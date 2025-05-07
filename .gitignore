@@ -1,0 +1,45 @@
+# Flutter/Dart generated files
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.build/
+
+# Miscellaneous generated files
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IDE-related files (IntelliJ, Android Studio, etc.)
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter build outputs (release, debug, profile)
+**/build/
+**/ios/Flutter/Build/
+
+# Obfuscation and symbolication related files
+app.*.symbols
+app.*.map.json
+
+# .env files (Sensitive configuration files)
+.env
+
+# Android Studio build artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release
