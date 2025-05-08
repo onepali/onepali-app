@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "nepali_name": "माछा",
+        "english_name": "Fish",
+        "image": "assets/images/animals/fish.png",
+        "lottie": "assets/lottie/animals/fish.json",
+        "audio": "assets/audio/animals/fish_sound.mp3",
+        "word_audio": "assets/audio/animals/fish.mp3"
+    },
+    {
+        "id": 2,
+        "nepali_name": "कुकुर",
+        "english_name": "Dog",
+        "image": "assets/images/animals/dog.png",
+        "lottie": "assets/lottie/animals/dog.json",
+        "audio": "assets/audio/animals/dog_sound.mp3",
+        "word_audio": "assets/audio/animals/dog.mp3"
+    },
+    {
+        "id": 3,
+        "nepali_name": "बिरालो",
+        "english_name": "Cat",
+        "image": "assets/images/animals/cat.png",
+        "lottie": "assets/lottie/animals/cat.json",
+        "audio": "assets/audio/animals/cat_sound.mp3",
+        "word_audio": "assets/audio/animals/cat.mp3"
+    },
+    {
+        "id": 4,
+        "nepali_name": "चरा",
+        "english_name": "Bird",
+        "image": "assets/images/animals/bird.png",
+        "lottie": "assets/lottie/animals/bird.json",
+        "audio": "assets/audio/animals/bird_sound.mp3",
+        "word_audio": "assets/audio/animals/bird.mp3"
+    },
+    {
+        "id": 5,
+        "nepali_name": "खरायो",
+        "english_name": "Rabbit",
+        "image": "assets/images/animals/rabbit.png",
+        "lottie": "assets/lottie/animals/rabbit.json",
+        "audio": "assets/audio/animals/rabbit_sound.mp3",
+        "word_audio": "assets/audio/animals/rabbit.mp3"
+    }
+]

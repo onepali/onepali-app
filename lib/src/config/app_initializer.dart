@@ -1,10 +1,17 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppInitializer {
   Future<void> initializeApp() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Lock orientation to landscape mode
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
 
     HttpOverrides.global = MyHttpOverrides();
   }
