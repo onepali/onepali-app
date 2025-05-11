@@ -9,11 +9,7 @@ class UserProvider extends ChangeNotifier {
   DataFetchStatus get status => _status;
   UserModel? get user => _user;
 
-  Future<void> userProfile(
-    BuildContext context,
-    String email,
-    String password,
-  ) async {
+  Future<void> userProfile() async {
     _status = DataFetchStatus.loading;
     notifyListeners();
 
@@ -27,8 +23,6 @@ class UserProvider extends ChangeNotifier {
     } else {
       _status = DataFetchStatus.error;
       notifyListeners();
-
-      if (!context.mounted) return;
     }
   }
 }

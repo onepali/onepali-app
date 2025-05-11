@@ -5,7 +5,7 @@ import '../../../src.dart';
 class LessonRepo {
   Future<ApiResponse> lessons() async {
     try {
-      var response = await rootBundle.loadString(Assets.lessons).then((value) {
+      var response = await rootBundle.loadString(Assets.lessonJson).then((value) {
         return value;
       });
       final apiResponse = ApiResponse.fromJson(

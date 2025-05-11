@@ -17,3 +17,9 @@ export 'custom_lottie.dart';
 
 /// Custom [Gaps]
 export 'gaps.dart';
+
+/// Custom [AppBar]
+export 'fixed_appbar.dart';
+
+/// Title [Action] Widget
+export 'title_action_child.dart';

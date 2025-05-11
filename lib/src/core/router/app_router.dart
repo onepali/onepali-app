@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 
 class AppRoutes {
+  static const String comingSoon = '/coming-soon';
+
   /// [Splash] & [OnBoarding] Routes
   static const String splashScreen = '/splash';
 

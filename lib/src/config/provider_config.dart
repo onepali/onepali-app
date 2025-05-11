@@ -5,6 +5,7 @@ import '../src.dart';
 class ProviderConfig {
   /// [System] Provider
   static final SystemProvider systemProvider = SystemProvider();
+  static final SplashProvider splashProvider = SplashProvider();
 
   /// [User] Provider
   static final UserProvider userProvider = UserProvider();
@@ -16,6 +17,7 @@ class ProviderConfig {
 
   static final List<ChangeNotifierProvider> providers = [
     ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
+    ChangeNotifierProvider<SplashProvider>(create: (_) => splashProvider),
     ChangeNotifierProvider<UserProvider>(create: (_) => userProvider),
     ChangeNotifierProvider<LessonProvider>(create: (_) => lessonProvider),
   ];
@@ -23,6 +25,7 @@ class ProviderConfig {
   /// Dispose all providers
   static void dispose() {
     systemProvider.dispose();
+    splashProvider.dispose();
     userProvider.dispose();
     lessonProvider.dispose();
   }

@@ -10,3 +10,6 @@ export 'lesson/lesson_model.dart';
 
 /// [Response] Model
 export 'response_model.dart';
+
+/// [Home] Model
+export 'home/home_model.dart';

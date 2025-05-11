@@ -17,9 +17,15 @@ class Assets {
   static String close = 'close'.icon;
   static String sound = 'sound'.icon;
 
+  /// [Home] Menu
+  static String games = 'game'.icon;
+  static String stories = 'story'.icon;
+  static String songsRhymes = 'song'.icon;
+  static String lessons = 'lesson'.icon;
+
   /// [Json] assets
   static String user = 'user'.json;
-  static String lessons = 'lesson'.json;
+  static String lessonJson = 'lesson'.json;
 }
 
 extension AssetsExtension on String {
