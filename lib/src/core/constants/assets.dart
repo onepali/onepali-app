@@ -1,6 +1,11 @@
 class Assets {
   /// [Brand] assets
   static String logo = 'logo'.png;
+  static String placeholder = 'placeholder'.jpg;
+  static String userAvatar = 'user_avatar'.png;
+
+  /// Lottie assets
+  static String onepaliLogo = 'onepali'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;

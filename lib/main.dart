@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: GlobalConfig.isShowDebugModeBanner,
               scrollBehavior: CustomScrollBehavior(),
-              initialRoute: '',
-              // routes: ,
+              initialRoute: AppRoutes.splashScreen,
+              routes: AppRoutes.routes,
               builder:
                   (context, widget) => MediaQuery(
                     data: MediaQuery.of(

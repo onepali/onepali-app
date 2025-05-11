@@ -1,0 +1,20 @@
+{
+    "name": "Laxman Magarati",
+    "email": "laxmanmagrati@gmail.com",
+    "age": 4,
+    "profile_picture": "assets/images/profile/aayush.png",
+    "level": "Pre-School",
+    "progress": {
+        "Pre-School": {
+            "Numbers": "completed",
+            "Alphabets": "in_progress",
+            "Sworn Barna": "locked"
+        }
+    },
+    "rewards": {
+        "stars": 3,
+        "badges": [
+            "Fast Learner"
+        ]
+    }
+}

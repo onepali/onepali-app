@@ -13,4 +13,13 @@ export 'services/service.dart';
 /// App [Utils]
 export 'utils/util.dart';
 
+/// App [Routes]
+export 'router/app_router.dart';
+
+/// App [Enums]
+export 'enums/enums.dart';
+
+/// App [Styles]
+export 'constants/app_styles.dart';
+
 //* ------------------------------- END CORE EXPORTS -------------------------------- *//

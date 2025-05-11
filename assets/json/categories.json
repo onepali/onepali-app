@@ -1,0 +1,32 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name_en": "Recommended",
+            "name_np": "सिफारिस गरिएको",
+            "image": "assets/images/categories/recommended.png",
+            "lottie": "assets/lottie/categories/recommended.json"
+        },
+        {
+            "id": 2,
+            "name_en": "Pre-School",
+            "name_np": "पूर्व-विद्यालय",
+            "image": "assets/images/categories/preschool.png",
+            "lottie": "assets/lottie/categories/preschool.json"
+        },
+        {
+            "id": 3,
+            "name_en": "Kindergarten",
+            "name_np": "बालविकास",
+            "image": "assets/images/categories/kindergarten.png",
+            "lottie": "assets/lottie/categories/kindergarten.json"
+        },
+        {
+            "id": 4,
+            "name_en": "1st Grade",
+            "name_np": "कक्षा १",
+            "image": "assets/images/categories/firstgrade.png",
+            "lottie": "assets/lottie/categories/firstgrade.json"
+        }
+    ]
+}
