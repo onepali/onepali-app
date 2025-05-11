@@ -1,0 +1,76 @@
+{
+    "subcategories": [
+        {
+            "id": 101,
+            "category_id": 1,
+            "name_en": "Starter Pack",
+            "name_np": "सुरुवाती प्याक",
+            "image": "assets/images/subcategories/starter.png",
+            "lottie": "assets/lottie/subcategories/starter.json"
+        },
+        {
+            "id": 102,
+            "category_id": 1,
+            "name_en": "Daily Essentials",
+            "name_np": "दैनिक आवश्यकताहरू",
+            "image": "assets/images/subcategories/daily_essentials.png",
+            "lottie": "assets/lottie/subcategories/daily_essentials.json"
+        },
+        {
+            "id": 201,
+            "category_id": 2,
+            "name_en": "Animals",
+            "name_np": "जनावरहरू",
+            "image": "assets/images/subcategories/animals.png",
+            "lottie": "assets/lottie/subcategories/animals.json"
+        },
+        {
+            "id": 202,
+            "category_id": 2,
+            "name_en": "Alphabets",
+            "name_np": "अक्षरहरू",
+            "image": "assets/images/subcategories/alphabets.png",
+            "lottie": "assets/lottie/subcategories/alphabets.json"
+        },
+        {
+            "id": 203,
+            "category_id": 2,
+            "name_en": "Colors",
+            "name_np": "रङहरू",
+            "image": "assets/images/subcategories/colors.png",
+            "lottie": "assets/lottie/subcategories/colors.json"
+        },
+        {
+            "id": 301,
+            "category_id": 3,
+            "name_en": "Numbers",
+            "name_np": "संख्या",
+            "image": "assets/images/subcategories/numbers.png",
+            "lottie": "assets/lottie/subcategories/numbers.json"
+        },
+        {
+            "id": 302,
+            "category_id": 3,
+            "name_en": "Shapes",
+            "name_np": "आकारहरू",
+            "image": "assets/images/subcategories/shapes.png",
+            "lottie": "assets/lottie/subcategories/shapes.json"
+        },
+        {
+            "id": 401,
+            "category_id": 4,
+            "name_en": "Swar Barna",
+            "name_np": "स्वर वर्ण",
+            "image": "assets/images/subcategories/swar.png",
+            "lottie": "assets/lottie/subcategories/swar.json"
+        },
+        {
+            "id": 402,
+            "category_id": 4,
+            "name_en": "Vyanjan Barna",
+            "name_np": "व्यञ्जन वर्ण",
+            "image": "assets/images/subcategories/vyanjan.png",
+            "lottie": "assets/lottie/subcategories/vyanjan.json"
+        }
+    ]
+}

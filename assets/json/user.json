@@ -1,0 +1,25 @@
+{
+    "status": true,
+    "message": "User data retrieved successfully",
+    "data": {
+        "name": "Laxman Magarati",
+        "email": "laxmanmagrati@gmail.com",
+        "age": 4,
+        "profile_picture": "assets/images/user_avatar.png",
+        "level": "Pre-School",
+        "progress": {
+            "Pre-School": {
+                "Numbers": "completed",
+                "Alphabets": "in_progress",
+                "Sworn Barna": "locked"
+            }
+        },
+        "rewards": {
+            "stars": 3,
+            "badges": [
+                "Fast Learner"
+            ]
+        }
+    },
+    "timestamp": "2023-10-01T12:00:00Z"
+}
