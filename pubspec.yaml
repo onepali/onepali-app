@@ -45,7 +45,7 @@ flutter:
     - assets/lottie/
     - assets/images/
     - assets/svg/icons/
-    - .env/
+    - .env
 
   # fonts:
   #   - family: Schyler

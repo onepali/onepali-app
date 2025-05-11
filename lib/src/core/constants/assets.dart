@@ -3,9 +3,10 @@ class Assets {
   static String logo = 'logo'.png;
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
+  static String patternBg = 'pattern_bg'.png;
 
   /// Lottie assets
-  static String onepaliLogo = 'onepali'.lottie;
+  static String logoLottie = 'onepali'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;

@@ -22,4 +22,7 @@ export 'enums/enums.dart';
 /// App [Styles]
 export 'constants/app_styles.dart';
 
+/// App [Provider]
+export 'provider/provider.dart';
+
 //* ------------------------------- END CORE EXPORTS -------------------------------- *//

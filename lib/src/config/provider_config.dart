@@ -1,18 +1,20 @@
 import 'package:provider/provider.dart';
 
+import '../src.dart';
+
 class ProviderConfig {
   /// [System] Provider
-  // static final SystemProvider systemProvider = SystemProvider();
+  static final SystemProvider systemProvider = SystemProvider();
 
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
-    // ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
+    ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
   ];
 
   /// Dispose all providers
   static void dispose() {
-    // systemProvider.dispose();
+    systemProvider.dispose();
   }
 
   /// Singleton factory
