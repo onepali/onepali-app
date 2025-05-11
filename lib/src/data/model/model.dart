@@ -7,3 +7,6 @@ export 'user/user_model.dart';
 
 /// [Lesson] Model
 export 'lesson/lesson_model.dart';
+
+/// [Response] Model
+export 'response_model.dart';
