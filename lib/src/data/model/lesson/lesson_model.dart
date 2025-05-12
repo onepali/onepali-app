@@ -74,6 +74,8 @@ class Lesson {
   final String audio;
   final String wordAudio;
   final String progress;
+  final String? type;
+  final String? tooltip;
 
   Lesson({
     required this.id,
@@ -84,6 +86,8 @@ class Lesson {
     required this.audio,
     required this.wordAudio,
     required this.progress,
+    this.type,
+    this.tooltip,
   });
 
   factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
@@ -95,6 +99,8 @@ class Lesson {
     audio: json["audio"] ?? "",
     wordAudio: json["word_audio"] ?? "",
     progress: json["progress"] ?? "",
+    type: json["type"] ?? "",
+    tooltip: json["tooltip"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -106,5 +112,7 @@ class Lesson {
     "audio": audio,
     "word_audio": wordAudio,
     "progress": progress,
+    "type": type,
+    "tooltip": tooltip,
   };
 }
