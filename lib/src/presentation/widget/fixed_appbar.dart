@@ -38,7 +38,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                     profileImage,
                     width: 40,
                     height: 40,
-                    imageType: CustomImageType.network,
+                    imageType: CustomImageType.local,
                     boxFit: BoxFit.cover,
                     circular: true,
                   ),
@@ -54,8 +54,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               Row(
                 children: [
-                  // _buildProgressBar(),
-                  Gaps.horizontalGapOf(10),
+                  _buildProgressBar(),
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: const BoxDecoration(
@@ -100,32 +99,39 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Row(
       children: List.generate(totalSteps, (index) {
         final isFilled = index < progressLevel;
-        return Expanded(
-          child: Container(
-            height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: isFilled ? Colors.amber : Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child:
-                index == totalSteps - 1
-                    ? Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: const BoxDecoration(
-                          color: Colors.amber,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.star,
-                          size: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                    : null,
-          ),
+        return Row(
+          children: [
+            if (index > 0)
+              Container(
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  color:
+                      isFilled
+                          ? AppColors.kOrange.withValues(alpha: 0.2)
+                          : Colors.grey.shade300,
+                ),
+              ),
+            if (index > 0 && index < totalSteps - 1)
+              Container(
+                height: 8,
+                width: 8,
+                decoration: BoxDecoration(
+                  color: isFilled ? AppColors.kOrange : Colors.grey.shade300,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            if (index == totalSteps - 1)
+              Container(
+                height: 4,
+                width: 40,
+                color:
+                    isFilled
+                        ? AppColors.kOrange.withValues(alpha: 0.2)
+                        : Colors.grey.shade300,
+              ),
+          ],
         );
       }),
     );
@@ -165,5 +171,5 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(160);
+  Size get preferredSize => const Size.fromHeight(100);
 }

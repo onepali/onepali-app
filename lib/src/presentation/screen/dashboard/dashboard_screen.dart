@@ -20,18 +20,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     var userData = context.watch<UserProvider>().user;
 
-    return Scaffold(
-      appBar: UserAppBar(
-        name: userData?.name ?? 'Guest',
-        profileImage: userData?.profilePicture ?? Assets.userAvatar,
-        progressLevel:
-            userData?.progress.preSchool.numbers == "completed" ? 1 : 0,
-        totalStars: userData?.rewards.stars ?? 0,
-        onTabSelected: (route) {
-          Navigator.pushNamed(context, route);
-        },
+    return SafeArea(
+      child: Scaffold(
+        appBar: UserAppBar(
+          name: userData?.name ?? 'Guest',
+          profileImage: userData?.profilePicture ?? Assets.userAvatar,
+          progressLevel: 4,
+          totalStars: userData?.rewards.stars ?? 0,
+          onTabSelected: (route) {
+            Navigator.pushNamed(context, route);
+          },
+        ),
+        body: LessonScreen(),
       ),
-      body: Column(children: [LessonScreen()]),
     );
   }
 }

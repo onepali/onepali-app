@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/data/data.dart';
+import 'package:onepali/src/presentation/presentation.dart';
 
 class LessonCard extends StatelessWidget {
-  const LessonCard({super.key});
+  final Category subcategory;
+
+  const LessonCard({super.key, required this.subcategory});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Column(
+      children: [
+        CustomImage(
+          subcategory.image,
+          height: 80,
+          width: 80,
+          boxFit: BoxFit.cover,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          subcategory.nameEn,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
   }
 }
