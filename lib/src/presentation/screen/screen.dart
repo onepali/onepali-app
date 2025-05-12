@@ -13,3 +13,4 @@ export 'user/user_screen.dart';
 export 'lesson/lesson_screen.dart';
 export 'lesson/lesson_card.dart';
 export 'lesson/lesson_detail.dart';
+export 'lesson/lesson_preview_screen.dart';

@@ -46,7 +46,8 @@ class LessonDetailScreen extends StatelessWidget {
                       height: screenHeight * 0.45,
                       width: screenWidth * 0.45,
                       borderRadius: 12,
-                      boxFit: BoxFit.cover,
+                      boxFit: BoxFit.contain,
+                      imageType: CustomImageType.local,
                     ),
                     const SizedBox(height: 8),
                     Text(

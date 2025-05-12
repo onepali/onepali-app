@@ -21,7 +21,7 @@ class _LessonScreenState extends State<LessonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.kWhite ,
+      backgroundColor: AppColors.kWhite,
       body: Consumer<LessonProvider>(
         builder: (context, lessonProvider, child) {
           if (lessonProvider.status == DataFetchStatus.loading) {
@@ -86,11 +86,11 @@ class _LessonScreenState extends State<LessonScreen> {
                                   },
                                   child: Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 3.5,
+                                        MediaQuery.of(context).size.width / 4,
                                     margin: const EdgeInsets.symmetric(
                                       horizontal: 8.0,
                                     ),
-                                    padding: const EdgeInsets.all(12.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8.0),
                                       color: AppColors
@@ -124,12 +124,14 @@ class _LessonScreenState extends State<LessonScreen> {
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         CustomImage(
                                           subCategory.image,
-                                          height: 90,
+                                          height: 100,
                                           imageType: CustomImageType.local,
-                                          width: double.infinity,
+                                          width: 100,
                                           borderRadius: 8.0,
                                           boxFit: BoxFit.contain,
                                         ),
