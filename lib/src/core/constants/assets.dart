@@ -13,9 +13,12 @@ class Assets {
   static String leftArrow = 'left_arrow'.icon;
   static String downArrow = 'down_arrow'.icon;
   static String upArrow = 'up_arrow'.icon;
+  static String speak = 'speak'.icon;
+  static String wrong = 'wrong'.icon;
   static String check = 'check'.icon;
-  static String close = 'close'.icon;
   static String sound = 'sound'.icon;
+  static String play = 'play'.icon;
+  static String redo = 'redo'.icon;
 
   /// [Home] Menu
   static String games = 'game'.icon;
@@ -26,6 +29,9 @@ class Assets {
   /// [Json] assets
   static String user = 'user'.json;
   static String lessonJson = 'lesson'.json;
+
+  /// [Audio] assets
+  static String eww = 'audio/eww'.audio;
 }
 
 extension AssetsExtension on String {
@@ -36,6 +42,6 @@ extension AssetsExtension on String {
   String get svg => 'assets/svg/$this.svg';
   String get icon => 'assets/svg/icons/$this.svg';
   String get lottie => 'assets/lottie/$this.json';
-  String get audio => 'assets/audio/$this.mp3';
+  String get audio => '$this.mp3';
   String get json => 'assets/json/$this.json';
 }

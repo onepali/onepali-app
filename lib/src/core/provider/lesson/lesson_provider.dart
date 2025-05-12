@@ -20,21 +20,27 @@ class LessonProvider extends ChangeNotifier {
     _status = DataFetchStatus.loading;
     notifyListeners();
 
-    final response = await _lessonRepo.lessons();
+    try {
+      final response = await _lessonRepo.lessons();
+      debugPrint("LessonRepo Response: ${response.toJson()}");
 
-    if (response.status) {
-      _lessons = response.data as LessonModel;
-      _categories = _lessons?.categories ?? [];
-      _subcategories = _categories.expand((cat) => cat.subcategories).toList();
-      _lessonsList = _categories.expand((cat) => cat.lessons).toList();
+      if (response.status && response.data != null) {
+        _lessons = response.data as LessonModel;
+        _categories = _lessons?.categories ?? [];
+        _subcategories =
+            _categories.expand((cat) => cat.subcategories).toList();
+        _lessonsList = _categories.expand((cat) => cat.lessons).toList();
 
-      _status = DataFetchStatus.success;
-      notifyListeners();
-    } else {
+        _status = DataFetchStatus.success;
+      } else {
+        debugPrint("Error: ${response.message}");
+        _status = DataFetchStatus.error;
+      }
+    } catch (e) {
+      debugPrint("Exception in fetchLessons: $e");
       _status = DataFetchStatus.error;
-      notifyListeners();
-
-      if (!context.mounted) return;
     }
+
+    notifyListeners();
   }
 }

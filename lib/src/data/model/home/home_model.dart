@@ -16,12 +16,12 @@ List<HomeServiceModel> homeServices = [
     tooltip: 'Lessons',
     route: AppRoutes.lessonScreen,
   ),
-  HomeServiceModel(
-    name: 'Games',
-    icon: Assets.games,
-    tooltip: 'Games',
-    route: AppRoutes.comingSoon,
-  ),
+  // HomeServiceModel(
+  //   name: 'Games',
+  //   icon: Assets.games,
+  //   tooltip: 'Games',
+  //   route: AppRoutes.comingSoon,
+  // ),
   HomeServiceModel(
     name: 'Stories',
     icon: Assets.stories,
