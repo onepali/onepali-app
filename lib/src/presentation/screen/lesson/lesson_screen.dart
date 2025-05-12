@@ -21,10 +21,9 @@ class _LessonScreenState extends State<LessonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.kWhite,
+      backgroundColor: AppColors.kWhite ,
       body: Consumer<LessonProvider>(
         builder: (context, lessonProvider, child) {
-          print('status ${lessonProvider.status}');
           if (lessonProvider.status == DataFetchStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           } else if (lessonProvider.status == DataFetchStatus.error) {
@@ -89,15 +88,38 @@ class _LessonScreenState extends State<LessonScreen> {
                                     width:
                                         MediaQuery.of(context).size.width / 3.5,
                                     margin: const EdgeInsets.symmetric(
-                                      horizontal: 4.0,
+                                      horizontal: 8.0,
                                     ),
                                     padding: const EdgeInsets.all(12.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8.0),
                                       color: AppColors
-                                          .learningColors[index %
+                                          .learningColors[(index + subIndex) %
                                               AppColors.learningColors.length]
-                                          .withValues(alpha: 0.2),
+                                          .withValues(alpha: 0.1),
+                                      border: Border.all(
+                                        color:
+                                            AppColors.learningColors[(index +
+                                                    subIndex) %
+                                                AppColors
+                                                    .learningColors
+                                                    .length],
+                                        width: 2,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors
+                                              .learningColors[(index +
+                                                      subIndex) %
+                                                  AppColors
+                                                      .learningColors
+                                                      .length]
+                                              .withValues(alpha: 0.2),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
@@ -106,10 +128,10 @@ class _LessonScreenState extends State<LessonScreen> {
                                         CustomImage(
                                           subCategory.image,
                                           height: 90,
-
+                                          imageType: CustomImageType.local,
                                           width: double.infinity,
                                           borderRadius: 8.0,
-                                          boxFit: BoxFit.cover,
+                                          boxFit: BoxFit.contain,
                                         ),
                                         const SizedBox(height: 8),
                                         Text(

@@ -23,3 +23,6 @@ export 'fixed_appbar.dart';
 
 /// Title [Action] Widget
 export 'title_action_child.dart';
+
+/// Custom [Audio] Widget
+export 'custom_audio_widget.dart';

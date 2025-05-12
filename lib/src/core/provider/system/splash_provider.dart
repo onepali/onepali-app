@@ -8,7 +8,12 @@ class SplashProvider extends ChangeNotifier {
   SplashProvider({this.splashDelay = const Duration(milliseconds: 1500)});
 
   Future<void> waitAndNavigate(context) async {
+    // final audioController = CustomAudioWidget(audioPath: Assets.eww);
+    // audioController.play();
+
     await Future.delayed(splashDelay, () {
+      // audioController.dispose();
+
       Utility.navigate(context, AppRoutes.dashboardScreen);
     });
   }
