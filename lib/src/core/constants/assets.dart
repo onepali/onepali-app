@@ -13,9 +13,12 @@ class Assets {
   static String leftArrow = 'left_arrow'.icon;
   static String downArrow = 'down_arrow'.icon;
   static String upArrow = 'up_arrow'.icon;
+  static String speak = 'speak'.icon;
+  static String wrong = 'wrong'.icon;
   static String check = 'check'.icon;
-  static String close = 'close'.icon;
   static String sound = 'sound'.icon;
+  static String play = 'play'.icon;
+  static String redo = 'redo'.icon;
 
   /// [Home] Menu
   static String games = 'game'.icon;
