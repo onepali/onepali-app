@@ -17,6 +17,9 @@ class AppColors {
   static const Color kYellow = Color(0xFFFFFF00);
   static const Color kOrange = Color(0xFFFFA500);
   static const Color kPitchBlack = Color(0xFF434343);
+  static const Color kPurple = Color(0xFF800080);
+  static const Color kTeal = Color(0xFF008080);
+  static const Color kPink = Color(0xFFFFC0CB);
 
   /// Status Color
   static const Color successColor = Color(0xFF4CAF50);

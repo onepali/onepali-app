@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
               scrollBehavior: CustomScrollBehavior(),
               initialRoute: AppRoutes.splashScreen,
               routes: AppRoutes.routes,
+              theme: ThemeConfig.lightTheme,
               builder:
                   (context, widget) => MediaQuery(
                     data: MediaQuery.of(

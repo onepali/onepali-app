@@ -29,6 +29,8 @@ class Category {
   final String lottie;
   final List<Category> subcategories;
   final List<Lesson> lessons;
+  final bool? soundAvailable;
+  final String progress;
 
   Category({
     required this.id,
@@ -38,6 +40,8 @@ class Category {
     required this.lottie,
     required this.subcategories,
     required this.lessons,
+    this.soundAvailable,
+    this.progress = "",
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
@@ -52,6 +56,8 @@ class Category {
     lessons: List<Lesson>.from(
       (json["lessons"] ?? []).map((x) => Lesson.fromJson(x)),
     ),
+    soundAvailable: json["sound_available"] ?? false,
+    progress: json["progress"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -62,6 +68,8 @@ class Category {
     "lottie": lottie,
     "subcategories": List<dynamic>.from(subcategories.map((x) => x.toJson())),
     "lessons": List<dynamic>.from(lessons.map((x) => x.toJson())),
+    "sound_available": soundAvailable,
+    "progress": progress,
   };
 }
 
@@ -74,6 +82,8 @@ class Lesson {
   final String audio;
   final String wordAudio;
   final String progress;
+  final String? type;
+  final String? tooltip;
 
   Lesson({
     required this.id,
@@ -84,6 +94,8 @@ class Lesson {
     required this.audio,
     required this.wordAudio,
     required this.progress,
+    this.type,
+    this.tooltip,
   });
 
   factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
@@ -95,6 +107,8 @@ class Lesson {
     audio: json["audio"] ?? "",
     wordAudio: json["word_audio"] ?? "",
     progress: json["progress"] ?? "",
+    type: json["type"] ?? "",
+    tooltip: json["tooltip"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -106,5 +120,7 @@ class Lesson {
     "audio": audio,
     "word_audio": wordAudio,
     "progress": progress,
+    "type": type,
+    "tooltip": tooltip,
   };
 }

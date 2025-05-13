@@ -5,8 +5,8 @@
     "categories": [
       {
         "id": 1,
-        "name_en": "Recommended",
-        "name_np": "सिफारिस गरिएको",
+        "name_en": "Recommended Lessons",
+        "name_np": "अनुशंसित पाठहरू",
         "image": "assets/images/categories/recommended.png",
         "lottie": "assets/lottie/categories/recommended.json",
         "subcategories": [
@@ -16,6 +16,8 @@
             "name_np": "सुरुवाती प्याक",
             "image": "assets/images/subcategories/starter.png",
             "lottie": "assets/lottie/subcategories/starter.json",
+            "sound_available": true,
+            "progress": "in_progress",
             "lessons": [
               {
                 "id": 1001,
@@ -23,8 +25,8 @@
                 "name_np": "माछा",
                 "image": "assets/images/animals/fish.png",
                 "lottie": "assets/lottie/animals/fish.json",
-                "audio": "assets/audio/animals/fish.m4a",
-                "word_audio": "assets/audio/animals/fish_s.mp3",
+                "audio": "audio/animals/fish.m4a",
+                "word_audio": "audio/animals/fish_s.mp3",
                 "type": "जलचर",
                 "tooltip": "यो पानीमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -35,8 +37,8 @@
                 "name_np": "बिरालो",
                 "image": "assets/images/animals/cat.png",
                 "lottie": "assets/lottie/animals/cat.json",
-                "audio": "assets/audio/animals/cat.m4a",
-                "word_audio": "assets/audio/biralo_s.mp3",
+                "audio": "audio/animals/cat.m4a",
+                "word_audio": "audio/animals/biralo_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "completed"
@@ -47,8 +49,8 @@
                 "name_np": "कुकुर",
                 "image": "assets/images/animals/dog.png",
                 "lottie": "assets/lottie/animals/dog.json",
-                "audio": "assets/audio/animals/dog.m4a",
-                "word_audio": "assets/audio/dog_s.mp3",
+                "audio": "audio/animals/dog.m4a",
+                "word_audio": "audio/animals/dog_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -59,8 +61,8 @@
                 "name_np": "चरा",
                 "image": "assets/images/animals/bird.png",
                 "lottie": "assets/lottie/animals/bird.json",
-                "audio": "assets/audio/animals/bird.m4a",
-                "word_audio": "assets/audio/words/bird_s.mp3",
+                "audio": "audio/animals/bird.m4a",
+                "word_audio": "audio/animals/bird_s.mp3",
                 "type": "पखेटा भएको",
                 "tooltip": "यो उड्न सक्ने जनावर हो।",
                 "progress": "locked"
@@ -71,8 +73,8 @@
                 "name_np": "खरायो",
                 "image": "assets/images/animals/rabbit.png",
                 "lottie": "assets/lottie/animals/rabbit.json",
-                "audio": "assets/audio/animals/rabbit.m4a",
-                "word_audio": "assets/audio/words/rabbit_s.mp3",
+                "audio": "audio/animals/rabbit.m4a",
+                "word_audio": "audio/animals/rabbit_s.mp3",
                 "type": "पशु",
                 "tooltip": "यो गाजर खान मन पराउने जनावर हो।",
                 "progress": "locked"
@@ -85,6 +87,8 @@
             "name_np": "दैनिक आवश्यकताहरू",
             "image": "assets/images/subcategories/daily_essentials.png",
             "lottie": "assets/lottie/subcategories/daily_essentials.json",
+            "sound_available": false,
+            "progress": "completed",
             "lessons": [
               {
                 "id": 1101,
@@ -353,6 +357,7 @@
             "name_np": "जनावरहरू",
             "image": "assets/images/subcategories/animals.png",
             "lottie": "assets/lottie/subcategories/animals.json",
+            "sound_available": true,
             "lessons": [
               {
                 "id": 2001,
@@ -360,8 +365,8 @@
                 "name_np": "माछा",
                 "image": "assets/images/animals/fish.png",
                 "lottie": "assets/lottie/animals/fish.json",
-                "audio": "assets/audio/animals/fish.m4a",
-                "word_audio": "assets/audio/animals/fish_s.mp3",
+                "audio": "audio/animals/fish.m4a",
+                "word_audio": "audio/animals/fish_s.mp3",
                 "type": "जलचर",
                 "tooltip": "यो पानीमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -372,8 +377,8 @@
                 "name_np": "बिरालो",
                 "image": "assets/images/animals/cat.png",
                 "lottie": "assets/lottie/animals/cat.json",
-                "audio": "assets/audio/animals/cat.m4a",
-                "word_audio": "assets/audio/biralo_s.mp3",
+                "audio": "audio/animals/cat.m4a",
+                "word_audio": "audio/animals/biralo_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "completed"
@@ -384,8 +389,8 @@
                 "name_np": "कुकुर",
                 "image": "assets/images/animals/dog.png",
                 "lottie": "assets/lottie/animals/dog.json",
-                "audio": "assets/audio/animals/dog.m4a",
-                "word_audio": "assets/audio/dog_s.mp3",
+                "audio": "audio/animals/dog.m4a",
+                "word_audio": "audio/animals/dog_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -396,8 +401,8 @@
                 "name_np": "चरा",
                 "image": "assets/images/animals/bird.png",
                 "lottie": "assets/lottie/animals/bird.json",
-                "audio": "assets/audio/animals/bird.m4a",
-                "word_audio": "assets/audio/words/bird_s.mp3",
+                "audio": "audio/animals/bird.m4a",
+                "word_audio": "audio/animals/bird_s.mp3",
                 "type": "पखेटा भएको",
                 "tooltip": "यो उड्न सक्ने जनावर हो।",
                 "progress": "locked"
@@ -408,8 +413,8 @@
                 "name_np": "खरायो",
                 "image": "assets/images/animals/rabbit.png",
                 "lottie": "assets/lottie/animals/rabbit.json",
-                "audio": "assets/audio/animals/rabbit.m4a",
-                "word_audio": "assets/audio/words/rabbit_s.mp3",
+                "audio": "audio/animals/rabbit.m4a",
+                "word_audio": "audio/animals/rabbit_s.mp3",
                 "type": "पशु",
                 "tooltip": "यो गाजर खान मन पराउने जनावर हो।",
                 "progress": "locked"
@@ -422,6 +427,7 @@
             "name_np": "अक्षरहरू",
             "image": "assets/images/subcategories/alphabets.png",
             "lottie": "assets/lottie/subcategories/alphabets.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 2101,
@@ -431,7 +437,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/a.json",
                 "audio": "assets/audio/lessons/alphabets/a_sentence.mp3",
                 "word_audio": "assets/audio/words/a.mp3",
-                "progress": "in_progress"
+                "progress": "in_progress",
+                "type": "स्वर वर्ण",
+                "tooltip": "अ बाट अनार"
               },
               {
                 "id": 2102,
@@ -441,7 +449,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/b.json",
                 "audio": "assets/audio/lessons/alphabets/b_sentence.mp3",
                 "word_audio": "assets/audio/words/b.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ब बाट बाघ"
               },
               {
                 "id": 2103,
@@ -451,7 +461,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/c.json",
                 "audio": "assets/audio/lessons/alphabets/c_sentence.mp3",
                 "word_audio": "assets/audio/words/c.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "क बाट काग"
               },
               {
                 "id": 2104,
@@ -461,7 +473,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/d.json",
                 "audio": "assets/audio/lessons/alphabets/d_sentence.mp3",
                 "word_audio": "assets/audio/words/d.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ड बाट डमरु"
               },
               {
                 "id": 2105,
@@ -471,7 +485,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/e.json",
                 "audio": "assets/audio/lessons/alphabets/e_sentence.mp3",
                 "word_audio": "assets/audio/words/e.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "स्वर वर्ण",
+                "tooltip": "इ बाट इमली"
               },
               {
                 "id": 2106,
@@ -481,7 +497,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/f.json",
                 "audio": "assets/audio/lessons/alphabets/f_sentence.mp3",
                 "word_audio": "assets/audio/words/f.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "फ बाट फल"
               },
               {
                 "id": 2107,
@@ -491,7 +509,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/g.json",
                 "audio": "assets/audio/lessons/alphabets/g_sentence.mp3",
                 "word_audio": "assets/audio/words/g.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ग बाट गधा"
               },
               {
                 "id": 2108,
@@ -501,7 +521,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/h.json",
                 "audio": "assets/audio/lessons/alphabets/h_sentence.mp3",
                 "word_audio": "assets/audio/words/h.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ह बाट हात्ती"
               },
               {
                 "id": 2109,
@@ -511,7 +533,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/i.json",
                 "audio": "assets/audio/lessons/alphabets/i_sentence.mp3",
                 "word_audio": "assets/audio/words/i.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "स्वर वर्ण",
+                "tooltip": "इ बाट इमली"
               },
               {
                 "id": 2110,
@@ -521,7 +545,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/j.json",
                 "audio": "assets/audio/lessons/alphabets/j_sentence.mp3",
                 "word_audio": "assets/audio/words/j.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ज बाट जहाज"
               },
               {
                 "id": 2111,
@@ -531,7 +557,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/k.json",
                 "audio": "assets/audio/lessons/alphabets/k_sentence.mp3",
                 "word_audio": "assets/audio/words/k.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "क बाट काग"
               },
               {
                 "id": 2112,
@@ -541,7 +569,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/l.json",
                 "audio": "assets/audio/lessons/alphabets/l_sentence.mp3",
                 "word_audio": "assets/audio/words/l.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ल बाट लट्टाई"
               },
               {
                 "id": 2113,
@@ -551,7 +581,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/m.json",
                 "audio": "assets/audio/lessons/alphabets/m_sentence.mp3",
                 "word_audio": "assets/audio/words/m.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "म बाट माछा"
               },
               {
                 "id": 2114,
@@ -561,7 +593,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/n.json",
                 "audio": "assets/audio/lessons/alphabets/n_sentence.mp3",
                 "word_audio": "assets/audio/words/n.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "न बाट नरिवल"
               },
               {
                 "id": 2115,
@@ -571,7 +605,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/o.json",
                 "audio": "assets/audio/lessons/alphabets/o_sentence.mp3",
                 "word_audio": "assets/audio/words/o.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "स्वर वर्ण",
+                "tooltip": "ओ बाट ओखर"
               },
               {
                 "id": 2116,
@@ -581,7 +617,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/p.json",
                 "audio": "assets/audio/lessons/alphabets/p_sentence.mp3",
                 "word_audio": "assets/audio/words/p.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "प बाट पतंग"
               },
               {
                 "id": 2117,
@@ -591,7 +629,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/q.json",
                 "audio": "assets/audio/lessons/alphabets/q_sentence.mp3",
                 "word_audio": "assets/audio/words/q.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "अक्षर",
+                "tooltip": "क्यु अंग्रेजी वर्ण हो।"
               },
               {
                 "id": 2118,
@@ -601,7 +641,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/r.json",
                 "audio": "assets/audio/lessons/alphabets/r_sentence.mp3",
                 "word_audio": "assets/audio/words/r.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "र बाट रसगुल्ला"
               },
               {
                 "id": 2119,
@@ -611,7 +653,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/s.json",
                 "audio": "assets/audio/lessons/alphabets/s_sentence.mp3",
                 "word_audio": "assets/audio/words/s.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "स बाट सर्प"
               },
               {
                 "id": 2120,
@@ -621,7 +665,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/t.json",
                 "audio": "assets/audio/lessons/alphabets/t_sentence.mp3",
                 "word_audio": "assets/audio/words/t.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "ट बाट टमाटर"
               },
               {
                 "id": 2121,
@@ -631,7 +677,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/u.json",
                 "audio": "assets/audio/lessons/alphabets/u_sentence.mp3",
                 "word_audio": "assets/audio/words/u.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "स्वर वर्ण",
+                "tooltip": "उ बाट उल्लु"
               },
               {
                 "id": 2122,
@@ -641,7 +689,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/v.json",
                 "audio": "assets/audio/lessons/alphabets/v_sentence.mp3",
                 "word_audio": "assets/audio/words/v.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "अ बाट अनार"
               },
               {
                 "id": 2123,
@@ -651,7 +701,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/w.json",
                 "audio": "assets/audio/lessons/alphabets/w_sentence.mp3",
                 "word_audio": "assets/audio/words/w.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "अ बाट अनार"
               },
               {
                 "id": 2124,
@@ -661,7 +713,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/x.json",
                 "audio": "assets/audio/lessons/alphabets/x_sentence.mp3",
                 "word_audio": "assets/audio/words/x.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "अ बाट अनार"
               },
               {
                 "id": 2125,
@@ -671,7 +725,9 @@
                 "lottie": "assets/lottie/lessons/alphabets/y.json",
                 "audio": "assets/audio/lessons/alphabets/y_sentence.mp3",
                 "word_audio": "assets/audio/words/y.mp3",
-                "progress": "locked"
+                "progress": "locked",
+                "type": "व्यञ्जन वर्ण",
+                "tooltip": "अ बाट अनार"
               }
             ]
           },
@@ -681,6 +737,8 @@
             "name_np": "रङहरू",
             "image": "assets/images/subcategories/colors.png",
             "lottie": "assets/lottie/subcategories/colors.json",
+            "progress": "locked",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 2201,
@@ -877,56 +935,6 @@
                 "name_en": "Olive",
                 "name_np": "जैतुन",
                 "image": "assets/images/lessons/colors/olive.png",
-                "lottie": "assets/lottie/lessons/colors/olive.json",
-                "audio": "assets/audio/lessons/colors/olive_sentence.mp3",
-                "word_audio": "assets/audio/words/olive.mp3",
-                "progress": "locked"
-              },
-              {
-                "id": 2221,
-                "name_en": "Navy",
-                "name_np": "नेभी",
-                "image": "assets/images/lessons/colors/navy.png",
-                "lottie": "assets/lottie/lessons/colors/navy.json",
-                "audio": "assets/audio/lessons/colors/navy_sentence.mp3",
-                "word_audio": "assets/audio/words/navy.mp3",
-                "progress": "locked"
-              },
-              {
-                "id": 2222,
-                "name_en": "Teal",
-                "name_np": "टील",
-                "image": "assets/images/lessons/colors/teal.png",
-                "lottie": "assets/lottie/lessons/colors/teal.json",
-                "audio": "assets/audio/lessons/colors/teal_sentence.mp3",
-                "word_audio": "assets/audio/words/teal.mp3",
-                "progress": "locked"
-              },
-              {
-                "id": 2223,
-                "name_en": "Coral",
-                "name_np": "कोरल",
-                "image": "assets/images/lessons/colors/coral.png",
-                "lottie": "assets/lottie/lessons/colors/coral.json",
-                "audio": "assets/audio/lessons/colors/coral_sentence.mp3",
-                "word_audio": "assets/audio/words/coral.mp3",
-                "progress": "locked"
-              },
-              {
-                "id": 2224,
-                "name_en": "Gold",
-                "name_np": "सुन",
-                "image": "assets/images/lessons/colors/gold.png",
-                "lottie": "assets/lottie/lessons/colors/gold.json",
-                "audio": "assets/audio/lessons/colors/gold_sentence.mp3",
-                "word_audio": "assets/audio/words/gold.mp3",
-                "progress": "locked"
-              },
-              {
-                "id": 2225,
-                "name_en": "Silver",
-                "name_np": "चाँदी",
-                "image": "assets/images/lessons/colors/silver.png",
                 "lottie": "assets/lottie/lessons/colors/silver.json",
                 "audio": "assets/audio/lessons/colors/silver_sentence.mp3",
                 "word_audio": "assets/audio/words/silver.mp3",
@@ -949,6 +957,7 @@
             "name_np": "संख्या",
             "image": "assets/images/subcategories/numbers.png",
             "lottie": "assets/lottie/subcategories/numbers.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 3001,
@@ -1208,6 +1217,7 @@
             "name_np": "आकारहरू",
             "image": "assets/images/subcategories/shapes.png",
             "lottie": "assets/lottie/subcategories/shapes.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 3101,
@@ -1476,6 +1486,7 @@
             "name_np": "स्वर वर्ण",
             "image": "assets/images/subcategories/swar.png",
             "lottie": "assets/lottie/subcategories/swar.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 4001,
@@ -1735,6 +1746,7 @@
             "name_np": "व्यञ्जन वर्ण",
             "image": "assets/images/subcategories/vyanjan.png",
             "lottie": "assets/lottie/subcategories/vyanjan.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 4201,

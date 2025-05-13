@@ -26,15 +26,16 @@ class Utility {
     }).toList();
   }
 
-  static String formatMoney(double amount) {
-    if (amount >= 1e9) {
-      return '\$${(amount / 1e9).toStringAsFixed(1)}B';
-    } else if (amount >= 1e6) {
-      return '\$${(amount / 1e6).toStringAsFixed(1)}M';
-    } else if (amount >= 1e3) {
-      return '\$${(amount / 1e3).toStringAsFixed(1)}K';
-    } else {
-      return '\$${amount.toStringAsFixed(2)}';
+  static IconData? getProgressTypeIcon(String type) {
+    switch (type) {
+      case 'completed':
+        return Icons.check_circle;
+      case 'locked':
+        return Icons.lock;
+      case 'in-progress':
+        return Icons.hourglass_bottom;
+      default:
+        return null;
     }
   }
 }

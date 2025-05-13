@@ -12,6 +12,7 @@ class ProviderConfig {
 
   /// [Lesson] Provider
   static final LessonProvider lessonProvider = LessonProvider();
+  static final LessonAudioProvider lessonAudioProvider = LessonAudioProvider();
 
   //* --------------------------- End --------------------------- *//
 
@@ -20,6 +21,9 @@ class ProviderConfig {
     ChangeNotifierProvider<SplashProvider>(create: (_) => splashProvider),
     ChangeNotifierProvider<UserProvider>(create: (_) => userProvider),
     ChangeNotifierProvider<LessonProvider>(create: (_) => lessonProvider),
+    ChangeNotifierProvider<LessonAudioProvider>(
+      create: (_) => lessonAudioProvider,
+    ),
   ];
 
   /// Dispose all providers
@@ -28,6 +32,7 @@ class ProviderConfig {
     splashProvider.dispose();
     userProvider.dispose();
     lessonProvider.dispose();
+    lessonAudioProvider.dispose();
   }
 
   /// Singleton factory
