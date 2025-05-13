@@ -23,8 +23,8 @@
                 "name_np": "माछा",
                 "image": "assets/images/animals/fish.png",
                 "lottie": "assets/lottie/animals/fish.json",
-                "audio": "assets/audio/animals/fish.m4a",
-                "word_audio": "assets/audio/animals/fish_s.mp3",
+                "audio": "audio/animals/fish.m4a",
+                "word_audio": "audio/animals/fish_s.mp3",
                 "type": "जलचर",
                 "tooltip": "यो पानीमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -35,8 +35,8 @@
                 "name_np": "बिरालो",
                 "image": "assets/images/animals/cat.png",
                 "lottie": "assets/lottie/animals/cat.json",
-                "audio": "assets/audio/animals/cat.m4a",
-                "word_audio": "assets/audio/biralo_s.mp3",
+                "audio": "audio/animals/cat.m4a",
+                "word_audio": "audio/animals/biralo_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "completed"
@@ -47,8 +47,8 @@
                 "name_np": "कुकुर",
                 "image": "assets/images/animals/dog.png",
                 "lottie": "assets/lottie/animals/dog.json",
-                "audio": "assets/audio/animals/dog.m4a",
-                "word_audio": "assets/audio/dog_s.mp3",
+                "audio": "audio/animals/dog.m4a",
+                "word_audio": "audio/animals/dog_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -59,8 +59,8 @@
                 "name_np": "चरा",
                 "image": "assets/images/animals/bird.png",
                 "lottie": "assets/lottie/animals/bird.json",
-                "audio": "assets/audio/animals/bird.m4a",
-                "word_audio": "assets/audio/words/bird_s.mp3",
+                "audio": "audio/animals/bird.m4a",
+                "word_audio": "audio/animals/bird_s.mp3",
                 "type": "पखेटा भएको",
                 "tooltip": "यो उड्न सक्ने जनावर हो।",
                 "progress": "locked"
@@ -71,10 +71,9 @@
                 "name_np": "खरायो",
                 "image": "assets/images/animals/rabbit.png",
                 "lottie": "assets/lottie/animals/rabbit.json",
-                "audio": "assets/audio/animals/rabbit.m4a",
-                "word_audio": "assets/audio/words/rabbit_s.mp3",
-                "type": "पशु",
-                "tooltip": "यो गाजर खान मन पराउने जनावर हो।",
+                "audio": "audio/animals/rabbit.m4a",
+                "word_audio": "audio/animals/rabbit_s.mp3",
+                
                 "progress": "locked"
               }
             ]
@@ -360,8 +359,8 @@
                 "name_np": "माछा",
                 "image": "assets/images/animals/fish.png",
                 "lottie": "assets/lottie/animals/fish.json",
-                "audio": "assets/audio/animals/fish.m4a",
-                "word_audio": "assets/audio/animals/fish_s.mp3",
+                "audio": "audio/animals/fish.m4a",
+                "word_audio": "audio/animals/fish_s.mp3",
                 "type": "जलचर",
                 "tooltip": "यो पानीमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -372,8 +371,8 @@
                 "name_np": "बिरालो",
                 "image": "assets/images/animals/cat.png",
                 "lottie": "assets/lottie/animals/cat.json",
-                "audio": "assets/audio/animals/cat.m4a",
-                "word_audio": "assets/audio/biralo_s.mp3",
+                "audio": "audio/animals/cat.m4a",
+                "word_audio": "audio/animals/biralo_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "completed"
@@ -384,8 +383,8 @@
                 "name_np": "कुकुर",
                 "image": "assets/images/animals/dog.png",
                 "lottie": "assets/lottie/animals/dog.json",
-                "audio": "assets/audio/animals/dog.m4a",
-                "word_audio": "assets/audio/dog_s.mp3",
+                "audio": "audio/animals/dog.m4a",
+                "word_audio": "audio/animals/dog_s.mp3",
                 "type": "घरपालुवा",
                 "tooltip": "यो घरमा बस्ने जनावर हो।",
                 "progress": "locked"
@@ -396,8 +395,8 @@
                 "name_np": "चरा",
                 "image": "assets/images/animals/bird.png",
                 "lottie": "assets/lottie/animals/bird.json",
-                "audio": "assets/audio/animals/bird.m4a",
-                "word_audio": "assets/audio/words/bird_s.mp3",
+                "audio": "audio/animals/bird.m4a",
+                "word_audio": "audio/animals/bird_s.mp3",
                 "type": "पखेटा भएको",
                 "tooltip": "यो उड्न सक्ने जनावर हो।",
                 "progress": "locked"
@@ -408,8 +407,8 @@
                 "name_np": "खरायो",
                 "image": "assets/images/animals/rabbit.png",
                 "lottie": "assets/lottie/animals/rabbit.json",
-                "audio": "assets/audio/animals/rabbit.m4a",
-                "word_audio": "assets/audio/words/rabbit_s.mp3",
+                "audio": "audio/animals/rabbit.m4a",
+                "word_audio": "audio/animals/rabbit_s.mp3",
                 "type": "पशु",
                 "tooltip": "यो गाजर खान मन पराउने जनावर हो।",
                 "progress": "locked"

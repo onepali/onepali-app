@@ -7,6 +7,7 @@ class Assets {
 
   /// Lottie assets
   static String logoLottie = 'onepali'.lottie;
+  static String bgTransition = 'bg_transition'.gif;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -38,6 +39,7 @@ extension AssetsExtension on String {
   String get png => 'assets/images/$this.png';
   String get jpg => 'assets/images/$this.jpg';
   String get jpeg => 'assets/images/$this.jpeg';
+  String get gif => 'assets/images/$this.gif';
   String get webp => 'assets/images/$this.webp';
   String get svg => 'assets/svg/$this.svg';
   String get icon => 'assets/svg/icons/$this.svg';

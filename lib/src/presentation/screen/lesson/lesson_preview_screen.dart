@@ -1,70 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
 
 import '../../../src.dart';
 
-class LessonPreviewScreen extends StatefulWidget {
+class LessonPreviewScreen extends StatelessWidget {
   final Lesson lesson;
-  const LessonPreviewScreen({super.key, required this.lesson});
-
-  @override
-  State<LessonPreviewScreen> createState() => _LessonPreviewScreenState();
-}
-
-class _LessonPreviewScreenState extends State<LessonPreviewScreen> {
-  final AudioPlayer _audioPlayer1 = AudioPlayer();
-  final AudioPlayer _audioPlayer2 = AudioPlayer();
-  bool _isPlaying = false;
-
-  @override
-  void dispose() {
-    _audioPlayer1.dispose();
-    _audioPlayer2.dispose();
-    super.dispose();
-  }
-
-  Future<void> _playAudio() async {
-    setState(() {
-      _isPlaying = true;
-    });
-
-    await Future.wait([
-      _audioPlayer1.play(AssetSource(widget.lesson.audio)),
-      _audioPlayer2.play(AssetSource(widget.lesson.wordAudio)),
-    ]);
-
-    _audioPlayer1.onPlayerComplete.listen((_) {
-      if (_audioPlayer2.state != PlayerState.playing) {
-        _onPlaybackComplete();
-      }
-    });
-
-    _audioPlayer2.onPlayerComplete.listen((_) {
-      if (_audioPlayer1.state != PlayerState.playing) {
-        _onPlaybackComplete();
-      }
-    });
-  }
-
-  void _onPlaybackComplete() {
-    setState(() {
-      _isPlaying = false;
-    });
-    // Automatically navigate to the next item
-    _navigateToNext();
-  }
-
-  void _navigateToNext() {
-    // Logic to navigate to the next lesson
-  }
-
-  void _navigateToPrevious() {
-    // Logic to navigate to the previous lesson
-  }
+  final List<Lesson> lessons;
+  const LessonPreviewScreen({
+    super.key,
+    required this.lesson,
+    required this.lessons,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final lesson = widget.lesson;
+    final audioProvider = context.watch<LessonAudioProvider>();
+    final lesson = lessons[audioProvider.currentIndex];
 
     return Scaffold(
       backgroundColor: AppColors.kWhite,
@@ -233,21 +184,35 @@ class _LessonPreviewScreenState extends State<LessonPreviewScreen> {
                           height: 48,
                           width: 48,
                           color:
-                              _isPlaying
+                              audioProvider.isPlaying ||
+                                      audioProvider.currentIndex == 0
                                   ? AppColors.kGrey
                                   : AppColors.kSecondaryColor,
                         ),
-                        onPressed: _isPlaying ? null : _navigateToPrevious,
+                        onPressed:
+                            audioProvider.isPlaying ||
+                                    audioProvider.currentIndex == 0
+                                ? null
+                                : audioProvider.navigateToPrevious,
                       ),
                       Gaps.horizontalGapOf(24),
-                      IconButton(
-                        icon: SvgHelper.fromSource(
-                          path: Assets.sound,
-                          height: 60,
-                          width: 60,
-                          color: AppColors.kPrimaryColor,
+                      CustomAvatarGlow(
+                        glowColor: AppColors.kSecondaryColor,
+                        glowShape: BoxShape.circle,
+                        visible: audioProvider.isPlaying,
+                        glowRadiusFactor: 0.2,
+                        child: IconButton(
+                          icon: SvgHelper.fromSource(
+                            path: Assets.sound,
+                            height: 55,
+                            width: 55,
+                            color: AppColors.kPrimaryColor,
+                          ),
+                          onPressed:
+                              audioProvider.isPlaying
+                                  ? null
+                                  : () => audioProvider.playAudio(lessons),
                         ),
-                        onPressed: _isPlaying ? null : _playAudio,
                       ),
                       Gaps.horizontalGapOf(24),
                       IconButton(
@@ -256,11 +221,18 @@ class _LessonPreviewScreenState extends State<LessonPreviewScreen> {
                           height: 48,
                           width: 48,
                           color:
-                              _isPlaying
+                              audioProvider.isPlaying ||
+                                      audioProvider.currentIndex ==
+                                          lessons.length - 1
                                   ? AppColors.kGrey
                                   : AppColors.kSecondaryColor,
                         ),
-                        onPressed: _isPlaying ? null : _navigateToNext,
+                        onPressed:
+                            audioProvider.isPlaying ||
+                                    audioProvider.currentIndex ==
+                                        lessons.length - 1
+                                ? null
+                                : () => audioProvider.navigateToNext(lessons),
                       ),
                     ],
                   ),
