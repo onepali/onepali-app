@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/constants/constant.dart';
 import 'package:onepali/src/src.dart';
 
 class ThemeConfig {

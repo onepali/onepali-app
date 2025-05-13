@@ -3,11 +3,11 @@
 ██    ██     ██ ██  ██ █████   ██████  ███████ ██      ██ 
 ██    ██     ██  ██ ██ ██      ██      ██   ██ ██      ██ 
  ██████      ██   ████ ███████ ██      ██   ██ ███████ ██ 
-                                                                         
-# O Nepali Learning App Documentation
+
+# O Nepali Kids Learning App Documentation
 
 ## Overview
-This document provides an in-depth overview of the O Nepali Learning App project structure, including its directory organization, purpose of each folder, and best practices for maintaining a scalable and modular application.
+This document provides an in-depth overview of the O Nepali Kids Learning App project structure, including its directory organization, purpose of each folder, and best practices for maintaining a scalable and modular application.
 
 ## Hardware Requirements
 To develop and run this Flutter application efficiently, your system should meet the following hardware requirements:
@@ -41,8 +41,8 @@ Follow these steps to set up and run the project:
 
 1. **Clone the Repository**:
    ```sh
-   git clone <https://github.com/ONepali/O-Nepali-Learning-App>
-   cd <O-Nepali-Learning-App>
+   git clone <https://github.com/onepali/onepali-app.git>
+   cd <O-Nepali-Kids-Learning-App>
    ```
 2. **Install Flutter Dependencies**:
    ```sh
@@ -58,117 +58,81 @@ Follow these steps to set up and run the project:
    flutter build ios   # For iOS (Mac required)
    ```
 
+## Technical Requirements
+
+### Development Environment
+- **Flutter Version**: 3.7.2
+- **Dart Version**: 3.7.2
+
+### Architecture & State Management
+- **Architecture**: Clean architecture approach with clear separation of concerns.
+- **State Management**: Provider with Clean Architecture.
+- **Folder Structure**: Organized into logical modules for scalability and maintainability.
+- **Code Style**: Follows Dart style guide and consistent naming conventions.
+
 ## Project Structure
 ```
-- .dart_tool/          # Internal Dart tools directory
-- .idea/               # IDE-specific settings (for Android Studio/IntelliJ)
-- android/             # Native Android code
-- assets/              # Static assets (images, fonts, etc.)
-- docs/                # Documentation files
-- ios/                 # Native iOS code
-- lib/                 # Main Dart source code
-  - src/               # Core application source code
-    - common/          # Shared resources
-      - constants/     # Application-wide constant values
-      - enums/         # Enum classes for better type safety
-      - extensions/    # Extension methods for reusable functionalities
-      - utils/         # Utility functions and helper classes
-      - widget/        # Common reusable UI widgets
-    - config/          # App configuration files
-    - domain/          # Business logic and core entities
-      - entities/      # Core business objects
-      - usecases/      # Application-specific business rules
-    - provider/        # State management using Provider
-    - repository/      # Data sources (API, database, local storage)
-      - datasources/   # API and local storage handlers
-      - models/        # Data structures for API/database
-    - screen/          # UI screens (pages)
-    - utils/           # Additional utility classes
-    - widget/          # UI components
-  - main.dart          # Application entry point
-  - navigator_key.dart # Global navigator key
-- linux/               # Linux platform support
-- macos/               # macOS platform support
-- web/                 # Web platform support
-- windows/             # Windows platform support
-- .env                 # Environment variables file
-- .gitignore           # Git ignore rules
-- analysis_options.yaml # Static analysis configurations
-- pubspec.lock         # Lock file for dependencies
-- pubspec.yaml         # Project metadata and dependencies
-- README.md            # Project documentation
+lib/
+└── src/
+    ├── config/         # App configuration files (themes, routes, etc.)
+    ├── core/           # Common/shared utilities
+    │   ├── constants/  # App-wide constants (e.g., strings, colors)
+    │   ├── errors/     # Error definitions and handling
+    │   ├── utils/      # Utility functions and helpers
+    │   └── services/   # Core services (network, storage, etc.)
+    ├── data/           # Data layer (external sources)
+    │   ├── models/     # Data models (DTOs)
+    │   ├── datasources/ # Local/remote data sources (e.g., APIs, DB)
+    │   └── repositories/ # Repository implementations
+    ├── domain/         # Business logic layer
+    │   ├── entities/   # Pure business models/entities
+    │   ├── usecases/   # Application-specific business logic
+    │   └── repositories/ # Repository contracts (abstract interfaces)
+    ├── presentation/   # UI layer
+    │   ├── screens/    # Screens/views (per feature)
+    │   ├── widgets/    # Reusable UI components
+    │   └── viewmodels/ # State management (e.g., Riverpod/Notifier)
+    └── injector.dart   # Dependency injection setup
+main.dart               # App entry point
 ```
 
-## Architecture: Clean Architecture with Enhanced View Layer
-This project follows the **Clean Architecture** principles, ensuring a clear separation of concerns and high testability. The architecture is divided into distinct layers, each with a specific responsibility.
+### **Directory Structure Description**
+- **`config/`**: Contains app configuration files such as themes, routes, and other global settings.
+- **`core/`**: Houses shared utilities and services used across the app.
+  - **`constants/`**: Defines app-wide constants like strings, colors, and other static values.
+  - **`errors/`**: Manages error definitions and handling mechanisms.
+  - **`utils/`**: Provides utility functions and helper methods.
+  - **`services/`**: Includes core services like network requests, local storage, etc.
+- **`data/`**: Represents the data layer responsible for external data sources.
+  - **`models/`**: Defines data models or DTOs (Data Transfer Objects).
+  - **`datasources/`**: Handles local and remote data sources such as APIs or databases.
+  - **`repositories/`**: Implements repository patterns for data access.
+- **`domain/`**: Contains the business logic layer.
+  - **`entities/`**: Defines pure business models or entities.
+  - **`usecases/`**: Encapsulates application-specific business logic.
+  - **`repositories/`**: Declares repository contracts or abstract interfaces.
+- **`presentation/`**: Manages the UI layer.
+  - **`screens/`**: Contains screens or views for each feature.
+  - **`widgets/`**: Includes reusable UI components.
+  - **`viewmodels/`**: Handles state management using tools like Riverpod or Notifier.
+- **`injector.dart`**: Sets up dependency injection for the app.
+- **`main.dart`**: The entry point of the application.
 
-### **Clean Architecture Structure**
-- **Presentation Layer**:
-  - Contains the UI (View) and state management logic.
-  - The View is responsible for rendering the UI and delegating user interactions to the ViewModel.
-  - Example: `lib/src/screen/` and `lib/src/provider/`
-
-- **Domain Layer**:
-  - Contains the business logic and use cases.
-  - Independent of any framework or external libraries.
-  - Example: `lib/src/domain/`
-    - `usecases/`: Contains application-specific business rules.
-    - `entities/`: Defines core business objects.
-
-- **Data Layer**:
-  - Responsible for data handling, including API calls, database operations, and local storage.
-  - Example: `lib/src/repository/`
-    - `datasources/`: Handles data fetching from APIs or local storage.
-    - `models/`: Defines data structures for API responses or database records.
-
-### **Layered Interaction**
-1. **View (Presentation Layer)**:
-   - Displays data and captures user interactions.
-   - Delegates user actions to the ViewModel.
-
-2. **ViewModel (Presentation Layer)**:
-   - Acts as a mediator between the View and the Domain Layer.
-   - Fetches data from the Domain Layer and updates the View.
-
-3. **Use Cases (Domain Layer)**:
-   - Encapsulates business logic and application rules.
-   - Interacts with the Repository to fetch or persist data.
-
-4. **Repository (Data Layer)**:
-   - Provides a unified interface for data operations.
-   - Fetches data from remote APIs or local storage.
-
-### **Directory Structure**
-```
-- lib/
-  - src/
-    - common/          # Shared resources
-      - constants/     # Application-wide constant values
-      - enums/         # Enum classes for better type safety
-      - extensions/    # Extension methods for reusable functionalities
-      - utils/         # Utility functions and helper classes
-      - widget/        # Common reusable UI widgets
-    - config/          # App configuration files
-    - domain/          # Business logic and core entities
-      - entities/      # Core business objects
-      - usecases/      # Application-specific business rules
-    - provider/        # State management using Provider
-    - repository/      # Data sources (API, database, local storage)
-      - datasources/   # API and local storage handlers
-      - models/        # Data structures for API/database
-    - screen/          # UI screens (pages)
-    - utils/           # Additional utility classes
-    - widget/          # UI components
-  - main.dart          # Application entry point
-  - navigator_key.dart # Global navigator key
-```
-
-### **Benefits of Clean Architecture**
-1. **Separation of Concerns**: Each layer has a distinct responsibility.
-2. **Testability**: Business logic is independent of the UI, making it easier to test.
-3. **Scalability**: Modular structure allows for easy addition of new features.
-4. **Maintainability**: Clear boundaries between layers simplify code maintenance.
-5. **Reusability**: Domain logic can be reused across different platforms (e.g., mobile, web).
+## Packages Used
+The following packages are used in this project:
+- **Provider**: State management (`provider: ^6.1.5`)
+- **Dio**: HTTP client for API integration (`dio: ^5.8.0+1`)
+- **Flutter Dotenv**: Environment variable management (`flutter_dotenv: ^5.2.1`)
+- **Photo View**: Image zooming and panning (`photo_view: ^0.15.0`)
+- **Share Plus**: Sharing content (`share_plus: ^11.0.0`)
+- **Connectivity Plus**: Network connectivity status (`connectivity_plus: ^6.1.4`)
+- **Google Sign-In**: Google authentication (`google_sign_in: ^6.3.0`)
+- **HTTP Parser**: Parsing HTTP requests (`http_parser: ^4.1.2`)
+- **Flutter SVG**: SVG rendering (`flutter_svg: ^2.1.0`)
+- **URL Launcher**: Launching URLs (`url_launcher: ^6.3.1`)
+- **Audioplayers**: Audio playback (`audioplayers: ^6.4.0`)
+- **Cached Network Image**: Image caching (`cached_network_image: ^3.4.1`)
+- **Lottie**: Lottie animations (`lottie: ^3.3.1`)
 
 ## Best Practices
 1. **Separation of Concerns**: Keep UI, business logic, and data management separate.
@@ -180,4 +144,4 @@ This project follows the **Clean Architecture** principles, ensuring a clear sep
 7. **Localization & Theming**: Ensure adaptability for different languages and themes.
 
 ## Conclusion
-This structured approach ensures maintainability and scalability, making it easier for developers to collaborate and build upon the existing architecture. Proper use of Clean Architecture improves code efficiency and overall app performance.
+This structured approach ensures maintainability and scalability, making it easier for developers to collaborate and build upon the existing architecture.
