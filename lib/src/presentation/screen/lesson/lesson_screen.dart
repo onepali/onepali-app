@@ -81,6 +81,8 @@ class _LessonScreenState extends State<LessonScreen> {
                                         category: subCategory.lessons,
                                         subCategoryName:
                                             "${subCategory.nameNp} (${subCategory.nameEn})",
+                                        hasSound:
+                                            subCategory.soundAvailable ?? false,
                                       ),
                                     );
                                   },

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class LessonDetailScreen extends StatefulWidget {
   final List<Lesson> category;
   final String subCategoryName;
+  final bool hasSound;
 
   const LessonDetailScreen({
     super.key,
     required this.category,
     required this.subCategoryName,
+    required this.hasSound,
   });
 
   @override
@@ -36,13 +39,19 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
               final screenWidth = MediaQuery.of(context).size.width;
               return InkWell(
                 onTap: () {
+                  context.read<LessonAudioProvider>().resetIndex(index);
                   Utility.navigateMaterialRoute(
                     context,
                     LessonPreviewScreen(
                       lesson: subcategory,
                       lessons: widget.category,
+                      hasSound: widget.hasSound,
                     ),
-                  );
+                  ).then((_) {
+                    setState(() {
+                      selectedIndex = null;
+                    });
+                  });
                 },
                 onHighlightChanged: (value) {
                   setState(() {

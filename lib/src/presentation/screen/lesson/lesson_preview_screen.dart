@@ -6,15 +6,18 @@ import '../../../src.dart';
 class LessonPreviewScreen extends StatelessWidget {
   final Lesson lesson;
   final List<Lesson> lessons;
+  final bool hasSound;
   const LessonPreviewScreen({
     super.key,
     required this.lesson,
     required this.lessons,
+    required this.hasSound,
   });
 
   @override
   Widget build(BuildContext context) {
     final audioProvider = context.watch<LessonAudioProvider>();
+
     final lesson = lessons[audioProvider.currentIndex];
 
     return Scaffold(
@@ -196,25 +199,27 @@ class LessonPreviewScreen extends StatelessWidget {
                                 : audioProvider.navigateToPrevious,
                       ),
                       Gaps.horizontalGapOf(24),
-                      CustomAvatarGlow(
-                        glowColor: AppColors.kSecondaryColor,
-                        glowShape: BoxShape.circle,
-                        visible: audioProvider.isPlaying,
-                        glowRadiusFactor: 0.2,
-                        child: IconButton(
-                          icon: SvgHelper.fromSource(
-                            path: Assets.sound,
-                            height: 55,
-                            width: 55,
-                            color: AppColors.kPrimaryColor,
+                      if (hasSound) ...[
+                        CustomAvatarGlow(
+                          glowColor: AppColors.kSecondaryColor,
+                          glowShape: BoxShape.circle,
+                          visible: audioProvider.isPlaying,
+                          glowRadiusFactor: 0.2,
+                          child: IconButton(
+                            icon: SvgHelper.fromSource(
+                              path: Assets.sound,
+                              height: 55,
+                              width: 55,
+                              color: AppColors.kPrimaryColor,
+                            ),
+                            onPressed:
+                                audioProvider.isPlaying
+                                    ? null
+                                    : () => audioProvider.playAudio(lessons),
                           ),
-                          onPressed:
-                              audioProvider.isPlaying
-                                  ? null
-                                  : () => audioProvider.playAudio(lessons),
                         ),
-                      ),
-                      Gaps.horizontalGapOf(24),
+                        Gaps.horizontalGapOf(24),
+                      ],
                       IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.rightArrow,

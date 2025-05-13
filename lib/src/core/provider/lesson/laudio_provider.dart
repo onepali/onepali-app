@@ -47,6 +47,11 @@ class LessonAudioProvider extends ChangeNotifier {
     }
   }
 
+  void resetIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _audioPlayer1.dispose();

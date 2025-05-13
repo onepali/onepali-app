@@ -16,6 +16,7 @@
             "name_np": "सुरुवाती प्याक",
             "image": "assets/images/subcategories/starter.png",
             "lottie": "assets/lottie/subcategories/starter.json",
+            "sound_available": true,
             "lessons": [
               {
                 "id": 1001,
@@ -85,6 +86,7 @@
             "name_np": "दैनिक आवश्यकताहरू",
             "image": "assets/images/subcategories/daily_essentials.png",
             "lottie": "assets/lottie/subcategories/daily_essentials.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 1101,
@@ -353,6 +355,7 @@
             "name_np": "जनावरहरू",
             "image": "assets/images/subcategories/animals.png",
             "lottie": "assets/lottie/subcategories/animals.json",
+            "sound_available": true,
             "lessons": [
               {
                 "id": 2001,
@@ -422,6 +425,7 @@
             "name_np": "अक्षरहरू",
             "image": "assets/images/subcategories/alphabets.png",
             "lottie": "assets/lottie/subcategories/alphabets.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 2101,
@@ -681,6 +685,7 @@
             "name_np": "रङहरू",
             "image": "assets/images/subcategories/colors.png",
             "lottie": "assets/lottie/subcategories/colors.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 2201,
@@ -949,6 +954,7 @@
             "name_np": "संख्या",
             "image": "assets/images/subcategories/numbers.png",
             "lottie": "assets/lottie/subcategories/numbers.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 3001,
@@ -1208,6 +1214,7 @@
             "name_np": "आकारहरू",
             "image": "assets/images/subcategories/shapes.png",
             "lottie": "assets/lottie/subcategories/shapes.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 3101,
@@ -1476,6 +1483,7 @@
             "name_np": "स्वर वर्ण",
             "image": "assets/images/subcategories/swar.png",
             "lottie": "assets/lottie/subcategories/swar.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 4001,
@@ -1735,6 +1743,7 @@
             "name_np": "व्यञ्जन वर्ण",
             "image": "assets/images/subcategories/vyanjan.png",
             "lottie": "assets/lottie/subcategories/vyanjan.json",
+            "sound_available": false,
             "lessons": [
               {
                 "id": 4201,
