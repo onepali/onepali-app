@@ -73,7 +73,8 @@
                 "lottie": "assets/lottie/animals/rabbit.json",
                 "audio": "audio/animals/rabbit.m4a",
                 "word_audio": "audio/animals/rabbit_s.mp3",
-                
+                "type": "पशु",
+                "tooltip": "यो गाजर खान मन पराउने जनावर हो।",
                 "progress": "locked"
               }
             ]
