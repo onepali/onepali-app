@@ -25,7 +25,15 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.subCategoryName)),
+      appBar: AppBar(
+        title: Text(
+          widget.subCategoryName,
+          style: AppStyles.text18PxBold.copyWith(
+            color: AppColors.kPitchBlack,
+            fontFamily: 'Mukta',
+          ),
+        ),
+      ),
       backgroundColor: AppColors.kBackgroundColor,
       body: Center(
         child: SizedBox(
@@ -104,7 +112,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                         boxFit: BoxFit.contain,
                         imageType: CustomImageType.local,
                       ),
-                      const SizedBox(height: 8),
+                      Gaps.verticalGapOf(8),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16.0,

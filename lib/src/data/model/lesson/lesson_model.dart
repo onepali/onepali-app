@@ -30,6 +30,7 @@ class Category {
   final List<Category> subcategories;
   final List<Lesson> lessons;
   final bool? soundAvailable;
+  final String progress;
 
   Category({
     required this.id,
@@ -40,6 +41,7 @@ class Category {
     required this.subcategories,
     required this.lessons,
     this.soundAvailable,
+    this.progress = "",
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
@@ -55,6 +57,7 @@ class Category {
       (json["lessons"] ?? []).map((x) => Lesson.fromJson(x)),
     ),
     soundAvailable: json["sound_available"] ?? false,
+    progress: json["progress"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -66,6 +69,7 @@ class Category {
     "subcategories": List<dynamic>.from(subcategories.map((x) => x.toJson())),
     "lessons": List<dynamic>.from(lessons.map((x) => x.toJson())),
     "sound_available": soundAvailable,
+    "progress": progress,
   };
 }
 

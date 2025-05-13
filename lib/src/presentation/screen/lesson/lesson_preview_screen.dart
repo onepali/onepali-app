@@ -87,9 +87,11 @@ class LessonPreviewScreen extends StatelessWidget {
                                         SizedBox(width: 4),
                                         Text(
                                           lesson.type ?? 'जंगली',
-                                          style: TextStyle(
-                                            color: AppColors.kWhite,
-                                          ),
+                                          style: AppStyles.text14PxSemiBold
+                                              .copyWith(
+                                                color: AppColors.kWhite,
+                                                fontFamily: 'Mukta',
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -98,12 +100,17 @@ class LessonPreviewScreen extends StatelessWidget {
                                 Gaps.verticalGapOf(20),
                                 // Image
                                 Expanded(
-                                  child: CustomImage(
-                                    lesson.image,
-                                    borderRadius: 8,
-                                    imageType: CustomImageType.local,
-                                    boxFit: BoxFit.contain,
-                                  ),
+                                  child:
+                                      audioProvider.isPlaying
+                                          ? LottieHelper.fromSource(
+                                            path: lesson.lottie,
+                                          )
+                                          : CustomImage(
+                                            lesson.image,
+                                            borderRadius: 8,
+                                            imageType: CustomImageType.local,
+                                            boxFit: BoxFit.contain,
+                                          ),
                                 ),
                               ],
                             ),
@@ -131,14 +138,15 @@ class LessonPreviewScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   lesson.nameNp,
-                                  style: AppStyles.text32PxMedium.copyWith(
+                                  style: AppStyles.text32PxBold.copyWith(
                                     color: AppColors.kSecondaryColor,
+                                    fontFamily: 'Mukta',
                                   ),
                                 ),
                                 Gaps.verticalGapOf(12),
                                 Text(
                                   lesson.nameEn,
-                                  style: AppStyles.text20PxMedium,
+                                  style: AppStyles.text20PxBold,
                                 ),
                                 Gaps.verticalGapOf(20),
                                 Container(
@@ -158,10 +166,18 @@ class LessonPreviewScreen extends StatelessWidget {
                                         color: AppColors.kTeal,
                                       ),
                                       Gaps.horizontalGapOf(8),
-                                      Text(
-                                        lesson.tooltip ?? 'यो जंगली जनावर हो!',
-                                        style: AppStyles.text16PxMedium
-                                            .copyWith(color: AppColors.kTeal),
+                                      Expanded(
+                                        child: Text(
+                                          lesson.tooltip ??
+                                              'यो जंगली जनावर हो!',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppStyles.text16PxMedium
+                                              .copyWith(
+                                                color: AppColors.kTeal,
+                                                fontFamily: 'Mukta',
+                                              ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -243,6 +259,28 @@ class LessonPreviewScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+
+            // Animated Good Remark
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 500),
+              bottom:
+                  audioProvider.currentIndex == lessons.length - 1 ? 0 : -100,
+              right:
+                  audioProvider.currentIndex == lessons.length - 1 ? 0 : -100,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity:
+                    audioProvider.currentIndex == lessons.length - 1
+                        ? 1.0
+                        : 0.0,
+                child: CustomImage(
+                  Assets.goodRemark,
+                  height: 150,
+                  width: 150,
+                  imageType: CustomImageType.local,
+                ),
+              ),
             ),
           ],
         ),

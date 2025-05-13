@@ -55,102 +55,187 @@ class _LessonScreenState extends State<LessonScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${category.nameNp} (${category.nameEn})',
-                          style: AppStyles.text16PxSemiBold,
-                        ),
-                        const SizedBox(height: 8.0),
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
+                        TitleActionChild(
+                          title: '${category.nameNp} (${category.nameEn})',
+                          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+                            color: AppColors.kPrimaryColor,
+                            fontFamily: 'Mukta',
                           ),
-                          child: SizedBox(
-                            height: 150,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: category.subcategories.length,
-                              itemBuilder: (context, subIndex) {
-                                final subCategory =
-                                    category.subcategories[subIndex];
-                                return GestureDetector(
-                                  onTap: () {
-                                    Utility.navigateMaterialRoute(
-                                      context,
-                                      LessonDetailScreen(
-                                        category: subCategory.lessons,
-                                        subCategoryName:
-                                            "${subCategory.nameNp} (${subCategory.nameEn})",
-                                        hasSound:
-                                            subCategory.soundAvailable ?? false,
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    padding: const EdgeInsets.all(8.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      color: AppColors
-                                          .learningColors[(index + subIndex) %
-                                              AppColors.learningColors.length]
-                                          .withValues(alpha: 0.1),
-                                      border: Border.all(
-                                        color:
-                                            AppColors.learningColors[(index +
-                                                    subIndex) %
-                                                AppColors
-                                                    .learningColors
-                                                    .length],
-                                        width: 2,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppColors
-                                              .learningColors[(index +
-                                                      subIndex) %
-                                                  AppColors
-                                                      .learningColors
-                                                      .length]
-                                              .withValues(alpha: 0.2),
-                                          spreadRadius: 1,
-                                          blurRadius: 1,
-                                          offset: Offset(0, 2),
+                          titlePadding: const EdgeInsets.only(
+                            left: 8.0,
+                            right: 8.0,
+                            bottom: 8.0,
+                          ),
+
+                          action: GestureDetector(
+                            onTap: () {
+                              Utility.navigateMaterialRoute(
+                                context,
+                                SubCategoryScreen(category: category),
+                              );
+                            },
+                            child: Text(
+                              "See All",
+                              style: AppStyles.text16PxSemiBold.copyWith(
+                                color: AppColors.kSecondaryColor,
+                              ),
+                            ),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: SizedBox(
+                              height: 150,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: category.subcategories.length,
+                                itemBuilder: (context, subIndex) {
+                                  final subCategory =
+                                      category.subcategories[subIndex];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Utility.navigateMaterialRoute(
+                                        context,
+                                        LessonDetailScreen(
+                                          category: subCategory.lessons,
+                                          subCategoryName: subCategory.nameNp,
+                                          hasSound:
+                                              subCategory.soundAvailable ??
+                                              false,
                                         ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      );
+                                    },
+                                    child: Stack(
                                       children: [
-                                        CustomImage(
-                                          subCategory.image,
-                                          height: 100,
-                                          imageType: CustomImageType.local,
-                                          width: 100,
-                                          borderRadius: 8.0,
-                                          boxFit: BoxFit.contain,
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          subCategory.nameEn,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
+                                        Container(
+                                          width:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width /
+                                              4,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 8.0,
+                                          ),
+                                          padding: const EdgeInsets.all(8.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              8.0,
+                                            ),
+                                            color: AppColors
+                                                .learningColors[(index +
+                                                        subIndex) %
+                                                    AppColors
+                                                        .learningColors
+                                                        .length]
+                                                .withValues(alpha: 0.1),
+                                            border: Border.all(
+                                              color:
+                                                  subCategory.progress ==
+                                                          'in_progress'
+                                                      ? AppColors.kOrange
+                                                      : AppColors
+                                                          .learningColors[(index +
+                                                              subIndex) %
+                                                          AppColors
+                                                              .learningColors
+                                                              .length],
+                                              width:
+                                                  subCategory.progress ==
+                                                          'in_progress'
+                                                      ? 2
+                                                      : 1,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: AppColors
+                                                    .learningColors[(index +
+                                                            subIndex) %
+                                                        AppColors
+                                                            .learningColors
+                                                            .length]
+                                                    .withValues(alpha: 0.2),
+                                                spreadRadius: 1,
+                                                blurRadius: 1,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              CustomImage(
+                                                subCategory.image,
+                                                height: 100,
+                                                imageType:
+                                                    CustomImageType.local,
+                                                width: 100,
+                                                borderRadius: 8.0,
+                                                boxFit: BoxFit.contain,
+                                              ),
+                                              Gaps.verticalGapOf(8),
+                                              Text(
+                                                subCategory.nameEn,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
+                                        if (subCategory.progress != "")
+                                          Positioned(
+                                            top: 8,
+                                            right: 16,
+                                            child: Container(
+                                              height: 24,
+                                              width: 24,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    subCategory.progress ==
+                                                            'completed'
+                                                        ? AppColors.kGreen
+                                                        : subCategory
+                                                                .progress ==
+                                                            'locked'
+                                                        ? AppColors.kGrey
+                                                        : AppColors.kOrange,
+                                              ),
+                                              child:
+                                                  subCategory.progress ==
+                                                          'in_progress'
+                                                      ? Text(
+                                                        '25',
+                                                        style: AppStyles
+                                                            .text12PxSemiBold
+                                                            .copyWith(
+                                                              color:
+                                                                  AppColors
+                                                                      .kWhite,
+                                                            ),
+                                                      )
+                                                      : Icon(
+                                                        Utility.getProgressTypeIcon(
+                                                          subCategory.progress,
+                                                        ),
+                                                        size: 18,
+                                                        color: AppColors.kWhite,
+                                                      ),
+                                            ),
+                                          ),
                                       ],
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),

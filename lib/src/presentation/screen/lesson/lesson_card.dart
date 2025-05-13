@@ -17,7 +17,7 @@ class LessonCard extends StatelessWidget {
           width: 80,
           boxFit: BoxFit.cover,
         ),
-        const SizedBox(height: 8),
+        Gaps.verticalGapOf(8),
         Text(
           subcategory.nameEn,
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
