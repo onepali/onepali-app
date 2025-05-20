@@ -29,3 +29,9 @@ export 'custom_audio_widget.dart';
 
 /// Custom [Avatar] Glow
 export 'custom_avatar_glow.dart';
+
+/// Custom [Logger] Widget
+export 'custom_logger.dart';
+
+/// Custom [Gif] Widget
+export 'custom_gif.dart';

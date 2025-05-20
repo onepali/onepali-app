@@ -25,4 +25,7 @@ export 'constants/app_styles.dart';
 /// App [Provider]
 export 'provider/provider.dart';
 
+/// App [Extensions]
+export 'extension/extension.dart';
+
 //* ------------------------------- END CORE EXPORTS -------------------------------- *//

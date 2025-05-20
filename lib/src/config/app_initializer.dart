@@ -9,8 +9,8 @@ class AppInitializer {
 
     // Lock orientation to landscape mode
     await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
     ]);
 
     HttpOverrides.global = MyHttpOverrides();

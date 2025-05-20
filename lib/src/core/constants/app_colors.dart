@@ -54,4 +54,14 @@ class AppColors {
     Color(0xFFFFCBA4), // learningSoftOrange
     Color(0xFFA0E7E5), // learningLightTeal
   ];
+
+  // Log Colors
+  static const String reset = '\x1B[0m'; // Reset color
+  static const String red = '\x1B[31m'; // Error (Red)
+  static const String green = '\x1B[32m'; // Success (Green)
+  static const String yellow = '\x1B[33m'; // Warning/Info (Yellow)
+  static const String blue = '\x1B[34m'; // Debug (Blue)
+  static const String magenta = '\x1B[35m'; // Log (Magenta)
+  static const String cyan = '\x1B[36m'; // Log (Cyan)
+  static const String white = '\x1B[37m'; // Log (White)
 }

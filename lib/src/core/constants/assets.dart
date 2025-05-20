@@ -1,9 +1,13 @@
 class Assets {
   /// [Brand] assets
   static String logo = 'logo'.png;
+  static String logoSvg = 'logo_svg'.brandSvg;
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
   static String patternBg = 'pattern_bg'.png;
+
+  /// [Image] assets
+  static String splashImage = 'splash'.gif;
 
   /// [Lottie] assets
   static String logoLottie = 'onepali'.lottie;
@@ -39,6 +43,8 @@ class Assets {
 }
 
 extension AssetsExtension on String {
+  String get brandSvg => 'assets/brand/$this.svg';
+  String get brandPng => 'assets/brand/$this.png';
   String get png => 'assets/images/$this.png';
   String get remark => 'assets/images/remark/$this.png';
   String get jpg => 'assets/images/$this.jpg';
