@@ -2,6 +2,7 @@ class Assets {
   /// [Brand] assets
   static String logo = 'logo'.png;
   static String logoSvg = 'logo_svg'.brandSvg;
+  static String leoSvg = 'leo'.brandSvg;
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
   static String patternBg = 'pattern_bg'.png;
@@ -11,6 +12,7 @@ class Assets {
 
   /// [Lottie] assets
   static String logoLottie = 'onepali'.lottie;
+  static String leoCharacterLottie = 'leo_character'.lottie;
   static String bgTransition = 'bg_transition'.gif;
 
   /// [Icons] assets

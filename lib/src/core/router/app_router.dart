@@ -6,6 +6,7 @@ class AppRoutes {
 
   /// [Splash] & [OnBoarding] Routes
   static const String splashScreen = '/splash';
+  static const String onboardingScreen = '/onboarding';
 
   /// [Dashboard] Routes
   static const String dashboardScreen = '/dashboard';
@@ -19,6 +20,7 @@ class AppRoutes {
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     splashScreen: (context) => const SplashScreen(),
+    onboardingScreen: (context) => const OnboardingScreen(),
 
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),

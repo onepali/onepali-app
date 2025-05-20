@@ -32,6 +32,20 @@ class MyApp extends StatelessWidget {
               initialRoute: AppRoutes.splashScreen,
               routes: AppRoutes.routes,
               theme: ThemeConfig.lightTheme,
+              onGenerateRoute: (settings) {
+                WidgetBuilder? builder = AppRoutes.routes[settings.name];
+                if (builder != null) {
+                  return PageRouteBuilder(
+                    pageBuilder:
+                        (context, animation, secondaryAnimation) =>
+                            builder(context),
+                    settings: settings,
+                    transitionsBuilder: RouteAnimationBuilder.slideFromBottom,
+                    transitionDuration: const Duration(milliseconds: 400),
+                  );
+                }
+                return null;
+              },
               builder:
                   (context, widget) => MediaQuery(
                     data: MediaQuery.of(

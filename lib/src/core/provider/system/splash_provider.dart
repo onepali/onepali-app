@@ -5,7 +5,7 @@ import 'package:onepali/src/src.dart';
 class SplashProvider extends ChangeNotifier {
   final Duration splashDelay;
 
-  SplashProvider({this.splashDelay = const Duration(milliseconds: 2550)});
+  SplashProvider({this.splashDelay = const Duration(milliseconds: 2600)});
 
   Future<void> waitAndNavigate(context) async {
     // final audioController = CustomAudioWidget(audioPath: Assets.eww);
@@ -14,7 +14,7 @@ class SplashProvider extends ChangeNotifier {
     await Future.delayed(splashDelay, () {
       // audioController.dispose();
 
-      Utility.navigate(context, AppRoutes.dashboardScreen);
+      Utility.navigate(context, AppRoutes.onboardingScreen);
     });
   }
 }
