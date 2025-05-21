@@ -45,7 +45,7 @@ class GoogleAuthProvider with ChangeNotifier {
             Utility.isAccessible(googleUser.photoUrl)
                 ? googleUser.photoUrl!.replaceAll('=s96-c', '=s512-c')
                 : "",
-        'login_type': "google",
+        'login_type': AuthProviderType.google,
         'access_token': accessToken,
       };
 

@@ -31,7 +31,7 @@ class FacebookAuthProvider with ChangeNotifier {
           'full_name': fullName,
           'email': userData['email'] ?? '',
           'user_dp': userData['picture']?['data']?['url'] ?? '',
-          'login_type': "F",
+          'login_type': AuthProviderType.facebook,
           'access_token': accessToken.tokenString,
         };
 

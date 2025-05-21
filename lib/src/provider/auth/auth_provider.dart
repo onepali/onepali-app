@@ -62,7 +62,7 @@ class AuthProvider with ChangeNotifier {
         'full_name': _user?.displayName ?? "",
         'email': _user?.email ?? "",
         'user_dp': _user?.photoURL ?? "",
-        'login_type': "email",
+        'login_type': AuthProviderType.email,
         'access_token': await _user?.getIdToken(),
         'refresh_token': _user?.refreshToken ?? "",
       };
