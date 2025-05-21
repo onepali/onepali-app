@@ -6,6 +6,7 @@ class Assets {
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
   static String patternBg = 'pattern_bg'.png;
+  static String leoChracterSvg = 'leo_character'.brandSvg;
 
   /// [Image] assets
   static String splashImage = 'splash'.gif;
@@ -14,6 +15,7 @@ class Assets {
   static String logoLottie = 'onepali'.lottie;
   static String leoCharacterLottie = 'leo_character'.lottie;
   static String bgTransition = 'bg_transition'.gif;
+  static String successLottie = 'success'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -26,6 +28,16 @@ class Assets {
   static String sound = 'sound'.icon;
   static String play = 'play'.icon;
   static String redo = 'redo'.icon;
+  static String meta = 'meta'.icon;
+  static String youtube = 'youtube'.icon;
+  static String other = 'other'.icon;
+  static String family = 'family'.icon;
+  static String google = 'google'.icon;
+  static String blog = 'blog'.icon;
+  static String facebook = 'facebook'.icon;
+
+  // Miscellaneous
+  static String successSvg = 'success'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;

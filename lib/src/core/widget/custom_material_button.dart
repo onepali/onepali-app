@@ -68,7 +68,7 @@ class CustomMaterialButton extends StatelessWidget {
     super.key,
     this.onTap,
     required this.label,
-    this.showBorder = true,
+    this.showBorder = false,
     this.elevation = 2.0,
     this.radius = 8.0,
     this.height = 45.0,

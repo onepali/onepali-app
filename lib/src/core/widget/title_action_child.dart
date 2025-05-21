@@ -44,7 +44,11 @@ class TitleActionChild extends StatelessWidget {
                 Text(
                   title,
                   textAlign: textAlign,
-                  style: titleStyle ?? AppStyles.text14PxSemiBold,
+                  style:
+                      titleStyle ??
+                      AppStyles.text14PxSemiBold.copyWith(
+                        color: AppColors.kPitchBlack,
+                      ),
                 ),
                 const Spacer(),
                 action ?? const SizedBox(),

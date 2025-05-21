@@ -62,7 +62,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Gaps.verticalGapOf(10),
                 CustomMaterialButton(
                   label: context.tr('create_account'),
-                  onTap: () {},
+                  onTap: () {
+                    Utility.navigate(context, AppRoutes.registerScreen);
+                  },
                   elevation: 0,
 
                   width: double.infinity,

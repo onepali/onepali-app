@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../src.dart';
+
 class Utility {
   static Future navigate(
     BuildContext context,
@@ -13,6 +15,35 @@ class Utility {
     return Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => screen),
+    );
+  }
+
+  static horizontalDividerTitle({String? title, TextStyle? titleStyle}) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Divider(
+            indent: 20.0,
+            endIndent: 12.0,
+            color: AppColors.kGrey,
+            thickness: 1,
+          ),
+        ),
+        Text(
+          title ?? "Or Continue with",
+          style:
+              titleStyle ??
+              AppStyles.text12PxRegular.copyWith(color: AppColors.kPitchBlack),
+        ),
+        Expanded(
+          child: Divider(
+            indent: 12.0,
+            endIndent: 20.0,
+            color: AppColors.kGrey,
+            thickness: 1,
+          ),
+        ),
+      ],
     );
   }
 

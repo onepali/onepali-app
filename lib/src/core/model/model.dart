@@ -2,6 +2,9 @@
 
 library;
 
+/// [OnBoarding] Model
+export 'onboard/onboard_model.dart';
+
 /// [User] Model
 export 'user/user_model.dart';
 
