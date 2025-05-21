@@ -6,6 +6,14 @@ class AppConstants {
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
 
+
+  static List<String> whyLearningNepali = [
+    'Develop a learning habit',
+    'Communicate with relatives in Nepal',
+    'Build vocabulary',
+    'Daily conversation',
+  ];
+
   static List<Map<String, dynamic>> languages = [
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},
     {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},
