@@ -54,8 +54,13 @@ class _CustomPinputState extends State<CustomPinput>
       for (int i = 0; i < widget.length; i++) {
         _inputList[i] = i < text.length ? text[i] : '';
       }
+      // Only validate if length matches required length
       if (widget.validator != null) {
-        _errorText = widget.validator!(text);
+        if (text.length < widget.length) {
+          _errorText = "Please enter all digits";
+        } else {
+          _errorText = widget.validator!(text);
+        }
       }
     });
   }
@@ -143,7 +148,11 @@ class _CustomPinputState extends State<CustomPinput>
             onChanged: (val) {
               if (widget.validator != null) {
                 setState(() {
-                  _errorText = widget.validator!(val);
+                  if (val.length < widget.length) {
+                    _errorText = "Please enter all digits";
+                  } else {
+                    _errorText = widget.validator!(val);
+                  }
                 });
               }
             },

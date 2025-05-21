@@ -35,11 +35,6 @@ class AuthRepository {
     throw UnimplementedError();
   }
 
-  Future<UserCredential> signInWithApple() async {
-    // TODO: Implement Apple sign-in
-    throw UnimplementedError();
-  }
-
   Future<void> saveUserToFirestore(UserModel user) async {
     await _firestore.collection('users').doc(user.uid).set(user.toJson());
   }

@@ -85,6 +85,14 @@ class _RS2ScreenState extends State<RS2Screen> {
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
+        if (selectedIndex == null) {
+          CustomToast.showToast(
+            context,
+            "Please select an option.",
+            isError: true,
+          );
+          return;
+        }
         Utility.navigateMaterialRoute(context, RS3Screen());
       },
       backgroundColor: AppColors.kButtonGreen,
