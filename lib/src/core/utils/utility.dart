@@ -47,6 +47,25 @@ class Utility {
     );
   }
 
+  static bool isAccessible(data) {
+    bool isEmpty = true;
+    try {
+      if (data != null) {
+        if (data is int) {
+          return isEmpty;
+        }
+        if (data?.isEmpty) {
+          isEmpty = false;
+        }
+      } else {
+        isEmpty = false;
+      }
+      return isEmpty;
+    } catch (e) {
+      return isEmpty;
+    }
+  }
+
   static List<Color> parseHexColors(String hexString) {
     final hexParts = hexString.split('/');
     return hexParts.map((hex) {
