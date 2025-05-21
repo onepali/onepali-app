@@ -18,3 +18,6 @@ export 'lesson/lesson_card.dart';
 export 'lesson/lesson_detail.dart';
 export 'lesson/lesson_preview_screen.dart';
 export 'lesson/sub_category_screen.dart';
+
+// Language Screen
+export 'language/language_screen.dart';

@@ -4,4 +4,10 @@ class AppConstants {
   static const String defaultFontFamily = 'Poppins';
 
   static const String dotEnvFileName = '.env';
+  static const String defaultLanguageCode = 'ne';
+
+  static List<Map<String, dynamic>> languages = [
+    {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},
+    {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},
+  ];
 }

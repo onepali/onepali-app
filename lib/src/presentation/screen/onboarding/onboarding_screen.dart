@@ -40,14 +40,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Gaps.verticalGapOf(30),
             SvgHelper.fromSource(path: Assets.logoSvg, width: 40, height: 30),
             Gaps.verticalGapOf(8),
-            Text('Connect to Your Roots', style: AppStyles.text14PxRegular),
+            Text(context.tr('tagline'), style: AppStyles.text14PxRegular),
             const Spacer(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomMaterialButton(
-                  label: 'Log in',
+                  label: context.tr('login'),
                   onTap: () {},
                   elevation: 0,
 
@@ -61,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 Gaps.verticalGapOf(10),
                 CustomMaterialButton(
-                  label: 'Create Account',
+                  label: context.tr('create_account'),
                   onTap: () {},
                   elevation: 0,
 
@@ -76,7 +76,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Gaps.verticalGapOf(10),
 
                 CustomMaterialButton(
-                  label: 'Try a lesson as Guest',
+                  label: context.tr('try_lesson_guest'),
                   onTap: () {},
                   elevation: 0,
 

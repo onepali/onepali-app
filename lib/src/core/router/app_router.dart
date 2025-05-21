@@ -17,6 +17,9 @@ class AppRoutes {
   /// [Lesson] Routes
   static const String lessonScreen = '/lesson';
 
+  /// [Language] Routes
+  static const String languageScreen = '/language';
+
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     splashScreen: (context) => const SplashScreen(),
@@ -25,5 +28,6 @@ class AppRoutes {
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
     lessonScreen: (context) => const LessonScreen(),
+    languageScreen: (context) => const LanguageScreen(),
   };
 }

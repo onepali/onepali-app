@@ -1,0 +1,19 @@
+{
+    "app_title": "Kids Learning App",
+    "tagline": "Connect to Our Roots",
+    "learn_animals": "Learn Animals",
+    "learn_numbers": "Learn Numbers",
+    "learn_alphabets": "Learn Alphabets",
+    "play_sound": "Play Sound",
+    "next": "Next",
+    "previous": "Previous",
+    "congratulations": "Congratulations!",
+    "try_again": "Try Again",
+    "score": "Score",
+    "settings": "Settings",
+    "language": "Language",
+    "exit": "Exit",
+    "login": "Log in",
+    "create_account": "Create Account",
+    "try_lesson_guest": "Try a lesson as Guest"
+}
