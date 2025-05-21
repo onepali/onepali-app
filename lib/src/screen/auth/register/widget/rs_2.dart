@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class RS2Screen extends StatefulWidget {
   const RS2Screen({super.key});
@@ -93,6 +94,11 @@ class _RS2ScreenState extends State<RS2Screen> {
           );
           return;
         }
+        // Save learningReason to AuthState
+        final authState = context.read<AuthState>();
+        authState.setLearningReason(
+          AppConstants.whyLearningNepali[selectedIndex!],
+        );
         Utility.navigateMaterialRoute(context, RS3Screen());
       },
       backgroundColor: AppColors.kButtonGreen,

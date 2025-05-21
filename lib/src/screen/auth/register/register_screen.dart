@@ -78,7 +78,6 @@ class RegisterScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: AppColors.kWhite,
-
           boxShadow: [
             BoxShadow(
               color: AppColors.kGrey.withValues(alpha: 0.2),
@@ -88,15 +87,18 @@ class RegisterScreen extends StatelessWidget {
             ),
           ],
         ),
-        child: CustomMaterialButton(
-          label: 'Create Account',
-          onTap: () {
-            Utility.navigateMaterialRoute(context, RS1Screen());
-          },
-          elevation: 0,
-          showBorder: false,
-          backgroundColor: AppColors.kButtonGreen,
-          width: double.infinity,
+        child: Builder(
+          builder:
+              (context) => CustomMaterialButton(
+                label: 'Create Account',
+                onTap: () {
+                  Utility.navigateMaterialRoute(context, RS1Screen());
+                },
+                elevation: 0,
+                showBorder: false,
+                backgroundColor: AppColors.kButtonGreen,
+                width: double.infinity,
+              ),
         ),
       ),
     );

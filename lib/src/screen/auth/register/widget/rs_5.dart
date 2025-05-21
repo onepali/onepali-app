@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class RS5Screen extends StatefulWidget {
   const RS5Screen({super.key});
@@ -56,9 +57,22 @@ class _RS5ScreenState extends State<RS5Screen> {
   Widget _buildNextButton(BuildContext context) {
     return CustomMaterialButton(
       label: 'Next',
-      onTap: () {
+      onTap: () async {
         if (_formKey.currentState!.validate()) {
-          Utility.navigateMaterialRoute(context, RS6Screen());
+          final authProvider = context.read<AuthProvider>();
+          await authProvider.reloadUser();
+          final isVerified = await authProvider.checkEmailVerified();
+          if (isVerified) {
+            if (!context.mounted) return;
+            Utility.navigateMaterialRoute(context, RS6Screen());
+          } else {
+            if (!context.mounted) return;
+            CustomToast.showToast(
+              context,
+              "Email not verified yet. Please check your inbox.",
+              isError: true,
+            );
+          }
         }
       },
       backgroundColor: AppColors.kButtonGreen,

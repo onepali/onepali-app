@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class RS1Screen extends StatefulWidget {
   const RS1Screen({super.key});
@@ -101,6 +102,9 @@ class _RS1ScreenState extends State<RS1Screen> {
           );
           return;
         }
+        // Save heardAbout to AuthState
+        final authState = context.read<AuthState>();
+        authState.setHeardAbout(onboardList[_selectedIndex!].title);
         Utility.navigateMaterialRoute(context, RS2Screen());
       },
       backgroundColor: AppColors.kButtonGreen,

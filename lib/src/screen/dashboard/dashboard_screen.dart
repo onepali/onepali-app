@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
 // import 'package:onepali/src/src.dart';
 // import 'package:provider/provider.dart';
 
@@ -20,18 +21,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     // var userData = context.watch<UserProvider>().user;
 
-    return SafeArea(
-      child: Scaffold(
-        // appBar: UserAppBar(
-        //   name: userData?.name ?? 'Guest',
-        //   profileImage: userData?.profilePicture ?? Assets.userAvatar,
-        //   progressLevel: 4,
-        //   totalStars: userData?.rewards.stars ?? 0,
-        //   onTabSelected: (route) {
-        //     Navigator.pushNamed(context, route);
-        //   },
-        // ),
-      ),
-    );
+    return SafeArea(child: Scaffold(appBar: CustomAppBar(title: 'Dashboard')));
   }
 }

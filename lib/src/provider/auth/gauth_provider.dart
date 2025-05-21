@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../src.dart';
 
@@ -15,6 +17,9 @@ class GoogleAuthProvider with ChangeNotifier {
   GoogleSignInAccount? get user => _user;
 
   final SharedPreferencesService _sharedPrefs = SharedPreferencesService();
+
+  final AuthState authState;
+  GoogleAuthProvider({required this.authState});
 
   Future<void> signInWithGoogle(context) async {
     setStatus(DataFetchStatus.loading);
@@ -45,7 +50,7 @@ class GoogleAuthProvider with ChangeNotifier {
             Utility.isAccessible(googleUser.photoUrl)
                 ? googleUser.photoUrl!.replaceAll('=s96-c', '=s512-c')
                 : "",
-        'login_type': AuthProviderType.google,
+        'login_type': AuthProviderType.google.name,
         'access_token': accessToken,
       };
 
@@ -55,6 +60,25 @@ class GoogleAuthProvider with ChangeNotifier {
         json.encode(userInfo),
       );
       await _sharedPrefs.setBoolPref(AppConstants.logged, true);
+
+      // Save UserModel to Firestore
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userModel = UserModel(
+          uid: user.uid,
+          fullName: authState.fullName ?? googleUser.displayName ?? "",
+          email: googleUser.email,
+          yearOfBirth: authState.yearOfBirth ?? 0,
+          heardAbout: authState.heardAbout ?? "",
+          learningReason: authState.learningReason ?? "",
+          authProvider: AppConstants.google,
+          createdAt: DateTime.now(),
+        );
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toJson());
+      }
 
       logger.d('accessToken---> $accessToken');
       logger.d(

@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'auth_state.dart';
 
 import '../../src.dart';
 
@@ -10,6 +13,9 @@ class FacebookAuthProvider with ChangeNotifier {
   DataFetchStatus get status => _status;
 
   final SharedPreferencesService _sharedPrefs = SharedPreferencesService();
+  final AuthState authState;
+
+  FacebookAuthProvider({required this.authState});
 
   Map<String, dynamic>? _userData;
   Map<String, dynamic>? get userData => _userData;
@@ -31,7 +37,7 @@ class FacebookAuthProvider with ChangeNotifier {
           'full_name': fullName,
           'email': userData['email'] ?? '',
           'user_dp': userData['picture']?['data']?['url'] ?? '',
-          'login_type': AuthProviderType.facebook,
+          'login_type': AppConstants.facebook,
           'access_token': accessToken.tokenString,
         };
 
@@ -44,6 +50,25 @@ class FacebookAuthProvider with ChangeNotifier {
           json.encode(userInfo),
         );
         await _sharedPrefs.setBoolPref(AppConstants.logged, true);
+
+        // Save UserModel to Firestore
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          final userModel = UserModel(
+            uid: user.uid,
+            fullName: authState.fullName ?? fullName,
+            email: userData['email'] ?? "",
+            yearOfBirth: authState.yearOfBirth ?? 0,
+            heardAbout: authState.heardAbout ?? "",
+            learningReason: authState.learningReason ?? "",
+            authProvider: AuthProviderType.facebook.name,
+            createdAt: DateTime.now(),
+          );
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set(userModel.toJson());
+        }
 
         logger.d('Facebook accessToken---> ${accessToken.tokenString}');
         logger.d(

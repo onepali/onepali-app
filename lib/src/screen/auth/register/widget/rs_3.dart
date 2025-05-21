@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class RS3Screen extends StatefulWidget {
   const RS3Screen({super.key});
@@ -79,6 +80,12 @@ class _RS3ScreenState extends State<RS3Screen> {
       label: 'Next',
       onTap: () {
         if (_formKey.currentState!.validate()) {
+          // Save fullName and yearOfBirth to AuthState
+          final authState = context.read<AuthState>();
+          authState.setFullName(nameController.text.trim());
+          authState.setYearOfBirth(
+            int.tryParse(yobController.text.trim()) ?? 0,
+          );
           Utility.navigateMaterialRoute(context, RS4Screen());
         }
       },
