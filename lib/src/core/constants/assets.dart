@@ -40,6 +40,10 @@ class Assets {
   static String user = 'user'.json;
   static String lessonJson = 'lesson'.json;
 
+  /// [Localization] assets
+  static String enJson = 'en'.json;
+  static String neJson = 'ne'.json;
+
   /// [Audio] assets
   static String eww = 'audio/eww'.audio;
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:onepali/src/src.dart';
 
 class AppLocalizations {
   final Locale locale;
@@ -14,7 +15,7 @@ class AppLocalizations {
 
   Future<bool> load() async {
     String jsonString = await rootBundle.loadString(
-      'assets/json/${locale.languageCode == 'ne' ? 'ne' : 'en'}.json',
+      locale.languageCode == 'ne' ? Assets.neJson : Assets.enJson,
     );
     Map<String, dynamic> jsonMap = json.decode(jsonString);
     _localizedStrings = jsonMap.map(
