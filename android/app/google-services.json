@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "259206374027",
+    "project_id": "o-nepali",
+    "storage_bucket": "o-nepali.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259206374027:android:3170dedbd021f4fdc76a8e",
+        "android_client_info": {
+          "package_name": "com.onepali.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS3R2yPanym3CbkJ5hsf2nNJkVQXs6SaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

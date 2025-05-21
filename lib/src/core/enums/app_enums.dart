@@ -9,3 +9,6 @@ enum CustomImageType { local, network }
 
 // Data Fetch Status
 enum DataFetchStatus { initial, loading, success, error }
+
+// Log Level
+enum LogLevel { debug, info, warning, error, success }

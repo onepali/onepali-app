@@ -17,6 +17,7 @@ class CustomImage extends StatelessWidget {
   final bool border;
   final Color? color;
   final bool isProfileImage;
+  final bool repeatGif;
   final Widget Function(BuildContext, String, dynamic)? errorBuilder;
 
   const CustomImage(
@@ -32,6 +33,7 @@ class CustomImage extends StatelessWidget {
     this.boxFit,
     this.color,
     this.isProfileImage = false,
+    this.repeatGif = false,
     this.placeholder = const Center(child: CircularProgressIndicator()),
     this.borderRadius = 0.0,
     this.errorBuilder,
@@ -41,17 +43,17 @@ class CustomImage extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (imageType) {
       case CustomImageType.local:
-        return _buildLocalImage(imagePath);
+        return _buildLocalImage(context, imagePath);
       case CustomImageType.network:
         return _buildNetworkImage(imagePath);
     }
   }
 
-  Widget _buildLocalImage(String path) {
+  Widget _buildLocalImage(BuildContext context, String path) {
+    final isGif = path.toLowerCase().endsWith('.gif');
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        // borderRadius: BorderRadius.circular(borderRadius),
         border:
             border
                 ? Border.all(
@@ -69,19 +71,35 @@ class CustomImage extends StatelessWidget {
             circular
                 ? BorderRadius.circular(width! / 2)
                 : BorderRadius.circular(borderRadius),
-        child: Image.asset(
-          path,
-          fit: boxFit ?? (cover ? BoxFit.cover : BoxFit.contain),
-          width: width,
-          height: height,
-          errorBuilder:
-              (context, error, stackTrace) => Image.asset(
-                Assets.placeholder,
-                height: height,
-                width: width,
-                fit: cover ? BoxFit.cover : BoxFit.contain,
-              ),
-        ),
+        child:
+            isGif
+                ? Image.asset(
+                  path,
+                  fit: boxFit ?? (cover ? BoxFit.cover : BoxFit.contain),
+                  width: width,
+                  height: height,
+                  repeat: repeatGif ? ImageRepeat.repeat : ImageRepeat.noRepeat,
+                  errorBuilder:
+                      (context, error, stackTrace) => Image.asset(
+                        Assets.placeholder,
+                        height: height,
+                        width: width,
+                        fit: cover ? BoxFit.cover : BoxFit.contain,
+                      ),
+                )
+                : Image.asset(
+                  path,
+                  fit: boxFit ?? (cover ? BoxFit.cover : BoxFit.contain),
+                  width: width,
+                  height: height,
+                  errorBuilder:
+                      (context, error, stackTrace) => Image.asset(
+                        Assets.placeholder,
+                        height: height,
+                        width: width,
+                        fit: cover ? BoxFit.cover : BoxFit.contain,
+                      ),
+                ),
       ),
     );
   }

@@ -6,6 +6,7 @@ class ProviderConfig {
   /// [System] Provider
   static final SystemProvider systemProvider = SystemProvider();
   static final SplashProvider splashProvider = SplashProvider();
+  static final LanguageProvider languageProvider = LanguageProvider();
 
   /// [User] Provider
   static final UserProvider userProvider = UserProvider();
@@ -19,6 +20,7 @@ class ProviderConfig {
   static final List<ChangeNotifierProvider> providers = [
     ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
     ChangeNotifierProvider<SplashProvider>(create: (_) => splashProvider),
+    ChangeNotifierProvider<LanguageProvider>(create: (_) => languageProvider),
     ChangeNotifierProvider<UserProvider>(create: (_) => userProvider),
     ChangeNotifierProvider<LessonProvider>(create: (_) => lessonProvider),
     ChangeNotifierProvider<LessonAudioProvider>(
@@ -30,6 +32,7 @@ class ProviderConfig {
   static void dispose() {
     systemProvider.dispose();
     splashProvider.dispose();
+    languageProvider.dispose();
     userProvider.dispose();
     lessonProvider.dispose();
     lessonAudioProvider.dispose();

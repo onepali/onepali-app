@@ -5,6 +5,7 @@ library;
 /// [System] Provider
 export 'system/system_provider.dart';
 export 'system/splash_provider.dart';
+export 'system/language_provider.dart';
 
 /// [User] Provider
 export 'user/user_provider.dart';

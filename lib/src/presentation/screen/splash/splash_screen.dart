@@ -23,20 +23,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(Assets.patternBg),
-            fit: BoxFit.cover,
-            opacity: 0.03,
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(color: AppColors.kWhite),
+          alignment: Alignment.center,
+          child: CustomImage(
+            Assets.splashImage,
+            width: 400,
+            height: 400,
+            imageType: CustomImageType.local,
           ),
-        ),
-        alignment: Alignment.center,
-        child: LottieHelper.fromSource(
-          path: Assets.logoLottie,
-          repeat: false,
-          width: 250,
-          height: 250,
         ),
       ),
     );

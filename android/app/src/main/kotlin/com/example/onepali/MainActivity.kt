@@ -1,4 +1,4 @@
-package com.example.onepali
+package com.onepali.app
 
 import io.flutter.embedding.android.FlutterActivity
 
