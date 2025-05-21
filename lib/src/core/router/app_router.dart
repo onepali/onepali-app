@@ -14,9 +14,6 @@ class AppRoutes {
   /// [User] Routes
   static const String userScreen = '/user';
 
-  /// [Lesson] Routes
-  static const String lessonScreen = '/lesson';
-
   /// [Language] Routes
   static const String languageScreen = '/language';
 
@@ -27,7 +24,6 @@ class AppRoutes {
 
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
-    lessonScreen: (context) => const LessonScreen(),
     languageScreen: (context) => const LanguageScreen(),
   };
 }
