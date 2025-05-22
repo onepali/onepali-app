@@ -114,6 +114,7 @@ class GoogleAuthProvider with ChangeNotifier {
       notifyListeners();
       if (!context.mounted) return;
       CustomToast.showToast(context, "Signed out successfully.");
+      Utility.navigate(context, AppRoutes.splashScreen);
     } catch (e) {
       CustomToast.showToast(context, "Failed to sign out.", isError: true);
     }
