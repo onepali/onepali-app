@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class RS4Screen extends StatefulWidget {
   const RS4Screen({super.key});
@@ -16,6 +17,11 @@ class _RS4ScreenState extends State<RS4Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final gAuthStatus = context.watch<GoogleAuthProvider>().status;
+    final fAuthStatus = context.watch<FAuthProvider>().status;
+    final isLoading = authProvider.status == DataFetchStatus.loading;
+
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 4),
       backgroundColor: AppColors.kWhite,
@@ -65,19 +71,57 @@ class _RS4ScreenState extends State<RS4Screen> {
                     validation: (value) => Validator.password(value ?? ""),
                   ),
                 ),
+                SizedBox(height: 35),
+                _buildNextButton(context, isLoading),
+
                 Gaps.verticalGapOf(50),
                 Utility.horizontalDividerTitle(),
                 Gaps.verticalGapOf(20),
-                ReusableWidget.horizontalIconTitle(
-                  title: 'Continue with Google',
-                ),
+                gAuthStatus == DataFetchStatus.loading
+                    ? Center(
+                      child: SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: const CircularProgressIndicator.adaptive(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.kButtonGreen,
+                          ),
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                    : ReusableWidget.horizontalIconTitle(
+                      title: 'Continue with Google',
+                      icon: Assets.google,
+                      onTap: () async {
+                        final googleAuthProvider =
+                            context.read<GoogleAuthProvider>();
+                        await googleAuthProvider.signInWithGoogle(context);
+                      },
+                    ),
                 Gaps.verticalGapOf(15),
-                ReusableWidget.horizontalIconTitle(
-                  title: 'Continue with Facebook',
-                  icon: Assets.facebook,
-                ),
-                SizedBox(height: 24),
-                _buildNextButton(context),
+                fAuthStatus == DataFetchStatus.loading
+                    ? Center(
+                      child: SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: const CircularProgressIndicator.adaptive(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.kButtonGreen,
+                          ),
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                    : ReusableWidget.horizontalIconTitle(
+                      title: 'Continue with Facebook',
+                      icon: Assets.facebook,
+                      onTap: () async {
+                        final facebookAuthProvider =
+                            context.read<FAuthProvider>();
+                        await facebookAuthProvider.signInWithFacebook(context);
+                      },
+                    ),
               ],
             ),
           ),
@@ -86,14 +130,36 @@ class _RS4ScreenState extends State<RS4Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(BuildContext context, bool isLoading) {
     return CustomMaterialButton(
       label: 'Next',
-      onTap: () {
-        if (_formKey.currentState!.validate()) {
-          Utility.navigateMaterialRoute(context, RS5Screen());
-        }
-      },
+      isLoading: isLoading,
+      onTap:
+          isLoading
+              ? null
+              : () async {
+                if (_formKey.currentState!.validate()) {
+                  final authProvider = context.read<AuthProvider>();
+
+                  await authProvider.signUpWithEmail(
+                    context,
+                    emailController.text.trim(),
+                    passwordController.text.trim(),
+                  );
+                  if (!context.mounted) return;
+                  final isVerified = await authProvider.loginWithEmail(
+                    context,
+                    emailController.text.trim(),
+                    passwordController.text.trim(),
+                  );
+                  if (!context.mounted) return;
+                  if (isVerified == true) {
+                    Utility.navigateMaterialRoute(context, RS6Screen());
+                  } else {
+                    Utility.navigateMaterialRoute(context, RS5Screen());
+                  }
+                }
+              },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       elevation: 0,

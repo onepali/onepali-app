@@ -84,15 +84,19 @@ class _ToastWidget extends StatelessWidget {
           children: [
             Icon(Icons.info_outline, color: backgroundColor, size: 20),
             Gaps.horizontalGapOf(8),
-            Text(
-              message,
-              style: TextStyle(
-                color: textColor,
-                fontSize: fontSize,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: fontSize,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

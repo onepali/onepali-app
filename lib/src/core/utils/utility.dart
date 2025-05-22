@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../src.dart';
 
@@ -45,6 +46,44 @@ class Utility {
         ),
       ],
     );
+  }
+
+  static bool isAccessible(data) {
+    bool isEmpty = true;
+    try {
+      if (data != null) {
+        if (data is int) {
+          return isEmpty;
+        }
+        if (data?.isEmpty) {
+          isEmpty = false;
+        }
+      } else {
+        isEmpty = false;
+      }
+      return isEmpty;
+    } catch (e) {
+      return isEmpty;
+    }
+  }
+
+  static Future<void> authWiseLogout(
+    BuildContext context,
+    AuthProviderType type,
+  ) async {
+    switch (type) {
+      case AuthProviderType.email:
+        await context.read<AuthProvider>().logout(context);
+        break;
+      case AuthProviderType.google:
+        await context.read<GoogleAuthProvider>().signOut(context);
+        break;
+      case AuthProviderType.facebook:
+        await context.read<FAuthProvider>().signOut(context);
+        break;
+      default:
+        break;
+    }
   }
 
   static List<Color> parseHexColors(String hexString) {

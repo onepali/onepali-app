@@ -20,16 +20,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           children: [
             Gaps.verticalGapOf(100),
             AnimatedSolidColorBorder(
-              size: 150,
+              size: 170,
               borderWidth: 6,
               child: Container(
-                height: 138,
-                width: 138,
+                height: 150,
+                width: 150,
                 padding: 30.p,
-                decoration: BoxDecoration(
-                  color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
+                // decoration: BoxDecoration(
+                //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
+                //   shape: BoxShape.circle,
+                // ),
                 child: SvgHelper.fromSource(
                   path: Assets.leoSvg,
                   width: 100,
@@ -48,7 +48,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 CustomMaterialButton(
                   label: context.tr('login'),
-                  onTap: () {},
+                  onTap: () {
+                    Utility.navigate(context, AppRoutes.loginScreen);
+                  },
                   elevation: 0,
 
                   width: double.infinity,

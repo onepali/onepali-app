@@ -91,7 +91,9 @@ class CustomTextField extends StatelessWidget {
       obscuringCharacter: '*',
       style: AppStyles.text14PxRegular,
       decoration: InputDecoration(
-        fillColor: AppColors.kWhite,
+        fillColor: AppColors.kLightGrey.withValues(alpha: 0.2),
+        hintStyle: AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey),
+
         filled: true,
         isDense: true,
         errorStyle: AppStyles.text12PxRegular.copyWith(color: AppColors.kRed),
@@ -116,7 +118,7 @@ class CustomTextField extends StatelessWidget {
                 : null),
         suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.kGrey),
+          borderSide: const BorderSide(color: AppColors.transparent),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         focusedBorder: OutlineInputBorder(

@@ -6,6 +6,16 @@ class AppConstants {
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
 
+  // Login Types
+  static const String email = 'email';
+  static const String google = 'google';
+  static const String facebook = 'facebook';
+
+  // Shared Preferences Keys
+  static const String accessToken = 'access_token';
+  static const String refreshToken = 'refresh_token';
+  static const String userInfo = 'user_info';
+  static const String logged = 'logged';
 
   static List<String> whyLearningNepali = [
     'Develop a learning habit',

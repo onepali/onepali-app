@@ -5,6 +5,7 @@ export 'custom_behaviour.dart';
 
 /// Custom [Button]
 export 'custom_material_button.dart';
+export 'custom_text_button.dart';
 
 /// Custom [Svg]
 export 'custom_svg.dart';
@@ -37,10 +38,10 @@ export 'custom_logger.dart';
 /// Custom [Gif] Widget
 export 'custom_gif.dart';
 
-/// Route Animation Builder
+/// Route [Animation] Builder
 export 'route_animation_builder.dart';
 
-/// Animated Gradient Border
+/// Animated [Gradient] Border
 export 'animated_gradient_border.dart';
 
 /// Custom [TextField]

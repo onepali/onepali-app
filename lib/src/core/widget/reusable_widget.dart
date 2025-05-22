@@ -3,9 +3,17 @@ import 'package:flutter/material.dart';
 import '../../src.dart';
 
 class ReusableWidget {
-  static horizontalIconTitle({String? icon, String? title}) {
+  static horizontalIconTitle({
+    String? icon,
+    String? title,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (onTap != null) {
+          onTap();
+        }
+      },
 
       child: Container(
         height: 45,

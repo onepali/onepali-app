@@ -6,7 +6,7 @@ class UserModel {
   final String heardAbout;
   final String learningReason;
   final String authProvider;
-  final DateTime createdAt;
+  final String createdAt;
 
   UserModel({
     required this.uid,
@@ -27,7 +27,7 @@ class UserModel {
     'heardAbout': heardAbout,
     'learningReason': learningReason,
     'authProvider': authProvider,
-    'createdAt': createdAt.toIso8601String(),
+    'createdAt': createdAt,
   };
 
   factory UserModel.fromJson(Map<String, dynamic> map) => UserModel(
@@ -38,6 +38,6 @@ class UserModel {
     heardAbout: map['heardAbout'],
     learningReason: map['learningReason'],
     authProvider: map['authProvider'],
-    createdAt: DateTime.parse(map['createdAt']),
+    createdAt: map['createdAt'],
   );
 }

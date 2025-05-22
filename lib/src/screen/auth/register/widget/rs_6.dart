@@ -87,7 +87,7 @@ class _RS6ScreenState extends State<RS6Screen>
     return CustomMaterialButton(
       label: 'Get Started',
       onTap: () {
-        Utility.navigateMaterialRoute(context, RS6Screen());
+        Utility.navigate(context, AppRoutes.loginScreen);
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,

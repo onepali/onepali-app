@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 class AppInitializer {
   Future<void> initializeApp() async {
     WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
 
     // Lock orientation to landscape mode
     await SystemChrome.setPreferredOrientations([
@@ -21,13 +23,24 @@ class AppInitializer {
     HttpOverrides.global = MyHttpOverrides();
   }
 
-  static Widget appMaterialApp(BuildContext context) {
+  static Future<bool> checkUserAuthentication() async {
+    final SharedPreferencesService sharedPref = SharedPreferencesService();
+    var logged = await sharedPref.getBoolPref(AppConstants.logged);
+    var userInfo = await sharedPref.getStringPref(AppConstants.userInfo);
+    logger.d(
+      'User logged: $logged, User info: $userInfo && ${userInfo != null}',
+    );
+
+    return logged && userInfo != null;
+  }
+
+  static Widget appMaterialApp(BuildContext context, logged) {
     return MaterialApp(
       title: AppConstants.appName,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       scrollBehavior: CustomScrollBehavior(),
-      initialRoute: AppRoutes.splashScreen,
+      initialRoute: logged ? AppRoutes.dashboardScreen : AppRoutes.splashScreen,
       routes: AppRoutes.routes,
       theme: ThemeConfig.lightTheme,
       locale: context.watch<LanguageProvider>().locale,

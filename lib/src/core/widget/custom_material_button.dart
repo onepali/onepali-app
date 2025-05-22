@@ -120,7 +120,9 @@ class CustomMaterialButton extends StatelessWidget {
                 height: loaderSize,
                 width: loaderSize,
                 child: const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.kButtonGreen,
+                  ),
                   strokeWidth: 2,
                 ),
               )
