@@ -7,14 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../src.dart';
 
-class FacebookAuthProvider with ChangeNotifier {
+class FAuthProvider with ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 
   final SharedPreferencesService _sharedPrefs = SharedPreferencesService();
   final AuthState authState;
 
-  FacebookAuthProvider({required this.authState});
+  FAuthProvider({required this.authState});
 
   Map<String, dynamic>? _userData;
   Map<String, dynamic>? get userData => _userData;
@@ -28,6 +28,16 @@ class FacebookAuthProvider with ChangeNotifier {
         final AccessToken accessToken = result.accessToken!;
         final userData = await FacebookAuth.instance.getUserData();
         _userData = userData;
+
+        // Authenticate with Firebase using Facebook access token
+        final firebaseAuthCredential = FacebookAuthProvider.credential(
+          accessToken.tokenString,
+        );
+        final userCredential = await FirebaseAuth.instance.signInWithCredential(
+          firebaseAuthCredential,
+        );
+
+        final firebaseUser = userCredential.user;
 
         // Prepare user info map
         final String fullName = userData['name'] ?? '';
@@ -51,8 +61,12 @@ class FacebookAuthProvider with ChangeNotifier {
         await _sharedPrefs.setBoolPref(AppConstants.logged, true);
 
         // Save UserModel to Firestore
-        final user = FirebaseAuth.instance.currentUser;
+        final user = firebaseUser;
         if (user != null) {
+          final userDocRef = FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid);
+
           final userModel = UserModel(
             uid: user.uid,
             fullName: authState.fullName ?? fullName,
@@ -61,12 +75,52 @@ class FacebookAuthProvider with ChangeNotifier {
             heardAbout: authState.heardAbout ?? "",
             learningReason: authState.learningReason ?? "",
             authProvider: AuthProviderType.facebook.name,
-            createdAt: DateTime.now(),
+            createdAt: DateTime.now().toIso8601String(),
           );
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .set(userModel.toJson());
+          logger.d('userModel---> ${userModel.toJson()}');
+
+          final docSnapshot = await userDocRef.get();
+          if (docSnapshot.exists) {
+            final data = docSnapshot.data() as Map<String, dynamic>;
+            final Map<String, dynamic> updateData = {};
+
+            if ((data['full_name'] == null ||
+                    (data['full_name'] as String).isEmpty) &&
+                userModel.fullName.isNotEmpty) {
+              updateData['full_name'] = userModel.fullName;
+            }
+            if ((data['year_of_birth'] == null || data['year_of_birth'] == 0) &&
+                userModel.yearOfBirth != 0) {
+              updateData['year_of_birth'] = userModel.yearOfBirth;
+            }
+            if ((data['heard_about'] == null ||
+                    (data['heard_about'] as String).isEmpty) &&
+                userModel.heardAbout.isNotEmpty) {
+              updateData['heard_about'] = userModel.heardAbout;
+            }
+            if ((data['learning_reason'] == null ||
+                    (data['learning_reason'] as String).isEmpty) &&
+                userModel.learningReason.isNotEmpty) {
+              updateData['learning_reason'] = userModel.learningReason;
+            }
+            if ((data['auth_provider'] == null ||
+                (data['auth_provider'] as String).isEmpty)) {
+              updateData['auth_provider'] = userModel.authProvider;
+            }
+            if (data['created_at'] == null) {
+              updateData['created_at'] = userModel.createdAt;
+            }
+
+            if (updateData.isNotEmpty) {
+              logger.d('Firestore updateData ---> ${json.encode(updateData)}');
+              await userDocRef.update(updateData);
+            }
+          } else {
+            logger.d(
+              'Firestore set userModel ---> ${json.encode(userModel.toJson())}',
+            );
+            await userDocRef.set(userModel.toJson());
+          }
         }
 
         logger.d('Facebook accessToken---> ${accessToken.tokenString}');
@@ -108,6 +162,10 @@ class FacebookAuthProvider with ChangeNotifier {
       await _sharedPrefs.setStringPref(AppConstants.userInfo, "");
       await _sharedPrefs.setBoolPref(AppConstants.logged, false);
       _userData = null;
+
+      // Reset AuthState
+      authState.clear();
+
       setStatus(DataFetchStatus.initial);
       notifyListeners();
       if (!context.mounted) return;

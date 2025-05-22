@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
-import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -65,9 +64,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       CustomMaterialButton(
                         label: 'Logout',
                         onTap: () {
-                          final authProvider =
-                              context.read<GoogleAuthProvider>();
-                          authProvider.signOut(context);
+                          AuthProviderType type = AuthProviderType.email;
+                          final loginType = userInfo!['login_type'];
+                          if (loginType == AuthProviderType.google.name) {
+                            type = AuthProviderType.google;
+                          } else if (loginType ==
+                              AuthProviderType.facebook.name) {
+                            type = AuthProviderType.facebook;
+                          }
+                          Utility.authWiseLogout(context, type);
                         },
                         width: 100,
                         height: 40,

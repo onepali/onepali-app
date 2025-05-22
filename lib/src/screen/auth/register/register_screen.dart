@@ -90,7 +90,7 @@ class RegisterScreen extends StatelessWidget {
         child: Builder(
           builder:
               (context) => CustomMaterialButton(
-                label: 'Create Account',
+                label: 'Continue',
                 onTap: () {
                   Utility.navigateMaterialRoute(context, RS1Screen());
                 },

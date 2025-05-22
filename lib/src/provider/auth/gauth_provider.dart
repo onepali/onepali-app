@@ -64,6 +64,10 @@ class GoogleAuthProvider with ChangeNotifier {
       // Save UserModel to Firestore
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
+        final userDocRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid);
+
         final userModel = UserModel(
           uid: user.uid,
           fullName: authState.fullName ?? googleUser.displayName ?? "",
@@ -71,13 +75,64 @@ class GoogleAuthProvider with ChangeNotifier {
           yearOfBirth: authState.yearOfBirth ?? 0,
           heardAbout: authState.heardAbout ?? "",
           learningReason: authState.learningReason ?? "",
-          authProvider: AppConstants.google,
-          createdAt: DateTime.now(),
+          authProvider: AuthProviderType.google.name,
+          createdAt: DateTime.now().toIso8601String(),
         );
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .set(userModel.toJson());
+        logger.d('userModel---> ${userModel.toJson()}');
+
+        final docSnapshot = await userDocRef.get();
+        if (docSnapshot.exists) {
+          final data = docSnapshot.data() as Map<String, dynamic>;
+          final Map<String, dynamic> updateData = {};
+
+          if ((data['full_name'] == null ||
+                  (data['full_name'] as String).isEmpty) &&
+              userModel.fullName.isNotEmpty) {
+            updateData['full_name'] = userModel.fullName;
+          }
+          if ((data['year_of_birth'] == null || data['year_of_birth'] == 0) &&
+              userModel.yearOfBirth != 0) {
+            updateData['year_of_birth'] = userModel.yearOfBirth;
+          }
+          if ((data['heard_about'] == null ||
+                  (data['heard_about'] as String).isEmpty) &&
+              userModel.heardAbout.isNotEmpty) {
+            updateData['heard_about'] = userModel.heardAbout;
+          }
+          if ((data['learning_reason'] == null ||
+                  (data['learning_reason'] as String).isEmpty) &&
+              userModel.learningReason.isNotEmpty) {
+            updateData['learning_reason'] = userModel.learningReason;
+          }
+          if ((data['auth_provider'] == null ||
+              (data['auth_provider'] as String).isEmpty)) {
+            updateData['auth_provider'] = userModel.authProvider;
+          }
+          if (data['created_at'] == null) {
+            updateData['created_at'] = userModel.createdAt;
+          }
+
+          if (updateData.isNotEmpty) {
+            // Convert DateTime to String for JSON encoding if present
+            if (updateData['created_at'] is DateTime) {
+              updateData['created_at'] =
+                  (updateData['created_at'] as DateTime).toIso8601String();
+            }
+            logger.d('Firestore updateData ---> ${json.encode(updateData)}');
+            await userDocRef.update(updateData);
+          }
+          // Convert DateTime to String for JSON encoding
+          final userJson = userModel.toJson();
+          if (userJson['created_at'] is DateTime) {
+            userJson['created_at'] =
+                (userJson['created_at'] as DateTime).toIso8601String();
+          }
+          await userDocRef.set(userJson);
+          logger.d(
+            'Firestore set userModel ---> ${json.encode(userModel.toJson())}',
+          );
+          await userDocRef.set(userModel.toJson());
+        }
       }
 
       logger.d('accessToken---> $accessToken');
@@ -110,6 +165,10 @@ class GoogleAuthProvider with ChangeNotifier {
       await _sharedPrefs.setStringPref(AppConstants.userInfo, "");
       await _sharedPrefs.setBoolPref(AppConstants.logged, false);
       _user = null;
+
+      // Reset AuthState
+      authState.clear();
+
       setStatus(DataFetchStatus.initial);
       notifyListeners();
       if (!context.mounted) return;

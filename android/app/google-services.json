@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "259206374027",
+    "firebase_url": "https://o-nepali-default-rtdb.firebaseio.com",
     "project_id": "o-nepali",
     "storage_bucket": "o-nepali.firebasestorage.app"
   },
@@ -12,7 +13,28 @@
           "package_name": "com.onepali.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.onepali.app",
+            "certificate_hash": "bc152fc19f979b6598319df4099f80df30947bdf"
+          }
+        },
+        {
+          "client_id": "259206374027-nfu9ofksbpvqqm5kegofuubl6t86g8i0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.onepali.app",
+            "certificate_hash": "3c22b49be28f929278789a4004764ccd09cf3fdc"
+          }
+        },
+        {
+          "client_id": "259206374027-b3nr2e48sfburmacir4ob60914kve39u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAS3R2yPanym3CbkJ5hsf2nNJkVQXs6SaQ"
@@ -20,7 +42,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259206374027-b3nr2e48sfburmacir4ob60914kve39u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

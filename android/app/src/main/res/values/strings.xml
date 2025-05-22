@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">O Nepali</string> 
     <string name="facebook_app_id">1817661262126199</string>
-    <string name="facebook_client_token">871af3dc248ff8929479fed17b1ebd0a</string>
+    <string name="facebook_client_token">eeda8a79b6812e09032e3df8e9306da8</string>
+    <string name="fb_login_protocol_scheme">fb1817661262126199</string>
 </resources>

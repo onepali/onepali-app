@@ -6,6 +6,9 @@ export 'onboarding/onboarding_screen.dart';
 
 // Auth Screen
 
+// [Auth] --> [Login]
+export 'auth/login/login_screen.dart';
+
 /// [Auth] --> [Register]
 export 'auth/register/register_screen.dart';
 

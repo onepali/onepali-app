@@ -59,7 +59,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> loginWithEmail(
+  Future<dynamic> loginWithEmail(
     BuildContext context,
     String email,
     String password,
@@ -73,18 +73,18 @@ class AuthProvider with ChangeNotifier {
       if (_user != null && !_user!.emailVerified) {
         setStatus(DataFetchStatus.success);
         notifyListeners();
-        // Not verified, return false so UI can navigate to RS5
-        return false;
+        return 'not_verified';
       }
 
       // Save user info and tokens
       final SharedPreferencesService sharedPrefs = SharedPreferencesService();
+      final String? accessToken = await _user?.getIdToken();
       final Map<String, dynamic> userInfo = {
         'full_name': _user?.displayName ?? authState.fullName ?? "",
         'email': _user?.email ?? "",
         'user_dp': _user?.photoURL ?? "",
-        'login_type': AuthProviderType.email,
-        'access_token': await _user?.getIdToken(),
+        'login_type': AuthProviderType.email.name,
+        'access_token': accessToken ?? "",
         'refresh_token': _user?.refreshToken ?? "",
       };
       logger.d('userInfo---> $userInfo');
@@ -104,6 +104,10 @@ class AuthProvider with ChangeNotifier {
 
       // Save UserModel to Firestore
       if (_user != null) {
+        final userDocRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(_user!.uid);
+
         final userModel = UserModel(
           uid: _user!.uid,
           fullName: authState.fullName ?? "",
@@ -112,13 +116,56 @@ class AuthProvider with ChangeNotifier {
           heardAbout: authState.heardAbout ?? "",
           learningReason: authState.learningReason ?? "",
           authProvider: AuthProviderType.email.name,
-          createdAt: DateTime.now(),
+          createdAt: DateTime.now().toIso8601String(),
         );
         logger.d('userModel---> ${userModel.toJson()}');
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(_user!.uid)
-            .set(userModel.toJson());
+
+        final docSnapshot = await userDocRef.get();
+        if (docSnapshot.exists) {
+          // Update only missing or empty fields
+          final data = docSnapshot.data() as Map<String, dynamic>;
+          final Map<String, dynamic> updateData = {};
+
+          if ((data['full_name'] == null ||
+                  (data['full_name'] as String).isEmpty) &&
+              userModel.fullName.isNotEmpty) {
+            updateData['full_name'] = userModel.fullName;
+          }
+          if ((data['year_of_birth'] == null || data['year_of_birth'] == 0) &&
+              userModel.yearOfBirth != 0) {
+            updateData['year_of_birth'] = userModel.yearOfBirth;
+          }
+          if ((data['heard_about'] == null ||
+                  (data['heard_about'] as String).isEmpty) &&
+              userModel.heardAbout.isNotEmpty) {
+            updateData['heard_about'] = userModel.heardAbout;
+          }
+          if ((data['learning_reason'] == null ||
+                  (data['learning_reason'] as String).isEmpty) &&
+              userModel.learningReason.isNotEmpty) {
+            updateData['learning_reason'] = userModel.learningReason;
+          }
+          // Always update authProvider if missing
+          if ((data['auth_provider'] == null ||
+              (data['auth_provider'] as String).isEmpty)) {
+            updateData['auth_provider'] = userModel.authProvider;
+          }
+          // Optionally update createdAt if missing
+          if (data['created_at'] == null) {
+            updateData['created_at'] = userModel.createdAt;
+          }
+
+          if (updateData.isNotEmpty) {
+            logger.d('Firestore updateData ---> ${json.encode(updateData)}');
+            await userDocRef.update(updateData);
+          }
+        } else {
+          // Create new document
+          logger.d(
+            'Firestore set userModel ---> ${json.encode(userModel.toJson())}',
+          );
+          await userDocRef.set(userModel.toJson());
+        }
       }
 
       setStatus(DataFetchStatus.success);
@@ -153,6 +200,30 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  /// Resend email verification to the current user.
+  Future<void> resendEmailVerification(BuildContext context) async {
+    if (_user != null && !_user!.emailVerified) {
+      try {
+        await _user!.sendEmailVerification();
+        if (!context.mounted) return;
+        CustomToast.showToast(context, "Verification email resent!");
+      } catch (e) {
+        CustomToast.showToast(
+          context,
+          "Failed to resend verification email",
+          isError: true,
+        );
+      }
+    } else {
+      if (!context.mounted) return;
+      CustomToast.showToast(
+        context,
+        "Email already verified or user not found.",
+        isError: true,
+      );
+    }
+  }
+
   Future<void> reloadUser() async {
     if (_user != null) {
       await _user!.reload();
@@ -176,9 +247,13 @@ class AuthProvider with ChangeNotifier {
     await sharedPrefs.setStringPref(AppConstants.userInfo, "");
     await sharedPrefs.setBoolPref(AppConstants.logged, false);
 
+    // Reset AuthState
+    authState.clear();
+
     setStatus(DataFetchStatus.initial);
     notifyListeners();
     if (!context.mounted) return;
     CustomToast.showToast(context, "Logged out");
+    Utility.navigate(context, AppRoutes.splashScreen);
   }
 }

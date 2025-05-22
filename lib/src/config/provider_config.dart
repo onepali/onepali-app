@@ -14,7 +14,7 @@ class ProviderConfig {
   static final GoogleAuthProvider googleAuthProvider = GoogleAuthProvider(
     authState: authState,
   );
-  static final FacebookAuthProvider facebookAuthProvider = FacebookAuthProvider(
+  static final FAuthProvider facebookAuthProvider = FAuthProvider(
     authState: authState,
   );
 
@@ -36,9 +36,7 @@ class ProviderConfig {
     ChangeNotifierProvider<GoogleAuthProvider>(
       create: (_) => googleAuthProvider,
     ),
-    ChangeNotifierProvider<FacebookAuthProvider>(
-      create: (_) => facebookAuthProvider,
-    ),
+    ChangeNotifierProvider<FAuthProvider>(create: (_) => facebookAuthProvider),
     ChangeNotifierProvider<UserProvider>(create: (_) => userProvider),
     ChangeNotifierProvider<LessonProvider>(create: (_) => lessonProvider),
     ChangeNotifierProvider<LessonAudioProvider>(
