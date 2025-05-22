@@ -176,28 +176,11 @@ class _LoginScreenState extends State<LoginScreen> {
               : () async {
                 if (_formKey.currentState!.validate()) {
                   final authProvider = context.read<AuthProvider>();
-                  try {
-                    final result = await authProvider.loginWithEmail(
-                      context,
-                      emailController.text.trim(),
-                      passwordController.text.trim(),
-                    );
-                    // result == true: login success, verified
-                    // result == false: either not verified or login failed
-                    if (result == true) {
-                      if (!context.mounted) return;
-                      Utility.navigate(context, AppRoutes.dashboardScreen);
-                    } else if (result == 'not_verified') {
-                      if (!context.mounted) return;
-                      Utility.navigateMaterialRoute(
-                        context,
-                        RS5Screen(isLogin: true),
-                      );
-                    }
-                  } catch (e) {
-                    if (!context.mounted) return;
-                    showCustomToaster( e.toString(), isError: true);
-                  }
+                  await authProvider.signIn(
+                    context,
+                    emailController.text.trim(),
+                    passwordController.text.trim(),
+                  );
                 }
               },
       backgroundColor: AppColors.kButtonGreen,

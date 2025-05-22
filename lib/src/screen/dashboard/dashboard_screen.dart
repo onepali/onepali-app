@@ -38,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
+                  child: Column(
                     children: [
                       CircleAvatar(
                         radius: 32,
@@ -51,12 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            userInfo!['full_name'] ?? '',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Login type: ${userInfo!['login_type'] ?? ''}',
+                            '${userInfo!['email'] ?? ''}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
