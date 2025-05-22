@@ -196,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   } catch (e) {
                     if (!context.mounted) return;
-                    CustomToast.showToast(context, e.toString(), isError: true);
+                    showCustomToaster( e.toString(), isError: true);
                   }
                 }
               },

@@ -45,17 +45,17 @@ class AuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.success);
       notifyListeners();
       if (!context.mounted) return;
-      CustomToast.showToast(
-        context,
-        "Registration successful! Please verify your email.",
-      );
+      showCustomToaster("Registration successful! Please verify your email.");
     } on FirebaseAuthException catch (e) {
       setStatus(DataFetchStatus.initial);
-      CustomToast.showToast(
-        context,
-        e.message ?? "Registration failed",
-        isError: true,
-      );
+      if (e.code == 'email-already-in-use') {
+        showCustomToaster(
+          "Email is already in use. Please use a different email.",
+          isError: true,
+        );
+      } else {
+        showCustomToaster(e.message ?? "Registration failed", isError: true);
+      }
     }
   }
 
@@ -171,15 +171,11 @@ class AuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.success);
       notifyListeners();
       if (!context.mounted) return true;
-      CustomToast.showToast(context, "Login successful!");
+      showCustomToaster("Login successful!");
       return true;
     } on FirebaseAuthException catch (e) {
       setStatus(DataFetchStatus.initial);
-      CustomToast.showToast(
-        context,
-        e.message ?? "Login failed",
-        isError: true,
-      );
+      showCustomToaster(e.message ?? "Login failed", isError: true);
       return false;
     }
   }
@@ -189,13 +185,9 @@ class AuthProvider with ChangeNotifier {
       try {
         await _user!.sendEmailVerification();
         if (!context.mounted) return;
-        CustomToast.showToast(context, "Verification email sent!");
+        showCustomToaster("Verification email sent!");
       } catch (e) {
-        CustomToast.showToast(
-          context,
-          "Failed to send verification email",
-          isError: true,
-        );
+        showCustomToaster("Failed to send verification email", isError: true);
       }
     }
   }
@@ -206,18 +198,13 @@ class AuthProvider with ChangeNotifier {
       try {
         await _user!.sendEmailVerification();
         if (!context.mounted) return;
-        CustomToast.showToast(context, "Verification email resent!");
+        showCustomToaster("Verification email resent!");
       } catch (e) {
-        CustomToast.showToast(
-          context,
-          "Failed to resend verification email",
-          isError: true,
-        );
+        showCustomToaster("Failed to resend verification email", isError: true);
       }
     } else {
       if (!context.mounted) return;
-      CustomToast.showToast(
-        context,
+      showCustomToaster(
         "Email already verified or user not found.",
         isError: true,
       );
@@ -253,7 +240,7 @@ class AuthProvider with ChangeNotifier {
     setStatus(DataFetchStatus.initial);
     notifyListeners();
     if (!context.mounted) return;
-    CustomToast.showToast(context, "Logged out");
+    showCustomToaster("Logged out");
     Utility.navigate(context, AppRoutes.splashScreen);
   }
 }

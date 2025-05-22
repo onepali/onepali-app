@@ -11,10 +11,7 @@ class RS5Screen extends StatelessWidget {
     final isVerified = await authProvider.checkEmailVerified();
     if (isVerified) {
       if (!context.mounted) return;
-      CustomToast.showToast(
-        context,
-        isLogin ? "Login successful!" : "Account created!",
-      );
+      showCustomToaster(isLogin ? "Login successful!" : "Account created!");
       if (isLogin) {
         Utility.navigate(context, AppRoutes.dashboardScreen);
       } else {
@@ -22,8 +19,7 @@ class RS5Screen extends StatelessWidget {
       }
     } else {
       if (!context.mounted) return;
-      CustomToast.showToast(
-        context,
+      showCustomToaster(
         "Please verify your email before continuing.",
         isError: true,
       );
@@ -95,7 +91,7 @@ class RS5Screen extends StatelessWidget {
             ),
             Gaps.verticalGapOf(16),
             CustomMaterialButton(
-              label: 'Next',
+              label: 'I\'ve verified, Continue',
               elevation: 0,
               backgroundColor: AppColors.kButtonGreen,
               onTap: () => _handleNext(context),
