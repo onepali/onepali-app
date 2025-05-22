@@ -10,10 +10,6 @@ updates:
       prefix: "chore(deps)"
     labels:
       - "dependencies"
-    assignees: []
-    reviewers: []
     allow:
       - dependency-type: "all"
-    ignore: []
     rebase-strategy: "auto"
-    security-updates: true
