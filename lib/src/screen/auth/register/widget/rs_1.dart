@@ -95,8 +95,7 @@ class _RS1ScreenState extends State<RS1Screen> {
       label: 'Next',
       onTap: () {
         if (_selectedIndex == null) {
-          CustomToast.showToast(
-            context,
+          showCustomToaster(
             "Please select an option.",
             isError: true,
           );

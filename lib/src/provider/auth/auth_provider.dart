@@ -45,17 +45,17 @@ class AuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.success);
       notifyListeners();
       if (!context.mounted) return;
-      CustomToast.showToast(
-        context,
-        "Registration successful! Please verify your email.",
-      );
+      showCustomToaster("Registration successful! Please verify your email.");
     } on FirebaseAuthException catch (e) {
       setStatus(DataFetchStatus.initial);
-      CustomToast.showToast(
-        context,
-        e.message ?? "Registration failed",
-        isError: true,
-      );
+      if (e.code == 'email-already-in-use') {
+        showCustomToaster(
+          "Email is already in use. Please use a different email.",
+          isError: true,
+        );
+      } else {
+        showCustomToaster(e.message ?? "Registration failed", isError: true);
+      }
     }
   }
 
@@ -171,16 +171,188 @@ class AuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.success);
       notifyListeners();
       if (!context.mounted) return true;
-      CustomToast.showToast(context, "Login successful!");
+      showCustomToaster("Login successful!");
       return true;
     } on FirebaseAuthException catch (e) {
       setStatus(DataFetchStatus.initial);
-      CustomToast.showToast(
-        context,
-        e.message ?? "Login failed",
-        isError: true,
-      );
+      showCustomToaster(e.message ?? "Login failed", isError: true);
       return false;
+    }
+  }
+
+  /// Simple sign in method: handles login, verification, error handling, and navigation.
+  Future<void> signIn(
+    BuildContext context,
+    String email,
+    String password,
+  ) async {
+    setStatus(DataFetchStatus.loading);
+    try {
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+      _user = userCredential.user;
+
+      if (_user != null && !_user!.emailVerified) {
+        setStatus(DataFetchStatus.success);
+        notifyListeners();
+        // Navigate to verification screen
+        if (!context.mounted) return;
+        Utility.navigateMaterialRoute(context, RS5Screen(isLogin: true));
+        showCustomToaster("Please verify your email.", isError: true);
+        return;
+      }
+
+      // Save user info and tokens to SharedPreferences
+      final SharedPreferencesService sharedPrefs = SharedPreferencesService();
+      final String? accessToken = await _user?.getIdToken();
+      final Map<String, dynamic> userInfo = {
+        'full_name': _user?.displayName,
+        'email': _user?.email ?? "",
+        'user_dp': _user?.photoURL ?? "",
+        'login_type': AuthProviderType.email.name,
+        'access_token': accessToken ?? "",
+        'refresh_token': _user?.refreshToken ?? "",
+      };
+      logger.d('userInfo---> $userInfo');
+      await sharedPrefs.setStringPref(
+        AppConstants.accessToken,
+        userInfo['access_token'] ?? "",
+      );
+      await sharedPrefs.setStringPref(
+        AppConstants.refreshToken,
+        userInfo['refresh_token'] ?? "",
+      );
+      await sharedPrefs.setStringPref(
+        AppConstants.userInfo,
+        json.encode(userInfo),
+      );
+      await sharedPrefs.setBoolPref(AppConstants.logged, true);
+
+      setStatus(DataFetchStatus.success);
+      notifyListeners();
+      if (!context.mounted) return;
+      showCustomToaster("Login successful!");
+      Utility.navigate(context, AppRoutes.dashboardScreen);
+    } on FirebaseAuthException catch (e) {
+      logger.e("FirebaseAuthException: ${e.code}");
+      setStatus(DataFetchStatus.initial);
+      if (e.code == 'user-not-found') {
+        showCustomToaster("User or account not found", isError: true);
+      } else if (e.code == 'invalid-credential') {
+        showCustomToaster(
+          "Invalid credentials, please try again",
+          isError: true,
+        );
+      } else if (e.code == 'account-exists-with-different-credential') {
+        showCustomToaster(
+          "Account exists with different credentials",
+          isError: true,
+        );
+      } else {
+        showCustomToaster(e.message ?? "Login failed", isError: true);
+      }
+    } catch (e) {
+      setStatus(DataFetchStatus.initial);
+      showCustomToaster("Login failed", isError: true);
+    }
+  }
+
+  /// New register method: handles registration, user data update, prefs, navigation, and error handling.
+  Future<void> register({
+    required BuildContext context,
+    required String email,
+    required String password,
+    required String fullName,
+    int? yearOfBirth,
+    String? heardAbout,
+    String? learningReason,
+  }) async {
+    setStatus(DataFetchStatus.loading);
+    try {
+      final UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      _user = userCredential.user;
+
+      // Send email verification
+      if (_user != null && !_user!.emailVerified) {
+        await _user!.sendEmailVerification();
+      }
+
+      // Save user info and tokens to SharedPreferences
+      final SharedPreferencesService sharedPrefs = SharedPreferencesService();
+      final String? accessToken = await _user?.getIdToken();
+      final Map<String, dynamic> userInfo = {
+        'full_name': fullName,
+        'email': _user?.email ?? "",
+        'user_dp': _user?.photoURL ?? "",
+        'login_type': AuthProviderType.email.name,
+        'access_token': accessToken ?? "",
+        'refresh_token': _user?.refreshToken ?? "",
+      };
+      logger.d('userInfo---> $userInfo');
+      await sharedPrefs.setStringPref(
+        AppConstants.accessToken,
+        userInfo['access_token'] ?? "",
+      );
+      await sharedPrefs.setStringPref(
+        AppConstants.refreshToken,
+        userInfo['refresh_token'] ?? "",
+      );
+      await sharedPrefs.setStringPref(
+        AppConstants.userInfo,
+        json.encode(userInfo),
+      );
+      await sharedPrefs.setBoolPref(AppConstants.logged, true);
+
+      // Save UserModel to Firestore
+      if (_user != null) {
+        final userDocRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(_user!.uid);
+
+        final userModel = UserModel(
+          uid: _user!.uid,
+          fullName: fullName,
+          email: _user!.email ?? "",
+          yearOfBirth: yearOfBirth ?? 0,
+          heardAbout: heardAbout ?? "",
+          learningReason: learningReason ?? "",
+          authProvider: AuthProviderType.email.name,
+          createdAt: DateTime.now().toIso8601String(),
+        );
+        logger.d('userModel---> ${userModel.toJson()}');
+
+        await userDocRef.set(userModel.toJson(), SetOptions(merge: true));
+      }
+
+      setStatus(DataFetchStatus.success);
+      notifyListeners();
+      if (!context.mounted) return;
+      showCustomToaster("Registration successful! Please verify your email.");
+      Utility.navigateMaterialRoute(context, RS5Screen());
+    } on FirebaseAuthException catch (e) {
+      setStatus(DataFetchStatus.initial);
+      String errorMsg;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMsg = "Email is already in use. Please use a different email.";
+          break;
+        case 'invalid-email':
+          errorMsg = "Invalid email address.";
+          break;
+        case 'weak-password':
+          errorMsg = "Password is too weak.";
+          break;
+        case 'operation-not-allowed':
+          errorMsg = "Operation not allowed. Please contact support.";
+          break;
+        default:
+          errorMsg = e.message ?? "Registration failed";
+      }
+      showCustomToaster(errorMsg, isError: true);
+    } catch (e) {
+      setStatus(DataFetchStatus.initial);
+      showCustomToaster("Registration failed", isError: true);
     }
   }
 
@@ -189,13 +361,9 @@ class AuthProvider with ChangeNotifier {
       try {
         await _user!.sendEmailVerification();
         if (!context.mounted) return;
-        CustomToast.showToast(context, "Verification email sent!");
+        showCustomToaster("Verification email sent!");
       } catch (e) {
-        CustomToast.showToast(
-          context,
-          "Failed to send verification email",
-          isError: true,
-        );
+        showCustomToaster("Failed to send verification email", isError: true);
       }
     }
   }
@@ -206,18 +374,13 @@ class AuthProvider with ChangeNotifier {
       try {
         await _user!.sendEmailVerification();
         if (!context.mounted) return;
-        CustomToast.showToast(context, "Verification email resent!");
+        showCustomToaster("Verification email resent!");
       } catch (e) {
-        CustomToast.showToast(
-          context,
-          "Failed to resend verification email",
-          isError: true,
-        );
+        showCustomToaster("Failed to resend verification email", isError: true);
       }
     } else {
       if (!context.mounted) return;
-      CustomToast.showToast(
-        context,
+      showCustomToaster(
         "Email already verified or user not found.",
         isError: true,
       );
@@ -253,7 +416,7 @@ class AuthProvider with ChangeNotifier {
     setStatus(DataFetchStatus.initial);
     notifyListeners();
     if (!context.mounted) return;
-    CustomToast.showToast(context, "Logged out");
+    showCustomToaster("Logged out");
     Utility.navigate(context, AppRoutes.splashScreen);
   }
 }

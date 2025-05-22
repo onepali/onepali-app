@@ -140,24 +140,15 @@ class _RS4ScreenState extends State<RS4Screen> {
               : () async {
                 if (_formKey.currentState!.validate()) {
                   final authProvider = context.read<AuthProvider>();
-
-                  await authProvider.signUpWithEmail(
-                    context,
-                    emailController.text.trim(),
-                    passwordController.text.trim(),
+                  await authProvider.register(
+                    context: context,
+                    email: emailController.text.trim(),
+                    password: passwordController.text.trim(),
+                    fullName: context.read<AuthState>().fullName ?? "",
+                    yearOfBirth: context.read<AuthState>().yearOfBirth,
+                    heardAbout: context.read<AuthState>().heardAbout,
+                    learningReason: context.read<AuthState>().learningReason,
                   );
-                  if (!context.mounted) return;
-                  final isVerified = await authProvider.loginWithEmail(
-                    context,
-                    emailController.text.trim(),
-                    passwordController.text.trim(),
-                  );
-                  if (!context.mounted) return;
-                  if (isVerified == true) {
-                    Utility.navigateMaterialRoute(context, RS6Screen());
-                  } else {
-                    Utility.navigateMaterialRoute(context, RS5Screen());
-                  }
                 }
               },
       backgroundColor: AppColors.kButtonGreen,

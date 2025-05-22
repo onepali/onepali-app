@@ -146,7 +146,7 @@ class GoogleAuthProvider with ChangeNotifier {
 
       if (!context.mounted) return;
       onNavigate(context);
-      CustomToast.showToast(context, 'Login Successful');
+      showCustomToaster( 'Login Successful');
       return;
     } on PlatformException catch (e) {
       _handlePlatformException(context, e);
@@ -172,10 +172,10 @@ class GoogleAuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.initial);
       notifyListeners();
       if (!context.mounted) return;
-      CustomToast.showToast(context, "Signed out successfully.");
+      showCustomToaster( "Signed out successfully.");
       Utility.navigate(context, AppRoutes.splashScreen);
     } catch (e) {
-      CustomToast.showToast(context, "Failed to sign out.", isError: true);
+      showCustomToaster( "Failed to sign out.", isError: true);
     }
   }
 
@@ -209,6 +209,6 @@ class GoogleAuthProvider with ChangeNotifier {
   }
 
   void handleError(String msg, context) {
-    return CustomToast.showToast(context, msg, isError: true);
+    return showCustomToaster( msg, isError: true);
   }
 }
