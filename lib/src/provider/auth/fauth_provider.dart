@@ -134,7 +134,7 @@ class FAuthProvider with ChangeNotifier {
 
         if (!context.mounted) return;
         onNavigate(context);
-        CustomToast.showToast(context, 'Login Successful');
+        showCustomToaster( 'Login Successful');
         return;
       } else if (result.status == LoginStatus.cancelled) {
         if (!context.mounted) return;
@@ -169,9 +169,9 @@ class FAuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.initial);
       notifyListeners();
       if (!context.mounted) return;
-      CustomToast.showToast(context, "Signed out successfully.");
+      showCustomToaster( "Signed out successfully.");
     } catch (e) {
-      CustomToast.showToast(context, "Failed to sign out.", isError: true);
+      showCustomToaster( "Failed to sign out.", isError: true);
     }
   }
 
@@ -190,6 +190,6 @@ class FAuthProvider with ChangeNotifier {
   }
 
   void handleError(String msg, context) {
-    return CustomToast.showToast(context, msg, isError: true);
+    return showCustomToaster( msg, isError: true);
   }
 }
