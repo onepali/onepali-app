@@ -6,6 +6,11 @@ class AppRoutes {
 
   /// [Splash] & [OnBoarding] Routes
   static const String splashScreen = '/splash';
+  static const String onboardingScreen = '/onboarding';
+
+  /// [Auth] Routes
+  static const String loginScreen = '/login';
+  static const String registerScreen = '/register';
 
   /// [Dashboard] Routes
   static const String dashboardScreen = '/dashboard';
@@ -13,15 +18,19 @@ class AppRoutes {
   /// [User] Routes
   static const String userScreen = '/user';
 
-  /// [Lesson] Routes
-  static const String lessonScreen = '/lesson';
+  /// [Language] Routes
+  static const String languageScreen = '/language';
 
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     splashScreen: (context) => const SplashScreen(),
+    onboardingScreen: (context) => const OnboardingScreen(),
+
+    loginScreen: (context) => const LoginScreen(),
+    registerScreen: (context) => const RegisterScreen(),
 
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
-    lessonScreen: (context) => const LessonScreen(),
+    languageScreen: (context) => const LanguageScreen(),
   };
 }

@@ -3,46 +3,27 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
-import 'navigator_key.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesService.init();
 
   await dotenv.load(fileName: AppConstants.dotEnvFileName);
   await AppInitializer().initializeApp();
 
-  runApp(MultiProvider(providers: ProviderConfig.providers, child: MyApp()));
+  runApp(
+    MultiProvider(
+      providers: ProviderConfig.providers,
+      child: MyApp(logged: await AppInitializer.checkUserAuthentication()),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool logged;
+  const MyApp({super.key, required this.logged});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return OrientationBuilder(
-          builder: (context, orientation) {
-            ResponsiveConfig().init(constraints, orientation);
-            return MaterialApp(
-              title: GlobalConfig.appName,
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: GlobalConfig.isShowDebugModeBanner,
-              scrollBehavior: CustomScrollBehavior(),
-              initialRoute: AppRoutes.splashScreen,
-              routes: AppRoutes.routes,
-              theme: ThemeConfig.lightTheme,
-              builder:
-                  (context, widget) => MediaQuery(
-                    data: MediaQuery.of(
-                      context,
-                    ).copyWith(textScaler: const TextScaler.linear(1)),
-                    child: Material(child: widget),
-                  ),
-            );
-          },
-        );
-      },
-    );
+    return AppInitializer.appMaterialApp(context, logged);
   }
 }

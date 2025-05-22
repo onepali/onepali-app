@@ -4,9 +4,6 @@ library;
 /// App [Constants]
 export 'constants/constant.dart';
 
-/// App [Errors]
-export 'errors/error.dart';
-
 /// App [Services]
 export 'services/service.dart';
 
@@ -23,6 +20,15 @@ export 'enums/enums.dart';
 export 'constants/app_styles.dart';
 
 /// App [Provider]
-export 'provider/provider.dart';
+export '../provider/provider.dart';
+
+/// App [Extensions]
+export 'extension/extension.dart';
+
+// App [Model]
+export 'model/model.dart';
+
+/// App [Widget]
+export 'widget/widget.dart';
 
 //* ------------------------------- END CORE EXPORTS -------------------------------- *//

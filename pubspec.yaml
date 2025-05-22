@@ -16,17 +16,22 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.2.1
   provider: ^6.1.5
-  # photo_view: ^0.15.0
-  # dio: ^5.8.0+1
-  # share_plus: ^11.0.0
-  # connectivity_plus: ^6.1.4
-  # google_sign_in: ^6.3.0
-  # http_parser: ^4.1.2
+  firebase_auth: ^5.5.4
+  cloud_firestore: ^5.6.8
+  google_sign_in: ^6.2.1
+  flutter_facebook_auth: ^7.1.2
   flutter_svg: ^2.1.0
-  # url_launcher: ^6.3.1
+  intl: ^0.19.0
+  modal_bottom_sheet: ^3.0.0
+  pin_code_fields: ^8.0.1
   audioplayers: ^6.4.0
   cached_network_image: ^3.4.1
   lottie: ^3.3.1
+  http: ^1.4.0
+  flutter_localizations:
+    sdk: flutter
+  firebase_core: ^3.13.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +44,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/brand/
     - assets/audio/
     - assets/audio/animals/
     - assets/fonts/
@@ -50,6 +56,7 @@ flutter:
     - assets/images/animals/
     - assets/images/subcategories/
     - assets/svg/icons/
+    - assets/svg/
     - .env
 
   fonts:

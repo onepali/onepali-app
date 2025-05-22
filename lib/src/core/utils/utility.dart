@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../src.dart';
 
 class Utility {
   static Future navigate(
@@ -14,6 +17,73 @@ class Utility {
       context,
       MaterialPageRoute(builder: (context) => screen),
     );
+  }
+
+  static horizontalDividerTitle({String? title, TextStyle? titleStyle}) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Divider(
+            indent: 20.0,
+            endIndent: 12.0,
+            color: AppColors.kGrey,
+            thickness: 1,
+          ),
+        ),
+        Text(
+          title ?? "Or Continue with",
+          style:
+              titleStyle ??
+              AppStyles.text12PxRegular.copyWith(color: AppColors.kPitchBlack),
+        ),
+        Expanded(
+          child: Divider(
+            indent: 12.0,
+            endIndent: 20.0,
+            color: AppColors.kGrey,
+            thickness: 1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static bool isAccessible(data) {
+    bool isEmpty = true;
+    try {
+      if (data != null) {
+        if (data is int) {
+          return isEmpty;
+        }
+        if (data?.isEmpty) {
+          isEmpty = false;
+        }
+      } else {
+        isEmpty = false;
+      }
+      return isEmpty;
+    } catch (e) {
+      return isEmpty;
+    }
+  }
+
+  static Future<void> authWiseLogout(
+    BuildContext context,
+    AuthProviderType type,
+  ) async {
+    switch (type) {
+      case AuthProviderType.email:
+        await context.read<AuthProvider>().logout(context);
+        break;
+      case AuthProviderType.google:
+        await context.read<GoogleAuthProvider>().signOut(context);
+        break;
+      case AuthProviderType.facebook:
+        await context.read<FAuthProvider>().signOut(context);
+        break;
+      default:
+        break;
+    }
   }
 
   static List<Color> parseHexColors(String hexString) {

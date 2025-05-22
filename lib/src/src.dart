@@ -7,14 +7,14 @@ export 'config/config.dart';
 /// Global [Core]
 export 'core/core.dart';
 
-/// Global [Data]
-export 'data/data.dart';
+/// Global [Provider]
+export 'provider/provider.dart';
 
-/// Global [Domain]
-export 'domain/domain.dart';
+/// Global [Repo]
+export 'repo/repo.dart';
 
-/// Global [Presentation]
-export 'presentation/presentation.dart';
+/// Global [Screen]
+export 'screen/screen.dart';
 
 /// Global [Injector]
 export 'injector.dart';
