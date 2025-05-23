@@ -72,6 +72,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         width: 100,
                         height: 40,
                       ),
+                      const SizedBox(height: 16),
+                      CustomTextButton(
+                        text: 'Create Child',
+                        onPressed: () {
+                          Utility.navigateMaterialRoute(
+                            context,
+                            ChildRegisterScreen(),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),

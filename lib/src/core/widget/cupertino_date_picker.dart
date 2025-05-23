@@ -18,6 +18,7 @@ class CupertinoDatePickerField extends StatefulWidget {
   final bool showDay;
   final int minYear;
   final int maxYear;
+  final DateTime? lastDate;
   final String? label;
   final TextStyle? textStyle;
   final BoxDecoration? decoration;
@@ -32,6 +33,7 @@ class CupertinoDatePickerField extends StatefulWidget {
     this.showDay = true,
     this.minYear = 1900,
     this.maxYear = 2100,
+    this.lastDate,
     this.label,
     this.textStyle,
     this.decoration,
@@ -59,6 +61,8 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
       _error = null;
     });
     DateTime tempDate = selectedDate;
+    final DateTime maxDate =
+        widget.lastDate ?? DateTime(widget.maxYear, 12, 31);
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -93,7 +97,10 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                     SizedBox(
                       height: 200,
                       child: _CupertinoDatePickerWidget(
-                        initialDate: selectedDate,
+                        initialDate:
+                            selectedDate.isAfter(maxDate)
+                                ? maxDate
+                                : selectedDate,
                         onDateChanged: (date) {
                           tempDate = date;
                         },
@@ -101,9 +108,10 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                         showDay: widget.showDay,
                         minYear: widget.minYear,
                         maxYear: widget.maxYear,
+                        lastDate: maxDate,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    Gaps.verticalGapOf(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -113,7 +121,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                             Navigator.of(context).pop();
                           },
                         ),
-                        SizedBox(width: 8),
+                        Gaps.horizontalGapOf(8),
                         CustomTextButton(
                           text: 'Select',
                           onPressed: () {
@@ -130,7 +138,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                             }
                           },
                         ),
-                        SizedBox(width: 16),
+                        Gaps.horizontalGapOf(16),
                       ],
                     ),
                     if (_error != null)
@@ -199,6 +207,7 @@ class _CupertinoDatePickerWidget extends StatefulWidget {
   final bool showDay;
   final int minYear;
   final int maxYear;
+  final DateTime? lastDate;
 
   const _CupertinoDatePickerWidget({
     required this.initialDate,
@@ -207,6 +216,7 @@ class _CupertinoDatePickerWidget extends StatefulWidget {
     required this.showDay,
     required this.minYear,
     required this.maxYear,
+    this.lastDate,
   });
 
   @override
@@ -241,6 +251,10 @@ class _CupertinoDatePickerWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final int maxYear = widget.lastDate?.year ?? widget.maxYear;
+    final int maxMonth = widget.lastDate?.month ?? 12;
+    final int maxDay = widget.lastDate?.day ?? 31;
+
     final yearPicker = Expanded(
       child: CupertinoPicker(
         scrollController: FixedExtentScrollController(
@@ -250,12 +264,15 @@ class _CupertinoDatePickerWidgetState
         onSelectedItemChanged: (index) {
           setState(() {
             selectedYear = widget.minYear + index;
+            if (widget.lastDate != null && selectedYear > maxYear) {
+              selectedYear = maxYear;
+            }
             if (selectedDay > daysInMonth) selectedDay = daysInMonth;
             _onChanged();
           });
         },
         children: [
-          for (int i = widget.minYear; i <= widget.maxYear; i++)
+          for (int i = widget.minYear; i <= maxYear; i++)
             Center(child: Text(i.toString())),
         ],
       ),
@@ -269,16 +286,27 @@ class _CupertinoDatePickerWidgetState
                   initialItem: selectedMonth - 1,
                 ),
                 itemExtent: 32,
-
                 onSelectedItemChanged: (index) {
                   setState(() {
                     selectedMonth = index + 1;
+                    if (widget.lastDate != null &&
+                        selectedYear == maxYear &&
+                        selectedMonth > maxMonth) {
+                      selectedMonth = maxMonth;
+                    }
                     if (selectedDay > daysInMonth) selectedDay = daysInMonth;
                     _onChanged();
                   });
                 },
                 children: [
-                  for (int i = 1; i <= 12; i++)
+                  for (
+                    int i = 1;
+                    i <=
+                        (selectedYear == maxYear && widget.lastDate != null
+                            ? maxMonth
+                            : 12);
+                    i++
+                  )
                     Center(child: Text(i.toString().padLeft(2, '0'))),
                 ],
               ),
@@ -296,11 +324,26 @@ class _CupertinoDatePickerWidgetState
                 onSelectedItemChanged: (index) {
                   setState(() {
                     selectedDay = index + 1;
+                    if (widget.lastDate != null &&
+                        selectedYear == maxYear &&
+                        selectedMonth == maxMonth &&
+                        selectedDay > maxDay) {
+                      selectedDay = maxDay;
+                    }
                     _onChanged();
                   });
                 },
                 children: [
-                  for (int i = 1; i <= daysInMonth; i++)
+                  for (
+                    int i = 1;
+                    i <=
+                        (selectedYear == maxYear &&
+                                selectedMonth == maxMonth &&
+                                widget.lastDate != null
+                            ? maxDay
+                            : daysInMonth);
+                    i++
+                  )
                     Center(child: Text(i.toString().padLeft(2, '0'))),
                 ],
               ),

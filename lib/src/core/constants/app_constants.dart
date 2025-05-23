@@ -19,7 +19,7 @@ class AppConstants {
   static const String userInfo = 'user_info';
   static const String logged = 'logged';
 
-  static List<String> avatarList = [
+  static List<String> get avatarList => [
     Assets.avatar1,
     Assets.avatar2,
     Assets.avatar3,
