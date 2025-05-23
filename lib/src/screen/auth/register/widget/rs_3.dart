@@ -11,7 +11,7 @@ class RS3Screen extends StatefulWidget {
 
 class _RS3ScreenState extends State<RS3Screen> {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController yobController = TextEditingController();
+  DateTime selectedYear = DateTime.now();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -22,8 +22,13 @@ class _RS3ScreenState extends State<RS3Screen> {
   @override
   void dispose() {
     nameController.dispose();
-    yobController.dispose();
     super.dispose();
+  }
+
+  onYearSelected(DateTime date) {
+    setState(() {
+      selectedYear = date;
+    });
   }
 
   @override
@@ -55,13 +60,19 @@ class _RS3ScreenState extends State<RS3Screen> {
               TitleActionChild(
                 title: 'Year of Birth',
                 titlePadding: EdgeInsets.only(bottom: 8),
-                child: CustomTextField(
-                  hintText: 'Enter your Year of Birth',
-                  isNumberField: true,
-                  controller: yobController,
-                  prefixIcon: Icon(Icons.calendar_today_outlined),
-                  textInputAction: TextInputAction.done,
-                  validation: (value) => Validator.empty(value ?? ""),
+                child: CupertinoDatePickerField(
+                  initialDate: selectedYear,
+                  onDateChanged: onYearSelected,
+                  showMonth: false,
+                  showDay: false,
+                  validator: (date) {
+                    final now = DateTime.now();
+                    final minYear = now.year - 18;
+                    if (date.year > minYear) {
+                      return 'Parent must be at least 18 years old.';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Gaps.verticalGapOf(5),
@@ -83,9 +94,7 @@ class _RS3ScreenState extends State<RS3Screen> {
           // Save fullName and yearOfBirth to AuthState
           final authState = context.read<AuthState>();
           authState.setFullName(nameController.text.trim());
-          authState.setYearOfBirth(
-            int.tryParse(yobController.text.trim()) ?? 0,
-          );
+          authState.setYearOfBirth(selectedYear.year.toInt());
           Utility.navigateMaterialRoute(context, RS4Screen());
         }
       },

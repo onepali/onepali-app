@@ -1,3 +1,5 @@
+import 'package:onepali/src/src.dart';
+
 class AppConstants {
   static const String appName = 'O Nepali';
   static const String appVersion = 'v1.0.0';
@@ -16,6 +18,17 @@ class AppConstants {
   static const String refreshToken = 'refresh_token';
   static const String userInfo = 'user_info';
   static const String logged = 'logged';
+
+  static List<String> avatarList = [
+    Assets.avatar1,
+    Assets.avatar2,
+    Assets.avatar3,
+    Assets.avatar4,
+    Assets.avatar5,
+    Assets.avatar6,
+    Assets.avatar7,
+    Assets.avatar8,
+  ];
 
   static List<String> whyLearningNepali = [
     'Develop a learning habit',

@@ -11,6 +11,16 @@ class Assets {
   /// [Image] assets
   static String splashImage = 'splash'.gif;
 
+  /// [Avatar] assets
+  static String avatar1 = 'av_1'.avatar;
+  static String avatar2 = 'av_2'.avatar;
+  static String avatar3 = 'av_3'.avatar;
+  static String avatar4 = 'av_4'.avatar;
+  static String avatar5 = 'av_5'.avatar;
+  static String avatar6 = 'av_6'.avatar;
+  static String avatar7 = 'av_7'.avatar;
+  static String avatar8 = 'av_8'.avatar;
+
   /// [Lottie] assets
   static String logoLottie = 'onepali'.lottie;
   static String leoCharacterLottie = 'leo_character'.lottie;
@@ -64,6 +74,7 @@ extension AssetsExtension on String {
   String get brandSvg => 'assets/brand/$this.svg';
   String get brandPng => 'assets/brand/$this.png';
   String get png => 'assets/images/$this.png';
+  String get avatar => 'assets/images/avatar/$this.png';
   String get remark => 'assets/images/remark/$this.png';
   String get jpg => 'assets/images/$this.jpg';
   String get jpeg => 'assets/images/$this.jpeg';
