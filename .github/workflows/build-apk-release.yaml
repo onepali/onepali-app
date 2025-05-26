@@ -22,6 +22,17 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Decode keystore and create key.properties
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "${{ secrets.SIGNING_KEY_JKS_BASE64 }}" | base64 -d > android/app/onepali.jks
+          cat <<EOF > android/key.properties
+          storeFile=onepali.jks
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          EOF
+
       - name: Build APK
         run: flutter build apk --release
 
