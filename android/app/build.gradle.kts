@@ -9,12 +9,16 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-// Look for key.properties inside android directory (not app)
 val keystorePropertiesFile = file("android/key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-} else {
-    throw GradleException("key.properties file not found at android/key.properties")
+
+val isReleaseBuild = gradle.startParameter.taskNames.any { it.contains("Release") }
+
+if (isReleaseBuild) {
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    } else {
+        throw GradleException("key.properties file not found at android/key.properties")
+    }
 }
 
 val localProperties = Properties()
@@ -53,11 +57,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as? String ?: ""
-            keyPassword = keystoreProperties["keyPassword"] as? String ?: ""
-            storeFile = keystoreProperties["storeFile"]?.let { file("android/app/$it") }
-            storePassword = keystoreProperties["storePassword"] as? String ?: ""
+        if (isReleaseBuild) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as? String ?: ""
+                keyPassword = keystoreProperties["keyPassword"] as? String ?: ""
+                storeFile = keystoreProperties["storeFile"]?.let { file("android/app/$it") }
+                storePassword = keystoreProperties["storePassword"] as? String ?: ""
+            }
         }
     }
 
@@ -65,7 +71,9 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+            if (isReleaseBuild) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }
@@ -75,5 +83,5 @@ flutter {
 }
 
 dependencies {
-    // Add your dependencies here
+    // Your dependencies
 }
