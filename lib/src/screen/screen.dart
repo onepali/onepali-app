@@ -28,3 +28,11 @@ export 'user/user_screen.dart';
 
 // Language Screen
 export 'language/language_screen.dart';
+
+//* ------------------------------------ Global Child Screen Export ------------------------------------ *//
+
+/// [Child] --> [Register]
+export 'child/cregister/cregister_screen.dart';
+export 'child/cregister/widget/child_rs1.dart';
+export 'child/cregister/widget/child_rs2.dart';
+export 'child/cregister/widget/child_rs3.dart';

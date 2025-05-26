@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
-class RS3Screen extends StatefulWidget {
-  const RS3Screen({super.key});
+class ChildRegisterScreen extends StatefulWidget {
+  const ChildRegisterScreen({super.key});
 
   @override
-  State<RS3Screen> createState() => _RS3ScreenState();
+  State<ChildRegisterScreen> createState() => _ChildRegisterScreenState();
 }
 
-class _RS3ScreenState extends State<RS3Screen> {
+class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
   final TextEditingController nameController = TextEditingController();
-  DateTime selectedYear = DateTime.now();
+  DateTime selectedDate = DateTime.now();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -27,14 +27,19 @@ class _RS3ScreenState extends State<RS3Screen> {
 
   onYearSelected(DateTime date) {
     setState(() {
-      selectedYear = date;
+      selectedDate = date;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: '', showStepper: true, currentStep: 3),
+      appBar: CustomAppBar(
+        title: '',
+        showStepper: true,
+        currentStep: 1,
+        totalSteps: 4,
+      ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,7 +48,10 @@ class _RS3ScreenState extends State<RS3Screen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Create your Account', style: AppStyles.text20PxSemiBold),
+              Text(
+                'Personalize your\nChild Account',
+                style: AppStyles.text20PxSemiBold,
+              ),
               SizedBox(height: 24),
               TitleActionChild(
                 titlePadding: EdgeInsets.only(bottom: 8),
@@ -58,21 +66,14 @@ class _RS3ScreenState extends State<RS3Screen> {
               ),
               Gaps.verticalGapOf(20),
               TitleActionChild(
-                title: 'Year of Birth',
+                title: 'Birthday',
                 titlePadding: EdgeInsets.only(bottom: 8),
                 child: CupertinoDatePickerField(
-                  initialDate: selectedYear,
+                  initialDate: selectedDate,
                   onDateChanged: onYearSelected,
-                  showMonth: false,
+                  maxYear: DateTime.now().year,
+                  showMonth: true,
                   showDay: false,
-                  validator: (date) {
-                    final now = DateTime.now();
-                    final minYear = now.year - 18;
-                    if (date.year > minYear) {
-                      return 'Parent must be at least 18 years old.';
-                    }
-                    return null;
-                  },
                 ),
               ),
               Gaps.verticalGapOf(5),
@@ -91,11 +92,10 @@ class _RS3ScreenState extends State<RS3Screen> {
       label: 'Next',
       onTap: () {
         if (_formKey.currentState!.validate()) {
-          // Save fullName and yearOfBirth to AuthState
           final authState = context.read<AuthState>();
-          authState.setFullName(nameController.text.trim());
-          authState.setYearOfBirth(selectedYear.year.toInt());
-          Utility.navigateMaterialRoute(context, RS4Screen());
+          authState.setChildName(nameController.text.trim());
+          authState.setChildDob(selectedDate.toString());
+          Utility.navigateMaterialRoute(context, ChildRS1Screen());
         }
       },
       backgroundColor: AppColors.kButtonGreen,

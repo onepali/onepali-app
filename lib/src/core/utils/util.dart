@@ -8,3 +8,6 @@ export 'misc_utility.dart';
 
 /// [Validator] Utility
 export 'validator.dart';
+
+/// [Media] Utility
+export 'media_utility.dart';
