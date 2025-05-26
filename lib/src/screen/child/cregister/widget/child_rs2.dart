@@ -30,7 +30,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Would you like to create a daily screen time limit for Dev?',
+              'Would you like to create a daily screen time limit for ${authState.childName}?',
               style: AppStyles.text20PxSemiBold,
             ),
             Gaps.verticalGapOf(24),

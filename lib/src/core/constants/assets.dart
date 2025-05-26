@@ -49,6 +49,7 @@ class Assets {
   // Miscellaneous
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
+  static String logout = 'logout'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
