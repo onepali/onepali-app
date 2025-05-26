@@ -20,3 +20,6 @@ export 'user/user_provider.dart';
 /// [Lesson] Provider
 export 'lesson/lesson_provider.dart';
 export 'lesson/laudio_provider.dart';
+
+/// [Child] Provider
+export 'child/cuser_provider.dart';

@@ -16,3 +16,6 @@ export 'response_model.dart';
 
 /// [Home] Model
 export 'home/home_model.dart';
+
+/// [Child] Model
+export 'child/cuser_model.dart';

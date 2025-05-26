@@ -72,7 +72,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
   }
 
   Widget _buildNextButton(BuildContext context) {
-    final childProvider = context.read<ChildAuthProvider>();
+    final childProvider = context.watch<ChildAuthProvider>();
 
     return CustomMaterialButton(
       label: 'Next',

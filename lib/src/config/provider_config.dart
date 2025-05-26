@@ -26,6 +26,9 @@ class ProviderConfig {
   static final LessonProvider lessonProvider = LessonProvider();
   static final LessonAudioProvider lessonAudioProvider = LessonAudioProvider();
 
+  /// [Child] Provider
+  static final ChildUserProvider childUserProvider = ChildUserProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -44,6 +47,9 @@ class ProviderConfig {
     ChangeNotifierProvider<LessonAudioProvider>(
       create: (_) => lessonAudioProvider,
     ),
+
+    /// [Child] Providers -------------------------------- *//
+    ChangeNotifierProvider<ChildUserProvider>(create: (_) => childUserProvider),
   ];
 
   /// Dispose all providers
@@ -58,6 +64,8 @@ class ProviderConfig {
     userProvider.dispose();
     lessonProvider.dispose();
     lessonAudioProvider.dispose();
+
+    childUserProvider.dispose();
   }
 
   /// Singleton factory
