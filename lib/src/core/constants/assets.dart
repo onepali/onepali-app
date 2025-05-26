@@ -60,6 +60,12 @@ class Assets {
   static String songsRhymes = 'song'.icon;
   static String lessons = 'lesson'.icon;
 
+  /// [Home] --> [Drawer] assets
+  static String profile = 'profile'.icon;
+  static String setting = 'setting'.icon;
+  static String parentZone = 'parent'.icon;
+  static String download = 'download'.icon;
+
   /// [Json] assets
   static String user = 'user'.json;
   static String lessonJson = 'lesson'.json;

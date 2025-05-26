@@ -10,6 +10,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +40,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
       child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(title: 'Dashboard'),
+          key: _scaffoldKey,
+          appBar: CustomAppBar(
+            title: 'Dashboard',
+            leading: IconButton(
+              icon: const Icon(Icons.menu, color: AppColors.kBlack),
+              onPressed:
+                  () => Utility.navigateMaterialRoute(
+                    context,
+                    DrawerScreen(data: childProvider.childUser),
+                  ),
+            ),
+          ),
+
           body:
               isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -52,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${userInfo.fullName ?? ''}',
+                              '${userInfo.fullName}',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],

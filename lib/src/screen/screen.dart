@@ -29,6 +29,14 @@ export 'user/user_screen.dart';
 // Language Screen
 export 'language/language_screen.dart';
 
+/// [Home] Screen
+export 'home/home_screen.dart';
+export 'home/home_card.dart';
+
+/// [Home] --> [Drawer]
+export 'home/drawer/drawer_screen.dart';
+export 'home/drawer/drawer_card.dart';
+
 //* ------------------------------------ Global Child Screen Export ------------------------------------ *//
 
 /// [Child] --> [Register]
