@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -11,30 +10,27 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  Map<String, dynamic>? userInfo;
-
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
-  }
-
-  Future<void> _loadUserInfo() async {
-    final sharedPref = SharedPreferencesService();
-    final userInfoJson = await sharedPref.getStringPref(AppConstants.userInfo);
-    if (userInfoJson != null) {
-      setState(() {
-        userInfo = jsonDecode(userInfoJson);
-      });
-      Misc.onLayoutRendered(() {
-        context.read<ChildUserProvider>().fetchChildUser();
-      });
-    }
+    Misc.onLayoutRendered(() {
+      context.read<UserProvider>().fetchOwnProfile();
+      context.read<ChildUserProvider>().fetchChildUser();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final childProvider = context.watch<ChildUserProvider>();
+    final childProvider = context.read<ChildUserProvider>();
+    // Watch the UserProvider to get updates
+    final userProvider = context.watch<UserProvider>();
+    final UserModel? userInfo = userProvider.user;
+
+    final bool isLoading = userProvider.status == DataFetchStatus.loading;
+    final bool hasData = userInfo != null;
+
+    logger.d('DashboardScreen: hasData: $hasData, isLoading: $isLoading');
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (index, value) {
@@ -44,24 +40,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Scaffold(
           appBar: CustomAppBar(title: 'Dashboard'),
           body:
-              userInfo == null
+              isLoading
                   ? const Center(child: CircularProgressIndicator())
+                  : !hasData
+                  ? const Center(child: Text('Failed to load user data'))
                   : Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 32,
-                          backgroundImage: NetworkImage(
-                            userInfo!["user_dp"] ?? '',
-                          ),
-                        ),
-                        const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${userInfo!["email"] ?? ''}',
+                              '${userInfo.fullName ?? ''}',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -70,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           label: 'Logout',
                           onTap: () {
                             AuthProviderType type = AuthProviderType.email;
-                            final loginType = userInfo!["login_type"];
+                            final loginType = userInfo.authProvider;
                             if (loginType == AuthProviderType.google.name) {
                               type = AuthProviderType.google;
                             } else if (loginType ==

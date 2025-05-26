@@ -28,6 +28,7 @@ class UserProvider extends ChangeNotifier {
               .get();
       if (doc.exists) {
         _user = UserModel.fromJson(doc.data()!);
+        logger.d('User fetched: ${_user?.toJson()}');
         _status = DataFetchStatus.success;
       } else {
         _user = null;

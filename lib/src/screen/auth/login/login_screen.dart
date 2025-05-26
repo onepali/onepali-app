@@ -115,7 +115,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () async {
                         final googleAuthProvider =
                             context.read<GoogleAuthProvider>();
-                        await googleAuthProvider.signInWithGoogle(context);
+                        await googleAuthProvider.signInWithGoogle(
+                          context,
+                          isLogin: true,
+                        );
                       },
                     ),
                     Gaps.horizontalGapOf(20),

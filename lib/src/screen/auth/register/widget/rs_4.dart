@@ -96,7 +96,10 @@ class _RS4ScreenState extends State<RS4Screen> {
                       onTap: () async {
                         final googleAuthProvider =
                             context.read<GoogleAuthProvider>();
-                        await googleAuthProvider.signInWithGoogle(context);
+                        await googleAuthProvider.signInWithGoogle(
+                          context,
+                          isLogin: false,
+                        );
                       },
                     ),
                 Gaps.verticalGapOf(15),
