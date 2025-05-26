@@ -9,12 +9,12 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-// Look for key.properties inside android/app directory
-val keystorePropertiesFile = file("android/app/key.properties")
+// Look for key.properties inside android directory (not app)
+val keystorePropertiesFile = file("android/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 } else {
-    throw GradleException("key.properties file not found at android/app/key.properties")
+    throw GradleException("key.properties file not found at android/key.properties")
 }
 
 val localProperties = Properties()
