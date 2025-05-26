@@ -9,9 +9,12 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("key.properties")
+// Look for key.properties inside android/app directory
+val keystorePropertiesFile = file("android/app/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+} else {
+    throw GradleException("key.properties file not found at android/app/key.properties")
 }
 
 val localProperties = Properties()
@@ -53,7 +56,7 @@ android {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as? String ?: ""
             keyPassword = keystoreProperties["keyPassword"] as? String ?: ""
-            storeFile = keystoreProperties["storeFile"]?.let { rootProject.file(it) }
+            storeFile = keystoreProperties["storeFile"]?.let { file("android/app/$it") }
             storePassword = keystoreProperties["storePassword"] as? String ?: ""
         }
     }
