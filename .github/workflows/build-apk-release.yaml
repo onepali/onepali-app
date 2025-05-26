@@ -22,6 +22,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create .env file if missing
+        run: |
+          if [ ! -f .env ]; then
+            echo "# Empty .env file created by CI" > .env
+          fi
+
       - name: Decode keystore and create key.properties
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
