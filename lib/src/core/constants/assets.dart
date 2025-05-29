@@ -45,6 +45,8 @@ class Assets {
   static String google = 'google'.icon;
   static String blog = 'blog'.icon;
   static String facebook = 'facebook'.icon;
+  static String search = 'search'.icon;
+  static String reward = 'reward'.icon;
 
   // Miscellaneous
   static String successSvg = 'success'.svg;

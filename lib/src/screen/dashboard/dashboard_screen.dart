@@ -41,96 +41,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: SafeArea(
         child: Scaffold(
           key: _scaffoldKey,
-          appBar: CustomAppBar(
-            title: 'Dashboard',
-            leading: IconButton(
-              icon: const Icon(Icons.menu, color: AppColors.kBlack),
-              onPressed:
-                  () => Utility.navigateMaterialRoute(
-                    context,
-                    DrawerScreen(data: childProvider.childUser),
-                  ),
-            ),
+          appBar: UserAppBar(
+            name: userInfo?.fullName ?? 'User',
+            profileImage: Assets.avatar1,
+            progressLevel: 0,
+            totalStars: 0,
+            onTabSelected: (tab) {},
+            childData: childProvider.childUser,
           ),
 
-          body:
-              isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : !hasData
-                  ? const Center(child: Text('Failed to load user data'))
-                  : Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${userInfo.fullName}',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                        CustomMaterialButton(
-                          label: 'Logout',
-                          onTap: () {
-                            AuthProviderType type = AuthProviderType.email;
-                            final loginType = userInfo.authProvider;
-                            if (loginType == AuthProviderType.google.name) {
-                              type = AuthProviderType.google;
-                            } else if (loginType ==
-                                AuthProviderType.facebook.name) {
-                              type = AuthProviderType.facebook;
-                            }
-                            Utility.authWiseLogout(context, type);
-                            Utility.navigate(context, AppRoutes.loginScreen);
-                          },
-                          width: 100,
-                          height: 40,
-                        ),
-                        const SizedBox(height: 16),
-                        CustomTextButton(
-                          text: 'Create Child',
-                          onPressed: () {
-                            Utility.navigateMaterialRoute(
-                              context,
-                              ChildRegisterScreen(),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          'Children:',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        if (childProvider.childUser.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text('No children found.'),
-                          )
-                        else
-                          Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: childProvider.childUser.length,
-                              itemBuilder: (context, index) {
-                                final child = childProvider.childUser[index];
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                      child.avatarUrl,
-                                    ),
-                                  ),
-                                  title: Text(child.fullName),
-                                  subtitle: Text('DOB: ${child.dob}'),
-                                );
-                              },
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                buildSongCard(),
+                CustomMaterialButton(
+                  label: 'Logout',
+                  onTap: () {
+                    AuthProviderType type = AuthProviderType.email;
+                    final loginType = userInfo?.authProvider;
+                    if (loginType == AuthProviderType.google.name) {
+                      type = AuthProviderType.google;
+                    } else if (loginType == AuthProviderType.facebook.name) {
+                      type = AuthProviderType.facebook;
+                    }
+                    Utility.authWiseLogout(context, type);
+                    Utility.navigate(context, AppRoutes.loginScreen);
+                  },
+                  width: 100,
+                  height: 40,
+                ),
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+
+  buildSongCard() {
+    return TitleActionChild(
+      title: 'Songs',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.45,
+        child: SongScreen(),
       ),
     );
   }

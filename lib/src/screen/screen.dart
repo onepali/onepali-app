@@ -44,3 +44,7 @@ export 'child/cregister/cregister_screen.dart';
 export 'child/cregister/widget/child_rs1.dart';
 export 'child/cregister/widget/child_rs2.dart';
 export 'child/cregister/widget/child_rs3.dart';
+
+/// [Song] Screen
+export 'song/song_screen.dart';
+export 'song/song_card.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/src.dart';
 
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -7,6 +8,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int progressLevel;
   final int totalStars;
   final Function(String) onTabSelected;
+  final List<ChildUserModel> childData;
   final bool isMobile;
 
   const UserAppBar({
@@ -16,89 +18,47 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.progressLevel,
     required this.totalStars,
     required this.onTabSelected,
+    required this.childData,
     this.isMobile = true,
   });
 
   @override
   Widget build(BuildContext context) {
     int selectedIndex = 0;
-    return Container(
-      height: preferredSize.height,
-      color: AppColors.kWhite,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return AppBar(
+      backgroundColor: AppColors.kWhite,
+      elevation: 0,
+      leading: Row(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  customInkwell(
-                    onTap: () {
-                      Utility.navigateMaterialRoute(
-                        context,
-                        ChildRegisterScreen(),
-                      );
-                    },
-                    child: CustomImage(
-                      Assets.userAvatar,
-                      width: 40,
-                      height: 40,
-                      imageType: CustomImageType.local,
-                      boxFit: BoxFit.cover,
-                      circular: true,
-                    ),
-                  ),
-                  Gaps.horizontalGapOf(10),
-                  // Text(
-                  //   name,
-                  //   style: const TextStyle(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w600,
-                  //   ),
-                  // ),
-                ],
-              ),
-              // Row(
-              //   children: [
-              //     _buildProgressBar(),
-              //     Container(
-              //       padding: const EdgeInsets.all(6),
-              //       decoration: const BoxDecoration(
-              //         color: Colors.amber,
-              //         shape: BoxShape.circle,
-              //       ),
-              //       child: const Icon(
-              //         Icons.star,
-              //         color: Colors.white,
-              //         size: 10,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-            ],
+          IconButton(
+            icon: CustomImage(
+              Assets.avatar1,
+              height: isMobile ? 50 : 65,
+              width: isMobile ? 50 : 65,
+              borderRadius: 60,
+            ),
+            onPressed:
+                () => Utility.navigateMaterialRoute(
+                  context,
+                  DrawerScreen(data: childData),
+                ),
           ),
-
-          // Dynamic Tabs
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            spacing: 16,
-            children:
-                homeServices.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final service = entry.value;
-                  return _buildTab(
-                    service.icon ?? "",
-                    service.name ?? '',
-                    Colors.blue,
-                    () => onTabSelected(service.route),
-                    index,
-                    selectedIndex,
-                  );
-                }).toList(),
+          Gaps.horizontalGapOf(16),
+          IconButton(
+            onPressed: () => {},
+            icon: SvgHelper.fromSource(
+              path: Assets.reward,
+              height: 28,
+              width: 28,
+            ),
+          ),
+          IconButton(
+            onPressed: () => {},
+            icon: SvgHelper.fromSource(
+              path: Assets.search,
+              height: 28,
+              width: 28,
+            ),
           ),
         ],
       ),
