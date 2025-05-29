@@ -105,7 +105,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
         );
       } else {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

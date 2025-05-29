@@ -29,6 +29,9 @@ class ProviderConfig {
   /// [Child] Provider
   static final ChildUserProvider childUserProvider = ChildUserProvider();
 
+  /// [Song] Provider
+  static final SongProvider songProvider = SongProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -50,6 +53,8 @@ class ProviderConfig {
 
     /// [Child] Providers -------------------------------- *//
     ChangeNotifierProvider<ChildUserProvider>(create: (_) => childUserProvider),
+
+    ChangeNotifierProvider<SongProvider>(create: (_) => songProvider),
   ];
 
   /// Dispose all providers
