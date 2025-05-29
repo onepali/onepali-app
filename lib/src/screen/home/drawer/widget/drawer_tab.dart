@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:onepali/src/core/model/system/setting_model.dart';
 
-class DrawerScreen extends StatefulWidget {
+class TabDrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
-  const DrawerScreen({super.key, required this.data});
+  const TabDrawerScreen({super.key, required this.data});
 
   @override
-  State<DrawerScreen> createState() => _DrawerScreenState();
+  State<TabDrawerScreen> createState() => _TabDrawerScreenState();
 }
 
-class _DrawerScreenState extends State<DrawerScreen> {
+class _TabDrawerScreenState extends State<TabDrawerScreen> {
   int _selectedChildIndex = -1;
 
   @override
@@ -24,14 +24,37 @@ class _DrawerScreenState extends State<DrawerScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-              child: Column(children: [_buildChildProfilesGrid()]),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+            child: Column(
+              children: [
+                Gaps.verticalGapOf(10),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.kButtonGrey,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      child: const Icon(
+                        Icons.close,
+                        color: AppColors.kPitchBlack,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                _buildChildProfilesGrid(),
+              ],
             ),
           ),
 
@@ -46,7 +69,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
     final items = List<Widget>.generate(widget.data.length + 1, (index) {
       if (index < widget.data.length) {
         final child = widget.data[index];
-        return Row(
+        return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
@@ -56,8 +79,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 });
               },
               child: Container(
-                height: 55,
-                width: 55,
+                height: 60,
+                width: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -68,41 +91,37 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     width: 2,
                   ),
                 ),
-                child: CustomImage(child.avatarUrl, height: 55, width: 55),
+                child: CustomImage(child.avatarUrl, height: 60, width: 60),
               ),
             ),
-            Gaps.horizontalGapOf(15),
+            Gaps.verticalGapOf(8),
             Text(
               child.fullName.split(' ')[0],
-              style: AppStyles.text20PxMedium.copyWith(color: AppColors.kWhite),
+              style: AppStyles.text14PxMedium.copyWith(color: AppColors.kWhite),
             ),
-            Gaps.horizontalGapOf(5),
+            Gaps.verticalGapOf(5),
             const Icon(Icons.local_police, size: 22, color: AppColors.kYellow),
           ],
         );
       } else {
         return GestureDetector(
-          onTap: () {
-            Utility.navigateMaterialRoute(context, ChildRegisterScreen());
-          },
-          child: Row(
+          onTap: () {},
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 50,
-                width: 50,
+                height: 60,
+                width: 60,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade600,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.add, color: AppColors.kWhite, size: 36),
               ),
-              Gaps.horizontalGapOf(15),
+              Gaps.verticalGapOf(8),
               Text(
                 'Add child',
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: AppStyles.text20PxMedium.copyWith(
+                style: AppStyles.text14PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
@@ -114,16 +133,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-      child: ListView.builder(
+      child: GridView.count(
+        crossAxisCount: 4,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: items[index],
-          );
-        },
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        childAspectRatio: 0.6,
+        children: items,
       ),
     );
   }
@@ -136,25 +153,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                margin: const EdgeInsets.only(right: 4, top: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.kButtonGrey,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.close,
-                  color: AppColors.kPitchBlack,
-                  size: 24,
-                ),
-              ),
-            ),
-          ),
           for (int i = 0; i < drawerSettings.length; i++)
             ListTile(
               contentPadding: const EdgeInsets.only(bottom: 8.0),
@@ -166,14 +164,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: SvgHelper.fromSource(
                   path: drawerSettings[i].icon,
-                  height: 40,
-                  width: 40,
+                  height: 28,
+                  width: 28,
                 ),
               ),
               dense: true,
               title: Text(
                 drawerSettings[i].name,
-                style: AppStyles.text18PxMedium.copyWith(
+                style: AppStyles.text16PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),

@@ -36,6 +36,7 @@ export 'home/home_card.dart';
 /// [Home] --> [Drawer]
 export 'home/drawer/drawer_screen.dart';
 export 'home/drawer/drawer_card.dart';
+export 'home/drawer/widget/drawer_tab.dart';
 
 //* ------------------------------------ Global Child Screen Export ------------------------------------ *//
 

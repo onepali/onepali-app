@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/src.dart';
 
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -24,48 +23,79 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    int selectedIndex = 0;
-    return AppBar(
-      backgroundColor: AppColors.kWhite,
-      elevation: 0,
-      leading: Row(
+    int selectedIndex = _selectedTabIndex;
+    return Container(
+      height: isMobile ? 90 : 120,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(color: AppColors.kWhite),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          IconButton(
-            icon: CustomImage(
-              Assets.avatar1,
-              height: isMobile ? 50 : 65,
-              width: isMobile ? 50 : 65,
-              borderRadius: 60,
-            ),
-            onPressed:
-                () => Utility.navigateMaterialRoute(
-                  context,
-                  DrawerScreen(data: childData),
+          Row(
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed:
+                    () => Utility.navigateMaterialRoute(
+                      context,
+                      DrawerScreen(data: childData),
+                    ),
+                icon: CustomImage(
+                  Assets.avatar1,
+
+                  height: 50,
+                  width: 50,
+                  imageType: CustomImageType.local,
+                  isProfileImage: true,
+                  borderRadius: 60,
                 ),
+              ),
+              IconButton(
+                onPressed:
+                    () => Utility.navigateMaterialRoute(
+                      context,
+                      DrawerScreen(data: childData),
+                    ),
+                icon: SvgHelper.fromSource(
+                  path: Assets.reward,
+
+                  height: 45,
+                  width: 45,
+                ),
+              ),
+            ],
           ),
-          Gaps.horizontalGapOf(16),
-          IconButton(
-            onPressed: () => {},
-            icon: SvgHelper.fromSource(
-              path: Assets.reward,
-              height: 28,
-              width: 28,
-            ),
-          ),
-          IconButton(
-            onPressed: () => {},
-            icon: SvgHelper.fromSource(
-              path: Assets.search,
-              height: 28,
-              width: 28,
-            ),
+          Row(
+            children: [
+              for (int i = 0; i < homeServices.length; i++)
+                _buildTab(
+                  homeServices[i].icon ?? '',
+                  homeServices[i].name ?? '',
+                  selectedIndex == i
+                      ? AppColors.kSecondaryColor
+                      : AppColors.kGrey,
+                  () => onTabSelected(homeServices[i].name ?? ''),
+                  i,
+                  selectedIndex,
+                ),
+              const SizedBox(width: 10),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProgressBar() {
+  static int _selectedTabIndex = 0;
+
+  static void setTabIndex(int index) {
+    _selectedTabIndex = index;
+  }
+
+  Widget buildProgressBar() {
     const totalSteps = 5;
     return Row(
       children: List.generate(totalSteps, (index) {

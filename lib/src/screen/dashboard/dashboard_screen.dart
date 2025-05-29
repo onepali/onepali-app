@@ -11,6 +11,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int _selectedTabIndex = 0;
 
   @override
   void initState() {
@@ -46,14 +47,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
             profileImage: Assets.avatar1,
             progressLevel: 0,
             totalStars: 0,
-            onTabSelected: (tab) {},
+            onTabSelected: (tab) {
+              final idx = homeServices.indexWhere((e) => e.name == tab);
+              if (idx != -1) {
+                setState(() {
+                  _selectedTabIndex = idx;
+                });
+                UserAppBar.setTabIndex(idx);
+              }
+            },
             childData: childProvider.childUser,
           ),
 
           body: SingleChildScrollView(
             child: Column(
               children: [
-                buildSongCard(),
+                if (_selectedTabIndex == 0)
+                  buildLessons()
+                else if (_selectedTabIndex == 1)
+                  buildSongCard()
+                else if (_selectedTabIndex == 2)
+                  buildStories(),
                 CustomMaterialButton(
                   label: 'Logout',
                   onTap: () {
@@ -78,6 +92,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  buildLessons() {
+    return TitleActionChild(
+      title: 'Lessons',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.45,
+        child: Center(child: Text('Lessons Content Here')),
+      ),
+    );
+  }
+
   buildSongCard() {
     return TitleActionChild(
       title: 'Songs',
@@ -86,6 +112,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.45,
         child: SongScreen(),
+      ),
+    );
+  }
+
+  buildStories() {
+    return TitleActionChild(
+      title: 'Stories',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.45,
+        child: Center(child: Text('Stories Content Here')),
       ),
     );
   }
