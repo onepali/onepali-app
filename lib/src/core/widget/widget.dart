@@ -70,3 +70,6 @@ export 'custom_inkwell.dart';
 
 /// Double [Tap] Trigger
 export 'double_tap_trigger.dart';
+
+/// Custom [Youtube] Video Widget
+export 'youtube_video_widget.dart';

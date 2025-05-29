@@ -65,6 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           body: SingleChildScrollView(
             child: Column(
               children: [
+                Gaps.verticalGapOf(10),
                 if (_selectedTabIndex == 0)
                   buildLessons()
                 else if (_selectedTabIndex == 1)
