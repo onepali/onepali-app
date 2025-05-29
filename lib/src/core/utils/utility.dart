@@ -67,6 +67,17 @@ class Utility {
     }
   }
 
+  static AuthProviderType getAuthTypeFromUserInfo(userInfo) {
+    AuthProviderType type = AuthProviderType.email;
+    final loginType = userInfo;
+    if (loginType == AuthProviderType.google.name) {
+      type = AuthProviderType.google;
+    } else if (loginType == AuthProviderType.facebook.name) {
+      type = AuthProviderType.facebook;
+    }
+    return type;
+  }
+
   static Future<void> authWiseLogout(
     BuildContext context,
     AuthProviderType type,

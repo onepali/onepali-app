@@ -21,20 +21,27 @@ List<SettingModel> drawerSettings = [
     name: 'Parent Zone',
     desciption: 'Manage your child\'s profile and settings',
     icon: Assets.parentZone,
-    route: '/profile',
+    route: AppRoutes.comingSoon,
   ),
 
   SettingModel(
     name: 'Printables',
     desciption: 'Access and manage printable resources',
     icon: Assets.download,
-    route: '/settings',
+    route: AppRoutes.comingSoon,
   ),
 
   SettingModel(
     name: 'Settings',
     desciption: 'Configure app settings and preferences',
     icon: Assets.setting,
-    route: '/settings',
+    route: AppRoutes.comingSoon,
+  ),
+
+  SettingModel(
+    name: 'Logout',
+    desciption: 'Log out of your account',
+    icon: Assets.logout,
+    route: AppRoutes.logout,
   ),
 ];

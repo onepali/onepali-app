@@ -26,6 +26,7 @@ class Assets {
   static String leoCharacterLottie = 'leo_character'.lottie;
   static String bgTransition = 'bg_transition'.gif;
   static String successLottie = 'success'.lottie;
+  static String logoutLottie = 'logout'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -47,11 +48,12 @@ class Assets {
   static String facebook = 'facebook'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
+  static String logout = 'logout'.icon;
 
   // Miscellaneous
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
-  static String logout = 'logout'.svg;
+  static String logoutSvg = 'logout'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;

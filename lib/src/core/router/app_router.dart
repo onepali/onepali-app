@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 
 class AppRoutes {
-  static const String comingSoon = '/coming-soon';
+  static const String comingSoon = '/coming';
+  static const String errorScreen = '/error';
+  static const String noInternetScreen = '/no-internet';
+  static const String notFoundScreen = '/not-found';
+  static const String logout = '/logout';
 
   /// [Splash] & [OnBoarding] Routes
   static const String splashScreen = '/splash';

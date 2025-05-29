@@ -9,6 +9,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
   final bool isMobile;
+  final AuthProviderType? authType ;
 
   const UserAppBar({
     super.key,
@@ -19,6 +20,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onTabSelected,
     required this.childData,
     this.isMobile = true,
+    this.authType,
   });
 
   @override
@@ -38,11 +40,12 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
-                onPressed:
-                    () => Utility.navigateMaterialRoute(
-                      context,
-                      DrawerScreen(data: childData),
-                    ),
+                onPressed: () {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    DrawerScreen(data: childData, authProviderType: authType),
+                  );
+                },
                 icon: CustomImage(
                   Assets.avatar1,
 

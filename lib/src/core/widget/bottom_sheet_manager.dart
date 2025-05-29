@@ -45,19 +45,20 @@ class BottomSheetManager {
                   Text(title, style: AppStyles.text16PxSemiBold),
                   Gaps.verticalGapOf(5),
                   Divider(color: AppColors.kPitchBlack.withValues(alpha: 0.07)),
-                  Gaps.verticalGapOf(10),
-                  SvgHelper.fromSource(
-                    path: image ?? Assets.logout,
-                    height: 150,
-                    width: 150,
+                  LottieHelper.fromSource(
+                    path: image ?? Assets.logoutLottie,
+
+                    height: 120,
+                    width: 120,
                   ),
                   Gaps.verticalGapOf(10),
-                  Text(
-                    subTitle,
-                    style: AppStyles.text12PxMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  Gaps.verticalGapOf(10),
+                  if (subTitle.isNotEmpty)
+                    Text(
+                      subTitle,
+                      style: AppStyles.text12PxMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  if (subTitle.isNotEmpty) Gaps.verticalGapOf(10),
                   action ?? SizedBox.shrink(),
                   Gaps.verticalGapOf(10),
                 ],

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/bottom_sheet_manager.dart';
 import 'package:onepali/src/src.dart';
 import 'package:onepali/src/core/model/system/setting_model.dart';
 
 class DrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
-  const DrawerScreen({super.key, required this.data});
+  final AuthProviderType? authProviderType;
+  const DrawerScreen({super.key, required this.data, this.authProviderType});
 
   @override
   State<DrawerScreen> createState() => _DrawerScreenState();
@@ -159,6 +161,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ListTile(
               contentPadding: const EdgeInsets.only(bottom: 8.0),
               onTap: () {
+                if (drawerSettings[i].route == AppRoutes.logout) {
+                  logoutBottomSheet(context);
+                } else if (drawerSettings[i].route == AppRoutes.comingSoon) {
+                  showCustomToaster('This feature is coming soon.');
+                  return;
+                }
                 Utility.navigate(context, drawerSettings[i].route);
               },
 
@@ -183,6 +191,43 @@ class _DrawerScreenState extends State<DrawerScreen> {
             "${GlobalConfig.appVersion} • All rights reserved.",
             style: AppStyles.text12PxRegular.copyWith(color: AppColors.kWhite),
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  logoutBottomSheet(context) {
+    return BottomSheetManager.bottomModelSheet(
+      title: 'Are you sure? Logout',
+      action: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Expanded(
+            child: CustomMaterialButton(
+              label: 'Cancel',
+              elevation: 0,
+              height: 40,
+              fillButton: false,
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          Gaps.horizontalGapOf(20),
+          Expanded(
+            child: CustomMaterialButton(
+              label: 'Yes, Logout',
+              height: 40,
+              elevation: 0,
+              onTap: () {
+                Utility.authWiseLogout(
+                  context,
+                  widget.authProviderType ?? AuthProviderType.email,
+                );
+                Utility.navigate(context, AppRoutes.loginScreen);
+              },
+            ),
           ),
         ],
       ),

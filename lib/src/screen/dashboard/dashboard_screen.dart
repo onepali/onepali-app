@@ -57,6 +57,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               }
             },
             childData: childProvider.childUser,
+            authType: Utility.getAuthTypeFromUserInfo(
+              userInfo?.authProvider ?? AuthProviderType.email.name,
+            ),
           ),
 
           body: SingleChildScrollView(
@@ -68,22 +71,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   buildSongCard()
                 else if (_selectedTabIndex == 2)
                   buildStories(),
-                CustomMaterialButton(
-                  label: 'Logout',
-                  onTap: () {
-                    AuthProviderType type = AuthProviderType.email;
-                    final loginType = userInfo?.authProvider;
-                    if (loginType == AuthProviderType.google.name) {
-                      type = AuthProviderType.google;
-                    } else if (loginType == AuthProviderType.facebook.name) {
-                      type = AuthProviderType.facebook;
-                    }
-                    Utility.authWiseLogout(context, type);
-                    Utility.navigate(context, AppRoutes.loginScreen);
-                  },
-                  width: 100,
-                  height: 40,
-                ),
               ],
             ),
           ),
