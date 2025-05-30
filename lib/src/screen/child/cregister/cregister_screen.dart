@@ -45,42 +45,44 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Personalize your\nChild Account',
-                style: AppStyles.text20PxSemiBold,
-              ),
-              SizedBox(height: 24),
-              TitleActionChild(
-                titlePadding: EdgeInsets.only(bottom: 8),
-                title: 'Name',
-                child: CustomTextField(
-                  hintText: 'Enter your Full Name',
-                  keyboardType: TextInputType.name,
-                  controller: nameController,
-                  prefixIcon: Icon(Icons.person_outline_rounded),
-                  validation: (value) => Validator.empty(value ?? ""),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Personalize your\nChild Account',
+                  style: AppStyles.text20PxSemiBold,
                 ),
-              ),
-              Gaps.verticalGapOf(20),
-              TitleActionChild(
-                title: 'Birthday',
-                titlePadding: EdgeInsets.only(bottom: 8),
-                child: CupertinoDatePickerField(
-                  initialDate: selectedDate,
-                  onDateChanged: onYearSelected,
-                  maxYear: DateTime.now().year,
-                  showMonth: true,
-                  showDay: false,
+                SizedBox(height: 24),
+                TitleActionChild(
+                  titlePadding: EdgeInsets.only(bottom: 8),
+                  title: 'Name',
+                  child: CustomTextField(
+                    hintText: 'Enter your Full Name',
+                    keyboardType: TextInputType.name,
+                    controller: nameController,
+                    prefixIcon: Icon(Icons.person_outline_rounded),
+                    validation: (value) => Validator.empty(value ?? ""),
+                  ),
                 ),
-              ),
-              // Gaps.verticalGapOf(5),
-              // InfoWidget.info('It will be the password for the parent zone.'),
-              Spacer(),
-              _buildNextButton(context),
-            ],
+                Gaps.verticalGapOf(20),
+                TitleActionChild(
+                  title: 'Birthday',
+                  titlePadding: EdgeInsets.only(bottom: 8),
+                  child: CupertinoDatePickerField(
+                    initialDate: selectedDate,
+                    onDateChanged: onYearSelected,
+                    maxYear: DateTime.now().year,
+                    showMonth: true,
+                    showDay: false,
+                  ),
+                ),
+                // Gaps.verticalGapOf(5),
+                // InfoWidget.info('It will be the password for the parent zone.'),
+                SizedBox(height: 20),
+                _buildNextButton(context),
+              ],
+            ),
           ),
         ),
       ),

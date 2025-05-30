@@ -225,7 +225,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   context,
                   widget.authProviderType ?? AuthProviderType.email,
                 );
-                Utility.navigate(context, AppRoutes.loginScreen);
               },
             ),
           ),

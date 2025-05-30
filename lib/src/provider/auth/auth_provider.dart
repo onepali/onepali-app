@@ -417,6 +417,6 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     if (!context.mounted) return;
     showCustomToaster("Logged out");
-    Utility.navigate(context, AppRoutes.splashScreen);
+    Utility.navigate(context, AppRoutes.loginScreen);
   }
 }

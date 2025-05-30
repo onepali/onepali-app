@@ -11,6 +11,13 @@ class ChildRS1Screen extends StatefulWidget {
 
 class _ChildRS1ScreenState extends State<ChildRS1Screen> {
   int? _selectedIndex;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,40 +33,46 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
       backgroundColor: AppColors.kWhite,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Let ${authState.childName} choose \nthe character',
-              style: AppStyles.text20PxSemiBold,
-            ),
-            Gaps.verticalGapOf(24),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.2,
-                children: List.generate(AppConstants.avatarList.length, (
-                  index,
-                ) {
-                  return _buildReferralCard(
-                    AppConstants.avatarList[index],
-                    _selectedIndex == index,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                      authState.setChildAvatar(
-                        AppConstants.avatarList[_selectedIndex!],
-                      );
-                    },
-                  );
-                }),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Let ${authState.childName} choose the character',
+                style: AppStyles.text20PxSemiBold,
               ),
-            ),
-            _buildNextButton(context),
-          ],
+              Gaps.verticalGapOf(30),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: GridView.count(
+                  crossAxisCount: 5,
+                  mainAxisSpacing: 16,
+                  controller: _scrollController,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 2.3 / 1.5,
+                  children: List.generate(AppConstants.avatarList.length, (
+                    index,
+                  ) {
+                    return _buildReferralCard(
+                      AppConstants.avatarList[index],
+                      _selectedIndex == index,
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                        authState.setChildAvatar(
+                          AppConstants.avatarList[_selectedIndex!],
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ),
+              _buildNextButton(context),
+            ],
+          ),
         ),
       ),
     );
