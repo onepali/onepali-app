@@ -13,7 +13,6 @@ class AppInitializer {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 
-
     HttpOverrides.global = MyHttpOverrides();
   }
 
@@ -34,9 +33,7 @@ class AppInitializer {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       scrollBehavior: CustomScrollBehavior(),
-      navigatorObservers: [
-        OrientationRouteObserver(),
-      ],
+      navigatorObservers: [OrientationRouteObserver()],
       initialRoute: logged ? AppRoutes.dashboardScreen : AppRoutes.splashScreen,
       routes: AppRoutes.routes,
       theme: ThemeConfig.lightTheme,

@@ -34,7 +34,6 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          controller: _scrollController,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,

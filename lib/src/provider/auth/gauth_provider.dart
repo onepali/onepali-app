@@ -144,7 +144,10 @@ class GoogleAuthProvider with ChangeNotifier {
 
       if (!context.mounted) return;
       showCustomToaster("Signed out successfully.");
-      Utility.navigate(context, AppRoutes.loginScreen);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.onboardingScreen,
+        (Route<dynamic> route) => false,
+      );
     } catch (e) {
       showCustomToaster("Failed to sign out.", isError: true);
     }
