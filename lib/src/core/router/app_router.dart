@@ -16,6 +16,14 @@ class AppRoutes {
   static const String loginScreen = '/login';
   static const String registerScreen = '/register';
 
+  /// [Auth]  --->  [Register] Routes
+  static const String rs1Screen = '/register/step1';
+  static const String rs2Screen = '/register/step2';
+  static const String rs3Screen = '/register/step3';
+  static const String rs4Screen = '/register/step4';
+  static const String rs5Screen = '/register/step5';
+  static const String rs6Screen = '/register/step6';
+
   /// [Dashboard] Routes
   static const String dashboardScreen = '/dashboard';
 
@@ -32,6 +40,13 @@ class AppRoutes {
 
     loginScreen: (context) => const LoginScreen(),
     registerScreen: (context) => const RegisterScreen(),
+
+    rs1Screen: (context) => const RS1Screen(),
+    rs2Screen: (context) => const RS2Screen(),
+    rs3Screen: (context) => const RS3Screen(),
+    rs4Screen: (context) => const RS4Screen(),
+    rs5Screen: (context) => const RS5Screen(),
+    rs6Screen: (context) => const RS6Screen(),
 
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),

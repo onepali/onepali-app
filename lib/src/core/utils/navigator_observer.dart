@@ -8,6 +8,12 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.loginScreen,
     AppRoutes.onboardingScreen,
     AppRoutes.registerScreen,
+    AppRoutes.rs1Screen,
+    AppRoutes.rs2Screen,
+    AppRoutes.rs3Screen,
+    AppRoutes.rs4Screen,
+    AppRoutes.rs5Screen,
+    AppRoutes.rs6Screen,
   ];
 
   void _setOrientation(Route<dynamic>? route) {
