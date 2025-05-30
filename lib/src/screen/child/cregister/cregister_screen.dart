@@ -50,7 +50,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Personalize your\nChild Account',
+                  'Personalize your Child Account',
                   style: AppStyles.text20PxSemiBold,
                 ),
                 SizedBox(height: 24),
