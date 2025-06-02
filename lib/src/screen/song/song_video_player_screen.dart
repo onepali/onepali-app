@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../src.dart';
 
-class SongVideoPlayerScreen extends StatelessWidget {
+class SongVideoPlayerScreen extends StatefulWidget {
   final String youtubeUrl;
   final String? title;
   final String? subtitle;
@@ -11,6 +11,7 @@ class SongVideoPlayerScreen extends StatelessWidget {
   final String? info;
   final String? songId;
   final double? initialPosition;
+  final String? image;
 
   const SongVideoPlayerScreen({
     super.key,
@@ -21,29 +22,67 @@ class SongVideoPlayerScreen extends StatelessWidget {
     this.info,
     this.songId,
     this.initialPosition,
+    this.image,
   });
 
   @override
+  State<SongVideoPlayerScreen> createState() => _SongVideoPlayerScreenState();
+}
+
+class _SongVideoPlayerScreenState extends State<SongVideoPlayerScreen> {
+  double _lastProgress = 0.0;
+  bool _lastCompleted = false;
+
+  void _onProgress(double progress, bool isCompleted) {
+    _lastProgress = progress;
+    _lastCompleted = isCompleted;
+    if (widget.songId != null && widget.songId!.isNotEmpty) {
+      context.read<RcmSongProvider>().saveOrUpdateSongProgress(
+        songId: widget.songId!,
+        progress: progress,
+        isCompleted: isCompleted,
+        title: widget.title ?? '',
+        youtubeLink: widget.youtubeUrl,
+        image: widget.image ?? '',
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    // Save last known progress on exit
+    logger.d(
+      'SongVideoPlayerScreen: Saving progress on exit: songId=${widget.songId}, progress=$_lastProgress, isCompleted=$_lastCompleted',
+    );
+    if (widget.songId != null && widget.songId!.isNotEmpty) {
+      context.read<RcmSongProvider>().saveOrUpdateSongProgress(
+        songId: widget.songId!,
+        progress: _lastProgress,
+        isCompleted: _lastCompleted,
+        title: widget.title ?? '',
+        youtubeLink: widget.youtubeUrl,
+        image: widget.image ?? '',
+      );
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    logger.d(
+      'SongVideoPlayerScreen: Building with songId=${widget.songId}, youtubeUrl=${widget.youtubeUrl}',
+    );
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: YoutubeVideoWidget(
-          youtubeUrl: youtubeUrl,
-          title: title,
-          subtitle: subtitle,
-          isLocked: isLocked,
-          info: info,
-          initialPosition: initialPosition,
-          onProgress: (progress, isCompleted) {
-            if (songId != null && songId!.isNotEmpty) {
-              context.read<RecommendedSongProvider>().saveOrUpdateSongProgress(
-                songId: songId!,
-                progress: progress,
-                isCompleted: isCompleted,
-              );
-            }
-          },
+          youtubeUrl: widget.youtubeUrl,
+          title: widget.title,
+          subtitle: widget.subtitle,
+          isLocked: widget.isLocked,
+          info: widget.info,
+          initialPosition: widget.initialPosition,
+          onProgress: _onProgress,
         ),
       ),
     );

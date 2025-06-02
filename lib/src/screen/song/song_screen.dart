@@ -91,6 +91,9 @@ class _SongScreenState extends State<SongScreen> {
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         final song = songs[index];
+                        logger.d(
+                          'SongScreen: songId: ${song.id}, title: ${song.titleEn}, category: ${song.categoryName}',
+                        );
                         return SongCard(index: index, data: song);
                       },
                     ),

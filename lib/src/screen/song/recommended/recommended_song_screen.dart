@@ -14,14 +14,14 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
   void initState() {
     super.initState();
     Misc.onLayoutRendered(() {
-      context.read<RecommendedSongProvider>().fetchRecommendedSongs();
+      context.read<RcmSongProvider>().fetchRecommendedSongs();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<RecommendedSongProvider>(
+      body: Consumer<RcmSongProvider>(
         builder: (context, provider, child) {
           if (provider.recommendedSongs.isEmpty) {
             return const Center(child: Text('No recommended songs yet.'));
@@ -49,14 +49,14 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                       ? songList.first
                       : SongModel(
                         id: rec.songId,
-                        titleEn: '',
+                        titleEn: rec.title,
                         titleNe: '',
                         youtubeTitleEn: '',
                         youtubeTitleNe: '',
                         ageGroup: '',
                         type: '',
                         language: [],
-                        media: Media(youtubeLink: ''),
+                        media: Media(youtubeLink: rec.youtubeLink),
                         rank: 0,
                         tags: [],
                         categoryName: '',
@@ -85,12 +85,14 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                           borderRadius: BorderRadius.circular(30),
                           backgroundColor: AppColors.transparent,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            rec.isCompleted ? Colors.green : Colors.orange,
+                            (rec.isCompleted == 1)
+                                ? Colors.green
+                                : Colors.orange,
                           ),
                         ),
                       ),
                     ),
-                    if (!rec.isCompleted)
+                    if (rec.isCompleted != 1)
                       Positioned(
                         top: 12,
                         right: 12,

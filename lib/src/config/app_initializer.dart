@@ -16,7 +16,7 @@ class AppInitializer {
     HttpOverrides.global = MyHttpOverrides();
 
     // Initialize RecommendedSongProvider DB
-    await RecommendedSongProvider().initDb();
+    await RcmSongProvider().initDb();
   }
 
   static Future<bool> checkUserAuthentication() async {

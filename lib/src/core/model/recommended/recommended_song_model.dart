@@ -1,62 +1,61 @@
 import 'dart:convert';
 
-class RecommendedSongModel {
-  final int? id;
+RcmSongsModel rcmSongsModelFromJson(String str) =>
+    RcmSongsModel.fromJson(json.decode(str));
+
+String rcmSongsModelToJson(RcmSongsModel data) => json.encode(data.toJson());
+
+class RcmSongsModel {
+  final int id;
   final String songId;
   final double progress;
-  final DateTime lastWatched;
-  final bool isCompleted;
+  final String lastWatched;
+  final int isCompleted;
+  final String title;
+  final String youtubeLink;
+  final String image;
 
-  RecommendedSongModel({
-    this.id,
+  RcmSongsModel({
+    required this.id,
     required this.songId,
     required this.progress,
     required this.lastWatched,
     required this.isCompleted,
+    required this.title,
+    required this.youtubeLink,
+    required this.image,
   });
 
-  factory RecommendedSongModel.fromMap(Map<String, dynamic> map) {
-    return RecommendedSongModel(
-      id: map['id'] as int?,
-      songId: map['songId'] as String,
-      progress: (map['progress'] as num).toDouble(),
-      lastWatched: DateTime.parse(map['lastWatched'] as String),
-      isCompleted: map['isCompleted'] == 1,
-    );
-  }
+  factory RcmSongsModel.fromJson(Map<String, dynamic> json) => RcmSongsModel(
+    id: json["id"] ?? 0,
+    songId: json["songId"] ?? "",
+    progress: json["progress"]?.toDouble() ?? 0.0,
+    lastWatched: json["lastWatched"] ?? "",
+    isCompleted: json["isCompleted"] ?? 0,
+    title: json["title"] ?? "",
+    youtubeLink: json["youtubeLink"] ?? "",
+    image: json["image"] ?? "",
+  );
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'songId': songId,
-      'progress': progress,
-      'lastWatched': lastWatched.toIso8601String(),
-      'isCompleted': isCompleted ? 1 : 0,
-    };
-  }
-
-  factory RecommendedSongModel.fromJson(Map<String, dynamic> json) =>
-      RecommendedSongModel(
-        id: json["id"] as int?,
-        songId: json["songId"] as String,
-        progress: (json["progress"] as num).toDouble(),
-        lastWatched: DateTime.parse(json["lastWatched"] as String),
-        isCompleted: json["isCompleted"] == 1,
-      );
+  factory RcmSongsModel.fromMap(Map<String, dynamic> map) => RcmSongsModel(
+    id: map["id"] ?? 0,
+    songId: map["songId"] ?? "",
+    progress: map["progress"]?.toDouble() ?? 0.0,
+    lastWatched: map["lastWatched"] ?? "",
+    isCompleted: map["isCompleted"] ?? 0,
+    title: map["title"] ?? "",
+    youtubeLink: map["youtubeLink"] ?? "",
+    image: map["image"] ?? "",
+  );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "songId": songId,
     "progress": progress,
-    "lastWatched": lastWatched.toIso8601String(),
-    "isCompleted": isCompleted ? 1 : 0,
+    "lastWatched": lastWatched,
+    "isCompleted": isCompleted,
+    "title": title,
+    "youtubeLink": youtubeLink,
+    "image": image,
   };
-
-  static List<RecommendedSongModel> recommendedSongModelFromJson(String str) =>
-      List<RecommendedSongModel>.from(
-        (jsonDecode(str) as List).map((x) => RecommendedSongModel.fromJson(x)),
-      );
-
-  static String recommendedSongModelToJson(List<RecommendedSongModel> data) =>
-      jsonEncode(List<dynamic>.from(data.map((x) => x.toJson())));
 }

@@ -31,4 +31,7 @@ export 'model/model.dart';
 /// App [Widget]
 export 'widget/widget.dart';
 
+/// App [Database]
+export 'database/database.dart';
+
 //* ------------------------------- END CORE EXPORTS -------------------------------- *//

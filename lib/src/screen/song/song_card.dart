@@ -16,6 +16,9 @@ class SongCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        logger.d(
+          'SongCard: Tapped on song: ${data.id}, youtubeLink: ${data.media.youtubeLink}',
+        );
         final isLocked = false;
         final subtitle =
             data.youtubeTitleEn.isNotEmpty ? data.youtubeTitleEn : null;
@@ -34,6 +37,11 @@ class SongCard extends StatelessWidget {
                           : ''),
                   songId: data.id,
                   initialPosition: initialPosition,
+                  image:
+                      Utility.generateYoutubeThumbnailUrl(
+                        data.media.youtubeLink,
+                      ) ??
+                      '',
                 ),
           ),
         );
