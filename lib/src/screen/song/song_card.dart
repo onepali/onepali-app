@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
-import 'song_video_player_screen.dart';
 
 class SongCard extends StatelessWidget {
   final int index;
@@ -27,6 +26,7 @@ class SongCard extends StatelessWidget {
                       (data.categoryName.isNotEmpty
                           ? '\nCategory: ${data.categoryName}'
                           : ''),
+                  songId: data.id,
                 ),
           ),
         );
@@ -35,9 +35,11 @@ class SongCard extends StatelessWidget {
         height: MediaQuery.of(context).size.height * 0.6,
         margin: EdgeInsets.only(
           left: index == 0 ? 16 : 8,
-          right: index == 4 ? 16 : 8,
+          right: 8,
+          top: 8,
+          bottom: 16.0,
         ),
-        width: MediaQuery.of(context).size.width * 0.43,
+        width: MediaQuery.of(context).size.width * 0.48,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(

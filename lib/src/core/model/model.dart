@@ -24,3 +24,6 @@ export 'child/cuser_model.dart';
 
 /// [Song] Model
 export 'song/song_model.dart';
+
+/// [Recommended] Model
+export 'recommended/recommended_song_model.dart';

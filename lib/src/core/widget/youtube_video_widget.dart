@@ -11,6 +11,8 @@ class YoutubeVideoWidget extends StatefulWidget {
   final String? subtitle;
   final bool isLocked;
   final String? info;
+  final void Function(double progress, bool isCompleted)? onProgress;
+  final double? initialPosition;
 
   const YoutubeVideoWidget({
     super.key,
@@ -19,6 +21,8 @@ class YoutubeVideoWidget extends StatefulWidget {
     this.subtitle,
     this.isLocked = false,
     this.info,
+    this.onProgress,
+    this.initialPosition,
   });
 
   @override
@@ -47,6 +51,17 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
         isLive: false,
       ),
     );
+    if (widget.initialPosition != null && widget.initialPosition! > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final duration = _controller.metadata.duration.inSeconds;
+        if (duration > 0) {
+          final seekTo = Duration(
+            seconds: (duration * widget.initialPosition!).toInt(),
+          );
+          _controller.seekTo(seekTo);
+        }
+      });
+    }
     _controller.addListener(_listener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setLandscape();
@@ -54,6 +69,13 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
   }
 
   void _listener() {
+    if (widget.onProgress != null) {
+      final duration = _controller.metadata.duration.inSeconds;
+      final position = _controller.value.position.inSeconds;
+      final progress = duration > 0 ? position / duration : 0.0;
+      final isCompleted = _controller.value.playerState == PlayerState.ended;
+      widget.onProgress!(progress, isCompleted);
+    }
     if (_controller.value.playerState == PlayerState.ended) {
       _setLandscape();
       Navigator.of(context).maybePop();

@@ -28,3 +28,6 @@ export 'child/cuser_provider.dart';
 
 /// [Song] Provider
 export 'song/song_provider.dart';
+
+/// [Recommended] Provider
+export 'recommended/recommended_song_provider.dart';

@@ -68,9 +68,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Gaps.verticalGapOf(10),
                 if (_selectedTabIndex == 0)
                   buildLessons()
-                else if (_selectedTabIndex == 1)
-                  buildSongCard()
-                else if (_selectedTabIndex == 2)
+                else if (_selectedTabIndex == 1) ...[
+                  buildRecommendedSongCard(),
+                  Gaps.verticalGapOf(10),
+                  buildSongCard(),
+                ] else if (_selectedTabIndex == 2)
                   buildStories(),
               ],
             ),
@@ -97,9 +99,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
       title: 'Songs',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      subTitle: 'VIEW ALL',
+      subTitleStyle: AppStyles.text14PxMedium.copyWith(
+        color: AppColors.kSecondaryColor,
+      ),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => SongScreen(showCategoryList: true)),
+        );
+      },
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.45,
+        height: MediaQuery.of(context).size.height * 0.55,
         child: SongScreen(),
+      ),
+    );
+  }
+
+  buildRecommendedSongCard() {
+    return TitleActionChild(
+      title: 'Recommended Songs',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.55,
+        child: RecommendedSongScreen(),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/widget/youtube_video_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../src.dart';
 
 class SongVideoPlayerScreen extends StatelessWidget {
   final String youtubeUrl;
@@ -7,6 +9,8 @@ class SongVideoPlayerScreen extends StatelessWidget {
   final String? subtitle;
   final bool isLocked;
   final String? info;
+  final String? songId;
+  final double? initialPosition;
 
   const SongVideoPlayerScreen({
     super.key,
@@ -15,6 +19,8 @@ class SongVideoPlayerScreen extends StatelessWidget {
     this.subtitle,
     this.isLocked = false,
     this.info,
+    this.songId,
+    this.initialPosition,
   });
 
   @override
@@ -28,6 +34,19 @@ class SongVideoPlayerScreen extends StatelessWidget {
           subtitle: subtitle,
           isLocked: isLocked,
           info: info,
+          initialPosition: initialPosition,
+          onProgress:
+              songId != null
+                  ? (progress, isCompleted) {
+                    context
+                        .read<RecommendedSongProvider>()
+                        .saveOrUpdateSongProgress(
+                          songId: songId!,
+                          progress: progress,
+                          isCompleted: isCompleted,
+                        );
+                  }
+                  : null,
         ),
       ),
     );

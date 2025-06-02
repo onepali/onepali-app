@@ -49,3 +49,7 @@ export 'child/cregister/widget/child_rs3.dart';
 /// [Song] Screen
 export 'song/song_screen.dart';
 export 'song/song_card.dart';
+export 'song/song_video_player_screen.dart';
+
+/// [Song] --> [Recommended]
+export 'song/recommended/recommended_song_screen.dart';
