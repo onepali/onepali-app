@@ -52,13 +52,16 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
       ),
     );
     if (widget.initialPosition != null && widget.initialPosition! > 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.addListener(() {
         final duration = _controller.metadata.duration.inSeconds;
         if (duration > 0) {
           final seekTo = Duration(
             seconds: (duration * widget.initialPosition!).toInt(),
           );
-          _controller.seekTo(seekTo);
+          if ((_controller.value.position.inSeconds - seekTo.inSeconds).abs() >
+              2) {
+            _controller.seekTo(seekTo);
+          }
         }
       });
     }
@@ -153,7 +156,18 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
             if (!_isLocked) ...[
               GestureDetector(
                 child: const Icon(Icons.close, color: Colors.white),
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  // Track progress before closing
+                  if (widget.onProgress != null) {
+                    final duration = _controller.metadata.duration.inSeconds;
+                    final position = _controller.value.position.inSeconds;
+                    final progress = duration > 0 ? position / duration : 0.0;
+                    final isCompleted =
+                        _controller.value.playerState == PlayerState.ended;
+                    widget.onProgress!(progress, isCompleted);
+                  }
+                  Navigator.of(context).pop();
+                },
               ),
             ],
           ],

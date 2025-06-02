@@ -13,7 +13,7 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    Misc.onLayoutRendered(() {
       context.read<RecommendedSongProvider>().fetchRecommendedSongs();
     });
   }
@@ -31,57 +31,44 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
             itemCount: provider.recommendedSongs.length,
             itemBuilder: (context, index) {
               final rec = provider.recommendedSongs[index];
-              final song = context.read<SongProvider>().songs.firstWhere(
-                (s) => s.id == rec.songId,
-                orElse:
-                    () => SongModel(
-                      id: rec.songId,
-                      titleEn: '',
-                      titleNe: '',
-                      youtubeTitleEn: '',
-                      youtubeTitleNe: '',
-                      ageGroup: '',
-                      type: '',
-                      language: [],
-                      media: Media(youtubeLink: ''),
-                      rank: 0,
-                      tags: [],
-                      categoryName: '',
-                    ),
+              logger.d(
+                'RecommendedSongScreen: songId: ${rec.songId}, progress: ${rec.progress}, isCompleted: ${rec.isCompleted}',
               );
+              final songList =
+                  context
+                      .read<SongProvider>()
+                      .songs
+                      .where(
+                        (s) =>
+                            s.id == rec.songId &&
+                            s.media.youtubeLink.isNotEmpty,
+                      )
+                      .toList();
+              final song =
+                  songList.isNotEmpty
+                      ? songList.first
+                      : SongModel(
+                        id: rec.songId,
+                        titleEn: '',
+                        titleNe: '',
+                        youtubeTitleEn: '',
+                        youtubeTitleNe: '',
+                        ageGroup: '',
+                        type: '',
+                        language: [],
+                        media: Media(youtubeLink: ''),
+                        rank: 0,
+                        tags: [],
+                        categoryName: '',
+                      );
               return SizedBox(
                 width: MediaQuery.of(context).size.width * 0.43,
                 child: Stack(
                   children: [
-                    GestureDetector(
-                      onTap: () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder:
-                                (_) => SongVideoPlayerScreen(
-                                  youtubeUrl: song.media.youtubeLink,
-                                  title: song.titleEn,
-                                  subtitle:
-                                      song.youtubeTitleEn.isNotEmpty
-                                          ? song.youtubeTitleEn
-                                          : null,
-                                  isLocked: false,
-                                  info:
-                                      song.titleEn +
-                                      (song.categoryName.isNotEmpty
-                                          ? '\nCategory: ${song.categoryName}'
-                                          : ''),
-                                  songId: song.id,
-                                  initialPosition: rec.progress,
-                                ),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Expanded(child: SongCard(index: index, data: song)),
-                        ],
-                      ),
+                    SongCard(
+                      index: index,
+                      data: song,
+                      initialPosition: rec.progress,
                     ),
                     Positioned(
                       left: 9,

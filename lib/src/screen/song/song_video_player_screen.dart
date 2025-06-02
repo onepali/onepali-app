@@ -35,18 +35,15 @@ class SongVideoPlayerScreen extends StatelessWidget {
           isLocked: isLocked,
           info: info,
           initialPosition: initialPosition,
-          onProgress:
-              songId != null
-                  ? (progress, isCompleted) {
-                    context
-                        .read<RecommendedSongProvider>()
-                        .saveOrUpdateSongProgress(
-                          songId: songId!,
-                          progress: progress,
-                          isCompleted: isCompleted,
-                        );
-                  }
-                  : null,
+          onProgress: (progress, isCompleted) {
+            if (songId != null && songId!.isNotEmpty) {
+              context.read<RecommendedSongProvider>().saveOrUpdateSongProgress(
+                songId: songId!,
+                progress: progress,
+                isCompleted: isCompleted,
+              );
+            }
+          },
         ),
       ),
     );

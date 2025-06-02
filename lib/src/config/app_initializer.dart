@@ -14,6 +14,9 @@ class AppInitializer {
     await Firebase.initializeApp();
 
     HttpOverrides.global = MyHttpOverrides();
+
+    // Initialize RecommendedSongProvider DB
+    await RecommendedSongProvider().initDb();
   }
 
   static Future<bool> checkUserAuthentication() async {

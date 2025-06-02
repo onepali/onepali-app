@@ -4,7 +4,13 @@ import 'package:onepali/src/src.dart';
 class SongCard extends StatelessWidget {
   final int index;
   final SongModel data;
-  const SongCard({super.key, required this.index, required this.data});
+  final double? initialPosition;
+  const SongCard({
+    super.key,
+    required this.index,
+    required this.data,
+    this.initialPosition,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +33,7 @@ class SongCard extends StatelessWidget {
                           ? '\nCategory: ${data.categoryName}'
                           : ''),
                   songId: data.id,
+                  initialPosition: initialPosition,
                 ),
           ),
         );

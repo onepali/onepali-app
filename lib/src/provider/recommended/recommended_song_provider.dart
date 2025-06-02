@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/core.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../../core/model/recommended/recommended_song_model.dart';
 
 class RecommendedSongProvider extends ChangeNotifier {
   static Database? _db;
@@ -32,12 +32,15 @@ class RecommendedSongProvider extends ChangeNotifier {
 
   Future<void> fetchRecommendedSongs() async {
     await initDb();
-    final List<Map<String, dynamic>> maps = await _db!.query(
-      _tableName,
-      orderBy: 'lastWatched DESC',
+    // Fetch only the latest entry for each unique songId
+    final List<Map<String, dynamic>> maps = await _db!.rawQuery(
+      'SELECT * FROM $_tableName WHERE id IN (SELECT MAX(id) FROM $_tableName GROUP BY songId) ORDER BY lastWatched DESC',
     );
     _recommendedSongs =
         maps.map((e) => RecommendedSongModel.fromMap(e)).toList();
+    logger.d(
+      'RecommendedSongProvider: fetched ${_recommendedSongs.length} recommended songs',
+    );
     notifyListeners();
   }
 
@@ -48,30 +51,12 @@ class RecommendedSongProvider extends ChangeNotifier {
   }) async {
     await initDb();
     final now = DateTime.now();
-    final existing = await _db!.query(
-      _tableName,
-      where: 'songId = ?',
-      whereArgs: [songId],
-    );
-    if (existing.isNotEmpty) {
-      await _db!.update(
-        _tableName,
-        {
-          'progress': progress,
-          'lastWatched': now.toIso8601String(),
-          'isCompleted': isCompleted ? 1 : 0,
-        },
-        where: 'songId = ?',
-        whereArgs: [songId],
-      );
-    } else {
-      await _db!.insert(_tableName, {
-        'songId': songId,
-        'progress': progress,
-        'lastWatched': now.toIso8601String(),
-        'isCompleted': isCompleted ? 1 : 0,
-      });
-    }
+    await _db!.insert(_tableName, {
+      'songId': songId,
+      'progress': progress,
+      'lastWatched': now.toIso8601String(),
+      'isCompleted': isCompleted ? 1 : 0,
+    });
     await fetchRecommendedSongs();
   }
 
