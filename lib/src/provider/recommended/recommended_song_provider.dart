@@ -40,7 +40,7 @@ class RcmSongProvider extends ChangeNotifier {
     final List<Map<String, dynamic>> maps = await _db!.rawQuery(
       'SELECT * FROM $_tableName WHERE id IN (SELECT MAX(id) FROM $_tableName GROUP BY songId) ORDER BY lastWatched DESC',
     );
-    _recommendedSongs = maps.map((e) => RcmSongsModel.fromMap(e)).toList();
+    _recommendedSongs = maps.map((e) => RcmSongsModel.fromJson(e)).toList();
     logger.d(
       'RcmSongProvider: fetched ${jsonEncode(_recommendedSongs)} recommended songs',
     );
@@ -54,6 +54,7 @@ class RcmSongProvider extends ChangeNotifier {
     required String title,
     required String youtubeLink,
     required String image,
+    required int childId,
   }) async {
     await initDb();
     final now = DateTime.now();
@@ -76,6 +77,7 @@ class RcmSongProvider extends ChangeNotifier {
           'title': title,
           'youtubeLink': youtubeLink,
           'image': image,
+          'childId': childId,
         },
         where: 'songId = ?',
         whereArgs: [songId],
@@ -94,6 +96,7 @@ class RcmSongProvider extends ChangeNotifier {
         'title': title,
         'youtubeLink': youtubeLink,
         'image': image,
+        'childId': childId,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
     await fetchRecommendedSongs();

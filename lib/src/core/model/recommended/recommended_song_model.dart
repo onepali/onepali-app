@@ -7,6 +7,7 @@ String rcmSongsModelToJson(RcmSongsModel data) => json.encode(data.toJson());
 
 class RcmSongsModel {
   final int id;
+  final int childId;
   final String songId;
   final double progress;
   final String lastWatched;
@@ -17,6 +18,7 @@ class RcmSongsModel {
 
   RcmSongsModel({
     required this.id,
+    required this.childId,
     required this.songId,
     required this.progress,
     required this.lastWatched,
@@ -28,6 +30,7 @@ class RcmSongsModel {
 
   factory RcmSongsModel.fromJson(Map<String, dynamic> json) => RcmSongsModel(
     id: json["id"] ?? 0,
+    childId: json["childId"] ?? 0,
     songId: json["songId"] ?? "",
     progress: json["progress"]?.toDouble() ?? 0.0,
     lastWatched: json["lastWatched"] ?? "",
@@ -37,16 +40,7 @@ class RcmSongsModel {
     image: json["image"] ?? "",
   );
 
-  factory RcmSongsModel.fromMap(Map<String, dynamic> map) => RcmSongsModel(
-    id: map["id"] ?? 0,
-    songId: map["songId"] ?? "",
-    progress: map["progress"]?.toDouble() ?? 0.0,
-    lastWatched: map["lastWatched"] ?? "",
-    isCompleted: map["isCompleted"] ?? 0,
-    title: map["title"] ?? "",
-    youtubeLink: map["youtubeLink"] ?? "",
-    image: map["image"] ?? "",
-  );
+  
 
   Map<String, dynamic> toJson() => {
     "id": id,

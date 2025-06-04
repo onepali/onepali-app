@@ -12,6 +12,7 @@ class SongVideoPlayerScreen extends StatefulWidget {
   final String? songId;
   final double? initialPosition;
   final String? image;
+  final int? childId;
 
   const SongVideoPlayerScreen({
     super.key,
@@ -23,6 +24,7 @@ class SongVideoPlayerScreen extends StatefulWidget {
     this.songId,
     this.initialPosition,
     this.image,
+    this.childId,
   });
 
   @override
@@ -44,6 +46,7 @@ class _SongVideoPlayerScreenState extends State<SongVideoPlayerScreen> {
         title: widget.title ?? '',
         youtubeLink: widget.youtubeUrl,
         image: widget.image ?? '',
+        childId: widget.childId ?? 0,
       );
     }
   }
@@ -62,6 +65,7 @@ class _SongVideoPlayerScreenState extends State<SongVideoPlayerScreen> {
         title: widget.title ?? '',
         youtubeLink: widget.youtubeUrl,
         image: widget.image ?? '',
+        childId: widget.childId ?? 0,
       );
     }
     super.dispose();

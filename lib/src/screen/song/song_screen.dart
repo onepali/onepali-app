@@ -18,11 +18,14 @@ class _SongScreenState extends State<SongScreen> {
     super.initState();
     Misc.onLayoutRendered(() {
       context.read<SongProvider>().fetchSongs();
+      context.read<ChildUserProvider>().fetchChildUser();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // var childs = context.watch<ChildUserProvider>().childUser;
+
     return SafeArea(
       child: Scaffold(
         body: Consumer<SongProvider>(
