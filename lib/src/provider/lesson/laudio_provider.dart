@@ -18,10 +18,10 @@ class LessonAudioProvider extends ChangeNotifier {
     _isPlaying = true;
     notifyListeners();
 
-    await _audioPlayer1.play(AssetSource(lessons[_currentIndex].audio));
-    await _audioPlayer1.onPlayerComplete.first;
+    // await _audioPlayer1.play(AssetSource(lessons[_currentIndex].audio));
+    // await _audioPlayer1.onPlayerComplete.first;
 
-    await _audioPlayer2.play(AssetSource(lessons[_currentIndex].wordAudio));
+    // await _audioPlayer2.play(AssetSource(lessons[_currentIndex].wordAudio));
     await _audioPlayer2.onPlayerComplete.first;
 
     _onPlaybackComplete(lessons);

@@ -1,0 +1,203 @@
+{
+    "courses": [
+        {
+            "id": "preschool",
+            "name_en": "Pre-School",
+            "name_np": "पूर्व-विद्यालय",
+            "thumbnail": "assets/images/categories/preschool.png",
+            "audio": "audio/categories/preschool_intro.m4a",
+            "age_group": "3-5",
+            "categoryName": "Pre-School",
+            "type": "course",
+            "tags": [
+                "early learning",
+                "fun",
+                "interactive"
+            ],
+            "completion_criteria": "activity_complete",
+            "chapters": [
+                {
+                    "id": "animals",
+                    "name_en": "Animals",
+                    "name_np": "जनावरहरू",
+                    "thumbnail": "assets/images/subcategories/animals.png",
+                    "audio": "audio/subcategories/animals_intro.m4a",
+                    "type": "chapter",
+                    "tags": [
+                        "animals",
+                        "nature"
+                    ],
+                    "categoryName": "Pre-School",
+                    "completion_criteria": "activity_complete",
+                    "lessons": [
+                        {
+                            "id": "basic1",
+                            "chapter_id": "animals",
+                            "lesson_name": "Basic 1",
+                            "short_info": "This lesson introduces basic animals like rabbit, fish, cat, dog, and bird.",
+                            "type": "lesson",
+                            "progress": "unlocked",
+                            "completion_criteria": "activity_complete",
+                            "rank": 1,
+                            "prerequisites": [],
+                            "lesson_content": [
+                                {
+                                    "name_en": "Rabbit",
+                                    "name_np": "खरायो",
+                                    "image": "assets/images/animals/rabbit.png",
+                                    "lottie": "assets/lottie/animals/rabbit.json",
+                                    "audio": "audio/animals/rabbit.m4a",
+                                    "word_audio": "audio/animals/rabbit_s.mp3",
+                                    "tooltip": "यो गाजर खान मन पराउने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Fish",
+                                    "name_np": "माछा",
+                                    "image": "assets/images/animals/fish.png",
+                                    "lottie": "assets/lottie/animals/fish.json",
+                                    "audio": "audio/animals/fish.m4a",
+                                    "word_audio": "audio/animals/fish_s.mp3",
+                                    "tooltip": "यो पानीमा बस्ने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Cat",
+                                    "name_np": "बिरालो",
+                                    "image": "assets/images/animals/cat.png",
+                                    "lottie": "assets/lottie/animals/cat.json",
+                                    "audio": "audio/animals/cat.m4a",
+                                    "word_audio": "audio/animals/cat_s.mp3",
+                                    "tooltip": "यो घरमा बस्ने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Dog",
+                                    "name_np": "कुकुर",
+                                    "image": "assets/images/animals/dog.png",
+                                    "lottie": "assets/lottie/animals/dog.json",
+                                    "audio": "audio/animals/dog.m4a",
+                                    "word_audio": "audio/animals/dog_s.mp3",
+                                    "tooltip": "यो घरमा बस्ने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Bird",
+                                    "name_np": "चरा",
+                                    "image": "assets/images/animals/bird.png",
+                                    "lottie": "assets/lottie/animals/bird.json",
+                                    "audio": "audio/animals/bird.m4a",
+                                    "word_audio": "audio/animals/bird_s.mp3",
+                                    "tooltip": "यो उड्न सक्ने जनावर हो।"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "basic2",
+                            "chapter_id": "animals",
+                            "lesson_name": "Basic 2",
+                            "short_info": "This lesson introduces new animals: horse, cow, elephant, and monkey.",
+                            "type": "lesson",
+                            "progress": "locked",
+                            "completion_criteria": "activity_complete",
+                            "rank": 2,
+                            "prerequisites": [
+                                "basic1"
+                            ],
+                            "lesson_content": [
+                                {
+                                    "name_en": "Horse",
+                                    "name_np": "घोडा",
+                                    "image": "assets/images/animals/horse.png",
+                                    "lottie": "assets/lottie/animals/horse.json",
+                                    "audio": "audio/animals/horse.m4a",
+                                    "word_audio": "audio/animals/horse_s.mp3",
+                                    "tooltip": "यो छिटो दौडन सक्ने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Cow",
+                                    "name_np": "गाई",
+                                    "image": "assets/images/animals/cow.png",
+                                    "lottie": "assets/lottie/animals/cow.json",
+                                    "audio": "audio/animals/cow.m4a",
+                                    "word_audio": "audio/animals/cow_s.mp3",
+                                    "tooltip": "यो दूध दिने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Elephant",
+                                    "name_np": "हात्ती",
+                                    "image": "assets/images/animals/elephant.png",
+                                    "lottie": "assets/lottie/animals/elephant.json",
+                                    "audio": "audio/animals/elephant.m4a",
+                                    "word_audio": "audio/animals/elephant_s.mp3",
+                                    "tooltip": "यो ठूलो कान भएको जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Monkey",
+                                    "name_np": "बाँदर",
+                                    "image": "assets/images/animals/monkey.png",
+                                    "lottie": "assets/lottie/animals/monkey.json",
+                                    "audio": "audio/animals/monkey.m4a",
+                                    "word_audio": "audio/animals/monkey_s.mp3",
+                                    "tooltip": "यो रूखमा चढ्न सक्ने जनावर हो।"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "basic3",
+                            "chapter_id": "animals",
+                            "lesson_name": "Basic 3",
+                            "short_info": "This lesson introduces more animals: lion, tiger, deer, and goat.",
+                            "type": "lesson",
+                            "progress": "locked",
+                            "completion_criteria": "activity_complete",
+                            "rank": 3,
+                            "prerequisites": [
+                                "basic2"
+                            ],
+                            "lesson_content": [
+                                {
+                                    "name_en": "Lion",
+                                    "name_np": "सिंह",
+                                    "image": "assets/images/animals/lion.png",
+                                    "lottie": "assets/lottie/animals/lion.json",
+                                    "audio": "audio/animals/lion.m4a",
+                                    "word_audio": "audio/animals/lion_s.mp3",
+                                    "tooltip": "यो जंगलको राजा हो।"
+                                },
+                                {
+                                    "name_en": "Tiger",
+                                    "name_np": "बाघ",
+                                    "image": "assets/images/animals/tiger.png",
+                                    "lottie": "assets/lottie/animals/tiger.json",
+                                    "audio": "audio/animals/tiger.m4a",
+                                    "word_audio": "audio/animals/tiger_s.mp3",
+                                    "tooltip": "यो धारिलो जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Deer",
+                                    "name_np": "हरिण",
+                                    "image": "assets/images/animals/deer.png",
+                                    "lottie": "assets/lottie/animals/deer.json",
+                                    "audio": "audio/animals/deer.m4a",
+                                    "word_audio": "audio/animals/deer_s.mp3",
+                                    "tooltip": "यो छिटो दौडन सक्ने जनावर हो।"
+                                },
+                                {
+                                    "name_en": "Goat",
+                                    "name_np": "बाख्रा",
+                                    "image": "assets/images/animals/goat.png",
+                                    "lottie": "assets/lottie/animals/goat.json",
+                                    "audio": "audio/animals/goat.m4a",
+                                    "word_audio": "audio/animals/goat_s.mp3",
+                                    "tooltip": "यो दूध दिने सानो जनावर हो।"
+                                }
+                            ]
+                        }
+                    ],
+                    "level_unlock_criteria": {
+                        "type": "percentage_complete",
+                        "value": 70,
+                        "description": "Complete 70% of the lessons in this chapter to unlock the next level (age group content)."
+                    }
+                }
+            ]
+        }
+    ]
+}

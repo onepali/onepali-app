@@ -13,6 +13,7 @@ function recreateSongsInFirestore() {
 
     const payload = {
       fields: {
+        id: {stringValue: row[0]},
         title_en: { stringValue: row[1] },
         title_ne: { stringValue: row[2] },
         youtube_title_en: { stringValue: row[3] },

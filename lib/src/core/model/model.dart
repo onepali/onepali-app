@@ -27,3 +27,6 @@ export 'song/song_model.dart';
 
 /// [Recommended] Model
 export 'recommended/recommended_song_model.dart';
+
+ /// [Course] Model
+export 'course/course_model.dart';
