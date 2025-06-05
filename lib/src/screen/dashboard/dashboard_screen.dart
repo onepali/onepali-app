@@ -25,13 +25,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final childProvider = context.read<ChildUserProvider>();
-    // Watch the UserProvider to get updates
     final userProvider = context.watch<UserProvider>();
     final UserModel? userInfo = userProvider.user;
-
     final bool isLoading = userProvider.status == DataFetchStatus.loading;
     final bool hasData = userInfo != null;
-
     logger.d('DashboardScreen: hasData: $hasData, isLoading: $isLoading');
 
     return PopScope(
@@ -61,80 +58,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               userInfo?.authProvider ?? AuthProviderType.email.name,
             ),
           ),
-
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Gaps.verticalGapOf(10),
-                if (_selectedTabIndex == 0)
-                  buildLessons()
-                else if (_selectedTabIndex == 1) ...[
-                  buildRecommendedSongCard(),
-                  Gaps.verticalGapOf(10),
-                  buildSongCard(),
-                ] else if (_selectedTabIndex == 2)
-                  buildStories(),
-              ],
-            ),
-          ),
+          body: HomeScreen(selectedTabIndex: _selectedTabIndex),
         ),
-      ),
-    );
-  }
-
-  buildLessons() {
-    return TitleActionChild(
-      title: 'Lessons',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: Center(child: Text('Lessons Content Here')),
-      ),
-    );
-  }
-
-  buildSongCard() {
-    return TitleActionChild(
-      title: 'Songs',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      subTitle: 'VIEW ALL',
-      subTitleStyle: AppStyles.text14PxMedium.copyWith(
-        color: AppColors.kSecondaryColor,
-      ),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => SongScreen(showCategoryList: true)),
-        );
-      },
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.55,
-        child: SongScreen(),
-      ),
-    );
-  }
-
-  buildRecommendedSongCard() {
-    return TitleActionChild(
-      title: 'Recommended Songs',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.55,
-        child: RecommendedSongScreen(),
-      ),
-    );
-  }
-
-  buildStories() {
-    return TitleActionChild(
-      title: 'Stories',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: Center(child: Text('Stories Content Here')),
       ),
     );
   }

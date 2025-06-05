@@ -53,3 +53,11 @@ export 'song/song_video_player_screen.dart';
 
 /// [Song] --> [Recommended]
 export 'song/recommended/recommended_song_screen.dart';
+
+/// [Course] Screen
+export 'course/course_screen.dart';
+export 'course/course_card.dart';
+
+/// [Course] --> [Lesson]
+export 'course/lesson/lesson_screen.dart';
+export 'course/lesson/lesson_card.dart';
