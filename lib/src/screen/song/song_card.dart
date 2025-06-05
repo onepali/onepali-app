@@ -4,14 +4,14 @@ import 'package:onepali/src/src.dart';
 class SongCard extends StatelessWidget {
   final int index;
   final SongModel data;
-  final int childId;
+  // final int childId;
   final double? initialPosition;
   const SongCard({
     super.key,
     required this.index,
     required this.data,
     this.initialPosition,
-    this.childId = 0,
+    // this.childId = 0,
   });
 
   @override
@@ -44,7 +44,7 @@ class SongCard extends StatelessWidget {
                         data.media.youtubeLink,
                       ) ??
                       '',
-                  childId: childId,
+                  // childId: childId,
                 ),
           ),
         );

@@ -54,7 +54,7 @@ class RcmSongProvider extends ChangeNotifier {
     required String title,
     required String youtubeLink,
     required String image,
-    required int childId,
+    // required int childId,
   }) async {
     await initDb();
     final now = DateTime.now();
@@ -77,7 +77,7 @@ class RcmSongProvider extends ChangeNotifier {
           'title': title,
           'youtubeLink': youtubeLink,
           'image': image,
-          'childId': childId,
+          // 'childId': childId,
         },
         where: 'songId = ?',
         whereArgs: [songId],
@@ -96,7 +96,7 @@ class RcmSongProvider extends ChangeNotifier {
         'title': title,
         'youtubeLink': youtubeLink,
         'image': image,
-        'childId': childId,
+        // 'childId': childId,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
     await fetchRecommendedSongs();
