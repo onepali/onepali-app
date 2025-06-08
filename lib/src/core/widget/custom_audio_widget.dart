@@ -12,9 +12,15 @@ class CustomAudioWidget {
   });
 
   Future<void> play() async {
-    if (audioSourceType == AudioSourceType.asset) {
+    if (audioSourceType == AudioSourceType.asset &&
+        !audioPath.startsWith('/')) {
+      // Play from bundled assets
       await _audioPlayer.play(AssetSource(audioPath));
+    } else if (audioPath.startsWith('/')) {
+      // Play from local file (cache)
+      await _audioPlayer.play(DeviceFileSource(audioPath));
     } else {
+      // Play from network URL
       await _audioPlayer.play(UrlSource(audioPath));
     }
   }

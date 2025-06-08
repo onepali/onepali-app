@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../../src.dart';
 
@@ -67,25 +68,32 @@ class LessonAudioProvider extends ChangeNotifier {
     final audioPath = contents[_currentIndex].audio;
     logger.i('Playing audio: $audioPath');
     if (audioPath.isNotEmpty) {
+      String sourcePath = audioPath;
+      AudioSourceType sourceType = audioSourceType;
+      if (audioSourceType == AudioSourceType.network) {
+        // Try to get from cache
+        final file = await DefaultCacheManager().getSingleFile(audioPath);
+        if (file.existsSync()) {
+          sourcePath = file.path;
+          sourceType = AudioSourceType.asset; // Play as local file
+          logger.i('Playing from cache: $sourcePath');
+        } else {
+          logger.i('Audio not cached, will stream from network: $audioPath');
+        }
+      }
       final audioWidget = CustomAudioWidget(
-        audioPath: audioPath,
-        audioSourceType: audioSourceType,
+        audioPath: sourcePath,
+        audioSourceType: sourceType,
       );
       // Preload next audio if available
       if (_currentIndex < contents.length - 1) {
         final nextAudioPath = contents[_currentIndex + 1].audio;
         logger.i('Preloading next audio: $nextAudioPath');
         if (nextAudioPath.isNotEmpty) {
-          // Preload by creating and releasing the player (network only)
+          // Preload/caching for next audio
           if (audioSourceType == AudioSourceType.network) {
-            final preloader = AudioPlayer();
-            try {
-              await preloader.setSource(UrlSource(nextAudioPath));
-              logger.i('Preloaded next audio successfully');
-            } catch (e) {
-              logger.i('Failed to preload next audio: $e');
-            }
-            await preloader.release();
+            await DefaultCacheManager().downloadFile(nextAudioPath);
+            logger.i('Preloaded and cached next audio');
           }
         }
       }

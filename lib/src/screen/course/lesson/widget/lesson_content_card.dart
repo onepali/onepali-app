@@ -86,13 +86,19 @@ class LessonContentCard extends StatelessWidget {
             //   ),
             // Gaps.verticalGapOf(16),
             if (hasSound)
-              IconButton(
-                icon: SvgHelper.fromSource(
-                  path: Assets.sound,
-                  height: 36,
-                  width: 36,
+              CustomAvatarGlow(
+                glowColor: AppColors.kSecondaryColor,
+                glowShape: BoxShape.circle,
+                visible: isPlaying,
+                glowRadiusFactor: 0.2,
+                child: IconButton(
+                  icon: SvgHelper.fromSource(
+                    path: Assets.sound,
+                    height: 36,
+                    width: 36,
+                  ),
+                  onPressed: onPlay,
                 ),
-                onPressed: onPlay,
               ),
           ],
         ),
