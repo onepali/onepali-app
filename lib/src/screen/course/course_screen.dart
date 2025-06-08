@@ -57,7 +57,7 @@ class CourseScreenState extends State<CourseScreen> {
                       ),
                       Gaps.verticalGapOf(8),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.50,
+                        height: MediaQuery.of(context).size.height * 0.55,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children:
@@ -67,7 +67,7 @@ class CourseScreenState extends State<CourseScreen> {
                                       chapter.nameEn.isNotEmpty
                                           ? chapter.nameEn
                                           : chapter.nameNp,
-                                  thumbnail: category.thumbnail,
+                                  thumbnail: chapter.thumbnail,
                                   color: Colors.orange[200]!,
                                   isLocked: false,
                                   isCompleted: false,

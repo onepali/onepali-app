@@ -24,6 +24,9 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.d(
+      'CourseCard: title: $title, isLocked: $isLocked, isCompleted: $thumbnail',
+    );
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.43,
       child: GestureDetector(
@@ -32,38 +35,42 @@ class CourseCard extends StatelessWidget {
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: color,
-            image:
-                thumbnail != null
-                    ? DecorationImage(
-                      image: NetworkImage(thumbnail!),
-                      fit: BoxFit.cover,
-                    )
-                    : null,
+
             borderRadius: BorderRadius.circular(16),
           ),
           child: Stack(
             children: [
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kWhite,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: Colors.black,
+                child: Column(
+                  children: [
+                    if (thumbnail != null)
+                      CustomImage(
+                        thumbnail!,
+                        width: 120,
+                        cover: false,
+                        height: 100,
+                        imageType: CustomImageType.network,
+                        circular: false,
+                      ),
+                    Gaps.verticalGapOf(20),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.kWhite,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Text(
+                        title,
+                        style: AppStyles.text16PxSemiBold,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
+                  ],
                 ),
               ),
               if (isCompleted)
