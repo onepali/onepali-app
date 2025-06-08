@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
 class LessonContentScreen extends StatefulWidget {
@@ -19,42 +20,13 @@ class LessonContentScreen extends StatefulWidget {
 }
 
 class _LessonContentScreenState extends State<LessonContentScreen> {
-  late int currentIndex;
-  bool isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    currentIndex = widget.initialIndex;
-  }
-
-  void playContentAudio() async {
-    final audioPath = widget.lesson.lessonContent[currentIndex].audio;
-    if (audioPath.isNotEmpty) {
-      setState(() => isPlaying = true);
-      final audioWidget = CustomAudioWidget(audioPath: audioPath);
-      await audioWidget.play();
-      setState(() => isPlaying = false);
-    }
-  }
-
-  void navigateToNext() {
-    if (currentIndex < widget.lesson.lessonContent.length - 1) {
-      setState(() => currentIndex++);
-    }
-  }
-
-  void navigateToPrevious() {
-    if (currentIndex > 0) {
-      setState(() => currentIndex--);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final content = widget.lesson.lessonContent[currentIndex];
-    final isFirst = currentIndex == 0;
-    final isLast = currentIndex == widget.lesson.lessonContent.length - 1;
+    final audioProvider = context.watch<LessonAudioProvider>();
+    final content = widget.lesson.lessonContent[audioProvider.currentIndex];
+    final isFirst = audioProvider.currentIndex == 0;
+    final isLast =
+        audioProvider.currentIndex == widget.lesson.lessonContent.length - 1;
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: SafeArea(
@@ -63,17 +35,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
             Positioned(
               top: 16,
               right: 16,
-              child: CircleAvatar(
-                backgroundColor: AppColors.kSecondaryColor,
-                radius: 22,
-                child: IconButton(
-                  icon: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    height: 24,
-                    width: 24,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
+              child: IconButton(
+                icon: SvgHelper.fromSource(
+                  path: Assets.wrong,
+                  height: 40,
+                  width: 40,
                 ),
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ),
             Center(
@@ -81,33 +49,82 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: SvgHelper.fromSource(
-                      path: Assets.leftArrow,
-                      height: 48,
-                      width: 48,
-                      color:
-                          isFirst ? AppColors.kGrey : AppColors.kSecondaryColor,
+                  Container(
+                    height: 17.h(context),
+                    width: 17.h(context),
+                    decoration: BoxDecoration(
+                      color: AppColors.kWhite,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.kBlack.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    onPressed: isFirst || isPlaying ? null : navigateToPrevious,
+                    child: IconButton(
+                      icon: SvgHelper.fromSource(
+                        path: Assets.leftArrow,
+                        height: 48,
+                        width: 48,
+                        color:
+                            isFirst
+                                ? AppColors.kGrey
+                                : AppColors.kSecondaryColor,
+                      ),
+                      onPressed:
+                          isFirst || audioProvider.isPlaying
+                              ? null
+                              : audioProvider.navigateToPreviousContent,
+                    ),
                   ),
                   Expanded(
                     child: LessonContentCard(
                       content: content,
-                      isPlaying: isPlaying,
+                      isPlaying: audioProvider.isPlaying,
                       hasSound: widget.hasSound,
-                      onPlay: isPlaying ? null : playContentAudio,
+                      onPlay:
+                          audioProvider.isPlaying
+                              ? null
+                              : () => audioProvider.playContentAudio(
+                                widget.lesson.lessonContent,
+                                audioSourceType: AudioSourceType.network,
+                              ),
+                      index: audioProvider.currentIndex,
                     ),
                   ),
-                  IconButton(
-                    icon: SvgHelper.fromSource(
-                      path: Assets.rightArrow,
-                      height: 48,
-                      width: 48,
-                      color:
-                          isLast ? AppColors.kGrey : AppColors.kSecondaryColor,
+                  Container(
+                    height: 17.h(context),
+                    width: 17.h(context),
+                    decoration: BoxDecoration(
+                      color: AppColors.kWhite,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.kBlack.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    onPressed: isLast || isPlaying ? null : navigateToNext,
+                    child: IconButton(
+                      icon: SvgHelper.fromSource(
+                        path: Assets.rightArrow,
+                        height: 48,
+                        width: 48,
+                        color:
+                            isLast
+                                ? AppColors.kGrey
+                                : AppColors.kSecondaryColor,
+                      ),
+                      onPressed:
+                          isLast || audioProvider.isPlaying
+                              ? null
+                              : () => audioProvider.navigateToNextContent(
+                                widget.lesson.lessonContent,
+                              ),
+                    ),
                   ),
                 ],
               ),
