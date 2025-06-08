@@ -26,46 +26,50 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
       backgroundColor: AppColors.kWhite,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Would you like to create a daily screen time limit for Dev?',
-              style: AppStyles.text20PxSemiBold,
-            ),
-            Gaps.verticalGapOf(24),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.kButtonGrey.withValues(alpha: 0.5),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Would you like to create a daily screen time limit for ${authState.childName}?',
+                style: AppStyles.text20PxSemiBold,
+              ),
+              Gaps.verticalGapOf(24),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: AppColors.kButtonGrey.withValues(alpha: 0.5),
+                  ),
+                ),
+                child: CustomRangeSlider(
+                  min: 0,
+                  max: 120,
+                  value: selectedRange,
+                  onChanged: (val) {
+                    setState(() {
+                      selectedRange = val;
+                    });
+                  },
+                  recommended: selectedRange,
                 ),
               ),
-              child: CustomRangeSlider(
-                min: 0,
-                max: 120,
-                value: selectedRange,
-                onChanged: (val) {
-                  setState(() {
-                    selectedRange = val;
-                  });
-                },
-                recommended: selectedRange,
+              Gaps.verticalGapOf(26),
+              Center(
+                child: Text(
+                  'We will notify ${authState.childName} when the time is up.',
+                  style: AppStyles.text14PxRegular,
+                  textAlign: TextAlign.end,
+                ),
               ),
-            ),
-            Gaps.verticalGapOf(26),
-            Center(
-              child: Text(
-                'We will notify ${authState.childName} when the time is up.',
-                style: AppStyles.text14PxRegular,
-                textAlign: TextAlign.end,
-              ),
-            ),
-            Gaps.verticalGapOf(40),
-
-            _buildNextButton(context),
-          ],
+              Gaps.verticalGapOf(40),
+              _buildNextButton(context),
+            ],
+          ),
         ),
       ),
     );

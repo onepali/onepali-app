@@ -15,7 +15,7 @@ class RS5Screen extends StatelessWidget {
       if (isLogin) {
         Utility.navigate(context, AppRoutes.dashboardScreen);
       } else {
-        Utility.navigateMaterialRoute(context, RS6Screen());
+        Utility.navigate(context, AppRoutes.rs6Screen);
       }
     } else {
       if (!context.mounted) return;

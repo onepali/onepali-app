@@ -19,6 +19,9 @@ class AppConstants {
   static const String userInfo = 'user_info';
   static const String logged = 'logged';
 
+  // Database
+  static const String RECOM_DB_PATH = 'onp_recom.db';
+
   static List<String> get avatarList => [
     Assets.avatar1,
     Assets.avatar2,

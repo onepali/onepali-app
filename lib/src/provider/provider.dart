@@ -23,3 +23,11 @@ export 'lesson/laudio_provider.dart';
 
 /// [Child] Provider
 export 'child/cuser_provider.dart';
+
+//* ------------------------------- Child Provider ------------------------------- *//
+
+/// [Song] Provider
+export 'song/song_provider.dart';
+
+/// [Recommended] Provider
+export 'recommended/recommended_song_provider.dart';

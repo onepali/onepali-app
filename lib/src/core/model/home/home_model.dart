@@ -23,15 +23,15 @@ List<HomeServiceModel> homeServices = [
   //   route: AppRoutes.comingSoon,
   // ),
   HomeServiceModel(
-    name: 'Stories',
-    icon: Assets.stories,
-    tooltip: 'Stories',
-    route: AppRoutes.comingSoon,
-  ),
-  HomeServiceModel(
     name: 'Songs & Rhymes',
     icon: Assets.songsRhymes,
     tooltip: 'Songs & Rhymes',
+    route: AppRoutes.comingSoon,
+  ),
+  HomeServiceModel(
+    name: 'Stories',
+    icon: Assets.stories,
+    tooltip: 'Stories',
     route: AppRoutes.comingSoon,
   ),
 ];

@@ -1,3 +1,102 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class LessonProvider extends ChangeNotifier {}
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
+
+class LessonProvider extends ChangeNotifier {
+  DataFetchStatus _status = DataFetchStatus.initial;
+  DataFetchStatus get status => _status;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final List<CourseModel> _courses = [];
+  List<CourseModel> get courses => _courses;
+
+  Future<void> fetchCourses() async {
+    setStatus(DataFetchStatus.loading);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    if (user == null) {
+      logger.e('User is not authenticated.');
+      handleError("User not signed in.");
+      return;
+    }
+
+    try {
+      final querySnapshot = await _firestore.collection('courses').get();
+      _courses.clear();
+      // Collect all course docs into a single array for CourseModel
+      final List<Map<String, dynamic>> allCourses = [];
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data();
+        // Defensive: ensure chapters, lessons, lesson_content are always List<Map<String, dynamic>>
+        if (data['chapters'] is List) {
+          data['chapters'] =
+              (data['chapters'] as List).map((ch) {
+                if (ch is Map<String, dynamic>) {
+                  if (ch['lessons'] is List) {
+                    ch['lessons'] =
+                        (ch['lessons'] as List).map((ls) {
+                          if (ls is Map<String, dynamic>) {
+                            if (ls['lesson_content'] is List) {
+                              ls['lesson_content'] =
+                                  (ls['lesson_content'] as List).map((lc) {
+                                    if (lc is Map<String, dynamic>) return lc;
+                                    if (lc is Map) {
+                                      return Map<String, dynamic>.from(lc);
+                                    }
+                                    return <String, dynamic>{};
+                                  }).toList();
+                            } else {
+                              ls['lesson_content'] = <Map<String, dynamic>>[];
+                            }
+                            return ls;
+                          }
+                          if (ls is Map) return Map<String, dynamic>.from(ls);
+                          return <String, dynamic>{};
+                        }).toList();
+                  } else {
+                    ch['lessons'] = <Map<String, dynamic>>[];
+                  }
+                  return ch;
+                }
+                if (ch is Map) return Map<String, dynamic>.from(ch);
+                return <String, dynamic>{};
+              }).toList();
+        } else {
+          data['chapters'] = <Map<String, dynamic>>[];
+        }
+        allCourses.add(data);
+      }
+      final courseModelJson = {'courses': allCourses};
+      try {
+        _courses.add(CourseModel.fromJson(courseModelJson));
+      } catch (e) {
+        logger.e(
+          'Error parsing all courses: $e\nData: ${json.encode(courseModelJson)}',
+        );
+      }
+      logger.d(
+        'LessonProvider: fetched ${_courses.length} courses -------- result: ${json.encode(_courses)}',
+      );
+      setStatus(DataFetchStatus.success);
+    } catch (e, s) {
+      logger.e('Error fetching courses: $e--------- $s');
+      handleError(e.toString());
+    }
+  }
+
+  void handleError(String error) {
+    _status = DataFetchStatus.error;
+    showCustomToaster(error, isError: true);
+    notifyListeners();
+  }
+
+  setStatus(DataFetchStatus status) {
+    _status = status;
+    notifyListeners();
+  }
+}

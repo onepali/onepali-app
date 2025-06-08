@@ -16,8 +16,17 @@ class ChildUserProvider extends ChangeNotifier {
     setStatus(DataFetchStatus.loading);
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
-    final String? parentUid = user?.uid;
-    logger.i('Parent UID: $parentUid');
+
+    if (user == null) {
+      logger.e('User is not authenticated.');
+      handleError("User not signed in.");
+      return;
+    }
+    final String parentUid = user.uid;
+    logger.i('Parent UID: $user');
+    logger.d('Current UID: ${FirebaseAuth.instance.currentUser?.uid}');
+    logger.d('Target path: /users/$parentUid/children');
+
     try {
       final querySnapshot =
           await _firestore
@@ -31,6 +40,7 @@ class ChildUserProvider extends ChangeNotifier {
               .toList();
       setStatus(DataFetchStatus.success);
     } catch (e) {
+      logger.e('Error fetching child users: $e');
       handleError(e.toString());
     }
   }

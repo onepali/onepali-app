@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 import '../../src.dart';
 
@@ -329,7 +330,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       if (!context.mounted) return;
       showCustomToaster("Registration successful! Please verify your email.");
-      Utility.navigateMaterialRoute(context, RS5Screen());
+      Utility.navigate(context, AppRoutes.rs5Screen);
     } on FirebaseAuthException catch (e) {
       setStatus(DataFetchStatus.initial);
       String errorMsg;
@@ -413,10 +414,17 @@ class AuthProvider with ChangeNotifier {
     // Reset AuthState
     authState.clear();
 
+    // Clear recommended songs DB
+    if (!context.mounted) return;
+    await Provider.of<RcmSongProvider>(context, listen: false).clearAll();
+
     setStatus(DataFetchStatus.initial);
     notifyListeners();
     if (!context.mounted) return;
     showCustomToaster("Logged out");
-    Utility.navigate(context, AppRoutes.splashScreen);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.onboardingScreen,
+      (Route<dynamic> route) => false,
+    );
   }
 }

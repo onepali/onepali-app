@@ -67,6 +67,17 @@ class Utility {
     }
   }
 
+  static AuthProviderType getAuthTypeFromUserInfo(userInfo) {
+    AuthProviderType type = AuthProviderType.email;
+    final loginType = userInfo;
+    if (loginType == AuthProviderType.google.name) {
+      type = AuthProviderType.google;
+    } else if (loginType == AuthProviderType.facebook.name) {
+      type = AuthProviderType.facebook;
+    }
+    return type;
+  }
+
   static Future<void> authWiseLogout(
     BuildContext context,
     AuthProviderType type,
@@ -107,5 +118,40 @@ class Utility {
       default:
         return null;
     }
+  }
+
+  static String? extractYoutubeVideoId(String url) {
+    final RegExp regExp = RegExp(
+      r'(?:v=|\/)([0-9A-Za-z_-]{11})(?:\?|&|\/|$)',
+      caseSensitive: false,
+      multiLine: false,
+    );
+    final match = regExp.firstMatch(url);
+    return match?.group(1);
+  }
+
+  static String ytThumbnailType(String type) {
+    if (type.isEmpty) {
+      return 'hqdefault';
+    }
+    switch (type) {
+      case 'mq':
+        return 'mqdefault';
+      case 'hq':
+        return 'hqdefault';
+      case 'sd':
+        return 'sddefault';
+      case 'max':
+        return 'maxresdefault';
+      default:
+        return 'hqdefault';
+    }
+  }
+
+  static generateYoutubeThumbnailUrl(String url, {String type = 'max'}) {
+    if (url.isEmpty) {
+      return '';
+    }
+    return 'https://img.youtube.com/vi/${extractYoutubeVideoId(url)}/${ytThumbnailType(type)}.jpg';
   }
 }

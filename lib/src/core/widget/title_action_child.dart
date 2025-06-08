@@ -53,6 +53,7 @@ class TitleActionChild extends StatelessWidget {
                 const Spacer(),
                 action ?? const SizedBox(),
                 Container(
+                  margin: const EdgeInsets.only(right: 8),
                   child:
                       widget ??
                       InkWell(

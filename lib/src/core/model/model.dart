@@ -12,10 +12,21 @@ export 'user/user_model.dart';
 export 'lesson/lesson_model.dart';
 
 /// [Response] Model
-export 'response_model.dart';
+export 'system/response_model.dart';
 
 /// [Home] Model
 export 'home/home_model.dart';
 
 /// [Child] Model
 export 'child/cuser_model.dart';
+
+//* ------------------------------- Child Models ------------------------------- *//
+
+/// [Song] Model
+export 'song/song_model.dart';
+
+/// [Recommended] Model
+export 'recommended/recommended_song_model.dart';
+
+ /// [Course] Model
+export 'course/course_model.dart';

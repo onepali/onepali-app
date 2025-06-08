@@ -87,10 +87,7 @@ class _RS2ScreenState extends State<RS2Screen> {
       label: 'Next',
       onTap: () {
         if (selectedIndex == null) {
-          showCustomToaster(
-            "Please select an option.",
-            isError: true,
-          );
+          showCustomToaster("Please select an option.", isError: true);
           return;
         }
         // Save learningReason to AuthState
@@ -98,7 +95,7 @@ class _RS2ScreenState extends State<RS2Screen> {
         authState.setLearningReason(
           AppConstants.whyLearningNepali[selectedIndex!],
         );
-        Utility.navigateMaterialRoute(context, RS3Screen());
+        Utility.navigate(context, AppRoutes.rs3Screen);
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
