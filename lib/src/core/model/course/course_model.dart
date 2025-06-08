@@ -99,6 +99,7 @@ class Lesson {
   final String type;
   final String progress;
   final String completionCriteria;
+  final String thumbnail;
   final int rank;
   final List<String> prerequisites;
   final List<LessonContent> lessonContent;
@@ -111,6 +112,7 @@ class Lesson {
     required this.type,
     required this.progress,
     required this.completionCriteria,
+    required this.thumbnail,
     required this.rank,
     required this.prerequisites,
     required this.lessonContent,
@@ -124,6 +126,7 @@ class Lesson {
     type: json["type"] ?? "",
     progress: json["progress"] ?? "",
     completionCriteria: json["completion_criteria"] ?? "",
+    thumbnail: json["thumbnail"] ?? "",
     rank: json["rank"] ?? 0,
     prerequisites: List<String>.from(
       (json["prerequisites"] ?? []).map((x) => x ?? ""),
@@ -141,6 +144,7 @@ class Lesson {
     "type": type,
     "progress": progress,
     "completion_criteria": completionCriteria,
+    "thumbnail": thumbnail,
     "rank": rank,
     "prerequisites": List<dynamic>.from(prerequisites.map((x) => x)),
     "lesson_content": List<dynamic>.from(lessonContent.map((x) => x.toJson())),

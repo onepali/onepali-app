@@ -67,6 +67,7 @@ class CourseScreenState extends State<CourseScreen> {
                                       chapter.nameEn.isNotEmpty
                                           ? chapter.nameEn
                                           : chapter.nameNp,
+                                  thumbnail: category.thumbnail,
                                   color: Colors.orange[200]!,
                                   isLocked: false,
                                   isCompleted: false,

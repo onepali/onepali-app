@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../src.dart';
 
 class LessonCard extends StatelessWidget {
-  final String title;
+  final Lesson data;
   final Color color;
   final bool isLocked;
   final bool isCompleted;
@@ -12,7 +12,7 @@ class LessonCard extends StatelessWidget {
 
   const LessonCard({
     super.key,
-    required this.title,
+    required this.data,
     required this.color,
     this.isLocked = false,
     this.isCompleted = false,
@@ -31,31 +31,45 @@ class LessonCard extends StatelessWidget {
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: color,
+
             borderRadius: BorderRadius.circular(16),
           ),
           child: Stack(
             children: [
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kWhite,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: AppColors.kBlack,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomImage(
+                      data.thumbnail,
+                      width: 140,
+                      cover: false,
+                      height: 100,
+                      circular: false,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
+                    Gaps.verticalGapOf(20),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.kWhite,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Text(
+                        data.lessonName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: AppColors.kBlack,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               if (isCompleted)

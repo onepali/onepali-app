@@ -19,7 +19,7 @@ class LessonScreen extends StatelessWidget {
         itemBuilder: (context, idx) {
           final lesson = chapter.lessons[idx];
           return LessonCard(
-            title: lesson.lessonName,
+            data: lesson,
             color: Colors.teal[200]!,
             isLocked: lesson.progress == 'locked',
             isCompleted: lesson.progress == 'completed',

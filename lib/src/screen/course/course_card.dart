@@ -4,6 +4,7 @@ import '../../src.dart';
 
 class CourseCard extends StatelessWidget {
   final String title;
+  final String? thumbnail;
   final Color color;
   final bool isLocked;
   final bool isCompleted;
@@ -13,6 +14,7 @@ class CourseCard extends StatelessWidget {
   const CourseCard({
     super.key,
     required this.title,
+    this.thumbnail,
     required this.color,
     this.isLocked = false,
     this.isCompleted = false,
@@ -30,6 +32,13 @@ class CourseCard extends StatelessWidget {
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: color,
+            image:
+                thumbnail != null
+                    ? DecorationImage(
+                      image: NetworkImage(thumbnail!),
+                      fit: BoxFit.cover,
+                    )
+                    : null,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Stack(
