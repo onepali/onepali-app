@@ -23,7 +23,19 @@ class LessonScreen extends StatelessWidget {
             color: Colors.teal[200]!,
             isLocked: lesson.progress == 'locked',
             isCompleted: lesson.progress == 'completed',
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (_) => LessonContentScreen(
+                        lesson: lesson,
+                        lessons: chapter.lessons,
+                        initialIndex: 0,
+                        hasSound: true,
+                      ),
+                ),
+              );
+            },
           );
         },
       ),

@@ -61,3 +61,7 @@ export 'course/course_card.dart';
 /// [Course] --> [Lesson]
 export 'course/lesson/lesson_screen.dart';
 export 'course/lesson/lesson_card.dart';
+
+/// [Course] --> [Lesson] --> [Leson_Content]
+export 'course/lesson/widget/lesson_content_screen.dart';
+export 'course/lesson/widget/lesson_content_card.dart';
