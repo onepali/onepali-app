@@ -1,0 +1,234 @@
+[
+    {
+        "nameEn": "The Tortoise and the Hare",
+        "nameNp": "कछुवा र खरायो",
+        "thumbnail": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftb_intro_image.svg?alt=media&token=be246887-72b0-4fd3-8faa-0895eb2fd3f3",
+        "lottie": "assets/lottie/animals/hare.json",
+        "audio": "assets/audio/animals/hare.mp3",
+        "tooltip": "A story about patience and perseverance.",
+        "description": "A classic fable showing that slow and steady wins the race.",
+        "content": [
+            {
+                "image": "assets/images/animals/hare.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "1",
+                        "messageEn": "Bunu is a rabbit. He can run fast.",
+                        "messageNp": "बुनु एउटा खरायो हो । ऊ छिटो दौडन सक्छ ।",
+                        "icon": ""
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/tortoise.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "2",
+                        "messageEn": "Tara is a tortoise. He walks slowly.",
+                        "messageNp": "तारा एउटा कछुवा हो । ऊ बिस्तारै हिँड्छ ।",
+                        "icon": ""
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/hare.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "3a",
+                        "messageEn": "Bunu: Tara dai! Why do you walk so slow?",
+                        "messageNp": "बुनु: तारा दाइ ! तपाईं त कति ढिलो हिँड्नुभएको ?",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_rabbit.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    },
+                    {
+                        "id": "3b",
+                        "messageEn": "Tara: Who is slow? Let's have a race and see!",
+                        "messageNp": "तारा: को ढिलो? एउटा दौड आयोजना गरौं । अनि थाहा हुन्छ ।",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_tortoise.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/objects/flag.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "4",
+                        "messageEn": "One, two, three - the race begins!",
+                        "messageNp": "एक, दुई, तिन - दौड सुरु हुन्छ ।",
+                        "icon": ""
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/tortoise.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "5a",
+                        "messageEn": "Tara: Slowly, slowly",
+                        "messageNp": "तारा: बिस्तारै, बिस्तारै",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_tortoise.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    },
+                    {
+                        "id": "5b",
+                        "messageEn": "Bunu: Quickly!",
+                        "messageNp": "बुनु:  फटाफट !",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_rabbit.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/objects/button.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "button_tap",
+                "conversation": [
+                    {
+                        "id": "6a",
+                        "messageEn": "Slow",
+                        "messageNp": "बिस्तारै",
+                        "icon": ""
+                    },
+                    {
+                        "id": "6b",
+                        "messageEn": "Quick",
+                        "messageNp": "फटाफट",
+                        "icon": ""
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/hare.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "7",
+                        "messageEn": "Bunu: I am tired. Tara dai is still far behind. I'll rest for a while.",
+                        "messageNp": "बुनु: मलाई थकाइ लाग्यो । तारा दाइ जहाँको त्यहीँ छ । एकछिन आराम गर्छु ।",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_rabbit.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/tortoise.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "8",
+                        "messageEn": "Tara: Slowly, slowly...",
+                        "messageNp": "तारा: बिस्तारै, बिस्तारै …",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_tortoise.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/tortoise.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "slide",
+                "conversation": [
+                    {
+                        "id": "9",
+                        "messageEn": "Tara slowly goes ahead of Bunu.",
+                        "messageNp": "तारा बिस्तारै बुनु भन्दा अघि जान्छ ।",
+                        "icon": ""
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/hare.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "10",
+                        "messageEn": "After a while... Bunu wakes up.\nTara is already ahead.",
+                        "messageNp": "केही बेर पछि … बुनुको निद्रा खुल्छ ।\nतारा बिस्तारै बुनु भन्दा अघि जान्छ ।",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_tortoise.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/hare.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "11",
+                        "messageEn": "Bunu: Quickly! Swa swa, fwa fwa!",
+                        "messageNp": "बुनु: फटाफट ! स्वाँ स्वाँ, फ्वाँ फ्वाँ ।",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_rabbit.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/tortoise.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal_confetti",
+                "confetti": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Fsuccess_confetti.json?alt=media&token=0cc7d9b9-a0ac-4e9d-b8f0-805525e16fdf",
+                "conversation": [
+                    {
+                        "id": "12",
+                        "messageEn": "Bunu, you came late. I won!",
+                        "messageNp": "बुनु, तिमी ढिलो आयौ । मैले जितें !",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_tortoise.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/animals/tortoise.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "normal",
+                "conversation": [
+                    {
+                        "id": "13a",
+                        "messageEn": "Tara: Congratulations, Tara dai!",
+                        "messageNp": "तारा: बधाइ छ तारा दाइ !",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_tortoise.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    },
+                    {
+                        "id": "13b",
+                        "messageEn": "Bunu: Thank you! Let's play together now.",
+                        "messageNp": "बुनु: धन्यवाद! अब सँगै खेलौँ ।",
+                        "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_rabbit.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03"
+                    }
+                ]
+            },
+            {
+                "image": "assets/images/objects/dragdrop.png",
+                "audio": "assets/audio/animals/hare.mp3",
+                "lottie": "assets/lottie/animals/hare.json",
+                "type": "drag_drop",
+                "conversation": [
+                    {
+                        "id": "14",
+                        "messageEn": "Slow / Quick. Drag & drop. Nepali audio 'slow', then 'quick'. Only possible to place if child matches correctly, otherwise the container returns. When done, return to the home dashboard.",
+                        "messageNp": "slow / quick. ड्र्याग एन्ड ड्रप। नेपाली अडियो 'slow', अनि 'quick'। सहि मिलाए मात्र राख्न सकिन्छ, नत्र कन्टेनर फर्कन्छ। सकिएपछि होम ड्यासबोर्डमा फर्कनुहोस्।",
+                        "icon": "assets/images/objects/dragdrop.png"
+                    }
+                ]
+            }
+        ]
+    }
+]
