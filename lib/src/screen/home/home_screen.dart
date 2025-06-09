@@ -49,9 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLessons(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    final containerHeight =
+        isMobile
+            ? MediaQuery.of(context).size.height * 0.60
+            : MediaQuery.of(context).size.height * 0.75;
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.60,
-      child: CourseScreen(),
+      height: containerHeight,
+      child: CourseScreen(isMobile: isMobile),
     );
   }
 
