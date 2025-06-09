@@ -35,6 +35,9 @@ class ProviderConfig {
   /// [Recommended] Provider
   static final RcmSongProvider recommendedSongProvider = RcmSongProvider();
 
+  /// [Story] Provider
+  static final StoryProvider storyProvider = StoryProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -61,6 +64,7 @@ class ProviderConfig {
     ChangeNotifierProvider<RcmSongProvider>(
       create: (_) => recommendedSongProvider,
     ),
+    ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
   ];
 
   /// Dispose all providers
@@ -78,6 +82,7 @@ class ProviderConfig {
 
     childUserProvider.dispose();
     recommendedSongProvider.dispose();
+    songProvider.dispose();
   }
 
   /// Singleton factory

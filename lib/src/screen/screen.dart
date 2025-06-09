@@ -65,3 +65,11 @@ export 'course/lesson/lesson_card.dart';
 /// [Course] --> [Lesson] --> [Leson_Content]
 export 'course/lesson/widget/lesson_content_screen.dart';
 export 'course/lesson/widget/lesson_content_card.dart';
+
+/// [Story]
+export 'story/story_screen.dart';
+export 'story/story_card.dart';
+
+/// [Story] --> [Story_Content]
+export 'story/story_content/story_content_screen.dart';
+export 'story/story_content/story_content_card.dart';
