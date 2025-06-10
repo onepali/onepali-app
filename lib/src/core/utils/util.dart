@@ -19,3 +19,6 @@ export 'datetime_utility.dart';
 
 /// [Navigate] Observer
 export 'navigator_observer.dart';
+
+/// [Platform] Utility
+export 'platform_utility.dart';

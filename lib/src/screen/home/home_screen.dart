@@ -98,10 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Stories',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: Center(child: Text('Stories Content Here')),
-      ),
+      child: SizedBox(height: 220, child: StoryScreen()),
     );
   }
 }
