@@ -14,7 +14,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    Misc.onLayoutRendered(() {
       context.read<StoryProvider>().setCurrentStory(widget.story);
     });
   }
@@ -30,7 +30,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
           // Logging for debugging
           logger.d(
-            '[StoryContentScreen] total: \\${contentList.length}, current: \\${idx}, remaining: \\${contentList.length - idx}',
+            '[StoryContentScreen] total: \\${contentList.length}, current: \\$idx, remaining: \\${contentList.length - idx}',
           );
 
           if (idx == 0) {
