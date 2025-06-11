@@ -49,6 +49,7 @@ class Assets {
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
   static String logout = 'logout'.icon;
+  static String scrollRightArrow = 'scroll_right_arrow'.icon;
 
   // Miscellaneous
   static String successSvg = 'success'.svg;

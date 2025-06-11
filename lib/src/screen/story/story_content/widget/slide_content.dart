@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../src.dart';
 
-
-
 // Slide UI
 class SlideContent extends StatefulWidget {
   final Content content;
@@ -195,6 +193,39 @@ class SlideContentState extends State<SlideContent> {
                   height: 35,
                   width: 35,
                 ),
+              ),
+            ),
+          ),
+        ),
+        // Slide action bar (background and arrow)
+        Positioned(
+          left: 32,
+          right: 32,
+          bottom: 70,
+          child: IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _completed ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 300),
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  Positioned(
+                    left: 12 + _position,
+                    child: SvgHelper.fromSource(
+                      path: Assets.scrollRightArrow,
+                      height: 44,
+                      width: 44,
+                      type: SvgSourceType.asset,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

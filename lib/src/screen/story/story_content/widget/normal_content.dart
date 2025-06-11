@@ -77,7 +77,6 @@ class NormalContent extends StatelessWidget {
     }
     return Stack(
       children: [
-        // Background image (full screen)
         if (content.image.isNotEmpty)
           Positioned.fill(
             bottom: 50,

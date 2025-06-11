@@ -38,8 +38,39 @@ function updateStoriesInFirestore() {
 
     for (let c = 0; c < headers.length; c++) {
       const header = headers[c];
-      const value = row[c];
+      let value = row[c];
       if (value === '' || value == null) continue;
+
+      // Update image/character/thumbnail fields if they match old paths
+      if (header.endsWith('image') && typeof value === 'string' && value.includes('/stories/content/')) {
+        // For story images 1-13
+        const match = value.match(/story_(\d+)(?:_\d+)?\.png/);
+        if (match) {
+          const idx = parseInt(match[1], 10);
+          if (idx === 5 || idx === 6) {
+            value = 'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_5_6.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a';
+          } else if (idx >= 1 && idx <= 13) {
+            value = `https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_${idx}.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a`;
+          }
+        }
+      }
+      if (header.endsWith('character') && Array.isArray(value)) {
+        value = value.map(v => {
+          if (typeof v === 'string' && v.includes('tortoise.svg')) {
+            return 'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Ftortoise.svg?alt=media&token=8538ae1b-6ff6-45a9-a35d-348607c0587e';
+          }
+          if (typeof v === 'string' && v.includes('rabbit.svg')) {
+            return 'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Frabbit.svg?alt=media&token=033e9e65-16bc-46f8-bc65-b6fd6a616f9c';
+          }
+          if (typeof v === 'string' && v.includes('sleep_rabbit.svg')) {
+            return 'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fsleep_rabbit.svg?alt=media&token=9d9a1a5f-eed8-4936-99c0-7b95904ca2f2';
+          }
+          return v;
+        });
+      }
+      if (header === 'thumbnail' && typeof value === 'string' && value.includes('tb_intro_image.svg')) {
+        value = 'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Ftb_intro_image.svg?alt=media&token=2db977ee-ae5c-4b5b-a33b-9e671f341196';
+      }
       setNested(storiesMap[storyId], header, value);
     }
   }
