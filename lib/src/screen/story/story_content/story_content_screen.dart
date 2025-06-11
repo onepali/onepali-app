@@ -21,71 +21,74 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Consumer<StoryProvider>(
-        builder: (context, provider, _) {
-          final story = provider.currentStory ?? widget.story;
-          final contentList = story.content;
-          final idx = provider.currentContentIndex;
+    return Scaffold(
+      backgroundColor: AppColors.kSkyBlue,
+      body: SafeArea(
+        child: Consumer<StoryProvider>(
+          builder: (context, provider, _) {
+            final story = provider.currentStory ?? widget.story;
+            final contentList = story.content;
+            final idx = provider.currentContentIndex;
 
-          // Logging for debugging
-          logger.d(
-            '[StoryContentScreen] total: \\${contentList.length}, current: \\$idx, remaining: \\${contentList.length - idx}',
-          );
+            // Logging for debugging
+            logger.d(
+              '[StoryContentScreen] total: \\${contentList.length}, current: \\$idx, remaining: \\${contentList.length - idx}',
+            );
 
-          if (idx == 0) {
-            return Stack(
-              children: [
-                Positioned.fill(
-                  child: StoryCard(story: story, isRadius: false),
-                ),
-                // Right arrow to go to next lesson
-                Positioned(
-                  right: 32,
-                  top: 0,
-                  bottom: 0,
-                  child: GestureDetector(
-                    onTap: () => provider.nextContent(),
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.kWhite,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.kBlack.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+            if (idx == 0) {
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: StoryCard(story: story, isRadius: false),
+                  ),
+                  // Right arrow to go to next lesson
+                  Positioned(
+                    right: 32,
+                    top: 0,
+                    bottom: 0,
+                    child: GestureDetector(
+                      onTap: () => provider.nextContent(),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.kWhite,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kBlack.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: SvgHelper.fromSource(path: Assets.rightArrow),
                       ),
-                      child: SvgHelper.fromSource(path: Assets.rightArrow),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
+                ],
+              );
+            }
 
-          // Show content card for idx in 1..contentList.length (inclusive)
-          if (idx > 0 && idx <= contentList.length) {
-            final content = contentList[idx - 1];
-            return Column(
-              children: [
-                Expanded(
-                  child: StoryContentCard(
-                    content: content,
-                    isLast: idx == contentList.length,
-                    onConfetti: () {},
+            // Show content card for idx in 1..contentList.length (inclusive)
+            if (idx > 0 && idx <= contentList.length) {
+              final content = contentList[idx - 1];
+              return Column(
+                children: [
+                  Expanded(
+                    child: StoryContentCard(
+                      content: content,
+                      isLast: idx == contentList.length,
+                      onConfetti: () {},
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
-          return const SizedBox();
-        },
+                ],
+              );
+            }
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }

@@ -1,8 +1,6 @@
-import'package:flutter/material.dart';
-import'package:provider/provider.dart';
-import'../../../../src.dart';
-
-
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../src.dart';
 
 // Normal UI
 class NormalContent extends StatelessWidget {
@@ -82,7 +80,7 @@ class NormalContent extends StatelessWidget {
         // Background image (full screen)
         if (content.image.isNotEmpty)
           Positioned.fill(
-            bottom: 60,
+            bottom: 50,
             child: CustomImage(
               content.image,
               imageType: CustomImageType.network,
@@ -105,7 +103,11 @@ class NormalContent extends StatelessWidget {
         Positioned(
           top: 24,
           right: 24,
-          child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+          child: customInkwell(
+            onTap:
+                () => Navigator.of(context).popUntil((route) => route.isFirst),
+            child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+          ),
         ),
         // Left arrow (center vertically)
         Positioned(

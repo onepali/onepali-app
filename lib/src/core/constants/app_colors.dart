@@ -23,6 +23,7 @@ class AppColors {
   static const Color kPurple = Color(0xFF5210BC);
   static const Color kTeal = Color(0xFF008080);
   static const Color kPink = Color(0xFFFFC0CB);
+  static const Color kSkyBlue = Color(0xFFB8F2FF);
 
   /// [Button] Color
   static const Color kButtonGrey = Color(0xFFE1E1E1);
