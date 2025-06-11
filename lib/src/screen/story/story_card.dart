@@ -3,7 +3,8 @@ import 'package:onepali/src/src.dart';
 
 class StoryCard extends StatelessWidget {
   final StoryModel story;
-  const StoryCard({super.key, required this.story});
+  final bool? isRadius;
+  const StoryCard({super.key, required this.story, this.isRadius = true});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,8 @@ class StoryCard extends StatelessWidget {
         width: cardWidth,
         decoration: BoxDecoration(
           color: AppColors.sunshineYellow,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius:
+              isRadius == true ? BorderRadius.circular(20) : BorderRadius.zero,
         ),
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -45,26 +47,24 @@ class StoryCard extends StatelessWidget {
                 type: SvgSourceType.network,
               ),
             Gaps.verticalGapOf(16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    story.nameNp,
-                    style: AppStyles.text18PxRegular.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  story.nameNp,
+                  style: AppStyles.text18PxRegular.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  Gaps.verticalGapOf(4),
-                  Text(
-                    story.nameEn,
-                    style: AppStyles.text14PxRegular.copyWith(
-                      color: AppColors.kGrey,
-                    ),
+                ),
+                Gaps.verticalGapOf(4),
+                Text(
+                  story.nameEn,
+                  style: AppStyles.text14PxRegular.copyWith(
+                    color: AppColors.kGrey,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

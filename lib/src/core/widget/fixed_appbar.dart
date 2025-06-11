@@ -9,7 +9,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
   final bool isMobile;
-  final AuthProviderType? authType ;
+  final AuthProviderType? authType;
 
   const UserAppBar({
     super.key,
@@ -84,7 +84,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   i,
                   selectedIndex,
                 ),
-              const SizedBox(width: 10),
+              Gaps.horizontalGapOf(10),
             ],
           ),
         ],

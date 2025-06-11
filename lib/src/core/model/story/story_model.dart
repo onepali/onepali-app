@@ -61,6 +61,7 @@ class Content {
   final String lottie;
   final String type;
   final List<Conversation> conversation;
+  final List<String>? characters;
   final String confetti;
 
   Content({
@@ -69,6 +70,7 @@ class Content {
     required this.lottie,
     required this.type,
     required this.conversation,
+    this.characters = const [],
     required this.confetti,
   });
 
@@ -83,6 +85,10 @@ class Content {
             : List<Conversation>.from(
               json["conversation"].map((x) => Conversation.fromJson(x)),
             ),
+    characters:
+        json["character"] == null
+            ? []
+            : List<String>.from(json["character"].map((x) => x.toString())),
     confetti: json["confetti"] ?? "",
   );
 
@@ -91,6 +97,7 @@ class Content {
     "audio": audio,
     "lottie": lottie,
     "type": type,
+    "character": List<dynamic>.from(characters!.map((x) => x.toString())),
     "conversation": List<dynamic>.from(conversation.map((x) => x.toJson())),
     "confetti": confetti,
   };
@@ -101,12 +108,14 @@ class Conversation {
   final String messageEn;
   final String messageNp;
   final String icon;
+  final bool? correct;
 
   Conversation({
     required this.id,
     required this.messageEn,
     required this.messageNp,
     required this.icon,
+    this.correct = false,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) => Conversation(
@@ -114,6 +123,7 @@ class Conversation {
     messageEn: json["messageEn"] ?? "",
     messageNp: json["messageNp"] ?? "",
     icon: json["icon"] ?? "",
+    correct: json["correct"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -121,5 +131,6 @@ class Conversation {
     "messageEn": messageEn,
     "messageNp": messageNp,
     "icon": icon,
+    "correct": correct,
   };
 }

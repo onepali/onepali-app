@@ -93,7 +93,7 @@ class DrawerCard extends StatelessWidget {
                 color: isSelected ? AppColors.kSecondaryColor : null,
               ),
 
-            const SizedBox(width: 16),
+            Gaps.horizontalGapOf(16),
 
             // Title
             Expanded(

@@ -9,6 +9,15 @@ class StoryProvider extends ChangeNotifier {
   final List<StoryModel> _stories = [];
   List<StoryModel> get stories => _stories;
 
+  int _currentContentIndex = 0;
+  int get currentContentIndex => _currentContentIndex;
+
+  StoryModel? _currentStory;
+  StoryModel? get currentStory => _currentStory;
+
+  bool _isPlaying = false;
+  bool get isPlaying => _isPlaying;
+
   Future<void> fetchStories() async {
     _status = DataFetchStatus.loading;
     notifyListeners();
@@ -17,7 +26,7 @@ class StoryProvider extends ChangeNotifier {
       _stories.clear();
       _stories.addAll(result);
       logger.d(
-        'Fetched ${_stories.length} stories ------ data: ${_stories[0].toJson()}',
+        'Fetched \\${_stories.length} stories ------ data: \\${_stories[0].toJson()}',
       );
       _status = DataFetchStatus.success;
       notifyListeners();
@@ -25,5 +34,53 @@ class StoryProvider extends ChangeNotifier {
       _status = DataFetchStatus.error;
       notifyListeners();
     }
+  }
+
+  void setCurrentStory(StoryModel story) {
+    _currentStory = story;
+    _currentContentIndex = 0;
+    notifyListeners();
+  }
+
+  void nextContent() {
+    if (_currentStory == null) return;
+    if (_currentContentIndex < _currentStory!.content.length) {
+      _currentContentIndex++;
+      notifyListeners();
+    }
+  }
+
+  void previousContent() {
+    if (_currentStory == null) return;
+    if (_currentContentIndex > 0) {
+      _currentContentIndex--;
+      notifyListeners();
+    }
+  }
+
+  void resetContentIndex() {
+    _currentContentIndex = 0;
+    notifyListeners();
+  }
+
+  Future<void> playAudio(
+    String url, {
+    AudioSourceType audioSourceType = AudioSourceType.asset,
+  }) async {
+    if (_isPlaying || url.isEmpty) return;
+    _isPlaying = true;
+    notifyListeners();
+    try {
+      final audioWidget = CustomAudioWidget(
+        audioPath: url,
+        audioSourceType: audioSourceType,
+      );
+      await audioWidget.play();
+      await audioWidget.dispose();
+    } catch (e) {
+      logger.e('Audio play error: \\${e.toString()}');
+    }
+    _isPlaying = false;
+    notifyListeners();
   }
 }
