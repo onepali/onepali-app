@@ -1,7 +1,7 @@
 {
     "nameEn": "The Tortoise and the Hare",
     "nameNp": "कछुवा र खरायो",
-    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftb_intro_image.svg?alt=media&token=be246887-72b0-4fd3-8faa-0895eb2fd3f3",
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Ftb_intro_image.svg?alt=media&token=2db977ee-ae5c-4b5b-a33b-9e671f341196",
     "lottie": "assets/lottie/animals/hare.json",
     "audio": "assets/audio/animals/hare.mp3",
     "tooltip": "A story about patience and perseverance.",
@@ -170,8 +170,8 @@
             "lottie": "assets/lottie/animals/hare.json",
             "type": "slide",
             "character": [
-                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise.svg?alt=media&token=a77aa428-e233-4f19-86fe-4c07e68cf66b",
-                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Fsleep_rabbit.svg?alt=media&token=d9d2aa22-48f6-414b-880a-ef4f3622b565"
+                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Ftortoise.svg?alt=media&token=8538ae1b-6ff6-45a9-a35d-348607c0587e",
+                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fsleep_rabbit.svg?alt=media&token=9d9a1a5f-eed8-4936-99c0-7b95904ca2f2"
             ],
             "conversation": [
                 {
@@ -265,8 +265,8 @@
             "lottie": "assets/lottie/animals/hare.json",
             "type": "drag_drop",
             "character": [
-                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise.svg?alt=media&token=a77aa428-e233-4f19-86fe-4c07e68cf66b",
-                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Frabbit.svg?alt=media&token=a77aa428-e233-4f19-86fe-4c07e68cf66b"
+                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Ftortoise.svg?alt=media&token=8538ae1b-6ff6-45a9-a35d-348607c0587e",
+                "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Frabbit.svg?alt=media&token=033e9e65-16bc-46f8-bc65-b6fd6a616f9c"
             ],
             "conversation": [
                 {
