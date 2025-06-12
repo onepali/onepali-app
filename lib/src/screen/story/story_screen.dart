@@ -15,6 +15,7 @@ class _StoryScreenState extends State<StoryScreen> {
     super.initState();
     Misc.onLayoutRendered(() {
       context.read<StoryProvider>().fetchStories();
+      context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(context);
     });
   }
 

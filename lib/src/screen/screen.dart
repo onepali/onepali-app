@@ -76,6 +76,7 @@ export 'story/story_content/story_content_card.dart';
 
 /// [Story] --> [Story_Content] --> [Widget]
 export 'story/story_content/story_content_widget_factory.dart';
+export 'story/story_content/recommended_stories_list.dart';
 
 export 'story/story_content/widget/slide_content.dart';
 export 'story/story_content/widget/dragdrop_content.dart';

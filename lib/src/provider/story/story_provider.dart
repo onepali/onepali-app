@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class StoryProvider extends ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
@@ -53,11 +54,33 @@ class StoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void nextContent() {
+  void nextContent(BuildContext context) async {
     if (_currentStory == null) return;
     if (_currentContentIndex < _currentStory!.content.length) {
       _currentContentIndex++;
       notifyListeners();
+      final authState = Provider.of<AuthState>(context, listen: false);
+      final childId = authState.currentChildId ?? '';
+      if (childId.isNotEmpty) {
+        final recommendedStoryProvider = Provider.of<RecommendedStoryProvider>(
+          context,
+          listen: false,
+        );
+        logger.d(
+          '[StoryProvider] Updating recommended story progress for childId: $childId, storyId: ${_currentStory!.nameEn}, progress: $_currentContentIndex',
+        );
+        await recommendedStoryProvider.saveOrUpdateStoryProgress(
+          childId: childId,
+          storyId: _currentStory!.nameEn,
+          progress: _currentContentIndex,
+          title: _currentStory!.nameEn,
+          image: _currentStory!.thumbnail,
+        );
+      } else {
+        logger.d(
+          '[StoryProvider] No childId found, not updating recommended story progress.',
+        );
+      }
     }
   }
 
@@ -93,5 +116,16 @@ class StoryProvider extends ChangeNotifier {
     }
     _isPlaying = false;
     notifyListeners();
+  }
+
+  Future<void> fetchRecommendedStoriesForActiveChild(
+    BuildContext context,
+  ) async {
+    if (!context.mounted) return;
+    final recommendedStoryProvider = Provider.of<RecommendedStoryProvider>(
+      context,
+      listen: false,
+    );
+    await recommendedStoryProvider.fetchRecommendedStories();
   }
 }

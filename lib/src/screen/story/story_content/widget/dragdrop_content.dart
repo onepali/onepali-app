@@ -122,9 +122,9 @@ class DragDropContentState extends State<DragDropContent> {
                     } else {
                       tryAgainIdx = details.data;
                       // Optionally, show a SnackBar or similar feedback
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Try Again!')),
-                      );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(content: Text('Try Again!')),
+                      // );
                     }
                   });
                 },

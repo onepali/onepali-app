@@ -26,7 +26,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
     if (correct) {
       await Future.delayed(const Duration(milliseconds: 800));
       if (mounted) {
-        storyProvider.nextContent();
+        storyProvider.nextContent(context);
       }
     }
   }

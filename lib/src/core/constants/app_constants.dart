@@ -18,6 +18,7 @@ class AppConstants {
   static const String refreshToken = 'refresh_token';
   static const String userInfo = 'user_info';
   static const String logged = 'logged';
+  static const String childIdKey = 'current_child_id';
 
   // Database
   static const String RECOM_DB_PATH = 'onp_recom.db';

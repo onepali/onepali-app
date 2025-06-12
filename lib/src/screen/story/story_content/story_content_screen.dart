@@ -14,9 +14,26 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
+    Misc.onLayoutRendered(() async {
+      final authState = context.read<AuthState>();
+      final childId = await ChildLocalStorage.getCurrentChildId();
+      if (childId != null && childId.isNotEmpty) {
+        authState.setCurrentChildId(childId);
+      }
+      if (!mounted) return;
       context.read<StoryProvider>().setCurrentStory(widget.story);
+      await context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
+        context,
+      );
     });
+  }
+
+  @override
+  void dispose() {
+    context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
+      context,
+    );
+    super.dispose();
   }
 
   @override
@@ -47,7 +64,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     top: 0,
                     bottom: 0,
                     child: GestureDetector(
-                      onTap: () => provider.nextContent(),
+                      onTap: () => provider.nextContent(context),
                       child: Container(
                         width: 48,
                         height: 48,

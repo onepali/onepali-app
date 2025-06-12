@@ -41,8 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildRecommendedSongCard(context),
             Gaps.verticalGapOf(10),
             _buildSongCard(context),
-          ] else if (_selectedTabIndex == 2)
+          ] else if (_selectedTabIndex == 2) ...[
             _buildStories(context),
+          ],
         ],
       ),
     );
@@ -94,11 +95,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStories(BuildContext context) {
-    return TitleActionChild(
-      title: 'Stories',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(height: 220, child: StoryScreen()),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RecommendedStoriesList(),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 8, top: 16),
+          child: Text('All Stories', style: AppStyles.text20PxSemiBold),
+        ),
+        SizedBox(height: 220, child: StoryScreen()),
+      ],
     );
   }
 }

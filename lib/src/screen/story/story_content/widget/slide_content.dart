@@ -78,7 +78,8 @@ class SlideContentState extends State<SlideContent> {
       if (_position >= maxPosition && !_completed) {
         setState(() => _completed = true);
         await Future.delayed(const Duration(milliseconds: 600));
-        if (mounted) storyProvider.nextContent();
+        if (!context.mounted) return;
+        if (mounted) storyProvider.nextContent(context);
       }
     }
 
@@ -174,7 +175,7 @@ class SlideContentState extends State<SlideContent> {
           bottom: 0,
           child: Center(
             child: GestureDetector(
-              onTap: () => storyProvider.nextContent(),
+              onTap: () => storyProvider.nextContent(context),
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,

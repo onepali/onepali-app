@@ -4,11 +4,17 @@ import 'package:onepali/src/src.dart';
 class StoryCard extends StatelessWidget {
   final StoryModel story;
   final bool? isRadius;
-  const StoryCard({super.key, required this.story, this.isRadius = true});
+  final double? progressPercent;
+  const StoryCard({
+    super.key,
+    required this.story,
+    this.isRadius = true,
+    this.progressPercent,
+  });
 
   @override
   Widget build(BuildContext context) {
-    logger.d('StoryCard: ${story.thumbnail}');
+    logger.d('StoryCard: \\${story.thumbnail}');
     final isTablet = PlatformUtility.isTablet(context);
     final isWeb = PlatformUtility.isWeb(context);
     final isLandscape = PlatformUtility.isLandscape(context);
@@ -66,6 +72,15 @@ class StoryCard extends StatelessWidget {
                 ),
               ],
             ),
+            Gaps.verticalGapOf(8),
+            if (progressPercent != null && progressPercent! > 0)
+              LinearProgressIndicator(
+                value: progressPercent,
+                backgroundColor: Colors.grey.shade300,
+                color: AppColors.kButtonGreen,
+                minHeight: 6,
+                borderRadius: BorderRadius.circular(10),
+              ),
           ],
         ),
       ),

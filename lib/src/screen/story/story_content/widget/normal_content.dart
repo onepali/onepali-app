@@ -128,7 +128,7 @@ class NormalContent extends StatelessWidget {
           child: Center(
             child: arrowButton(
               isLeft: false,
-              onTap: () => storyProvider.nextContent(),
+              onTap: () => storyProvider.nextContent(context),
             ),
           ),
         ),

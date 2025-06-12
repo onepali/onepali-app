@@ -31,6 +31,7 @@ export 'song/song_provider.dart';
 
 /// [Recommended] Provider
 export 'recommended/recommended_song_provider.dart';
+export 'recommended/recommended_story_provider.dart';
 
 /// [Story] Provider
 export 'story/story_provider.dart';
