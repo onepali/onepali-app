@@ -7,37 +7,58 @@ class LessonScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = PlatformUtility.isTablet(context);
+    final isWeb = PlatformUtility.isWeb(context);
+    final isLandscape = PlatformUtility.isLandscape(context);
+    double cardWidth;
+    double listHeight;
+    if (isWeb) {
+      cardWidth = 400;
+      listHeight = 320;
+    } else if (isTablet) {
+      cardWidth = isLandscape ? 350 : 300;
+      listHeight = isLandscape ? 260 : 350;
+    } else {
+      cardWidth = isLandscape ? 320 : 260;
+      listHeight = isLandscape ? 220 : 320;
+    }
     return Scaffold(
       appBar: CustomAppBar(
         title: chapter.nameEn.isNotEmpty ? chapter.nameEn : chapter.nameNp,
         centerTitle: false,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: chapter.lessons.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, idx) {
-          final lesson = chapter.lessons[idx];
-          return LessonCard(
-            data: lesson,
-            color: Colors.teal[200]!,
-            isLocked: lesson.progress == 'locked',
-            isCompleted: lesson.progress == 'completed',
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder:
-                      (_) => LessonContentScreen(
-                        lesson: lesson,
-                        lessons: chapter.lessons,
-                        initialIndex: 0,
-                        hasSound: true,
-                      ),
-                ),
-              );
-            },
-          );
-        },
+      body: SizedBox(
+        height: listHeight,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: chapter.lessons.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, idx) {
+            final lesson = chapter.lessons[idx];
+            return SizedBox(
+              width: cardWidth,
+              child: LessonCard(
+                data: lesson,
+                color: Colors.teal[200]!,
+                isLocked: lesson.progress == 'locked',
+                isCompleted: lesson.progress == 'completed',
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (_) => LessonContentScreen(
+                            lesson: lesson,
+                            lessons: chapter.lessons,
+                            initialIndex: 0,
+                            hasSound: true,
+                          ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
