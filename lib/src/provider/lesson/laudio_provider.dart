@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:provider/provider.dart';
 
 import '../../src.dart';
 
@@ -103,17 +104,55 @@ class LessonAudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void navigateToNextContent(List<LessonContent> contents) {
+  void navigateToNextContent(
+    List<LessonContent> contents,
+    BuildContext context,
+    Lesson lesson,
+  ) async {
     if (_currentIndex < contents.length - 1) {
       _currentIndex++;
       notifyListeners();
+      // Save progress after moving to next
+      final prefs = SharedPreferencesService();
+      final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
+      if (childId.isNotEmpty) {
+        if (!context.mounted) return;
+        final recommendedLessonProvider =
+            context.read<RecommendedLessonProvider>();
+        await recommendedLessonProvider.saveOrUpdateLessonProgress(
+          childId: childId,
+          lessonId: lesson.id.toString(),
+          progress: _currentIndex + 1,
+          title: contents[_currentIndex].nameNp,
+          image: contents[_currentIndex].image,
+        );
+      }
     }
   }
 
-  void navigateToPreviousContent() {
+  void navigateToPreviousContent(
+    List<LessonContent> contents,
+    BuildContext context,
+    Lesson lesson,
+  ) async {
     if (_currentIndex > 0) {
       _currentIndex--;
       notifyListeners();
+      // Save progress after moving to previous
+      final prefs = SharedPreferencesService();
+      final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
+      if (!context.mounted) return;
+      if (childId.isNotEmpty) {
+        final recommendedLessonProvider =
+            context.read<RecommendedLessonProvider>();
+        await recommendedLessonProvider.saveOrUpdateLessonProgress(
+          childId: childId,
+          lessonId: lesson.id.toString(),
+          progress: _currentIndex + 1,
+          title: contents[_currentIndex].nameNp,
+          image: contents[_currentIndex].image,
+        );
+      }
     }
   }
 

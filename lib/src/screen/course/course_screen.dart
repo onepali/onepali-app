@@ -16,6 +16,7 @@ class CourseScreenState extends State<CourseScreen> {
     super.initState();
     Misc.onLayoutRendered(() {
       context.read<LessonProvider>().fetchCourses();
+      context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
     });
   }
 

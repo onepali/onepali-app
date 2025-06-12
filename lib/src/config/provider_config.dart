@@ -36,8 +36,8 @@ class ProviderConfig {
   static final RcmSongProvider recommendedSongProvider = RcmSongProvider();
   static final RecommendedStoryProvider recommendedStoryProvider =
       RecommendedStoryProvider();
-  static final RecomLessonProvider recommendedLessonProvider =
-      RecomLessonProvider();
+  static final RecommendedLessonProvider recommendedLessonProvider =
+      RecommendedLessonProvider();
 
   /// [Story] Provider
   static final StoryProvider storyProvider = StoryProvider();
@@ -71,7 +71,7 @@ class ProviderConfig {
     ChangeNotifierProvider<RecommendedStoryProvider>(
       create: (_) => recommendedStoryProvider,
     ),
-    ChangeNotifierProvider<RecomLessonProvider>(
+    ChangeNotifierProvider<RecommendedLessonProvider>(
       create: (_) => recommendedLessonProvider,
     ),
     ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),

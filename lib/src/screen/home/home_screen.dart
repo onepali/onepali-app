@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:onepali/src/screen/course/lesson/widget/recommended_lessons_list.dart';
 
 class HomeScreen extends StatefulWidget {
   final int selectedTabIndex;
@@ -61,9 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       containerHeight = isLandscape ? 220 : 320;
     }
-    return SizedBox(
-      height: containerHeight,
-      child: CourseScreen(isMobile: !isTablet && !isWeb),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RecommendedLessonsList(),
+        SizedBox(height: 8),
+        SizedBox(
+          height: containerHeight,
+          child: CourseScreen(isMobile: !isTablet && !isWeb),
+        ),
+      ],
     );
   }
 
