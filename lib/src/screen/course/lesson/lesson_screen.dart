@@ -27,38 +27,37 @@ class LessonScreen extends StatelessWidget {
         title: chapter.nameEn.isNotEmpty ? chapter.nameEn : chapter.nameNp,
         centerTitle: false,
       ),
-      body: SizedBox(
-        height: listHeight,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: chapter.lessons.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, idx) {
-            final lesson = chapter.lessons[idx];
-            return SizedBox(
-              width: cardWidth,
-              child: LessonCard(
-                data: lesson,
-                color: Colors.teal[200]!,
-                isLocked: lesson.progress == 'locked',
-                isCompleted: lesson.progress == 'completed',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => LessonContentScreen(
-                            lesson: lesson,
-                            lessons: chapter.lessons,
-                            initialIndex: 0,
-                            hasSound: true,
-                          ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: chapter.lessons.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, idx) {
+          final lesson = chapter.lessons[idx];
+          return SizedBox(
+            width: cardWidth,
+            height: listHeight,
+
+            child: LessonCard(
+              data: lesson,
+              color: Colors.teal[200]!,
+              isLocked: lesson.progress == 'locked',
+              isCompleted: lesson.progress == 'completed',
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder:
+                        (_) => LessonContentScreen(
+                          lesson: lesson,
+                          lessons: chapter.lessons,
+                          initialIndex: 0,
+                          hasSound: true,
+                        ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

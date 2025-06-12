@@ -21,10 +21,19 @@ class RecommendedStoryProvider extends ChangeNotifier {
     final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
     logger.d('Fetching recommended stories for childId: $childId');
 
+    if (childId.isEmpty) {
+      logger.e('No childId found, skipping Firestore query.');
+      _recommendedStories = [];
+      _status = DataFetchStatus.error;
+      _isSyncing = false;
+      notifyListeners();
+      return;
+    }
+
     try {
       final query =
           await _firestore
-              .collection('recommended')
+              .collection(AppConstants.recomStoryCollection)
               .where('childId', isEqualTo: childId)
               .orderBy('lastWatched', descending: true)
               .get();
@@ -33,12 +42,12 @@ class RecommendedStoryProvider extends ChangeNotifier {
               .map((doc) => RecommendedStoryModel.fromJson(doc.data()))
               .toList();
       logger.d(
-        'Fetched ${_recommendedStories.length} recommended stories for childId: $childId',
+        'Fetched \\${_recommendedStories.length} recommended stories for childId: $childId',
       );
       _status = DataFetchStatus.success;
     } catch (e, stack) {
       logger.e(
-        'Error fetching recommended stories for childId: $childId\nError: $e\nStack: $stack',
+        'Error fetching recommended stories for childId: $childId\\nError: $e\\nStack: $stack',
       );
       _recommendedStories = [];
       _status = DataFetchStatus.error;
@@ -56,7 +65,7 @@ class RecommendedStoryProvider extends ChangeNotifier {
   }) async {
     final now = Timestamp.now();
     final docRef = _firestore
-        .collection('recommended')
+        .collection(AppConstants.recomStoryCollection)
         .doc('$childId-$storyId');
     await docRef.set({
       'childId': childId,
@@ -71,7 +80,7 @@ class RecommendedStoryProvider extends ChangeNotifier {
 
   Future<void> removeStory(String childId, String storyId) async {
     await _firestore
-        .collection('recommended')
+        .collection(AppConstants.recomStoryCollection)
         .doc('$childId-$storyId')
         .delete();
     await fetchRecommendedStories();
