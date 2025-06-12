@@ -13,6 +13,7 @@ export 'lesson/lesson_model.dart';
 
 /// [Response] Model
 export 'system/response_model.dart';
+export 'system/setting_model.dart';
 
 /// [Home] Model
 export 'home/home_model.dart';
@@ -27,6 +28,10 @@ export 'song/song_model.dart';
 
 /// [Recommended] Model
 export 'recommended/recommended_song_model.dart';
+export 'recommended/recommended_story_model.dart';
 
- /// [Course] Model
+/// [Course] Model
 export 'course/course_model.dart';
+
+/// [Story] Model
+export 'story/story_model.dart';

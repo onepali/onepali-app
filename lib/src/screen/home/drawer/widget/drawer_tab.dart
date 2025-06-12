@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
-import 'package:onepali/src/core/model/system/setting_model.dart';
+import 'package:provider/provider.dart';
 
 class TabDrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
@@ -13,12 +13,54 @@ class TabDrawerScreen extends StatefulWidget {
 class _TabDrawerScreenState extends State<TabDrawerScreen> {
   int _selectedChildIndex = -1;
 
+  Future<void> _initChildSelection() async {
+    if (widget.data.isNotEmpty) {
+      final savedId = await ChildLocalStorage.getCurrentChildId();
+      int idx = 0;
+      if (savedId != null && savedId.isNotEmpty) {
+        idx = widget.data.indexWhere((c) => c.uid == savedId);
+        if (idx == -1) idx = 0;
+      }
+      setState(() {
+        _selectedChildIndex = idx;
+      });
+      final authState = Provider.of<AuthState>(context, listen: false);
+      authState.setCurrentChildId(widget.data[idx].uid);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    if (widget.data.isNotEmpty) {
-      _selectedChildIndex = 0;
-    }
+    _initChildSelection();
+  }
+
+  void _onChildSelected(int index) async {
+    setState(() {
+      _selectedChildIndex = index;
+    });
+    // Show syncing overlay
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    final child = widget.data[index];
+    final recommendedStoryProvider = Provider.of<RecommendedStoryProvider>(
+      context,
+      listen: false,
+    );
+    await recommendedStoryProvider.fetchRecommendedStories();
+    await ChildLocalStorage.saveCurrentChildId(child.uid);
+    if (!mounted) return;
+    Navigator.of(context).pop(); // Remove overlay
+    final authState = Provider.of<AuthState>(context, listen: false);
+    authState.setCurrentChildId(child.uid);
+    Navigator.of(context).pop(); // Close the drawer
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(
+      context,
+    ).pushReplacement(MaterialPageRoute(builder: (_) => DashboardScreen()));
   }
 
   @override
@@ -74,9 +116,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                setState(() {
-                  _selectedChildIndex = index;
-                });
+                _onChildSelected(index);
               },
               child: Container(
                 height: 60,

@@ -9,6 +9,8 @@ class LessonCard extends StatelessWidget {
   final bool isCompleted;
   final VoidCallback? onTap;
   final Widget? trailing;
+  final double? thumbnailHeight;
+  final double? thumbnailWidth;
 
   const LessonCard({
     super.key,
@@ -18,6 +20,8 @@ class LessonCard extends StatelessWidget {
     this.isCompleted = false,
     this.onTap,
     this.trailing,
+    this.thumbnailHeight,
+    this.thumbnailWidth,
   });
 
   @override
@@ -31,21 +35,21 @@ class LessonCard extends StatelessWidget {
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: color,
-
             borderRadius: BorderRadius.circular(16),
           ),
           child: Stack(
             children: [
               Align(
-                alignment: Alignment.bottomCenter,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomImage(
                       data.thumbnail,
-                      width: 140,
+                      width: thumbnailWidth ?? 200,
                       cover: false,
-                      height: 100,
+                      height: thumbnailHeight ?? 140,
                       circular: false,
                     ),
                     Gaps.verticalGapOf(20),

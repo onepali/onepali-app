@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:onepali/src/core/widget/bottom_sheet_manager.dart';
 import 'package:onepali/src/src.dart';
-import 'package:onepali/src/core/model/system/setting_model.dart';
 
 class DrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
@@ -15,12 +15,26 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
   int _selectedChildIndex = -1;
 
+  Future<void> _initChildSelection() async {
+    if (widget.data.isNotEmpty) {
+      final savedId = await ChildLocalStorage.getCurrentChildId();
+      int idx = 0;
+      if (savedId != null && savedId.isNotEmpty) {
+        idx = widget.data.indexWhere((c) => c.uid == savedId);
+        if (idx == -1) idx = 0;
+      }
+      setState(() {
+        _selectedChildIndex = idx;
+      });
+      final authState = Provider.of<AuthState>(context, listen: false);
+      authState.setCurrentChildId(widget.data[idx].uid);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    if (widget.data.isNotEmpty) {
-      _selectedChildIndex = 0;
-    }
+    _initChildSelection();
   }
 
   @override
@@ -52,10 +66,21 @@ class _DrawerScreenState extends State<DrawerScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 setState(() {
                   _selectedChildIndex = index;
                 });
+                await ChildLocalStorage.saveCurrentChildId(child.uid);
+                final authState = Provider.of<AuthState>(
+                  context,
+                  listen: false,
+                );
+                authState.setCurrentChildId(child.uid);
+                Navigator.of(context).pop(); // Close the drawer
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => DashboardScreen()),
+                );
               },
               child: Container(
                 height: 55,

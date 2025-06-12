@@ -104,7 +104,7 @@ class CustomMaterialButton extends StatelessWidget {
                               ? const Color.fromARGB(72, 153, 29, 60)
                               : backgroundColor
                           : isBorderPrimary
-                          ? AppColors.kPrimaryColor
+                          ? AppColors.kButtonGreen
                           : backgroundColor,
                 )
                 : BorderSide.none,
@@ -150,7 +150,7 @@ class CustomMaterialButton extends StatelessWidget {
                         smallbutton
                             ? AppStyles.text12PxRegular.copyWith(
                               color:
-                                  fillButton ? AppColors.kPrimaryColor : color,
+                                  fillButton ? AppColors.kButtonGreen : color,
                             )
                             : textStyle ??
                                 AppStyles.text16PxMedium.copyWith(

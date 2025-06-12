@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class CourseScreen extends StatefulWidget {
-  const CourseScreen({super.key});
+  final bool isMobile;
+  const CourseScreen({super.key, this.isMobile = true});
 
   @override
   State<CourseScreen> createState() => CourseScreenState();
@@ -44,6 +45,13 @@ class CourseScreenState extends State<CourseScreen> {
                 itemCount: categoriesWithChapters.length,
                 itemBuilder: (context, catIdx) {
                   final category = categoriesWithChapters[catIdx];
+                  final isMobile = widget.isMobile;
+                  final containerHeight =
+                      isMobile
+                          ? MediaQuery.of(context).size.height * 0.55
+                          : MediaQuery.of(context).size.height * 0.65;
+                  final thumbnailHeight = isMobile ? 100.0 : 180.0;
+                  final thumbnailWidth = isMobile ? 120.0 : 200.0;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -57,7 +65,7 @@ class CourseScreenState extends State<CourseScreen> {
                       ),
                       Gaps.verticalGapOf(8),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.55,
+                        height: containerHeight,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children:
@@ -71,6 +79,8 @@ class CourseScreenState extends State<CourseScreen> {
                                   color: Colors.orange[200]!,
                                   isLocked: false,
                                   isCompleted: false,
+                                  thumbnailHeight: thumbnailHeight,
+                                  thumbnailWidth: thumbnailWidth,
                                   onTap: () {
                                     Utility.navigateMaterialRoute(
                                       context,

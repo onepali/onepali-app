@@ -41,17 +41,23 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildRecommendedSongCard(context),
             Gaps.verticalGapOf(10),
             _buildSongCard(context),
-          ] else if (_selectedTabIndex == 2)
+          ] else if (_selectedTabIndex == 2) ...[
             _buildStories(context),
+          ],
         ],
       ),
     );
   }
 
   Widget _buildLessons(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    final containerHeight =
+        isMobile
+            ? MediaQuery.of(context).size.height * 0.60
+            : MediaQuery.of(context).size.height * 0.75;
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.60,
-      child: CourseScreen(),
+      height: containerHeight,
+      child: CourseScreen(isMobile: isMobile),
     );
   }
 
@@ -89,14 +95,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStories(BuildContext context) {
-    return TitleActionChild(
-      title: 'Stories',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: Center(child: Text('Stories Content Here')),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RecommendedStoriesList(),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 8, top: 16),
+          child: Text('All Stories', style: AppStyles.text20PxSemiBold),
+        ),
+        SizedBox(height: 220, child: StoryScreen()),
+      ],
     );
   }
 }
