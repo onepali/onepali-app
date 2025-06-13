@@ -42,8 +42,7 @@ class SongCard extends StatelessWidget {
                   image:
                       Utility.generateYoutubeThumbnailUrl(
                         data.media.youtubeLink,
-                      ) ??
-                      '',
+                      ),
                   // childId: childId,
                 ),
           ),
@@ -61,7 +60,7 @@ class SongCard extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              Utility.generateYoutubeThumbnailUrl(data.media.youtubeLink) ?? '',
+              Utility.generateYoutubeThumbnailUrl(data.media.youtubeLink),
             ),
             fit: BoxFit.cover,
             onError: (exception, stackTrace) {

@@ -43,7 +43,7 @@ class SongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setStatus(DataFetchStatus status) {
+  void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
   }

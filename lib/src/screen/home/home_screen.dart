@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _buildRecommendedLessonCard(BuildContext context) {
+  Consumer<RecommendedLessonProvider> _buildRecommendedLessonCard(BuildContext context) {
     return Consumer<RecommendedLessonProvider>(
       builder: (context, provider, child) {
         if (!(provider.hasData)) return const SizedBox();

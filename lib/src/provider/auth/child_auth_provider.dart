@@ -52,7 +52,7 @@ class ChildAuthProvider extends ChangeNotifier {
     }
   }
 
-  setStatus(DataFetchStatus value) {
+  void setStatus(DataFetchStatus value) {
     _status = value;
     notifyListeners();
   }

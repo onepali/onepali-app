@@ -66,7 +66,7 @@ class RecommendedLessonsList extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: recommendedLessonModels.length,
-          separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
+          separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
           itemBuilder: (context, i) {
             final lesson = recommendedLessonModels[i];
             final rec = recommendedLessons.firstWhere(
