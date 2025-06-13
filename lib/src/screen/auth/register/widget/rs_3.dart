@@ -25,7 +25,7 @@ class _RS3ScreenState extends State<RS3Screen> {
     super.dispose();
   }
 
-  onYearSelected(DateTime date) {
+  void onYearSelected(DateTime date) {
     setState(() {
       selectedYear = date;
     });

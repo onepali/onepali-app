@@ -3,7 +3,7 @@ import 'package:onepali/navigator_key.dart';
 import 'package:onepali/src/src.dart';
 
 class BottomSheetManager {
-  static bottomModelSheet({
+  static Future bottomModelSheet({
     String title = '',
     String subTitle = '',
     String? image,
@@ -68,7 +68,7 @@ class BottomSheetManager {
     );
   }
 
-  static customBottomSheet(context, {String? title, Widget? child}) {
+  static Future customBottomSheet(context, {String? title, Widget? child}) {
     return showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: AppColors.transparent,

@@ -41,7 +41,7 @@ class _StoryScreenState extends State<StoryScreen> {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             itemCount: stories.length,
-            separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
+            separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
             itemBuilder: (context, i) {
               final story = stories[i];
               return SizedBox(

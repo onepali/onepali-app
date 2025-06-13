@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../src.dart';
 
 class ReusableWidget {
-  static horizontalIconTitle({
+  static GestureDetector horizontalIconTitle({
     String? icon,
     String? title,
     VoidCallback? onTap,

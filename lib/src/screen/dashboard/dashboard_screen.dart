@@ -24,7 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  fetchChildImage() async {
+  Future<void> fetchChildImage() async {
     await ChildLocalStorage.getCurrentAvatarUrl().then((value) {
       if (value != null && value.isNotEmpty) {
         setState(() {

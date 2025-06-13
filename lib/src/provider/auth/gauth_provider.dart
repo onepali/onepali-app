@@ -153,7 +153,7 @@ class GoogleAuthProvider with ChangeNotifier {
     }
   }
 
-  onNavigate(BuildContext context) {
+  void onNavigate(BuildContext context) {
     Utility.navigate(context, AppRoutes.dashboardScreen);
   }
 

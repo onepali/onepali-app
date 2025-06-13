@@ -230,7 +230,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
     );
   }
 
-  logoutBottomSheet(context) {
+  Future logoutBottomSheet(context) {
     return BottomSheetManager.bottomModelSheet(
       title: 'Are you sure? Logout',
       action: Row(

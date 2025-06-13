@@ -180,7 +180,7 @@ class FAuthProvider with ChangeNotifier {
     }
   }
 
-  onNavigate(context) {
+  void onNavigate(context) {
     Utility.navigate(context, AppRoutes.dashboardScreen);
   }
 
@@ -189,7 +189,7 @@ class FAuthProvider with ChangeNotifier {
     handleError(message, context);
   }
 
-  setStatus(DataFetchStatus status) {
+  void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
   }
