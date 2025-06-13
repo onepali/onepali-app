@@ -62,8 +62,9 @@ class LessonAudioProvider extends ChangeNotifier {
   Future<void> playContentAudio(
     List<LessonContent> contents, {
     AudioSourceType audioSourceType = AudioSourceType.asset,
+    bool forceReplay = false,
   }) async {
-    if (_isPlaying) return;
+    if (_isPlaying && !forceReplay) return;
     _isPlaying = true;
     notifyListeners();
     final audioPath = contents[_currentIndex].audio;
@@ -154,6 +155,11 @@ class LessonAudioProvider extends ChangeNotifier {
         );
       }
     }
+  }
+
+  void resetIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
   }
 
   @override

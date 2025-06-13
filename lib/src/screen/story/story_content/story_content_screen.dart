@@ -56,7 +56,11 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               return Stack(
                 children: [
                   Positioned.fill(
-                    child: StoryCard(story: story, isRadius: false),
+                    child: StoryCard(
+                      story: story,
+                      isRadius: false,
+                      isRecommended: true,
+                    ),
                   ),
                   // Right arrow to go to next lesson
                   Positioned(

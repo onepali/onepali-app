@@ -23,6 +23,30 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   bool _showGoodRemark = false;
 
   @override
+  void initState() {
+    super.initState();
+    final audioProvider = context.read<LessonAudioProvider>();
+    if (widget.initialIndex == 0) {
+      audioProvider.resetIndex(0);
+    } else {
+      audioProvider.resetIndex(widget.initialIndex);
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final idx = widget.initialIndex;
+      final content =
+          (widget.lesson.lessonContent.length > idx)
+              ? widget.lesson.lessonContent[idx]
+              : null;
+      if (content != null && content.audio.isNotEmpty) {
+        await audioProvider.playContentAudio(
+          widget.lesson.lessonContent,
+          audioSourceType: AudioSourceType.network,
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final audioProvider = context.watch<LessonAudioProvider>();
     final content = widget.lesson.lessonContent[audioProvider.currentIndex];
@@ -76,11 +100,23 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         onPressed:
                             audioProvider.isPlaying
                                 ? null
-                                : () => audioProvider.navigateToPreviousContent(
-                                  widget.lesson.lessonContent,
-                                  context,
-                                  widget.lesson,
-                                ),
+                                : () async {
+                                  audioProvider.navigateToPreviousContent(
+                                    widget.lesson.lessonContent,
+                                    context,
+                                    widget.lesson,
+                                  );
+                                  // Auto play audio after navigation if audio exists
+                                  final prevContent =
+                                      widget.lesson.lessonContent[audioProvider
+                                          .currentIndex];
+                                  if (prevContent.audio.isNotEmpty) {
+                                    await audioProvider.playContentAudio(
+                                      widget.lesson.lessonContent,
+                                      audioSourceType: AudioSourceType.network,
+                                    );
+                                  }
+                                },
                       ),
                     ),
                   Expanded(
@@ -88,51 +124,49 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       content: content,
                       isPlaying: audioProvider.isPlaying,
                       hasSound: widget.hasSound,
-                      onPlay:
-                          audioProvider.isPlaying
-                              ? null
-                              : () async {
-                                await audioProvider.playContentAudio(
-                                  widget.lesson.lessonContent,
-                                  audioSourceType: AudioSourceType.network,
-                                );
-                                if (!context.mounted) return;
-                                final recommendedLessonProvider =
-                                    context.read<RecommendedLessonProvider>();
-                                final prefs = SharedPreferencesService();
-                                final childId =
-                                    await prefs.getStringPref(
-                                      AppConstants.childIdKey,
-                                    ) ??
-                                    '';
-                                if (childId.isNotEmpty) {
-                                  await recommendedLessonProvider
-                                      .saveOrUpdateLessonProgress(
-                                        childId: childId,
-                                        lessonId: widget.lesson.chapterId.toString(),
-                                        progress:
-                                            audioProvider.currentIndex + 1,
-                                        title:
-                                            widget
-                                                .lesson
-                                                .lessonContent[audioProvider
-                                                    .currentIndex]
-                                                .nameNp,
-                                        image:
-                                            widget
-                                                .lesson
-                                                .lessonContent[audioProvider
-                                                    .currentIndex]
-                                                .image,
-                                      );
-                                }
-                                if (audioProvider.currentIndex ==
-                                    widget.lesson.lessonContent.length - 1) {
-                                  setState(() {
-                                    _showGoodRemark = true;
-                                  });
-                                }
-                              },
+                      onPlay: () async {
+                        // Always play from start when tapped
+                        await audioProvider.playContentAudio(
+                          widget.lesson.lessonContent,
+                          audioSourceType: AudioSourceType.network,
+                          forceReplay: true,
+                        );
+                        if (!context.mounted) return;
+                        final recommendedLessonProvider =
+                            context.read<RecommendedLessonProvider>();
+                        final prefs = SharedPreferencesService();
+                        final childId =
+                            await prefs.getStringPref(
+                              AppConstants.childIdKey,
+                            ) ??
+                            '';
+                        if (childId.isNotEmpty) {
+                          await recommendedLessonProvider
+                              .saveOrUpdateLessonProgress(
+                                childId: childId,
+                                lessonId: widget.lesson.chapterId.toString(),
+                                progress: audioProvider.currentIndex + 1,
+                                title:
+                                    widget
+                                        .lesson
+                                        .lessonContent[audioProvider
+                                            .currentIndex]
+                                        .nameNp,
+                                image:
+                                    widget
+                                        .lesson
+                                        .lessonContent[audioProvider
+                                            .currentIndex]
+                                        .image,
+                              );
+                        }
+                        if (audioProvider.currentIndex ==
+                            widget.lesson.lessonContent.length - 1) {
+                          setState(() {
+                            _showGoodRemark = true;
+                          });
+                        }
+                      },
                       index: audioProvider.currentIndex,
                     ),
                   ),
@@ -161,11 +195,23 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         onPressed:
                             audioProvider.isPlaying
                                 ? null
-                                : () => audioProvider.navigateToNextContent(
-                                  widget.lesson.lessonContent,
-                                  context,
-                                  widget.lesson,
-                                ),
+                                : () async {
+                                  audioProvider.navigateToNextContent(
+                                    widget.lesson.lessonContent,
+                                    context,
+                                    widget.lesson,
+                                  );
+                                  // Auto play audio after navigation if audio exists
+                                  final nextContent =
+                                      widget.lesson.lessonContent[audioProvider
+                                          .currentIndex];
+                                  if (nextContent.audio.isNotEmpty) {
+                                    await audioProvider.playContentAudio(
+                                      widget.lesson.lessonContent,
+                                      audioSourceType: AudioSourceType.network,
+                                    );
+                                  }
+                                },
                       ),
                     ),
                 ],

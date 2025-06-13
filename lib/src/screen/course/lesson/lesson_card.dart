@@ -40,6 +40,7 @@ class LessonCard extends StatelessWidget {
           child: Stack(
             children: [
               Align(
+                alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +77,19 @@ class LessonCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (trailing != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: -8,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: trailing!,
+                  ),
+                ),
               if (isCompleted)
                 Positioned(
                   top: 12,
@@ -92,7 +106,6 @@ class LessonCard extends StatelessWidget {
                   right: 12,
                   child: Icon(Icons.lock, color: Colors.black, size: 22),
                 ),
-              if (trailing != null) trailing!,
             ],
           ),
         ),

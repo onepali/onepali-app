@@ -24,6 +24,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
       setState(() {
         _selectedChildIndex = idx;
       });
+      if (!mounted) return;
       final authState = Provider.of<AuthState>(context, listen: false);
       authState.setCurrentChildId(widget.data[idx].uid);
     }
@@ -52,12 +53,14 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     );
     await recommendedStoryProvider.fetchRecommendedStories();
     await ChildLocalStorage.saveCurrentChildId(child.uid);
+    await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
     if (!mounted) return;
     Navigator.of(context).pop(); // Remove overlay
     final authState = Provider.of<AuthState>(context, listen: false);
     authState.setCurrentChildId(child.uid);
     Navigator.of(context).pop(); // Close the drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
+    UserAppBar.setTabIndex(0);
     Navigator.of(
       context,
     ).pushReplacement(MaterialPageRoute(builder: (_) => DashboardScreen()));
@@ -126,7 +129,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                   border: Border.all(
                     color:
                         index == _selectedChildIndex
-                            ? AppColors.kButtonGreen
+                            ? AppColors.kPrimaryColor
                             : AppColors.transparent,
                     width: 2,
                   ),

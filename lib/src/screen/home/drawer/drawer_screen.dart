@@ -26,6 +26,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
       setState(() {
         _selectedChildIndex = idx;
       });
+      if (!mounted) return;
       final authState = Provider.of<AuthState>(context, listen: false);
       authState.setCurrentChildId(widget.data[idx].uid);
     }
@@ -70,14 +71,21 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 setState(() {
                   _selectedChildIndex = index;
                 });
+
                 await ChildLocalStorage.saveCurrentChildId(child.uid);
+                await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
+                if (!mounted) return;
+
                 final authState = Provider.of<AuthState>(
                   context,
                   listen: false,
                 );
                 authState.setCurrentChildId(child.uid);
-                Navigator.of(context).pop(); // Close the drawer
+
+                Navigator.of(context).pop();
                 Navigator.of(context).popUntil((route) => route.isFirst);
+                UserAppBar.setTabIndex(0);
+
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => DashboardScreen()),
                 );
@@ -90,9 +98,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   border: Border.all(
                     color:
                         index == _selectedChildIndex
-                            ? AppColors.kButtonGreen
+                            ? AppColors.kPrimaryColor
                             : AppColors.transparent,
-                    width: 2,
+                    width: 3,
                   ),
                 ),
                 child: CustomImage(child.avatarUrl, height: 55, width: 55),

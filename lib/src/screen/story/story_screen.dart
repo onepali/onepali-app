@@ -15,27 +15,14 @@ class _StoryScreenState extends State<StoryScreen> {
     super.initState();
     Misc.onLayoutRendered(() {
       context.read<StoryProvider>().fetchStories();
-      context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(context);
+      context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
+        context,
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isWeb = PlatformUtility.isWeb(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    double cardWidth;
-    double listHeight;
-    if (isWeb) {
-      cardWidth = 400;
-      listHeight = 320;
-    } else if (isTablet) {
-      cardWidth = isLandscape ? 350 : 300;
-      listHeight = isLandscape ? 260 : 350;
-    } else {
-      cardWidth = isLandscape ? 320 : 260;
-      listHeight = isLandscape ? 220 : 320;
-    }
     return Consumer<StoryProvider>(
       builder: (context, provider, _) {
         if (provider.status == DataFetchStatus.loading) {
@@ -49,7 +36,7 @@ class _StoryScreenState extends State<StoryScreen> {
           return const Center(child: Text('No stories found'));
         }
         return SizedBox(
-          height: listHeight,
+          height: AppCardResponsive.getCardHeight(context),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -57,7 +44,10 @@ class _StoryScreenState extends State<StoryScreen> {
             separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
             itemBuilder: (context, i) {
               final story = stories[i];
-              return SizedBox(width: cardWidth, child: StoryCard(story: story));
+              return SizedBox(
+                width: AppCardResponsive.getCardWidth(context),
+                child: StoryCard(story: story),
+              );
             },
           ),
         );

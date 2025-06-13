@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:onepali/src/screen/course/lesson/widget/recommended_lessons_list.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final int selectedTabIndex;
@@ -30,19 +31,36 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  double _getCardHeight(BuildContext context) =>
+      AppCardResponsive.getCardHeight(context);
+
   @override
   Widget build(BuildContext context) {
+    // Fetch data for the selected tab only when needed
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_selectedTabIndex == 0) {
+        context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
+      } else if (_selectedTabIndex == 1) {
+        context.read<RcmSongProvider>().fetchRecommendedSongs();
+      } else if (_selectedTabIndex == 2) {
+        context.read<RecommendedStoryProvider>().fetchRecommendedStories();
+      }
+    });
     return SingleChildScrollView(
       child: Column(
         children: [
           Gaps.verticalGapOf(10),
-          if (_selectedTabIndex == 0)
-            _buildLessons(context)
-          else if (_selectedTabIndex == 1) ...[
+          if (_selectedTabIndex == 0) ...[
+            _buildRecommendedLessonCard(context),
+            Gaps.verticalGapOf(10),
+            _buildLessons(context),
+          ] else if (_selectedTabIndex == 1) ...[
             _buildRecommendedSongCard(context),
             Gaps.verticalGapOf(10),
             _buildSongCard(context),
           ] else if (_selectedTabIndex == 2) ...[
+            _buildRecommendedStoryCard(context),
+            Gaps.verticalGapOf(10),
             _buildStories(context),
           ],
         ],
@@ -50,28 +68,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  _buildRecommendedLessonCard(BuildContext context) {
+    return Consumer<RecommendedLessonProvider>(
+      builder: (context, provider, child) {
+        if (!(provider.hasData)) return const SizedBox();
+        return TitleActionChild(
+          title: 'Recommended Lessons',
+          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+            color: AppColors.kBlack,
+          ),
+
+          child: SizedBox(
+            height: _getCardHeight(context),
+            child: RecommendedLessonsList(),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildLessons(BuildContext context) {
     final isTablet = PlatformUtility.isTablet(context);
     final isWeb = PlatformUtility.isWeb(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    double containerHeight;
-    if (isWeb) {
-      containerHeight = 320;
-    } else if (isTablet) {
-      containerHeight = isLandscape ? 260 : 350;
-    } else {
-      containerHeight = isLandscape ? 220 : 320;
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RecommendedLessonsList(),
-        SizedBox(height: 8),
-        SizedBox(
-          height: containerHeight,
-          child: CourseScreen(isMobile: !isTablet && !isWeb),
-        ),
-      ],
+
+    return SizedBox(
+      height: AppCardResponsive.getLessonCardHeight(context),
+      child: CourseScreen(isMobile: !isTablet && !isWeb),
     );
   }
 
@@ -89,36 +112,54 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (_) => SongScreen(showCategoryList: true)),
         );
       },
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.55,
-        child: SongScreen(),
-      ),
+      child: SizedBox(height: _getCardHeight(context), child: SongScreen()),
     );
   }
 
   Widget _buildRecommendedSongCard(BuildContext context) {
-    return TitleActionChild(
-      title: 'Recommended Songs',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.55,
-        child: RecommendedSongScreen(),
-      ),
+    return Consumer<RcmSongProvider>(
+      builder: (context, provider, child) {
+        if (!provider.hasData) return const SizedBox();
+        return TitleActionChild(
+          title: 'Recommended Songs',
+          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+            color: AppColors.kBlack,
+          ),
+          child: SizedBox(
+            height: _getCardHeight(context),
+            child: RecommendedSongScreen(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRecommendedStoryCard(BuildContext context) {
+    return Consumer<RecommendedStoryProvider>(
+      builder: (context, provider, child) {
+        if (!provider.hasData) return const SizedBox();
+        return TitleActionChild(
+          title: 'Recommended Stories',
+          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+            color: AppColors.kBlack,
+          ),
+          child: SizedBox(
+            height: _getCardHeight(context),
+            child: RecommendedStoriesList(),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildStories(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RecommendedStoriesList(),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, bottom: 8, top: 16),
-          child: Text('All Stories', style: AppStyles.text20PxSemiBold),
-        ),
-        SizedBox(height: 220, child: StoryScreen()),
-      ],
+    return TitleActionChild(
+      title: 'Stories',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
     );
   }
 }

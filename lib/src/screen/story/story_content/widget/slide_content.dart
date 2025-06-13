@@ -95,11 +95,11 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Character 2 (static, right side)
         Positioned(
-          left: maxPosition + char1Width,
-          bottom: 55,
+          left: maxPosition + char1Width - charPadding,
+          bottom: 40,
           child: SvgHelper.fromSource(
             path: char2,
-            height: 100,
+            height: 30.h(context),
             width: char2Width,
             type: SvgSourceType.network,
           ),
@@ -114,7 +114,7 @@ class SlideContentState extends State<SlideContent> {
             },
             child: SvgHelper.fromSource(
               path: char1,
-              height: 100,
+              height: 25.h(context),
               width: char1Width,
               type: SvgSourceType.network,
             ),
