@@ -45,6 +45,17 @@ class AppConstants {
     Assets.avatar8,
   ];
 
+  static List<String> get avatarList => [
+    Assets.avatar1,
+    Assets.avatar2,
+    Assets.avatar3,
+    Assets.avatar4,
+    Assets.avatar5,
+    Assets.avatar6,
+    Assets.avatar7,
+    Assets.avatar8,
+  ];
+
   static List<String> whyLearningNepali = [
     'Develop a learning habit',
     'Communicate with relatives in Nepal',

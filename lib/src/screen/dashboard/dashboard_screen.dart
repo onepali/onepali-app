@@ -12,6 +12,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedTabIndex = 0;
+  String childProfileImage = '';
 
   @override
   void initState() {
@@ -19,6 +20,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Misc.onLayoutRendered(() {
       context.read<UserProvider>().fetchOwnProfile();
       context.read<ChildUserProvider>().fetchChildUser();
+      fetchChildImage();
+    });
+  }
+
+  fetchChildImage() async {
+    await ChildLocalStorage.getCurrentAvatarUrl().then((value) {
+      if (value != null && value.isNotEmpty) {
+        setState(() {
+          childProfileImage = value;
+        });
+      } else {
+        setState(() {
+          childProfileImage = Assets.avatar1;
+        });
+      }
     });
   }
 
@@ -41,7 +57,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           key: _scaffoldKey,
           appBar: UserAppBar(
             name: userInfo?.fullName ?? 'User',
-            profileImage: Assets.avatar1,
+            profileImage: childProfileImage,
             progressLevel: 0,
             totalStars: 0,
             onTabSelected: (tab) {
