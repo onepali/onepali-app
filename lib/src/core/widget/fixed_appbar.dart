@@ -26,6 +26,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     int selectedIndex = _selectedTabIndex;
+
     return Container(
       height: isMobile ? 90 : 120,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -40,22 +41,21 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
-                onPressed: () {
-                  Utility.navigateMaterialRoute(
-                    context,
-                    DrawerScreen(data: childData, authProviderType: authType),
-                  );
-                },
+                onPressed:
+                    () => Utility.navigateMaterialRoute(
+                      context,
+                      DrawerScreen(data: childData),
+                    ),
                 icon: CustomImage(
-                  Assets.avatar1,
-
-                  height: 50,
-                  width: 50,
-                  imageType: CustomImageType.local,
-                  isProfileImage: true,
-                  borderRadius: 60,
+                  profileImage,
+                  height: 45,
+                  width: 45,
+                  circular: true,
+                  imageType: CustomImageType.network,
                 ),
               ),
+              Gaps.horizontalGapOf(8),
+
               IconButton(
                 onPressed:
                     () => Utility.navigateMaterialRoute(

@@ -53,6 +53,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     );
     await recommendedStoryProvider.fetchRecommendedStories();
     await ChildLocalStorage.saveCurrentChildId(child.uid);
+    await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
     if (!mounted) return;
     Navigator.of(context).pop(); // Remove overlay
     final authState = Provider.of<AuthState>(context, listen: false);

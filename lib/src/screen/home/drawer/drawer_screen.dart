@@ -73,6 +73,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 });
 
                 await ChildLocalStorage.saveCurrentChildId(child.uid);
+                await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
                 if (!mounted) return;
 
                 final authState = Provider.of<AuthState>(
@@ -80,6 +81,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   listen: false,
                 );
                 authState.setCurrentChildId(child.uid);
+
                 Navigator.of(context).pop();
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 UserAppBar.setTabIndex(0);

@@ -7,7 +7,15 @@ class ChildLocalStorage {
     await prefs.setStringPref(AppConstants.childIdKey, childId);
   }
 
+  static Future<void> saveCurrentAvatarUrl(String avatar) async {
+    await prefs.setStringPref(AppConstants.avatarUrlKey, avatar);
+  }
+
   static Future<String?> getCurrentChildId() async {
     return await prefs.getStringPref(AppConstants.childIdKey);
+  }
+
+  static Future<String?> getCurrentAvatarUrl() async {
+    return await prefs.getStringPref(AppConstants.avatarUrlKey);
   }
 }
