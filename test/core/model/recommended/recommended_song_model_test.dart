@@ -17,7 +17,7 @@ void main() {
         'image': 'img.png',
       };
       final model = RcmSongsModel.fromJson(json);
-      expect(model.id, 1);
+      expect(model.songId, 1);
       expect(model.childId, 2);
       expect(model.songId, 'song123');
       expect(model.progress, 0.5);

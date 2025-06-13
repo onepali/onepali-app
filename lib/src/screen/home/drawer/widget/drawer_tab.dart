@@ -24,6 +24,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
       setState(() {
         _selectedChildIndex = idx;
       });
+      if (!mounted) return;
       final authState = Provider.of<AuthState>(context, listen: false);
       authState.setCurrentChildId(widget.data[idx].uid);
     }
