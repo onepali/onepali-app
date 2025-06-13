@@ -63,5 +63,18 @@
           export XDG_DATA_DIRS=${gtk3}/share/gsettings-schemas/${gtk3.name}:$XDG_DATA_DIRS
         '';
       };
+
+      # CI/CD pipeline steps
+      jobs = {
+        test = {
+          name = "Run tests";
+          run = "nix develop --impure --command flutter test";
+        };
+
+        build = {
+          name = "Build";
+          run = "nix develop --impure --command flutter build apk --split-per-abi --no-tree-shake-icons";
+        };
+      };
     };
 }

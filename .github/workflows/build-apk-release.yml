@@ -21,7 +21,7 @@ jobs:
         uses: cachix/install-nix-action@v27
 
       - name: Run tests
-        run: nix develop -c -- flutter test
+        run: nix develop --impure --command --flake . flutter test
 
       - name: Decode Keystore
         run: echo "${{ secrets.SIGNING_KEY_JKS_BASE64 }}" | base64 --decode > android/app/onepali.jks
@@ -34,7 +34,7 @@ jobs:
           echo "storeFile=onepali.jks" >> android/key.properties
 
       - name: Build
-        run: nix develop -c -- flutter build apk --split-per-abi --no-tree-shake-icons
+        run: nix develop --impure --command --flake . flutter build apk --split-per-abi --no-tree-shake-icons
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
