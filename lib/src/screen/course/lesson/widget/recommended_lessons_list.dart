@@ -15,12 +15,12 @@ class RecommendedLessonsList extends StatelessWidget {
         if (status == DataFetchStatus.loading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (status == DataFetchStatus.error) {
+        if (status == DataFetchStatus.error || lessonProvider.courses.isEmpty) {
           logger.e('Error fetching recommended lessons');
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              'Failed to load recommended lessons.',
+              'No recommended lessons available.',
               style: AppStyles.text16PxMedium.copyWith(color: Colors.red),
             ),
           );
@@ -61,9 +61,7 @@ class RecommendedLessonsList extends StatelessWidget {
         logger.d(
           'Filtered recommended lessons count: \\${recommendedLessonModels.length}--- l.ids: \\${recommendedLessonModels.map((l) => l.id).join(', ')}',
         );
-        if (recommendedLessonModels.isEmpty) {
-          return const SizedBox();
-        }
+
         return ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),

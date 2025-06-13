@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:onepali/src/screen/course/lesson/widget/recommended_lessons_list.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final int selectedTabIndex;
@@ -35,6 +36,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Fetch data for the selected tab only when needed
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_selectedTabIndex == 0) {
+        context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
+      } else if (_selectedTabIndex == 1) {
+        context.read<RcmSongProvider>().fetchRecommendedSongs();
+      } else if (_selectedTabIndex == 2) {
+        context.read<RecommendedStoryProvider>().fetchRecommendedStories();
+      }
+    });
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -58,15 +69,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _buildRecommendedLessonCard(BuildContext context) {
-    return TitleActionChild(
-      title: 'Recommended Lessons',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+    return Consumer<RecommendedLessonProvider>(
+      builder: (context, provider, child) {
+        if (!(provider.hasData)) return const SizedBox();
+        return TitleActionChild(
+          title: 'Recommended Lessons',
+          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+            color: AppColors.kBlack,
+          ),
 
-      child: SizedBox(
-        height: _getCardHeight(context),
-        child: RecommendedLessonsList(),
-      ),
+          child: SizedBox(
+            height: _getCardHeight(context),
+            child: RecommendedLessonsList(),
+          ),
+        );
+      },
     );
   }
 
@@ -99,26 +117,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecommendedSongCard(BuildContext context) {
-    return TitleActionChild(
-      title: 'Recommended Songs',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: _getCardHeight(context),
-        child: RecommendedSongScreen(),
-      ),
+    return Consumer<RcmSongProvider>(
+      builder: (context, provider, child) {
+        if (!provider.hasData) return const SizedBox();
+        return TitleActionChild(
+          title: 'Recommended Songs',
+          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+            color: AppColors.kBlack,
+          ),
+          child: SizedBox(
+            height: _getCardHeight(context),
+            child: RecommendedSongScreen(),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildRecommendedStoryCard(BuildContext context) {
-    return TitleActionChild(
-      title: 'Recommended Stories',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: _getCardHeight(context),
-        child: RecommendedStoriesList(),
-      ),
+    return Consumer<RecommendedStoryProvider>(
+      builder: (context, provider, child) {
+        if (!provider.hasData) return const SizedBox();
+        return TitleActionChild(
+          title: 'Recommended Stories',
+          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titleStyle: AppStyles.text20PxSemiBold.copyWith(
+            color: AppColors.kBlack,
+          ),
+          child: SizedBox(
+            height: _getCardHeight(context),
+            child: RecommendedStoriesList(),
+          ),
+        );
+      },
     );
   }
 

@@ -59,6 +59,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     authState.setCurrentChildId(child.uid);
     Navigator.of(context).pop(); // Close the drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
+    UserAppBar.setTabIndex(0);
     Navigator.of(
       context,
     ).pushReplacement(MaterialPageRoute(builder: (_) => DashboardScreen()));
@@ -127,7 +128,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                   border: Border.all(
                     color:
                         index == _selectedChildIndex
-                            ? AppColors.kButtonGreen
+                            ? AppColors.kPrimaryColor
                             : AppColors.transparent,
                     width: 2,
                   ),

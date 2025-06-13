@@ -13,6 +13,9 @@ class RecommendedStoryProvider extends ChangeNotifier {
   bool _isSyncing = false;
   bool get isSyncing => _isSyncing;
 
+  bool _hasData = false;
+  bool get hasData => _hasData;
+
   Future<void> fetchRecommendedStories() async {
     _status = DataFetchStatus.loading;
     _isSyncing = true;
@@ -24,6 +27,7 @@ class RecommendedStoryProvider extends ChangeNotifier {
     if (childId.isEmpty) {
       logger.e('No childId found, skipping Firestore query.');
       _recommendedStories = [];
+      _hasData = false;
       _status = DataFetchStatus.error;
       _isSyncing = false;
       notifyListeners();
@@ -41,6 +45,7 @@ class RecommendedStoryProvider extends ChangeNotifier {
           query.docs
               .map((doc) => RecommendedStoryModel.fromJson(doc.data()))
               .toList();
+      _hasData = _recommendedStories.isNotEmpty;
       logger.d(
         'Fetched \\${_recommendedStories.length} recommended stories for childId: $childId',
       );
@@ -50,6 +55,7 @@ class RecommendedStoryProvider extends ChangeNotifier {
         'Error fetching recommended stories for childId: $childId\\nError: $e\\nStack: $stack',
       );
       _recommendedStories = [];
+      _hasData = false;
       _status = DataFetchStatus.error;
     }
     _isSyncing = false;
@@ -88,6 +94,7 @@ class RecommendedStoryProvider extends ChangeNotifier {
 
   void clear() {
     _recommendedStories = [];
+    _hasData = false;
     notifyListeners();
   }
 }
