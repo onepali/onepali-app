@@ -18,6 +18,14 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
     });
   }
 
+  double _getCardWidth(BuildContext context) {
+    return AppCardResponsive.getCardWidth(context);
+  }
+
+  double _getCardHeight(BuildContext context) {
+    return AppCardResponsive.getCardHeight(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +70,8 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                         categoryName: '',
                       );
               return SizedBox(
-                width: MediaQuery.of(context).size.width * 0.43,
+                width: _getCardWidth(context),
+                height: _getCardHeight(context),
                 child: Stack(
                   children: [
                     SongCard(
@@ -73,10 +82,10 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                     Positioned(
                       left: 9,
                       right: 5,
-                      bottom: 0.3,
+                      bottom: 0.25,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
+                          horizontal: 18,
                           vertical: 15.7,
                         ),
                         child: LinearProgressIndicator(

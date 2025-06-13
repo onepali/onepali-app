@@ -22,3 +22,6 @@ export 'navigator_observer.dart';
 
 /// [Platform] Utility
 export 'platform_utility.dart';
+
+/// App [Responsive] Utility
+export 'app_card_responsive.dart';

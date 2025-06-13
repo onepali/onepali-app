@@ -5,27 +5,19 @@ class StoryCard extends StatelessWidget {
   final StoryModel story;
   final bool? isRadius;
   final double? progressPercent;
+  final bool isRecommended;
   const StoryCard({
     super.key,
     required this.story,
     this.isRadius = true,
     this.progressPercent,
+    this.isRecommended = false,
   });
 
   @override
   Widget build(BuildContext context) {
     logger.d('StoryCard: \\${story.thumbnail}');
-    final isTablet = PlatformUtility.isTablet(context);
-    final isWeb = PlatformUtility.isWeb(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    double cardWidth;
-    if (isWeb) {
-      cardWidth = 400;
-    } else if (isTablet) {
-      cardWidth = isLandscape ? 350 : 300;
-    } else {
-      cardWidth = isLandscape ? 320 : 260;
-    }
+
     return customInkwell(
       onTap: () {
         Utility.navigateMaterialRoute(
@@ -33,56 +25,82 @@ class StoryCard extends StatelessWidget {
           StoryContentScreen(story: story),
         );
       },
-      child: Container(
-        width: cardWidth,
-        decoration: BoxDecoration(
-          color: AppColors.sunshineYellow,
-          borderRadius:
-              isRadius == true ? BorderRadius.circular(20) : BorderRadius.zero,
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (story.thumbnail.isNotEmpty)
-              SvgHelper.fromSource(
-                path: story.thumbnail,
-                height: 80,
-                width: 80,
-                type: SvgSourceType.network,
-              ),
-            Gaps.verticalGapOf(16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.sunshineYellow,
+              borderRadius:
+                  isRadius == true
+                      ? BorderRadius.circular(20)
+                      : BorderRadius.zero,
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  story.nameNp,
-                  style: AppStyles.text18PxRegular.copyWith(
-                    fontWeight: FontWeight.bold,
+                if (story.thumbnail.isNotEmpty)
+                  SvgHelper.fromSource(
+                    path: story.thumbnail,
+                    height: isRecommended ? 40.h(context) : 80,
+                    width: isRecommended ? 40.w(context) : 80,
+                    type: SvgSourceType.network,
                   ),
-                ),
-                Gaps.verticalGapOf(4),
-                Text(
-                  story.nameEn,
-                  style: AppStyles.text14PxRegular.copyWith(
-                    color: AppColors.kGrey,
-                  ),
+                Gaps.verticalGapOf(isRecommended ? 8.h(context) : 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      story.nameNp,
+                      style:
+                          isRecommended
+                              ? AppStyles.text22PxRegular.copyWith(
+                                fontWeight: FontWeight.bold,
+                              )
+                              : AppStyles.text18PxRegular.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                    Gaps.verticalGapOf(4),
+                    Text(
+                      story.nameEn,
+                      style:
+                          isRecommended
+                              ? AppStyles.text16PxRegular.copyWith(
+                                color: AppColors.kGrey,
+                              )
+                              : AppStyles.text14PxRegular.copyWith(
+                                color: AppColors.kGrey,
+                              ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            Gaps.verticalGapOf(8),
-            if (progressPercent != null && progressPercent! > 0)
-              LinearProgressIndicator(
-                value: progressPercent,
-                backgroundColor: Colors.grey.shade300,
-                color: AppColors.kButtonGreen,
-                minHeight: 6,
-                borderRadius: BorderRadius.circular(10),
+          ),
+          if (progressPercent != null && progressPercent! > 0)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: -7.5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: LinearProgressIndicator(
+                  value: progressPercent,
+                  backgroundColor: Colors.grey.shade300,
+                  color: AppColors.kButtonGreen,
+                  minHeight: 2.5,
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

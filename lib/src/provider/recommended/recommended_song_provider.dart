@@ -13,6 +13,9 @@ class RcmSongProvider extends ChangeNotifier {
   bool _isSyncing = false;
   bool get isSyncing => _isSyncing;
 
+  bool _hasData = false;
+  bool get hasData => _hasData;
+
   Future<void> fetchRecommendedSongs() async {
     _status = DataFetchStatus.loading;
     _isSyncing = true;
@@ -24,6 +27,7 @@ class RcmSongProvider extends ChangeNotifier {
     if (childId.isEmpty) {
       logger.e('No childId found, skipping Firestore query.');
       _recommendedSongs = [];
+      _hasData = false;
       _status = DataFetchStatus.error;
       _isSyncing = false;
       notifyListeners();
@@ -39,6 +43,7 @@ class RcmSongProvider extends ChangeNotifier {
               .get();
       _recommendedSongs =
           query.docs.map((doc) => RcmSongsModel.fromJson(doc.data())).toList();
+      _hasData = _recommendedSongs.isNotEmpty;
       logger.d(
         'Fetched \\${_recommendedSongs.length} recommended songs for childId: $childId',
       );
@@ -48,6 +53,7 @@ class RcmSongProvider extends ChangeNotifier {
         'Error fetching recommended songs for childId: $childId\\nError: $e\\nStack: $stack',
       );
       _recommendedSongs = [];
+      _hasData = false;
       _status = DataFetchStatus.error;
     }
     _isSyncing = false;
@@ -95,6 +101,7 @@ class RcmSongProvider extends ChangeNotifier {
 
   void clear() {
     _recommendedSongs = [];
+    _hasData = false;
     notifyListeners();
   }
 }

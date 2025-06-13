@@ -37,48 +37,36 @@ class RecommendedStoriesList extends StatelessWidget {
         if (recommendedStoryModels.isEmpty) {
           return const SizedBox();
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8),
-              child: Text(
-                'Recommended Stories',
-                style: AppStyles.text20PxSemiBold,
-              ),
-            ),
-            SizedBox(
-              height: 220,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: recommendedStoryModels.length,
-                separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
-                itemBuilder: (context, i) {
-                  final story = recommendedStoryModels[i];
-                  final rec =
-                      recommendedStories
-                              .where((r) => r.storyId == story.nameEn)
-                              .isNotEmpty
-                          ? recommendedStories.firstWhere(
-                            (r) => r.storyId == story.nameEn,
-                          )
-                          : null;
-                  double? progressPercent;
-                  if (rec != null && story.content.isNotEmpty) {
-                    progressPercent = rec.progress / story.content.length;
-                  }
-                  return SizedBox(
-                    width: 260,
-                    child: StoryCard(
-                      story: story,
-                      progressPercent: progressPercent,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+        return SizedBox(
+          height: AppCardResponsive.getCardHeight(context),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: recommendedStoryModels.length,
+            separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
+            itemBuilder: (context, i) {
+              final story = recommendedStoryModels[i];
+              final rec =
+                  recommendedStories
+                          .where((r) => r.storyId == story.nameEn)
+                          .isNotEmpty
+                      ? recommendedStories.firstWhere(
+                        (r) => r.storyId == story.nameEn,
+                      )
+                      : null;
+              double? progressPercent;
+              if (rec != null && story.content.isNotEmpty) {
+                progressPercent = rec.progress / story.content.length;
+              }
+              return SizedBox(
+                width: AppCardResponsive.getCardWidth(context),
+                child: StoryCard(
+                  story: story,
+                  progressPercent: progressPercent,
+                ),
+              );
+            },
+          ),
         );
       },
     );

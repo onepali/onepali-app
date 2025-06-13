@@ -12,6 +12,8 @@ class RecommendedLessonProvider extends ChangeNotifier {
 
   bool _isSyncing = false;
   bool get isSyncing => _isSyncing;
+  bool _hasData = true;
+  bool get hasData => _hasData;
 
   Future<void> fetchRecommendedLessons() async {
     logger.d('fetchRecommendedLessons called');
@@ -25,6 +27,7 @@ class RecommendedLessonProvider extends ChangeNotifier {
     if (childId.isEmpty) {
       logger.e('No childId found, skipping Firestore query.');
       _recommendedLessons = [];
+      _hasData = false;
       _status = DataFetchStatus.error;
       _isSyncing = false;
       notifyListeners();
@@ -41,11 +44,13 @@ class RecommendedLessonProvider extends ChangeNotifier {
           query.docs
               .map((doc) => RecommendedLessonModel.fromJson(doc.data()))
               .toList();
+      _hasData = _recommendedLessons.isNotEmpty;
       logger.d('Fetched ${_recommendedLessons.length} recommended lessons');
       _status = DataFetchStatus.success;
     } catch (e, stack) {
       logger.e('Error fetching recommended lessons: $e\n$stack');
       _recommendedLessons = [];
+      _hasData = false;
       _status = DataFetchStatus.error;
     }
     _isSyncing = false;
@@ -84,6 +89,7 @@ class RecommendedLessonProvider extends ChangeNotifier {
 
   void clear() {
     _recommendedLessons = [];
+    _hasData = false;
     notifyListeners();
   }
 }

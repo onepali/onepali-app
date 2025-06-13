@@ -90,15 +90,15 @@ class DragDropContentState extends State<DragDropContent> {
               if (char1 != null)
                 SvgHelper.fromSource(
                   path: char1,
-                  height: 70,
-                  width: 70,
+                  height: 20.h(context),
+                  width: 70.w(context),
                   type: SvgSourceType.network,
                 ),
               if (char2 != null)
                 SvgHelper.fromSource(
                   path: char2,
-                  height: 70,
-                  width: 70,
+                  height: 20.h(context),
+                  width: 70.w(context),
                   type: SvgSourceType.network,
                 ),
             ],
