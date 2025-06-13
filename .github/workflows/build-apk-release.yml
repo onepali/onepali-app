@@ -47,7 +47,7 @@ jobs:
   release:
     name: Create GitHub release
     runs-on: ubuntu-latest
-    needs: [android, linux]
+    needs: [android]
     permissions:
       contents: write
     steps:
