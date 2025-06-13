@@ -12,14 +12,14 @@ class Utility {
     return Navigator.of(context).pushNamed(route, arguments: arguments);
   }
 
-  static navigateMaterialRoute(BuildContext context, screen) {
+  static Future navigateMaterialRoute(BuildContext context, screen) {
     return Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => screen),
     );
   }
 
-  static horizontalDividerTitle({String? title, TextStyle? titleStyle}) {
+  static Row horizontalDividerTitle({String? title, TextStyle? titleStyle}) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -67,7 +67,7 @@ class Utility {
     }
   }
 
-  static AuthProviderType getAuthTypeFromUserInfo(userInfo) {
+  static AuthProviderType getAuthTypeFromUserInfo(String userInfo) {
     AuthProviderType type = AuthProviderType.email;
     final loginType = userInfo;
     if (loginType == AuthProviderType.google.name) {
@@ -148,7 +148,7 @@ class Utility {
     }
   }
 
-  static generateYoutubeThumbnailUrl(String url, {String type = 'max'}) {
+  static String generateYoutubeThumbnailUrl(String url, {String type = 'max'}) {
     if (url.isEmpty) {
       return '';
     }

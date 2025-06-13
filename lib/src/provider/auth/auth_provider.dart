@@ -21,7 +21,7 @@ class AuthProvider with ChangeNotifier {
   User? _user;
   User? get user => _user;
 
-  setStatus(DataFetchStatus status) {
+  void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
   }

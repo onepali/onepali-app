@@ -45,12 +45,12 @@ class ChildUserProvider extends ChangeNotifier {
     }
   }
 
-  setStatus(DataFetchStatus status) {
+  void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
   }
 
-  handleError(String error) {
+  void handleError(String error) {
     _status = DataFetchStatus.error;
     showCustomToaster(error, isError: true);
     notifyListeners();
