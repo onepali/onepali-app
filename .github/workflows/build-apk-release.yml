@@ -28,12 +28,18 @@ jobs:
       - name: Decode Keystore
         run: echo "${{ secrets.SIGNING_KEY_JKS_BASE64 }}" | base64 --decode > android/app/onepali.jks
 
+      - name: Remove old key.properties
+        run: rm -f android/key.properties
+
       - name: Create key.properties
         run: |
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-          echo "storeFile=onepali.jks" >> android/key.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > $GITHUB_WORKSPACE/android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_WORKSPACE/android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> $GITHUB_WORKSPACE/android/key.properties
+          echo "storeFile=onepali.jks" >> $GITHUB_WORKSPACE/android/key.properties
+
+      - name: Debug workspace root
+        run: ls -l
 
       - name: Debug key.properties
         run: |
