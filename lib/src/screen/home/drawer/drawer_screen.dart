@@ -26,6 +26,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
       setState(() {
         _selectedChildIndex = idx;
       });
+      if (!mounted) return;
       final authState = Provider.of<AuthState>(context, listen: false);
       authState.setCurrentChildId(widget.data[idx].uid);
     }
@@ -70,13 +71,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 setState(() {
                   _selectedChildIndex = index;
                 });
+
                 await ChildLocalStorage.saveCurrentChildId(child.uid);
+                if (!mounted) return;
+
                 final authState = Provider.of<AuthState>(
                   context,
                   listen: false,
                 );
                 authState.setCurrentChildId(child.uid);
-                Navigator.of(context).pop(); // Close the drawer
+                Navigator.of(context).pop();
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => DashboardScreen()),

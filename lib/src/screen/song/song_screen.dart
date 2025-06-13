@@ -22,6 +22,14 @@ class _SongScreenState extends State<SongScreen> {
     });
   }
 
+  double _getCardWidth(BuildContext context) {
+    return AppCardResponsive.getCardWidth(context);
+  }
+
+  double _getCardHeight(BuildContext context) {
+    return AppCardResponsive.getCardHeight(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     // var childs = context.watch<ChildUserProvider>().childUser;
@@ -97,7 +105,15 @@ class _SongScreenState extends State<SongScreen> {
                         logger.d(
                           'SongScreen: songId: ${song.id}, title: ${song.titleEn}, category: ${song.categoryName}',
                         );
-                        return SongCard(index: index, data: song);
+                        return SizedBox(
+                          width: _getCardWidth(context),
+                          height: _getCardHeight(context),
+                          child: SongCard(
+                            index: index,
+                            data: song,
+                            // initialPosition: rec.progress, // Only for recommended, not for all songs
+                          ),
+                        );
                       },
                     ),
                   ),

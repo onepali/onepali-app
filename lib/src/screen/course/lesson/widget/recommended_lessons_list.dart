@@ -30,12 +30,10 @@ class RecommendedLessonsList extends StatelessWidget {
         );
         for (var i = 0; i < lessonProvider.courses.length; i++) {
           final course = lessonProvider.courses[i];
-          logger.d('Course \\${i} chapters: \\${course.courses.length}');
-          if (course.courses.map((c) => c.chapters) != null) {
-            for (var j = 0; j < course.courses.length; j++) {
-              final chapter = course.courses[j];
-              logger.d('  Chapter \\${j} lessons: \\${chapter.lessons.length}');
-            }
+          logger.d('Course \\$i chapters: \\${course.courses.length}');
+          for (var j = 0; j < course.courses.length; j++) {
+            final chapter = course.courses[j];
+            logger.d('  Chapter \\$j lessons: \\${chapter.lessons.length}');
           }
         }
         // Map RecommendedLessonModel to Lesson for display
@@ -66,71 +64,55 @@ class RecommendedLessonsList extends StatelessWidget {
         if (recommendedLessonModels.isEmpty) {
           return const SizedBox();
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8),
-              child: Text(
-                'Recommended Lessons',
-                style: AppStyles.text20PxSemiBold,
-              ),
-            ),
-            SizedBox(
-              height: 220,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: recommendedLessonModels.length,
-                separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
-                itemBuilder: (context, i) {
-                  final lesson = recommendedLessonModels[i];
-                  final rec = recommendedLessons.firstWhere(
-                    (r) => r.lessonId == lesson.id,
-                  );
-                  logger.d(
-                    'Building LessonCard for lessonId: \\${lesson.id}, title: \\${lesson.lessonName}, progress: \\${rec.progress}',
-                  );
-                  double? progressPercent;
-                  if (lesson.lessonContent.isNotEmpty) {
-                    progressPercent =
-                        rec.progress / lesson.lessonContent.length;
-                  }
-                  return SizedBox(
-                    width: 260,
-                    child: LessonCard(
-                      data: lesson,
-                      color: Colors.teal[200]!,
-                      isLocked: false,
-                      isCompleted:
-                          progressPercent != null && progressPercent >= 1.0,
-                      trailing:
-                          progressPercent != null && progressPercent > 0
-                              ? LinearProgressIndicator(
-                                value: progressPercent,
-                                backgroundColor: Colors.grey.shade300,
-                                color: AppColors.kButtonGreen,
-                                minHeight: 6,
-                                borderRadius: BorderRadius.circular(10),
-                              )
-                              : null,
-                      onTap: () {
-                        Utility.navigateMaterialRoute(
-                          context,
-                          LessonContentScreen(
-                            lesson: lesson,
-                            lessons: [lesson],
-                            initialIndex: rec.progress,
-                            hasSound: true,
-                          ),
-                        );
-                      },
+        return ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: recommendedLessonModels.length,
+          separatorBuilder: (_, __) => Gaps.horizontalGapOf(16),
+          itemBuilder: (context, i) {
+            final lesson = recommendedLessonModels[i];
+            final rec = recommendedLessons.firstWhere(
+              (r) => r.lessonId == lesson.id,
+            );
+            logger.d(
+              'Building LessonCard for lessonId: \${lesson.id}, title: \${lesson.lessonName}, progress: \${rec.progress}',
+            );
+            double? progressPercent;
+            if (lesson.lessonContent.isNotEmpty) {
+              progressPercent = rec.progress / lesson.lessonContent.length;
+            }
+            return SizedBox(
+              width: AppCardResponsive.getCardWidth(context),
+              height: AppCardResponsive.getCardHeight(context),
+              child: LessonCard(
+                data: lesson,
+                color: Colors.teal[200]!,
+                isLocked: false,
+                isCompleted: progressPercent != null && progressPercent >= 1.0,
+                trailing:
+                    progressPercent != null && progressPercent > 0
+                        ? LinearProgressIndicator(
+                          value: progressPercent,
+                          backgroundColor: Colors.grey.shade300,
+                          color: AppColors.kOrange,
+                          minHeight: 2.5,
+                          borderRadius: BorderRadius.circular(10),
+                        )
+                        : null,
+                onTap: () {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    LessonContentScreen(
+                      lesson: lesson,
+                      lessons: [lesson],
+                      initialIndex: rec.progress,
+                      hasSound: true,
                     ),
                   );
                 },
               ),
-            ),
-          ],
+            );
+          },
         );
       },
     );

@@ -30,19 +30,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  double _getCardHeight(BuildContext context) =>
+      AppCardResponsive.getCardHeight(context);
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
           Gaps.verticalGapOf(10),
-          if (_selectedTabIndex == 0)
-            _buildLessons(context)
-          else if (_selectedTabIndex == 1) ...[
+          if (_selectedTabIndex == 0) ...[
+            _buildRecommendedLessonCard(context),
+            Gaps.verticalGapOf(10),
+            _buildLessons(context),
+          ] else if (_selectedTabIndex == 1) ...[
             _buildRecommendedSongCard(context),
             Gaps.verticalGapOf(10),
             _buildSongCard(context),
           ] else if (_selectedTabIndex == 2) ...[
+            _buildRecommendedStoryCard(context),
+            Gaps.verticalGapOf(10),
             _buildStories(context),
           ],
         ],
@@ -50,28 +57,26 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  _buildRecommendedLessonCard(BuildContext context) {
+    return TitleActionChild(
+      title: 'Recommended Lessons',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+
+      child: SizedBox(
+        height: _getCardHeight(context),
+        child: RecommendedLessonsList(),
+      ),
+    );
+  }
+
   Widget _buildLessons(BuildContext context) {
     final isTablet = PlatformUtility.isTablet(context);
     final isWeb = PlatformUtility.isWeb(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    double containerHeight;
-    if (isWeb) {
-      containerHeight = 320;
-    } else if (isTablet) {
-      containerHeight = isLandscape ? 260 : 350;
-    } else {
-      containerHeight = isLandscape ? 220 : 320;
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RecommendedLessonsList(),
-        SizedBox(height: 8),
-        SizedBox(
-          height: containerHeight,
-          child: CourseScreen(isMobile: !isTablet && !isWeb),
-        ),
-      ],
+
+    return SizedBox(
+      height: AppCardResponsive.getLessonCardHeight(context),
+      child: CourseScreen(isMobile: !isTablet && !isWeb),
     );
   }
 
@@ -89,10 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (_) => SongScreen(showCategoryList: true)),
         );
       },
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.55,
-        child: SongScreen(),
-      ),
+      child: SizedBox(height: _getCardHeight(context), child: SongScreen()),
     );
   }
 
@@ -102,23 +104,30 @@ class _HomeScreenState extends State<HomeScreen> {
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.55,
+        height: _getCardHeight(context),
         child: RecommendedSongScreen(),
       ),
     );
   }
 
+  Widget _buildRecommendedStoryCard(BuildContext context) {
+    return TitleActionChild(
+      title: 'Recommended Stories',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(
+        height: _getCardHeight(context),
+        child: RecommendedStoriesList(),
+      ),
+    );
+  }
+
   Widget _buildStories(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RecommendedStoriesList(),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, bottom: 8, top: 16),
-          child: Text('All Stories', style: AppStyles.text20PxSemiBold),
-        ),
-        SizedBox(height: 220, child: StoryScreen()),
-      ],
+    return TitleActionChild(
+      title: 'Stories',
+      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
     );
   }
 }

@@ -46,42 +46,33 @@ class CourseScreenState extends State<CourseScreen> {
                 itemCount: categoriesWithChapters.length,
                 itemBuilder: (context, catIdx) {
                   final category = categoriesWithChapters[catIdx];
-                  final isMobile = widget.isMobile;
-                  final isTablet = PlatformUtility.isTablet(context);
-                  final isWeb = PlatformUtility.isWeb(context);
-                  final isLandscape = PlatformUtility.isLandscape(context);
-                  double cardWidth;
-                  double listHeight;
-                  if (isWeb) {
-                    cardWidth = 400;
-                    listHeight = 320;
-                  } else if (isTablet) {
-                    cardWidth = isLandscape ? 350 : 300;
-                    listHeight = isLandscape ? 260 : 350;
-                  } else {
-                    cardWidth = isLandscape ? 320 : 260;
-                    listHeight = isLandscape ? 220 : 320;
-                  }
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        category.nameEn.isNotEmpty
-                            ? category.nameEn
-                            : category.nameNp,
-                        style: AppStyles.text20PxSemiBold.copyWith(
-                          color: AppColors.kBlack,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8, left: 8),
+                        child: Text(
+                          category.nameEn.isNotEmpty
+                              ? category.nameEn
+                              : category.nameNp,
+                          style: AppStyles.text20PxSemiBold.copyWith(
+                            color: AppColors.kBlack,
+                          ),
                         ),
                       ),
                       Gaps.verticalGapOf(8),
                       SizedBox(
-                        height: listHeight,
+                        height: AppCardResponsive.getCardHeight(context),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           children:
                               category.chapters.map((chapter) {
                                 return SizedBox(
-                                  width: cardWidth,
+                                  width: AppCardResponsive.getCardWidth(
+                                    context,
+                                  ),
                                   child: CourseCard(
                                     title:
                                         chapter.nameEn.isNotEmpty
@@ -91,8 +82,6 @@ class CourseScreenState extends State<CourseScreen> {
                                     color: Colors.orange[200]!,
                                     isLocked: false,
                                     isCompleted: false,
-                                    thumbnailHeight: isMobile ? 100.0 : 180.0,
-                                    thumbnailWidth: isMobile ? 120.0 : 200.0,
                                     onTap: () {
                                       Utility.navigateMaterialRoute(
                                         context,
@@ -104,7 +93,6 @@ class CourseScreenState extends State<CourseScreen> {
                               }).toList(),
                         ),
                       ),
-                      Gaps.verticalGapOf(16),
                     ],
                   );
                 },
