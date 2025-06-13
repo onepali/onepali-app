@@ -35,6 +35,11 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=onepali.jks" >> android/key.properties
 
+      - name: Debug key.properties
+        run: |
+          ls -l android/
+          cat android/key.properties
+
       - name: Build
         run: flutter build apk --split-per-abi --no-tree-shake-icons
 
