@@ -96,6 +96,7 @@ class _RS3ScreenState extends State<RS3Screen> {
           authState.setFullName(nameController.text.trim());
           authState.setYearOfBirth(selectedYear.year.toInt());
           Utility.navigate(context, AppRoutes.rs4Screen);
+
         }
       },
       backgroundColor: AppColors.kButtonGreen,
