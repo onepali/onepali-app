@@ -51,6 +51,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   height: 45,
                   width: 45,
                   circular: true,
+                  isProfileImage: true,
                   imageType: CustomImageType.network,
                 ),
               ),
