@@ -7,6 +7,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int progressLevel;
   final int totalStars;
   final Function(String) onTabSelected;
+  final List<ChildUserModel> childData;
+  final bool isMobile;
+  final AuthProviderType? authType;
 
   const UserAppBar({
     super.key,
@@ -15,86 +18,87 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.progressLevel,
     required this.totalStars,
     required this.onTabSelected,
+    required this.childData,
+    this.isMobile = true,
+    this.authType,
   });
 
   @override
   Widget build(BuildContext context) {
-    int selectedIndex = 0;
+    int selectedIndex = _selectedTabIndex;
     return Container(
-      height: preferredSize.height,
-      color: AppColors.kWhite,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      height: isMobile ? 90 : 120,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(color: AppColors.kWhite),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
+          Row(
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  CustomImage(
-                    profileImage,
-                    width: 40,
-                    height: 40,
-                    imageType: CustomImageType.local,
-                    boxFit: BoxFit.cover,
-                    circular: true,
-                  ),
-                  Gaps.horizontalGapOf(10),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              IconButton(
+                onPressed: () {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    DrawerScreen(data: childData, authProviderType: authType),
+                  );
+                },
+                icon: CustomImage(
+                  Assets.avatar1,
+
+                  height: 50,
+                  width: 50,
+                  imageType: CustomImageType.local,
+                  isProfileImage: true,
+                  borderRadius: 60,
+                ),
               ),
-              Row(
-                children: [
-                  _buildProgressBar(),
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.amber,
-                      shape: BoxShape.circle,
+              IconButton(
+                onPressed:
+                    () => Utility.navigateMaterialRoute(
+                      context,
+                      DrawerScreen(data: childData),
                     ),
-                    child: const Icon(
-                      Icons.star,
-                      color: Colors.white,
-                      size: 10,
-                    ),
-                  ),
-                ],
+                icon: SvgHelper.fromSource(
+                  path: Assets.reward,
+
+                  height: 45,
+                  width: 45,
+                ),
               ),
             ],
           ),
-
-          // Dynamic Tabs
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children:
-                homeServices.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final service = entry.value;
-                  return _buildTab(
-                    service.icon ?? "",
-                    service.name ?? '',
-                    Colors.blue,
-                    () => onTabSelected(service.route),
-                    index,
-                    selectedIndex,
-                  );
-                }).toList(),
+            children: [
+              for (int i = 0; i < homeServices.length; i++)
+                _buildTab(
+                  homeServices[i].icon ?? '',
+                  homeServices[i].name ?? '',
+                  selectedIndex == i
+                      ? AppColors.kSecondaryColor
+                      : AppColors.kGrey,
+                  () => onTabSelected(homeServices[i].name ?? ''),
+                  i,
+                  selectedIndex,
+                ),
+              Gaps.horizontalGapOf(10),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProgressBar() {
+  static int _selectedTabIndex = 0;
+
+  static void setTabIndex(int index) {
+    _selectedTabIndex = index;
+  }
+
+  Widget buildProgressBar() {
     const totalSteps = 5;
     return Row(
       children: List.generate(totalSteps, (index) {
@@ -146,26 +150,30 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     int selectedIndex,
   ) {
     final bool isSelected = index == selectedIndex;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 60,
-        height: 60,
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.2) : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgHelper.fromSource(path: icon, height: 28, width: 28),
-            if (isSelected) ...[
-              Gaps.verticalGapOf(4),
-              Text(label, style: AppStyles.text8PxRegular),
-            ],
+    return IconButton(
+      onPressed: onTap,
+      icon: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgHelper.fromSource(path: icon, height: 28, width: 28),
+          if (isSelected) ...[
+            Gaps.verticalGapOf(4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(20),
+              ),
+
+              child: Text(
+                label,
+                style: AppStyles.text10PxMedium.copyWith(
+                  color: AppColors.kWhite,
+                ),
+              ),
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

@@ -134,7 +134,7 @@ class FAuthProvider with ChangeNotifier {
 
         if (!context.mounted) return;
         onNavigate(context);
-        showCustomToaster( 'Login Successful');
+        showCustomToaster('Login Successful');
         return;
       } else if (result.status == LoginStatus.cancelled) {
         if (!context.mounted) return;
@@ -159,6 +159,7 @@ class FAuthProvider with ChangeNotifier {
       await FacebookAuth.instance.logOut();
 
       await _sharedPrefs.setStringPref(AppConstants.accessToken, "");
+      await _sharedPrefs.setStringPref(AppConstants.refreshToken, "");
       await _sharedPrefs.setStringPref(AppConstants.userInfo, "");
       await _sharedPrefs.setBoolPref(AppConstants.logged, false);
       _userData = null;
@@ -169,9 +170,13 @@ class FAuthProvider with ChangeNotifier {
       setStatus(DataFetchStatus.initial);
       notifyListeners();
       if (!context.mounted) return;
-      showCustomToaster( "Signed out successfully.");
+      showCustomToaster("Signed out successfully.");
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.onboardingScreen,
+        (Route<dynamic> route) => false,
+      );
     } catch (e) {
-      showCustomToaster( "Failed to sign out.", isError: true);
+      showCustomToaster("Failed to sign out.", isError: true);
     }
   }
 
@@ -190,6 +195,6 @@ class FAuthProvider with ChangeNotifier {
   }
 
   void handleError(String msg, context) {
-    return showCustomToaster( msg, isError: true);
+    return showCustomToaster(msg, isError: true);
   }
 }

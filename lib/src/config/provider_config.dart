@@ -26,6 +26,22 @@ class ProviderConfig {
   static final LessonProvider lessonProvider = LessonProvider();
   static final LessonAudioProvider lessonAudioProvider = LessonAudioProvider();
 
+  /// [Child] Provider
+  static final ChildUserProvider childUserProvider = ChildUserProvider();
+
+  /// [Song] Provider
+  static final SongProvider songProvider = SongProvider();
+
+  /// [Recommended] Provider
+  static final RcmSongProvider recommendedSongProvider = RcmSongProvider();
+  static final RecommendedStoryProvider recommendedStoryProvider =
+      RecommendedStoryProvider();
+  static final RecommendedLessonProvider recommendedLessonProvider =
+      RecommendedLessonProvider();
+
+  /// [Story] Provider
+  static final StoryProvider storyProvider = StoryProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -44,6 +60,21 @@ class ProviderConfig {
     ChangeNotifierProvider<LessonAudioProvider>(
       create: (_) => lessonAudioProvider,
     ),
+
+    /// [Child] Providers -------------------------------- *//
+    ChangeNotifierProvider<ChildUserProvider>(create: (_) => childUserProvider),
+
+    ChangeNotifierProvider<SongProvider>(create: (_) => songProvider),
+    ChangeNotifierProvider<RcmSongProvider>(
+      create: (_) => recommendedSongProvider,
+    ),
+    ChangeNotifierProvider<RecommendedStoryProvider>(
+      create: (_) => recommendedStoryProvider,
+    ),
+    ChangeNotifierProvider<RecommendedLessonProvider>(
+      create: (_) => recommendedLessonProvider,
+    ),
+    ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
   ];
 
   /// Dispose all providers
@@ -58,6 +89,12 @@ class ProviderConfig {
     userProvider.dispose();
     lessonProvider.dispose();
     lessonAudioProvider.dispose();
+
+    childUserProvider.dispose();
+    recommendedSongProvider.dispose();
+    recommendedStoryProvider.dispose();
+    recommendedLessonProvider.dispose();
+    songProvider.dispose();
   }
 
   /// Singleton factory

@@ -11,3 +11,6 @@ export 'assets.dart';
 
 /// App [Theme]
 export 'theme_config.dart';
+
+/// DB [Constants]
+export 'db_constants.dart';

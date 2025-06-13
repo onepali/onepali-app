@@ -329,7 +329,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       if (!context.mounted) return;
       showCustomToaster("Registration successful! Please verify your email.");
-      Utility.navigateMaterialRoute(context, RS5Screen());
+      Utility.navigate(context, AppRoutes.rs5Screen);
     } on FirebaseAuthException catch (e) {
       setStatus(DataFetchStatus.initial);
       String errorMsg;
@@ -417,6 +417,9 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     if (!context.mounted) return;
     showCustomToaster("Logged out");
-    Utility.navigate(context, AppRoutes.splashScreen);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.onboardingScreen,
+      (Route<dynamic> route) => false,
+    );
   }
 }

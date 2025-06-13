@@ -95,16 +95,13 @@ class _RS1ScreenState extends State<RS1Screen> {
       label: 'Next',
       onTap: () {
         if (_selectedIndex == null) {
-          showCustomToaster(
-            "Please select an option.",
-            isError: true,
-          );
+          showCustomToaster("Please select an option.", isError: true);
           return;
         }
         // Save heardAbout to AuthState
         final authState = context.read<AuthState>();
         authState.setHeardAbout(onboardList[_selectedIndex!].title);
-        Utility.navigateMaterialRoute(context, RS2Screen());
+        Utility.navigate(context, AppRoutes.rs2Screen);
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,

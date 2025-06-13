@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -10,81 +10,72 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  Map<String, dynamic>? userInfo;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int _selectedTabIndex = 0;
+  String childProfileImage = '';
 
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
+    Misc.onLayoutRendered(() {
+      context.read<UserProvider>().fetchOwnProfile();
+      context.read<ChildUserProvider>().fetchChildUser();
+      fetchChildImage();
+    });
   }
 
-  Future<void> _loadUserInfo() async {
-    final sharedPref = SharedPreferencesService();
-    final userInfoJson = await sharedPref.getStringPref(AppConstants.userInfo);
-    if (userInfoJson != null) {
-      setState(() {
-        userInfo = jsonDecode(userInfoJson);
-      });
-    }
+  fetchChildImage() async {
+    await ChildLocalStorage.getCurrentAvatarUrl().then((value) {
+      if (value != null && value.isNotEmpty) {
+        setState(() {
+          childProfileImage = value;
+        });
+      } else {
+        setState(() {
+          childProfileImage = Assets.avatar1;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: CustomAppBar(title: 'Dashboard'),
-        body:
-            userInfo == null
-                ? const Center(child: CircularProgressIndicator())
-                : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 32,
-                        backgroundImage: NetworkImage(
-                          userInfo!['user_dp'] ?? '',
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${userInfo!['email'] ?? ''}',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      CustomMaterialButton(
-                        label: 'Logout',
-                        onTap: () {
-                          AuthProviderType type = AuthProviderType.email;
-                          final loginType = userInfo!['login_type'];
-                          if (loginType == AuthProviderType.google.name) {
-                            type = AuthProviderType.google;
-                          } else if (loginType ==
-                              AuthProviderType.facebook.name) {
-                            type = AuthProviderType.facebook;
-                          }
-                          Utility.authWiseLogout(context, type);
-                        },
-                        width: 100,
-                        height: 40,
-                      ),
-                      const SizedBox(height: 16),
-                      CustomTextButton(
-                        text: 'Create Child',
-                        onPressed: () {
-                          Utility.navigateMaterialRoute(
-                            context,
-                            ChildRegisterScreen(),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+    final childProvider = context.read<ChildUserProvider>();
+    final userProvider = context.watch<UserProvider>();
+    final UserModel? userInfo = userProvider.user;
+    final bool isLoading = userProvider.status == DataFetchStatus.loading;
+    final bool hasData = userInfo != null;
+    logger.d('DashboardScreen: hasData: $hasData, isLoading: $isLoading');
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (index, value) {
+        doubleTapTrigger();
+      },
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: UserAppBar(
+            name: userInfo?.fullName ?? 'User',
+            profileImage: childProfileImage,
+            progressLevel: 0,
+            totalStars: 0,
+            onTabSelected: (tab) {
+              final idx = homeServices.indexWhere((e) => e.name == tab);
+              if (idx != -1) {
+                setState(() {
+                  _selectedTabIndex = idx;
+                });
+                UserAppBar.setTabIndex(idx);
+              }
+            },
+            childData: childProvider.childUser,
+            authType: Utility.getAuthTypeFromUserInfo(
+              userInfo?.authProvider ?? AuthProviderType.email.name,
+            ),
+          ),
+          body: HomeScreen(selectedTabIndex: _selectedTabIndex),
+        ),
       ),
     );
   }

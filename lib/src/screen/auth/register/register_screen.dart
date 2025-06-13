@@ -92,7 +92,7 @@ class RegisterScreen extends StatelessWidget {
               (context) => CustomMaterialButton(
                 label: 'Continue',
                 onTap: () {
-                  Utility.navigateMaterialRoute(context, RS1Screen());
+                  Utility.navigate(context, AppRoutes.rs1Screen);
                 },
                 elevation: 0,
                 showBorder: false,

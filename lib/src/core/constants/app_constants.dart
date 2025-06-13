@@ -18,6 +18,32 @@ class AppConstants {
   static const String refreshToken = 'refresh_token';
   static const String userInfo = 'user_info';
   static const String logged = 'logged';
+  static const String childIdKey = 'current_child_id';
+
+  /// Firebase Collection Names
+  static const String usersCollection = 'users';
+  static const String childrenCollection = 'children';
+  static const String lessonsCollection = 'lessons';
+  static const String coursesCollection = 'courses';
+  static const String storiesCollection = 'stories';
+  static const String songsCollection = 'songs';
+  static const String recomStoryCollection = 'recom_story';
+  static const String recomSongCollection = 'recom_song';
+  static const String recomLessonCollection = 'recom_lesson';
+
+  // Database
+  static const String RECOM_DB_PATH = 'onp_recom.db';
+
+  static List<String> get avatarList => [
+    Assets.avatar1,
+    Assets.avatar2,
+    Assets.avatar3,
+    Assets.avatar4,
+    Assets.avatar5,
+    Assets.avatar6,
+    Assets.avatar7,
+    Assets.avatar8,
+  ];
 
   static List<String> get avatarList => [
     Assets.avatar1,

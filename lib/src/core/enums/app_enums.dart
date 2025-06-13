@@ -15,3 +15,6 @@ enum LogLevel { debug, info, warning, error, success }
 
 // Auth Provider
 enum AuthProviderType { google, apple, facebook, email, anonymous }
+
+// Audio Source
+enum AudioSourceType { asset, network }

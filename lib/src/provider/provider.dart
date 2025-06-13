@@ -20,3 +20,19 @@ export 'user/user_provider.dart';
 /// [Lesson] Provider
 export 'lesson/lesson_provider.dart';
 export 'lesson/laudio_provider.dart';
+
+/// [Child] Provider
+export 'child/cuser_provider.dart';
+
+//* ------------------------------- Child Provider ------------------------------- *//
+
+/// [Song] Provider
+export 'song/song_provider.dart';
+
+/// [Recommended] Provider
+export 'recommended/recommended_song_provider.dart';
+export 'recommended/recommended_story_provider.dart';
+export 'recommended/recommended_lesson_provider.dart';
+
+/// [Story] Provider
+export 'story/story_provider.dart';

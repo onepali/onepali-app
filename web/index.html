@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,20 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>onepali</title>
   <link rel="manifest" href="manifest.json">
+  <!-- Inject BASE_URL from .env for Flutter web -->
+  <script>
+    // This value should match your .env BASE_URL
+    window.env = window.env || {};
+    window.env.BASE_URL = "https://onepali.com";
+  </script>
 </head>
+
 <body>
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>

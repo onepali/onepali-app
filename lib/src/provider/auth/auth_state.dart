@@ -10,6 +10,8 @@ class AuthState with ChangeNotifier {
   String? childDob;
   String? childAvatar;
   double? childScreenTime;
+  String? currentChildId;
+  
   void setHeardAbout(String value) {
     heardAbout = value;
     notifyListeners();
@@ -51,6 +53,11 @@ class AuthState with ChangeNotifier {
     notifyListeners();
   }
 
+  void setCurrentChildId(String id) {
+    currentChildId = id;
+    notifyListeners();
+  }
+
   void clear() {
     heardAbout = null;
     learningReason = null;
@@ -60,6 +67,8 @@ class AuthState with ChangeNotifier {
     childDob = null;
     childAvatar = null;
     childScreenTime = null;
+    currentChildId = null;
+
     notifyListeners();
   }
 }

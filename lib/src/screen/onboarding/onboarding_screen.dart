@@ -11,90 +11,96 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(color: Colors.white),
-        padding: 20.p,
-        child: Column(
-          children: [
-            Gaps.verticalGapOf(100),
-            AnimatedSolidColorBorder(
-              size: 170,
-              borderWidth: 6,
-              child: Container(
-                height: 150,
-                width: 150,
-                padding: 30.p,
-                // decoration: BoxDecoration(
-                //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
-                //   shape: BoxShape.circle,
-                // ),
-                child: SvgHelper.fromSource(
-                  path: Assets.leoSvg,
-                  width: 100,
-                  height: 100,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (index, value) {
+        doubleTapTrigger();
+      },
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.white),
+          padding: 20.p,
+          child: Column(
+            children: [
+              Gaps.verticalGapOf(100),
+              AnimatedSolidColorBorder(
+                size: 170,
+                borderWidth: 6,
+                child: Container(
+                  height: 150,
+                  width: 150,
+                  padding: 30.p,
+                  // decoration: BoxDecoration(
+                  //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
+                  //   shape: BoxShape.circle,
+                  // ),
+                  child: SvgHelper.fromSource(
+                    path: Assets.leoSvg,
+                    width: 100,
+                    height: 100,
+                  ),
                 ),
               ),
-            ),
-            Gaps.verticalGapOf(30),
-            SvgHelper.fromSource(path: Assets.logoSvg, width: 40, height: 30),
-            Gaps.verticalGapOf(8),
-            Text(context.tr('tagline'), style: AppStyles.text14PxRegular),
-            const Spacer(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomMaterialButton(
-                  label: context.tr('login'),
-                  onTap: () {
-                    Utility.navigate(context, AppRoutes.loginScreen);
-                  },
-                  elevation: 0,
+              Gaps.verticalGapOf(30),
+              SvgHelper.fromSource(path: Assets.logoSvg, width: 40, height: 30),
+              Gaps.verticalGapOf(8),
+              Text(context.tr('tagline'), style: AppStyles.text14PxRegular),
+              const Spacer(),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomMaterialButton(
+                    label: context.tr('login'),
+                    onTap: () {
+                      Utility.navigate(context, AppRoutes.loginScreen);
+                    },
+                    elevation: 0,
 
-                  width: double.infinity,
-                  textStyle: AppStyles.text16PxMedium.copyWith(
-                    color: AppColors.kWhite,
+                    width: double.infinity,
+                    textStyle: AppStyles.text16PxMedium.copyWith(
+                      color: AppColors.kWhite,
+                    ),
+                    showBorder: false,
+                    backgroundColor: AppColors.kButtonGreen,
+                    radius: 8,
                   ),
-                  showBorder: false,
-                  backgroundColor: AppColors.kButtonGreen,
-                  radius: 8,
-                ),
-                Gaps.verticalGapOf(10),
-                CustomMaterialButton(
-                  label: context.tr('create_account'),
-                  onTap: () {
-                    Utility.navigate(context, AppRoutes.registerScreen);
-                  },
-                  elevation: 0,
+                  Gaps.verticalGapOf(10),
+                  CustomMaterialButton(
+                    label: context.tr('create_account'),
+                    onTap: () {
+                      Utility.navigate(context, AppRoutes.registerScreen);
+                    },
+                    elevation: 0,
 
-                  width: double.infinity,
-                  showBorder: false,
-                  textStyle: AppStyles.text16PxMedium.copyWith(
-                    color: AppColors.kPitchBlack,
+                    width: double.infinity,
+                    showBorder: false,
+                    textStyle: AppStyles.text16PxMedium.copyWith(
+                      color: AppColors.kPitchBlack,
+                    ),
+                    backgroundColor: AppColors.kButtonGrey,
+                    radius: 8,
                   ),
-                  backgroundColor: AppColors.kButtonGrey,
-                  radius: 8,
-                ),
-                Gaps.verticalGapOf(10),
+                  Gaps.verticalGapOf(10),
 
-                CustomMaterialButton(
-                  label: context.tr('try_lesson_guest'),
-                  onTap: () {},
-                  elevation: 0,
+                  CustomMaterialButton(
+                    label: context.tr('try_lesson_guest'),
+                    onTap: () {},
+                    elevation: 0,
 
-                  width: double.infinity,
-                  textStyle: AppStyles.text16PxMedium.copyWith(
-                    color: AppColors.kPitchBlack,
+                    width: double.infinity,
+                    textStyle: AppStyles.text16PxMedium.copyWith(
+                      color: AppColors.kPitchBlack,
+                    ),
+                    showBorder: false,
+                    backgroundColor: AppColors.kButtonGrey,
+                    radius: 8,
                   ),
-                  showBorder: false,
-                  backgroundColor: AppColors.kButtonGrey,
-                  radius: 8,
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
