@@ -1,6 +1,7 @@
 name: Build releases
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - '**'
@@ -9,9 +10,13 @@ jobs:
   android:
     name: Android
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_FINE_TOKEN }}
 
       - name: Install Nix
         uses: cachix/install-nix-action@v27
