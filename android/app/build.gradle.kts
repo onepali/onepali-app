@@ -33,7 +33,7 @@ val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "
 android {
     namespace = "com.onepali.app"
     compileSdk = 35
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -61,7 +61,7 @@ android {
             create("release") {
                 keyAlias = keystoreProperties["keyAlias"] as? String ?: ""
                 keyPassword = keystoreProperties["keyPassword"] as? String ?: ""
-                storeFile = keystoreProperties["storeFile"]?.let { file("android/app/$it") }
+                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
                 storePassword = keystoreProperties["storePassword"] as? String ?: ""
             }
         }
