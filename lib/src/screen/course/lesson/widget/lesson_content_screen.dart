@@ -76,7 +76,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         onPressed:
                             audioProvider.isPlaying
                                 ? null
-                                : audioProvider.navigateToPreviousContent,
+                                : () => audioProvider.navigateToPreviousContent(
+                                  widget.lesson.lessonContent,
+                                  context,
+                                  widget.lesson,
+                                ),
                       ),
                     ),
                   Expanded(
@@ -92,7 +96,36 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                   widget.lesson.lessonContent,
                                   audioSourceType: AudioSourceType.network,
                                 );
-                                // Show good remark only after audio played at last index
+                                if (!context.mounted) return;
+                                final recommendedLessonProvider =
+                                    context.read<RecommendedLessonProvider>();
+                                final prefs = SharedPreferencesService();
+                                final childId =
+                                    await prefs.getStringPref(
+                                      AppConstants.childIdKey,
+                                    ) ??
+                                    '';
+                                if (childId.isNotEmpty) {
+                                  await recommendedLessonProvider
+                                      .saveOrUpdateLessonProgress(
+                                        childId: childId,
+                                        lessonId: widget.lesson.chapterId.toString(),
+                                        progress:
+                                            audioProvider.currentIndex + 1,
+                                        title:
+                                            widget
+                                                .lesson
+                                                .lessonContent[audioProvider
+                                                    .currentIndex]
+                                                .nameNp,
+                                        image:
+                                            widget
+                                                .lesson
+                                                .lessonContent[audioProvider
+                                                    .currentIndex]
+                                                .image,
+                                      );
+                                }
                                 if (audioProvider.currentIndex ==
                                     widget.lesson.lessonContent.length - 1) {
                                   setState(() {
@@ -130,6 +163,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                 ? null
                                 : () => audioProvider.navigateToNextContent(
                                   widget.lesson.lessonContent,
+                                  context,
+                                  widget.lesson,
                                 ),
                       ),
                     ),

@@ -16,6 +16,7 @@ class CourseScreenState extends State<CourseScreen> {
     super.initState();
     Misc.onLayoutRendered(() {
       context.read<LessonProvider>().fetchCourses();
+      context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
     });
   }
 
@@ -46,12 +47,21 @@ class CourseScreenState extends State<CourseScreen> {
                 itemBuilder: (context, catIdx) {
                   final category = categoriesWithChapters[catIdx];
                   final isMobile = widget.isMobile;
-                  final containerHeight =
-                      isMobile
-                          ? MediaQuery.of(context).size.height * 0.55
-                          : MediaQuery.of(context).size.height * 0.65;
-                  final thumbnailHeight = isMobile ? 100.0 : 180.0;
-                  final thumbnailWidth = isMobile ? 120.0 : 200.0;
+                  final isTablet = PlatformUtility.isTablet(context);
+                  final isWeb = PlatformUtility.isWeb(context);
+                  final isLandscape = PlatformUtility.isLandscape(context);
+                  double cardWidth;
+                  double listHeight;
+                  if (isWeb) {
+                    cardWidth = 400;
+                    listHeight = 320;
+                  } else if (isTablet) {
+                    cardWidth = isLandscape ? 350 : 300;
+                    listHeight = isLandscape ? 260 : 350;
+                  } else {
+                    cardWidth = isLandscape ? 320 : 260;
+                    listHeight = isLandscape ? 220 : 320;
+                  }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -65,28 +75,31 @@ class CourseScreenState extends State<CourseScreen> {
                       ),
                       Gaps.verticalGapOf(8),
                       SizedBox(
-                        height: containerHeight,
+                        height: listHeight,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children:
                               category.chapters.map((chapter) {
-                                return CourseCard(
-                                  title:
-                                      chapter.nameEn.isNotEmpty
-                                          ? chapter.nameEn
-                                          : chapter.nameNp,
-                                  thumbnail: chapter.thumbnail,
-                                  color: Colors.orange[200]!,
-                                  isLocked: false,
-                                  isCompleted: false,
-                                  thumbnailHeight: thumbnailHeight,
-                                  thumbnailWidth: thumbnailWidth,
-                                  onTap: () {
-                                    Utility.navigateMaterialRoute(
-                                      context,
-                                      LessonScreen(chapter: chapter),
-                                    );
-                                  },
+                                return SizedBox(
+                                  width: cardWidth,
+                                  child: CourseCard(
+                                    title:
+                                        chapter.nameEn.isNotEmpty
+                                            ? chapter.nameEn
+                                            : chapter.nameNp,
+                                    thumbnail: chapter.thumbnail,
+                                    color: Colors.orange[200]!,
+                                    isLocked: false,
+                                    isCompleted: false,
+                                    thumbnailHeight: isMobile ? 100.0 : 180.0,
+                                    thumbnailWidth: isMobile ? 120.0 : 200.0,
+                                    onTap: () {
+                                      Utility.navigateMaterialRoute(
+                                        context,
+                                        LessonScreen(chapter: chapter),
+                                      );
+                                    },
+                                  ),
                                 );
                               }).toList(),
                         ),
