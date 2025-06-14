@@ -49,6 +49,7 @@ class CourseScreenState extends State<CourseScreen> {
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8, left: 8),
