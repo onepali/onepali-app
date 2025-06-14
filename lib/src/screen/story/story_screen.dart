@@ -35,21 +35,18 @@ class _StoryScreenState extends State<StoryScreen> {
         if (stories.isEmpty) {
           return const Center(child: Text('No stories found'));
         }
-        return SizedBox(
-          height: AppCardResponsive.getCardHeight(context),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            itemCount: stories.length,
-            separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
-            itemBuilder: (context, i) {
-              final story = stories[i];
-              return SizedBox(
-                width: AppCardResponsive.getCardWidth(context),
-                child: StoryCard(story: story),
-              );
-            },
-          ),
+        return ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          itemCount: stories.length,
+          separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
+          itemBuilder: (context, i) {
+            final story = stories[i];
+            return SizedBox(
+              width: AppCardResponsive.getCardWidth(context),
+              child: StoryCard(story: story),
+            );
+          },
         );
       },
     );

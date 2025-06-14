@@ -58,7 +58,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     Navigator.of(context).pop(); // Remove overlay
     final authState = Provider.of<AuthState>(context, listen: false);
     authState.setCurrentChildId(child.uid);
-    Navigator.of(context).pop(); // Close the drawer
+    // Navigator.of(context).pop(); // Close the drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
     UserAppBar.setTabIndex(0);
     Navigator.of(

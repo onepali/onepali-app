@@ -28,7 +28,6 @@ class LessonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.43,
-      height: 140,
       child: GestureDetector(
         onTap: isLocked ? null : onTap,
         child: Container(
@@ -42,15 +41,18 @@ class LessonCard extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomImage(
                       data.thumbnail,
-                      width: thumbnailWidth ?? 200,
+                      width:
+                          thumbnailWidth ??
+                          AppCardResponsive.getThumbnailWidth(context),
                       cover: false,
-                      height: thumbnailHeight ?? 140,
+                      height:
+                          thumbnailHeight ??
+                          AppCardResponsive.getThumbnailHeight(context),
                       circular: false,
                     ),
                     Gaps.verticalGapOf(20),

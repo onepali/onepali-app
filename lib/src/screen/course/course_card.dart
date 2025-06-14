@@ -46,9 +46,9 @@ class CourseCard extends StatelessWidget {
                   if (thumbnail != null)
                     CustomImage(
                       thumbnail!,
-                      width: 200,
+                      width: AppCardResponsive.getThumbnailWidth(context),
                       cover: false,
-                      height: 140,
+                      height: AppCardResponsive.getThumbnailHeight(context),
                       imageType: CustomImageType.network,
                       circular: false,
                     ),

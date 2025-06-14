@@ -46,6 +46,12 @@ jobs:
           ls -l android/
           cat android/key.properties
 
+      - name: Create .env file if missing
+        run: |
+          if [ ! -f .env ]; then
+            echo "# Empty .env file created by CI" > .env
+          fi
+
       - name: Build
         run: flutter build apk --split-per-abi --no-tree-shake-icons
 
