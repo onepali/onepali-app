@@ -29,8 +29,8 @@ To develop and run this Flutter application efficiently, your system should meet
 ## Software Requirements
 Ensure the following software dependencies are installed:
 
-- **Flutter SDK**: Latest stable version ([Download Here](https://flutter.dev/docs/get-started/install))
-- **Dart SDK**: Comes with Flutter, ensure it's up to date
+- **Flutter SDK**: See Technical Requirements below for version guidance. ([Download Here](https://flutter.dev/docs/get-started/install))
+- **Dart SDK**: Comes with Flutter. See Technical Requirements below for version guidance
 - **IDE**: Android Studio / Visual Studio Code / IntelliJ IDEA
 - **Android SDK**: Required for Android development
 - **Xcode**: Required for iOS development (Mac only)
@@ -41,8 +41,8 @@ Follow these steps to set up and run the project:
 
 1. **Clone the Repository**:
    ```sh
-   git clone <https://github.com/onepali/onepali-app.git>
-   cd <O-Nepali-Kids-Learning-App>
+   git clone <your-repository-url>
+   cd onepali
    ```
 2. **Install Flutter Dependencies**:
    ```sh
@@ -52,17 +52,21 @@ Follow these steps to set up and run the project:
    ```sh
    flutter run
    ```
-4. **Build for Production**:
+4. **Build for Production** (example for Android APK):
    ```sh
-   flutter build apk   # For Android
-   flutter build ios   # For iOS (Mac required)
+   flutter build apk
+   # For other platforms: flutter build <ios|web|linux|macos|windows>
    ```
 
 ## Technical Requirements
 
 ### Development Environment
-- **Flutter Version**: 3.7.2
-- **Dart Version**: 3.7.2
+- **Dart SDK Version**: `^3.7.2` (as specified in `pubspec.yaml`)
+- **Flutter Version**: Ensure you are using a Flutter SDK version compatible with Dart `^3.7.2`. (Note: The project's `.metadata` file currently indicates Flutter 3.7.0 via revision `c23637390482d4cf9598c3ce3f2be31aa7332daf`, which typically uses Dart 2.19.0. You may need to ensure your `pubspec.yaml` and actual Flutter environment are aligned.)
+- **IDE**: Android Studio / Visual Studio Code / IntelliJ IDEA
+- **Android SDK**: Required for Android development
+- **Xcode**: Required for iOS development (Mac only)
+- **Git**: Version control system
 
 ### Architecture & State Management
 - **Architecture**: Clean architecture approach with clear separation of concerns.
@@ -71,52 +75,57 @@ Follow these steps to set up and run the project:
 - **Code Style**: Follows Dart style guide and consistent naming conventions.
 
 ## Project Structure
+The project follows a standard Flutter project structure, with additional organization for clarity and scalability, aligning with Clean Architecture principles.
 ```
-lib/
-└── src/
-    ├── config/         # App configuration files (themes, routes, etc.)
-    ├── core/           # Common/shared utilities
-    │   ├── constants/  # App-wide constants (e.g., strings, colors)
-    │   ├── errors/     # Error definitions and handling
-    │   ├── utils/      # Utility functions and helpers
-    │   └── services/   # Core services (network, storage, etc.)
-    ├── data/           # Data layer (external sources)
-    │   ├── models/     # Data models (DTOs)
-    │   ├── datasources/ # Local/remote data sources (e.g., APIs, DB)
-    │   └── repositories/ # Repository implementations
-    ├── domain/         # Business logic layer
-    │   ├── entities/   # Pure business models/entities
-    │   ├── usecases/   # Application-specific business logic
-    │   └── repositories/ # Repository contracts (abstract interfaces)
-    ├── presentation/   # UI layer
-    │   ├── screens/    # Screens/views (per feature)
-    │   ├── widgets/    # Reusable UI components
-    │   └── viewmodels/ # State management (e.g., Riverpod/Notifier)
-    └── injector.dart   # Dependency injection setup
-main.dart               # App entry point
+onepali/
+├── android/              # Android specific platform code and configurations
+├── assets/               # Static assets like images, fonts, audio, and JSON data
+│   ├── audio/            # Sound files and music (e.g., animals/, sfx/)
+│   ├── brand/            # Branding assets (logos, etc.)
+│   ├── fonts/            # Custom fonts (Poppins, Mukta)
+│   ├── images/           # Image assets (backgrounds, placeholders, category images)
+│   ├── json/             # JSON data files (categories, lessons, stories, localization)
+│   ├── lottie/           # Lottie animation files
+│   └── svg/              # SVG vector graphics (icons, illustrations)
+├── ios/                  # iOS specific platform code and configurations
+├── lib/                  # Core application source code (Dart)
+│   ├── main.dart         # Main application entry point
+│   ├── navigator_key.dart # Global navigator key (present in workspace)
+│   └── src/              # Main source code, typically organized by features/layers
+│       │                 # (e.g., data, domain, presentation layers for Clean Architecture)
+│       ├── config/       # (Example) App configuration (themes, routes)
+│       └── injector.dart # (Example) Dependency injection setup
+├── linux/                # Linux specific platform code
+├── macos/                # macOS specific platform code
+├── scripts/              # Utility scripts (build, analysis, format, etc.)
+│   ├── analyze.sh
+│   ├── build_apk.sh
+│   ├── clean.sh
+│   ├── format.sh
+│   └── ... (other project-specific scripts)
+├── test/                 # Automated tests (unit, widget, integration)
+│   ├── widget_test.dart  # Example widget test
+│   ├── core/             # Tests for core logic/domain
+│   ├── provider/         # Tests for providers/state management
+│   └── repo/             # Tests for data repositories
+├── web/                  # Web specific platform code and configurations
+├── windows/              # Windows specific platform code
+├── .gitignore            # Specifies intentionally untracked files
+├── analysis_options.yaml # Dart static analysis tool configuration
+├── pubspec.yaml          # Project metadata and dependencies
+├── pubspec.lock          # Records exact versions of all dependencies
+└── README.md             # This documentation file
 ```
 
 ### **Directory Structure Description**
-- **`config/`**: Contains app configuration files such as themes, routes, and other global settings.
-- **`core/`**: Houses shared utilities and services used across the app.
-  - **`constants/`**: Defines app-wide constants like strings, colors, and other static values.
-  - **`errors/`**: Manages error definitions and handling mechanisms.
-  - **`utils/`**: Provides utility functions and helper methods.
-  - **`services/`**: Includes core services like network requests, local storage, etc.
-- **`data/`**: Represents the data layer responsible for external data sources.
-  - **`models/`**: Defines data models or DTOs (Data Transfer Objects).
-  - **`datasources/`**: Handles local and remote data sources such as APIs or databases.
-  - **`repositories/`**: Implements repository patterns for data access.
-- **`domain/`**: Contains the business logic layer.
-  - **`entities/`**: Defines pure business models or entities.
-  - **`usecases/`**: Encapsulates application-specific business logic.
-  - **`repositories/`**: Declares repository contracts or abstract interfaces.
-- **`presentation/`**: Manages the UI layer.
-  - **`screens/`**: Contains screens or views for each feature.
-  - **`widgets/`**: Includes reusable UI components.
-  - **`viewmodels/`**: Handles state management using tools like Riverpod or Notifier.
-- **`injector.dart`**: Sets up dependency injection for the app.
-- **`main.dart`**: The entry point of the application.
+Key directories include:
+- **`lib/`**: This is where the vast majority of the Dart code for the application resides.
+  - **`lib/main.dart`**: The entry point of the Flutter application.
+  - **`lib/src/`**: Contains the core application logic, structured to support a Clean Architecture approach. This typically includes UI (presentation), business logic (domain), data handling (data layer), dependency injection, routing, and utility classes.
+- **`assets/`**: Holds all static assets like images, fonts, JSON files, Lottie animations, audio files, etc., which are bundled with the app. The subdirectory structure (e.g., `assets/images/animals/`) indicates organized asset management.
+- **`test/`**: Contains all automated tests. The subdirectories (`core/`, `provider/`, `repo/`) suggest tests are organized by architectural layers or features.
+- **Platform-specific folders (`android/`, `ios/`, `linux/`, `macos/`, `web/`, `windows/`)**: Contain code and configuration specific to each target platform.
+- **`scripts/`**: Contains various utility shell scripts for common development tasks such as building the app, running analysis, cleaning the project, and code formatting.
 
 ## Packages Used
 The following packages are used in this project:
