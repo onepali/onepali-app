@@ -44,8 +44,14 @@ class StoryCard extends StatelessWidget {
                 if (story.thumbnail.isNotEmpty)
                   SvgHelper.fromSource(
                     path: story.thumbnail,
-                    height: isRecommended ? 40.h(context) : 80,
-                    width: isRecommended ? 40.w(context) : 80,
+                    height:
+                        isRecommended
+                            ? 40.h(context)
+                            : AppCardResponsive.getThumbnailHeight(context),
+                    width:
+                        isRecommended
+                            ? 40.w(context)
+                            : AppCardResponsive.getThumbnailWidth(context),
                     type: SvgSourceType.network,
                   ),
                 Gaps.verticalGapOf(isRecommended ? 8.h(context) : 16),

@@ -68,7 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Consumer<RecommendedLessonProvider> _buildRecommendedLessonCard(BuildContext context) {
+  Consumer<RecommendedLessonProvider> _buildRecommendedLessonCard(
+    BuildContext context,
+  ) {
     return Consumer<RecommendedLessonProvider>(
       builder: (context, provider, child) {
         if (!(provider.hasData)) return const SizedBox();
@@ -93,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final isWeb = PlatformUtility.isWeb(context);
 
     return SizedBox(
-      height: AppCardResponsive.getLessonCardHeight(context),
+      height: AppCardResponsive.getLessonCardHeight(context) + 50,
       child: CourseScreen(isMobile: !isTablet && !isWeb),
     );
   }
@@ -159,7 +161,10 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Stories',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
+      child: SizedBox(
+        height: _getCardHeight(context) + 32,
+        child: StoryScreen(),
+      ),
     );
   }
 }

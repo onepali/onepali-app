@@ -81,7 +81,7 @@ class RecommendedLessonsList extends StatelessWidget {
             }
             return SizedBox(
               width: AppCardResponsive.getCardWidth(context),
-              height: AppCardResponsive.getCardHeight(context),
+              // height: AppCardResponsive.getCardHeight(context),
               child: LessonCard(
                 data: lesson,
                 color: Colors.teal[200]!,

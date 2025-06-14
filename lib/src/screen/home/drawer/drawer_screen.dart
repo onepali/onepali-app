@@ -82,7 +82,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 );
                 authState.setCurrentChildId(child.uid);
 
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 UserAppBar.setTabIndex(0);
 
