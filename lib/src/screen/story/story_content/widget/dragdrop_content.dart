@@ -4,7 +4,12 @@ import '../../../../src.dart';
 
 class DragDropContent extends StatefulWidget {
   final Content content;
-  const DragDropContent({super.key, required this.content});
+  final bool playAudio;
+  const DragDropContent({
+    super.key,
+    required this.content,
+    this.playAudio = true,
+  });
   @override
   State<DragDropContent> createState() => DragDropContentState();
 }
