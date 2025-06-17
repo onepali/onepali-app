@@ -5,11 +5,13 @@ class StoryContentCard extends StatelessWidget {
   final Content content;
   final VoidCallback? onConfetti;
   final bool isLast;
+  final bool playAudio;
   const StoryContentCard({
     super.key,
     required this.content,
     this.onConfetti,
     this.isLast = false,
+    this.playAudio = true,
   });
 
   @override
@@ -18,6 +20,7 @@ class StoryContentCard extends StatelessWidget {
       content: content,
       onConfetti: onConfetti,
       isLast: isLast,
+      playAudio: playAudio,
     );
   }
 }
@@ -27,20 +30,21 @@ class NormalConfettiContent extends StatelessWidget {
   final Content content;
   final VoidCallback? onConfetti;
   final bool isLast;
+  final bool playAudio;
   const NormalConfettiContent({
     super.key,
     required this.content,
     this.onConfetti,
     required this.isLast,
+    this.playAudio = true,
   });
   @override
   Widget build(BuildContext context) {
-    // For demo, just show a confetti icon if isLast or confetti is not empty
     final showConfetti = isLast || (content.confetti.isNotEmpty);
     return Stack(
       alignment: Alignment.center,
       children: [
-        NormalContent(content: content),
+        NormalContent(content: content, playAudio: playAudio),
         if (showConfetti)
           LottieHelper.fromSource(
             path: content.confetti,

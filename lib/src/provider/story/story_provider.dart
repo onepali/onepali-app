@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/src.dart';
@@ -19,6 +20,8 @@ class StoryProvider extends ChangeNotifier {
 
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
+
+  AudioPlayer? _audioPlayerInstance;
 
   Future<void> fetchStories() async {
     _status = DataFetchStatus.loading;
@@ -137,6 +140,16 @@ class StoryProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> stopAudio() async {
+    if (_audioPlayerInstance != null) {
+      await _audioPlayerInstance!.stop();
+      await _audioPlayerInstance!.dispose();
+      _audioPlayerInstance = null;
+      _isPlaying = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> playAudio(
     dynamic url, {
     AudioSourceType audioSourceType = AudioSourceType.network,
@@ -144,13 +157,12 @@ class StoryProvider extends ChangeNotifier {
     logger.d(
       '[StoryProvider] playAudio called with url: $url, isPlaying: $_isPlaying',
     );
-    if (_isPlaying ||
-        url == null ||
+    // Stop any currently playing audio before starting new
+    await stopAudio();
+    if (url == null ||
         (url is String && url.isEmpty) ||
         (url is List && url.isEmpty)) {
-      logger.d(
-        '[StoryProvider] playAudio: Not playing (already playing or url empty/null)',
-      );
+      logger.d('[StoryProvider] playAudio: Not playing (url empty/null)');
       return;
     }
     _isPlaying = true;
@@ -164,10 +176,9 @@ class StoryProvider extends ChangeNotifier {
               audioPath: u,
               audioSourceType: audioSourceType,
             );
+            _audioPlayerInstance = audioWidget.audioPlayer;
             await audioWidget.play();
-            // Wait for the audio to finish before continuing
             await audioWidget.audioPlayer.onPlayerComplete.first;
-            // Optionally: await audioWidget.dispose();
           }
         }
       } else if (url is String && url.isNotEmpty) {
@@ -176,10 +187,9 @@ class StoryProvider extends ChangeNotifier {
           audioPath: url,
           audioSourceType: audioSourceType,
         );
+        _audioPlayerInstance = audioWidget.audioPlayer;
         await audioWidget.play();
-        // Wait for the audio to finish before continuing
         await audioWidget.audioPlayer.onPlayerComplete.first;
-        // Optionally: await audioWidget.dispose();
       }
     } catch (e) {
       logger.e('Audio play error: $e');

@@ -30,6 +30,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   void dispose() {
+    context.read<StoryProvider>().stopAudio();
     context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
       context,
     );

@@ -5,7 +5,12 @@ import '../../../../src.dart';
 // Normal UI
 class NormalContent extends StatefulWidget {
   final Content content;
-  const NormalContent({super.key, required this.content});
+  final bool playAudio;
+  const NormalContent({
+    super.key,
+    required this.content,
+    this.playAudio = true,
+  });
   @override
   State<NormalContent> createState() => _NormalContentState();
 }
@@ -14,13 +19,6 @@ class _NormalContentState extends State<NormalContent> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      final storyProvider = Provider.of<StoryProvider>(context, listen: false);
-      logger.d(
-        '[NormalContent] playAudio called, isPlaying: \\${storyProvider.isPlaying}',
-      );
-      storyProvider.playAudio(widget.content.audio);
-    });
   }
 
   @override
@@ -132,8 +130,11 @@ class _NormalContentState extends State<NormalContent> {
           top: 24,
           right: 24,
           child: customInkwell(
-            onTap:
-                () => Navigator.of(context).popUntil((route) => route.isFirst),
+            onTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              storyProvider.stopAudio();
+              logger.d('[NormalContent] Wrong icon tapped, stopping audio');
+            },
             child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
           ),
         ),

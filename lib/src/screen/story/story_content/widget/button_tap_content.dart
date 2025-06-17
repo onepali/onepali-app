@@ -5,7 +5,12 @@ import '../../../../src.dart';
 // Button Tap UI
 class ButtonTapContent extends StatefulWidget {
   final Content content;
-  const ButtonTapContent({super.key, required this.content});
+  final bool playAudio;
+  const ButtonTapContent({
+    super.key,
+    required this.content,
+    this.playAudio = true,
+  });
   @override
   State<ButtonTapContent> createState() => ButtonTapContentState();
 }
@@ -34,13 +39,6 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      final storyProvider = Provider.of<StoryProvider>(context, listen: false);
-      logger.d(
-        '[ButtonTapContent] playAudio called, isPlaying: \\${storyProvider.isPlaying}',
-      );
-      storyProvider.playAudio(widget.content.audio);
-    });
   }
 
   @override

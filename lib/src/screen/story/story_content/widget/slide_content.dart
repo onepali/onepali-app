@@ -6,7 +6,8 @@ import '../../../../src.dart';
 // Slide UI
 class SlideContent extends StatefulWidget {
   final Content content;
-  const SlideContent({super.key, required this.content});
+  final bool playAudio;
+  const SlideContent({super.key, required this.content, this.playAudio = true});
   @override
   State<SlideContent> createState() => SlideContentState();
 }
@@ -18,13 +19,6 @@ class SlideContentState extends State<SlideContent> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      final storyProvider = Provider.of<StoryProvider>(context, listen: false);
-      logger.d(
-        '[SlideContent] playAudio called, isPlaying: \\${storyProvider.isPlaying}',
-      );
-      storyProvider.playAudio(widget.content.audio);
-    });
   }
 
   @override
@@ -160,7 +154,12 @@ class SlideContentState extends State<SlideContent> {
         Positioned(
           top: 24,
           right: 24,
-          child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+          child: customInkwell(
+            onTap: () {
+              storyProvider.stopAudio();
+            },
+            child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+          ),
         ),
         // Left arrow (center vertically)
         Positioned(
