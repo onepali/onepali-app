@@ -98,19 +98,36 @@ class StoryProvider extends ChangeNotifier {
   }
 
   Future<void> playAudio(
-    String url, {
+    dynamic url, {
     AudioSourceType audioSourceType = AudioSourceType.asset,
   }) async {
-    if (_isPlaying || url.isEmpty) return;
+    if (_isPlaying ||
+        url == null ||
+        (url is String && url.isEmpty) ||
+        (url is List && url.isEmpty))
+      return;
     _isPlaying = true;
     notifyListeners();
     try {
-      final audioWidget = CustomAudioWidget(
-        audioPath: url,
-        audioSourceType: audioSourceType,
-      );
-      await audioWidget.play();
-      await audioWidget.dispose();
+      if (url is List) {
+        for (final u in url) {
+          if (u is String && u.isNotEmpty) {
+            final audioWidget = CustomAudioWidget(
+              audioPath: u,
+              audioSourceType: audioSourceType,
+            );
+            await audioWidget.play();
+            await audioWidget.dispose();
+          }
+        }
+      } else if (url is String && url.isNotEmpty) {
+        final audioWidget = CustomAudioWidget(
+          audioPath: url,
+          audioSourceType: audioSourceType,
+        );
+        await audioWidget.play();
+        await audioWidget.dispose();
+      }
     } catch (e) {
       logger.e('Audio play error: \\${e.toString()}');
     }

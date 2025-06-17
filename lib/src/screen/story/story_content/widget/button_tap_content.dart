@@ -35,6 +35,11 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   Widget build(BuildContext context) {
     final options = widget.content.conversation;
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+    void playAudio() {
+      final audio = widget.content.audio;
+      storyProvider.playAudio(audio);
+    }
+
     return Stack(
       children: [
         // Main content
@@ -115,7 +120,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
           right: 0,
           child: Center(
             child: GestureDetector(
-              onTap: () => storyProvider.playAudio(widget.content.audio),
+              onTap: playAudio,
               child: SvgHelper.fromSource(path: Assets.sound, height: 40),
             ),
           ),
