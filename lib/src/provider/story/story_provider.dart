@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -81,58 +82,111 @@ class StoryProvider extends ChangeNotifier {
           '[StoryProvider] No childId found, not updating recommended story progress.',
         );
       }
+      // Play audio for the new content after navigation
+      if (_currentContentIndex > 0 &&
+          _currentContentIndex <= _currentStory!.content.length) {
+        final content = _currentStory!.content[_currentContentIndex - 1];
+        await _playAudioCached(content.audio);
+      }
     }
   }
 
-  void previousContent() {
+  void previousContent() async {
     if (_currentStory == null) return;
     if (_currentContentIndex > 0) {
       _currentContentIndex--;
       notifyListeners();
+      // Play audio for the new content after navigation
+      if (_currentContentIndex > 0 &&
+          _currentContentIndex <= _currentStory!.content.length) {
+        final content = _currentStory!.content[_currentContentIndex - 1];
+        await _playAudioCached(content.audio);
+      }
     }
   }
 
-  void resetContentIndex() {
-    _currentContentIndex = 0;
-    notifyListeners();
+  Future<void> _playAudioCached(dynamic url) async {
+    if (url == null) return;
+    if (url is String) {
+      if (url.isEmpty) return;
+      String sourcePath = url;
+      AudioSourceType sourceType = AudioSourceType.network;
+      try {
+        final file = await DefaultCacheManager().getSingleFile(url);
+        if (file.existsSync()) {
+          sourcePath = file.path;
+          sourceType = AudioSourceType.asset;
+        }
+      } catch (_) {}
+      await playAudio(sourcePath, audioSourceType: sourceType);
+    } else if (url is List) {
+      for (final u in url) {
+        if (u is String && u.isNotEmpty) {
+          String sourcePath = u;
+          AudioSourceType sourceType = AudioSourceType.network;
+          try {
+            final file = await DefaultCacheManager().getSingleFile(u);
+            if (file.existsSync()) {
+              sourcePath = file.path;
+              sourceType = AudioSourceType.asset;
+            }
+          } catch (_) {}
+          await playAudio(sourcePath, audioSourceType: sourceType);
+        }
+      }
+    }
   }
 
   Future<void> playAudio(
     dynamic url, {
-    AudioSourceType audioSourceType = AudioSourceType.asset,
+    AudioSourceType audioSourceType = AudioSourceType.network,
   }) async {
+    logger.d(
+      '[StoryProvider] playAudio called with url: $url, isPlaying: $_isPlaying',
+    );
     if (_isPlaying ||
         url == null ||
         (url is String && url.isEmpty) ||
-        (url is List && url.isEmpty))
+        (url is List && url.isEmpty)) {
+      logger.d(
+        '[StoryProvider] playAudio: Not playing (already playing or url empty/null)',
+      );
       return;
+    }
     _isPlaying = true;
     notifyListeners();
     try {
       if (url is List) {
         for (final u in url) {
           if (u is String && u.isNotEmpty) {
+            logger.d('[StoryProvider] Playing audio from list: $u');
             final audioWidget = CustomAudioWidget(
               audioPath: u,
               audioSourceType: audioSourceType,
             );
             await audioWidget.play();
-            await audioWidget.dispose();
+            // Wait for the audio to finish before continuing
+            await audioWidget.audioPlayer.onPlayerComplete.first;
+            // Optionally: await audioWidget.dispose();
           }
         }
       } else if (url is String && url.isNotEmpty) {
+        logger.d('[StoryProvider] Playing audio from string: $url');
         final audioWidget = CustomAudioWidget(
           audioPath: url,
           audioSourceType: audioSourceType,
         );
         await audioWidget.play();
-        await audioWidget.dispose();
+        // Wait for the audio to finish before continuing
+        await audioWidget.audioPlayer.onPlayerComplete.first;
+        // Optionally: await audioWidget.dispose();
       }
     } catch (e) {
-      logger.e('Audio play error: \\${e.toString()}');
+      logger.e('Audio play error: $e');
     }
     _isPlaying = false;
     notifyListeners();
+    logger.d('[StoryProvider] playAudio finished, isPlaying: $_isPlaying');
   }
 
   Future<void> fetchRecommendedStoriesForActiveChild(

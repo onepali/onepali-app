@@ -32,13 +32,21 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Misc.onLayoutRendered(() {
+      final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+      logger.d(
+        '[ButtonTapContent] playAudio called, isPlaying: \\${storyProvider.isPlaying}',
+      );
+      storyProvider.playAudio(widget.content.audio);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final options = widget.content.conversation;
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
-    void playAudio() {
-      final audio = widget.content.audio;
-      storyProvider.playAudio(audio);
-    }
 
     return Stack(
       children: [
@@ -119,9 +127,21 @@ class ButtonTapContentState extends State<ButtonTapContent> {
           left: 0,
           right: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: playAudio,
-              child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+            child: Consumer<StoryProvider>(
+              builder: (context, storyProvider, _) {
+                final soundIcon = GestureDetector(
+                  onTap: () {
+                    logger.d(
+                      '[ButtonTapContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
+                    );
+                    storyProvider.playAudio(widget.content.audio);
+                  },
+                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                );
+                return storyProvider.isPlaying
+                    ? CustomAvatarGlow(child: soundIcon)
+                    : soundIcon;
+              },
             ),
           ),
         ),

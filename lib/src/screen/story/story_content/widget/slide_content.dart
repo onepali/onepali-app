@@ -16,6 +16,18 @@ class SlideContentState extends State<SlideContent> {
   bool _completed = false;
 
   @override
+  void initState() {
+    super.initState();
+    Misc.onLayoutRendered(() {
+      final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+      logger.d(
+        '[SlideContent] playAudio called, isPlaying: \\${storyProvider.isPlaying}',
+      );
+      storyProvider.playAudio(widget.content.audio);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Prepare all conversation rows
     List<Widget> messageWidgets = [];
@@ -126,9 +138,21 @@ class SlideContentState extends State<SlideContent> {
           left: 0,
           right: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.playAudio(widget.content.audio),
-              child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+            child: Consumer<StoryProvider>(
+              builder: (context, storyProvider, _) {
+                final soundIcon = GestureDetector(
+                  onTap: () {
+                    logger.d(
+                      '[SlideContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
+                    );
+                    storyProvider.playAudio(widget.content.audio);
+                  },
+                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                );
+                return storyProvider.isPlaying
+                    ? CustomAvatarGlow(child: soundIcon)
+                    : soundIcon;
+              },
             ),
           ),
         ),

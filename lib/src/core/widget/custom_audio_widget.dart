@@ -11,6 +11,8 @@ class CustomAudioWidget {
     this.audioSourceType = AudioSourceType.asset,
   });
 
+  AudioPlayer get audioPlayer => _audioPlayer;
+
   Future<void> play() async {
     if (audioSourceType == AudioSourceType.asset &&
         !audioPath.startsWith('/')) {
