@@ -10,3 +10,5 @@ export 'user/user_repo.dart';
 
 /// [Story] repository
 export 'story/story_repo.dart';
+
+/// [Rewa]

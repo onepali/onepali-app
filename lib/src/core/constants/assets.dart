@@ -50,6 +50,7 @@ class Assets {
   static String reward = 'reward'.icon;
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
+  static String star = 'star'.icon;
 
   // Miscellaneous
   static String successSvg = 'success'.svg;

@@ -21,6 +21,8 @@ export 'home/home_model.dart';
 /// [Child] Model
 export 'child/cuser_model.dart';
 
+/// [R]
+
 //* ------------------------------- Child Models ------------------------------- *//
 
 /// [Song] Model

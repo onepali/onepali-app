@@ -82,3 +82,7 @@ export 'story/story_content/widget/slide_content.dart';
 export 'story/story_content/widget/dragdrop_content.dart';
 export 'story/story_content/widget/button_tap_content.dart';
 export 'story/story_content/widget/normal_content.dart';
+
+/// [Reward] Screen
+export 'reward/reward_screen.dart';
+export 'reward/reward_card.dart';
