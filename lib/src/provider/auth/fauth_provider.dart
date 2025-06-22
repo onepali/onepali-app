@@ -162,6 +162,7 @@ class FAuthProvider with ChangeNotifier {
       await _sharedPrefs.setStringPref(AppConstants.refreshToken, "");
       await _sharedPrefs.setStringPref(AppConstants.userInfo, "");
       await _sharedPrefs.setBoolPref(AppConstants.logged, false);
+      await _sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
       _userData = null;
 
       // Reset AuthState

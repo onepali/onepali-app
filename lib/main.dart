@@ -13,17 +13,21 @@ void main() async {
   runApp(
     MultiProvider(
       providers: ProviderConfig.providers,
-      child: MyApp(logged: await AppInitializer.checkUserAuthentication()),
+      child: MyApp(
+        logged: await AppInitializer.checkUserAuthentication(),
+        isParentLogged: await AppInitializer.isParentLogged(),
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
   final bool logged;
-  const MyApp({super.key, required this.logged});
+  final bool isParentLogged;
+  const MyApp({super.key, required this.logged, required this.isParentLogged});
 
   @override
   Widget build(BuildContext context) {
-    return AppInitializer.appMaterialApp(context, logged);
+    return AppInitializer.appMaterialApp(context, logged, isParentLogged);
   }
 }

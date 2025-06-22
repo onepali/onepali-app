@@ -409,6 +409,7 @@ class AuthProvider with ChangeNotifier {
     await sharedPrefs.setStringPref(AppConstants.refreshToken, "");
     await sharedPrefs.setStringPref(AppConstants.userInfo, "");
     await sharedPrefs.setBoolPref(AppConstants.logged, false);
+    await sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
 
     // Reset AuthState
     authState.clear();

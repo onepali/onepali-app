@@ -37,6 +37,7 @@ class AppRoutes {
   /// [Parent] Routes
   static const String parentDashboardScreen = '/parent/dashboard';
   static const String parentPinScreen = '/parent/pin';
+  static const String parentHomeScreen = '/parent/home';
   static const String parentProfileScreen = '/parent/profile';
   static const String parentBlogScreen = '/parent/blog';
 
@@ -62,5 +63,8 @@ class AppRoutes {
     // Parent Zone Routes
     parentDashboardScreen: (context) => const ParentDashboardScreen(),
     parentPinScreen: (context) => const ParentZoneScreen(),
+    parentHomeScreen: (context) => const PHomeScreen(),
+    parentBlogScreen: (context) => const ParentBlogScreen(),
+    parentProfileScreen: (context) => const ParentSettingScreen(),
   };
 }

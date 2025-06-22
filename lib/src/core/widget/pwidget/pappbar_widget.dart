@@ -4,8 +4,14 @@ import 'package:onepali/src/src.dart';
 class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Widget? leading;
+  final bool automaticallyImplyLeading;
 
-  const PZAppBarWidget({super.key, required this.title, this.leading});
+  const PZAppBarWidget({
+    super.key,
+    required this.title,
+    this.leading,
+    this.automaticallyImplyLeading = false,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -23,6 +29,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 : AppStyles.text26PxMedium,
       ),
       leading: leading,
+      automaticallyImplyLeading: automaticallyImplyLeading,
       actions: [
         Icon(Icons.arrow_drop_down_outlined, size: isMobilePortrait ? 30 : 40),
       ],

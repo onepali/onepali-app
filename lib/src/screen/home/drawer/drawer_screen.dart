@@ -124,7 +124,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
       } else {
         return GestureDetector(
           onTap: () {
-            Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+            if (widget.totalChildCount >= 3) {
+              DialogManager.showCustomDialog(
+                context: context,
+                title: 'You\'ve added 3 kids!',
+                content:
+                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                confirmButtonText: 'Add for \$5',
+                onConfirm: () {},
+              );
+              return;
+            } else {
+              Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+            }
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,

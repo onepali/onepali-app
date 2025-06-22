@@ -27,14 +27,25 @@ class AppInitializer {
     return logged && userInfo != null;
   }
 
-  static Widget appMaterialApp(BuildContext context, logged) {
+  static Future<bool> isParentLogged() async {
+    var logged = await ParentLocalStorage.isParentLogged();
+    return logged;
+  }
+
+  static String getInitialRoute(bool logged, bool isParentLogged) {
+    if (!logged) return AppRoutes.splashScreen;
+    if (isParentLogged) return AppRoutes.parentDashboardScreen;
+    return AppRoutes.dashboardScreen;
+  }
+
+  static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     return MaterialApp(
       title: AppConstants.appName,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       scrollBehavior: CustomScrollBehavior(),
       navigatorObservers: [OrientationRouteObserver()],
-      initialRoute: logged ? AppRoutes.dashboardScreen : AppRoutes.splashScreen,
+      initialRoute: getInitialRoute(logged, isParentLogged),
       routes: AppRoutes.routes,
       theme: ThemeConfig.lightTheme,
       locale: context.watch<LanguageProvider>().locale,

@@ -18,7 +18,7 @@ class DialogManager {
     // Set your desired max width here
     double dialogMaxWidth =
         isMobileLandScape
-            ? MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width * 0.7
             : MediaQuery.of(context).size.width * 0.6;
 
     return showDialog(

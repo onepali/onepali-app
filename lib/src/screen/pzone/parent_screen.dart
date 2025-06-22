@@ -15,6 +15,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
   bool _isError = false;
   bool _isLoading = false;
   bool _listenerAdded = false;
+  final SharedPreferencesService sharedPref = SharedPreferencesService();
 
   @override
   void initState() {
@@ -47,9 +48,8 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     final matched = await userProvider.isMatchedPin(pin);
     if (matched) {
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const ParentDashboardScreen()),
-        );
+        Utility.navigate(context, AppRoutes.parentDashboardScreen);
+        ParentLocalStorage.setParentLogged(true);
       }
     } else {
       _showError();

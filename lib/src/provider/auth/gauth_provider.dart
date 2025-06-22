@@ -136,6 +136,8 @@ class GoogleAuthProvider with ChangeNotifier {
       await _sharedPrefs.setStringPref(AppConstants.accessToken, "");
       await _sharedPrefs.setStringPref(AppConstants.userInfo, "");
       await _sharedPrefs.setBoolPref(AppConstants.logged, false);
+      await _sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
+
       _user = null;
 
       authState.clear();

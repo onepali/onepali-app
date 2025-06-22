@@ -31,6 +31,9 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = PlatformUtility.isMobile(context);
+    bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
+
     return Scaffold(
       appBar: PZAppBarWidget(title: pzoneBottomModel[_currentIndex].label),
       body: _screen[_currentIndex],
@@ -39,7 +42,17 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
             pzoneBottomModel
                 .map(
                   (e) => BottomNavigationBarItem(
-                    icon: SvgHelper.fromSource(path: e.icon),
+                    icon: SvgHelper.fromSource(
+                      path: e.icon,
+                      height: isMobilePortrait ? 30 : 36,
+                      color: AppColors.kLightGrey,
+                    ),
+                    activeIcon: SvgHelper.fromSource(
+                      path: e.icon,
+                      height: isMobilePortrait ? 30 : 36,
+                      color: AppColors.kSecondaryColor,
+                    ),
+                    label: e.label,
                   ),
                 )
                 .toList(),

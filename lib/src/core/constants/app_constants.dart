@@ -20,6 +20,7 @@ class AppConstants {
   static const String logged = 'logged';
   static const String childIdKey = 'current_child_id';
   static const String avatarUrlKey = 'avatar_url';
+  static const String parentDashboardLogged = 'parent_dashboard_logged';
 
   /// Firebase Collection Names
   static const String usersCollection = 'users';
