@@ -1,0 +1,117 @@
+[
+    {
+        "id": "learn-spanish-basics-for-kids",
+        "authorName": "O Nepali",
+        "authorAvatar": "https://cdn.avokids.app/onepali-logo.png",
+        "title": "Learn Spanish Basics: Fun and Easy for Kids",
+        "slug": "learn-spanish-basics-for-kids",
+        "content": "## Hola, amigos!\n\nLearning Spanish can be super fun! Here are some colorful words:\n\n### Colors\n- Red = Rojo\n- Blue = Azul\n- Yellow = Amarillo\n\n### Animals\n- Dog = Perro\n- Cat = Gato\n\nTip: Repeat these with actions or toys!",
+        "coverImage": "https://cdn.avokids.app/blog/spanish-basics.png",
+        "readTimeMinutes": 3,
+        "isDraft": false,
+        "isFeatured": true,
+        "viewCount": 120,
+        "likesCount": 15,
+        "tags": [
+            "spanish",
+            "kids",
+            "language",
+            "colors"
+        ],
+        "createdAt": "2025-06-22T09:00:00.000Z",
+        "updatedAt": "2025-06-22T09:00:00.000Z",
+        "publishedAt": "2025-06-22T09:00:00.000Z"
+    },
+    {
+        "id": "french-food-words-for-kids",
+        "authorName": "O Nepali",
+        "authorAvatar": "https://cdn.avokids.app/onepali-logo.png",
+        "title": "Yummy French Food Words",
+        "slug": "french-food-words-for-kids",
+        "content": "## Bonjour!\n\nLet’s learn delicious French words together:\n\n### Foods\n- Apple = Pomme\n- Bread = Pain\n- Cheese = Fromage\n\nTry saying them before snack time!",
+        "coverImage": "https://cdn.avokids.app/blog/french-food.png",
+        "readTimeMinutes": 2,
+        "isDraft": false,
+        "isFeatured": false,
+        "viewCount": 89,
+        "likesCount": 9,
+        "tags": [
+            "french",
+            "food",
+            "kids",
+            "language"
+        ],
+        "createdAt": "2025-06-21T14:30:00.000Z",
+        "updatedAt": "2025-06-21T14:30:00.000Z",
+        "publishedAt": "2025-06-21T14:30:00.000Z"
+    },
+    {
+        "id": "fun-english-alphabet-games",
+        "authorName": "O Nepali",
+        "authorAvatar": "https://cdn.avokids.app/onepali-logo.png",
+        "title": "Fun English Alphabet Games",
+        "slug": "fun-english-alphabet-games",
+        "content": "## Let’s Play with Letters\n\nAlphabet learning is a blast:\n\n- Match A-Z with objects (A is for Apple)\n- Use magnetic letters or flashcards\n- Sing the ABC song together\n\nTip: Make it a game with rewards!",
+        "coverImage": "https://cdn.avokids.app/blog/english-alphabet.png",
+        "readTimeMinutes": 4,
+        "isDraft": false,
+        "isFeatured": false,
+        "viewCount": 153,
+        "likesCount": 18,
+        "tags": [
+            "english",
+            "alphabet",
+            "games",
+            "kids"
+        ],
+        "createdAt": "2025-06-20T10:45:00.000Z",
+        "updatedAt": "2025-06-20T10:45:00.000Z",
+        "publishedAt": "2025-06-20T10:45:00.000Z"
+    },
+    {
+        "id": "counting-fun-numbers-1-10",
+        "authorName": "O Nepali",
+        "authorAvatar": "https://cdn.avokids.app/onepali-logo.png",
+        "title": "Counting Fun! Numbers 1 to 10",
+        "slug": "counting-fun-numbers-1-10",
+        "content": "## Count with Me\n\nLearning numbers is easy when it’s fun:\n\n1 One elephant\n2 Two dogs\n3 Three cats\n\nKeep going to 10 using toys, snacks, or fingers!",
+        "coverImage": "https://cdn.avokids.app/blog/counting-numbers.png",
+        "readTimeMinutes": 2,
+        "isDraft": false,
+        "isFeatured": true,
+        "viewCount": 200,
+        "likesCount": 25,
+        "tags": [
+            "numbers",
+            "counting",
+            "math",
+            "kids"
+        ],
+        "createdAt": "2025-06-19T12:00:00.000Z",
+        "updatedAt": "2025-06-19T12:00:00.000Z",
+        "publishedAt": "2025-06-19T12:00:00.000Z"
+    },
+    {
+        "id": "colors-around-you",
+        "authorName": "O Nepali",
+        "authorAvatar": "https://cdn.avokids.app/onepali-logo.png",
+        "title": "Colors Around You",
+        "slug": "colors-around-you",
+        "content": "## Let’s Explore Colors\n\nAsk your child to find these colors:\n\n- Red – apple\n- Green – leaf\n- Blue – sky\n- Yellow – sun\n\nMake a rainbow scavenger hunt at home!",
+        "coverImage": "https://cdn.avokids.app/blog/colors-around.png",
+        "readTimeMinutes": 2,
+        "isDraft": false,
+        "isFeatured": false,
+        "viewCount": 98,
+        "likesCount": 11,
+        "tags": [
+            "colors",
+            "early-learning",
+            "explore",
+            "kids"
+        ],
+        "createdAt": "2025-06-18T08:15:00.000Z",
+        "updatedAt": "2025-06-18T08:15:00.000Z",
+        "publishedAt": "2025-06-18T08:15:00.000Z"
+    }
+]
