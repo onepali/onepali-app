@@ -13,6 +13,9 @@ class Assets {
 
   /// [Parent] Zone assets
   static String parentZoneImage = 'pz_danfe'.png;
+  static String parentHome = 'pz_home'.parentSvg;
+  static String parentBlog = 'pz_blog'.parentSvg;
+  static String parentSetting = 'pz_setting'.parentSvg;
 
   /// [Avatar] assets
   static String avatar1 = 'av_1'.avatar;
@@ -99,6 +102,7 @@ extension AssetsExtension on String {
   String get webp => 'assets/images/$this.webp';
   String get svg => 'assets/svg/$this.svg';
   String get icon => 'assets/svg/icons/$this.svg';
+  String get parentSvg => 'assets/svg/parent/$this.svg';
   String get lottie => 'assets/lottie/$this.json';
   String get audio => '$this.mp3';
   String get json => 'assets/json/$this.json';

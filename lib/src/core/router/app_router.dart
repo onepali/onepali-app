@@ -38,6 +38,7 @@ class AppRoutes {
   static const String parentDashboardScreen = '/parent/dashboard';
   static const String parentPinScreen = '/parent/pin';
   static const String parentProfileScreen = '/parent/profile';
+  static const String parentBlogScreen = '/parent/blog';
 
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {

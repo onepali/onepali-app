@@ -90,7 +90,19 @@ export 'reward/reward_card.dart';
 //* -------------------------------------- PARENT ZONE SCREEN EXPORTS -------------------------------------- *//
 
 /// [Parent] --> [Dashboard]
-export 'parent/parent_dashboard_screen.dart';
+export 'pzone/parent_dashboard_screen.dart';
 
-export 'parent/parent_screen.dart';
-export 'parent/parent_card.dart';
+/// [Parent] --> [Pin]
+export 'pzone/parent_screen.dart';
+
+/// [Parent] --> [Home]
+export 'pzone/phome/phome_screen.dart';
+
+/// [Parent] --> [Blog]
+export 'pzone/pblog/pblog_screen.dart';
+export 'pzone/pblog/pblog_card.dart';
+export 'pzone/pblog/pblog_detail_screen.dart';
+
+/// [Parent] --> [Profile]
+export 'pzone/psetting/psetting_screen.dart';
+export 'pzone/psetting/psetting_card.dart';
