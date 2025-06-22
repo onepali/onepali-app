@@ -32,13 +32,6 @@ List<SettingModel> drawerSettings = [
   ),
 
   SettingModel(
-    name: 'Settings',
-    desciption: 'Configure app settings and preferences',
-    icon: Assets.setting,
-    route: AppRoutes.comingSoon,
-  ),
-
-  SettingModel(
     name: 'Logout',
     desciption: 'Log out of your account',
     icon: Assets.logout,

@@ -5,8 +5,14 @@ import 'package:onepali/src/src.dart';
 
 class DrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
+  final int totalChildCount;
   final AuthProviderType? authProviderType;
-  const DrawerScreen({super.key, required this.data, this.authProviderType});
+  const DrawerScreen({
+    super.key,
+    required this.data,
+    required this.totalChildCount,
+    this.authProviderType,
+  });
 
   @override
   State<DrawerScreen> createState() => _DrawerScreenState();

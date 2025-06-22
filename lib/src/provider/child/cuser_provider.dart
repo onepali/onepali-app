@@ -12,6 +12,9 @@ class ChildUserProvider extends ChangeNotifier {
   List<ChildUserModel> _childUser = [];
   List<ChildUserModel> get childUser => _childUser;
 
+  int _totalChildren = 3;
+  int get totalChildren => _totalChildren;
+
   Future<void> fetchChildUser() async {
     setStatus(DataFetchStatus.loading);
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -38,6 +41,10 @@ class ChildUserProvider extends ChangeNotifier {
           querySnapshot.docs
               .map((doc) => ChildUserModel.fromJson(doc.data()))
               .toList();
+      logger.d('Fetched ${_childUser.length} child users');
+      if (_childUser.isNotEmpty) {
+        _totalChildren = _childUser.length;
+      }
       setStatus(DataFetchStatus.success);
     } catch (e) {
       logger.e('Error fetching child users: $e');

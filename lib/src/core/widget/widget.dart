@@ -73,3 +73,6 @@ export 'double_tap_trigger.dart';
 
 /// Custom [Youtube] Video Widget
 export 'youtube_video_widget.dart';
+
+/// [Dialog] Widget
+export 'dialog/dialog_manager.dart';

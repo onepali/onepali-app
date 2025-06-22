@@ -8,6 +8,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int totalStars;
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
+  final int totalChildCount;
+
   final AuthProviderType? authType;
 
   const UserAppBar({
@@ -19,6 +21,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onTabSelected,
     required this.childData,
     this.authType,
+    this.totalChildCount = 0,
   });
 
   @override
@@ -45,8 +48,14 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                     () => Utility.navigateMaterialRoute(
                       context,
                       isMobileLandScape
-                          ? DrawerScreen(data: childData)
-                          : TabDrawerScreen(data: childData),
+                          ? DrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          )
+                          : TabDrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          ),
                     ),
                 icon: CustomImage(
                   profileImage,

@@ -4,7 +4,13 @@ import 'package:provider/provider.dart';
 
 class TabDrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
-  const TabDrawerScreen({super.key, required this.data});
+  final int totalChildCount;
+
+  const TabDrawerScreen({
+    super.key,
+    required this.data,
+    required this.totalChildCount,
+  });
 
   @override
   State<TabDrawerScreen> createState() => _TabDrawerScreenState();
@@ -68,6 +74,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d('total child count: ${widget.totalChildCount}');
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +157,21 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
         );
       } else {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            if (widget.totalChildCount >= 3) {
+              DialogManager.showCustomDialog(
+                context: context,
+                title: 'You\'ve added 3 kids!',
+                content:
+                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                confirmButtonText: 'Add for \$5',
+                onConfirm: () {},
+              );
+              return;
+            } else {
+              Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+            }
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
