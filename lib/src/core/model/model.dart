@@ -39,3 +39,11 @@ export 'course/course_model.dart';
 
 /// [Story] Model
 export 'story/story_model.dart';
+
+//* ------------------------------- Parent Models ------------------------------- *//
+
+/// [Parent] Zone Model
+export 'pzone/pzone_model.dart';
+
+/// Parent [Blog] Model
+export 'pzone/pz_blog/pz_blog_model.dart';
