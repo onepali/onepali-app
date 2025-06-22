@@ -42,6 +42,10 @@ class ProviderConfig {
   /// [Story] Provider
   static final StoryProvider storyProvider = StoryProvider();
 
+  //* --------------------------- PZone Provider --------------------------- *//
+  // PZ [Blog] Provider
+  static final PzBlogProvider pzBlogProvider = PzBlogProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -75,6 +79,9 @@ class ProviderConfig {
       create: (_) => recommendedLessonProvider,
     ),
     ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
+
+    //* --------------------------- PZone Provider --------------------------- *//
+    ChangeNotifierProvider<PzBlogProvider>(create: (_) => pzBlogProvider),
   ];
 
   /// Dispose all providers
@@ -95,6 +102,10 @@ class ProviderConfig {
     recommendedStoryProvider.dispose();
     recommendedLessonProvider.dispose();
     songProvider.dispose();
+    storyProvider.dispose();
+
+    // PZone Providers
+    pzBlogProvider.dispose();
   }
 
   /// Singleton factory

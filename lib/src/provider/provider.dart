@@ -39,3 +39,8 @@ export 'recommended/recommended_lesson_provider.dart';
 
 /// [Story] Provider
 export 'story/story_provider.dart';
+
+//* ------------------------------- PZone Provider ------------------------------- *//
+
+/// PZ [Blog] Provider
+export 'pzone/pz_blog/pz_blog_provider.dart';
