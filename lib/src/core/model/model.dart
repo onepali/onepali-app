@@ -21,7 +21,8 @@ export 'home/home_model.dart';
 /// [Child] Model
 export 'child/cuser_model.dart';
 
-/// [R]
+/// [Reward] Model
+export 'reward/reward_model.dart';
 
 //* ------------------------------- Child Models ------------------------------- *//
 

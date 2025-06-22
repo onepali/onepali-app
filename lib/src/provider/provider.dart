@@ -24,7 +24,8 @@ export 'lesson/laudio_provider.dart';
 /// [Child] Provider
 export 'child/cuser_provider.dart';
 
-
+/// [Reward] Provider
+export 'reward/reward_provider.dart';
 
 //* ------------------------------- Child Provider ------------------------------- *//
 
