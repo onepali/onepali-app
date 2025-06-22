@@ -11,6 +11,9 @@ class Assets {
   /// [Image] assets
   static String splashImage = 'splash'.gif;
 
+  /// [Parent] Zone assets
+  static String parentZoneImage = 'pz_danfe'.png;
+
   /// [Avatar] assets
   static String avatar1 = 'av_1'.avatar;
   static String avatar2 = 'av_2'.avatar;

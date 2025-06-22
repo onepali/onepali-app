@@ -86,3 +86,11 @@ export 'story/story_content/widget/normal_content.dart';
 /// [Reward] Screen
 export 'reward/reward_screen.dart';
 export 'reward/reward_card.dart';
+
+//* -------------------------------------- PARENT ZONE SCREEN EXPORTS -------------------------------------- *//
+
+/// [Parent] --> [Dashboard]
+export 'parent/parent_dashboard_screen.dart';
+
+export 'parent/parent_screen.dart';
+export 'parent/parent_card.dart';

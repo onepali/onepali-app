@@ -33,6 +33,12 @@ class AppRoutes {
   /// [Language] Routes
   static const String languageScreen = '/language';
 
+  //*--------- Parent Zone Routes ---------*/
+  /// [Parent] Routes
+  static const String parentDashboardScreen = '/parent/dashboard';
+  static const String parentPinScreen = '/parent/pin';
+  static const String parentProfileScreen = '/parent/profile';
+
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     splashScreen: (context) => const SplashScreen(),
@@ -51,5 +57,9 @@ class AppRoutes {
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
     languageScreen: (context) => const LanguageScreen(),
+
+    // Parent Zone Routes
+    parentDashboardScreen: (context) => const ParentDashboardScreen(),
+    parentPinScreen: (context) => const ParentZoneScreen(),
   };
 }
