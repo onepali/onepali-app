@@ -12,14 +12,14 @@ class PZServiceModel {
   }
 }
 
-List<PZServiceModel> pzoneServices = [
+List<PZServiceModel> pzoneBottomModel = [
   PZServiceModel(
-    label: 'Home',
+    label: 'Progress Report',
     icon: Assets.parentHome,
     route: AppRoutes.parentDashboardScreen,
   ),
   PZServiceModel(
-    label: 'Blog',
+    label: 'Community',
     icon: Assets.parentBlog,
     route: AppRoutes.parentBlogScreen,
   ),

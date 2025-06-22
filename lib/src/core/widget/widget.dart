@@ -76,3 +76,8 @@ export 'youtube_video_widget.dart';
 
 /// [Dialog] Widget
 export 'dialog/dialog_manager.dart';
+
+//* --------------------------------- Parent Zone --------------------------------- *//
+
+//// Parent Zone [AppBar]
+export 'pwidget/pappbar_widget.dart';
