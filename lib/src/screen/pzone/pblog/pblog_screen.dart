@@ -31,8 +31,10 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
           return ListView.separated(
             itemCount: provider.blogs.length,
             separatorBuilder:
-                (context, index) =>
-                    Divider(color: AppColors.kLightGrey, thickness: 0.5),
+                (context, index) => SizedBox(
+                  height: 50,
+                  child: Divider(color: AppColors.kLightGrey, thickness: 0.2),
+                ),
             itemBuilder: (context, index) {
               final blog = provider.blogs[index];
               return PBlogCard(

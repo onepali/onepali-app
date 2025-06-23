@@ -27,8 +27,11 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
     final parent = userProvider.user;
     final children = childProvider.childUser;
     final canAddChild = children.length < 3;
+    bool isMobile = PlatformUtility.isMobile(context);
+    bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
     return Scaffold(
+      backgroundColor: AppColors.kWhite,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         children: [
@@ -45,7 +48,6 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           Gaps.verticalGapOf(8),
-          // Children cards
           ...children.map(
             (child) => PSettingCard(
               title: child.fullName,
@@ -71,24 +73,50 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
-                Icon(Icons.favorite, color: Colors.orange[300]),
                 Gaps.horizontalGapOf(8),
-                Icon(Icons.send, color: Colors.orange[300]),
+                Icon(Icons.volunteer_activism, color: Colors.orange[300]),
               ],
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.notifications),
+            leading: Container(
+              height: isMobilePortrait ? 40 : 48,
+              width: isMobilePortrait ? 40 : 48,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.kLightGrey.withValues(alpha: 0.3),
+              ),
+              child: const Icon(Icons.notifications),
+            ),
             title: const Text('Notifications'),
             onTap: () {},
           ),
           ListTile(
-            leading: const Icon(Icons.assignment),
+            leading: Container(
+              height: isMobilePortrait ? 40 : 48,
+              width: isMobilePortrait ? 40 : 48,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.kLightGrey.withValues(alpha: 0.3),
+              ),
+              child: const Icon(Icons.assignment),
+            ),
             title: const Text('My plan'),
             onTap: () {},
           ),
           ListTile(
-            leading: const Icon(Icons.favorite),
+            leading: Container(
+              height: isMobilePortrait ? 40 : 48,
+              width: isMobilePortrait ? 40 : 48,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.kLightGrey.withValues(alpha: 0.3),
+              ),
+              child: SvgHelper.fromSource(path: Assets.unsubscribe),
+            ),
             title: const Text('Cancel Subscription'),
             onTap: () {},
           ),

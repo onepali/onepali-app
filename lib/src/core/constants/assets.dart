@@ -57,6 +57,7 @@ class Assets {
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
+  static String unsubscribe = 'unfav'.icon;
 
   // Miscellaneous
   static String successSvg = 'success'.svg;

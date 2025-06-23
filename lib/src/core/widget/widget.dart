@@ -77,6 +77,9 @@ export 'youtube_video_widget.dart';
 /// [Dialog] Widget
 export 'dialog/dialog_manager.dart';
 
+/// Custom [Rounded] Box
+export 'custom_rounded_box.dart';
+
 //* --------------------------------- Parent Zone --------------------------------- *//
 
 //// Parent Zone [AppBar]

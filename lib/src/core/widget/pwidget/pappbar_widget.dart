@@ -30,6 +30,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ),
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
+      actionsPadding: EdgeInsets.only(right: isMobilePortrait ? 8 : 16),
       actions: [
         Icon(Icons.arrow_drop_down_outlined, size: isMobilePortrait ? 30 : 40),
       ],

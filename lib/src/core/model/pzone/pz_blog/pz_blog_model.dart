@@ -84,4 +84,42 @@ class PzBlogModel {
     "updatedAt": updatedAt,
     "publishedAt": publishedAt,
   };
+
+  PzBlogModel copyWith({
+    String? id,
+    String? authorName,
+    String? authorAvatar,
+    String? title,
+    String? slug,
+    String? content,
+    String? coverImage,
+    int? readTimeMinutes,
+    bool? isDraft,
+    bool? isFeatured,
+    int? viewCount,
+    int? likesCount,
+    List<String>? tags,
+    String? createdAt,
+    String? updatedAt,
+    String? publishedAt,
+  }) {
+    return PzBlogModel(
+      id: id ?? this.id,
+      authorName: authorName ?? this.authorName,
+      authorAvatar: authorAvatar ?? this.authorAvatar,
+      title: title ?? this.title,
+      slug: slug ?? this.slug,
+      content: content ?? this.content,
+      coverImage: coverImage ?? this.coverImage,
+      readTimeMinutes: readTimeMinutes ?? this.readTimeMinutes,
+      isDraft: isDraft ?? this.isDraft,
+      isFeatured: isFeatured ?? this.isFeatured,
+      viewCount: viewCount ?? this.viewCount,
+      likesCount: likesCount ?? this.likesCount,
+      tags: tags ?? this.tags,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      publishedAt: publishedAt ?? this.publishedAt,
+    );
+  }
 }

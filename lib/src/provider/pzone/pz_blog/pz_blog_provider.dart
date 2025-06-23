@@ -47,4 +47,28 @@ class PzBlogProvider extends ChangeNotifier {
       handleError(e.toString());
     }
   }
+
+  Future<void> incrementBlogView(String blogId) async {
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final User? user = auth.currentUser;
+
+      if (user == null) {
+        logger.e('User is not authenticated.');
+        handleError("User not signed in.");
+        return;
+      }
+      final blogRef = _firestore.collection('blogs').doc(blogId);
+      await blogRef.update({'viewCount': FieldValue.increment(1)});
+      final index = _blogs.indexWhere((b) => b.id == blogId);
+      if (index != -1) {
+        _blogs[index] = _blogs[index].copyWith(
+          viewCount: _blogs[index].viewCount + 1,
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      logger.e('Error incrementing blog view: $e');
+    }
+  }
 }
