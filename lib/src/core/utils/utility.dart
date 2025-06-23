@@ -12,10 +12,17 @@ class Utility {
     return Navigator.of(context).pushNamed(route, arguments: arguments);
   }
 
-  static Future navigateMaterialRoute(BuildContext context, screen) {
+  static Future navigateMaterialRoute(
+    BuildContext context,
+    screen, {
+    String? routeName,
+  }) {
     return Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => screen),
+      MaterialPageRoute(
+        builder: (context) => screen,
+        settings: routeName != null ? RouteSettings(name: routeName) : null,
+      ),
     );
   }
 

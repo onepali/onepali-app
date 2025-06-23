@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class ParentBlogScreen extends StatefulWidget {
   const ParentBlogScreen({super.key});
@@ -9,7 +11,44 @@ class ParentBlogScreen extends StatefulWidget {
 
 class _ParentBlogScreenState extends State<ParentBlogScreen> {
   @override
+  void initState() {
+    super.initState();
+    Misc.onLayoutRendered(() => context.read<PzBlogProvider>().fetchBlogs());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: AppColors.kWhite,
+      body: Consumer<PzBlogProvider>(
+        builder: (context, provider, _) {
+          if (provider.status == DataFetchStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (provider.blogs.isEmpty &&
+              provider.status == DataFetchStatus.error) {
+            return const Center(child: Text('No blogs found.'));
+          }
+          return ListView.separated(
+            itemCount: provider.blogs.length,
+            separatorBuilder:
+                (context, index) =>
+                    Divider(color: AppColors.kLightGrey, thickness: 0.5),
+            itemBuilder: (context, index) {
+              final blog = provider.blogs[index];
+              return PBlogCard(
+                blog: blog,
+                onTap: () {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    PBlogDetailScreen(data: blog),
+                    routeName: AppRoutes.blogDetailScreen,
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

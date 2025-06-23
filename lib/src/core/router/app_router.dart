@@ -40,6 +40,7 @@ class AppRoutes {
   static const String parentHomeScreen = '/parent/home';
   static const String parentProfileScreen = '/parent/profile';
   static const String parentBlogScreen = '/parent/blog';
+  static const String blogDetailScreen = '/parent/blog/detail';
 
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
@@ -66,5 +67,9 @@ class AppRoutes {
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),
     parentProfileScreen: (context) => const ParentSettingScreen(),
+    blogDetailScreen:
+        (context) => PBlogDetailScreen(
+          data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,
+        ),
   };
 }

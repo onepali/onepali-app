@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/model/pzone/pzone_model.dart';
 import 'package:onepali/src/src.dart';
 
 class ParentDashboardScreen extends StatefulWidget {
