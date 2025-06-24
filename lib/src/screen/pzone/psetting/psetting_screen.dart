@@ -40,7 +40,13 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             PSettingCard(
               title: parent.fullName,
               avatarUrl: null,
-              onEdit: () {},
+              onEdit: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  UserScreen(),
+                  routeName: AppRoutes.parentProfileScreen,
+                );
+              },
             ),
           Gaps.verticalGapOf(18),
           const Text(
@@ -52,7 +58,13 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             (child) => PSettingCard(
               title: child.fullName,
               avatarUrl: child.avatarUrl,
-              onEdit: () {},
+              onEdit: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  CUserScreen(child: child),
+                  routeName: AppRoutes.childProfileScreen,
+                );
+              },
             ),
           ),
           if (canAddChild)

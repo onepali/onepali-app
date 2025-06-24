@@ -33,12 +33,16 @@ class AppRoutes {
   /// [Language] Routes
   static const String languageScreen = '/language';
 
+  /// [Profile] Update Routes
+  static const String childProfileScreen = '/cprofile/update';
+  static const String parentProfileScreen = '/pz_profile/update';
+
   //*--------- Parent Zone Routes ---------*/
   /// [Parent] Routes
   static const String parentDashboardScreen = '/parent/dashboard';
   static const String parentPinScreen = '/parent/pin';
   static const String parentHomeScreen = '/parent/home';
-  static const String parentProfileScreen = '/parent/profile';
+  static const String parentSettingScreen = '/parent/setting';
   static const String parentBlogScreen = '/parent/blog';
   static const String blogDetailScreen = '/parent/blog/detail';
 
@@ -61,12 +65,18 @@ class AppRoutes {
     userScreen: (context) => const UserScreen(),
     languageScreen: (context) => const LanguageScreen(),
 
+    childProfileScreen:
+        (context) => CUserScreen(
+          child: ModalRoute.of(context)?.settings.arguments as ChildUserModel,
+        ),
+    parentProfileScreen: (context) => const UserScreen(),
+
     // Parent Zone Routes
     parentDashboardScreen: (context) => const ParentDashboardScreen(),
     parentPinScreen: (context) => const ParentZoneScreen(),
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),
-    parentProfileScreen: (context) => const ParentSettingScreen(),
+    parentSettingScreen: (context) => const ParentSettingScreen(),
     blogDetailScreen:
         (context) => PBlogDetailScreen(
           data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,

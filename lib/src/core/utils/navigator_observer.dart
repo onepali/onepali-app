@@ -19,6 +19,8 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.parentBlogScreen,
     AppRoutes.parentProfileScreen,
     AppRoutes.blogDetailScreen,
+    AppRoutes.childProfileScreen,
+    AppRoutes.parentProfileScreen,
   ];
 
   void _setOrientation(Route<dynamic>? route) {

@@ -61,6 +61,39 @@ class UserProvider extends ChangeNotifier {
     logger.d('PIN match: true');
     return true;
   }
+
+  Future<void> updateUserProfile({
+    required String fullName,
+    required String email,
+  }) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      showCustomToaster('User not signed in.', isError: true);
+      return;
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .update({'fullName': fullName, 'email': email});
+      if (_user != null) {
+        _user = UserModel(
+          uid: _user!.uid,
+          fullName: fullName,
+          email: email,
+          yearOfBirth: _user!.yearOfBirth,
+          heardAbout: _user!.heardAbout,
+          learningReason: _user!.learningReason,
+          authProvider: _user!.authProvider,
+          createdAt: _user!.createdAt,
+        );
+      }
+      notifyListeners();
+      showCustomToaster('Profile updated successfully.');
+    } catch (e) {
+      showCustomToaster('Failed to update profile.', isError: true);
+    }
+  }
 }
 
 
