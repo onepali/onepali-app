@@ -50,3 +50,6 @@ export 'pzone/pz_blog/pz_blog_model.dart';
 
 /// Parent [Notification] Model
 export 'pzone/pz_notification/pz_notification_model.dart';
+
+/// Parent [Plan] Model
+export 'pzone/pz_plan/pz_plan_model.dart';
