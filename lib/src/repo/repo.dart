@@ -13,3 +13,6 @@ export 'story/story_repo.dart';
 
 /// [Reward] repository
 export 'reward/reward_repo.dart';
+
+/// Parent [Zone] repository
+export 'pzone/pz_notification/pz_notification_repo.dart';
