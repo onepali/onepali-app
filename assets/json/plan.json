@@ -1,11 +1,11 @@
 [
     {
-        "id": "annual",
-        "name": "Annual Subscription",
-        "price": 6.99,
+        "id": "free",
+        "name": "Free Subscription",
+        "price": 0.00,
         "currency": "USD",
-        "billing_cycle": "year",
-        "description": "$6.99/year (billed annually)"
+        "billing_cycle": "",
+        "description": "Free forever, no credit card requireda"
     },
     {
         "id": "monthly",
@@ -14,5 +14,13 @@
         "currency": "USD",
         "billing_cycle": "month",
         "description": "$9.99/month (billed monthly)"
+    },
+    {
+        "id": "annual",
+        "name": "Annual Subscription",
+        "price": 6.99,
+        "currency": "USD",
+        "billing_cycle": "year",
+        "description": "$6.99/year (billed annually)"
     }
 ]
