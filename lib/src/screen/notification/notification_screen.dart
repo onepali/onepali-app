@@ -20,7 +20,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       if (provider.settings == null) {
         provider.getNotificationSetting();
       }
-      provider.getNotification();
+      // provider.getNotification();
     });
   }
 

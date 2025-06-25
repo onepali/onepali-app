@@ -14,27 +14,14 @@ import 'package:provider/provider.dart';
 class AppInitializer {
   Future<void> initializeApp() async {
     WidgetsFlutterBinding.ensureInitialized();
-    logger.d('[AppInit] Starting app initialization...');
     await Firebase.initializeApp();
-    logger.d('[AppInit] Firebase initialized');
     HttpOverrides.global = MyHttpOverrides();
-    logger.d('[AppInit] HttpOverrides set');
     await NotificationService.initialize();
-    logger.d('[AppInit] NotificationService initialized');
     tz.initializeTimeZones();
-    logger.d('[AppInit] Timezone database initialized');
     final String deviceTimeZone = await FlutterTimezone.getLocalTimezone();
-    logger.d('[AppInit] Device Time Zone: $deviceTimeZone');
     tz.setLocalLocation(tz.getLocation(deviceTimeZone));
-    logger.d('[AppInit] Local timezone set to: ${tz.local}');
 
     await ProviderConfig.pzNotificationProvider.getNotificationSetting();
-    logger.d(
-      '[AppInit] Notification settings fetched and daily reminder rescheduled if set.',
-    );
-    logger.d(
-      '[AppInit] Pending notifications logged: ${NotificationService.logPendingNotifications()}',
-    );
   }
 
   static Future<bool> checkUserAuthentication() async {
