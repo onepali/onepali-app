@@ -58,4 +58,9 @@ class AppConstants {
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},
     {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},
   ];
+
+  // Notification Titles & Bodies [Daily Reminder]
+  static const String dailyReminderTitle = "⏰ It's Time to Practice!";
+  static const String dailyReminderBody =
+      "Let's make today awesome! Are you ready for your daily adventure? 🚀";
 }

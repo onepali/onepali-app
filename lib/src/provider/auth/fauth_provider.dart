@@ -121,6 +121,8 @@ class FAuthProvider with ChangeNotifier {
             );
             await userDocRef.set(userModel.toJson());
           }
+          // Save FCM token after Facebook login/registration
+          await Utility.saveFcmTokenToFirestore(user.uid);
         }
 
         logger.d('Facebook accessToken---> ${accessToken.tokenString}');

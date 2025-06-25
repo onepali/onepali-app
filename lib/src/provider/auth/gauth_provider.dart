@@ -94,6 +94,8 @@ class GoogleAuthProvider with ChangeNotifier {
 
       if (!isLogin) {
         await userDocRef.set(userModel.toJson());
+        // Save FCM token after registration
+        await Utility.saveFcmTokenToFirestore(firebaseUser.uid);
       }
 
       if (isLogin) {
@@ -103,6 +105,8 @@ class GoogleAuthProvider with ChangeNotifier {
           json.encode(userInfo),
         );
         await _sharedPrefs.setBoolPref(AppConstants.logged, true);
+        // Save FCM token after login
+        await Utility.saveFcmTokenToFirestore(firebaseUser.uid);
       }
 
       if (!context.mounted) return;

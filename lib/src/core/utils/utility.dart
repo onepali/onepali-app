@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../src.dart';
 
@@ -160,5 +162,21 @@ class Utility {
       return '';
     }
     return 'https://img.youtube.com/vi/${extractYoutubeVideoId(url)}/${ytThumbnailType(type)}.jpg';
+  }
+
+  static Future<void> saveFcmTokenToFirestore(String userId) async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    if (fcmToken != null) {
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'fcmToken': fcmToken,
+      }, SetOptions(merge: true));
+    }
+
+    // Listen for token refresh
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'fcmToken': newToken,
+      }, SetOptions(merge: true));
+    });
   }
 }
