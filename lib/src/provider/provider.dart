@@ -44,3 +44,6 @@ export 'story/story_provider.dart';
 
 /// PZ [Blog] Provider
 export 'pzone/pz_blog/pz_blog_provider.dart';
+
+/// PZ [Notification] Provider
+export 'pzone/pz_notification/pz_notification_provider.dart';

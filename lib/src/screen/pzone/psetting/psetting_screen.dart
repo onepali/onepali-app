@@ -102,7 +102,9 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               child: const Icon(Icons.notifications),
             ),
             title: const Text('Notifications'),
-            onTap: () {},
+            onTap: () {
+              Utility.navigate(context, AppRoutes.parentNotificationScreen);
+            },
           ),
           ListTile(
             leading: Container(

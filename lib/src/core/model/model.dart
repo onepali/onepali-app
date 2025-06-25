@@ -47,3 +47,6 @@ export 'pzone/pzone_model.dart';
 
 /// Parent [Blog] Model
 export 'pzone/pz_blog/pz_blog_model.dart';
+
+/// Parent [Notification] Model
+export 'pzone/pz_notification/pz_notification_model.dart';

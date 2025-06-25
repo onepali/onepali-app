@@ -61,6 +61,7 @@ export 'custom_toast.dart';
 
 /// Custom [DatePicker]
 export 'cupertino_date_picker.dart';
+export 'cupertino_time_picker.dart';
 
 /// Custom [Range] Slider
 export 'custom_range_slider.dart';

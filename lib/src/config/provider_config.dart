@@ -43,8 +43,12 @@ class ProviderConfig {
   static final StoryProvider storyProvider = StoryProvider();
 
   //* --------------------------- PZone Provider --------------------------- *//
-  // PZ [Blog] Provider
+  /// PZ [Blog] Provider
   static final PzBlogProvider pzBlogProvider = PzBlogProvider();
+
+  /// PZ [Notification] Provider
+  static final PzNotificationProvider pzNotificationProvider =
+      PzNotificationProvider();
 
   //* --------------------------- End --------------------------- *//
 
@@ -82,6 +86,9 @@ class ProviderConfig {
 
     //* --------------------------- PZone Provider --------------------------- *//
     ChangeNotifierProvider<PzBlogProvider>(create: (_) => pzBlogProvider),
+    ChangeNotifierProvider<PzNotificationProvider>(
+      create: (_) => pzNotificationProvider,
+    ),
   ];
 
   /// Dispose all providers
@@ -106,6 +113,7 @@ class ProviderConfig {
 
     // PZone Providers
     pzBlogProvider.dispose();
+    pzNotificationProvider.dispose();
   }
 
   /// Singleton factory
