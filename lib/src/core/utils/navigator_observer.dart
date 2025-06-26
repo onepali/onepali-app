@@ -4,6 +4,11 @@ import 'package:onepali/src/src.dart';
 
 class OrientationRouteObserver extends NavigatorObserver {
   static const List<String> portraitRoutes = [
+    AppRoutes.systemScreen,
+    AppRoutes.aboutUsScreen,
+    AppRoutes.contactScreen,
+    AppRoutes.faqsScreen,
+
     AppRoutes.splashScreen,
     AppRoutes.loginScreen,
     AppRoutes.onboardingScreen,

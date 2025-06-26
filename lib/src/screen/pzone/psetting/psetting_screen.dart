@@ -153,21 +153,66 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             onTap: () {},
           ),
           Gaps.verticalGapOf(24),
+
           // Footer
-          Container(
-            color: Colors.blue[50],
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('About us'),
-                const Text('Contact us'),
-                const Text('FAQ'),
-                // Image.asset('assets/images/kidsafe.png', height: 32),
-              ],
-            ),
-          ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.blue[50],
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  SystemScreen(initialIndex: 0),
+                  routeName: AppRoutes.aboutUsScreen,
+                );
+              },
+              child: Text(
+                'About us',
+                style:
+                    isMobilePortrait
+                        ? AppStyles.text16PxMedium
+                        : AppStyles.text20PxMedium,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  SystemScreen(initialIndex: 1),
+                  routeName: AppRoutes.contactScreen,
+                );
+              },
+              child: Text(
+                'Contact us',
+                style:
+                    isMobilePortrait
+                        ? AppStyles.text16PxMedium
+                        : AppStyles.text20PxMedium,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  SystemScreen(initialIndex: 2),
+                  routeName: AppRoutes.faqsScreen,
+                );
+              },
+              child: Text(
+                'FAQ',
+                style:
+                    isMobilePortrait
+                        ? AppStyles.text16PxMedium
+                        : AppStyles.text20PxMedium,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -8,6 +8,12 @@ class AppRoutes {
   static const String notFoundScreen = '/not-found';
   static const String logout = '/logout';
 
+  /// [System] Routes
+  static const String systemScreen = '/system';
+  static const String aboutUsScreen = '/about-us';
+  static const String contactScreen = '/contact-us';
+  static const String faqsScreen = '/faqs';
+
   /// [Splash] & [OnBoarding] Routes
   static const String splashScreen = '/splash';
   static const String onboardingScreen = '/onboarding';
@@ -54,6 +60,16 @@ class AppRoutes {
 
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
+    systemScreen: (context) => const SystemScreen(),
+    aboutUsScreen: (context) => const AboutUsScreen(),
+    contactScreen: (context) => const ContactScreen(),
+    faqsScreen:
+        (context) => FaqsScreen(
+          faqsData:
+              ModalRoute.of(context)?.settings.arguments as List<FaqModel>? ??
+              [],
+        ),
+
     splashScreen: (context) => const SplashScreen(),
     onboardingScreen: (context) => const OnboardingScreen(),
 

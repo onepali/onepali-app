@@ -47,6 +47,8 @@ class AppConstants {
     Assets.avatar8,
   ];
 
+  static List<String> sysTab = ['About Us', 'Contact Us', 'FAQs'];
+
   static List<String> whyLearningNepali = [
     'Develop a learning habit',
     'Communicate with relatives in Nepal',
