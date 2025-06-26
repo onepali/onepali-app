@@ -8,7 +8,7 @@ export 'onboarding/onboarding_screen.dart';
 export 'system/about_us_screen.dart';
 export 'system/contact_screen.dart';
 export 'system/faqs_screen.dart';
-export 'system/system_status_screen.dart';
+export 'system/system_screen.dart';
 
 // Auth Screen
 
