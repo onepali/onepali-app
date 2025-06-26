@@ -42,6 +42,10 @@ export 'story/story_provider.dart';
 
 //* ------------------------------- PZone Provider ------------------------------- *//
 
+/// PZ [Home] Provider
+export 'pzone/pz_home/pz_home_provider.dart';
+export 'pzone/pz_home/pz_metrics_provider.dart';
+
 /// PZ [Blog] Provider
 export 'pzone/pz_blog/pz_blog_provider.dart';
 

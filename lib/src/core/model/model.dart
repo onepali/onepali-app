@@ -48,6 +48,9 @@ export 'story/story_model.dart';
 /// [Parent] Zone Model
 export 'pzone/pzone_model.dart';
 
+/// Parent [Home] Model
+export 'pzone/pz_home/pz_home_metrics_model.dart';
+
 /// Parent [Blog] Model
 export 'pzone/pz_blog/pz_blog_model.dart';
 
@@ -56,6 +59,3 @@ export 'pzone/pz_notification/pz_notification_model.dart';
 
 /// Parent [Plan] Model
 export 'pzone/pz_plan/pz_plan_model.dart';
-
-/// Parent [Home] Model
-export 'pzone/pz_home/pz_home_metrics_model.dart';

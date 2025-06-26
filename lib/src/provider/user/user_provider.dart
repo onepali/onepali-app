@@ -9,6 +9,8 @@ class UserProvider extends ChangeNotifier {
 
   DataFetchStatus get status => _status;
   UserModel? get user => _user;
+  String? _userId;
+  String? get userId => _userId;
 
   Future<void> fetchOwnProfile() async {
     _status = DataFetchStatus.loading;
@@ -28,6 +30,7 @@ class UserProvider extends ChangeNotifier {
               .get();
       if (doc.exists) {
         _user = UserModel.fromJson(doc.data()!);
+        _userId = _user?.uid;
         logger.d('User fetched: ${_user?.toJson()}');
         _status = DataFetchStatus.success;
       } else {
