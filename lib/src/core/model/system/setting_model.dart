@@ -30,11 +30,4 @@ List<SettingModel> drawerSettings = [
     icon: Assets.download,
     route: AppRoutes.comingSoon,
   ),
-
-  SettingModel(
-    name: 'Logout',
-    desciption: 'Log out of your account',
-    icon: Assets.logout,
-    route: AppRoutes.logout,
-  ),
 ];

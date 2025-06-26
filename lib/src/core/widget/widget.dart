@@ -81,6 +81,9 @@ export 'dialog/dialog_manager.dart';
 /// Custom [Rounded] Box
 export 'custom_rounded_box.dart';
 
+/// Custom [Bottom] Sheet
+export 'bottom_sheet_manager.dart';
+
 //* --------------------------------- Parent Zone --------------------------------- *//
 
 //// Parent Zone [AppBar]

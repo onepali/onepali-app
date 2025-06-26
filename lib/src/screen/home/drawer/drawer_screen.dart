@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:onepali/src/core/widget/bottom_sheet_manager.dart';
 import 'package:onepali/src/src.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -212,9 +211,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ListTile(
               contentPadding: const EdgeInsets.only(bottom: 8.0),
               onTap: () {
-                if (drawerSettings[i].route == AppRoutes.logout) {
-                  logoutBottomSheet(context);
-                } else if (drawerSettings[i].route == AppRoutes.comingSoon) {
+                if (drawerSettings[i].route == AppRoutes.comingSoon) {
                   showCustomToaster('This feature is coming soon.');
                   return;
                 }
@@ -237,48 +234,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 ),
               ),
             ),
-          const Spacer(),
-          Text(
-            "${GlobalConfig.appVersion} • All rights reserved.",
-            style: AppStyles.text12PxRegular.copyWith(color: AppColors.kWhite),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future logoutBottomSheet(context) {
-    return BottomSheetManager.bottomModelSheet(
-      title: 'Are you sure? Logout',
-      action: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(
-            child: CustomMaterialButton(
-              label: 'Cancel',
-              elevation: 0,
-              height: 40,
-              fillButton: false,
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          Gaps.horizontalGapOf(20),
-          Expanded(
-            child: CustomMaterialButton(
-              label: 'Yes, Logout',
-              height: 40,
-              elevation: 0,
-              onTap: () {
-                Utility.authWiseLogout(
-                  context,
-                  widget.authProviderType ?? AuthProviderType.email,
-                );
-              },
-            ),
-          ),
         ],
       ),
     );

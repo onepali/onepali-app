@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class ParentDashboardScreen extends StatefulWidget {
   const ParentDashboardScreen({super.key});
@@ -20,6 +21,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<UserProvider>().fetchOwnProfile();
   }
 
   _onItemTapped(int index) {
@@ -32,9 +34,16 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   Widget build(BuildContext context) {
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
+    final userProvider = context.watch<UserProvider>();
+    final UserModel? userInfo = userProvider.user;
 
     return Scaffold(
-      appBar: PZAppBarWidget(title: pzoneBottomModel[_currentIndex].label),
+      appBar: PZAppBarWidget(
+        title: pzoneBottomModel[_currentIndex].label,
+        authProviderType: Utility.getAuthTypeFromUserInfo(
+          userInfo?.authProvider ?? AuthProviderType.email.name,
+        ),
+      ),
       body: _screen[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items:
