@@ -104,6 +104,12 @@ export 'pzone/parent_screen.dart';
 
 /// [Parent] --> [Home]
 export 'pzone/phome/phome_screen.dart';
+export 'pzone/phome/phome_card.dart';
+
+/// [Parent] --> [Home] --> [Widget]
+export 'pzone/phome/widget/paverage_learning_widget.dart';
+export 'pzone/phome/widget/pdaily_learning_widget.dart';
+export 'pzone/phome/widget/pdashboard_metrics_widget.dart';
 
 /// [Parent] --> [Blog]
 export 'pzone/pblog/pblog_screen.dart';
@@ -115,7 +121,7 @@ export 'pzone/psetting/psetting_screen.dart';
 export 'pzone/psetting/psetting_card.dart';
 
 /// [Parent] --> [Plan]
-export'pzone/plan/pz_plan_screen.dart';
+export 'pzone/plan/pz_plan_screen.dart';
 export 'pzone/plan/pz_plan_card.dart';
 export 'pzone/plan/add_update_plan_screen.dart';
 export 'pzone/plan/cancel_plan_screen.dart.dart';
