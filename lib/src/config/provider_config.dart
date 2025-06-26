@@ -50,6 +50,9 @@ class ProviderConfig {
   static final PzNotificationProvider pzNotificationProvider =
       PzNotificationProvider();
 
+  /// PZ [Plan] Provider
+  static final PzPlanProvider pzPlanProvider = PzPlanProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -89,6 +92,7 @@ class ProviderConfig {
     ChangeNotifierProvider<PzNotificationProvider>(
       create: (_) => pzNotificationProvider,
     ),
+    ChangeNotifierProvider<PzPlanProvider>(create: (_) => pzPlanProvider),
   ];
 
   /// Dispose all providers
@@ -114,6 +118,7 @@ class ProviderConfig {
     // PZone Providers
     pzBlogProvider.dispose();
     pzNotificationProvider.dispose();
+    pzPlanProvider.dispose();
   }
 
   /// Singleton factory

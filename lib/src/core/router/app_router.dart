@@ -49,6 +49,9 @@ class AppRoutes {
   /// [Parent] ---> [Notification] Routes
   static const String parentNotificationScreen = '/parent/notification';
 
+  /// [Parent] ---> [Plans] Routes
+  static const String parentPlansScreen = '/parent/plans';
+
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     splashScreen: (context) => const SplashScreen(),
@@ -86,5 +89,7 @@ class AppRoutes {
         ),
 
     parentNotificationScreen: (context) => const NotificationScreen(),
+
+    parentPlansScreen: (context) => const PlanScreen(),
   };
 }

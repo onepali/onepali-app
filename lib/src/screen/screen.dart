@@ -115,10 +115,10 @@ export 'pzone/psetting/psetting_screen.dart';
 export 'pzone/psetting/psetting_card.dart';
 
 /// [Parent] --> [Plan]
-export'plan/plan_screen.dart';
-export 'plan/plan_card.dart';
-export 'plan/add_update_plan_screen.dart';
-export 'plan/cancel_plan_screen.dart.dart';
+export'pzone/plan/pz_plan_screen.dart';
+export 'pzone/plan/pz_plan_card.dart';
+export 'pzone/plan/add_update_plan_screen.dart';
+export 'pzone/plan/cancel_plan_screen.dart.dart';
 
 /// [Parent] --> [Notification]
 export 'notification/notification_screen.dart';

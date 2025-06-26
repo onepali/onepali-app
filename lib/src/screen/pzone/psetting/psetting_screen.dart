@@ -26,7 +26,6 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
     final childProvider = context.watch<ChildUserProvider>();
     final parent = userProvider.user;
     final children = childProvider.childUser;
-    final canAddChild = children.length < 3;
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
@@ -67,8 +66,25 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               },
             ),
           ),
-          if (canAddChild)
-            PSettingCard(title: 'Add child', isAdd: true, onTap: () {}),
+          // Add child button with restrictions
+          PSettingCard(
+            title: 'Add child',
+            isAdd: true,
+            onTap: () {
+              if (children.length >= 3) {
+                DialogManager.showCustomDialog(
+                  context: context,
+                  title: 'You\'ve added 3 kids!',
+                  content:
+                      'Want to add another to keep learning personalized? It\'s just \$5 per extra child.',
+                  confirmButtonText: 'Add for \$5',
+                  onConfirm: () {},
+                );
+              } else {
+                Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+              }
+            },
+          ),
           Gaps.verticalGapOf(18),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 12),
@@ -118,7 +134,9 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               child: const Icon(Icons.assignment),
             ),
             title: const Text('My plan'),
-            onTap: () {},
+            onTap: () {
+              Utility.navigate(context, AppRoutes.parentPlansScreen);
+            },
           ),
           ListTile(
             leading: Container(
