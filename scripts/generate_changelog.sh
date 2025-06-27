@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function print_list {
     title="$1"
     messages="$2"
@@ -16,12 +18,28 @@ function print_list {
     echo
 }
 
+# Check if there are any tags
+tag_count=$(git tag | wc -l)
+
+if [ "$tag_count" -eq 0 ]; then
+    echo "# First Release"
+    echo ""
+    echo "This is the first release of the application."
+    echo ""
+    echo "## All Changes"
+    git log --format='- %s' | head -20
+    exit 0
+fi
+
 prev_ver=$(git tag --sort=-creatordate | head -2 | tail -1)
 current_ver=$(git tag --sort=-creatordate | head -1)
 
-if [ "$prev_ver" == "$current_ver" ]; then
-    echo Failed to fetch the previous version >&2
-    exit 1
+if [ "$prev_ver" == "$current_ver" ] || [ -z "$prev_ver" ]; then
+    echo "# Latest Changes"
+    echo ""
+    echo "## Recent Commits"
+    git log --format='- %s' | head -10
+    exit 0
 fi
 
 commits=$(git log $prev_ver..$current_ver --format='- %s' | grep -v 'release:') 
