@@ -77,6 +77,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
 
   Widget _buildNextButton(BuildContext context) {
     final childProvider = context.watch<ChildAuthProvider>();
+    final childUserProvider = context.watch<ChildUserProvider>();
 
     return CustomMaterialButton(
       label: 'Next',
@@ -102,6 +103,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
           parentUid: parentUser.uid,
           parentEmail: parentUser.email ?? '',
         );
+        await childUserProvider.fetchChildUser();
         if (context.mounted) {
           showCustomToaster('Child account created successfully');
 

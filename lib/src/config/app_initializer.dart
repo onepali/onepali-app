@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import '../../src/src.dart';
 
 import '../../navigator_key.dart';
@@ -12,8 +15,13 @@ class AppInitializer {
   Future<void> initializeApp() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-
     HttpOverrides.global = MyHttpOverrides();
+    await NotificationService.initialize();
+    tz.initializeTimeZones();
+    final String deviceTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(deviceTimeZone));
+
+    await ProviderConfig.pzNotificationProvider.getNotificationSetting();
   }
 
   static Future<bool> checkUserAuthentication() async {
@@ -27,14 +35,25 @@ class AppInitializer {
     return logged && userInfo != null;
   }
 
-  static Widget appMaterialApp(BuildContext context, logged) {
+  static Future<bool> isParentLogged() async {
+    var logged = await ParentLocalStorage.isParentLogged();
+    return logged;
+  }
+
+  static String getInitialRoute(bool logged, bool isParentLogged) {
+    if (!logged) return AppRoutes.splashScreen;
+    if (isParentLogged) return AppRoutes.parentDashboardScreen;
+    return AppRoutes.dashboardScreen;
+  }
+
+  static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     return MaterialApp(
       title: AppConstants.appName,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       scrollBehavior: CustomScrollBehavior(),
       navigatorObservers: [OrientationRouteObserver()],
-      initialRoute: logged ? AppRoutes.dashboardScreen : AppRoutes.splashScreen,
+      initialRoute: getInitialRoute(logged, isParentLogged),
       routes: AppRoutes.routes,
       theme: ThemeConfig.lightTheme,
       locale: context.watch<LanguageProvider>().locale,

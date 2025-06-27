@@ -8,6 +8,12 @@ class AppRoutes {
   static const String notFoundScreen = '/not-found';
   static const String logout = '/logout';
 
+  /// [System] Routes
+  static const String systemScreen = '/system';
+  static const String aboutUsScreen = '/about-us';
+  static const String contactScreen = '/contact-us';
+  static const String faqsScreen = '/faqs';
+
   /// [Splash] & [OnBoarding] Routes
   static const String splashScreen = '/splash';
   static const String onboardingScreen = '/onboarding';
@@ -33,8 +39,37 @@ class AppRoutes {
   /// [Language] Routes
   static const String languageScreen = '/language';
 
+  /// [Profile] Update Routes
+  static const String childProfileScreen = '/cprofile/update';
+  static const String parentProfileScreen = '/pz_profile/update';
+
+  //*--------- Parent Zone Routes ---------*/
+  /// [Parent] Routes
+  static const String parentDashboardScreen = '/parent/dashboard';
+  static const String parentPinScreen = '/parent/pin';
+  static const String parentHomeScreen = '/parent/home';
+  static const String parentSettingScreen = '/parent/setting';
+  static const String parentBlogScreen = '/parent/blog';
+  static const String blogDetailScreen = '/parent/blog/detail';
+
+  /// [Parent] ---> [Notification] Routes
+  static const String parentNotificationScreen = '/parent/notification';
+
+  /// [Parent] ---> [Plans] Routes
+  static const String parentPlansScreen = '/parent/plans';
+
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
+    systemScreen: (context) => const SystemScreen(),
+    aboutUsScreen: (context) => const AboutUsScreen(),
+    contactScreen: (context) => const ContactScreen(),
+    faqsScreen:
+        (context) => FaqsScreen(
+          faqsData:
+              ModalRoute.of(context)?.settings.arguments as List<FaqModel>? ??
+              [],
+        ),
+
     splashScreen: (context) => const SplashScreen(),
     onboardingScreen: (context) => const OnboardingScreen(),
 
@@ -51,5 +86,26 @@ class AppRoutes {
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
     languageScreen: (context) => const LanguageScreen(),
+
+    childProfileScreen:
+        (context) => CUserScreen(
+          child: ModalRoute.of(context)?.settings.arguments as ChildUserModel,
+        ),
+    parentProfileScreen: (context) => const UserScreen(),
+
+    // Parent Zone Routes
+    parentDashboardScreen: (context) => const ParentDashboardScreen(),
+    parentPinScreen: (context) => const ParentZoneScreen(),
+    parentHomeScreen: (context) => const PHomeScreen(),
+    parentBlogScreen: (context) => const ParentBlogScreen(),
+    parentSettingScreen: (context) => const ParentSettingScreen(),
+    blogDetailScreen:
+        (context) => PBlogDetailScreen(
+          data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,
+        ),
+
+    parentNotificationScreen: (context) => const NotificationScreen(),
+
+    parentPlansScreen: (context) => const PlanScreen(),
   };
 }

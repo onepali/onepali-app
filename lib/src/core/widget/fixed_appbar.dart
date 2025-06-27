@@ -8,7 +8,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int totalStars;
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
-  final bool isMobile;
+  final int totalChildCount;
+
   final AuthProviderType? authType;
 
   const UserAppBar({
@@ -19,16 +20,18 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.totalStars,
     required this.onTabSelected,
     required this.childData,
-    this.isMobile = true,
     this.authType,
+    this.totalChildCount = 0,
   });
 
   @override
   Widget build(BuildContext context) {
     int selectedIndex = _selectedTabIndex;
+    final isMobileLandScape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
 
     return Container(
-      height: isMobile ? 90 : 120,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kWhite),
       child: Row(
@@ -44,7 +47,15 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed:
                     () => Utility.navigateMaterialRoute(
                       context,
-                      DrawerScreen(data: childData),
+                      isMobileLandScape
+                          ? DrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          )
+                          : TabDrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          ),
                     ),
                 icon: CustomImage(
                   profileImage,
@@ -59,10 +70,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               IconButton(
                 onPressed:
-                    () => Utility.navigateMaterialRoute(
-                      context,
-                      DrawerScreen(data: childData),
-                    ),
+                    () => Utility.navigate(context, AppRoutes.parentPinScreen),
                 icon: SvgHelper.fromSource(
                   path: Assets.reward,
 

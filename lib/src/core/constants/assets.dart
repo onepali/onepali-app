@@ -11,6 +11,12 @@ class Assets {
   /// [Image] assets
   static String splashImage = 'splash'.gif;
 
+  /// [Parent] Zone assets
+  static String parentZoneImage = 'pz_danfe'.png;
+  static String parentHome = 'pz_home'.parentSvg;
+  static String parentBlog = 'pz_blog'.parentSvg;
+  static String parentSetting = 'pz_setting'.parentSvg;
+
   /// [Avatar] assets
   static String avatar1 = 'av_1'.avatar;
   static String avatar2 = 'av_2'.avatar;
@@ -50,6 +56,8 @@ class Assets {
   static String reward = 'reward'.icon;
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
+  static String star = 'star'.icon;
+  static String unsubscribe = 'unfav'.icon;
 
   // Miscellaneous
   static String successSvg = 'success'.svg;
@@ -95,6 +103,7 @@ extension AssetsExtension on String {
   String get webp => 'assets/images/$this.webp';
   String get svg => 'assets/svg/$this.svg';
   String get icon => 'assets/svg/icons/$this.svg';
+  String get parentSvg => 'assets/svg/parent/$this.svg';
   String get lottie => 'assets/lottie/$this.json';
   String get audio => '$this.mp3';
   String get json => 'assets/json/$this.json';

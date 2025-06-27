@@ -42,6 +42,22 @@ class ProviderConfig {
   /// [Story] Provider
   static final StoryProvider storyProvider = StoryProvider();
 
+  //* --------------------------- PZone Provider --------------------------- *//
+
+  /// PZ [Home] Provider
+  // static final PzHomeProvider pzHomeProvider = PzHomeProvider();
+  static final PzMetricsProvider pzMetricsProvider = PzMetricsProvider();
+
+  /// PZ [Blog] Provider
+  static final PzBlogProvider pzBlogProvider = PzBlogProvider();
+
+  /// PZ [Notification] Provider
+  static final PzNotificationProvider pzNotificationProvider =
+      PzNotificationProvider();
+
+  /// PZ [Plan] Provider
+  static final PzPlanProvider pzPlanProvider = PzPlanProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<ChangeNotifierProvider> providers = [
@@ -75,6 +91,15 @@ class ProviderConfig {
       create: (_) => recommendedLessonProvider,
     ),
     ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
+
+    //* --------------------------- PZone Provider --------------------------- *//
+    // ChangeNotifierProvider<PzHomeProvider>(create: (_) => pzHomeProvider),
+    ChangeNotifierProvider<PzMetricsProvider>(create: (_) => pzMetricsProvider),
+    ChangeNotifierProvider<PzBlogProvider>(create: (_) => pzBlogProvider),
+    ChangeNotifierProvider<PzNotificationProvider>(
+      create: (_) => pzNotificationProvider,
+    ),
+    ChangeNotifierProvider<PzPlanProvider>(create: (_) => pzPlanProvider),
   ];
 
   /// Dispose all providers
@@ -95,6 +120,14 @@ class ProviderConfig {
     recommendedStoryProvider.dispose();
     recommendedLessonProvider.dispose();
     songProvider.dispose();
+    storyProvider.dispose();
+
+    // PZone Providers
+    // pzHomeProvider.dispose();
+    pzMetricsProvider.dispose();
+    pzBlogProvider.dispose();
+    pzNotificationProvider.dispose();
+    pzPlanProvider.dispose();
   }
 
   /// Singleton factory
