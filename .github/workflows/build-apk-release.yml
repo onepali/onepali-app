@@ -72,12 +72,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          sparse-checkout: generate-changelog.sh
-          sparse-checkout-cone-mode: false
           fetch-depth: 0
 
       - name: Generate release notes
-        run: ./generate-changelog.sh | tee changelog.md
+        run: |
+          if [ -f ./scripts/generate-changelog.sh ]; then
+            chmod +x ./scripts/generate-changelog.sh
+            ./scripts/generate-changelog.sh | tee changelog.md
+          else
+            # Fallback changelog if script doesn't exist
+            echo "# Release Notes" > changelog.md
+            echo "" >> changelog.md
+            echo "**Build Date:** $(date)" >> changelog.md
+            echo "" >> changelog.md
+            echo "## Recent Changes" >> changelog.md
+            git log --oneline -10 --pretty=format:"- %s" >> changelog.md
+          fi
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -92,7 +102,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" \
+          # Generate unique tag and title
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          TAG_NAME="release-${TIMESTAMP}"
+          TITLE="Release ${TIMESTAMP}"
+          
+          # If triggered by workflow_dispatch, use a more descriptive title
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TITLE="Manual Release ${TIMESTAMP}"
+          elif [[ "${{ github.ref_type }}" == "tag" ]]; then
+            TAG_NAME="${{ github.ref_name }}"
+            TITLE="Release ${{ github.ref_name }}"
+          fi
+          
+          gh release create "${TAG_NAME}" \
+            --title "${TITLE}" \
             -F changelog.md \
             android/onepali.arm64-v8a.apk \
             android/onepali.armeabi-v7a.apk \
