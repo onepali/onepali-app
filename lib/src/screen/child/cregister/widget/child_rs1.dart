@@ -3,7 +3,8 @@ import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
 class ChildRS1Screen extends StatefulWidget {
-  const ChildRS1Screen({super.key});
+  final bool isUpdate;
+  const ChildRS1Screen({super.key, this.isUpdate = false});
 
   @override
   State<ChildRS1Screen> createState() => _ChildRS1ScreenState();
@@ -22,6 +23,7 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
   @override
   Widget build(BuildContext context) {
     final authState = context.read<AuthState>();
+    final isUpdate = widget.isUpdate;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -69,7 +71,7 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
                   }),
                 ),
               ),
-              _buildNextButton(context),
+              _buildNextButton(context, isUpdate),
             ],
           ),
         ),
@@ -102,15 +104,18 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(BuildContext context, bool isUpdate) {
     return CustomMaterialButton(
-      label: 'Next',
+      label: isUpdate ? 'Save' : 'Next',
       onTap: () {
         if (_selectedIndex == null) {
           showCustomToaster("Please select an option.", isError: true);
           return;
         }
-        Utility.navigateMaterialRoute(context, ChildRS2Screen());
+        if (isUpdate) {
+        } else {
+          Utility.navigateMaterialRoute(context, ChildRS2Screen());
+        }
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,

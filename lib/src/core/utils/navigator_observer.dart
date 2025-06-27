@@ -4,6 +4,11 @@ import 'package:onepali/src/src.dart';
 
 class OrientationRouteObserver extends NavigatorObserver {
   static const List<String> portraitRoutes = [
+    AppRoutes.systemScreen,
+    AppRoutes.aboutUsScreen,
+    AppRoutes.contactScreen,
+    AppRoutes.faqsScreen,
+
     AppRoutes.splashScreen,
     AppRoutes.loginScreen,
     AppRoutes.onboardingScreen,
@@ -14,16 +19,29 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.rs4Screen,
     AppRoutes.rs5Screen,
     AppRoutes.rs6Screen,
+    AppRoutes.parentDashboardScreen,
+    AppRoutes.parentHomeScreen,
+    AppRoutes.parentBlogScreen,
+    AppRoutes.parentProfileScreen,
+    AppRoutes.blogDetailScreen,
+    AppRoutes.childProfileScreen,
+    AppRoutes.parentProfileScreen,
+    AppRoutes.parentNotificationScreen,
+    AppRoutes.parentSettingScreen,
+    AppRoutes.parentPlansScreen,
   ];
 
   void _setOrientation(Route<dynamic>? route) {
     final name = route?.settings.name ?? '';
+    logger.i('OrientationRouteObserver: route name = $name');
     if (portraitRoutes.contains(name)) {
+      logger.i('Setting orientation: PORTRAIT');
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
       ]);
     } else {
+      logger.i('Setting orientation: LANDSCAPE');
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,

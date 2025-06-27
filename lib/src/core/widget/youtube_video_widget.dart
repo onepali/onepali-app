@@ -3,7 +3,6 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter/services.dart';
 
 import '../../src.dart';
-import 'bottom_sheet_manager.dart';
 
 class YoutubeVideoWidget extends StatefulWidget {
   final String youtubeUrl;

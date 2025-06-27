@@ -6,7 +6,8 @@ import '../../../../src.dart';
 // Slide UI
 class SlideContent extends StatefulWidget {
   final Content content;
-  const SlideContent({super.key, required this.content});
+  final bool playAudio;
+  const SlideContent({super.key, required this.content, this.playAudio = true});
   @override
   State<SlideContent> createState() => SlideContentState();
 }
@@ -14,6 +15,11 @@ class SlideContent extends StatefulWidget {
 class SlideContentState extends State<SlideContent> {
   double _position = 0.0;
   bool _completed = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,9 +132,21 @@ class SlideContentState extends State<SlideContent> {
           left: 0,
           right: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.playAudio(widget.content.audio),
-              child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+            child: Consumer<StoryProvider>(
+              builder: (context, storyProvider, _) {
+                final soundIcon = GestureDetector(
+                  onTap: () {
+                    logger.d(
+                      '[SlideContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
+                    );
+                    storyProvider.playAudio(widget.content.audio);
+                  },
+                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                );
+                return storyProvider.isPlaying
+                    ? CustomAvatarGlow(child: soundIcon)
+                    : soundIcon;
+              },
             ),
           ),
         ),
@@ -136,7 +154,12 @@ class SlideContentState extends State<SlideContent> {
         Positioned(
           top: 24,
           right: 24,
-          child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+          child: customInkwell(
+            onTap: () {
+              storyProvider.stopAudio();
+            },
+            child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+          ),
         ),
         // Left arrow (center vertically)
         Positioned(

@@ -166,6 +166,8 @@ class AuthProvider with ChangeNotifier {
           );
           await userDocRef.set(userModel.toJson());
         }
+        // Save FCM token after email login/registration
+        await Utility.saveFcmTokenToFirestore(_user!.uid);
       }
 
       setStatus(DataFetchStatus.success);
@@ -323,6 +325,8 @@ class AuthProvider with ChangeNotifier {
         logger.d('userModel---> ${userModel.toJson()}');
 
         await userDocRef.set(userModel.toJson(), SetOptions(merge: true));
+        // Save FCM token after email registration
+        await Utility.saveFcmTokenToFirestore(_user!.uid);
       }
 
       setStatus(DataFetchStatus.success);
@@ -409,6 +413,7 @@ class AuthProvider with ChangeNotifier {
     await sharedPrefs.setStringPref(AppConstants.refreshToken, "");
     await sharedPrefs.setStringPref(AppConstants.userInfo, "");
     await sharedPrefs.setBoolPref(AppConstants.logged, false);
+    await sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
 
     // Reset AuthState
     authState.clear();

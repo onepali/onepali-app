@@ -1,8 +1,14 @@
 //* ---------------------------------------- GLOBAL SCREEN EXPORTS ---------------------------------------- *//
 
-// Splash & [OnBoarding] Screen
+// [Splash] & [OnBoarding] Screen
 export 'splash/splash_screen.dart';
 export 'onboarding/onboarding_screen.dart';
+
+/// [System] System
+export 'system/about_us_screen.dart';
+export 'system/contact_screen.dart';
+export 'system/faqs_screen.dart';
+export 'system/system_screen.dart';
 
 // Auth Screen
 
@@ -25,6 +31,7 @@ export 'dashboard/dashboard_screen.dart';
 
 // User Screen
 export 'user/user_screen.dart';
+export 'user/cuser_screen.dart';
 
 // Language Screen
 export 'language/language_screen.dart';
@@ -82,3 +89,43 @@ export 'story/story_content/widget/slide_content.dart';
 export 'story/story_content/widget/dragdrop_content.dart';
 export 'story/story_content/widget/button_tap_content.dart';
 export 'story/story_content/widget/normal_content.dart';
+
+/// [Reward] Screen
+export 'reward/reward_screen.dart';
+export 'reward/reward_card.dart';
+
+//* -------------------------------------- PARENT ZONE SCREEN EXPORTS -------------------------------------- *//
+
+/// [Parent] --> [Dashboard]
+export 'pzone/parent_dashboard_screen.dart';
+
+/// [Parent] --> [Pin]
+export 'pzone/parent_screen.dart';
+
+/// [Parent] --> [Home]
+export 'pzone/phome/phome_screen.dart';
+export 'pzone/phome/phome_card.dart';
+
+/// [Parent] --> [Home] --> [Widget]
+export 'pzone/phome/widget/paverage_learning_widget.dart';
+export 'pzone/phome/widget/pdaily_learning_widget.dart';
+export 'pzone/phome/widget/pdashboard_metrics_widget.dart';
+
+/// [Parent] --> [Blog]
+export 'pzone/pblog/pblog_screen.dart';
+export 'pzone/pblog/pblog_card.dart';
+export 'pzone/pblog/pblog_detail_screen.dart';
+
+/// [Parent] --> [Profile]
+export 'pzone/psetting/psetting_screen.dart';
+export 'pzone/psetting/psetting_card.dart';
+
+/// [Parent] --> [Plan]
+export 'pzone/plan/pz_plan_screen.dart';
+export 'pzone/plan/pz_plan_card.dart';
+export 'pzone/plan/add_update_plan_screen.dart';
+export 'pzone/plan/cancel_plan_screen.dart.dart';
+
+/// [Parent] --> [Notification]
+export 'notification/notification_screen.dart';
+export 'notification/notification_card.dart';

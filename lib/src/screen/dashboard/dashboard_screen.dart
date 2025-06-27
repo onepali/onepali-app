@@ -45,6 +45,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final UserModel? userInfo = userProvider.user;
     final bool isLoading = userProvider.status == DataFetchStatus.loading;
     final bool hasData = userInfo != null;
+    final int childCount = childProvider.totalChildren;
     logger.d('DashboardScreen: hasData: $hasData, isLoading: $isLoading');
 
     return PopScope(
@@ -60,6 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             profileImage: childProfileImage,
             progressLevel: 0,
             totalStars: 0,
+            totalChildCount: childCount > 0 ? childCount : 0,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);
               if (idx != -1) {

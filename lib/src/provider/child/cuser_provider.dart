@@ -12,6 +12,9 @@ class ChildUserProvider extends ChangeNotifier {
   List<ChildUserModel> _childUser = [];
   List<ChildUserModel> get childUser => _childUser;
 
+  int _totalChildren = 3;
+  int get totalChildren => _totalChildren;
+
   Future<void> fetchChildUser() async {
     setStatus(DataFetchStatus.loading);
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -38,10 +41,66 @@ class ChildUserProvider extends ChangeNotifier {
           querySnapshot.docs
               .map((doc) => ChildUserModel.fromJson(doc.data()))
               .toList();
+      logger.d('Fetched ${_childUser.length} child users');
+      if (_childUser.isNotEmpty) {
+        _totalChildren = _childUser.length;
+      }
       setStatus(DataFetchStatus.success);
     } catch (e) {
       logger.e('Error fetching child users: $e');
       handleError(e.toString());
+    }
+  }
+
+  Future<void> updateChildUserProfile({
+    required String childUid,
+    required String fullName,
+    required String dob,
+    required double screenTime,
+    required String avatarUrl,
+  }) async {
+    setStatus(DataFetchStatus.loading);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    if (user == null) {
+      showCustomToaster('User not signed in.', isError: true);
+      setStatus(DataFetchStatus.error);
+      return;
+    }
+    final String parentUid = user.uid;
+    try {
+      await _firestore
+          .collection('users')
+          .doc(parentUid)
+          .collection('children')
+          .doc(childUid)
+          .update({
+            'full_name': fullName,
+            'dob': dob,
+            'screen_time': screenTime,
+            'avatar_url': avatarUrl,
+          });
+      // Update local list
+      int idx = _childUser.indexWhere((c) => c.uid == childUid);
+      if (idx != -1) {
+        _childUser[idx] = ChildUserModel(
+          avatarUrl: avatarUrl,
+          createdAt: _childUser[idx].createdAt,
+          dob: dob,
+          fullName: fullName,
+          parentEmail: _childUser[idx].parentEmail,
+          parentUid: _childUser[idx].parentUid,
+          role: _childUser[idx].role,
+          screenTime: screenTime,
+          uid: childUid,
+        );
+        notifyListeners();
+      }
+      showCustomToaster('Child profile updated successfully.');
+      setStatus(DataFetchStatus.success);
+    } catch (e) {
+      showCustomToaster('Failed to update child profile.', isError: true);
+      setStatus(DataFetchStatus.error);
     }
   }
 

@@ -20,6 +20,7 @@ class AppConstants {
   static const String logged = 'logged';
   static const String childIdKey = 'current_child_id';
   static const String avatarUrlKey = 'avatar_url';
+  static const String parentDashboardLogged = 'parent_dashboard_logged';
 
   /// Firebase Collection Names
   static const String usersCollection = 'users';
@@ -46,6 +47,8 @@ class AppConstants {
     Assets.avatar8,
   ];
 
+  static List<String> sysTab = ['About Us', 'Contact Us', 'FAQs'];
+
   static List<String> whyLearningNepali = [
     'Develop a learning habit',
     'Communicate with relatives in Nepal',
@@ -57,4 +60,9 @@ class AppConstants {
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},
     {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},
   ];
+
+  // Notification Titles & Bodies [Daily Reminder]
+  static const String dailyReminderTitle = "⏰ It's Time to Practice!";
+  static const String dailyReminderBody =
+      "Let's make today awesome! Are you ready for your daily adventure? 🚀";
 }

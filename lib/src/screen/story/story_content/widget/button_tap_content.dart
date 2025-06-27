@@ -5,7 +5,12 @@ import '../../../../src.dart';
 // Button Tap UI
 class ButtonTapContent extends StatefulWidget {
   final Content content;
-  const ButtonTapContent({super.key, required this.content});
+  final bool playAudio;
+  const ButtonTapContent({
+    super.key,
+    required this.content,
+    this.playAudio = true,
+  });
   @override
   State<ButtonTapContent> createState() => ButtonTapContentState();
 }
@@ -32,9 +37,15 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final options = widget.content.conversation;
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+
     return Stack(
       children: [
         // Main content
@@ -114,9 +125,21 @@ class ButtonTapContentState extends State<ButtonTapContent> {
           left: 0,
           right: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.playAudio(widget.content.audio),
-              child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+            child: Consumer<StoryProvider>(
+              builder: (context, storyProvider, _) {
+                final soundIcon = GestureDetector(
+                  onTap: () {
+                    logger.d(
+                      '[ButtonTapContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
+                    );
+                    storyProvider.playAudio(widget.content.audio);
+                  },
+                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                );
+                return storyProvider.isPlaying
+                    ? CustomAvatarGlow(child: soundIcon)
+                    : soundIcon;
+              },
             ),
           ),
         ),

@@ -3,9 +3,24 @@ import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
 // Normal UI
-class NormalContent extends StatelessWidget {
+class NormalContent extends StatefulWidget {
   final Content content;
-  const NormalContent({super.key, required this.content});
+  final bool playAudio;
+  const NormalContent({
+    super.key,
+    required this.content,
+    this.playAudio = true,
+  });
+  @override
+  State<NormalContent> createState() => _NormalContentState();
+}
+
+class _NormalContentState extends State<NormalContent> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
@@ -36,7 +51,7 @@ class NormalContent extends StatelessWidget {
 
     // Prepare all conversation rows
     List<Widget> messageWidgets = [];
-    for (final conversation in content.conversation) {
+    for (final conversation in widget.content.conversation) {
       String? iconPath;
       String messageNp = conversation.messageNp;
       // Remove prefix before and including ':' if present
@@ -77,11 +92,11 @@ class NormalContent extends StatelessWidget {
     }
     return Stack(
       children: [
-        if (content.image.isNotEmpty)
+        if (widget.content.image.isNotEmpty)
           Positioned.fill(
             bottom: 50,
             child: CustomImage(
-              content.image,
+              widget.content.image,
               imageType: CustomImageType.network,
               boxFit: BoxFit.cover,
             ),
@@ -92,9 +107,21 @@ class NormalContent extends StatelessWidget {
           left: 0,
           right: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.playAudio(content.audio),
-              child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+            child: Consumer<StoryProvider>(
+              builder: (context, storyProvider, _) {
+                final soundIcon = GestureDetector(
+                  onTap: () {
+                    logger.d(
+                      '[NormalContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
+                    );
+                    storyProvider.playAudio(widget.content.audio);
+                  },
+                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                );
+                return storyProvider.isPlaying
+                    ? CustomAvatarGlow(child: soundIcon)
+                    : soundIcon;
+              },
             ),
           ),
         ),
@@ -103,8 +130,11 @@ class NormalContent extends StatelessWidget {
           top: 24,
           right: 24,
           child: customInkwell(
-            onTap:
-                () => Navigator.of(context).popUntil((route) => route.isFirst),
+            onTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              storyProvider.stopAudio();
+              logger.d('[NormalContent] Wrong icon tapped, stopping audio');
+            },
             child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
           ),
         ),

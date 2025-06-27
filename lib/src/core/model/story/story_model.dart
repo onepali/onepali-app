@@ -57,7 +57,7 @@ class StoryModel {
 
 class Content {
   final String image;
-  final String audio;
+  final List<String> audio;
   final String lottie;
   final String type;
   final List<Conversation> conversation;
@@ -76,7 +76,10 @@ class Content {
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
     image: json["image"] ?? "",
-    audio: json["audio"] ?? "",
+    audio:
+        json["audio"] == null
+            ? []
+            : List<String>.from(json["audio"].map((x) => x.toString())),
     lottie: json["lottie"] ?? "",
     type: json["type"] ?? "",
     conversation:
@@ -94,7 +97,7 @@ class Content {
 
   Map<String, dynamic> toJson() => {
     "image": image,
-    "audio": audio,
+    "audio": List<dynamic>.from(audio.map((x) => x.toString())),
     "lottie": lottie,
     "type": type,
     "character": List<dynamic>.from(characters!.map((x) => x.toString())),

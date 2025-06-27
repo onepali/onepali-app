@@ -10,7 +10,9 @@
         "content": [
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_1.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara1.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -27,7 +29,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_2.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara2.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -44,7 +48,10 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_3.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara3a.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af",
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara3b.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -68,7 +75,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_4.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara4.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -85,7 +94,10 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_5_6.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara5a.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af",
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara5b.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -109,7 +121,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_5_6.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara6.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "button_tap",
                 "character": [],
@@ -133,7 +147,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_7.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara7.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -150,7 +166,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_8.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara5a.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -167,7 +185,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_9.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara9.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "slide",
                 "character": [
@@ -187,7 +207,10 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_10.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara10a.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af",
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara10b.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -204,7 +227,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_11.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara11.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],
@@ -221,7 +246,9 @@
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_12.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara12.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal_confetti",
                 "character": [],
@@ -234,11 +261,15 @@
                         "correct": false
                     }
                 ],
-                "confetti": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Fsuccess_confetti.json?alt=media&token=0cc7d9b9-a0ac-4e9d-b8f0-805525e16fdf"
+                "confetti": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/misc%2Fsuccess_confetti.json?alt=media&token=38f41ddb-b429-4917-8571-147aedbe5dbe"
             },
             {
                 "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Fstory_13.png?alt=media&token=31285ac7-10b1-4709-91b7-977a7d31a24a",
-                "audio": "assets/audio/animals/hare.mp3",
+                "audio": [
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara13a.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af",
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara13b.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af",
+                    "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Fcontent%2Ftortoise_hare%2Faudio%2Fbunu-and-tara13c.mp3?alt=media&token=6964900d-4902-4c5c-b725-8eb99231e3af"
+                ],
                 "lottie": "assets/lottie/animals/hare.json",
                 "type": "normal",
                 "character": [],

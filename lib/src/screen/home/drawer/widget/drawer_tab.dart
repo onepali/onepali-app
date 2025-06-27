@@ -4,7 +4,13 @@ import 'package:provider/provider.dart';
 
 class TabDrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
-  const TabDrawerScreen({super.key, required this.data});
+  final int totalChildCount;
+
+  const TabDrawerScreen({
+    super.key,
+    required this.data,
+    required this.totalChildCount,
+  });
 
   @override
   State<TabDrawerScreen> createState() => _TabDrawerScreenState();
@@ -68,17 +74,21 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d('total child count: ${widget.totalChildCount}');
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            height: MediaQuery.of(context).size.height * 0.45,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
             decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Gaps.verticalGapOf(10),
+                Expanded(child: _buildChildProfilesGrid()),
+
+                Gaps.horizontalGapOf(10),
                 InkWell(
                   onTap: () => Navigator.pop(context),
                   child: Align(
@@ -93,12 +103,11 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                       child: const Icon(
                         Icons.close,
                         color: AppColors.kPitchBlack,
-                        size: 20,
+                        size: 32,
                       ),
                     ),
                   ),
                 ),
-                _buildChildProfilesGrid(),
               ],
             ),
           ),
@@ -122,8 +131,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 _onChildSelected(index);
               },
               child: Container(
-                height: 60,
-                width: 60,
+                height: 80,
+                width: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -134,7 +143,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                     width: 2,
                   ),
                 ),
-                child: CustomImage(child.avatarUrl, height: 60, width: 60),
+                child: CustomImage(child.avatarUrl, height: 80, width: 80),
               ),
             ),
             Gaps.verticalGapOf(8),
@@ -143,12 +152,26 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               style: AppStyles.text14PxMedium.copyWith(color: AppColors.kWhite),
             ),
             Gaps.verticalGapOf(5),
-            const Icon(Icons.local_police, size: 22, color: AppColors.kYellow),
+            const Icon(Icons.local_police, size: 30, color: AppColors.kYellow),
           ],
         );
       } else {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            if (widget.totalChildCount >= 3) {
+              DialogManager.showCustomDialog(
+                context: context,
+                title: 'You\'ve added 3 kids!',
+                content:
+                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                confirmButtonText: 'Add for \$5',
+                onConfirm: () {},
+              );
+              return;
+            } else {
+              Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+            }
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -177,7 +200,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
       child: GridView.count(
-        crossAxisCount: 4,
+        crossAxisCount: 5,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         mainAxisSpacing: 16,
