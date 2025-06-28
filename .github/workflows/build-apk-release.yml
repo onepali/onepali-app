@@ -92,6 +92,15 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
+      - name: Debug GitHub context
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Ref name: ${{ github.ref_name }}"
+          echo "Ref type: ${{ github.ref_type }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Repository: ${{ github.repository }}"
+
       - name: Rename artifacts
         run: |
            mv android/app-arm64-v8a-release.apk android/onepali.arm64-v8a.apk
@@ -102,22 +111,44 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Generate unique tag and title
+          # Generate unique tag and title based on trigger type
           TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          
+          # Default to timestamp-based tag to avoid conflicts
           TAG_NAME="release-${TIMESTAMP}"
           TITLE="Release ${TIMESTAMP}"
           
-          # If triggered by workflow_dispatch, use a more descriptive title
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            TITLE="Manual Release ${TIMESTAMP}"
-          elif [[ "${{ github.ref_type }}" == "tag" ]]; then
+          # Check if this was triggered by a tag push
+          if [[ "${{ github.event_name }}" == "push" ]] && [[ "${{ github.ref_type }}" == "tag" ]]; then
+            # Use the actual tag name only if it's a tag push
             TAG_NAME="${{ github.ref_name }}"
             TITLE="Release ${{ github.ref_name }}"
+            echo "Creating release for tag: ${TAG_NAME}"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # Manual trigger - use descriptive title
+            TITLE="Manual Release ${TIMESTAMP}"
+            echo "Creating manual release with tag: ${TAG_NAME}"
+          else
+            # Fallback for any other trigger (like push to main)
+            TAG_NAME="auto-release-${TIMESTAMP}"
+            TITLE="Automated Release ${TIMESTAMP}"
+            echo "Creating automated release with tag: ${TAG_NAME}"
           fi
+          
+          # Check if tag already exists and modify if needed
+          if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "Tag ${TAG_NAME} already exists, appending random suffix"
+            RANDOM_SUFFIX=$(openssl rand -hex 4)
+            TAG_NAME="${TAG_NAME}-${RANDOM_SUFFIX}"
+            TITLE="${TITLE} (${RANDOM_SUFFIX})"
+          fi
+          
+          echo "Final tag name: ${TAG_NAME}"
+          echo "Final title: ${TITLE}"
           
           gh release create "${TAG_NAME}" \
             --title "${TITLE}" \
-            -F changelog.md \
+            --notes-file changelog.md \
             android/onepali.arm64-v8a.apk \
             android/onepali.armeabi-v7a.apk \
             android/onepali.x86_64.apk
