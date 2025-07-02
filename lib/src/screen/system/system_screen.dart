@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/core.dart';
 import 'package:provider/provider.dart';
-import 'package:onepali/src/screen/system/about_us_screen.dart';
-import 'package:onepali/src/screen/system/contact_screen.dart';
-import 'package:onepali/src/screen/system/faqs_screen.dart';
+import '../../src.dart';
 
 class SystemScreen extends StatefulWidget {
   final int initialIndex;
@@ -80,11 +77,17 @@ class _SystemScreenState extends State<SystemScreen>
       body: Consumer<SystemProvider>(
         builder: (context, provider, child) {
           if (provider.status == DataFetchStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return CustomLoader();
           }
 
           if (provider.status == DataFetchStatus.error) {
-            return const Center(child: Text('Error loading system data'));
+            return ErrorScreen(
+              title: 'Error Fetching Data',
+              message: 'Please try again later.',
+              onRetry: () {
+                context.read<SystemProvider>().fetchSystemData();
+              },
+            );
           }
 
           return TabBarView(

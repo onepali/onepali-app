@@ -84,6 +84,9 @@ export 'custom_rounded_box.dart';
 /// Custom [Bottom] Sheet
 export 'bottom_sheet_manager.dart';
 
+/// Custom [Loader]
+export 'custom_loader.dart';
+
 //* --------------------------------- Parent Zone --------------------------------- *//
 
 //// Parent Zone [AppBar]

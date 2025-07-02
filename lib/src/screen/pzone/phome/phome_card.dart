@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_styles.dart';
-import '../../../core/widget/gaps.dart';
-import '../../../core/enums/app_enums.dart';
-import '../../../core/model/pzone/pz_home/pz_home_metrics_model.dart';
-import '../../../core/model/child/cuser_model.dart';
-import '../../../provider/pzone/pz_home/pz_metrics_provider.dart';
-import 'widget/paverage_learning_widget.dart';
-import 'widget/pdaily_learning_widget.dart';
-import 'widget/pdashboard_metrics_widget.dart';
 
 class PHomeCard extends StatelessWidget {
   final List<ChildUserModel> children;
@@ -110,7 +101,7 @@ class PHomeCard extends StatelessWidget {
 
         // Metrics Content
         if (metricsStatus == DataFetchStatus.loading)
-          const Center(child: CircularProgressIndicator())
+          CustomLoader()
         else if (metrics == null)
           const Center(child: Text('No metrics data found'))
         else ...[

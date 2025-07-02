@@ -62,7 +62,7 @@ class _PHomeScreenState extends State<PHomeScreen> {
           body: SafeArea(
             child:
                 childStatus == DataFetchStatus.loading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? CustomLoader()
                     : children.isEmpty
                     ? const Center(
                       child: Text(

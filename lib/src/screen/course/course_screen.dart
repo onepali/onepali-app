@@ -30,7 +30,7 @@ class CourseScreenState extends State<CourseScreen> {
               'CourseScreen: status: ${lessonProvider.status}, courses: ${lessonProvider.courses.length}',
             );
             if (lessonProvider.status == DataFetchStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
+              return CustomLoader();
             } else if (lessonProvider.status == DataFetchStatus.error ||
                 lessonProvider.courses.isEmpty) {
               return ErrorScreen(

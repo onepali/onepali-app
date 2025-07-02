@@ -50,7 +50,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
+      builder: (_) => CustomLoader(),
     );
     final child = widget.data[index];
     final recommendedStoryProvider = Provider.of<RecommendedStoryProvider>(

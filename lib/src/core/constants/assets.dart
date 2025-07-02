@@ -33,6 +33,7 @@ class Assets {
   static String bgTransition = 'bg_transition'.gif;
   static String successLottie = 'success'.lottie;
   static String logoutLottie = 'logout'.lottie;
+  static String preLoader = 'pre_loader'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -59,7 +60,7 @@ class Assets {
   static String star = 'star'.icon;
   static String unsubscribe = 'unfav'.icon;
 
-  // Miscellaneous
+  /// [Miscellaneous]
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
   static String logoutSvg = 'logout'.svg;

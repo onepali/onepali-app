@@ -39,7 +39,7 @@ class _SongScreenState extends State<SongScreen> {
         body: Consumer<SongProvider>(
           builder: (context, songProvider, child) {
             if (songProvider.status == DataFetchStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
+              return CustomLoader();
             } else if (songProvider.status == DataFetchStatus.error ||
                 songProvider.songs.isEmpty) {
               return ErrorScreen(

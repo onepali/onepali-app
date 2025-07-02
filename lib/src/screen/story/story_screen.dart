@@ -26,7 +26,7 @@ class _StoryScreenState extends State<StoryScreen> {
     return Consumer<StoryProvider>(
       builder: (context, provider, _) {
         if (provider.status == DataFetchStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return const CustomLoader();
         }
 
         final stories = provider.stories;

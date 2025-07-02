@@ -13,7 +13,7 @@ class RecommendedLessonsList extends StatelessWidget {
         final status = recommendedProvider.status;
         logger.d('RecommendedLessonsList status: $status');
         if (status == DataFetchStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return CustomLoader();
         }
         if (status == DataFetchStatus.error || lessonProvider.courses.isEmpty) {
           logger.e('Error fetching recommended lessons');

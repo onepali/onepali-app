@@ -23,7 +23,7 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
       body: Consumer<PzBlogProvider>(
         builder: (context, provider, _) {
           if (provider.status == DataFetchStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return CustomLoader();
           } else if (provider.blogs.isEmpty ||
               provider.status == DataFetchStatus.error) {
             return ErrorScreen(

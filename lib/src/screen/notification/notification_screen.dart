@@ -33,7 +33,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       builder: (context, provider, _) {
         final settings = provider.settings;
         if (provider.loading || settings == null) {
-          return const Center(child: CircularProgressIndicator());
+          return CustomLoader();
         }
         return Scaffold(
           appBar: CustomAppBar(title: 'Notification'),
