@@ -17,13 +17,7 @@ class RecommendedLessonsList extends StatelessWidget {
         }
         if (status == DataFetchStatus.error || lessonProvider.courses.isEmpty) {
           logger.e('Error fetching recommended lessons');
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'No recommended lessons available.',
-              style: AppStyles.text16PxMedium.copyWith(color: Colors.red),
-            ),
-          );
+          return const SizedBox();
         }
         logger.d(
           'lessonProvider.courses count: \\${lessonProvider.courses.length}',

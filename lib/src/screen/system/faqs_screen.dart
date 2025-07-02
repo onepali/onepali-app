@@ -20,14 +20,10 @@ class _FaqsScreenState extends State<FaqsScreen> {
         PlatformUtility.isPortrait(context);
 
     if (widget.faqsData.isEmpty) {
-      return Center(
-        child: Text(
-          'No FAQs available',
-          style:
-              isMobilePortrait
-                  ? AppStyles.text16PxRegular.copyWith(color: Colors.grey)
-                  : AppStyles.text20PxRegular.copyWith(color: Colors.grey),
-        ),
+      return ErrorScreen(
+        title: 'No FAQs Available',
+        message: 'Please check back later for new FAQs.',
+        isShowButton: false,
       );
     }
 

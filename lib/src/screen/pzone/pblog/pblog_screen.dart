@@ -24,9 +24,15 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
         builder: (context, provider, _) {
           if (provider.status == DataFetchStatus.loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (provider.blogs.isEmpty &&
+          } else if (provider.blogs.isEmpty ||
               provider.status == DataFetchStatus.error) {
-            return const Center(child: Text('No blogs found.'));
+            return ErrorScreen(
+              title: 'No Blogs Available',
+              message: 'Please check back later for new blogs.',
+              onRetry: () {
+                context.read<PzBlogProvider>().fetchBlogs();
+              },
+            );
           }
           return ListView.separated(
             itemCount: provider.blogs.length,

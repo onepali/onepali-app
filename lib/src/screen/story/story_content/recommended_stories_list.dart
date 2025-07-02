@@ -34,7 +34,8 @@ class RecommendedStoriesList extends StatelessWidget {
             allStories
                 .where((s) => recommendedStoryIds.contains(s.nameEn))
                 .toList();
-        if (recommendedStoryModels.isEmpty) {
+        if (recommendedStoryModels.isEmpty &&
+            recommendedProvider.status == DataFetchStatus.error) {
           return const SizedBox();
         }
         return SizedBox(

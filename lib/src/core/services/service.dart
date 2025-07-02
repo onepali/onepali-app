@@ -14,3 +14,6 @@ export 'parent_local_storage.dart';
 
 /// [Push] Notification service
 export 'notification_service.dart';
+
+/// [Connectivity] service
+export 'connectivity_service.dart';

@@ -28,12 +28,16 @@ class _StoryScreenState extends State<StoryScreen> {
         if (provider.status == DataFetchStatus.loading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (provider.status == DataFetchStatus.error) {
-          return const Center(child: Text('Failed to load stories'));
-        }
+
         final stories = provider.stories;
-        if (stories.isEmpty) {
-          return const Center(child: Text('No stories found'));
+        if (stories.isEmpty && provider.status == DataFetchStatus.error) {
+          return ErrorScreen(
+            title: 'No Stories Found',
+            message: 'Please check back later for new stories.',
+            onRetry: () {
+              context.read<StoryProvider>().fetchStories();
+            },
+          );
         }
         return ListView.separated(
           scrollDirection: Axis.horizontal,

@@ -63,6 +63,8 @@ class Assets {
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
   static String logoutSvg = 'logout'.svg;
+  static String dataSvg = 'data'.svg;
+  static String connectionSvg = 'connection'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
