@@ -36,7 +36,7 @@ class PzBlogProvider extends ChangeNotifier {
     }
 
     try {
-      final querySnapshot = await _firestore.collection('blos').get();
+      final querySnapshot = await _firestore.collection('blogs').get();
       final List<Map<String, dynamic>> blogList =
           querySnapshot.docs.map((doc) => doc.data()).toList();
       _blogs.clear();

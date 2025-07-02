@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 class AppInitializer {
   Future<void> initializeApp() async {
     WidgetsFlutterBinding.ensureInitialized();
+    ConnectivityService().startListening();
+
     await Firebase.initializeApp();
     HttpOverrides.global = MyHttpOverrides();
     await NotificationService.initialize();

@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import '../src.dart';
 
@@ -60,7 +61,7 @@ class ProviderConfig {
 
   //* --------------------------- End --------------------------- *//
 
-  static final List<ChangeNotifierProvider> providers = [
+  static final List<SingleChildWidget> providers = [
     ChangeNotifierProvider<AuthState>(create: (_) => authState),
     ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
     ChangeNotifierProvider<SplashProvider>(create: (_) => splashProvider),
@@ -100,6 +101,12 @@ class ProviderConfig {
       create: (_) => pzNotificationProvider,
     ),
     ChangeNotifierProvider<PzPlanProvider>(create: (_) => pzPlanProvider),
+
+    /// Global network type provider
+    StreamProvider<NetworkType>(
+      create: (_) => ConnectivityService().onNetworkTypeChanged,
+      initialData: NetworkType.none,
+    ),
   ];
 
   /// Dispose all providers

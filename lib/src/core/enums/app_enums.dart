@@ -18,3 +18,6 @@ enum AuthProviderType { google, apple, facebook, email, anonymous }
 
 // Audio Source
 enum AudioSourceType { asset, network }
+
+// Network Type
+enum NetworkType { none, wifi, mobile, ethernet, bluetooth, vpn, other }
