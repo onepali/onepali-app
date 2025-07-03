@@ -63,10 +63,12 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
     DateTime tempDate = selectedDate;
     final DateTime maxDate =
         widget.lastDate ?? DateTime(widget.maxYear, 12, 31);
+
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+      routeSettings: const RouteSettings(name: AppConstants.datePickerModal),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {

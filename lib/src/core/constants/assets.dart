@@ -32,7 +32,7 @@ class Assets {
   static String leoCharacterLottie = 'leo_character'.lottie;
   static String bgTransition = 'bg_transition'.gif;
   static String successLottie = 'success'.lottie;
-  static String logoutLottie = 'logout'.lottie;
+  static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
 
   /// [Icons] assets

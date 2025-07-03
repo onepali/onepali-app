@@ -108,7 +108,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Future logoutBottomSheet(context) {
     return BottomSheetManager.bottomModelSheet(
-      title: 'Are you sure? Logout',
+      title: 'Do you want to logout?',
       action: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -126,7 +126,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           Gaps.horizontalGapOf(20),
           Expanded(
             child: CustomMaterialButton(
-              label: 'Yes, Logout',
+              label: 'Logout',
               height: 40,
               elevation: 0,
               onTap: () {

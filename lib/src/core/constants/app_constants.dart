@@ -57,6 +57,14 @@ class AppConstants {
     'Daily conversation',
   ];
 
+  /// Model Route
+  static const String datePickerModal = 'date_picker_modal';
+  static const String timePickerModal = 'time_picker_modal';
+  static const String avatarPickerModal = 'avatar_picker_modal';
+  static const String bottomSheetModal = 'bottom_sheet';
+  static const String dialogModal = 'dialog';
+  static const String modalRoute = 'modal';
+
   static List<Map<String, dynamic>> languages = [
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},
     {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},

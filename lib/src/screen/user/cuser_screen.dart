@@ -164,6 +164,7 @@ class _CUserScreenState extends State<CUserScreen> {
     if (!context.mounted) return;
     await showModalBottomSheet(
       context: context,
+      routeSettings: const RouteSettings(name: AppConstants.avatarPickerModal),
       builder: (_) {
         return SizedBox(
           height: 200,
