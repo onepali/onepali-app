@@ -92,7 +92,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 UserAppBar.setTabIndex(0);
 
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => DashboardScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => DashboardScreen(),
+                    settings: RouteSettings(name: AppRoutes.dashboardScreen),
+                  ),
                 );
               },
               child: Container(

@@ -6,14 +6,11 @@ class CustomLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kWhite,
-      body: Center(
-        child: LottieHelper.fromSource(
-          path: Assets.preLoader,
-          height: 120,
-          width: 120,
-        ),
+    return Center(
+      child: LottieHelper.fromSource(
+        path: Assets.preLoader,
+        height: 120,
+        width: 120,
       ),
     );
   }

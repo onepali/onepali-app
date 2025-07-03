@@ -64,6 +64,7 @@ class AppConstants {
   static const String bottomSheetModal = 'bottom_sheet';
   static const String dialogModal = 'dialog';
   static const String modalRoute = 'modal';
+  static const String customDialogModal = 'custom_dialog';
 
   static List<Map<String, dynamic>> languages = [
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},

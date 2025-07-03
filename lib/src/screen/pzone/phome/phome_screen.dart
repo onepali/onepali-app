@@ -59,27 +59,25 @@ class _PHomeScreenState extends State<PHomeScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.kBackgroundColor,
-          body: SafeArea(
-            child:
-                childStatus == DataFetchStatus.loading
-                    ? CustomLoader()
-                    : children.isEmpty
-                    ? const Center(
-                      child: Text(
-                        'No child found',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    )
-                    : PHomeCard(
-                      children: children,
-                      selectedChildUid: selectedChildUid,
-                      onChildSelected: _onChildSelected,
-                      metrics: metrics,
-                      metricsStatus: metricsStatus,
-                      isMobilePortrait: isMobilePortrait,
-                      parentUid: parentUid,
+          body:
+              childStatus == DataFetchStatus.loading
+                  ? CustomLoader()
+                  : children.isEmpty
+                  ? const Center(
+                    child: Text(
+                      'No child found',
+                      style: TextStyle(fontSize: 18),
                     ),
-          ),
+                  )
+                  : PHomeCard(
+                    children: children,
+                    selectedChildUid: selectedChildUid,
+                    onChildSelected: _onChildSelected,
+                    metrics: metrics,
+                    metricsStatus: metricsStatus,
+                    isMobilePortrait: isMobilePortrait,
+                    parentUid: parentUid,
+                  ),
         );
       },
     );

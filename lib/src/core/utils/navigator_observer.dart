@@ -41,12 +41,13 @@ class OrientationRouteObserver extends NavigatorObserver {
     // Check if it's a modal route without a name or with modal-specific names
     if (route is ModalRoute &&
         (name == null ||
-            name.contains(AppConstants.modalRoute) ||
-            name.contains(AppConstants.bottomSheetModal) ||
-            name.contains(AppConstants.dialogModal) ||
+            (name.contains(AppConstants.modalRoute)) ||
+            (name.contains(AppConstants.bottomSheetModal)) ||
+            (name.contains(AppConstants.dialogModal)) ||
             name == AppConstants.datePickerModal ||
             name == AppConstants.timePickerModal ||
-            name == AppConstants.avatarPickerModal)) {
+            name == AppConstants.avatarPickerModal ||
+            name == AppConstants.customDialogModal)) {
       return true;
     }
 

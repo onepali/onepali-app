@@ -50,12 +50,13 @@ class Assets {
   static String meta = 'meta'.icon;
   static String youtube = 'youtube'.icon;
   static String other = 'other'.icon;
-  static String family = 'family'.icon;
   static String google = 'google'.icon;
   static String blog = 'blog'.icon;
   static String facebook = 'facebook'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
+  static String family = 'family'.icon;
+  static String home = 'home'.icon;
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
