@@ -50,6 +50,8 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
   late DateTime selectedDate;
   String? _error;
   final TextEditingController _yearController = TextEditingController();
+  final TextEditingController _monthController = TextEditingController();
+  final TextEditingController _combinedController = TextEditingController();
   bool _showYearInput = false;
 
   @override
@@ -57,12 +59,28 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
     super.initState();
     selectedDate = widget.initialDate;
     _yearController.text = selectedDate.year.toString();
+    _monthController.text = selectedDate.month.toString();
+    _updateCombinedController();
   }
 
   @override
   void dispose() {
     _yearController.dispose();
+    _monthController.dispose();
+    _combinedController.dispose();
     super.dispose();
+  }
+
+  void _updateCombinedController() {
+    if (widget.showMonth && widget.showDay) {
+      _combinedController.text =
+          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}";
+    } else if (widget.showMonth) {
+      _combinedController.text =
+          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}";
+    } else {
+      _combinedController.text = selectedDate.year.toString();
+    }
   }
 
   String? _validateYear(String? value) {
@@ -84,6 +102,71 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
       return 'Year cannot be later than ${widget.lastDate!.year}';
     }
 
+    return null;
+  }
+
+  String? _validateCombined(String? value) {
+    if (value == null || value.isEmpty) {
+      return widget.showMonth
+          ? 'Please enter year and month (YYYY-MM)'
+          : 'Please enter a year';
+    }
+
+    if (!widget.showMonth) {
+      return _validateYear(value);
+    }
+
+    // For combined year-month input (YYYY-MM format)
+    final parts = value.split('-');
+    if (parts.length != 2) {
+      return 'Please enter date in YYYY-MM format';
+    }
+
+    final year = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+
+    if (year == null || month == null) {
+      return 'Please enter valid year and month';
+    }
+
+    if (year < widget.minYear || year > widget.maxYear) {
+      return 'Year must be between ${widget.minYear} and ${widget.maxYear}';
+    }
+
+    if (month < 1 || month > 12) {
+      return 'Month must be between 1 and 12';
+    }
+
+    // Check against lastDate if provided
+    if (widget.lastDate != null) {
+      if (year > widget.lastDate!.year) {
+        return 'Year cannot be later than ${widget.lastDate!.year}';
+      }
+      if (year == widget.lastDate!.year && month > widget.lastDate!.month) {
+        return 'Date cannot be later than ${widget.lastDate!.year}-${widget.lastDate!.month.toString().padLeft(2, '0')}';
+      }
+    }
+
+    return null;
+  }
+
+  DateTime? _parseCombinedInput(String value) {
+    if (!widget.showMonth) {
+      final year = int.tryParse(value);
+      if (year != null) {
+        return DateTime(year, 1, 1);
+      }
+      return null;
+    }
+
+    final parts = value.split('-');
+    if (parts.length == 2) {
+      final year = int.tryParse(parts[0]);
+      final month = int.tryParse(parts[1]);
+      if (year != null && month != null) {
+        return DateTime(year, month, widget.showDay ? selectedDate.day : 1);
+      }
+    }
     return null;
   }
 
@@ -127,53 +210,63 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                       width: 40,
                     ),
                     Gaps.verticalGapOf(16),
-                    // Year input toggle button
+                    // Year/Month input toggle button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomTextButton(
-                          text: _showYearInput ? 'Use Picker' : 'Enter Year',
+                          text:
+                              _showYearInput
+                                  ? 'Use Picker'
+                                  : (widget.showMonth
+                                      ? 'Enter Year & Month'
+                                      : 'Enter Year'),
                           onPressed: () {
                             setModalState(() {
                               _showYearInput = !_showYearInput;
                               if (!_showYearInput) {
-                                _yearController.text = tempDate.year.toString();
+                                _updateCombinedController();
                               }
                             });
                           },
                         ),
                       ],
                     ),
-                    Gaps.verticalGapOf(8),
-                    // Year input field or picker
+                    Gaps.verticalGapOf(8), // Year/Month input field or picker
                     _showYearInput
                         ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
                             children: [
                               CustomTextField(
-                                controller: _yearController,
+                                controller: _combinedController,
                                 hintText:
-                                    'Enter year (${widget.minYear}-${widget.maxYear})',
+                                    widget.showMonth
+                                        ? 'Enter date (YYYY-MM)'
+                                        : 'Enter year (${widget.minYear}-${widget.maxYear})',
                                 keyboardType: TextInputType.number,
-                                validation: _validateYear,
+                                validation: _validateCombined,
                                 paddingHorizontal: 16,
                                 paddingVertical: 16,
                                 onChanged: (value) {
-                                  final year = int.tryParse(value);
-                                  if (year != null &&
-                                      year >= widget.minYear &&
-                                      year <= widget.maxYear) {
+                                  final parsedDate = _parseCombinedInput(value);
+                                  if (parsedDate != null) {
                                     setModalState(() {
-                                      tempDate = DateTime(
-                                        year,
-                                        widget.showMonth ? tempDate.month : 1,
-                                        widget.showDay ? tempDate.day : 1,
-                                      );
+                                      tempDate = parsedDate;
                                     });
                                   }
                                 },
                               ),
+                              if (widget.showMonth) ...[
+                                Gaps.verticalGapOf(8),
+                                Text(
+                                  'Format: YYYY-MM (e.g., 2024-03)',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                               Gaps.verticalGapOf(16),
                             ],
                           ),
@@ -188,6 +281,13 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                             onDateChanged: (date) {
                               tempDate = date;
                               _yearController.text = date.year.toString();
+                              _monthController.text = date.month.toString();
+                              if (widget.showMonth) {
+                                _combinedController.text =
+                                    "${date.year}-${date.month.toString().padLeft(2, '0')}";
+                              } else {
+                                _combinedController.text = date.year.toString();
+                              }
                             },
                             showMonth: widget.showMonth,
                             showDay: widget.showDay,
@@ -214,14 +314,16 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
 
                             // Validate based on input method
                             if (_showYearInput) {
-                              error = _validateYear(_yearController.text);
+                              error = _validateCombined(
+                                _combinedController.text,
+                              );
                               if (error == null) {
-                                final year = int.parse(_yearController.text);
-                                tempDate = DateTime(
-                                  year,
-                                  widget.showMonth ? tempDate.month : 1,
-                                  widget.showDay ? tempDate.day : 1,
+                                final parsedDate = _parseCombinedInput(
+                                  _combinedController.text,
                                 );
+                                if (parsedDate != null) {
+                                  tempDate = parsedDate;
+                                }
                               }
                             }
 
@@ -236,6 +338,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                                 selectedDate = tempDate;
                                 widget.onDateChanged(tempDate);
                                 _error = null;
+                                _updateCombinedController();
                               });
                             }
                           },
