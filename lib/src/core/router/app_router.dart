@@ -52,6 +52,9 @@ class AppRoutes {
   static const String parentBlogScreen = '/parent/blog';
   static const String blogDetailScreen = '/parent/blog/detail';
 
+  /// [Parent] ---> [Review] Routes
+  static const String parentReviewScreen = '/parent/review';
+
   /// [Parent] ---> [Notification] Routes
   static const String parentNotificationScreen = '/parent/notification';
 
@@ -104,6 +107,7 @@ class AppRoutes {
           data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,
         ),
 
+    parentReviewScreen: (context) => const PreviewScreen(),
     parentNotificationScreen: (context) => const NotificationScreen(),
 
     parentPlansScreen: (context) => const PlanScreen(),

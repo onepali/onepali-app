@@ -59,6 +59,9 @@ class ProviderConfig {
   /// PZ [Plan] Provider
   static final PzPlanProvider pzPlanProvider = PzPlanProvider();
 
+  /// PZ [Review] Provider
+  static final PzReviewProvider pzReviewProvider = PzReviewProvider();
+
   //* --------------------------- End --------------------------- *//
 
   static final List<SingleChildWidget> providers = [
@@ -101,6 +104,7 @@ class ProviderConfig {
       create: (_) => pzNotificationProvider,
     ),
     ChangeNotifierProvider<PzPlanProvider>(create: (_) => pzPlanProvider),
+    ChangeNotifierProvider<PzReviewProvider>(create: (_) => pzReviewProvider),
 
     /// Global network type provider
     StreamProvider<NetworkType>(
@@ -135,6 +139,7 @@ class ProviderConfig {
     pzBlogProvider.dispose();
     pzNotificationProvider.dispose();
     pzPlanProvider.dispose();
+    pzReviewProvider.dispose();
   }
 
   /// Singleton factory

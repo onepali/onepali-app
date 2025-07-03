@@ -35,7 +35,10 @@ class _FaqsScreenState extends State<FaqsScreen> {
         return Card(
           margin: EdgeInsets.only(bottom: isMobilePortrait ? 12 : 20),
           elevation: 1,
-          color: AppColors.kWhite,
+          color:
+              _expandedIndex == index
+                  ? AppColors.kLightGrey.withValues(alpha: 0.02)
+                  : AppColors.kWhite,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(isMobilePortrait ? 12 : 16),
           ),
@@ -58,16 +61,16 @@ class _FaqsScreenState extends State<FaqsScreen> {
               isMobilePortrait ? 16 : 24,
             ),
             iconColor: AppColors.kPrimaryColor,
-            collapsedIconColor: AppColors.kSecondaryColor,
+            collapsedIconColor: AppColors.kPitchBlack,
             title: Text(
               faq.title,
               style:
                   isMobilePortrait
-                      ? AppStyles.text16PxSemiBold.copyWith(
-                        color: AppColors.kSecondaryColor,
+                      ? AppStyles.text16PxMedium.copyWith(
+                        color: AppColors.kPitchBlack,
                       )
-                      : AppStyles.text20PxSemiBold.copyWith(
-                        color: AppColors.kSecondaryColor,
+                      : AppStyles.text20PxMedium.copyWith(
+                        color: AppColors.kPitchBlack,
                       ),
             ),
             children: [
@@ -75,7 +78,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 width: double.infinity,
                 padding: EdgeInsets.all(isMobilePortrait ? 12 : 16),
                 decoration: BoxDecoration(
-                  color: AppColors.kPrimaryColor.withValues(alpha: 0.05),
+                  color: AppColors.kLightGrey.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(
                     isMobilePortrait ? 8 : 12,
                   ),
@@ -84,7 +87,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
                   faq.answer,
                   style:
                       isMobilePortrait
-                          ? AppStyles.text14PxRegular.copyWith(
+                          ? AppStyles.text16PxRegular.copyWith(
                             height: 1.5,
                             color: AppColors.kBlack,
                           )

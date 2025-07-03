@@ -130,3 +130,7 @@ export 'pzone/plan/cancel_plan_screen.dart.dart';
 /// [Parent] --> [Notification]
 export 'notification/notification_screen.dart';
 export 'notification/notification_card.dart';
+
+/// [Parent] --> [Review]
+export 'pzone/preview/preview_screen.dart';
+export 'pzone/preview/preview_card.dart';

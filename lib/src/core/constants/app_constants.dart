@@ -5,6 +5,7 @@ class AppConstants {
   static const String appVersion = 'v1.0.0';
   static const String defaultFontFamily = 'Poppins';
 
+  static const String applicationId = 'com.onepali.app';
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
 
@@ -65,4 +66,7 @@ class AppConstants {
   static const String dailyReminderTitle = "⏰ It's Time to Practice!";
   static const String dailyReminderBody =
       "Let's make today awesome! Are you ready for your daily adventure? 🚀";
+
+  static const String kAppLink =
+      'https://play.google.com/store/apps/details?id=$applicationId';
 }

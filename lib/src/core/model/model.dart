@@ -4,6 +4,7 @@ library;
 
 /// [System] Model
 export 'system/system_model.dart';
+export 'system/banner_model.dart';
 
 /// [OnBoarding] Model
 export 'onboard/onboard_model.dart';
