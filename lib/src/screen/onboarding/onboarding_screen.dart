@@ -24,28 +24,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Column(
             children: [
               Gaps.verticalGapOf(100),
-              AnimatedSolidColorBorder(
-                size: 170,
-                borderWidth: 6,
-                child: Container(
-                  height: 150,
-                  width: 150,
-                  padding: 30.p,
-                  // decoration: BoxDecoration(
-                  //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
-                  //   shape: BoxShape.circle,
-                  // ),
-                  child: SvgHelper.fromSource(
-                    path: Assets.leoSvg,
-                    width: 100,
-                    height: 100,
-                  ),
+              Container(
+                height: 150,
+                width: 150,
+                padding: 30.p,
+                // decoration: BoxDecoration(
+                //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
+                //   shape: BoxShape.circle,
+                // ),
+                child: SvgHelper.fromSource(
+                  path: Assets.leoSvg,
+                  width: 100,
+                  height: 100,
                 ),
               ),
-              Gaps.verticalGapOf(30),
-              SvgHelper.fromSource(path: Assets.logoSvg, width: 40, height: 30),
+              SvgHelper.fromSource(
+                path: Assets.logoSvg,
+                width: 40,
+                height: 35,
+                color: AppColors.kBlack,
+              ),
               Gaps.verticalGapOf(8),
-              Text(context.tr('tagline'), style: AppStyles.text14PxRegular),
+              Text(context.tr('tagline'), style: AppStyles.text14PxMedium),
               const Spacer(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -59,9 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     elevation: 0,
 
                     width: double.infinity,
-                    textStyle: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kWhite,
-                    ),
+                    textStyle: AppStyles.text16PxMedium,
                     showBorder: false,
                     backgroundColor: AppColors.kButtonGreen,
                     radius: 8,
@@ -76,9 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                     width: double.infinity,
                     showBorder: false,
-                    textStyle: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kPitchBlack,
-                    ),
+                    textStyle: AppStyles.text16PxMedium,
                     backgroundColor: AppColors.kButtonGrey,
                     radius: 8,
                   ),
@@ -90,9 +86,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     elevation: 0,
 
                     width: double.infinity,
-                    textStyle: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kPitchBlack,
-                    ),
+                    textStyle: AppStyles.text16PxMedium,
                     showBorder: false,
                     backgroundColor: AppColors.kButtonGrey,
                     radius: 8,

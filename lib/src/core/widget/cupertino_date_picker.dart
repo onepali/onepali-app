@@ -49,11 +49,42 @@ class CupertinoDatePickerField extends StatefulWidget {
 class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
   late DateTime selectedDate;
   String? _error;
+  final TextEditingController _yearController = TextEditingController();
+  bool _showYearInput = false;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.initialDate;
+    _yearController.text = selectedDate.year.toString();
+  }
+
+  @override
+  void dispose() {
+    _yearController.dispose();
+    super.dispose();
+  }
+
+  String? _validateYear(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a year';
+    }
+
+    final year = int.tryParse(value);
+    if (year == null) {
+      return 'Please enter a valid year';
+    }
+
+    if (year < widget.minYear || year > widget.maxYear) {
+      return 'Year must be between ${widget.minYear} and ${widget.maxYear}';
+    }
+
+    // Check against lastDate if provided
+    if (widget.lastDate != null && year > widget.lastDate!.year) {
+      return 'Year cannot be later than ${widget.lastDate!.year}';
+    }
+
+    return null;
   }
 
   Future<void> _showPicker(BuildContext context) async {
@@ -96,23 +127,75 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                       width: 40,
                     ),
                     Gaps.verticalGapOf(16),
-                    SizedBox(
-                      height: 200,
-                      child: _CupertinoDatePickerWidget(
-                        initialDate:
-                            selectedDate.isAfter(maxDate)
-                                ? maxDate
-                                : selectedDate,
-                        onDateChanged: (date) {
-                          tempDate = date;
-                        },
-                        showMonth: widget.showMonth,
-                        showDay: widget.showDay,
-                        minYear: widget.minYear,
-                        maxYear: widget.maxYear,
-                        lastDate: maxDate,
-                      ),
+                    // Year input toggle button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomTextButton(
+                          text: _showYearInput ? 'Use Picker' : 'Enter Year',
+                          onPressed: () {
+                            setModalState(() {
+                              _showYearInput = !_showYearInput;
+                              if (!_showYearInput) {
+                                _yearController.text = tempDate.year.toString();
+                              }
+                            });
+                          },
+                        ),
+                      ],
                     ),
+                    Gaps.verticalGapOf(8),
+                    // Year input field or picker
+                    _showYearInput
+                        ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              CustomTextField(
+                                controller: _yearController,
+                                hintText:
+                                    'Enter year (${widget.minYear}-${widget.maxYear})',
+                                keyboardType: TextInputType.number,
+                                validation: _validateYear,
+                                paddingHorizontal: 16,
+                                paddingVertical: 16,
+                                onChanged: (value) {
+                                  final year = int.tryParse(value);
+                                  if (year != null &&
+                                      year >= widget.minYear &&
+                                      year <= widget.maxYear) {
+                                    setModalState(() {
+                                      tempDate = DateTime(
+                                        year,
+                                        widget.showMonth ? tempDate.month : 1,
+                                        widget.showDay ? tempDate.day : 1,
+                                      );
+                                    });
+                                  }
+                                },
+                              ),
+                              Gaps.verticalGapOf(16),
+                            ],
+                          ),
+                        )
+                        : SizedBox(
+                          height: 200,
+                          child: _CupertinoDatePickerWidget(
+                            initialDate:
+                                selectedDate.isAfter(maxDate)
+                                    ? maxDate
+                                    : selectedDate,
+                            onDateChanged: (date) {
+                              tempDate = date;
+                              _yearController.text = date.year.toString();
+                            },
+                            showMonth: widget.showMonth,
+                            showDay: widget.showDay,
+                            minYear: widget.minYear,
+                            maxYear: widget.maxYear,
+                            lastDate: maxDate,
+                          ),
+                        ),
                     Gaps.verticalGapOf(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -127,7 +210,24 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                         CustomTextButton(
                           text: 'Select',
                           onPressed: () {
-                            final error = widget.validator?.call(tempDate);
+                            String? error;
+
+                            // Validate based on input method
+                            if (_showYearInput) {
+                              error = _validateYear(_yearController.text);
+                              if (error == null) {
+                                final year = int.parse(_yearController.text);
+                                tempDate = DateTime(
+                                  year,
+                                  widget.showMonth ? tempDate.month : 1,
+                                  widget.showDay ? tempDate.day : 1,
+                                );
+                              }
+                            }
+
+                            // Apply widget validator if provided
+                            error ??= widget.validator?.call(tempDate);
+
                             if (error != null) {
                               setModalState(() => _error = error);
                             } else {

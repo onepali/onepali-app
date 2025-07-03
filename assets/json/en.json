@@ -1,6 +1,6 @@
 {
     "app_title": "Kids Learning App",
-    "tagline": "Connect to Our Roots",
+    "tagline": "Learn • Grow • Connect",
     "learn_animals": "Learn Animals",
     "learn_numbers": "Learn Numbers",
     "learn_alphabets": "Learn Alphabets",
@@ -14,6 +14,6 @@
     "language": "Language",
     "exit": "Exit",
     "login": "Log in",
-    "create_account": "Create Account",
-    "try_lesson_guest": "Try a lesson as Guest"
+    "create_account": "Create account",
+    "try_lesson_guest": "Try a lesson as guest"
 }
