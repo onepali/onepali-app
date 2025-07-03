@@ -5,6 +5,7 @@ class Assets {
   static String leoSvg = 'leo'.brandSvg;
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
+  static String parentAvatar = 'parent_avatar'.png;
   static String patternBg = 'pattern_bg'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 

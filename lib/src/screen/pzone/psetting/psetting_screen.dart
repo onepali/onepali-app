@@ -172,6 +172,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
               child: const Icon(Icons.notifications),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             title: const Text('Notifications'),
             onTap: () {
               Utility.navigate(context, AppRoutes.parentNotificationScreen);
@@ -188,6 +189,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
               child: const Icon(Icons.assignment),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             title: const Text('My plan'),
             onTap: () {
               Utility.navigate(context, AppRoutes.parentPlansScreen);
@@ -204,6 +206,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
               child: SvgHelper.fromSource(path: Assets.unsubscribe),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             title: const Text('Cancel Subscription'),
             onTap: () {},
           ),
