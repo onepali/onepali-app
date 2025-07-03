@@ -27,21 +27,23 @@ class _FaqsScreenState extends State<FaqsScreen> {
       );
     }
 
-    return ListView.builder(
-      padding: EdgeInsets.all(isMobilePortrait ? 16.0 : 32.0),
+    return ListView.separated(
       itemCount: widget.faqsData.length,
+      separatorBuilder:
+          (context, index) => Divider(
+            height: 0,
+            thickness: 1,
+            color: AppColors.kLightGrey.withValues(alpha: 0.5),
+          ),
       itemBuilder: (context, index) {
         final faq = widget.faqsData[index];
-        return Card(
+        return Container(
           margin: EdgeInsets.only(bottom: isMobilePortrait ? 12 : 20),
-          elevation: 1,
+
           color:
               _expandedIndex == index
                   ? AppColors.kLightGrey.withValues(alpha: 0.02)
                   : AppColors.kWhite,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(isMobilePortrait ? 12 : 16),
-          ),
           child: ExpansionTile(
             key: Key('faq_$index${_expandedIndex == index ? '_expanded' : ''}'),
             initiallyExpanded: _expandedIndex == index,
@@ -50,6 +52,8 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 _expandedIndex = isExpanded ? index : null;
               });
             },
+            shape: LinearBorder.none,
+
             tilePadding: EdgeInsets.symmetric(
               horizontal: isMobilePortrait ? 16 : 24,
               vertical: isMobilePortrait ? 8 : 12,
@@ -60,14 +64,23 @@ class _FaqsScreenState extends State<FaqsScreen> {
               isMobilePortrait ? 16 : 24,
               isMobilePortrait ? 16 : 24,
             ),
-            iconColor: AppColors.kPrimaryColor,
+            iconColor: AppColors.kSecondaryColor,
             collapsedIconColor: AppColors.kPitchBlack,
+
             title: Text(
               faq.title,
               style:
                   isMobilePortrait
-                      ? AppStyles.text16PxMedium.copyWith(
-                        color: AppColors.kPitchBlack,
+                      ? _expandedIndex == index
+                          ? AppStyles.text16PxSemiBold.copyWith(
+                            color: AppColors.kSecondaryColor,
+                          )
+                          : AppStyles.text16PxMedium.copyWith(
+                            color: AppColors.kPitchBlack,
+                          )
+                      : _expandedIndex == index
+                      ? AppStyles.text20PxSemiBold.copyWith(
+                        color: AppColors.kSecondaryColor,
                       )
                       : AppStyles.text20PxMedium.copyWith(
                         color: AppColors.kPitchBlack,
@@ -79,6 +92,12 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 padding: EdgeInsets.all(isMobilePortrait ? 12 : 16),
                 decoration: BoxDecoration(
                   color: AppColors.kLightGrey.withValues(alpha: 0.3),
+                  border: Border(
+                    left: BorderSide(
+                      color: AppColors.kPureSkyBlue,
+                      width: isMobilePortrait ? 4 : 6,
+                    ),
+                  ),
                   borderRadius: BorderRadius.circular(
                     isMobilePortrait ? 8 : 12,
                   ),

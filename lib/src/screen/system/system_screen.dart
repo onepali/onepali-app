@@ -46,23 +46,25 @@ class _SystemScreenState extends State<SystemScreen>
         backgroundColor: AppColors.kSecondaryColor,
         title: SvgHelper.fromSource(
           path: Assets.logoSvg,
-          height: isMobilePortrait ? 20 : 28,
+          height: isMobilePortrait ? 24 : 30,
           color: AppColors.kWhite,
         ),
         iconTheme: const IconThemeData(color: AppColors.kWhite),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppColors.kWhite,
+          indicatorColor: AppColors.kPureSkyBlue,
           indicatorWeight: 3,
           labelColor: AppColors.kWhite,
           indicatorSize: TabBarIndicatorSize.tab,
           unselectedLabelColor: AppColors.kWhite.withValues(alpha: 0.7),
+
           labelStyle:
               isMobilePortrait
                   ? AppStyles.text14PxSemiBold.copyWith(color: AppColors.kWhite)
                   : AppStyles.text18PxSemiBold.copyWith(
                     color: AppColors.kWhite,
                   ),
+          dividerColor: Colors.transparent,
           unselectedLabelStyle:
               isMobilePortrait
                   ? AppStyles.text14PxRegular.copyWith(
