@@ -38,6 +38,17 @@ class _SongVideoPlayerScreenState extends State<SongVideoPlayerScreen> {
   void _onProgress(double progress, bool isCompleted) {
     _lastProgress = progress;
     _lastCompleted = isCompleted;
+
+    // Track song completion for parent metrics
+    if (isCompleted && widget.songId != null && widget.songId!.isNotEmpty) {
+      MetricsTrackingHelper.trackSongCompletion(
+        context: context,
+        songId: widget.songId!,
+        songTitle: widget.title ?? '',
+        categoryName: widget.subtitle ?? '',
+      );
+    }
+
     if (widget.songId != null && widget.songId!.isNotEmpty) {
       context.read<RcmSongProvider>().saveOrUpdateSongProgress(
         songId: widget.songId!,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
-import 'package:provider/provider.dart';
 
 class PHomeCard extends StatelessWidget {
   final List<ChildUserModel> children;
@@ -98,26 +97,26 @@ class PHomeCard extends StatelessWidget {
               mostPracticedTopics: metrics!.mostPracticedTopics,
               isMobilePortrait: isMobilePortrait,
             ),
-            Gaps.verticalGapOf(24),
-            ElevatedButton(
-              onPressed:
-                  parentUid != null && selectedChildUid != null
-                      ? () async {
-                        await Provider.of<PzMetricsProvider>(
-                          context,
-                          listen: false,
-                        ).updateMetrics(
-                          parentUid: parentUid!,
-                          childUid: selectedChildUid!,
-                          newMetrics: metrics!.copyWith(
-                            completedActivities:
-                                metrics!.completedActivities + 1,
-                          ),
-                        );
-                      }
-                      : null,
-              child: const Text('Update Metrics (Demo)'),
-            ),
+            // Gaps.verticalGapOf(24),
+            // ElevatedButton(
+            //   onPressed:
+            //       parentUid != null && selectedChildUid != null
+            //           ? () async {
+            //             await Provider.of<PzMetricsProvider>(
+            //               context,
+            //               listen: false,
+            //             ).updateMetrics(
+            //               parentUid: parentUid!,
+            //               childUid: selectedChildUid!,
+            //               newMetrics: metrics!.copyWith(
+            //                 completedActivities:
+            //                     metrics!.completedActivities + 1,
+            //               ),
+            //             );
+            //           }
+            //           : null,
+            //   child: const Text('Update Metrics (Demo)'),
+            // ),
           ],
         ],
       ),

@@ -28,6 +28,19 @@ class ButtonTapContentState extends State<ButtonTapContent> {
       isCorrect = correct;
       showTryAgain = !correct;
     });
+
+    // Track the answer for parent metrics
+    if (storyProvider.currentStory != null) {
+      await MetricsTrackingHelper.trackStoryAnswer(
+        context: context,
+        isCorrect: correct,
+        storyTitle:
+            storyProvider.currentStory!.nameNp.isNotEmpty
+                ? storyProvider.currentStory!.nameNp
+                : storyProvider.currentStory!.nameEn,
+      );
+    }
+
     if (correct) {
       await Future.delayed(const Duration(milliseconds: 800));
       if (mounted) {

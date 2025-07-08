@@ -32,7 +32,15 @@ class _PHomeScreenState extends State<PHomeScreen> {
       context.read<PzMetricsProvider>().fetchMetrics(
         parentUid: parentUid,
         childUid: childUid,
-      );
+      )
+      // .then((_) {
+      //   if (!mounted) return;
+      //   context.read<PzMetricsProvider>().checkAndResetWeeklyStreak(
+      //     parentUid: parentUid,
+      //     childUid: childUid,
+      //   );
+      // })
+      ;
     }
   }
 
@@ -52,7 +60,7 @@ class _PHomeScreenState extends State<PHomeScreen> {
 
         // Set first child as default if not selected
         if (children.isNotEmpty && selectedChildUid == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          Misc.onLayoutRendered(() {
             _onChildSelected(children.first.uid);
           });
         }

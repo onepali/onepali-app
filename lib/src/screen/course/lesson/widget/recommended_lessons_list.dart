@@ -71,7 +71,12 @@ class RecommendedLessonsList extends StatelessWidget {
             );
             double? progressPercent;
             if (lesson.lessonContent.isNotEmpty) {
-              progressPercent = rec.progress / lesson.lessonContent.length;
+              // Clamp progress to content length to handle completed lessons properly
+              final clampedProgress = rec.progress.clamp(
+                0,
+                lesson.lessonContent.length,
+              );
+              progressPercent = clampedProgress / lesson.lessonContent.length;
             }
             return SizedBox(
               width: AppCardResponsive.getCardWidth(context),
@@ -92,12 +97,40 @@ class RecommendedLessonsList extends StatelessWidget {
                         )
                         : null,
                 onTap: () {
+                  // Safety check for empty lesson content
+                  if (lesson.lessonContent.isEmpty) {
+                    logger.w(
+                      'Lesson ${lesson.id} has no content, cannot navigate',
+                    );
+                    return;
+                  }
+
+                  // Ensure initial index is within valid range
+                  final maxIndex = lesson.lessonContent.length - 1;
+                  int safeInitialIndex;
+
+                  // If lesson is completed (progress >= content length), start from beginning
+                  // Otherwise, use the progress as starting point but clamp to valid range
+                  if (rec.progress >= lesson.lessonContent.length) {
+                    safeInitialIndex =
+                        0; // Start from beginning for completed lessons
+                    logger.d(
+                      'Lesson ${lesson.id} is completed, starting from beginning',
+                    );
+                  } else {
+                    safeInitialIndex = rec.progress.clamp(0, maxIndex);
+                  }
+
+                  logger.d(
+                    'Navigating to lesson: ${lesson.id}, content length: ${lesson.lessonContent.length}, progress: ${rec.progress}, safe index: $safeInitialIndex',
+                  );
+
                   Utility.navigateMaterialRoute(
                     context,
                     LessonContentScreen(
                       lesson: lesson,
                       lessons: [lesson],
-                      initialIndex: rec.progress,
+                      initialIndex: safeInitialIndex,
                       hasSound: true,
                     ),
                   );

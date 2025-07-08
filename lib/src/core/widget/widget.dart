@@ -87,6 +87,9 @@ export 'bottom_sheet_manager.dart';
 /// Custom [Loader]
 export 'custom_loader.dart';
 
+/// [Learning Session] Wrapper
+export 'learning_session_wrapper.dart';
+
 //* --------------------------------- Parent Zone --------------------------------- *//
 
 //// Parent Zone [AppBar]

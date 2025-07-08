@@ -25,19 +25,33 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   @override
   void initState() {
     super.initState();
-    final audioProvider = context.read<LessonAudioProvider>();
-    if (widget.initialIndex == 0) {
-      audioProvider.resetIndex(0);
-    } else {
-      audioProvider.resetIndex(widget.initialIndex);
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final idx = widget.initialIndex;
-      final content =
-          (widget.lesson.lessonContent.length > idx)
-              ? widget.lesson.lessonContent[idx]
-              : null;
-      if (content != null && content.audio.isNotEmpty) {
+
+    // Start learning session for metrics tracking (safe for initState)
+    MetricsTrackingHelper.startLearningSessionSafe(context);
+
+    Misc.onLayoutRendered(() async {
+      final audioProvider = context.read<LessonAudioProvider>();
+
+      // Safety check: ensure lesson has content before proceeding
+      if (widget.lesson.lessonContent.isEmpty) {
+        logger.w(
+          'Lesson ${widget.lesson.id} has no content, cannot initialize audio',
+        );
+        return;
+      }
+
+      // Clamp initial index to valid range
+      final maxIndex = widget.lesson.lessonContent.length - 1;
+      final safeIndex = widget.initialIndex.clamp(0, maxIndex);
+
+      logger.d(
+        'LessonContentScreen: initializing with index $safeIndex (requested: ${widget.initialIndex}, max: $maxIndex)',
+      );
+
+      audioProvider.resetIndex(safeIndex, widget.lesson.lessonContent.length);
+
+      final content = widget.lesson.lessonContent[safeIndex];
+      if (content.audio.isNotEmpty) {
         await audioProvider.playContentAudio(
           widget.lesson.lessonContent,
           audioSourceType: AudioSourceType.network,
@@ -47,12 +61,43 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   }
 
   @override
+  void dispose() {
+    MetricsTrackingHelper.endLearningSessionSafe();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final audioProvider = context.watch<LessonAudioProvider>();
-    final content = widget.lesson.lessonContent[audioProvider.currentIndex];
-    final isFirst = audioProvider.currentIndex == 0;
-    final isLast =
-        audioProvider.currentIndex == widget.lesson.lessonContent.length - 1;
+
+    // Safety check: ensure lesson has content and currentIndex is valid
+    if (widget.lesson.lessonContent.isEmpty) {
+      logger.w(
+        'Lesson ${widget.lesson.id} has no content, showing empty state',
+      );
+      return Scaffold(
+        backgroundColor: AppColors.kWhite,
+        body: const Center(child: Text('No content available for this lesson')),
+      );
+    }
+
+    // Clamp current index to valid range
+    final maxIndex = widget.lesson.lessonContent.length - 1;
+    final safeCurrentIndex = audioProvider.currentIndex.clamp(0, maxIndex);
+
+    // If audioProvider has wrong index, reset it
+    if (audioProvider.currentIndex != safeCurrentIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        audioProvider.resetIndex(
+          safeCurrentIndex,
+          widget.lesson.lessonContent.length,
+        );
+      });
+    }
+
+    final content = widget.lesson.lessonContent[safeCurrentIndex];
+    final isFirst = safeCurrentIndex == 0;
+    final isLast = safeCurrentIndex == widget.lesson.lessonContent.length - 1;
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: SafeArea(
@@ -106,10 +151,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                     context,
                                     widget.lesson,
                                   );
-                                  // Auto play audio after navigation if audio exists
+                                  final safeIndex = audioProvider.currentIndex
+                                      .clamp(
+                                        0,
+                                        widget.lesson.lessonContent.length - 1,
+                                      );
                                   final prevContent =
-                                      widget.lesson.lessonContent[audioProvider
-                                          .currentIndex];
+                                      widget.lesson.lessonContent[safeIndex];
                                   if (prevContent.audio.isNotEmpty) {
                                     await audioProvider.playContentAudio(
                                       widget.lesson.lessonContent,
@@ -145,29 +193,19 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               .saveOrUpdateLessonProgress(
                                 childId: childId,
                                 lessonId: widget.lesson.chapterId.toString(),
-                                progress: audioProvider.currentIndex + 1,
-                                title:
-                                    widget
-                                        .lesson
-                                        .lessonContent[audioProvider
-                                            .currentIndex]
-                                        .nameNp,
-                                image:
-                                    widget
-                                        .lesson
-                                        .lessonContent[audioProvider
-                                            .currentIndex]
-                                        .image,
+                                progress: safeCurrentIndex + 1,
+                                title: content.nameNp,
+                                image: content.image,
                               );
                         }
-                        if (audioProvider.currentIndex ==
+                        if (safeCurrentIndex ==
                             widget.lesson.lessonContent.length - 1) {
                           setState(() {
                             _showGoodRemark = true;
                           });
                         }
                       },
-                      index: audioProvider.currentIndex,
+                      index: safeCurrentIndex,
                     ),
                   ),
                   if (!isLast)
@@ -201,10 +239,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                     context,
                                     widget.lesson,
                                   );
-                                  // Auto play audio after navigation if audio exists
+                                  final safeIndex = audioProvider.currentIndex
+                                      .clamp(
+                                        0,
+                                        widget.lesson.lessonContent.length - 1,
+                                      );
                                   final nextContent =
-                                      widget.lesson.lessonContent[audioProvider
-                                          .currentIndex];
+                                      widget.lesson.lessonContent[safeIndex];
                                   if (nextContent.audio.isNotEmpty) {
                                     await audioProvider.playContentAudio(
                                       widget.lesson.lessonContent,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonProvider extends ChangeNotifier {
@@ -98,5 +99,59 @@ class LessonProvider extends ChangeNotifier {
   void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
+  }
+
+  // Track lesson completion and update parent metrics
+  Future<void> trackLessonCompletion({
+    required String parentUid,
+    required String childUid,
+    required String lessonId,
+    required String topicName,
+    required BuildContext context,
+  }) async {
+    try {
+      // Get the metrics provider
+      final metricsProvider = context.read<PzMetricsProvider>();
+
+      // Track the activity completion
+      await metricsProvider.trackActivityCompletion(
+        parentUid: parentUid,
+        childUid: childUid,
+        topicName: topicName,
+        activityType: ActivityType.lesson,
+      );
+
+      logger.d('Lesson completion tracked: $lessonId in $topicName');
+    } catch (e) {
+      logger.e('Error tracking lesson completion: $e');
+    }
+  }
+
+  // Track lesson answer for success rate
+  Future<void> trackLessonAnswer({
+    required String parentUid,
+    required String childUid,
+    required bool isCorrect,
+    required String topicName,
+    required BuildContext context,
+  }) async {
+    try {
+      // Get the metrics provider
+      final metricsProvider = context.read<PzMetricsProvider>();
+
+      // Track the answer
+      await metricsProvider.trackAnswer(
+        parentUid: parentUid,
+        childUid: childUid,
+        isCorrect: isCorrect,
+        topicName: topicName,
+      );
+
+      logger.d(
+        'Lesson answer tracked: ${isCorrect ? 'Correct' : 'Incorrect'} in $topicName',
+      );
+    } catch (e) {
+      logger.e('Error tracking lesson answer: $e');
+    }
   }
 }
