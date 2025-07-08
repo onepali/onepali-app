@@ -79,10 +79,21 @@ class ChildUserProvider extends ChangeNotifier {
             'dob': dob,
             'screen_time': screenTime,
             'avatar_url': avatarUrl,
+            'screenTimeTracking': {
+              'totalAllowed': screenTime,
+              'totalUsed': 0.0,
+              'lastUpdated': DateTime.now().toIso8601String(),
+            },
           });
       // Update local list
       int idx = _childUser.indexWhere((c) => c.uid == childUid);
       if (idx != -1) {
+        final newScreenTimeTracking = ScreenTimeModel(
+          totalAllowed: screenTime,
+          totalUsed: 0.0,
+          lastUpdated: DateTime.now(),
+        );
+
         _childUser[idx] = ChildUserModel(
           avatarUrl: avatarUrl,
           createdAt: _childUser[idx].createdAt,
@@ -93,6 +104,7 @@ class ChildUserProvider extends ChangeNotifier {
           role: _childUser[idx].role,
           screenTime: screenTime,
           uid: childUid,
+          screenTimeTracking: newScreenTimeTracking,
         );
         notifyListeners();
       }

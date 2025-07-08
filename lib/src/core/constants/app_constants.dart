@@ -57,6 +57,13 @@ class AppConstants {
     'Daily conversation',
   ];
 
+  /// Screen Time Constants
+  // static const String screenTimeExceededKey = 'screen_time_exceeded';
+  static const int screenTimeCheckIntervalSeconds =
+      10; // Check every 10 seconds
+  // static const int dailyResetHour = 23; // Reset at 11:59 PM
+  // static const int dailyResetMinute = 59;
+
   /// Model Route
   static const String datePickerModal = 'date_picker_modal';
   static const String timePickerModal = 'time_picker_modal';

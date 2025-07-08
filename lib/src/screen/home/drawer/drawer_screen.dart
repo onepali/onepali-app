@@ -73,10 +73,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
           children: [
             GestureDetector(
               onTap: () async {
+                logger.i(
+                  '👆 DrawerScreen: Child selected - ${child.fullName} (${child.uid})',
+                );
+
                 setState(() {
                   _selectedChildIndex = index;
                 });
 
+                logger.i('🛑 Stopping tracking for previous child');
+                // Stop tracking for previous child
+                await ScreenTimeService.instance.stopTracking();
+
+                logger.d('💾 Saving child data to local storage');
                 await ChildLocalStorage.saveCurrentChildId(child.uid);
                 await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
                 if (!mounted) return;
@@ -87,6 +96,22 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 );
                 authState.setCurrentChildId(child.uid);
 
+                // // Check if the screen time limit is already exceeded before navigating
+                // logger.i(
+                //   '🔍 Checking screen time limit for child ${child.uid} before navigation',
+                // );
+                // final isLimitExceeded = await ScreenTimeService.instance
+                //     .checkScreenTimeLimitExceeded(child.uid);
+
+                // if (isLimitExceeded) {
+                //   logger.w(
+                //     '⚠️ Screen time limit already exceeded for child ${child.uid}',
+                //   );
+                //   // Dialog is already shown by the check method
+                //   return; // Don't navigate to dashboard
+                // }
+
+                logger.i('🔄 Navigating to dashboard with new child');
                 // Navigator.of(context).pop();
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 UserAppBar.setTabIndex(0);

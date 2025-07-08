@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'screen_time_model.dart';
 
 List<ChildUserModel> childUserModelFromJson(String str) =>
     List<ChildUserModel>.from(
@@ -16,7 +17,10 @@ class ChildUserModel {
   final String parentEmail;
   final String parentUid;
   final String role;
-  final double screenTime;
+  final double
+  screenTime; // Legacy field - still used for backward compatibility
+  final ScreenTimeModel?
+  screenTimeTracking; // New detailed screen time tracking
   final String uid;
 
   ChildUserModel({
@@ -29,6 +33,7 @@ class ChildUserModel {
     required this.role,
     required this.screenTime,
     required this.uid,
+    this.screenTimeTracking,
   });
 
   factory ChildUserModel.fromJson(Map<String, dynamic> json) => ChildUserModel(
@@ -41,6 +46,10 @@ class ChildUserModel {
     role: json["role"] ?? "",
     screenTime: (json["screen_time"] ?? 0).toDouble(),
     uid: json["uid"] ?? "",
+    screenTimeTracking:
+        json["screenTimeTracking"] != null
+            ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
+            : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -53,5 +62,33 @@ class ChildUserModel {
     "role": role,
     "screen_time": screenTime,
     "uid": uid,
+    if (screenTimeTracking != null)
+      "screenTimeTracking": screenTimeTracking!.toJson(),
   };
+
+  /// Get the current screen time tracking, creating a default one if null
+  ScreenTimeModel getScreenTimeTracking() {
+    return screenTimeTracking ??
+        ScreenTimeModel(
+          totalAllowed: screenTime,
+          totalUsed: 0.0,
+          lastUpdated: DateTime.now(),
+        );
+  }
+
+  /// Create a copy with updated screen time tracking
+  ChildUserModel copyWithScreenTime(ScreenTimeModel newScreenTimeTracking) {
+    return ChildUserModel(
+      avatarUrl: avatarUrl,
+      createdAt: createdAt,
+      dob: dob,
+      fullName: fullName,
+      parentEmail: parentEmail,
+      parentUid: parentUid,
+      role: role,
+      screenTime: screenTime,
+      uid: uid,
+      screenTimeTracking: newScreenTimeTracking,
+    );
+  }
 }

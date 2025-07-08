@@ -32,6 +32,7 @@ class DialogManager {
     return showDialog(
       context: context,
       routeSettings: const RouteSettings(name: AppConstants.customDialogModal),
+      barrierDismissible: barrierDismissible,
       builder: (context) {
         return Center(
           child: ConstrainedBox(
@@ -83,10 +84,23 @@ class DialogManager {
                               : 150,
                     ),
                   if (image.isNotEmpty && isSvg)
-                    SvgHelper.fromSource(
-                      path: image,
-                      height: isMobilePortrait ? 120 : 150,
-                      width: isMobilePortrait ? 120 : 150,
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SvgHelper.fromSource(
+                        path: image,
+                        height:
+                            isMobileLandScape
+                                ? 80
+                                : isMobilePortrait
+                                ? 120
+                                : 150,
+                        width:
+                            isMobileLandScape
+                                ? 80
+                                : isMobilePortrait
+                                ? 120
+                                : 150,
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0),
@@ -179,27 +193,6 @@ class DialogManager {
           ),
         );
       },
-    );
-  }
-
-  timesUpDialog(BuildContext context) {
-    return showCustomDialog(
-      context: context,
-      title: 'Time\'s Up',
-      content: 'Comeback Tomorrow to continue your learning journey!',
-      image: Assets.timeUpSvg,
-      isSvg: true,
-      onConfirm: () {
-        Navigator.of(context).pop();
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.parentPinScreen,
-          (route) => false,
-        );
-      },
-      confirmButtonText: 'Ok',
-      barrierDismissible: false,
-      hasSingleButton: true,
     );
   }
 }

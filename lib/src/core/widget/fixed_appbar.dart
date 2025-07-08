@@ -70,10 +70,13 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               IconButton(
                 onPressed:
-                    () => Utility.navigate(context, AppRoutes.parentPinScreen),
+                    () => Utility.navigate(
+                      context,
+                      AppRoutes.parentPinScreen,
+                      arguments: {'fromScreenTimeLimit': false},
+                    ),
                 icon: SvgHelper.fromSource(
                   path: Assets.reward,
-
                   height: 45,
                   width: 45,
                 ),

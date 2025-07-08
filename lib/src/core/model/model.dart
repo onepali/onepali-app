@@ -24,6 +24,7 @@ export 'home/home_model.dart';
 
 /// [Child] Model
 export 'child/cuser_model.dart';
+export 'child/screen_time_model.dart';
 
 /// [Reward] Model
 export 'reward/reward_model.dart';

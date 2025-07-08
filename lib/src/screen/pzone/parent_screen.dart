@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../src.dart';
 
 class ParentZoneScreen extends StatefulWidget {
-  const ParentZoneScreen({super.key});
+  final bool fromScreenTimeLimit;
+
+  const ParentZoneScreen({super.key, this.fromScreenTimeLimit = false});
 
   @override
   State<ParentZoneScreen> createState() => _ParentZoneScreenState();
@@ -72,79 +75,108 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
   @override
   Widget build(BuildContext context) {
     final isTablet = PlatformUtility.isTablet(context);
-    return Scaffold(
-      backgroundColor: AppColors.kPurple,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            if (isTablet)
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 32, bottom: 16),
-                  child: CustomImage(
-                    Assets.parentZoneImage,
-                    imageType: CustomImageType.local,
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    boxFit: BoxFit.contain,
+    return PopScope(
+      canPop:
+          !widget
+              .fromScreenTimeLimit, // Prevent back button if from screen time limit
+      onPopInvoked: (didPop) {
+        if (widget.fromScreenTimeLimit && !didPop) {
+          // If coming from screen time limit dialog and trying to go back, exit app
+          logger.i('🚪 Exiting app from parent screen back button');
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.kPurple,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              if (isTablet)
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 32, bottom: 16),
+                    child: CustomImage(
+                      Assets.parentZoneImage,
+                      imageType: CustomImageType.local,
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      boxFit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Parents only',
+                        style: AppStyles.text40PxBold.copyWith(
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Gaps.verticalGapOf(16),
+                      Text(
+                        'Enter your year of birth',
+                        style: AppStyles.text20PxRegular.copyWith(
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Gaps.verticalGapOf(32),
+                      CustomPinput(
+                        length: 4,
+                        controller: _pinController,
+                        boxSize: 56,
+                        boxSpacing: 16,
+                        activeColor: AppColors.kWhite,
+                        inactiveColor: Colors.white.withValues(alpha: 0.3),
+                        errorColor: AppColors.kRed,
+                        validator: (val) => _isError ? 'Invalid PIN' : null,
+                      ),
+                      Gaps.verticalGapOf(32),
+                      if (_isLoading)
+                        const CircularProgressIndicator(
+                          color: AppColors.kWhite,
+                        ),
+                    ],
                   ),
                 ),
               ),
-            Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Parents only',
-                      style: AppStyles.text40PxBold.copyWith(
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
+              Positioned(
+                top: 24,
+                right: 24,
+                child: GestureDetector(
+                  onTap: () {
+                    if (widget.fromScreenTimeLimit) {
+                      // If coming from screen time limit dialog, exit the app
+                      logger.i(
+                        '🚪 Exiting app from parent screen (from screen time limit)',
+                      );
+                      SystemNavigator.pop(); // This will close the app
+                    } else {
+                      // Regular navigation back
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
                     ),
-                    Gaps.verticalGapOf(16),
-                    Text(
-                      'Enter your year of birth',
-                      style: AppStyles.text20PxRegular.copyWith(
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
+                    padding: const EdgeInsets.all(8),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 32,
                     ),
-                    Gaps.verticalGapOf(32),
-                    CustomPinput(
-                      length: 4,
-                      controller: _pinController,
-                      boxSize: 56,
-                      boxSpacing: 16,
-                      activeColor: AppColors.kWhite,
-                      inactiveColor: Colors.white.withValues(alpha: 0.3),
-                      errorColor: AppColors.kRed,
-                      validator: (val) => _isError ? 'Invalid PIN' : null,
-                    ),
-                    Gaps.verticalGapOf(32),
-                    if (_isLoading)
-                      const CircularProgressIndicator(color: AppColors.kWhite),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: 24,
-              right: 24,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
                   ),
-                  padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.close, color: Colors.white, size: 32),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

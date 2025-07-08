@@ -21,7 +21,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context.read<UserProvider>().fetchOwnProfile();
       context.read<ChildUserProvider>().fetchChildUser();
       fetchChildImage();
+      _initializeScreenTimeTracking();
     });
+  }
+
+  @override
+  void dispose() {
+    // Stop screen time tracking when dashboard is disposed
+    _stopScreenTimeTracking();
+    super.dispose();
+  }
+
+  Future<void> _initializeScreenTimeTracking() async {
+    logger.i('🚀 DashboardScreen: Initializing screen time tracking');
+
+    final currentChildId = await ChildLocalStorage.getCurrentChildId();
+    if (currentChildId != null) {
+      logger.d('👶 Found current child ID: $currentChildId');
+      if (!mounted) return;
+      final childProvider = context.read<ChildUserProvider>();
+      if (childProvider.childUser.isNotEmpty) {
+        final childIndex = childProvider.childUser.indexWhere(
+          (c) => c.uid == currentChildId,
+        );
+        final child =
+            childIndex != -1
+                ? childProvider.childUser[childIndex]
+                : childProvider.childUser.first;
+
+        logger.i('👦 Child selected: ${child.fullName} (${child.uid})');
+
+        // Check if the screen time limit is already exceeded
+        final isLimitExceeded = await ScreenTimeService.instance
+            .checkScreenTimeLimitExceeded(child.uid);
+
+        // If limit is not exceeded, start tracking
+        if (!isLimitExceeded) {
+          logger.i(
+            '🕐 Starting screen time tracking for: ${child.fullName} (${child.uid})',
+          );
+          await ScreenTimeService.instance.startTracking(child.uid);
+        } else {
+          logger.w(
+            '⚠️ Screen time limit already exceeded for child ${child.uid}',
+          );
+          // The dialog is already shown by checkScreenTimeLimitExceeded
+        }
+      } else {
+        logger.w('⚠️ No children found in provider');
+      }
+    } else {
+      logger.w('⚠️ No current child ID found');
+    }
+  }
+
+  Future<void> _stopScreenTimeTracking() async {
+    logger.i('🛑 DashboardScreen: Stopping screen time tracking');
+    await ScreenTimeService.instance.stopTracking();
   }
 
   Future<void> fetchChildImage() async {
@@ -36,6 +92,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       }
     });
+  }
+
+  // Check screen time limit on dashboard refresh
+  Future<void> _checkScreenTimeLimit() async {
+    logger.i('🔄 DashboardScreen: Checking screen time limit on refresh');
+
+    final currentChildId = await ChildLocalStorage.getCurrentChildId();
+    if (currentChildId != null && mounted) {
+      await ScreenTimeService.instance.checkScreenTimeLimitExceeded(
+        currentChildId,
+      );
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // This will run when the dependencies change, good place for refresh checks
+    _checkScreenTimeLimit();
   }
 
   @override

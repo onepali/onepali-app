@@ -17,6 +17,9 @@ export 'notification_service.dart';
 
 /// [Connectivity] service
 export 'connectivity_service.dart';
- 
-/// [Learning Session] Manager
+
+/// Learning [Session] Manager
 export 'learning_session_manager.dart';
+
+/// [Screen] Time service
+export 'screen_time_service.dart';

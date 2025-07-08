@@ -98,7 +98,12 @@ class AppRoutes {
 
     // Parent Zone Routes
     parentDashboardScreen: (context) => const ParentDashboardScreen(),
-    parentPinScreen: (context) => const ParentZoneScreen(),
+    parentPinScreen: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final fromScreenTimeLimit = args?['fromScreenTimeLimit'] ?? false;
+      return ParentZoneScreen(fromScreenTimeLimit: fromScreenTimeLimit);
+    },
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),
     parentSettingScreen: (context) => const ParentSettingScreen(),
