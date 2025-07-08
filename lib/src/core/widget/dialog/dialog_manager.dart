@@ -7,8 +7,11 @@ class DialogManager {
     required String title,
     required String content,
     String image = '',
+    bool isSvg = false,
     required Function onConfirm,
     String confirmButtonText = 'Confirm',
+    bool barrierDismissible = true,
+    bool hasSingleButton = false,
     Function? onCancel,
   }) {
     var isMobileLandScape =
@@ -63,7 +66,7 @@ class DialogManager {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (image.isNotEmpty)
+                  if (image.isNotEmpty && !isSvg)
                     Image.asset(
                       image,
                       height:
@@ -78,6 +81,12 @@ class DialogManager {
                               : isMobilePortrait
                               ? 120
                               : 150,
+                    ),
+                  if (image.isNotEmpty && isSvg)
+                    SvgHelper.fromSource(
+                      path: image,
+                      height: isMobilePortrait ? 120 : 150,
+                      width: isMobilePortrait ? 120 : 150,
                     ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0),
@@ -106,20 +115,21 @@ class DialogManager {
                 !isMobilePortrait
                     ? Row(
                       children: [
-                        Expanded(
-                          child: CustomMaterialButton(
-                            onTap: () {
-                              onCancel?.call();
-                              Navigator.of(context).pop();
-                            },
-                            textStyle: AppStyles.text14PxMedium,
-                            label: 'Cancel',
-                            backgroundColor: AppColors.kButtonGrey,
-                            elevation: 0,
-                            height: 35,
+                        if (!hasSingleButton)
+                          Expanded(
+                            child: CustomMaterialButton(
+                              onTap: () {
+                                onCancel?.call();
+                                Navigator.of(context).pop();
+                              },
+                              textStyle: AppStyles.text14PxMedium,
+                              label: 'Cancel',
+                              backgroundColor: AppColors.kButtonGrey,
+                              elevation: 0,
+                              height: 35,
+                            ),
                           ),
-                        ),
-                        Gaps.horizontalGapOf(15),
+                        if (!hasSingleButton) Gaps.horizontalGapOf(15),
                         Expanded(
                           child: CustomMaterialButton(
                             onTap: () {
@@ -149,18 +159,19 @@ class DialogManager {
                           width: double.infinity,
                           elevation: 0,
                         ),
-                        Gaps.verticalGapOf(10),
-                        CustomMaterialButton(
-                          onTap: () {
-                            onCancel?.call();
-                            Navigator.of(context).pop();
-                          },
-                          textStyle: AppStyles.text14PxMedium,
-                          label: 'Cancel',
-                          backgroundColor: AppColors.kButtonGrey,
-                          elevation: 0,
-                          height: 40,
-                        ),
+                        if (!hasSingleButton) Gaps.verticalGapOf(10),
+                        if (!hasSingleButton)
+                          CustomMaterialButton(
+                            onTap: () {
+                              onCancel?.call();
+                              Navigator.of(context).pop();
+                            },
+                            textStyle: AppStyles.text14PxMedium,
+                            label: 'Cancel',
+                            backgroundColor: AppColors.kButtonGrey,
+                            elevation: 0,
+                            height: 40,
+                          ),
                       ],
                     ),
               ],
@@ -168,6 +179,27 @@ class DialogManager {
           ),
         );
       },
+    );
+  }
+
+  timesUpDialog(BuildContext context) {
+    return showCustomDialog(
+      context: context,
+      title: 'Time\'s Up',
+      content: 'Comeback Tomorrow to continue your learning journey!',
+      image: Assets.timeUpSvg,
+      isSvg: true,
+      onConfirm: () {
+        Navigator.of(context).pop();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.parentPinScreen,
+          (route) => false,
+        );
+      },
+      confirmButtonText: 'Ok',
+      barrierDismissible: false,
+      hasSingleButton: true,
     );
   }
 }
