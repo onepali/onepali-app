@@ -27,14 +27,14 @@ export 'auth/register/widget/rs_4.dart';
 export 'auth/register/widget/rs_5.dart';
 export 'auth/register/widget/rs_6.dart';
 
-// Dashboard Screen
+/// [Dashboard] Screen
 export 'dashboard/dashboard_screen.dart';
 
-// User Screen
+/// [User] Screen
 export 'user/user_screen.dart';
 export 'user/cuser_screen.dart';
 
-// Language Screen
+/// [Language] Screen
 export 'language/language_screen.dart';
 
 /// [Home] Screen
@@ -94,6 +94,11 @@ export 'story/story_content/widget/normal_content.dart';
 /// [Reward] Screen
 export 'reward/reward_screen.dart';
 export 'reward/reward_card.dart';
+
+/// [Reward] --> [Widget]
+export 'reward/widget/reward_collection_widget.dart';
+export 'reward/widget/choose_reward_widget.dart';
+export 'reward/widget/reward_preview_widget.dart';
 
 //* -------------------------------------- PARENT ZONE SCREEN EXPORTS -------------------------------------- *//
 

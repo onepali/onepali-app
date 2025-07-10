@@ -154,4 +154,18 @@ class LessonProvider extends ChangeNotifier {
       logger.e('Error tracking lesson answer: $e');
     }
   }
+
+  Future<void> updateTotalLessonsCompleted(String childId, int newTotal) async {
+    try {
+      await _firestore.collection('children').doc(childId).update({
+        'totalLessonsCompleted': newTotal,
+      });
+      logger.d('Updated totalLessonsCompleted for childId: $childId');
+    } catch (e) {
+      logger.e(
+        'Failed to update totalLessonsCompleted for childId: $childId. Error: $e',
+      );
+      rethrow;
+    }
+  }
 }

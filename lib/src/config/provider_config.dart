@@ -43,6 +43,9 @@ class ProviderConfig {
   /// [Story] Provider
   static final StoryProvider storyProvider = StoryProvider();
 
+  /// [Reward] Provider
+  static final RewardProvider rewardProvider = RewardProvider();
+
   //* --------------------------- PZone Provider --------------------------- *//
 
   /// PZ [Home] Provider
@@ -95,6 +98,7 @@ class ProviderConfig {
       create: (_) => recommendedLessonProvider,
     ),
     ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
+    ChangeNotifierProvider<RewardProvider>(create: (_) => rewardProvider),
 
     //* --------------------------- PZone Provider --------------------------- *//
     // ChangeNotifierProvider<PzHomeProvider>(create: (_) => pzHomeProvider),
@@ -132,6 +136,7 @@ class ProviderConfig {
     recommendedLessonProvider.dispose();
     songProvider.dispose();
     storyProvider.dispose();
+    rewardProvider.dispose();
 
     // PZone Providers
     // pzHomeProvider.dispose();

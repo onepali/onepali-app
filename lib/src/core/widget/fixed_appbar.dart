@@ -78,16 +78,32 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       Gaps.horizontalGapOf(10),
                       if (totalLessonsCompleted == 5) ...[
-                        LottieHelper.fromSource(
-                          path: Assets.starRewardLottie,
-                          height: 100,
-                          width: 100,
+                        customInkwell(
+                          onTap: () {
+                            Utility.navigate(
+                              context,
+                              AppRoutes.chooseRewardScreen,
+                            );
+                          },
+                          child: LottieHelper.fromSource(
+                            path: Assets.starRewardLottie,
+                            height: 100,
+                            width: 100,
+                          ),
                         ),
                       ] else ...[
-                        SvgHelper.fromSource(
-                          path: Assets.reward,
-                          height: 40,
-                          width: 40,
+                        customInkwell(
+                          onTap: () {
+                            Utility.navigate(
+                              context,
+                              AppRoutes.rewardCollectionScreen,
+                            );
+                          },
+                          child: SvgHelper.fromSource(
+                            path: Assets.reward,
+                            height: 40,
+                            width: 40,
+                          ),
                         ),
                       ],
                     ],

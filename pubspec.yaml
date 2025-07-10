@@ -89,6 +89,9 @@ flutter:
         - asset: assets/fonts/Mukta-Medium.ttf
         - asset: assets/fonts/Mukta-SemiBold.ttf
         - asset: assets/fonts/Mukta-Bold.ttf
+    - family: Luckiest Guy
+      fonts:
+        - asset: assets/fonts/LuckiestGuy-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

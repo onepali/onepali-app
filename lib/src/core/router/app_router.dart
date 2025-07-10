@@ -36,6 +36,11 @@ class AppRoutes {
   /// [User] Routes
   static const String userScreen = '/user';
 
+  /// [Reward] Routes
+  static const String rewardScreen = '/reward';
+  static const String rewardCollectionScreen = '/reward/collection';
+  static const String chooseRewardScreen = '/reward/choose';
+
   /// [Language] Routes
   static const String languageScreen = '/language';
 
@@ -88,6 +93,10 @@ class AppRoutes {
 
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
+
+    rewardScreen: (context) => const RewardScreen(),
+    rewardCollectionScreen: (context) => const RewardCollectionWidget(),
+    chooseRewardScreen: (context) => ChooseRewardWidget(),
     languageScreen: (context) => const LanguageScreen(),
 
     childProfileScreen:
