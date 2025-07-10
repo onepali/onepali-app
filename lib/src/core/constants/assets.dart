@@ -6,7 +6,9 @@ class Assets {
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
   static String parentAvatar = 'parent_avatar'.png;
+
   static String patternBg = 'pattern_bg'.png;
+  static String rewardBackground = 'reward_bg'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
   /// [Image] assets
@@ -35,6 +37,7 @@ class Assets {
   static String successLottie = 'success'.lottie;
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
+  static String starRewardLottie = '  '.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;

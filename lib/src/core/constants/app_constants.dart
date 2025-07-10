@@ -33,6 +33,7 @@ class AppConstants {
   static const String recomStoryCollection = 'recom_story';
   static const String recomSongCollection = 'recom_song';
   static const String recomLessonCollection = 'recom_lesson';
+  static const String rewardCollection = 'reward_collection';
 
   // Database
   static const String RECOM_DB_PATH = 'onp_recom.db';
@@ -72,6 +73,13 @@ class AppConstants {
   static const String dialogModal = 'dialog';
   static const String modalRoute = 'modal';
   static const String customDialogModal = 'custom_dialog';
+
+  /// Reward Outlined Stickers
+  static List<String> rewardOutlinedStickers = [
+    'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow_leopard_outline.svg?alt=media&token=499f6b1d-da05-45b1-8ca4-5eaad0311546',
+    'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fred_panda_outline.svg?alt=media&token=e8e7b4ed-c0d7-442d-9459-7f1e2682c2c6',
+    'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fdanfe_outline.svg?alt=media&token=c70f3622-ae3e-4513-b137-8fe584c56249',
+  ];
 
   static List<Map<String, dynamic>> languages = [
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},

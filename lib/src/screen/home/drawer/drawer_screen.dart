@@ -243,7 +243,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   showCustomToaster('This feature is coming soon.');
                   return;
                 }
-                Utility.navigate(context, drawerSettings[i].route);
+                Utility.navigate(
+                  context,
+                  drawerSettings[i].route,
+                  arguments: drawerSettings[i].args,
+                );
               },
 
               leading: Padding(

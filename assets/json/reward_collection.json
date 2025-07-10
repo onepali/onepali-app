@@ -1,0 +1,29 @@
+[
+    {
+        "id": "1",
+        "title_np": "हिउँ चितुवा",
+        "title_en": "Snow Leopard",
+        "description_np": "हिउँ चितुवा हिमाली क्षेत्रमा पाइने जनावर हो।",
+        "description_en": "Snow Leopard is an animal found in the Himalayan region.",
+        "s_audio": "assets/audio/snow_leopard.mp3",
+        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow%20leopard_with%20shadow.svg?alt=media&token=bf6994cb-7fd9-4d02-ba21-20f30ec769d6"
+    },
+    {
+        "id": "2",
+        "title_np": "रातो पांडा",
+        "title_en": "Red Panda",
+        "description_np": "रातो पांडा नेपालमा पाइने दुर्लभ जनावर हो।",
+        "description_en": "Red Panda is a rare animal found in Nepal.",
+        "s_audio": "assets/audio/red_panda.mp3",
+        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fred_panda_with%20shadow.svg?alt=media&token=9e99036d-0c54-40ed-85d3-6511f0d5aacf"
+    },
+    {
+        "id": "3",
+        "title_np": "डाफ्ने",
+        "title_en": "Daphne",
+        "description_np": "डाफ्ने नेपालको राष्ट्रिय फूल हो।",
+        "description_en": "Daphne is Nepal's national flower.",
+        "s_audio": "assets/audio/daphne.mp3",
+        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fdaphne_with%20shadow.svg?alt=media&token=02f49cc3-216d-4ad0-add5-5c88d5640f7a"
+    }
+]

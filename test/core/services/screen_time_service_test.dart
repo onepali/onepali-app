@@ -136,9 +136,9 @@ void main() {
 
       final json = screenTime.toJson();
       expect(
-        json['totalScreenTime'],
+        json['totalAllowed'],
         equals(60.0),
-      ); // Note: field is 'totalScreenTime' in JSON
+      );
       expect(json['totalUsed'], equals(25.5));
       expect(json['lastUpdated'], equals('2024-01-15T10:30:00.000Z'));
 

@@ -8,33 +8,41 @@ String rewardModelToJson(List<RewardModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class RewardModel {
+  final String id;
+  final String titleNp;
+  final String titleEn;
+  final String descriptionNp;
+  final String descriptionEn;
+  final String sAudio;
+  final String image;
+
   RewardModel({
     required this.id,
-    required this.name,
-    required this.description,
-    required this.points,
-    required this.imageUrl,
+    required this.titleNp,
+    required this.titleEn,
+    required this.descriptionNp,
+    required this.descriptionEn,
+    required this.sAudio,
+    required this.image,
   });
 
-  int id;
-  String name;
-  String description;
-  int points;
-  String imageUrl;
-
   factory RewardModel.fromJson(Map<String, dynamic> json) => RewardModel(
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    points: json["points"],
-    imageUrl: json["image_url"],
+    id: json["id"] ?? "",
+    titleNp: json["title_np"] ?? "",
+    titleEn: json["title_en"] ?? "",
+    descriptionNp: json["description_np"] ?? "",
+    descriptionEn: json["description_en"] ?? "",
+    sAudio: json["s_audio"] ?? "",
+    image: json["image"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": name,
-    "description": description,
-    "points": points,
-    "image_url": imageUrl,
+    "title_np": titleNp,
+    "title_en": titleEn,
+    "description_np": descriptionNp,
+    "description_en": descriptionEn,
+    "s_audio": sAudio,
+    "image": image,
   };
 }

@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ScreenTimeModel {
-  final double totalAllowed; // Total screen time allowed in minutes
-  final double totalUsed; // Total screen time used today in minutes
-  final DateTime lastUpdated; // Last time the screen time was updated
+  final double totalAllowed;
+  final double totalUsed;
+  final DateTime lastUpdated;
 
   ScreenTimeModel({
     required this.totalAllowed,
@@ -10,18 +12,30 @@ class ScreenTimeModel {
   });
 
   factory ScreenTimeModel.fromJson(Map<String, dynamic> json) {
+    final allowed = json['totalAllowed'] ?? json['totalScreenTime'] ?? 0;
+    final used = json['totalUsed'] ?? 0;
+    final lastUpdatedRaw = json['lastUpdated'];
+    DateTime lastUpdated;
+    if (lastUpdatedRaw == null) {
+      lastUpdated = DateTime.now();
+    } else if (lastUpdatedRaw is String) {
+      lastUpdated = DateTime.tryParse(lastUpdatedRaw) ?? DateTime.now();
+    } else if (lastUpdatedRaw is DateTime) {
+      lastUpdated = lastUpdatedRaw;
+    } else if (lastUpdatedRaw is Timestamp) {
+      lastUpdated = lastUpdatedRaw.toDate();
+    } else {
+      lastUpdated = DateTime.now();
+    }
     return ScreenTimeModel(
-      totalAllowed: (json['totalScreenTime'] ?? 0).toDouble(),
-      totalUsed: (json['totalUsed'] ?? 0).toDouble(),
-      lastUpdated:
-          json['lastUpdated'] != null
-              ? DateTime.parse(json['lastUpdated'])
-              : DateTime.now(),
+      totalAllowed: (allowed as num).toDouble(),
+      totalUsed: (used as num).toDouble(),
+      lastUpdated: lastUpdated,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'totalScreenTime': totalAllowed,
+    'totalAllowed': totalAllowed,
     'totalUsed': totalUsed,
     'lastUpdated': lastUpdated.toIso8601String(),
   };
