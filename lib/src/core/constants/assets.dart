@@ -9,6 +9,7 @@ class Assets {
 
   static String patternBg = 'pattern_bg'.png;
   static String rewardBackground = 'reward_bg'.png;
+  static String rewardPreviewBackground = 'reward_preview_bg'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
   /// [Image] assets
@@ -37,7 +38,7 @@ class Assets {
   static String successLottie = 'success'.lottie;
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
-  static String starRewardLottie = '  '.lottie;
+  static String starRewardLottie = 'rewards_star'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;

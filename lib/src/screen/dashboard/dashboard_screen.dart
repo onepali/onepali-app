@@ -133,6 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Scaffold(
           key: _scaffoldKey,
           appBar: UserAppBar(
+            context: context,
             name: userInfo?.fullName ?? 'User',
             profileImage: childProfileImage,
             progressLevel: 0,

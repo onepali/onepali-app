@@ -33,6 +33,7 @@ class AppConstants {
   static const String recomStoryCollection = 'recom_story';
   static const String recomSongCollection = 'recom_song';
   static const String recomLessonCollection = 'recom_lesson';
+  static const String childRewardCollection = 'creward';
   static const String rewardCollection = 'reward_collection';
 
   // Database

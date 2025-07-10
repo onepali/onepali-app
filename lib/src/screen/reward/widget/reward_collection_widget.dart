@@ -30,7 +30,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
 
     final unlockedStickers =
         AppConstants.rewardOutlinedStickers.take(5).toList();
-    final placeholders = List.generate(5, (index) => '?');
+    // final placeholders = List.generate(5, (index) => '?');
 
     Widget stickerGrid() {
       return Wrap(
