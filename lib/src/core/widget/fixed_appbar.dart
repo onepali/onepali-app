@@ -11,6 +11,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int totalChildCount;
   final AuthProviderType? authType;
   final BuildContext context;
+  final int totalLessonsCompleted;
 
   const UserAppBar({
     super.key,
@@ -23,10 +24,22 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.authType,
     this.totalChildCount = 0,
     required this.context,
-  });
+
+    this.totalLessonsCompleted = 0,
+  }) : assert(
+         progressLevel >= 0 && progressLevel <= 5,
+         'Progress level must be between 0 and 5',
+       ),
+       assert(totalStars >= 0, 'Total stars must be non-negative'),
+       assert(totalChildCount >= 0, 'Total child count must be non-negative'),
+       assert(
+         totalLessonsCompleted >= 0,
+         'Total lessons completed must be non-negative',
+       );
 
   @override
   Widget build(BuildContext context) {
+    logger.d('totalLessonsCompleted: $totalLessonsCompleted');
     int selectedIndex = _selectedTabIndex;
     final isMobileLandScape =
         PlatformUtility.isMobile(context) &&
@@ -64,11 +77,19 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                       Gaps.horizontalGapOf(10),
-                      SvgHelper.fromSource(
-                        path: Assets.reward,
-                        height: 40,
-                        width: 40,
-                      ),
+                      if (totalLessonsCompleted == 5) ...[
+                        LottieHelper.fromSource(
+                          path: Assets.starRewardLottie,
+                          height: 100,
+                          width: 100,
+                        ),
+                      ] else ...[
+                        SvgHelper.fromSource(
+                          path: Assets.reward,
+                          height: 40,
+                          width: 40,
+                        ),
+                      ],
                     ],
                   ),
                   Row(
