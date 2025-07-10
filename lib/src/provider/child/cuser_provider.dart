@@ -46,8 +46,9 @@ class ChildUserProvider extends ChangeNotifier {
         _totalChildren = _childUser.length;
       }
       setStatus(DataFetchStatus.success);
-    } catch (e) {
+    } catch (e, s) {
       logger.e('Error fetching child users: $e');
+      logger.e('Stack trace: $s');
       handleError(e.toString());
     }
   }

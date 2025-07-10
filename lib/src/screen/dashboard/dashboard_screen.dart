@@ -17,11 +17,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      context.read<UserProvider>().fetchOwnProfile();
-      context.read<ChildUserProvider>().fetchChildUser();
+    Misc.onLayoutRendered(() async {
+      await context.read<UserProvider>().fetchOwnProfile();
+      if (!mounted) return;
+      await context.read<ChildUserProvider>().fetchChildUser();
       fetchChildImage();
-      _initializeScreenTimeTracking();
+      await _initializeScreenTimeTracking();
     });
   }
 
