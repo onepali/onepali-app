@@ -5,6 +5,7 @@ class AppConstants {
   static const String appVersion = 'v1.0.0';
   static const String defaultFontFamily = 'Poppins';
 
+  static const String applicationId = 'com.onepali.app';
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
 
@@ -32,6 +33,8 @@ class AppConstants {
   static const String recomStoryCollection = 'recom_story';
   static const String recomSongCollection = 'recom_song';
   static const String recomLessonCollection = 'recom_lesson';
+  static const String childRewardCollection = 'creward';
+  static const String rewardCollection = 'reward_collection';
 
   // Database
   static const String RECOM_DB_PATH = 'onp_recom.db';
@@ -47,13 +50,38 @@ class AppConstants {
     Assets.avatar8,
   ];
 
-  static List<String> sysTab = ['About Us', 'Contact Us', 'FAQs'];
+  static const int starBlastDuration = 3000; // Duration in milliseconds
+
+  static List<String> sysTab = ['About us', 'Contact us', 'FAQs'];
 
   static List<String> whyLearningNepali = [
     'Develop a learning habit',
     'Communicate with relatives in Nepal',
     'Build vocabulary',
     'Daily conversation',
+  ];
+
+  /// Screen Time Constants
+  // static const String screenTimeExceededKey = 'screen_time_exceeded';
+  static const int screenTimeCheckIntervalSeconds =
+      10; // Check every 10 seconds
+  // static const int dailyResetHour = 23; // Reset at 11:59 PM
+  // static const int dailyResetMinute = 59;
+
+  /// Model Route
+  static const String datePickerModal = 'date_picker_modal';
+  static const String timePickerModal = 'time_picker_modal';
+  static const String avatarPickerModal = 'avatar_picker_modal';
+  static const String bottomSheetModal = 'bottom_sheet';
+  static const String dialogModal = 'dialog';
+  static const String modalRoute = 'modal';
+  static const String customDialogModal = 'custom_dialog';
+
+  /// Reward Outlined Stickers
+  static List<String> rewardOutlinedStickers = [
+    'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow_leopard_outline.svg?alt=media&token=499f6b1d-da05-45b1-8ca4-5eaad0311546',
+    'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fred_panda_outline.svg?alt=media&token=e8e7b4ed-c0d7-442d-9459-7f1e2682c2c6',
+    'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fdanfe_outline.svg?alt=media&token=c70f3622-ae3e-4513-b137-8fe584c56249',
   ];
 
   static List<Map<String, dynamic>> languages = [
@@ -65,4 +93,7 @@ class AppConstants {
   static const String dailyReminderTitle = "⏰ It's Time to Practice!";
   static const String dailyReminderBody =
       "Let's make today awesome! Are you ready for your daily adventure? 🚀";
+
+  static const String kAppLink =
+      'https://play.google.com/store/apps/details?id=$applicationId';
 }

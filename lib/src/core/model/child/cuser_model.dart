@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'screen_time_model.dart';
 
 List<ChildUserModel> childUserModelFromJson(String str) =>
     List<ChildUserModel>.from(
@@ -17,6 +18,8 @@ class ChildUserModel {
   final String parentUid;
   final String role;
   final double screenTime;
+  final ScreenTimeModel? screenTimeTracking;
+  final int totalLessonsCompleted;
   final String uid;
 
   ChildUserModel({
@@ -28,7 +31,9 @@ class ChildUserModel {
     required this.parentUid,
     required this.role,
     required this.screenTime,
+    required this.totalLessonsCompleted,
     required this.uid,
+    this.screenTimeTracking,
   });
 
   factory ChildUserModel.fromJson(Map<String, dynamic> json) => ChildUserModel(
@@ -40,7 +45,12 @@ class ChildUserModel {
     parentUid: json["parent_uid"] ?? "",
     role: json["role"] ?? "",
     screenTime: (json["screen_time"] ?? 0).toDouble(),
+    totalLessonsCompleted: (json["totalLessonsCompleted"] ?? 0) as int,
     uid: json["uid"] ?? "",
+    screenTimeTracking:
+        json["screenTimeTracking"] != null
+            ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
+            : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -52,6 +62,36 @@ class ChildUserModel {
     "parent_uid": parentUid,
     "role": role,
     "screen_time": screenTime,
+    "totalLessonsCompleted": totalLessonsCompleted,
     "uid": uid,
+    if (screenTimeTracking != null)
+      "screenTimeTracking": screenTimeTracking!.toJson(),
   };
+
+  /// Get the current screen time tracking, creating a default one if null
+  ScreenTimeModel getScreenTimeTracking() {
+    return screenTimeTracking ??
+        ScreenTimeModel(
+          totalAllowed: screenTime,
+          totalUsed: 0.0,
+          lastUpdated: DateTime.now(),
+        );
+  }
+
+  /// Create a copy with updated screen time tracking
+  ChildUserModel copyWithScreenTime(ScreenTimeModel newScreenTimeTracking) {
+    return ChildUserModel(
+      avatarUrl: avatarUrl,
+      createdAt: createdAt,
+      dob: dob,
+      fullName: fullName,
+      parentEmail: parentEmail,
+      parentUid: parentUid,
+      role: role,
+      screenTime: screenTime,
+      totalLessonsCompleted: totalLessonsCompleted,
+      uid: uid,
+      screenTimeTracking: newScreenTimeTracking,
+    );
+  }
 }

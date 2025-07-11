@@ -44,7 +44,7 @@ class PSettingCard extends StatelessWidget {
                     backgroundImage:
                         avatarUrl != null && avatarUrl!.isNotEmpty
                             ? NetworkImage(avatarUrl!)
-                            : AssetImage(Assets.userAvatar) as ImageProvider,
+                            : AssetImage(Assets.parentAvatar) as ImageProvider,
                   ),
           title: Text(
             title,

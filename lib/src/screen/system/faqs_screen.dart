@@ -20,29 +20,30 @@ class _FaqsScreenState extends State<FaqsScreen> {
         PlatformUtility.isPortrait(context);
 
     if (widget.faqsData.isEmpty) {
-      return Center(
-        child: Text(
-          'No FAQs available',
-          style:
-              isMobilePortrait
-                  ? AppStyles.text16PxRegular.copyWith(color: Colors.grey)
-                  : AppStyles.text20PxRegular.copyWith(color: Colors.grey),
-        ),
+      return ErrorScreen(
+        title: 'No FAQs Available',
+        message: 'Please check back later for new FAQs.',
+        isShowButton: false,
       );
     }
 
-    return ListView.builder(
-      padding: EdgeInsets.all(isMobilePortrait ? 16.0 : 32.0),
+    return ListView.separated(
       itemCount: widget.faqsData.length,
+      separatorBuilder:
+          (context, index) => Divider(
+            height: 0,
+            thickness: 1,
+            color: AppColors.kLightGrey.withValues(alpha: 0.5),
+          ),
       itemBuilder: (context, index) {
         final faq = widget.faqsData[index];
-        return Card(
+        return Container(
           margin: EdgeInsets.only(bottom: isMobilePortrait ? 12 : 20),
-          elevation: 1,
-          color: AppColors.kWhite,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(isMobilePortrait ? 12 : 16),
-          ),
+
+          color:
+              _expandedIndex == index
+                  ? AppColors.kLightGrey.withValues(alpha: 0.02)
+                  : AppColors.kWhite,
           child: ExpansionTile(
             key: Key('faq_$index${_expandedIndex == index ? '_expanded' : ''}'),
             initiallyExpanded: _expandedIndex == index,
@@ -51,6 +52,8 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 _expandedIndex = isExpanded ? index : null;
               });
             },
+            shape: LinearBorder.none,
+
             tilePadding: EdgeInsets.symmetric(
               horizontal: isMobilePortrait ? 16 : 24,
               vertical: isMobilePortrait ? 8 : 12,
@@ -61,17 +64,26 @@ class _FaqsScreenState extends State<FaqsScreen> {
               isMobilePortrait ? 16 : 24,
               isMobilePortrait ? 16 : 24,
             ),
-            iconColor: AppColors.kPrimaryColor,
-            collapsedIconColor: AppColors.kSecondaryColor,
+            iconColor: AppColors.kSecondaryColor,
+            collapsedIconColor: AppColors.kPitchBlack,
+
             title: Text(
               faq.title,
               style:
                   isMobilePortrait
-                      ? AppStyles.text16PxSemiBold.copyWith(
+                      ? _expandedIndex == index
+                          ? AppStyles.text16PxSemiBold.copyWith(
+                            color: AppColors.kSecondaryColor,
+                          )
+                          : AppStyles.text16PxMedium.copyWith(
+                            color: AppColors.kPitchBlack,
+                          )
+                      : _expandedIndex == index
+                      ? AppStyles.text20PxSemiBold.copyWith(
                         color: AppColors.kSecondaryColor,
                       )
-                      : AppStyles.text20PxSemiBold.copyWith(
-                        color: AppColors.kSecondaryColor,
+                      : AppStyles.text20PxMedium.copyWith(
+                        color: AppColors.kPitchBlack,
                       ),
             ),
             children: [
@@ -79,7 +91,13 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 width: double.infinity,
                 padding: EdgeInsets.all(isMobilePortrait ? 12 : 16),
                 decoration: BoxDecoration(
-                  color: AppColors.kPrimaryColor.withValues(alpha: 0.05),
+                  color: AppColors.kLightGrey.withValues(alpha: 0.3),
+                  border: Border(
+                    left: BorderSide(
+                      color: AppColors.kPureSkyBlue,
+                      width: isMobilePortrait ? 4 : 6,
+                    ),
+                  ),
                   borderRadius: BorderRadius.circular(
                     isMobilePortrait ? 8 : 12,
                   ),
@@ -88,7 +106,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
                   faq.answer,
                   style:
                       isMobilePortrait
-                          ? AppStyles.text14PxRegular.copyWith(
+                          ? AppStyles.text16PxRegular.copyWith(
                             height: 1.5,
                             color: AppColors.kBlack,
                           )

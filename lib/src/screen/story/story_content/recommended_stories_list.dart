@@ -14,7 +14,7 @@ class RecommendedStoriesList extends StatelessWidget {
       builder: (context, recommendedProvider, storyProvider, _) {
         final status = recommendedProvider.status;
         if (status == DataFetchStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return CustomLoader();
         }
         if (status == DataFetchStatus.error) {
           return Padding(
@@ -34,7 +34,8 @@ class RecommendedStoriesList extends StatelessWidget {
             allStories
                 .where((s) => recommendedStoryIds.contains(s.nameEn))
                 .toList();
-        if (recommendedStoryModels.isEmpty) {
+        if (recommendedStoryModels.isEmpty &&
+            recommendedProvider.status == DataFetchStatus.error) {
           return const SizedBox();
         }
         return SizedBox(

@@ -71,7 +71,7 @@ class CustomMaterialButton extends StatelessWidget {
     this.showBorder = false,
     this.elevation = 2.0,
     this.radius = 8.0,
-    this.height = 45.0,
+    this.height = 48.0,
     this.width = double.infinity,
     this.icon,
     this.fillButton = true,
@@ -154,7 +154,10 @@ class CustomMaterialButton extends StatelessWidget {
                             )
                             : textStyle ??
                                 AppStyles.text16PxMedium.copyWith(
-                                  color: fillButton ? AppColors.kWhite : color,
+                                  color:
+                                      fillButton
+                                          ? AppColors.kPitchBlack
+                                          : color,
                                 ),
                   ),
                 ],

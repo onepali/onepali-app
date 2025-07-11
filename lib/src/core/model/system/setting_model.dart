@@ -5,6 +5,7 @@ class SettingModel {
   String desciption;
   String icon;
   String route;
+  Map<String, dynamic> args;
   bool isActive;
 
   SettingModel({
@@ -13,6 +14,7 @@ class SettingModel {
     required this.icon,
     required this.route,
     this.isActive = true,
+    this.args = const {},
   });
 }
 
@@ -21,7 +23,8 @@ List<SettingModel> drawerSettings = [
     name: 'Parent Zone',
     desciption: 'Manage your child\'s profile and settings',
     icon: Assets.parentZone,
-    route: AppRoutes.comingSoon,
+    route: AppRoutes.parentPinScreen,
+    args: {'fromScreenTimeLimit': false},
   ),
 
   SettingModel(

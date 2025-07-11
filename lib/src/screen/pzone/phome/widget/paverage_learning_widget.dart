@@ -17,67 +17,72 @@ class PAverageLearningWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: AppColors.kWhite,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  completedActivities.toString(),
-                  style:
-                      isMobilePortrait
-                          ? AppStyles.text32PxSemiBold
-                          : AppStyles.text40PxSemiBold,
-                ),
-                Gaps.verticalGapOf(8),
-                Text(
-                  'Completed activities',
-                  textAlign: TextAlign.center,
-                  style: AppStyles.text14PxRegular,
-                ),
-              ],
-            ),
-          ),
-        ),
-        Gaps.horizontalGapOf(12),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: AppColors.kWhite,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '${(answerSuccessRate * 100).toInt()}',
-                  style:
-                      isMobilePortrait
-                          ? AppStyles.text32PxSemiBold
-                          : AppStyles.text40PxSemiBold,
-                ),
-                Text('%', style: AppStyles.text14PxRegular),
-                Gaps.verticalGapOf(8),
-                Text(
-                  'Answer success rate',
-                  textAlign: TextAlign.center,
-                  style: AppStyles.text14PxRegular,
-                ),
-              ],
+    final minHeight = isMobilePortrait ? 140.0 : 180.0;
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Container(
+              constraints: BoxConstraints(minHeight: minHeight),
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: AppColors.kWhite,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    completedActivities.toString(),
+                    style:
+                        isMobilePortrait
+                            ? AppStyles.text32PxSemiBold
+                            : AppStyles.text40PxSemiBold,
+                  ),
+                  Gaps.verticalGapOf(8),
+                  Text(
+                    'Completed activities',
+                    textAlign: TextAlign.center,
+                    style: AppStyles.text14PxRegular,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+          Gaps.horizontalGapOf(12),
+          Expanded(
+            child: Container(
+              constraints: BoxConstraints(minHeight: minHeight),
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: AppColors.kWhite,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${(answerSuccessRate * 100).toInt()}',
+                    style:
+                        isMobilePortrait
+                            ? AppStyles.text32PxSemiBold
+                            : AppStyles.text40PxSemiBold,
+                  ),
+                  Text('%', style: AppStyles.text14PxRegular),
+                  Gaps.verticalGapOf(8),
+                  Text(
+                    'Answer success rate',
+                    textAlign: TextAlign.center,
+                    style: AppStyles.text14PxRegular,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -30,10 +30,16 @@ class CourseScreenState extends State<CourseScreen> {
               'CourseScreen: status: ${lessonProvider.status}, courses: ${lessonProvider.courses.length}',
             );
             if (lessonProvider.status == DataFetchStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
+              return CustomLoader();
             } else if (lessonProvider.status == DataFetchStatus.error ||
                 lessonProvider.courses.isEmpty) {
-              return const Center(child: Text('No courses available'));
+              return ErrorScreen(
+                title: 'No Courses Available',
+                message: 'Please check back later for new courses.',
+                onRetry: () {
+                  context.read<LessonProvider>().fetchCourses();
+                },
+              );
             } else {
               final courseModel = lessonProvider.courses.first;
               final categoriesWithChapters =

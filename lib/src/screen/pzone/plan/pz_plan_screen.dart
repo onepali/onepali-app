@@ -18,7 +18,7 @@ class PlanScreen extends StatelessWidget {
           backgroundColor: AppColors.kWhite,
           body:
               planProvider.status == DataFetchStatus.loading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const CustomLoader()
                   : Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,

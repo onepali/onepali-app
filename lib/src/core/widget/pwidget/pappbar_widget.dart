@@ -20,7 +20,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   PopupMenuItem<String> _buildMenuItem({
     required String value,
-    required IconData icon,
+    required String icon,
     required String text,
     required bool isMobilePortrait,
     required Function()? onTap,
@@ -30,13 +30,18 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon, size: isMobilePortrait ? 20 : 24),
-          Gaps.horizontalGapOf(isMobilePortrait ? 8 : 12),
+          SvgHelper.fromSource(
+            path: icon,
+            color: AppColors.kBlack,
+            height: isMobilePortrait ? 20 : 24,
+            width: isMobilePortrait ? 20 : 24,
+          ),
+          Gaps.horizontalGapOf(isMobilePortrait ? 10 : 14),
           Text(
             text,
             style:
                 isMobilePortrait
-                    ? AppStyles.text18PxMedium
+                    ? AppStyles.text16PxMedium
                     : AppStyles.text18PxMedium,
           ),
         ],
@@ -69,31 +74,42 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: BorderRadius.circular(isMobilePortrait ? 12 : 16),
           ),
           onSelected: (String value) {
-            // Handle menu item selection
             switch (value) {
-              case 'family_dashboard':
-                // Add navigation to family dashboard
+              case 'home':
+                break;
+              case 'family':
                 break;
               case 'logout':
-                // Add logout functionality
                 break;
             }
           },
           itemBuilder:
               (BuildContext context) => [
                 _buildMenuItem(
-                  value: 'family_dashboard',
-                  icon: Icons.diversity_3,
-                  text: 'Family Dashboard',
+                  value: 'home',
+                  icon: Assets.home,
+                  text: 'Home',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
                     Utility.navigate(context, AppRoutes.dashboardScreen);
                     ParentLocalStorage.setParentLogged(false);
+                    ChildLocalStorage.clear();
+                  },
+                ),
+                _buildMenuItem(
+                  value: 'family',
+                  icon: Assets.family,
+                  text: 'Family',
+                  isMobilePortrait: isMobilePortrait,
+                  onTap: () {
+                    Utility.navigate(context, AppRoutes.dashboardScreen);
+                    ParentLocalStorage.setParentLogged(false);
+                    ChildLocalStorage.clear();
                   },
                 ),
                 _buildMenuItem(
                   value: 'logout',
-                  icon: Icons.logout_outlined,
+                  icon: Assets.logout,
                   text: 'Logout',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
@@ -108,7 +124,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Future logoutBottomSheet(context) {
     return BottomSheetManager.bottomModelSheet(
-      title: 'Are you sure? Logout',
+      title: 'Do you want to logout?',
       action: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -126,7 +142,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           Gaps.horizontalGapOf(20),
           Expanded(
             child: CustomMaterialButton(
-              label: 'Yes, Logout',
+              label: 'Logout',
               height: 40,
               elevation: 0,
               onTap: () {

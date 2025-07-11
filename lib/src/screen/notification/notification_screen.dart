@@ -33,7 +33,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       builder: (context, provider, _) {
         final settings = provider.settings;
         if (provider.loading || settings == null) {
-          return const Center(child: CircularProgressIndicator());
+          return CustomLoader();
         }
         return Scaffold(
           appBar: CustomAppBar(title: 'Notification'),
@@ -68,24 +68,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ),
                 ),
                 Gaps.verticalGapOf(16),
-                TitleActionChild(
-                  title: 'Daily Practice Reminder',
-                  titlePadding: const EdgeInsets.only(bottom: 8.0),
-                  titleStyle:
-                      isMobilePortrait
-                          ? AppStyles.text16PxMedium
-                          : AppStyles.text18PxMedium,
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhite,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.kButtonGrey, width: 1),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
-                        leading: Icon(
-                          Icons.alarm_add_outlined,
-                          color:
-                              settings.isPracticeEnabled
-                                  ? AppColors.kButtonGreen
-                                  : AppColors.kGrey,
-                        ),
                         title: Text(
                           'Daily Practice Reminder',
                           style:
@@ -130,61 +123,63 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ),
                 ),
                 Gaps.verticalGapOf(16),
-                ListTile(
-                  leading: Icon(
-                    Icons.mark_email_unread_outlined,
-                    color:
-                        settings.isProgressReportEnabled
-                            ? AppColors.kButtonGreen
-                            : AppColors.kGrey,
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhite,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.kButtonGrey, width: 1),
                   ),
-                  title: Text(
-                    'Weekly Progress Report',
-                    style:
-                        isMobilePortrait
-                            ? AppStyles.text14PxRegular
-                            : AppStyles.text16PxRegular,
-                  ),
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  trailing: CupertinoSwitch(
-                    value: settings.isProgressReportEnabled,
-                    onChanged: (value) {
-                      provider.toggleProgressReport(value);
-                    },
-                    activeTrackColor:
-                        settings.isProgressReportEnabled
-                            ? AppColors.kButtonGreen
-                            : AppColors.kGrey,
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListTile(
+                    title: Text(
+                      'Weekly Progress Report',
+                      style:
+                          isMobilePortrait
+                              ? AppStyles.text14PxRegular
+                              : AppStyles.text16PxRegular,
+                    ),
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    trailing: CupertinoSwitch(
+                      value: settings.isProgressReportEnabled,
+                      onChanged: (value) {
+                        provider.toggleProgressReport(value);
+                      },
+                      activeTrackColor:
+                          settings.isProgressReportEnabled
+                              ? AppColors.kButtonGreen
+                              : AppColors.kGrey,
+                    ),
                   ),
                 ),
                 Gaps.verticalGapOf(16),
-                ListTile(
-                  leading: Icon(
-                    Icons.tips_and_updates_outlined,
-                    color:
-                        settings.isNewsEnabled
-                            ? AppColors.kButtonGreen
-                            : AppColors.kGrey,
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhite,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.kButtonGrey, width: 1),
                   ),
-                  title: Text(
-                    'News and Updates',
-                    style:
-                        isMobilePortrait
-                            ? AppStyles.text14PxRegular
-                            : AppStyles.text16PxRegular,
-                  ),
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  trailing: CupertinoSwitch(
-                    value: settings.isNewsEnabled,
-                    onChanged: (value) {
-                      provider.toggleNews(value);
-                    },
-                    activeTrackColor:
-                        settings.isNewsEnabled
-                            ? AppColors.kButtonGreen
-                            : AppColors.kGrey,
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListTile(
+                    title: Text(
+                      'News and Updates',
+                      style:
+                          isMobilePortrait
+                              ? AppStyles.text14PxRegular
+                              : AppStyles.text16PxRegular,
+                    ),
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    trailing: CupertinoSwitch(
+                      value: settings.isNewsEnabled,
+                      onChanged: (value) {
+                        provider.toggleNews(value);
+                      },
+                      activeTrackColor:
+                          settings.isNewsEnabled
+                              ? AppColors.kButtonGreen
+                              : AppColors.kGrey,
+                    ),
                   ),
                 ),
                 Gaps.verticalGapOf(24),

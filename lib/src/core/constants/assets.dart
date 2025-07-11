@@ -5,7 +5,11 @@ class Assets {
   static String leoSvg = 'leo'.brandSvg;
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
+  static String parentAvatar = 'parent_avatar'.png;
+
   static String patternBg = 'pattern_bg'.png;
+  static String rewardBackground = 'reward_bg'.png;
+  static String rewardPreviewBackground = 'reward_preview_bg'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
   /// [Image] assets
@@ -32,7 +36,9 @@ class Assets {
   static String leoCharacterLottie = 'leo_character'.lottie;
   static String bgTransition = 'bg_transition'.gif;
   static String successLottie = 'success'.lottie;
-  static String logoutLottie = 'logout'.lottie;
+  static String logoutLottie = 'hand_weaving'.lottie;
+  static String preLoader = 'pre_loader'.lottie;
+  static String starRewardLottie = 'rewards_star'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -48,21 +54,25 @@ class Assets {
   static String meta = 'meta'.icon;
   static String youtube = 'youtube'.icon;
   static String other = 'other'.icon;
-  static String family = 'family'.icon;
   static String google = 'google'.icon;
   static String blog = 'blog'.icon;
   static String facebook = 'facebook'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
+  static String family = 'family'.icon;
+  static String home = 'home'.icon;
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
   static String unsubscribe = 'unfav'.icon;
 
-  // Miscellaneous
+  /// [Miscellaneous]
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
   static String logoutSvg = 'logout'.svg;
+  static String dataSvg = 'data'.svg;
+  static String connectionSvg = 'connection'.svg;
+  static String timeUpSvg = 'time_up'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
@@ -89,6 +99,7 @@ class Assets {
 
   /// [Audio] assets
   static String eww = 'audio/eww'.audio;
+  static String starBlast = 'audio/sfx/star_blast.mp3';
 }
 
 extension AssetsExtension on String {

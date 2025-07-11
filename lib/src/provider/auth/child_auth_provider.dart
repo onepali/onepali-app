@@ -31,6 +31,11 @@ class ChildAuthProvider extends ChangeNotifier {
         childDoc.id,
       );
       logger.d('Avatar URL: $avatarUrl');
+
+      logger.i('📋 Creating child data with screen time tracking:');
+      logger.i('   - Child name: $childName');
+      logger.i('   - Screen time limit: $screenTime minutes');
+
       final childData = {
         'uid': childDoc.id,
         'full_name': childName,
@@ -41,9 +46,16 @@ class ChildAuthProvider extends ChangeNotifier {
         'parent_uid': parentUid,
         'parent_email': parentEmail,
         'created_at': DateTime.now().toIso8601String(),
+        'screenTimeTracking': {
+          'totalAllowed': screenTime,
+          'totalUsed': 0.0,
+          'lastUpdated': DateTime.now().toIso8601String(),
+        },
       };
       logger.d('Child data: $childData');
       await childDoc.set(childData);
+
+      logger.i('Child profile created successfully with screen time tracking');
       setStatus(DataFetchStatus.success);
     } catch (e, s) {
       logger.e('Error creating child user: $e $s');

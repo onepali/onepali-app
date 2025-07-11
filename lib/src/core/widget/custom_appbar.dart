@@ -13,6 +13,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int? currentStep;
   final int totalSteps;
   final bool showStepper;
+  final bool showBackButton;
+  final TextStyle? titleStyle;
+  final bool? automaticallyImplyLeading;
 
   const CustomAppBar({
     super.key,
@@ -26,6 +29,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.currentStep,
     this.totalSteps = 6,
     this.showStepper = false,
+    this.showBackButton = true,
+    this.titleStyle,
+    this.automaticallyImplyLeading,
   });
 
   @override
@@ -44,19 +50,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   (title != null
                       ? Text(
                         title!,
-                        style: AppStyles.text18PxMedium.copyWith(
-                          color: AppColors.kBlack,
-                          fontFamily: 'Poppins',
-                        ),
+                        style:
+                            titleStyle ??
+                            AppStyles.text18PxMedium.copyWith(
+                              color: AppColors.kBlack,
+                              fontFamily: 'Poppins',
+                            ),
                       )
                       : null),
       centerTitle: centerTitle,
+      automaticallyImplyLeading: automaticallyImplyLeading ?? true,
       leading:
-          leading ??
-          IconButton(
-            icon: Icon(Icons.arrow_back_outlined, color: AppColors.kBlack),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+          showBackButton
+              ? (leading ??
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_outlined,
+                      color: AppColors.kBlack,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ))
+              : null,
       actions: actions,
       backgroundColor: backgroundColor,
       elevation: elevation,

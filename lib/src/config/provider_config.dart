@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import '../src.dart';
 
@@ -7,6 +8,7 @@ class ProviderConfig {
   static final SystemProvider systemProvider = SystemProvider();
   static final SplashProvider splashProvider = SplashProvider();
   static final LanguageProvider languageProvider = LanguageProvider();
+  static final AudioProvider audioProvider = AudioProvider();
 
   /// [Auth] Provider
   static final AuthState authState = AuthState();
@@ -42,6 +44,9 @@ class ProviderConfig {
   /// [Story] Provider
   static final StoryProvider storyProvider = StoryProvider();
 
+  /// [Reward] Provider
+  static final RewardProvider rewardProvider = RewardProvider();
+
   //* --------------------------- PZone Provider --------------------------- *//
 
   /// PZ [Home] Provider
@@ -58,12 +63,16 @@ class ProviderConfig {
   /// PZ [Plan] Provider
   static final PzPlanProvider pzPlanProvider = PzPlanProvider();
 
+  /// PZ [Review] Provider
+  static final PzReviewProvider pzReviewProvider = PzReviewProvider();
+
   //* --------------------------- End --------------------------- *//
 
-  static final List<ChangeNotifierProvider> providers = [
+  static final List<SingleChildWidget> providers = [
     ChangeNotifierProvider<AuthState>(create: (_) => authState),
     ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
     ChangeNotifierProvider<SplashProvider>(create: (_) => splashProvider),
+    ChangeNotifierProvider<AudioProvider>(create: (_) => audioProvider),
     ChangeNotifierProvider<LanguageProvider>(create: (_) => languageProvider),
     ChangeNotifierProvider<AuthProvider>(create: (_) => authProvider),
     ChangeNotifierProvider<GoogleAuthProvider>(
@@ -91,6 +100,7 @@ class ProviderConfig {
       create: (_) => recommendedLessonProvider,
     ),
     ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
+    ChangeNotifierProvider<RewardProvider>(create: (_) => rewardProvider),
 
     //* --------------------------- PZone Provider --------------------------- *//
     // ChangeNotifierProvider<PzHomeProvider>(create: (_) => pzHomeProvider),
@@ -100,6 +110,13 @@ class ProviderConfig {
       create: (_) => pzNotificationProvider,
     ),
     ChangeNotifierProvider<PzPlanProvider>(create: (_) => pzPlanProvider),
+    ChangeNotifierProvider<PzReviewProvider>(create: (_) => pzReviewProvider),
+
+    /// Global network type provider
+    StreamProvider<NetworkType>(
+      create: (_) => ConnectivityService().onNetworkTypeChanged,
+      initialData: NetworkType.none,
+    ),
   ];
 
   /// Dispose all providers
@@ -107,6 +124,7 @@ class ProviderConfig {
     systemProvider.dispose();
     splashProvider.dispose();
     authProvider.dispose();
+    audioProvider.dispose();
     googleAuthProvider.dispose();
     facebookAuthProvider.dispose();
     childAuthProvider.dispose();
@@ -121,6 +139,7 @@ class ProviderConfig {
     recommendedLessonProvider.dispose();
     songProvider.dispose();
     storyProvider.dispose();
+    rewardProvider.dispose();
 
     // PZone Providers
     // pzHomeProvider.dispose();
@@ -128,6 +147,7 @@ class ProviderConfig {
     pzBlogProvider.dispose();
     pzNotificationProvider.dispose();
     pzPlanProvider.dispose();
+    pzReviewProvider.dispose();
   }
 
   /// Singleton factory

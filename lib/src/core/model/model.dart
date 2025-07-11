@@ -4,6 +4,7 @@ library;
 
 /// [System] Model
 export 'system/system_model.dart';
+export 'system/banner_model.dart';
 
 /// [OnBoarding] Model
 export 'onboard/onboard_model.dart';
@@ -23,6 +24,7 @@ export 'home/home_model.dart';
 
 /// [Child] Model
 export 'child/cuser_model.dart';
+export 'child/screen_time_model.dart';
 
 /// [Reward] Model
 export 'reward/reward_model.dart';

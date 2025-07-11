@@ -53,6 +53,8 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+
+      routeSettings: const RouteSettings(name: AppConstants.timePickerModal),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {

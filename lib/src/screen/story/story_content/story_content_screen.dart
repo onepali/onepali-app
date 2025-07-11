@@ -11,9 +11,15 @@ class StoryContentScreen extends StatefulWidget {
 }
 
 class _StoryContentScreenState extends State<StoryContentScreen> {
+  StoryProvider? _storyProvider;
+
   @override
   void initState() {
     super.initState();
+
+    // Start learning session for metrics tracking (safe for initState)
+    MetricsTrackingHelper.startLearningSessionSafe(context);
+
     Misc.onLayoutRendered(() async {
       final authState = context.read<AuthState>();
       final childId = await ChildLocalStorage.getCurrentChildId();
@@ -21,19 +27,25 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
         authState.setCurrentChildId(childId);
       }
       if (!mounted) return;
-      context.read<StoryProvider>().setCurrentStory(widget.story);
-      await context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
-        context,
-      );
+
+      // Store provider reference for safe dispose usage
+      _storyProvider = context.read<StoryProvider>();
+      _storyProvider!.setCurrentStory(widget.story);
+      await _storyProvider!.fetchRecommendedStoriesForActiveChild(context);
     });
   }
 
   @override
   void dispose() {
-    context.read<StoryProvider>().stopAudio();
-    context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
-      context,
-    );
+    // Use stored provider reference to avoid context access in dispose
+    try {
+      _storyProvider?.stopAudio();
+    } catch (e) {
+      logger.e('Error stopping audio in dispose: $e');
+    }
+
+    // End learning session when leaving story (context-free for safe disposal)
+    MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
   }
 

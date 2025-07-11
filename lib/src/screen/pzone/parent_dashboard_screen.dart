@@ -21,7 +21,9 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UserProvider>().fetchOwnProfile();
+    Misc.onLayoutRendered(() {
+      context.read<UserProvider>().fetchOwnProfile();
+    });
   }
 
   _onItemTapped(int index) {

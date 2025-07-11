@@ -4,100 +4,172 @@ import 'package:onepali/src/src.dart';
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
   final String profileImage;
-  final int progressLevel;
   final int totalStars;
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
   final int totalChildCount;
-
   final AuthProviderType? authType;
+  final BuildContext context;
+  final int totalLessonsCompleted;
 
   const UserAppBar({
     super.key,
     required this.name,
     required this.profileImage,
-    required this.progressLevel,
     required this.totalStars,
     required this.onTabSelected,
     required this.childData,
     this.authType,
     this.totalChildCount = 0,
-  });
+    required this.context,
+
+    this.totalLessonsCompleted = 0,
+  }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
+       assert(totalChildCount >= 0, 'Total child count must be non-negative'),
+       assert(
+         totalLessonsCompleted >= 0,
+         'Total lessons completed must be non-negative',
+       );
 
   @override
   Widget build(BuildContext context) {
+    logger.d('totalLessonsCompleted: $totalLessonsCompleted');
     int selectedIndex = _selectedTabIndex;
     final isMobileLandScape =
         PlatformUtility.isMobile(context) &&
         PlatformUtility.isLandscape(context);
+    logger.d('UserAppBar: isMobileLandScape: $isMobileLandScape');
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kWhite),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            spacing: 8,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed:
-                    () => Utility.navigateMaterialRoute(
-                      context,
-                      isMobileLandScape
-                          ? DrawerScreen(
-                            data: childData,
-                            totalChildCount: totalChildCount,
-                          )
-                          : TabDrawerScreen(
-                            data: childData,
-                            totalChildCount: totalChildCount,
+      child:
+          isMobileLandScape
+              ? Row(
+                spacing: 8,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed:
+                            () => Utility.navigateMaterialRoute(
+                              context,
+                              DrawerScreen(
+                                data: childData,
+                                totalChildCount: totalChildCount,
+                              ),
+                            ),
+                        icon: CustomImage(
+                          profileImage,
+                          height: 45,
+                          width: 45,
+                          circular: true,
+                          isProfileImage: true,
+                          imageType: CustomImageType.network,
+                        ),
+                      ),
+                      Gaps.horizontalGapOf(10),
+                      if (totalLessonsCompleted == 5) ...[
+                        customInkwell(
+                          onTap: () {
+                            Utility.navigate(
+                              context,
+                              AppRoutes.chooseRewardScreen,
+                            );
+                          },
+                          child: LottieHelper.fromSource(
+                            path: Assets.starRewardLottie,
+                            height: 100,
+                            width: 100,
                           ),
-                    ),
-                icon: CustomImage(
-                  profileImage,
-                  height: 45,
-                  width: 45,
-                  circular: true,
-                  isProfileImage: true,
-                  imageType: CustomImageType.network,
-                ),
+                        ),
+                      ] else ...[
+                        customInkwell(
+                          onTap: () {
+                            Utility.navigate(
+                              context,
+                              AppRoutes.rewardCollectionScreen,
+                            );
+                          },
+                          child: SvgHelper.fromSource(
+                            path: Assets.reward,
+                            height: 40,
+                            width: 40,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      for (int i = 0; i < homeServices.length; i++)
+                        _buildTab(
+                          homeServices[i].icon ?? '',
+                          homeServices[i].name ?? '',
+                          selectedIndex == i
+                              ? AppColors.kSecondaryColor
+                              : AppColors.kGrey,
+                          () => onTabSelected(homeServices[i].name ?? ''),
+                          i,
+                          selectedIndex,
+                        ),
+                      Gaps.horizontalGapOf(10),
+                    ],
+                  ),
+                ],
+              )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed:
+                            () => Utility.navigateMaterialRoute(
+                              context,
+                              TabDrawerScreen(
+                                data: childData,
+                                totalChildCount: totalChildCount,
+                              ),
+                            ),
+                        icon: CustomImage(
+                          profileImage,
+                          height: 45,
+                          width: 45,
+                          circular: true,
+                          isProfileImage: true,
+                          imageType: CustomImageType.network,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          for (int i = 0; i < homeServices.length; i++)
+                            _buildTab(
+                              homeServices[i].icon ?? '',
+                              homeServices[i].name ?? '',
+                              selectedIndex == i
+                                  ? AppColors.kSecondaryColor
+                                  : AppColors.kGrey,
+                              () => onTabSelected(homeServices[i].name ?? ''),
+                              i,
+                              selectedIndex,
+                            ),
+                          Gaps.horizontalGapOf(10),
+                        ],
+                      ),
+                    ],
+                  ),
+                  // Gaps.verticalGapOf(8),
+                  buildProgressBar(),
+                ],
               ),
-              Gaps.horizontalGapOf(8),
-
-              IconButton(
-                onPressed:
-                    () => Utility.navigate(context, AppRoutes.parentPinScreen),
-                icon: SvgHelper.fromSource(
-                  path: Assets.reward,
-
-                  height: 45,
-                  width: 45,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              for (int i = 0; i < homeServices.length; i++)
-                _buildTab(
-                  homeServices[i].icon ?? '',
-                  homeServices[i].name ?? '',
-                  selectedIndex == i
-                      ? AppColors.kSecondaryColor
-                      : AppColors.kGrey,
-                  () => onTabSelected(homeServices[i].name ?? ''),
-                  i,
-                  selectedIndex,
-                ),
-              Gaps.horizontalGapOf(10),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -110,43 +182,70 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget buildProgressBar() {
     const totalSteps = 5;
     return Row(
-      children: List.generate(totalSteps, (index) {
-        final isFilled = index < progressLevel;
-        return Row(
-          children: [
-            if (index > 0)
+      children: [
+        Container(
+          height: 8,
+          width: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color:
+                totalLessonsCompleted > 0
+                    ? AppColors.kOrange.withValues(alpha: 0.2)
+                    : Colors.grey.shade300,
+          ),
+        ),
+        ...List.generate(totalSteps - 1, (index) {
+          final isFilled = totalLessonsCompleted > index;
+          final isBarFilled = totalLessonsCompleted > (index + 1);
+          return Row(
+            children: [
               Container(
-                height: 4,
-                width: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color:
-                      isFilled
-                          ? AppColors.kOrange.withValues(alpha: 0.2)
-                          : Colors.grey.shade300,
-                ),
-              ),
-            if (index > 0 && index < totalSteps - 1)
-              Container(
-                height: 8,
-                width: 8,
+                height: 12,
+                width: 12,
                 decoration: BoxDecoration(
                   color: isFilled ? AppColors.kOrange : Colors.grey.shade300,
                   shape: BoxShape.circle,
                 ),
               ),
-            if (index == totalSteps - 1)
               Container(
-                height: 4,
+                height: 8,
                 width: 40,
-                color:
-                    isFilled
-                        ? AppColors.kOrange.withValues(alpha: 0.2)
-                        : Colors.grey.shade300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color:
+                      isBarFilled
+                          ? AppColors.kOrange.withValues(alpha: 0.2)
+                          : Colors.grey.shade300,
+                ),
               ),
-          ],
-        );
-      }),
+            ],
+          );
+        }),
+        if (totalLessonsCompleted == 5) ...[
+          Builder(
+            builder: (context) {
+              Future.microtask(() async {
+                if (!context.mounted) return;
+                final audioWidget = CustomAudioWidget(
+                  audioPath: Assets.starBlast,
+                );
+                await audioWidget.play();
+                Misc.delayed(AppConstants.starBlastDuration, () async {
+                  await audioWidget.dispose();
+                });
+              });
+              return LottieHelper.fromSource(
+                path: Assets.starRewardLottie,
+                height: 40,
+                repeat: false,
+                width: 40,
+              );
+            },
+          ),
+        ] else ...[
+          SvgHelper.fromSource(path: Assets.reward, height: 30, width: 30),
+        ],
+      ],
     );
   }
 
@@ -188,5 +287,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(90);
+  Size get preferredSize => Size.fromHeight(
+    PlatformUtility.isMobile(context) && PlatformUtility.isLandscape(context)
+        ? 90
+        : 130,
+  );
 }

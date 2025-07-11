@@ -80,6 +80,19 @@ class StoryProvider extends ChangeNotifier {
           title: _currentStory!.nameEn,
           image: _currentStory!.thumbnail,
         );
+
+        // If this is the last content, mark story as completed for parent metrics
+        if (_currentContentIndex == _currentStory!.content.length) {
+          if (!context.mounted) return;
+          await MetricsTrackingHelper.trackStoryCompletion(
+            context: context,
+            storyId: _currentStory!.nameEn,
+            storyTitle:
+                _currentStory!.nameNp.isNotEmpty
+                    ? _currentStory!.nameNp
+                    : _currentStory!.nameEn,
+          );
+        }
       } else {
         logger.d(
           '[StoryProvider] No childId found, not updating recommended story progress.',
@@ -208,5 +221,59 @@ class StoryProvider extends ChangeNotifier {
       listen: false,
     );
     await recommendedStoryProvider.fetchRecommendedStories();
+  }
+
+  // Track story completion and update parent metrics
+  Future<void> trackStoryCompletion({
+    required String parentUid,
+    required String childUid,
+    required String storyId,
+    required String storyTitle,
+    required BuildContext context,
+  }) async {
+    try {
+      // Get the metrics provider
+      final metricsProvider = context.read<PzMetricsProvider>();
+
+      // Track the activity completion
+      await metricsProvider.trackActivityCompletion(
+        parentUid: parentUid,
+        childUid: childUid,
+        topicName: storyTitle,
+        activityType: ActivityType.story,
+      );
+
+      logger.d('Story completion tracked: $storyId ($storyTitle)');
+    } catch (e) {
+      logger.e('Error tracking story completion: $e');
+    }
+  }
+
+  // Track story answer for interactive stories
+  Future<void> trackStoryAnswer({
+    required String parentUid,
+    required String childUid,
+    required bool isCorrect,
+    required String storyTitle,
+    required BuildContext context,
+  }) async {
+    try {
+      // Get the metrics provider
+      final metricsProvider = context.read<PzMetricsProvider>();
+
+      // Track the answer
+      await metricsProvider.trackAnswer(
+        parentUid: parentUid,
+        childUid: childUid,
+        isCorrect: isCorrect,
+        topicName: storyTitle,
+      );
+
+      logger.d(
+        'Story answer tracked: ${isCorrect ? 'Correct' : 'Incorrect'} in $storyTitle',
+      );
+    } catch (e) {
+      logger.e('Error tracking story answer: $e');
+    }
   }
 }
