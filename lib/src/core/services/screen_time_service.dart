@@ -380,9 +380,9 @@ class ScreenTimeService extends ChangeNotifier {
       return false;
     }
 
-    // Check if we need to reset for a new day
+    // Reset whenever a new day is detected
     if (_currentScreenTime!.shouldReset()) {
-      logger.i('Resetting screen time for new day');
+      logger.i('Resetting screen time for new day (new day detected)');
       await _resetScreenTimeForNewDay();
     }
 
@@ -478,6 +478,7 @@ class ScreenTimeService extends ChangeNotifier {
     // Load new child's data
     await _loadScreenTimeData();
 
+    // Do NOT reset screen time for new day here; only at midnight in checkAndHandleExceededLimit
     if (_isTracking) {
       _sessionStartTime =
           DateTime.now(); // Reset session start time for new child

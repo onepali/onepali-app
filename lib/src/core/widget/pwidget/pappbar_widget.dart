@@ -93,6 +93,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   onTap: () {
                     Utility.navigate(context, AppRoutes.dashboardScreen);
                     ParentLocalStorage.setParentLogged(false);
+                    ChildLocalStorage.clear();
                   },
                 ),
                 _buildMenuItem(
@@ -103,6 +104,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   onTap: () {
                     Utility.navigate(context, AppRoutes.dashboardScreen);
                     ParentLocalStorage.setParentLogged(false);
+                    ChildLocalStorage.clear();
                   },
                 ),
                 _buildMenuItem(
