@@ -136,9 +136,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             context: context,
             name: userInfo?.fullName ?? 'User',
             profileImage: childProfileImage,
-            progressLevel: 0,
             totalStars: 0,
-            totalLessonsCompleted: 0,
+            totalLessonsCompleted: 1,
             totalChildCount: childCount > 0 ? childCount : 0,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);

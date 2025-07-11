@@ -99,6 +99,7 @@ class Assets {
 
   /// [Audio] assets
   static String eww = 'audio/eww'.audio;
+  static String starBlast = 'audio/sfx/star_blast.mp3';
 }
 
 extension AssetsExtension on String {

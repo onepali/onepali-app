@@ -50,6 +50,8 @@ class AppConstants {
     Assets.avatar8,
   ];
 
+  static const int starBlastDuration = 3000; // Duration in milliseconds
+
   static List<String> sysTab = ['About us', 'Contact us', 'FAQs'];
 
   static List<String> whyLearningNepali = [

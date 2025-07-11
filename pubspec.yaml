@@ -60,6 +60,7 @@ flutter:
   assets:
     - assets/brand/
     - assets/audio/
+    - assets/audio/sfx/
     - assets/audio/animals/
     - assets/fonts/
     - assets/json/

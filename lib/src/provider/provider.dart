@@ -6,6 +6,7 @@ library;
 export 'system/system_provider.dart';
 export 'system/splash_provider.dart';
 export 'system/language_provider.dart';
+export 'audio_provider.dart';
 
 /// [Auth] Provider
 export 'auth/auth_provider.dart'; // Email & Password

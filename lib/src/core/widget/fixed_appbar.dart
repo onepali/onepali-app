@@ -4,7 +4,6 @@ import 'package:onepali/src/src.dart';
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
   final String profileImage;
-  final int progressLevel;
   final int totalStars;
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
@@ -17,7 +16,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.name,
     required this.profileImage,
-    required this.progressLevel,
     required this.totalStars,
     required this.onTabSelected,
     required this.childData,
@@ -26,11 +24,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.context,
 
     this.totalLessonsCompleted = 0,
-  }) : assert(
-         progressLevel >= 0 && progressLevel <= 5,
-         'Progress level must be between 0 and 5',
-       ),
-       assert(totalStars >= 0, 'Total stars must be non-negative'),
+  }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
        assert(totalChildCount >= 0, 'Total child count must be non-negative'),
        assert(
          totalLessonsCompleted >= 0,
@@ -194,38 +188,63 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
           width: 40,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            color: Colors.grey.shade300,
+            color:
+                totalLessonsCompleted > 0
+                    ? AppColors.kOrange.withValues(alpha: 0.2)
+                    : Colors.grey.shade300,
           ),
         ),
-        ...List.generate(totalSteps, (index) {
-          final isFilled = index < progressLevel;
+        ...List.generate(totalSteps - 1, (index) {
+          final isFilled = totalLessonsCompleted > index;
+          final isBarFilled = totalLessonsCompleted > (index + 1);
           return Row(
             children: [
-              if (index < totalSteps - 1)
-                Container(
-                  height: 12,
-                  width: 12,
-                  decoration: BoxDecoration(
-                    color: isFilled ? AppColors.kOrange : Colors.grey.shade300,
-                    shape: BoxShape.circle,
-                  ),
+              Container(
+                height: 12,
+                width: 12,
+                decoration: BoxDecoration(
+                  color: isFilled ? AppColors.kOrange : Colors.grey.shade300,
+                  shape: BoxShape.circle,
                 ),
-              if (index < totalSteps - 1)
-                Container(
-                  height: 8,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color:
-                        isFilled
-                            ? AppColors.kOrange.withValues(alpha: 0.2)
-                            : Colors.grey.shade300,
-                  ),
+              ),
+              Container(
+                height: 8,
+                width: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color:
+                      isBarFilled
+                          ? AppColors.kOrange.withValues(alpha: 0.2)
+                          : Colors.grey.shade300,
                 ),
+              ),
             ],
           );
         }),
-        SvgHelper.fromSource(path: Assets.reward, height: 30, width: 30),
+        if (totalLessonsCompleted == 5) ...[
+          Builder(
+            builder: (context) {
+              Future.microtask(() async {
+                if (!context.mounted) return;
+                final audioWidget = CustomAudioWidget(
+                  audioPath: Assets.starBlast,
+                );
+                await audioWidget.play();
+                Misc.delayed(AppConstants.starBlastDuration, () async {
+                  await audioWidget.dispose();
+                });
+              });
+              return LottieHelper.fromSource(
+                path: Assets.starRewardLottie,
+                height: 40,
+                repeat: false,
+                width: 40,
+              );
+            },
+          ),
+        ] else ...[
+          SvgHelper.fromSource(path: Assets.reward, height: 30, width: 30),
+        ],
       ],
     );
   }

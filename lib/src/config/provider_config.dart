@@ -8,6 +8,7 @@ class ProviderConfig {
   static final SystemProvider systemProvider = SystemProvider();
   static final SplashProvider splashProvider = SplashProvider();
   static final LanguageProvider languageProvider = LanguageProvider();
+  static final AudioProvider audioProvider = AudioProvider();
 
   /// [Auth] Provider
   static final AuthState authState = AuthState();
@@ -71,6 +72,7 @@ class ProviderConfig {
     ChangeNotifierProvider<AuthState>(create: (_) => authState),
     ChangeNotifierProvider<SystemProvider>(create: (_) => systemProvider),
     ChangeNotifierProvider<SplashProvider>(create: (_) => splashProvider),
+    ChangeNotifierProvider<AudioProvider>(create: (_) => audioProvider),
     ChangeNotifierProvider<LanguageProvider>(create: (_) => languageProvider),
     ChangeNotifierProvider<AuthProvider>(create: (_) => authProvider),
     ChangeNotifierProvider<GoogleAuthProvider>(
@@ -122,6 +124,7 @@ class ProviderConfig {
     systemProvider.dispose();
     splashProvider.dispose();
     authProvider.dispose();
+    audioProvider.dispose();
     googleAuthProvider.dispose();
     facebookAuthProvider.dispose();
     childAuthProvider.dispose();
