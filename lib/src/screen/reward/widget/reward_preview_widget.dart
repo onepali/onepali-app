@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 import '../../../src.dart';
 
@@ -15,25 +15,12 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
   @override
   void initState() {
     super.initState();
-    _saveRewardToFirestore();
+    _updateReward();
   }
 
-  Future<void> _saveRewardToFirestore() async {
-    final childId = await ChildLocalStorage.getCurrentChildId();
-    if (childId == null) {
-      logger.e('Child ID not found');
-      return;
-    }
-
-    final rewardData = widget.data.toJson();
-    rewardData['childId'] = childId;
-
-    try {
-      await FirebaseFirestore.instance.collection('creward').add(rewardData);
-      logger.d('Reward saved successfully for childId: $childId');
-    } catch (e) {
-      logger.e('Failed to save reward for childId: $childId. Error: $e');
-    }
+  Future<void> _updateReward() async {
+    final provider = context.read<RewardProvider>();
+    await provider.saveRewardForChild(widget.data);
   }
 
   @override

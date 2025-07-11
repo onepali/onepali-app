@@ -4,6 +4,40 @@ import 'package:flutter/material.dart';
 import '../../src.dart';
 
 class RewardProvider extends ChangeNotifier {
+  Future<void> saveRewardForChild(RewardModel reward) async {
+    final childId = await ChildLocalStorage.getCurrentChildId();
+    if (childId == null) {
+      logger.e('Child ID not found');
+      return;
+    }
+
+    final rewardData = reward.toJson();
+
+    try {
+      final querySnapshot =
+          await _firestore
+              .collection('creward')
+              .where('childId', isEqualTo: childId)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final docRef = querySnapshot.docs.first.reference;
+        await docRef.update({
+          'rewards': FieldValue.arrayUnion([rewardData]),
+        });
+        logger.d('Reward appended for childId: $childId');
+      } else {
+        await _firestore.collection('creward').add({
+          'childId': childId,
+          'rewards': [rewardData],
+        });
+        logger.d('Reward created for childId: $childId');
+      }
+    } catch (e) {
+      logger.e('Failed to save reward for childId: $childId. Error: $e');
+    }
+  }
+
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 

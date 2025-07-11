@@ -7,6 +7,27 @@ import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonProvider extends ChangeNotifier {
+  Future<void> incrementTotalLessonsCompleted() async {
+    final childId = await ChildLocalStorage.getCurrentChildId();
+    if (childId == null) {
+      logger.e('Child ID not found');
+      return;
+    }
+    try {
+      final doc = await _firestore.collection('children').doc(childId).get();
+      int currentTotal = 0;
+      if (doc.exists &&
+          doc.data() != null &&
+          doc.data()!['totalLessonsCompleted'] != null) {
+        currentTotal = doc.data()!['totalLessonsCompleted'] as int;
+      }
+      final newTotal = currentTotal + 1;
+      await updateTotalLessonsCompleted(childId, newTotal);
+    } catch (e) {
+      logger.e('Failed to increment totalLessonsCompleted: $e');
+    }
+  }
+
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 

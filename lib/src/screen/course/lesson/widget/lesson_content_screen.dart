@@ -98,6 +98,14 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final content = widget.lesson.lessonContent[safeCurrentIndex];
     final isFirst = safeCurrentIndex == 0;
     final isLast = safeCurrentIndex == widget.lesson.lessonContent.length - 1;
+    // Update totalLessonsCompleted in Firebase when last lesson is completed
+    if (isLast && _showGoodRemark) {
+      Future.microtask(() async {
+        if (!context.mounted) return;
+        final lessonProvider = context.read<LessonProvider>();
+        await lessonProvider.incrementTotalLessonsCompleted();
+      });
+    }
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: SafeArea(
