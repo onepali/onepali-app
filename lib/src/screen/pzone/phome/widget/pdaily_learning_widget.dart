@@ -47,7 +47,8 @@ class PDailyLearningWidget extends StatelessWidget {
                   Gaps.verticalGapOf(4),
                   Icon(
                     checked ? Icons.check_circle : Icons.radio_button_unchecked,
-                    color: checked ? AppColors.kGreen : AppColors.kLightGrey,
+                    color:
+                        checked ? AppColors.kButtonGreen : AppColors.kLightGrey,
                     size: 24,
                   ),
                 ],

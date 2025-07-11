@@ -15,6 +15,7 @@ class BottomSheetManager {
       backgroundColor: AppColors.transparent,
       context: context,
       clipBehavior: Clip.antiAlias,
+      routeSettings: const RouteSettings(name: AppConstants.bottomSheetModal),
       builder:
           (context) => Container(
             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),

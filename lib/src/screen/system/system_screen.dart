@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/core.dart';
 import 'package:provider/provider.dart';
-import 'package:onepali/src/screen/system/about_us_screen.dart';
-import 'package:onepali/src/screen/system/contact_screen.dart';
-import 'package:onepali/src/screen/system/faqs_screen.dart';
+import '../../src.dart';
 
 class SystemScreen extends StatefulWidget {
   final int initialIndex;
@@ -49,23 +46,25 @@ class _SystemScreenState extends State<SystemScreen>
         backgroundColor: AppColors.kSecondaryColor,
         title: SvgHelper.fromSource(
           path: Assets.logoSvg,
-          height: isMobilePortrait ? 20 : 28,
+          height: isMobilePortrait ? 24 : 30,
           color: AppColors.kWhite,
         ),
         iconTheme: const IconThemeData(color: AppColors.kWhite),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppColors.kWhite,
+          indicatorColor: AppColors.kPureSkyBlue,
           indicatorWeight: 3,
           labelColor: AppColors.kWhite,
           indicatorSize: TabBarIndicatorSize.tab,
           unselectedLabelColor: AppColors.kWhite.withValues(alpha: 0.7),
+
           labelStyle:
               isMobilePortrait
                   ? AppStyles.text14PxSemiBold.copyWith(color: AppColors.kWhite)
                   : AppStyles.text18PxSemiBold.copyWith(
                     color: AppColors.kWhite,
                   ),
+          dividerColor: Colors.transparent,
           unselectedLabelStyle:
               isMobilePortrait
                   ? AppStyles.text14PxRegular.copyWith(
@@ -80,11 +79,17 @@ class _SystemScreenState extends State<SystemScreen>
       body: Consumer<SystemProvider>(
         builder: (context, provider, child) {
           if (provider.status == DataFetchStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return CustomLoader();
           }
 
           if (provider.status == DataFetchStatus.error) {
-            return const Center(child: Text('Error loading system data'));
+            return ErrorScreen(
+              title: 'Error Fetching Data',
+              message: 'Please try again later.',
+              onRetry: () {
+                context.read<SystemProvider>().fetchSystemData();
+              },
+            );
           }
 
           return TabBarView(

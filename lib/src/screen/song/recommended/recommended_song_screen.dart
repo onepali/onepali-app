@@ -31,8 +31,9 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
     return Scaffold(
       body: Consumer<RcmSongProvider>(
         builder: (context, provider, child) {
-          if (provider.recommendedSongs.isEmpty) {
-            return const Center(child: Text('No recommended songs yet.'));
+          if (provider.recommendedSongs.isEmpty ||
+              provider.status == DataFetchStatus.error) {
+            return const SizedBox();
           }
           return ListView.builder(
             scrollDirection: Axis.horizontal,

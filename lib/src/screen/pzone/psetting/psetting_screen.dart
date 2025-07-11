@@ -11,13 +11,41 @@ class ParentSettingScreen extends StatefulWidget {
 }
 
 class _ParentSettingScreenState extends State<ParentSettingScreen> {
+  int _currentBannerIndex = 0;
+  late final PageController _bannerPageController;
+  late final List<BannerModel> _banners;
   @override
   void initState() {
     super.initState();
+    _bannerPageController = PageController();
+    _banners = spreadBannerList;
     Misc.onLayoutRendered(() {
       context.read<UserProvider>().fetchOwnProfile();
       context.read<ChildUserProvider>().fetchChildUser();
+      _startBannerRotation();
     });
+  }
+
+  void _startBannerRotation() {
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 10));
+      if (!mounted) return false;
+      setState(() {
+        _currentBannerIndex = (_currentBannerIndex + 1) % _banners.length;
+      });
+      _bannerPageController.animateToPage(
+        _currentBannerIndex,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+      return mounted;
+    });
+  }
+
+  @override
+  void dispose() {
+    _bannerPageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,27 +113,54 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               }
             },
           ),
-          Gaps.verticalGapOf(18),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.orange[50],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Spread the word! Invite a friend.',
-                    style: TextStyle(fontSize: 15),
+          Gaps.verticalGapOf(10),
+          SizedBox(
+            height: 100,
+            child: PageView.builder(
+              controller: _bannerPageController,
+              itemCount: _banners.length,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentBannerIndex = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                final banner = _banners[index];
+                return GestureDetector(
+                  onTap: banner.onTap,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: banner.color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            banner.title,
+                            style:
+                                isMobilePortrait
+                                    ? AppStyles.text14PxRegular
+                                    : AppStyles.text16PxRegular,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ),
+                        Gaps.horizontalGapOf(8),
+                        Icon(
+                          banner.icon,
+                          color: banner.color.withValues(alpha: 0.7),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Gaps.horizontalGapOf(8),
-                Icon(Icons.volunteer_activism, color: Colors.orange[300]),
-              ],
+                );
+              },
             ),
           ),
+          Gaps.verticalGapOf(10),
           ListTile(
             leading: Container(
               height: isMobilePortrait ? 40 : 48,
@@ -117,6 +172,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
               child: const Icon(Icons.notifications),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             title: const Text('Notifications'),
             onTap: () {
               Utility.navigate(context, AppRoutes.parentNotificationScreen);
@@ -133,6 +189,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
               child: const Icon(Icons.assignment),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             title: const Text('My plan'),
             onTap: () {
               Utility.navigate(context, AppRoutes.parentPlansScreen);
@@ -149,6 +206,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
               child: SvgHelper.fromSource(path: Assets.unsubscribe),
             ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             title: const Text('Cancel Subscription'),
             onTap: () {},
           ),

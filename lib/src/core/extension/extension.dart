@@ -11,3 +11,6 @@ export 'mediaquery_extension.dart';
 
 /// [Localization] Extension
 export 'i18n.dart';
+
+/// [Network] Extension
+export 'network_extension.dart';

@@ -36,6 +36,11 @@ class AppRoutes {
   /// [User] Routes
   static const String userScreen = '/user';
 
+  /// [Reward] Routes
+  static const String rewardScreen = '/reward';
+  static const String rewardCollectionScreen = '/reward/collection';
+  static const String chooseRewardScreen = '/reward/choose';
+
   /// [Language] Routes
   static const String languageScreen = '/language';
 
@@ -51,6 +56,9 @@ class AppRoutes {
   static const String parentSettingScreen = '/parent/setting';
   static const String parentBlogScreen = '/parent/blog';
   static const String blogDetailScreen = '/parent/blog/detail';
+
+  /// [Parent] ---> [Review] Routes
+  static const String parentReviewScreen = '/parent/review';
 
   /// [Parent] ---> [Notification] Routes
   static const String parentNotificationScreen = '/parent/notification';
@@ -85,6 +93,10 @@ class AppRoutes {
 
     dashboardScreen: (context) => const DashboardScreen(),
     userScreen: (context) => const UserScreen(),
+
+    rewardScreen: (context) => const RewardScreen(),
+    rewardCollectionScreen: (context) => const RewardCollectionWidget(),
+    chooseRewardScreen: (context) => ChooseRewardWidget(),
     languageScreen: (context) => const LanguageScreen(),
 
     childProfileScreen:
@@ -95,7 +107,12 @@ class AppRoutes {
 
     // Parent Zone Routes
     parentDashboardScreen: (context) => const ParentDashboardScreen(),
-    parentPinScreen: (context) => const ParentZoneScreen(),
+    parentPinScreen: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final fromScreenTimeLimit = args?['fromScreenTimeLimit'] ?? false;
+      return ParentZoneScreen(fromScreenTimeLimit: fromScreenTimeLimit);
+    },
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),
     parentSettingScreen: (context) => const ParentSettingScreen(),
@@ -104,6 +121,7 @@ class AppRoutes {
           data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,
         ),
 
+    parentReviewScreen: (context) => const PreviewScreen(),
     parentNotificationScreen: (context) => const NotificationScreen(),
 
     parentPlansScreen: (context) => const PlanScreen(),

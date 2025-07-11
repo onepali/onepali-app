@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonProvider extends ChangeNotifier {
@@ -13,6 +14,33 @@ class LessonProvider extends ChangeNotifier {
 
   final List<CourseModel> _courses = [];
   List<CourseModel> get courses => _courses;
+
+  Future<void> incrementTotalLessonsCompleted(context, parentId) async {
+    final childId = await ChildLocalStorage.getCurrentChildId();
+    if (childId == null || parentId == null) {
+      logger.e('Child ID or Parent ID not found');
+      return;
+    }
+    try {
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(parentId)
+              .collection('children')
+              .doc(childId)
+              .get();
+      int currentTotal = 0;
+      if (doc.exists &&
+          doc.data() != null &&
+          doc.data()!['totalLessonsCompleted'] != null) {
+        currentTotal = doc.data()!['totalLessonsCompleted'] as int;
+      }
+      final newTotal = currentTotal + 1;
+      await updateTotalLessonsCompleted(parentId, childId, newTotal);
+    } catch (e) {
+      logger.e('Failed to increment totalLessonsCompleted: $e');
+    }
+  }
 
   Future<void> fetchCourses() async {
     setStatus(DataFetchStatus.loading);
@@ -98,5 +126,83 @@ class LessonProvider extends ChangeNotifier {
   void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
+  }
+
+  // Track lesson completion and update parent metrics
+  Future<void> trackLessonCompletion({
+    required String parentUid,
+    required String childUid,
+    required String lessonId,
+    required String topicName,
+    required BuildContext context,
+  }) async {
+    try {
+      // Get the metrics provider
+      final metricsProvider = context.read<PzMetricsProvider>();
+
+      // Track the activity completion
+      await metricsProvider.trackActivityCompletion(
+        parentUid: parentUid,
+        childUid: childUid,
+        topicName: topicName,
+        activityType: ActivityType.lesson,
+      );
+
+      logger.d('Lesson completion tracked: $lessonId in $topicName');
+    } catch (e) {
+      logger.e('Error tracking lesson completion: $e');
+    }
+  }
+
+  // Track lesson answer for success rate
+  Future<void> trackLessonAnswer({
+    required String parentUid,
+    required String childUid,
+    required bool isCorrect,
+    required String topicName,
+    required BuildContext context,
+  }) async {
+    try {
+      // Get the metrics provider
+      final metricsProvider = context.read<PzMetricsProvider>();
+
+      // Track the answer
+      await metricsProvider.trackAnswer(
+        parentUid: parentUid,
+        childUid: childUid,
+        isCorrect: isCorrect,
+        topicName: topicName,
+      );
+
+      logger.d(
+        'Lesson answer tracked: ${isCorrect ? 'Correct' : 'Incorrect'} in $topicName',
+      );
+    } catch (e) {
+      logger.e('Error tracking lesson answer: $e');
+    }
+  }
+
+  Future<void> updateTotalLessonsCompleted(
+    String parentUid,
+    String childId,
+    int newTotal,
+  ) async {
+    logger.d(
+      'Updating totalLessonsCompleted for childId: $childId of parent: $parentUid',
+    );
+    try {
+      await _firestore
+          .collection('users')
+          .doc(parentUid)
+          .collection('children')
+          .doc(childId)
+          .update({'totalLessonsCompleted': newTotal});
+      logger.d('Updated totalLessonsCompleted for childId: $childId');
+    } catch (e) {
+      logger.e(
+        'Failed to update totalLessonsCompleted for childId: $childId. Error: $e',
+      );
+      rethrow;
+    }
   }
 }

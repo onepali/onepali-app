@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class ChildUserProvider extends ChangeNotifier {
@@ -14,6 +15,33 @@ class ChildUserProvider extends ChangeNotifier {
 
   int _totalChildren = 3;
   int get totalChildren => _totalChildren;
+
+  Future<void> selectDefaultChildIfNeeded(BuildContext context) async {
+    final currentChildId = await ChildLocalStorage.getCurrentChildId();
+    if ((currentChildId == null || currentChildId.isEmpty) &&
+        _childUser.isNotEmpty) {
+      final firstChild = _childUser.first;
+      await ChildLocalStorage.saveCurrentChildId(firstChild.uid);
+      await ChildLocalStorage.saveCurrentAvatarUrl(firstChild.avatarUrl);
+      // Optionally, update AuthState if needed
+      if (context.mounted) {
+        final authState = Provider.of<AuthState>(context, listen: false);
+        authState.setCurrentChildId(firstChild.uid);
+      }
+    }
+  }
+
+  /// Returns the current child user based on local storage, or null if not found
+  Future<ChildUserModel?> getCurrentChild() async {
+    final currentChildId = await ChildLocalStorage.getCurrentChildId();
+    if (currentChildId != null && _childUser.isNotEmpty) {
+      return _childUser.firstWhere(
+        (c) => c.uid == currentChildId,
+        orElse: () => _childUser.first,
+      );
+    }
+    return null;
+  }
 
   Future<void> fetchChildUser() async {
     setStatus(DataFetchStatus.loading);
@@ -46,8 +74,9 @@ class ChildUserProvider extends ChangeNotifier {
         _totalChildren = _childUser.length;
       }
       setStatus(DataFetchStatus.success);
-    } catch (e) {
+    } catch (e, s) {
       logger.e('Error fetching child users: $e');
+      logger.e('Stack trace: $s');
       handleError(e.toString());
     }
   }
@@ -79,10 +108,21 @@ class ChildUserProvider extends ChangeNotifier {
             'dob': dob,
             'screen_time': screenTime,
             'avatar_url': avatarUrl,
+            'screenTimeTracking': {
+              'totalAllowed': screenTime,
+              'totalUsed': 0.0,
+              'lastUpdated': DateTime.now().toIso8601String(),
+            },
           });
       // Update local list
       int idx = _childUser.indexWhere((c) => c.uid == childUid);
       if (idx != -1) {
+        final newScreenTimeTracking = ScreenTimeModel(
+          totalAllowed: screenTime,
+          totalUsed: 0.0,
+          lastUpdated: DateTime.now(),
+        );
+
         _childUser[idx] = ChildUserModel(
           avatarUrl: avatarUrl,
           createdAt: _childUser[idx].createdAt,
@@ -92,7 +132,9 @@ class ChildUserProvider extends ChangeNotifier {
           parentUid: _childUser[idx].parentUid,
           role: _childUser[idx].role,
           screenTime: screenTime,
+          totalLessonsCompleted: _childUser[idx].totalLessonsCompleted,
           uid: childUid,
+          screenTimeTracking: newScreenTimeTracking,
         );
         notifyListeners();
       }

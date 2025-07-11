@@ -127,6 +127,16 @@ class LessonAudioProvider extends ChangeNotifier {
           title: contents[_currentIndex].nameNp,
           image: contents[_currentIndex].image,
         );
+
+        // If this is the last content, mark lesson as completed for parent metrics
+        if (_currentIndex == contents.length - 1) {
+          if (!context.mounted) return;
+          await MetricsTrackingHelper.trackLessonCompletion(
+            context: context,
+            lessonId: lesson.id,
+            topicName: lesson.lessonName,
+          );
+        }
       }
     }
   }
@@ -157,8 +167,12 @@ class LessonAudioProvider extends ChangeNotifier {
     }
   }
 
-  void resetIndex(int index) {
-    _currentIndex = index;
+  void resetIndex(int index, [int? maxLength]) {
+    if (maxLength != null && maxLength > 0) {
+      _currentIndex = index.clamp(0, maxLength - 1);
+    } else {
+      _currentIndex = index;
+    }
     notifyListeners();
   }
 

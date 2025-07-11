@@ -18,4 +18,6 @@ class ChildLocalStorage {
   static Future<String?> getCurrentAvatarUrl() async {
     return await prefs.getStringPref(AppConstants.avatarUrlKey);
   }
+
+  static Future<void> clear() async => await prefs.clear();
 }

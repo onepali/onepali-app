@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_styles.dart';
-import '../../../core/widget/gaps.dart';
-import '../../../core/enums/app_enums.dart';
-import '../../../core/model/pzone/pz_home/pz_home_metrics_model.dart';
-import '../../../core/model/child/cuser_model.dart';
-import '../../../provider/pzone/pz_home/pz_metrics_provider.dart';
-import 'widget/paverage_learning_widget.dart';
-import 'widget/pdaily_learning_widget.dart';
-import 'widget/pdashboard_metrics_widget.dart';
+import 'package:onepali/src/src.dart';
 
 class PHomeCard extends StatelessWidget {
   final List<ChildUserModel> children;
@@ -33,125 +23,103 @@ class PHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedChild = children.firstWhere(
-      (child) => child.uid == selectedChildUid,
-      orElse: () => children.first,
-    );
+    // final selectedChild = children.firstWhere(
+    //   (child) => child.uid == selectedChildUid,
+    //   orElse: () => children.first,
+    // );
 
-    return ListView(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.kWhite,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.kLightGrey),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: selectedChildUid,
-              isExpanded: true,
-              hint: const Text('Select Child'),
-              items:
-                  children.map((child) {
-                    return DropdownMenuItem<String>(
-                      value: child.uid,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 16,
-                            backgroundColor: AppColors.kGrey,
-                            backgroundImage:
-                                child.avatarUrl.isNotEmpty
-                                    ? NetworkImage(child.avatarUrl)
-                                    : null,
-                          ),
-                          Gaps.horizontalGapOf(12),
-                          Text(child.fullName),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  onChildSelected(value);
-                }
-              },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.kWhite,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.kLightGrey),
             ),
-          ),
-        ),
-
-        Gaps.verticalGapOf(16),
-
-        // Selected Child Info
-        Row(
-          children: [
-            CircleAvatar(
-              radius: isMobilePortrait ? 24 : 32,
-              backgroundColor: AppColors.kGrey,
-              backgroundImage:
-                  selectedChild.avatarUrl.isNotEmpty
-                      ? NetworkImage(selectedChild.avatarUrl)
-                      : null,
-            ),
-            Gaps.horizontalGapOf(12),
-            Text(
-              selectedChild.fullName,
-              style:
-                  isMobilePortrait
-                      ? AppStyles.text18PxSemiBold
-                      : AppStyles.text22PxSemiBold,
-            ),
-          ],
-        ),
-
-        Gaps.verticalGapOf(24),
-
-        // Metrics Content
-        if (metricsStatus == DataFetchStatus.loading)
-          const Center(child: CircularProgressIndicator())
-        else if (metrics == null)
-          const Center(child: Text('No metrics data found'))
-        else ...[
-          PAverageLearningWidget(
-            completedActivities: metrics!.completedActivities,
-            answerSuccessRate: metrics!.answerSuccessRate,
-            isMobilePortrait: isMobilePortrait,
-          ),
-          Gaps.verticalGapOf(16),
-          PDailyLearningWidget(
-            dayStreak: metrics!.dayStreak,
-            weeklyStreak: metrics!.weeklyStreak,
-            isMobilePortrait: isMobilePortrait,
-          ),
-          Gaps.verticalGapOf(16),
-          PDashboardMetricsWidget(
-            averageDailyLearningTime: metrics!.averageDailyLearningTime,
-            mostPracticedTopics: metrics!.mostPracticedTopics,
-            isMobilePortrait: isMobilePortrait,
-          ),
-          Gaps.verticalGapOf(24),
-          ElevatedButton(
-            onPressed:
-                parentUid != null && selectedChildUid != null
-                    ? () async {
-                      await Provider.of<PzMetricsProvider>(
-                        context,
-                        listen: false,
-                      ).updateMetrics(
-                        parentUid: parentUid!,
-                        childUid: selectedChildUid!,
-                        newMetrics: metrics!.copyWith(
-                          completedActivities: metrics!.completedActivities + 1,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: selectedChildUid,
+                isExpanded: true,
+                hint: const Text('Select Child'),
+                items:
+                    children.map((child) {
+                      return DropdownMenuItem<String>(
+                        value: child.uid,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 16,
+                              backgroundColor: AppColors.kGrey,
+                              backgroundImage:
+                                  child.avatarUrl.isNotEmpty
+                                      ? NetworkImage(child.avatarUrl)
+                                      : null,
+                            ),
+                            Gaps.horizontalGapOf(12),
+                            Text(child.fullName),
+                          ],
                         ),
                       );
-                    }
-                    : null,
-            child: const Text('Update Metrics (Demo)'),
+                    }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    onChildSelected(value);
+                  }
+                },
+              ),
+            ),
           ),
+          Gaps.verticalGapOf(16),
+          // Metrics Content
+          if (metricsStatus == DataFetchStatus.loading)
+            CustomLoader()
+          else if (metrics == null)
+            const Center(child: Text('No metrics data found'))
+          else ...[
+            PAverageLearningWidget(
+              completedActivities: metrics!.completedActivities,
+              answerSuccessRate: metrics!.answerSuccessRate,
+              isMobilePortrait: isMobilePortrait,
+            ),
+            Gaps.verticalGapOf(16),
+            PDailyLearningWidget(
+              dayStreak: metrics!.dayStreak,
+              weeklyStreak: metrics!.weeklyStreak,
+              isMobilePortrait: isMobilePortrait,
+            ),
+            Gaps.verticalGapOf(16),
+            PDashboardMetricsWidget(
+              averageDailyLearningTime: metrics!.averageDailyLearningTime,
+              mostPracticedTopics: metrics!.mostPracticedTopics,
+              isMobilePortrait: isMobilePortrait,
+            ),
+            // Gaps.verticalGapOf(24),
+            // ElevatedButton(
+            //   onPressed:
+            //       parentUid != null && selectedChildUid != null
+            //           ? () async {
+            //             await Provider.of<PzMetricsProvider>(
+            //               context,
+            //               listen: false,
+            //             ).updateMetrics(
+            //               parentUid: parentUid!,
+            //               childUid: selectedChildUid!,
+            //               newMetrics: metrics!.copyWith(
+            //                 completedActivities:
+            //                     metrics!.completedActivities + 1,
+            //               ),
+            //             );
+            //           }
+            //           : null,
+            //   child: const Text('Update Metrics (Demo)'),
+            // ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

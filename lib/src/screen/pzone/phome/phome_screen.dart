@@ -32,7 +32,15 @@ class _PHomeScreenState extends State<PHomeScreen> {
       context.read<PzMetricsProvider>().fetchMetrics(
         parentUid: parentUid,
         childUid: childUid,
-      );
+      )
+      // .then((_) {
+      //   if (!mounted) return;
+      //   context.read<PzMetricsProvider>().checkAndResetWeeklyStreak(
+      //     parentUid: parentUid,
+      //     childUid: childUid,
+      //   );
+      // })
+      ;
     }
   }
 
@@ -52,34 +60,32 @@ class _PHomeScreenState extends State<PHomeScreen> {
 
         // Set first child as default if not selected
         if (children.isNotEmpty && selectedChildUid == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          Misc.onLayoutRendered(() {
             _onChildSelected(children.first.uid);
           });
         }
 
         return Scaffold(
           backgroundColor: AppColors.kBackgroundColor,
-          body: SafeArea(
-            child:
-                childStatus == DataFetchStatus.loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : children.isEmpty
-                    ? const Center(
-                      child: Text(
-                        'No child found',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    )
-                    : PHomeCard(
-                      children: children,
-                      selectedChildUid: selectedChildUid,
-                      onChildSelected: _onChildSelected,
-                      metrics: metrics,
-                      metricsStatus: metricsStatus,
-                      isMobilePortrait: isMobilePortrait,
-                      parentUid: parentUid,
+          body:
+              childStatus == DataFetchStatus.loading
+                  ? CustomLoader()
+                  : children.isEmpty
+                  ? const Center(
+                    child: Text(
+                      'No child found',
+                      style: TextStyle(fontSize: 18),
                     ),
-          ),
+                  )
+                  : PHomeCard(
+                    children: children,
+                    selectedChildUid: selectedChildUid,
+                    onChildSelected: _onChildSelected,
+                    metrics: metrics,
+                    metricsStatus: metricsStatus,
+                    isMobilePortrait: isMobilePortrait,
+                    parentUid: parentUid,
+                  ),
         );
       },
     );

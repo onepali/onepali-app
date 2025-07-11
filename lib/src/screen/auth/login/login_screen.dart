@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Gaps.verticalGapOf(20),
                 CustomTextField(
-                  hintText: 'Enter your Email Address',
+                  hintText: 'Email',
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   prefixIcon: Icon(Icons.email_outlined),
@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Gaps.verticalGapOf(20),
                 CustomTextField(
-                  hintText: 'Enter a Password',
+                  hintText: 'Password',
                   isPasswordField: isObscure,
                   controller: passwordController,
                   prefixIcon: Icon(Icons.lock_outline_rounded),
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Utility.navigate(context, AppRoutes.loginScreen);
                     },
                     child: Text(
-                      'Forgot Password?',
+                      'Forgot password?',
                       textAlign: TextAlign.right,
                       style: AppStyles.text14PxRegular.copyWith(
                         color: AppColors.kButtonGreen,

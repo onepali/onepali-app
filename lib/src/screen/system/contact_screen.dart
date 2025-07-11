@@ -54,18 +54,18 @@ class ContactScreen extends StatelessWidget {
                       color: AppColors.kBlack,
                     ),
           ),
-          Gaps.verticalGapOf(isMobilePortrait ? 100 : 150),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              width: isMobilePortrait ? 100 : 140,
-              height: isMobilePortrait ? 100 : 140,
-              decoration: BoxDecoration(
-                color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(isMobilePortrait ? 50 : 70),
-              ),
-            ),
-          ),
+          // Gaps.verticalGapOf(isMobilePortrait ? 100 : 150),
+          // Align(
+          //   alignment: Alignment.bottomRight,
+          //   child: Container(
+          //     width: isMobilePortrait ? 100 : 140,
+          //     height: isMobilePortrait ? 100 : 140,
+          //     decoration: BoxDecoration(
+          //       color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
+          //       borderRadius: BorderRadius.circular(isMobilePortrait ? 50 : 70),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

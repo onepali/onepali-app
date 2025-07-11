@@ -42,6 +42,17 @@ class PzHomeMetricsModel {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'completedActivities': completedActivities,
+      'answerSuccessRate': answerSuccessRate,
+      'dayStreak': dayStreak,
+      'weeklyStreak': weeklyStreak,
+      'averageDailyLearningTime': averageDailyLearningTime,
+      'mostPracticedTopics': mostPracticedTopics,
+    };
+  }
+
   PzHomeMetricsModel copyWith({
     int? completedActivities,
     double? answerSuccessRate,
