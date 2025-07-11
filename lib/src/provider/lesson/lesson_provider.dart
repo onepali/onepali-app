@@ -7,27 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonProvider extends ChangeNotifier {
-  Future<void> incrementTotalLessonsCompleted() async {
-    final childId = await ChildLocalStorage.getCurrentChildId();
-    if (childId == null) {
-      logger.e('Child ID not found');
-      return;
-    }
-    try {
-      final doc = await _firestore.collection('children').doc(childId).get();
-      int currentTotal = 0;
-      if (doc.exists &&
-          doc.data() != null &&
-          doc.data()!['totalLessonsCompleted'] != null) {
-        currentTotal = doc.data()!['totalLessonsCompleted'] as int;
-      }
-      final newTotal = currentTotal + 1;
-      await updateTotalLessonsCompleted(childId, newTotal);
-    } catch (e) {
-      logger.e('Failed to increment totalLessonsCompleted: $e');
-    }
-  }
-
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 
@@ -35,6 +14,33 @@ class LessonProvider extends ChangeNotifier {
 
   final List<CourseModel> _courses = [];
   List<CourseModel> get courses => _courses;
+
+  Future<void> incrementTotalLessonsCompleted(context, parentId) async {
+    final childId = await ChildLocalStorage.getCurrentChildId();
+    if (childId == null || parentId == null) {
+      logger.e('Child ID or Parent ID not found');
+      return;
+    }
+    try {
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(parentId)
+              .collection('children')
+              .doc(childId)
+              .get();
+      int currentTotal = 0;
+      if (doc.exists &&
+          doc.data() != null &&
+          doc.data()!['totalLessonsCompleted'] != null) {
+        currentTotal = doc.data()!['totalLessonsCompleted'] as int;
+      }
+      final newTotal = currentTotal + 1;
+      await updateTotalLessonsCompleted(parentId, childId, newTotal);
+    } catch (e) {
+      logger.e('Failed to increment totalLessonsCompleted: $e');
+    }
+  }
 
   Future<void> fetchCourses() async {
     setStatus(DataFetchStatus.loading);
@@ -176,11 +182,21 @@ class LessonProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateTotalLessonsCompleted(String childId, int newTotal) async {
+  Future<void> updateTotalLessonsCompleted(
+    String parentUid,
+    String childId,
+    int newTotal,
+  ) async {
+    logger.d(
+      'Updating totalLessonsCompleted for childId: $childId of parent: $parentUid',
+    );
     try {
-      await _firestore.collection('children').doc(childId).update({
-        'totalLessonsCompleted': newTotal,
-      });
+      await _firestore
+          .collection('users')
+          .doc(parentUid)
+          .collection('children')
+          .doc(childId)
+          .update({'totalLessonsCompleted': newTotal});
       logger.d('Updated totalLessonsCompleted for childId: $childId');
     } catch (e) {
       logger.e(

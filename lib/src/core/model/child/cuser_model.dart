@@ -17,10 +17,9 @@ class ChildUserModel {
   final String parentEmail;
   final String parentUid;
   final String role;
-  final double
-  screenTime; // Legacy field - still used for backward compatibility
-  final ScreenTimeModel?
-  screenTimeTracking; // New detailed screen time tracking
+  final double screenTime;
+  final ScreenTimeModel? screenTimeTracking;
+  final int totalLessonsCompleted;
   final String uid;
 
   ChildUserModel({
@@ -32,6 +31,7 @@ class ChildUserModel {
     required this.parentUid,
     required this.role,
     required this.screenTime,
+    required this.totalLessonsCompleted,
     required this.uid,
     this.screenTimeTracking,
   });
@@ -45,6 +45,7 @@ class ChildUserModel {
     parentUid: json["parent_uid"] ?? "",
     role: json["role"] ?? "",
     screenTime: (json["screen_time"] ?? 0).toDouble(),
+    totalLessonsCompleted: (json["totalLessonsCompleted"] ?? 0) as int,
     uid: json["uid"] ?? "",
     screenTimeTracking:
         json["screenTimeTracking"] != null
@@ -61,6 +62,7 @@ class ChildUserModel {
     "parent_uid": parentUid,
     "role": role,
     "screen_time": screenTime,
+    "totalLessonsCompleted": totalLessonsCompleted,
     "uid": uid,
     if (screenTimeTracking != null)
       "screenTimeTracking": screenTimeTracking!.toJson(),
@@ -87,6 +89,7 @@ class ChildUserModel {
       parentUid: parentUid,
       role: role,
       screenTime: screenTime,
+      totalLessonsCompleted: totalLessonsCompleted,
       uid: uid,
       screenTimeTracking: newScreenTimeTracking,
     );

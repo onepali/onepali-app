@@ -30,6 +30,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     MetricsTrackingHelper.startLearningSessionSafe(context);
 
     Misc.onLayoutRendered(() async {
+      context.read<UserProvider>().fetchOwnProfile();
       final audioProvider = context.read<LessonAudioProvider>();
 
       // Safety check: ensure lesson has content before proceeding
@@ -98,14 +99,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final content = widget.lesson.lessonContent[safeCurrentIndex];
     final isFirst = safeCurrentIndex == 0;
     final isLast = safeCurrentIndex == widget.lesson.lessonContent.length - 1;
-    // Update totalLessonsCompleted in Firebase when last lesson is completed
-    if (isLast && _showGoodRemark) {
-      Future.microtask(() async {
-        if (!context.mounted) return;
-        final lessonProvider = context.read<LessonProvider>();
-        await lessonProvider.incrementTotalLessonsCompleted();
-      });
-    }
+    logger.d(
+      'LessonContentScreen: currentIndex: $safeCurrentIndex, isFirst: $isFirst, isLast: $isLast',
+    );
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: SafeArea(
@@ -211,6 +207,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                           setState(() {
                             _showGoodRemark = true;
                           });
+                          // Update totalLessonsCompleted in Firebase when last lesson is completed
+                          final lessonProvider = context.read<LessonProvider>();
+                          final userProvider = context.read<UserProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            userProvider.userId,
+                          );
                         }
                       },
                       index: safeCurrentIndex,

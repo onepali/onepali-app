@@ -13,22 +13,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedTabIndex = 0;
   String childProfileImage = '';
+  int totalLessonsCompleted = 0;
+
+  // Moved to provider
 
   @override
   void initState() {
     super.initState();
     Misc.onLayoutRendered(() async {
+      final childProvider = context.read<ChildUserProvider>();
+
       await context.read<UserProvider>().fetchOwnProfile();
-      if (!mounted) return;
-      await context.read<ChildUserProvider>().fetchChildUser();
-      fetchChildImage();
+      await childProvider.fetchChildUser();
+      await childProvider.selectDefaultChildIfNeeded(context);
       await _initializeScreenTimeTracking();
+
+      // Use provider method to get current child
+      final currentChild = await childProvider.getCurrentChild();
+      setState(() {
+        childProfileImage = currentChild?.avatarUrl ?? Assets.avatar1;
+        totalLessonsCompleted = currentChild?.totalLessonsCompleted ?? 0;
+      });
     });
   }
 
   @override
   void dispose() {
-    // Stop screen time tracking when dashboard is disposed
     _stopScreenTimeTracking();
     super.dispose();
   }
@@ -81,20 +91,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await ScreenTimeService.instance.stopTracking();
   }
 
-  Future<void> fetchChildImage() async {
-    await ChildLocalStorage.getCurrentAvatarUrl().then((value) {
-      if (value != null && value.isNotEmpty) {
-        setState(() {
-          childProfileImage = value;
-        });
-      } else {
-        setState(() {
-          childProfileImage = Assets.avatar1;
-        });
-      }
-    });
-  }
-
   // Check screen time limit on dashboard refresh
   Future<void> _checkScreenTimeLimit() async {
     logger.i('🔄 DashboardScreen: Checking screen time limit on refresh');
@@ -137,7 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             name: userInfo?.fullName ?? 'User',
             profileImage: childProfileImage,
             totalStars: 0,
-            totalLessonsCompleted: 1,
+            totalLessonsCompleted: totalLessonsCompleted,
             totalChildCount: childCount > 0 ? childCount : 0,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);
