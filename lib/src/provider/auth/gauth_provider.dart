@@ -12,7 +12,7 @@ class GoogleAuthProvider with ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GoogleSignIn googleSignIn = GoogleSignIn.instance;
   GoogleSignInAccount? _user;
   GoogleSignInAccount? get user => _user;
 
@@ -28,17 +28,24 @@ class GoogleAuthProvider with ChangeNotifier {
     setStatus(DataFetchStatus.loading);
 
     try {
-      final GoogleSignInAccount? googleUser = await _signInWithGoogle(context);
-      logger.d('googleUser: $googleUser');
-      if (googleUser == null) return;
+      final GoogleSignInAccount googleUser = await _signInWithGoogle(context);
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final String? accessToken = googleAuth.accessToken;
-      final String? idToken = googleAuth.idToken;
+      // Get authorization for required scopes
+      final scopes = <String>["email", "profile", "openid"];
+      final GoogleSignInClientAuthorization? authorization = await googleUser
+          .authorizationClient
+          .authorizationForScopes(scopes);
+      if (authorization == null) {
+        if (!context.mounted) return;
+        handleError('Failed to retrieve authorization for scopes', context);
+        return;
+      }
 
+      // Get ID token for Firebase
+      final String? idToken = googleUser.authentication.idToken;
+      final String accessToken = authorization.accessToken;
       logger.d('accessToken: $accessToken ---> idToken: $idToken');
-      if (accessToken == null || idToken == null) {
+      if (accessToken.isEmpty || idToken == null) {
         if (!context.mounted) return;
         handleError('Failed to retrieve access or ID token', context);
         return;
@@ -163,22 +170,32 @@ class GoogleAuthProvider with ChangeNotifier {
     Utility.navigate(context, AppRoutes.dashboardScreen);
   }
 
-  Future<GoogleSignInAccount?> _signInWithGoogle(BuildContext context) async {
+  Future<GoogleSignInAccount> _signInWithGoogle(BuildContext context) async {
     try {
-      return await googleSignIn.signIn();
-    } on PlatformException catch (e, s) {
-      logger.e('error ---> $e ----> stack --> $s');
-      _handlePlatformException(context, e);
-      return null;
+      return await googleSignIn.authenticate();
+    } on GoogleSignInException catch (e) {
+      logger.e('error ---> $e');
+      _handleGoogleSignInException(context, e);
+      return Future.error(e);
     }
   }
 
   void _handlePlatformException(BuildContext context, PlatformException e) {
     String message = "An error occurred: ${e.message}";
-    if (e.code == GoogleSignIn.kSignInCanceledError) {
-      message = "Sign in cancelled.";
-    } else if (e.code == GoogleSignIn.kSignInFailedError) {
-      message = "Sign in failed.";
+    handleError(message, context);
+  }
+
+  void _handleGoogleSignInException(
+    BuildContext context,
+    GoogleSignInException e,
+  ) {
+    String message;
+    switch (e.code) {
+      case GoogleSignInExceptionCode.canceled:
+        message = "Sign in cancelled.";
+        break;
+      default:
+        message = "Sign in failed: ${e.description}";
     }
     handleError(message, context);
   }

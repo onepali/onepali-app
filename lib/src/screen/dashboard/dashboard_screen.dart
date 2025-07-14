@@ -32,7 +32,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final currentChild = await childProvider.getCurrentChild();
       setState(() {
         childProfileImage = currentChild?.avatarUrl ?? Assets.avatar1;
-        totalLessonsCompleted = currentChild?.totalLessonsCompleted ?? 0;
+        totalLessonsCompleted =
+            currentChild?.completedLessons?.totalLessonsCompleted ?? 0;
       });
     });
   }

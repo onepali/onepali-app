@@ -214,11 +214,11 @@ class PzMetricsProvider extends ChangeNotifier {
     final currentRate = _metrics!.answerSuccessRate;
     final sessionTotalAnswers = _sessionTotalAnswers.values.fold(
       0,
-      (sum, count) => sum + count,
+      (total, answerCount) => total + answerCount,
     );
     final sessionCorrectAnswers = _sessionCorrectAnswers.values.fold(
       0,
-      (sum, count) => sum + count,
+      (total, answerCount) => total + answerCount,
     );
 
     // Use exponential moving average for smoother rate calculation

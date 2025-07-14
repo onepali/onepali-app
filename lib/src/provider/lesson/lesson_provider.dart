@@ -15,10 +15,19 @@ class LessonProvider extends ChangeNotifier {
   final List<CourseModel> _courses = [];
   List<CourseModel> get courses => _courses;
 
-  Future<void> incrementTotalLessonsCompleted(context, parentId) async {
+  Future<void> incrementTotalLessonsCompleted(
+    BuildContext context,
+    dynamic lessonId,
+    String lessonName,
+  ) async {
     final childId = await ChildLocalStorage.getCurrentChildId();
-    if (childId == null || parentId == null) {
-      logger.e('Child ID or Parent ID not found');
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final parentId = userProvider.userId ?? '';
+    if (childId == null ||
+        parentId.isEmpty ||
+        lessonId == null ||
+        lessonName.isEmpty) {
+      logger.e('Child ID, Parent ID, Lesson ID, or Lesson Name not found');
       return;
     }
     try {
@@ -29,14 +38,40 @@ class LessonProvider extends ChangeNotifier {
               .collection('children')
               .doc(childId)
               .get();
-      int currentTotal = 0;
+
+      List<dynamic> completedLessons = [];
       if (doc.exists &&
           doc.data() != null &&
-          doc.data()!['totalLessonsCompleted'] != null) {
-        currentTotal = doc.data()!['totalLessonsCompleted'] as int;
+          doc.data()!['completedLessons'] != null) {
+        completedLessons = List.from(doc.data()!['completedLessons']);
       }
-      final newTotal = currentTotal + 1;
-      await updateTotalLessonsCompleted(parentId, childId, newTotal);
+
+      // Check if lesson already completed
+      final alreadyCompleted = completedLessons.any(
+        (l) => l['id'].toString() == lessonId.toString(),
+      );
+      if (alreadyCompleted) {
+        logger.i('Lesson $lessonId already completed, not incrementing.');
+        return;
+      }
+
+      // Add lesson info to completedLessons
+      completedLessons.add({'id': lessonId, 'name': lessonName});
+
+      // Update Firestore: nest totalLessonsCompleted and completedLessons under completedLessons object
+      final newTotal = completedLessons.length;
+      await _firestore
+          .collection('users')
+          .doc(parentId)
+          .collection('children')
+          .doc(childId)
+          .update({
+            'completedLessons': {
+              'totalLessonsCompleted': newTotal,
+              'lessons': completedLessons,
+            },
+          });
+      logger.i('Lesson $lessonId completed and merged. Total: $newTotal');
     } catch (e) {
       logger.e('Failed to increment totalLessonsCompleted: $e');
     }

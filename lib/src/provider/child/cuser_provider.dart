@@ -132,9 +132,9 @@ class ChildUserProvider extends ChangeNotifier {
           parentUid: _childUser[idx].parentUid,
           role: _childUser[idx].role,
           screenTime: screenTime,
-          totalLessonsCompleted: _childUser[idx].totalLessonsCompleted,
           uid: childUid,
           screenTimeTracking: newScreenTimeTracking,
+          completedLessons: _childUser[idx].completedLessons,
         );
         notifyListeners();
       }
