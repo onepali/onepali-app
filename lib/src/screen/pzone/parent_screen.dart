@@ -79,7 +79,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       canPop:
           !widget
               .fromScreenTimeLimit, // Prevent back button if from screen time limit
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (widget.fromScreenTimeLimit && !didPop) {
           // If coming from screen time limit dialog and trying to go back, exit app
           logger.i('🚪 Exiting app from parent screen back button');
