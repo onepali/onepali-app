@@ -19,8 +19,8 @@ class ChildUserModel {
   final String role;
   final double screenTime;
   final ScreenTimeModel? screenTimeTracking;
-  final int totalLessonsCompleted;
   final String uid;
+  final CompletedLessons? completedLessons;
 
   ChildUserModel({
     required this.avatarUrl,
@@ -31,9 +31,9 @@ class ChildUserModel {
     required this.parentUid,
     required this.role,
     required this.screenTime,
-    required this.totalLessonsCompleted,
     required this.uid,
     this.screenTimeTracking,
+    this.completedLessons,
   });
 
   factory ChildUserModel.fromJson(Map<String, dynamic> json) => ChildUserModel(
@@ -45,11 +45,14 @@ class ChildUserModel {
     parentUid: json["parent_uid"] ?? "",
     role: json["role"] ?? "",
     screenTime: (json["screen_time"] ?? 0).toDouble(),
-    totalLessonsCompleted: (json["totalLessonsCompleted"] ?? 0) as int,
     uid: json["uid"] ?? "",
     screenTimeTracking:
         json["screenTimeTracking"] != null
             ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
+            : null,
+    completedLessons:
+        json["completedLessons"] != null
+            ? CompletedLessons.fromJson(json["completedLessons"])
             : null,
   );
 
@@ -62,10 +65,11 @@ class ChildUserModel {
     "parent_uid": parentUid,
     "role": role,
     "screen_time": screenTime,
-    "totalLessonsCompleted": totalLessonsCompleted,
     "uid": uid,
     if (screenTimeTracking != null)
       "screenTimeTracking": screenTimeTracking!.toJson(),
+    if (completedLessons != null)
+      "completedLessons": completedLessons!.toJson(),
   };
 
   /// Get the current screen time tracking, creating a default one if null
@@ -89,9 +93,48 @@ class ChildUserModel {
       parentUid: parentUid,
       role: role,
       screenTime: screenTime,
-      totalLessonsCompleted: totalLessonsCompleted,
       uid: uid,
       screenTimeTracking: newScreenTimeTracking,
     );
   }
+}
+
+class CompletedLessons {
+  final int totalLessonsCompleted;
+  final List<CompletedLesson> lessons;
+
+  CompletedLessons({
+    required this.totalLessonsCompleted,
+    required this.lessons,
+  });
+
+  factory CompletedLessons.fromJson(Map<String, dynamic> json) =>
+      CompletedLessons(
+        totalLessonsCompleted: (json["totalLessonsCompleted"] ?? 0) as int,
+        lessons:
+            json["lessons"] != null
+                ? List<CompletedLesson>.from(
+                  (json["lessons"] as List).map(
+                    (x) => CompletedLesson.fromJson(x),
+                  ),
+                )
+                : [],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "totalLessonsCompleted": totalLessonsCompleted,
+    "lessons": List<dynamic>.from(lessons.map((x) => x.toJson())),
+  };
+}
+
+class CompletedLesson {
+  final String id;
+  final String name;
+
+  CompletedLesson({required this.id, required this.name});
+
+  factory CompletedLesson.fromJson(Map<String, dynamic> json) =>
+      CompletedLesson(id: json["id"] ?? "", name: json["name"] ?? "");
+
+  Map<String, dynamic> toJson() => {"id": id, "name": name};
 }

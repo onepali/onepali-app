@@ -76,12 +76,9 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
   Widget build(BuildContext context) {
     final isTablet = PlatformUtility.isTablet(context);
     return PopScope(
-      canPop:
-          !widget
-              .fromScreenTimeLimit, // Prevent back button if from screen time limit
-      onPopInvoked: (didPop) {
+      canPop: !widget.fromScreenTimeLimit,
+      onPopInvokedWithResult: (didPop, result) {
         if (widget.fromScreenTimeLimit && !didPop) {
-          // If coming from screen time limit dialog and trying to go back, exit app
           logger.i('🚪 Exiting app from parent screen back button');
           SystemNavigator.pop();
         }
