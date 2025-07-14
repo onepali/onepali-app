@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:onepali/firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -16,7 +17,9 @@ class AppInitializer {
     WidgetsFlutterBinding.ensureInitialized();
     ConnectivityService().startListening();
 
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     HttpOverrides.global = MyHttpOverrides();
     await NotificationService.initialize();
     tz.initializeTimeZones();
