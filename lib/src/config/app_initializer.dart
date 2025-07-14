@@ -21,10 +21,14 @@ class AppInitializer {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     HttpOverrides.global = MyHttpOverrides();
-    await NotificationService.initialize();
+    if (!kIsWeb) {
+      await NotificationService.initialize();
+    }
     tz.initializeTimeZones();
     final String deviceTimeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(deviceTimeZone));
+    final String fixedTimeZone =
+        deviceTimeZone == 'Asia/Katmandu' ? 'Asia/Kathmandu' : deviceTimeZone;
+    tz.setLocalLocation(tz.getLocation(fixedTimeZone));
 
     await ProviderConfig.pzNotificationProvider.getNotificationSetting();
   }
