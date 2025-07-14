@@ -207,12 +207,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                           setState(() {
                             _showGoodRemark = true;
                           });
-                          // Update totalLessonsCompleted in Firebase when last lesson is completed
                           final lessonProvider = context.read<LessonProvider>();
-                          final userProvider = context.read<UserProvider>();
+                          final lessonId = widget.lesson.id;
+                          final lessonName = widget.lesson.lessonName;
                           await lessonProvider.incrementTotalLessonsCompleted(
                             context,
-                            userProvider.userId,
+                            lessonId,
+                            lessonName,
                           );
                         }
                       },
