@@ -359,7 +359,7 @@ class ScreenTimeService extends ChangeNotifier {
           }
         });
       },
-      confirmButtonText: 'Ok',
+      confirmButtonText: 'Extend Time',
       barrierDismissible: false,
       hasSingleButton: true,
     );
