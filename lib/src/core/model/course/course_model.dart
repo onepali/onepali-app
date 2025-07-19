@@ -159,6 +159,8 @@ class LessonContent {
   final String audio;
   final String wordAudio;
   final String tooltip;
+  final String correctAnswer;
+  final String type;
 
   LessonContent({
     required this.nameEn,
@@ -168,6 +170,8 @@ class LessonContent {
     required this.audio,
     required this.wordAudio,
     required this.tooltip,
+    required this.correctAnswer,
+    required this.type,
   });
 
   factory LessonContent.fromJson(Map<String, dynamic> json) => LessonContent(
@@ -178,6 +182,8 @@ class LessonContent {
     audio: json["audio"] ?? "",
     wordAudio: json["word_audio"] ?? "",
     tooltip: json["tooltip"] ?? "",
+    correctAnswer: json["correct_answer"] ?? "",
+    type: json["type"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -188,6 +194,8 @@ class LessonContent {
     "audio": audio,
     "word_audio": wordAudio,
     "tooltip": tooltip,
+    "correct_answer": correctAnswer,
+    "type": type,
   };
 }
 
