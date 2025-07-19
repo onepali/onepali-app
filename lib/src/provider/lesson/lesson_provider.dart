@@ -88,13 +88,30 @@ class LessonProvider extends ChangeNotifier {
       return;
     }
 
+    logger.d('User authenticated: ${user.uid}');
+
     try {
-      final querySnapshot = await _firestore.collection('courses').get();
+      logger.d('Attempting to fetch courses from Firestore...');
+      final querySnapshot =
+          await _firestore.collection(AppConstants.coursesCollection).get();
+      logger.d(
+        'Firestore query returned ${querySnapshot.docs.length} course documents',
+      );
       _courses.clear();
       // Collect all course docs into a single array for CourseModel
       final List<Map<String, dynamic>> allCourses = [];
       for (final doc in querySnapshot.docs) {
         final data = doc.data();
+        logger.d(
+          'Processing course document: ${doc.id} with data keys: ${data.keys.toList()}',
+        );
+
+        // Check if the document has the expected structure
+        if (data.isEmpty) {
+          logger.w('Document ${doc.id} is empty');
+          continue;
+        }
+
         // Defensive: ensure chapters, lessons, lesson_content are always List<Map<String, dynamic>>
         if (data['chapters'] is List) {
           data['chapters'] =
@@ -134,13 +151,23 @@ class LessonProvider extends ChangeNotifier {
         }
         allCourses.add(data);
       }
+      logger.d('Total courses processed: ${allCourses.length}');
       final courseModelJson = {'courses': allCourses};
       try {
-        _courses.add(CourseModel.fromJson(courseModelJson));
-      } catch (e) {
+        if (allCourses.isNotEmpty) {
+          _courses.add(CourseModel.fromJson(courseModelJson));
+          logger.d(
+            'Successfully parsed CourseModel with ${allCourses.length} courses',
+          );
+        } else {
+          logger.w('No courses found in Firestore to parse');
+        }
+      } catch (e, stackTrace) {
         logger.e(
-          'Error parsing all courses: $e\nData: ${json.encode(courseModelJson)}',
+          'Error parsing all courses: $e\nStackTrace: $stackTrace\nData: ${json.encode(courseModelJson)}',
         );
+        // Still set success status but with empty courses
+        // This prevents the UI from showing error state when data exists but can't be parsed
       }
       logger.d(
         'LessonProvider: fetched ${_courses.length} courses -------- result: ${json.encode(_courses)}',
@@ -148,6 +175,13 @@ class LessonProvider extends ChangeNotifier {
       setStatus(DataFetchStatus.success);
     } catch (e, s) {
       logger.e('Error fetching courses: $e--------- $s');
+      // Check if it's a permission/authentication error
+      if (e.toString().contains('permission') ||
+          e.toString().contains('auth')) {
+        logger.e(
+          'Possible authentication or permission issue accessing courses collection',
+        );
+      }
       handleError(e.toString());
     }
   }

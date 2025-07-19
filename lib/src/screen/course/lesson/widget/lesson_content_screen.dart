@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
+import 'tap_send_lesson_card.dart';
 
 class LessonContentScreen extends StatefulWidget {
   final Lesson lesson;
@@ -49,20 +50,34 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         'LessonContentScreen: initializing with index $safeIndex (requested: ${widget.initialIndex}, max: $maxIndex)',
       );
 
+      // Reset audio state first to ensure clean start
+      audioProvider.resetAudioState();
       audioProvider.resetIndex(safeIndex, widget.lesson.lessonContent.length);
 
       final content = widget.lesson.lessonContent[safeIndex];
-      if (content.audio.isNotEmpty) {
-        await audioProvider.playContentAudio(
-          widget.lesson.lessonContent,
-          audioSourceType: AudioSourceType.network,
-        );
+      if (content.type == 'tap_send') {
+        // For tap_send lessons, play word audio first
+        if (content.wordAudio.isNotEmpty) {
+          await audioProvider.playWordAudio(content.wordAudio);
+        }
+      } else {
+        // For regular lessons, play content audio
+        if (content.audio.isNotEmpty) {
+          await audioProvider.playContentAudio(
+            widget.lesson.lessonContent,
+            audioSourceType: AudioSourceType.network,
+          );
+        }
       }
     });
   }
 
   @override
   void dispose() {
+    // Clean up audio when leaving the screen
+    final audioProvider = context.read<LessonAudioProvider>();
+    audioProvider.stopAudio();
+
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
   }
@@ -99,8 +114,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final content = widget.lesson.lessonContent[safeCurrentIndex];
     final isFirst = safeCurrentIndex == 0;
     final isLast = safeCurrentIndex == widget.lesson.lessonContent.length - 1;
+    final isTapSendType = content.type == 'tap_send';
+
     logger.d(
-      'LessonContentScreen: currentIndex: $safeCurrentIndex, isFirst: $isFirst, isLast: $isLast',
+      'LessonContentScreen: currentIndex: $safeCurrentIndex, isFirst: $isFirst, isLast: $isLast, type: ${content.type}',
     );
     return Scaffold(
       backgroundColor: AppColors.kWhite,
@@ -124,7 +141,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (!isFirst)
+                  if (!isFirst && !isTapSendType)
                     Container(
                       height: 17.h(context),
                       width: 17.h(context),
@@ -172,55 +189,172 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       ),
                     ),
                   Expanded(
-                    child: LessonContentCard(
-                      content: content,
-                      isPlaying: audioProvider.isPlaying,
-                      hasSound: widget.hasSound,
-                      onPlay: () async {
-                        // Always play from start when tapped
-                        await audioProvider.playContentAudio(
-                          widget.lesson.lessonContent,
-                          audioSourceType: AudioSourceType.network,
-                          forceReplay: true,
-                        );
-                        if (!context.mounted) return;
-                        final recommendedLessonProvider =
-                            context.read<RecommendedLessonProvider>();
-                        final prefs = SharedPreferencesService();
-                        final childId =
-                            await prefs.getStringPref(
-                              AppConstants.childIdKey,
-                            ) ??
-                            '';
-                        if (childId.isNotEmpty) {
-                          await recommendedLessonProvider
-                              .saveOrUpdateLessonProgress(
-                                childId: childId,
-                                lessonId: widget.lesson.chapterId.toString(),
-                                progress: safeCurrentIndex + 1,
-                                title: content.nameNp,
-                                image: content.image,
-                              );
-                        }
-                        if (safeCurrentIndex ==
-                            widget.lesson.lessonContent.length - 1) {
-                          setState(() {
-                            _showGoodRemark = true;
-                          });
-                          final lessonProvider = context.read<LessonProvider>();
-                          final lessonId = widget.lesson.id;
-                          final lessonName = widget.lesson.lessonName;
-                          await lessonProvider.incrementTotalLessonsCompleted(
-                            context,
-                            lessonId,
-                            lessonName,
-                          );
-                        }
-                      },
-                      index: safeCurrentIndex,
-                    ),
+                    child:
+                        widget.lesson.lessonContent[safeCurrentIndex].type ==
+                                'tap_send'
+                            ? TapSendLessonCard(
+                              content: content,
+                              isPlaying: audioProvider.isPlaying,
+                              isLastItem:
+                                  safeCurrentIndex ==
+                                  widget.lesson.lessonContent.length - 1,
+                              onCorrectAnswer: () async {
+                                // Handle correct answer for non-last items
+                                final recommendedLessonProvider =
+                                    context.read<RecommendedLessonProvider>();
+                                final prefs = SharedPreferencesService();
+                                final childId =
+                                    await prefs.getStringPref(
+                                      AppConstants.childIdKey,
+                                    ) ??
+                                    '';
+                                if (childId.isNotEmpty) {
+                                  await recommendedLessonProvider
+                                      .saveOrUpdateLessonProgress(
+                                        childId: childId,
+                                        lessonId:
+                                            widget.lesson.chapterId.toString(),
+                                        progress: safeCurrentIndex + 1,
+                                        title: content.nameNp,
+                                        image: content.image,
+                                      );
+                                }
+
+                                // If last item, exit lesson instead of navigating
+                                if (safeCurrentIndex ==
+                                    widget.lesson.lessonContent.length - 1) {
+                                  setState(() {
+                                    _showGoodRemark = true;
+                                  });
+                                  final lessonProvider =
+                                      context.read<LessonProvider>();
+                                  final lessonId = widget.lesson.id;
+                                  final lessonName = widget.lesson.lessonName;
+                                  await lessonProvider
+                                      .incrementTotalLessonsCompleted(
+                                        context,
+                                        lessonId,
+                                        lessonName,
+                                      );
+                                  Future.delayed(
+                                    const Duration(seconds: 4),
+                                    () {
+                                      if (mounted) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                  );
+                                } else {
+                                  // Move to next content
+                                  audioProvider.navigateToNextContent(
+                                    widget.lesson.lessonContent,
+                                    context,
+                                    widget.lesson,
+                                  );
+                                }
+                              },
+                              onLessonComplete: () async {
+                                // Handle lesson completion for last item
+                                final recommendedLessonProvider =
+                                    context.read<RecommendedLessonProvider>();
+                                final prefs = SharedPreferencesService();
+                                final childId =
+                                    await prefs.getStringPref(
+                                      AppConstants.childIdKey,
+                                    ) ??
+                                    '';
+                                if (childId.isNotEmpty) {
+                                  await recommendedLessonProvider
+                                      .saveOrUpdateLessonProgress(
+                                        childId: childId,
+                                        lessonId:
+                                            widget.lesson.chapterId.toString(),
+                                        progress: safeCurrentIndex + 1,
+                                        title: content.nameNp,
+                                        image: content.image,
+                                      );
+                                }
+
+                                // Mark lesson as completed
+                                setState(() {
+                                  _showGoodRemark = true;
+                                });
+
+                                final lessonProvider =
+                                    context.read<LessonProvider>();
+                                final lessonId = widget.lesson.id;
+                                final lessonName = widget.lesson.lessonName;
+                                await lessonProvider
+                                    .incrementTotalLessonsCompleted(
+                                      context,
+                                      lessonId,
+                                      lessonName,
+                                    );
+
+                                // Reset audio state for next play
+                                audioProvider.resetAudioState();
+
+                                // Auto-hide after delay and close lesson
+                                Future.delayed(const Duration(seconds: 4), () {
+                                  if (mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                });
+                              },
+                              index: safeCurrentIndex,
+                            )
+                            : LessonContentCard(
+                              content: content,
+                              isPlaying: audioProvider.isPlaying,
+                              hasSound: widget.hasSound,
+                              onPlay: () async {
+                                // Always play from start when tapped
+                                await audioProvider.playContentAudio(
+                                  widget.lesson.lessonContent,
+                                  audioSourceType: AudioSourceType.network,
+                                  forceReplay: true,
+                                );
+                                if (!context.mounted) return;
+                                final recommendedLessonProvider =
+                                    context.read<RecommendedLessonProvider>();
+                                final prefs = SharedPreferencesService();
+                                final childId =
+                                    await prefs.getStringPref(
+                                      AppConstants.childIdKey,
+                                    ) ??
+                                    '';
+                                if (childId.isNotEmpty) {
+                                  await recommendedLessonProvider
+                                      .saveOrUpdateLessonProgress(
+                                        childId: childId,
+                                        lessonId:
+                                            widget.lesson.chapterId.toString(),
+                                        progress: safeCurrentIndex + 1,
+                                        title: content.nameNp,
+                                        image: content.image,
+                                      );
+                                }
+                                if (safeCurrentIndex ==
+                                    widget.lesson.lessonContent.length - 1) {
+                                  setState(() {
+                                    _showGoodRemark = true;
+                                  });
+                                  final lessonProvider =
+                                      context.read<LessonProvider>();
+                                  final lessonId = widget.lesson.id;
+                                  final lessonName = widget.lesson.lessonName;
+                                  await lessonProvider
+                                      .incrementTotalLessonsCompleted(
+                                        context,
+                                        lessonId,
+                                        lessonName,
+                                      );
+                                }
+                              },
+                              index: safeCurrentIndex,
+                            ),
                   ),
-                  if (!isLast)
+                  if (!isLast && !isTapSendType)
                     Container(
                       height: 17.h(context),
                       width: 17.h(context),

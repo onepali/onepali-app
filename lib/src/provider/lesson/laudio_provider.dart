@@ -176,6 +176,103 @@ class LessonAudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Play word audio for tap_send lesson type
+  Future<void> playWordAudio(String audioPath) async {
+    if (audioPath.isEmpty) return;
+
+    _isPlaying = true;
+    notifyListeners();
+
+    try {
+      // Try to get from cache
+      final file = await DefaultCacheManager().getSingleFile(audioPath);
+      String sourcePath = audioPath;
+      AudioSourceType sourceType = AudioSourceType.network;
+
+      if (file.existsSync()) {
+        sourcePath = file.path;
+        sourceType = AudioSourceType.asset;
+        logger.i('Playing word audio from cache: $sourcePath');
+      } else {
+        logger.i('Word audio not cached, will stream from network: $audioPath');
+      }
+
+      final audioWidget = CustomAudioWidget(
+        audioPath: sourcePath,
+        audioSourceType: sourceType,
+      );
+
+      await audioWidget.play();
+    } catch (e) {
+      logger.e('Error playing word audio: $e');
+    } finally {
+      _isPlaying = false;
+      notifyListeners();
+    }
+  }
+
+  /// Play option audio for tap_send lesson type
+  Future<void> playOptionAudio(String audioPath) async {
+    if (audioPath.isEmpty) return;
+
+    try {
+      // Try to get from cache
+      final file = await DefaultCacheManager().getSingleFile(audioPath);
+      String sourcePath = audioPath;
+      AudioSourceType sourceType = AudioSourceType.network;
+
+      if (file.existsSync()) {
+        sourcePath = file.path;
+        sourceType = AudioSourceType.asset;
+        logger.i('Playing option audio from cache: $sourcePath');
+      } else {
+        logger.i(
+          'Option audio not cached, will stream from network: $audioPath',
+        );
+      }
+
+      final audioWidget = CustomAudioWidget(
+        audioPath: sourcePath,
+        audioSourceType: sourceType,
+      );
+
+      await audioWidget.play();
+    } catch (e) {
+      logger.e('Error playing option audio: $e');
+    }
+  }
+
+  /// Stop all audio playback
+  Future<void> stopAudio() async {
+    try {
+      await _audioPlayer1.stop();
+      await _audioPlayer2.stop();
+      _isPlaying = false;
+      notifyListeners();
+      logger.d('Audio stopped and reset');
+    } catch (e) {
+      logger.e('Error stopping audio: $e');
+    }
+  }
+
+  /// Clear audio cache
+  Future<void> clearCache() async {
+    try {
+      await DefaultCacheManager().emptyCache();
+      logger.d('Audio cache cleared');
+    } catch (e) {
+      logger.e('Error clearing audio cache: $e');
+    }
+  }
+
+  /// Reset audio state to initial state
+  void resetAudioState() {
+    _isPlaying = false;
+    _currentIndex = 0;
+    notifyListeners();
+    logger.d('Audio state reset to initial state');
+  }
+
   @override
   void dispose() {
     _audioPlayer1.dispose();
