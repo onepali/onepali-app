@@ -47,8 +47,8 @@ class RecommendedLessonProvider extends ChangeNotifier {
       _hasData = _recommendedLessons.isNotEmpty;
       logger.d('Fetched ${_recommendedLessons.length} recommended lessons');
       _status = DataFetchStatus.success;
-    } catch (e, stack) {
-      logger.e('Error fetching recommended lessons: $e\n$stack');
+    } catch (e, s) {
+      logger.e('Error fetching recommended lessons: $e\n$s');
       _recommendedLessons = [];
       _hasData = false;
       _status = DataFetchStatus.error;
