@@ -73,6 +73,7 @@ class Assets {
   static String dataSvg = 'data'.svg;
   static String connectionSvg = 'connection'.svg;
   static String timeUpSvg = 'time_up'.svg;
+  static String guestAvatar = 'guest_avatar'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
