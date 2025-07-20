@@ -11,6 +11,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AuthProviderType? authType;
   final BuildContext context;
   final int totalLessonsCompleted;
+  final bool isGuest;
 
   const UserAppBar({
     super.key,
@@ -22,6 +23,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.authType,
     this.totalChildCount = 0,
     required this.context,
+    this.isGuest = false,
 
     this.totalLessonsCompleted = 0,
   }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
@@ -53,53 +55,69 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Row(
                     children: [
                       IconButton(
-                        onPressed:
-                            () => Utility.navigateMaterialRoute(
+                        onPressed: () {
+                          if (!isGuest) {
+                            Utility.navigateMaterialRoute(
                               context,
                               DrawerScreen(
                                 data: childData,
                                 totalChildCount: totalChildCount,
                               ),
-                            ),
+                            );
+                          } else {
+                            Utility.navigate(context, AppRoutes.systemScreen);
+                          }
+                        },
                         icon: CustomImage(
-                          profileImage,
+                          isGuest ? Assets.userAvatar : profileImage,
                           height: 45,
                           width: 45,
                           circular: true,
                           isProfileImage: true,
-                          imageType: CustomImageType.network,
+                          imageType:
+                              isGuest
+                                  ? CustomImageType.local
+                                  : CustomImageType.network,
                         ),
                       ),
                       Gaps.horizontalGapOf(10),
-                      if (totalLessonsCompleted == 5) ...[
-                        customInkwell(
-                          onTap: () {
-                            Utility.navigate(
-                              context,
-                              AppRoutes.chooseRewardScreen,
-                            );
-                          },
-                          child: LottieHelper.fromSource(
-                            path: Assets.starRewardLottie,
-                            height: 100,
-                            width: 100,
+                      if (isGuest)
+                        Text(
+                          name,
+                          style: AppStyles.text16PxBold.copyWith(
+                            color: AppColors.kPitchBlack,
                           ),
                         ),
-                      ] else ...[
-                        customInkwell(
-                          onTap: () {
-                            Utility.navigate(
-                              context,
-                              AppRoutes.rewardCollectionScreen,
-                            );
-                          },
-                          child: SvgHelper.fromSource(
-                            path: Assets.reward,
-                            height: 40,
-                            width: 40,
+                      if (!isGuest)
+                        if (totalLessonsCompleted == 5) ...[
+                          customInkwell(
+                            onTap: () {
+                              Utility.navigate(
+                                context,
+                                AppRoutes.chooseRewardScreen,
+                              );
+                            },
+                            child: LottieHelper.fromSource(
+                              path: Assets.starRewardLottie,
+                              height: 100,
+                              width: 100,
+                            ),
                           ),
-                        ),
-                      ],
+                        ] else ...[
+                          customInkwell(
+                            onTap: () {
+                              Utility.navigate(
+                                context,
+                                AppRoutes.rewardCollectionScreen,
+                              );
+                            },
+                            child: SvgHelper.fromSource(
+                              path: Assets.reward,
+                              height: 40,
+                              width: 40,
+                            ),
+                          ),
+                        ],
                     ],
                   ),
                   Row(
@@ -129,21 +147,29 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed:
-                            () => Utility.navigateMaterialRoute(
+                        onPressed: () {
+                          if (!isGuest) {
+                            Utility.navigateMaterialRoute(
                               context,
                               TabDrawerScreen(
                                 data: childData,
                                 totalChildCount: totalChildCount,
                               ),
-                            ),
+                            );
+                          } else {
+                            Utility.navigate(context, AppRoutes.systemScreen);
+                          }
+                        },
                         icon: CustomImage(
-                          profileImage,
+                          isGuest ? Assets.userAvatar : profileImage,
                           height: 45,
                           width: 45,
                           circular: true,
                           isProfileImage: true,
-                          imageType: CustomImageType.network,
+                          imageType:
+                              isGuest
+                                  ? CustomImageType.local
+                                  : CustomImageType.network,
                         ),
                       ),
                       Row(
@@ -167,7 +193,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                   // Gaps.verticalGapOf(8),
-                  buildProgressBar(),
+                  if (!isGuest) buildProgressBar(),
                 ],
               ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
 
 class GuestDashboardScreen extends StatefulWidget {
   const GuestDashboardScreen({super.key});
@@ -9,7 +10,23 @@ class GuestDashboardScreen extends StatefulWidget {
 
 class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(body: const Center(child: Text('GuestDashboardScreen')));
+    return Scaffold(
+      appBar: UserAppBar(
+        name: 'Guest',
+        profileImage: '',
+        totalStars: 0,
+        onTabSelected: (tab) {},
+        childData: [],
+        context: context,
+        isGuest: true,
+      ),
+      body: const Center(child: Text('GuestDashboardScreen')),
+    );
   }
 }
