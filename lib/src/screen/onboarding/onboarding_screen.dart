@@ -45,7 +45,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 color: AppColors.kBlack,
               ),
               Gaps.verticalGapOf(8),
-              Text(context.tr('tagline'), style: AppStyles.text14PxMedium),
+              Text(
+                context.tr('tagline'),
+                style: AppStyles.text14PxMedium.copyWith(
+                  color: AppColors.kPrimaryColor,
+                ),
+              ),
               const Spacer(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
