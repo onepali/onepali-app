@@ -12,6 +12,9 @@ class Assets {
   static String rewardPreviewBackground = 'reward_preview_bg'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
+  // Seal
+  static String kidSafeSeal = 'kid_safe_seal'.png;
+
   /// [Image] assets
   static String splashImage = 'splash'.gif;
 
