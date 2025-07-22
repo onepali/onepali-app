@@ -19,8 +19,10 @@ class SongProvider extends ChangeNotifier {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
-    if (user == null) {
-      logger.e('User is not authenticated.');
+    bool isGuest = GuestUtil.isGuestUser();
+
+    if (user == null && !isGuest) {
+      logger.e('User is not authenticated and not a guest user.');
       handleError("User not signed in.");
       return;
     }

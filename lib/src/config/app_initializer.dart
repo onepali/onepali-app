@@ -31,6 +31,9 @@ class AppInitializer {
     tz.setLocalLocation(tz.getLocation(fixedTimeZone));
 
     await ProviderConfig.pzNotificationProvider.getNotificationSetting();
+
+    // Initialize guest user status
+    await GuestUtil.init();
   }
 
   static Future<bool> checkUserAuthentication() async {

@@ -27,6 +27,12 @@ class StoryProvider extends ChangeNotifier {
     _status = DataFetchStatus.loading;
     notifyListeners();
     try {
+      // Check if it's a guest user - we'll still fetch stories but log it
+      bool isGuest = GuestUtil.isGuestUser();
+      if (isGuest) {
+        logger.i('Guest user detected. Fetching stories for guest mode.');
+      }
+
       final result = await _repo.fetchStories();
       _stories.clear();
       _stories.addAll(result);
@@ -47,7 +53,9 @@ class StoryProvider extends ChangeNotifier {
       _status = DataFetchStatus.success;
       notifyListeners();
     } catch (e) {
+      logger.e('Error fetching stories: $e');
       _status = DataFetchStatus.error;
+      showCustomToaster(e.toString(), isError: true);
       notifyListeners();
     }
   }
@@ -63,6 +71,20 @@ class StoryProvider extends ChangeNotifier {
     if (_currentContentIndex < _currentStory!.content.length) {
       _currentContentIndex++;
       notifyListeners();
+
+      // Skip progress tracking for guest users
+      bool isGuest = GuestUtil.isGuestUser();
+      if (isGuest) {
+        logger.i('Guest user detected. Skipping story progress tracking.');
+        // Play audio for the new content after navigation
+        if (_currentContentIndex > 0 &&
+            _currentContentIndex <= _currentStory!.content.length) {
+          final content = _currentStory!.content[_currentContentIndex - 1];
+          await _playAudioCached(content.audio);
+        }
+        return;
+      }
+
       final authState = Provider.of<AuthState>(context, listen: false);
       final childId = authState.currentChildId ?? '';
       if (childId.isNotEmpty) {
@@ -216,6 +238,14 @@ class StoryProvider extends ChangeNotifier {
     BuildContext context,
   ) async {
     if (!context.mounted) return;
+
+    // Skip for guest users
+    bool isGuest = GuestUtil.isGuestUser();
+    if (isGuest) {
+      logger.i('Guest user detected. Skipping recommended stories fetch.');
+      return;
+    }
+
     final recommendedStoryProvider = Provider.of<RecommendedStoryProvider>(
       context,
       listen: false,

@@ -10,6 +10,7 @@ class CourseCard extends StatelessWidget {
   final bool isCompleted;
   final VoidCallback? onTap;
   final Widget? trailing;
+  final bool isGuestUser;
 
   const CourseCard({
     super.key,
@@ -20,6 +21,7 @@ class CourseCard extends StatelessWidget {
     this.isCompleted = false,
     this.onTap,
     this.trailing,
+    this.isGuestUser = false,
   });
 
   @override
@@ -89,7 +91,7 @@ class CourseCard extends StatelessWidget {
               Positioned(
                 top: 12,
                 right: 12,
-                child: Icon(Icons.lock, color: Colors.black, size: 22),
+                child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
               ),
             if (trailing != null) trailing!,
           ],

@@ -21,12 +21,12 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
   }
 
   setGuestLogged(bool isLogged) async {
-    await ChildLocalStorage.setGuestLogged(isLogged);
+    await GuestUtil.setGuestUser(isLogged);
     logger.i('👤 Guest logged ${isLogged ? 'in' : 'out'} successfully');
   }
 
   getGuestLoggedStatus() async {
-    final isLogged = await ChildLocalStorage.getGuestLogged();
+    final isLogged = GuestUtil.isGuestUser();
     logger.i('👤 Guest logged ${isLogged ? 'in' : 'out'} status retrieved');
     setState(() {
       isGuestLogged = isLogged;
@@ -38,8 +38,9 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (result, value) {
-        setGuestLogged(false);
+      onPopInvokedWithResult: (result, value) async {
+        await setGuestLogged(false);
+        Utility.navigate(context, AppRoutes.onboardingScreen);
       },
       child: Scaffold(
         key: _scaffoldKey,
@@ -60,7 +61,7 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
           context: context,
           isGuest: true,
         ),
-        body: const Center(child: Text('GuestDashboardScreen')),
+        body: HomeScreen(selectedTabIndex: _selectedTabIndex),
       ),
     );
   }

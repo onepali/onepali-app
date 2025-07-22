@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/navigator_key.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -179,25 +178,5 @@ class Utility {
         'fcmToken': newToken,
       }, SetOptions(merge: true));
     });
-  }
-
-  /// Show screen time limit exceeded dialog
-  Future<void> showGuestDialog() async {
-    BuildContext context =
-        navigatorKey.currentContext ?? navigatorKey.currentState!.context;
-
-    await DialogManager.showCustomDialog(
-      context: context,
-      title: 'Save your progress and unlock more lessons!',
-      content: '',
-      image: Assets.guestAvatar,
-      isSvg: true,
-      onConfirm: () {
-        Utility.navigate(context, AppRoutes.registerScreen);
-      },
-      confirmButtonText: 'Create account',
-      barrierDismissible: false,
-      hasSingleButton: true,
-    );
   }
 }
