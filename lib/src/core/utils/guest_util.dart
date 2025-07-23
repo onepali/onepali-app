@@ -9,6 +9,7 @@ class GuestUtil {
   }
 
   static bool isGuestUser() {
+    logger.d('🔍 Checking guest user status: ${_isGuestUser ?? false}');
     return _isGuestUser ?? false;
   }
 

@@ -12,25 +12,40 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedTabIndex = 0;
   bool isGuestLogged = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    setGuestLogged(true);
-    getGuestLoggedStatus();
+    _initializeGuestUser();
   }
 
-  setGuestLogged(bool isLogged) async {
+  Future<void> _initializeGuestUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await setGuestLogged(true);
+    await getGuestLoggedStatus();
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> setGuestLogged(bool isLogged) async {
     await GuestUtil.setGuestUser(isLogged);
     logger.i('👤 Guest logged ${isLogged ? 'in' : 'out'} successfully');
   }
 
-  getGuestLoggedStatus() async {
+  Future<bool> getGuestLoggedStatus() async {
     final isLogged = GuestUtil.isGuestUser();
     logger.i('👤 Guest logged ${isLogged ? 'in' : 'out'} status retrieved');
-    setState(() {
-      isGuestLogged = isLogged;
-    });
+    if (mounted) {
+      setState(() {
+        isGuestLogged = isLogged;
+      });
+    }
     return isLogged;
   }
 
@@ -61,7 +76,10 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
           context: context,
           isGuest: true,
         ),
-        body: HomeScreen(selectedTabIndex: _selectedTabIndex),
+        body:
+            _isLoading
+                ? CustomLoader()
+                : HomeScreen(selectedTabIndex: _selectedTabIndex),
       ),
     );
   }
