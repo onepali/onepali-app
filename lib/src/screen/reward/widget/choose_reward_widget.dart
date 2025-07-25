@@ -64,7 +64,11 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
             child: SizedBox(
               width: stickerSize,
               height: stickerSize,
-              child: CustomImage(rewards[index].image, cover: false),
+              child: SvgHelper.fromSource(
+                path: rewards[index].imageOutline ?? rewards[index].image,
+                fit: BoxFit.contain,
+                type: SvgSourceType.network,
+              ),
             ),
           ),
         );
@@ -86,46 +90,48 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final double titlePaddingV = isMobileLandscape ? 10 : 18;
     final double gap = isMobileLandscape ? 24 : 40;
 
-    return Scaffold(
-      backgroundColor: AppColors.kBlack,
-      body: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(Assets.rewardBackground),
-                fit: BoxFit.cover,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.kBlack,
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(Assets.rewardBackground),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: titlePaddingH,
-                    vertical: titlePaddingV,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kWhite,
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  child: Text(
-                    'Choose your new sticker!',
-                    style: AppStyles.text22PxMedium.copyWith(
-                      fontSize: titleFontSize,
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: titlePaddingH,
+                      vertical: titlePaddingV,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.kWhite,
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    child: Text(
+                      'Choose your new sticker!',
+                      style: AppStyles.text22PxMedium.copyWith(
+                        fontSize: titleFontSize,
+                      ),
                     ),
                   ),
-                ),
-                Gaps.verticalGapOf(gap),
-                stickerGrid(rewards),
-              ],
+                  Gaps.verticalGapOf(gap),
+                  stickerGrid(rewards),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

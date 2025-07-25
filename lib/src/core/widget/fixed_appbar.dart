@@ -107,8 +107,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 },
                                 child: LottieHelper.fromSource(
                                   path: Assets.starRewardLottie,
-                                  height: 100,
-                                  width: 100,
+                                  height: 65,
+                                  width: 65,
                                 ),
                               ),
                             ] else ...[

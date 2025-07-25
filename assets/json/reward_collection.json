@@ -3,27 +3,30 @@
         "id": "1",
         "title_np": "हिउँ चितुवा",
         "title_en": "Snow Leopard",
-        "description_np": "हिउँ चितुवा हिमाली क्षेत्रमा पाइने जनावर हो।",
-        "description_en": "Snow Leopard is an animal found in the Himalayan region.",
+        "description_np": "हिउँ चितुवा एक अद्भुत जनावर हो। यसले ५० फिट (१५ मिटर) सम्मको उचाइमा उडान भर्न सक्छ! यो स्कूल बसको लम्बाइ जस्तै लामो छ।",
+        "description_en": "Snow leopards can leap up to 50 feet (15 meters) in one jump! That's as long as a school bus.",
         "s_audio": "assets/audio/snow_leopard.mp3",
-        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow%20leopard_with%20shadow.svg?alt=media&token=bf6994cb-7fd9-4d02-ba21-20f30ec769d6"
+        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow%20leopard_with%20shadow.svg?alt=media&token=bf6994cb-7fd9-4d02-ba21-20f30ec769d6",
+        "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow_leopard_outline.svg?alt=media&token=3f4b6c8e-4d5a-4b7c-9f0e-2d1f3c5b6c8e"
     },
     {
         "id": "2",
         "title_np": "रातो पांडा",
         "title_en": "Red Panda",
-        "description_np": "रातो पांडा नेपालमा पाइने दुर्लभ जनावर हो।",
-        "description_en": "Red Panda is a rare animal found in Nepal.",
+        "description_np": "रातो पांडा एक प्यारा जनावर हो। यसका रिंगदार पुच्छरहरू हुन्छन्! यसका पुच्छरहरूले यसलाई सन्तुलन बनाउन र तातो रहन मद्दत गर्छन्।",
+        "description_en": "They have fluffy ringed tails! Their tails help them balance and stay warm.",
         "s_audio": "assets/audio/red_panda.mp3",
-        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fred_panda_with%20shadow.svg?alt=media&token=9e99036d-0c54-40ed-85d3-6511f0d5aacf"
+        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fred_panda_with%20shadow.svg?alt=media&token=9e99036d-0c54-40ed-85d3-6511f0d5aacf",
+        "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fred_panda_outline.svg?alt=media&token=1f3b6c8e-4d5a-4b7c-9f0e-2d1f3c5b6c8e"
     },
     {
         "id": "3",
-        "title_np": "डाफ्ने",
-        "title_en": "Daphne",
-        "description_np": "डाफ्ने नेपालको राष्ट्रिय फूल हो।",
-        "description_en": "Daphne is Nepal's national flower.",
+        "title_np": "डान्फे",
+        "title_en": "Danphe",
+        "description_np": "डान्फे एक रंगीन चरा हो। यसका नीलो, हरियो, र सुनौलो पंखहरू छन्—जुन आकाशमा उड्ने इन्द्रेणी जस्तै देखिन्छ!",
+        "description_en": "Danphe is super colorful bird! It shines with blue, green, and gold feathers—like a flying rainbow!",
         "s_audio": "assets/audio/daphne.mp3",
-        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fdaphne_with%20shadow.svg?alt=media&token=02f49cc3-216d-4ad0-add5-5c88d5640f7a"
+        "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fdaphne_with%20shadow.svg?alt=media&token=02f49cc3-216d-4ad0-add5-5c88d5640f7a",
+        "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fdanfe_outline.svg?alt=media&token=c70f3622-ae3e-4513-b137-8fe584c56249"
     }
 ]
