@@ -301,13 +301,13 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                             ),
                           ],
                         ),
-                        CustomImage(
-                          Assets.kidSafeSeal,
-                          height: 40,
-                          width: 110,
-                          imageType: CustomImageType.local,
-                          cover: false,
-                        ),
+                        // CustomImage(
+                        //   Assets.kidSafeSeal,
+                        //   height: 40,
+                        //   width: 110,
+                        //   imageType: CustomImageType.local,
+                        //   cover: false,
+                        // ),
                       ],
                     )
                     : Row(
@@ -361,13 +361,13 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                                     : AppStyles.text20PxMedium,
                           ),
                         ),
-                        CustomImage(
-                          Assets.kidSafeSeal,
-                          height: 60,
-                          width: 100,
-                          imageType: CustomImageType.local,
-                          cover: false,
-                        ),
+                        // CustomImage(
+                        //   Assets.kidSafeSeal,
+                        //   height: 60,
+                        //   width: 100,
+                        //   imageType: CustomImageType.local,
+                        //   cover: false,
+                        // ),
                       ],
                     ),
           ),

@@ -148,11 +148,10 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                 child: GestureDetector(
                   onTap: () {
                     if (widget.fromScreenTimeLimit) {
-                      // If coming from screen time limit dialog, exit the app
                       logger.i(
                         '🚪 Exiting app from parent screen (from screen time limit)',
                       );
-                      SystemNavigator.pop(); // This will close the app
+                      SystemNavigator.pop();
                     } else {
                       // Regular navigation back
                       Navigator.of(context).pop();

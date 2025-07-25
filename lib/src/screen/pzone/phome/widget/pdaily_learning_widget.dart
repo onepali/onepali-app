@@ -27,7 +27,7 @@ class PDailyLearningWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('Days learning', style: AppStyles.text14PxRegular),
+          Text('Days learning', style: AppStyles.text14PxMedium),
           Gaps.verticalGapOf(8),
           Text(
             '$dayStreak/7',
