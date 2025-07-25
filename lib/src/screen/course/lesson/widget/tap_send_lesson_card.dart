@@ -60,12 +60,19 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
     final images = widget.content.image.split(', ');
     final audios = widget.content.audio.split(', ');
 
+    // Parse colors if available
+    List<String> colors = [];
+    if (Utility.isAccessible(widget.content.color)) {
+      colors = widget.content.color!.split(', ');
+    }
+
     options = List.generate(nameEn.length, (index) {
       return TapSendOption(
         nameEn: nameEn[index].trim(),
         nameNp: nameNp[index].trim(),
         image: images[index].trim(),
         audio: audios[index].trim(),
+        color: index < colors.length ? colors[index].trim() : "",
       );
     });
   }
@@ -219,6 +226,8 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                   color:
                       isSelected
                           ? AppColors.kSecondaryColor
+                          : option.color.isNotEmpty
+                          ? Utility.parseHexColors(option.color).first
                           : AppColors.learningColors[options.indexOf(option) %
                               AppColors.learningColors.length],
                   borderRadius: BorderRadius.circular(16),
@@ -285,6 +294,8 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                   color:
                       isSelected
                           ? AppColors.kSecondaryColor
+                          : option.color.isNotEmpty
+                          ? Utility.parseHexColors(option.color).first
                           : AppColors.learningColors[options.indexOf(option) %
                               AppColors.learningColors.length],
                   borderRadius: BorderRadius.circular(20),
@@ -350,6 +361,8 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                   color:
                       isSelected
                           ? AppColors.kSecondaryColor
+                          : option.color.isNotEmpty
+                          ? Utility.parseHexColors(option.color).first
                           : AppColors.learningColors[options.indexOf(option) %
                               AppColors.learningColors.length],
                   borderRadius: BorderRadius.circular(24),
@@ -406,11 +419,13 @@ class TapSendOption {
   final String nameNp;
   final String image;
   final String audio;
+  final String color;
 
   TapSendOption({
     required this.nameEn,
     required this.nameNp,
     required this.image,
     required this.audio,
+    this.color = "",
   });
 }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatefulWidget {
   final int selectedTabIndex;
   final Function(int)? onTabChanged;
+
   const HomeScreen({super.key, this.selectedTabIndex = 0, this.onTabChanged});
 
   @override
@@ -36,31 +37,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Fetch data for the selected tab only when needed
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_selectedTabIndex == 0) {
-        context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
-      } else if (_selectedTabIndex == 1) {
-        context.read<RcmSongProvider>().fetchRecommendedSongs();
-      } else if (_selectedTabIndex == 2) {
-        context.read<RecommendedStoryProvider>().fetchRecommendedStories();
-      }
-    });
+    // Check if user is guest
+    bool isGuest = GuestUtil.isGuestUser();
+
+    // Fetch data for the selected tab only when needed (and not a guest user)
+    if (!isGuest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_selectedTabIndex == 0) {
+          context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
+        } else if (_selectedTabIndex == 1) {
+          context.read<RcmSongProvider>().fetchRecommendedSongs();
+        } else if (_selectedTabIndex == 2) {
+          context.read<RecommendedStoryProvider>().fetchRecommendedStories();
+        }
+      });
+    }
+
     return SingleChildScrollView(
       child: Column(
         children: [
           Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
-            _buildRecommendedLessonCard(context),
-            Gaps.verticalGapOf(10),
+            // Only show recommended card for non-guest users
+            if (!isGuest) ...[
+              _buildRecommendedLessonCard(context),
+              Gaps.verticalGapOf(10),
+            ],
             _buildLessons(context),
           ] else if (_selectedTabIndex == 1) ...[
-            _buildRecommendedSongCard(context),
-            Gaps.verticalGapOf(10),
+            // Only show recommended card for non-guest users
+            if (!isGuest) ...[
+              _buildRecommendedSongCard(context),
+              Gaps.verticalGapOf(10),
+            ],
             _buildSongCard(context),
           ] else if (_selectedTabIndex == 2) ...[
-            _buildRecommendedStoryCard(context),
-            Gaps.verticalGapOf(10),
+            // Only show recommended card for non-guest users
+            if (!isGuest) ...[
+              _buildRecommendedStoryCard(context),
+              Gaps.verticalGapOf(10),
+            ],
             _buildStories(context),
           ],
         ],

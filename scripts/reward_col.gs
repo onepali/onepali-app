@@ -19,7 +19,8 @@ function appendRewardsToFirestore() {
         description_np: { stringValue: row[3] },
         description_en: { stringValue: row[4] },
         s_audio: { stringValue: row[5] },
-        image: { stringValue: row[6] }
+        image: { stringValue: row[6] },
+        image_outline: { stringValue: row[7] || "" }
       }
     };
 

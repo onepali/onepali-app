@@ -103,9 +103,10 @@ jobs:
 
       - name: Rename artifacts
         run: |
-           mv android/app-arm64-v8a-release.apk android/onepali.arm64-v8a.apk
-           mv android/app-armeabi-v7a-release.apk android/onepali.armeabi-v7a.apk
-           mv android/app-x86_64-release.apk android/onepali.x86_64.apk
+           DATE_FORMAT=$(date +"%d %B, %Y")
+           mv android/app-arm64-v8a-release.apk "android/O Nepali ($DATE_FORMAT).arm64-v8a.apk"
+           mv android/app-armeabi-v7a-release.apk "android/O Nepali ($DATE_FORMAT).armeabi-v7a.apk"
+           mv android/app-x86_64-release.apk "android/O Nepali ($DATE_FORMAT).x86_64.apk"
 
       - name: Create release
         env:
@@ -146,9 +147,10 @@ jobs:
           echo "Final tag name: ${TAG_NAME}"
           echo "Final title: ${TITLE}"
           
+          DATE_FORMAT=$(date +"%d %B, %Y")
           gh release create "${TAG_NAME}" \
             --title "${TITLE}" \
             --notes-file changelog.md \
-            android/onepali.arm64-v8a.apk \
-            android/onepali.armeabi-v7a.apk \
-            android/onepali.x86_64.apk
+            "android/O Nepali ($DATE_FORMAT).arm64-v8a.apk" \
+            "android/O Nepali ($DATE_FORMAT).armeabi-v7a.apk" \
+            "android/O Nepali ($DATE_FORMAT).x86_64.apk"

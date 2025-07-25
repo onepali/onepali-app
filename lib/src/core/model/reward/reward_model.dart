@@ -15,6 +15,7 @@ class RewardModel {
   final String descriptionEn;
   final String sAudio;
   final String image;
+  final String? imageOutline;
 
   RewardModel({
     required this.id,
@@ -24,6 +25,7 @@ class RewardModel {
     required this.descriptionEn,
     required this.sAudio,
     required this.image,
+    this.imageOutline,
   });
 
   factory RewardModel.fromJson(Map<String, dynamic> json) => RewardModel(
@@ -34,6 +36,7 @@ class RewardModel {
     descriptionEn: json["description_en"] ?? "",
     sAudio: json["s_audio"] ?? "",
     image: json["image"] ?? "",
+    imageOutline: json["image_outline"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -44,5 +47,6 @@ class RewardModel {
     "description_en": descriptionEn,
     "s_audio": sAudio,
     "image": image,
+    "image_outline": imageOutline,
   };
 }

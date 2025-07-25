@@ -115,16 +115,16 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                               : AppStyles.text24PxSemiBold,
                     ),
                     Gaps.verticalGapOf(10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8,
-                      children:
-                          blog.tags
-                              .map((e) => CustomRoundedBox(title: e))
-                              .toList(),
-                    ),
-                    Gaps.verticalGapOf(18),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   spacing: 8,
+                    //   children:
+                    //       blog.tags
+                    //           .map((e) => CustomRoundedBox(title: e))
+                    //           .toList(),
+                    // ),
+                    // Gaps.verticalGapOf(18),
                     Text(
                       blog.content,
                       style: const TextStyle(fontSize: 16, height: 1.5),

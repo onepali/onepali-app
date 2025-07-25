@@ -107,7 +107,7 @@ class _CUserScreenState extends State<CUserScreen> {
                     ),
                   ),
                   child: CustomRangeSlider(
-                    min: 0,
+                    min: 5,
                     max: 120,
                     value: selectedRange ?? 0,
                     onChanged: (val) {

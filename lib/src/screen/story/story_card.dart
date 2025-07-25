@@ -6,12 +6,16 @@ class StoryCard extends StatelessWidget {
   final bool? isRadius;
   final double? progressPercent;
   final bool isRecommended;
+  final bool isGuestUser;
+  final bool isLocked;
   const StoryCard({
     super.key,
     required this.story,
     this.isRadius = true,
     this.progressPercent,
     this.isRecommended = false,
+    this.isGuestUser = false,
+    this.isLocked = false,
   });
 
   @override
@@ -20,10 +24,15 @@ class StoryCard extends StatelessWidget {
 
     return customInkwell(
       onTap: () {
-        Utility.navigateMaterialRoute(
-          context,
-          StoryContentScreen(story: story),
-        );
+        if (isGuestUser && isLocked) {
+          // Show guest account prompt for locked stories
+          GuestUtil.showGuestAccountPrompt(context);
+        } else {
+          Utility.navigateMaterialRoute(
+            context,
+            StoryContentScreen(story: story),
+          );
+        }
       },
       child: Stack(
         children: [
@@ -104,6 +113,16 @@ class StoryCard extends StatelessWidget {
                   minHeight: 2.5,
                   borderRadius: BorderRadius.circular(10),
                 ),
+              ),
+            ),
+          if (isGuestUser && isLocked)
+            Positioned(
+              top: 12,
+              right: 12,
+              child: CircleAvatar(
+                backgroundColor: AppColors.kWhite.withValues(alpha: 0.8),
+                radius: 14,
+                child: Icon(Icons.lock, color: AppColors.kBlack, size: 18),
               ),
             ),
         ],

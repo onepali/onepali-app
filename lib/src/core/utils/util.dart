@@ -14,6 +14,9 @@ export 'validator.dart';
 /// [Media] Utility
 export 'media_utility.dart';
 
+/// [Guest] Utility
+export 'guest_util.dart';
+
 /// [DateTime] utility
 export 'datetime_utility.dart';
 

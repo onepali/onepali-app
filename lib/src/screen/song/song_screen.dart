@@ -117,6 +117,7 @@ class _SongScreenState extends State<SongScreen> {
                           child: SongCard(
                             index: index,
                             data: song,
+                            isGuestUser: GuestUtil.isGuestUser(),
                             // initialPosition: rec.progress, // Only for recommended, not for all songs
                           ),
                         );

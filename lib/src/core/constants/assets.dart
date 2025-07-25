@@ -12,6 +12,9 @@ class Assets {
   static String rewardPreviewBackground = 'reward_preview_bg'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
+  // Seal
+  static String kidSafeSeal = 'kid_safe_seal'.png;
+
   /// [Image] assets
   static String splashImage = 'splash'.gif;
 
@@ -65,6 +68,7 @@ class Assets {
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
   static String unsubscribe = 'unfav'.icon;
+  static String email = 'email'.icon;
 
   /// [Miscellaneous]
   static String successSvg = 'success'.svg;
@@ -73,6 +77,7 @@ class Assets {
   static String dataSvg = 'data'.svg;
   static String connectionSvg = 'connection'.svg;
   static String timeUpSvg = 'time_up'.svg;
+  static String guestAvatar = 'guest_avatar'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;

@@ -29,45 +29,59 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double titleFontSize = isMobileLandscape ? 20 : 28;
+    final double titleFontSize = isMobileLandscape ? 28 : 35;
     final double descriptionFontSize = isMobileLandscape ? 16 : 22;
     final double paddingH = isMobileLandscape ? 16 : 32;
     final double paddingV = isMobileLandscape ? 10 : 18;
     final double imageSize = isMobileLandscape ? 150 : 200;
-    final double audioButtonSize = isMobileLandscape ? 40 : 60;
+    final double audioButtonSize = isMobileLandscape ? 28 : 48;
+    final double descriptionSizeBoxHeight =
+        isMobileLandscape
+            ? MediaQuery.of(context).size.height * 0.7
+            : MediaQuery.of(context).size.height * 0.5;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(Assets.rewardPreviewBackground),
-                fit: BoxFit.cover,
-              ),
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(Assets.rewardPreviewBackground),
+              fit: BoxFit.cover,
             ),
           ),
-          Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: paddingH,
-                    vertical: paddingV,
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: SvgHelper.fromSource(
+                    path: Assets.wrong,
+                    height: 40,
+                    width: 40,
+                    color: AppColors.kWhite,
                   ),
-                  child: Column(
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             widget.data.titleNp,
-                            style: AppStyles.text28PxRegular.copyWith(
+                            style: AppStyles.text35PxBold.copyWith(
                               fontSize: titleFontSize,
                               color: AppColors.kWhite,
+                              fontFamily: 'Mukta',
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -89,26 +103,34 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                         ],
                       ),
                       SizedBox(height: paddingV),
-                      Text(
-                        widget.data.descriptionNp,
-                        style: AppStyles.text22PxRegular.copyWith(
-                          fontSize: descriptionFontSize,
-                          color: AppColors.kWhite,
+                      SizedBox(
+                        width: descriptionSizeBoxHeight,
+                        child: Text(
+                          widget.data.descriptionNp,
+                          style: AppStyles.text22PxRegular.copyWith(
+                            fontSize: descriptionFontSize,
+                            fontFamily: 'Mukta',
+                            color: AppColors.kWhite,
+                          ),
+                          textAlign: TextAlign.start,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  width: imageSize,
-                  height: imageSize,
-                  child: CustomImage(widget.data.image, cover: true),
-                ),
-              ],
-            ),
+                  SizedBox(
+                    width: imageSize,
+                    height: imageSize,
+                    child: SvgHelper.fromSource(
+                      path: widget.data.image,
+                      fit: BoxFit.contain,
+                      type: SvgSourceType.network,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

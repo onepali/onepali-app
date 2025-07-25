@@ -43,28 +43,18 @@ class RS5Screen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
-                ),
-                child: Icon(
-                  Icons.email_outlined,
-                  size: 60,
-                  color: AppColors.kPrimaryColor,
-                ),
-              ),
-              Gaps.verticalGapOf(32),
               Text(
                 'Check your email',
                 style: AppStyles.text24PxSemiBold,
                 textAlign: TextAlign.center,
               ),
-              Gaps.verticalGapOf(16),
+              Gaps.verticalGapOf(50),
+
+              SvgHelper.fromSource(path: Assets.email, height: 40, width: 40),
+
+              Gaps.verticalGapOf(50),
               Text(
-                'We have sent a verification link to your email address. Please check your inbox and click the link to verify your email.',
+                'We sent a verification link to your email. Click the link to get started!',
                 style: AppStyles.text14PxRegular,
                 textAlign: TextAlign.center,
               ),
@@ -78,7 +68,7 @@ class RS5Screen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Didn\'t receive the email?\nCheck your spam folder or tap the button below to resend.',
+              'Can\'t find it? Check your spam folder.',
               style: AppStyles.text12PxRegular.copyWith(
                 color: Colors.grey[700],
               ),

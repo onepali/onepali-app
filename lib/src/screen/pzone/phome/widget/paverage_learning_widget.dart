@@ -45,7 +45,7 @@ class PAverageLearningWidget extends StatelessWidget {
                   Text(
                     'Completed activities',
                     textAlign: TextAlign.center,
-                    style: AppStyles.text14PxRegular,
+                    style: AppStyles.text14PxMedium,
                   ),
                 ],
               ),
@@ -63,19 +63,26 @@ class PAverageLearningWidget extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    '${(answerSuccessRate * 100).toInt()}',
-                    style:
-                        isMobilePortrait
-                            ? AppStyles.text32PxSemiBold
-                            : AppStyles.text40PxSemiBold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${(answerSuccessRate * 100).toInt()}',
+                        style:
+                            isMobilePortrait
+                                ? AppStyles.text32PxSemiBold
+                                : AppStyles.text40PxSemiBold,
+                      ),
+                      Gaps.horizontalGapOf(4),
+                      Text('%', style: AppStyles.text14PxRegular),
+                    ],
                   ),
-                  Text('%', style: AppStyles.text14PxRegular),
                   Gaps.verticalGapOf(8),
                   Text(
                     'Answer success rate',
                     textAlign: TextAlign.center,
-                    style: AppStyles.text14PxRegular,
+                    style: AppStyles.text14PxMedium,
                   ),
                 ],
               ),
