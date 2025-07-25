@@ -56,7 +56,7 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
     // Check if pin is a valid year and matches user's yearOfBirth
-    if (pin < 1900 || _user!.yearOfBirth != pin) {
+    if (pin < 1900 || pin > DateTime.now().year || _user!.yearOfBirth != pin) {
       showCustomToaster('Invalid PIN. Please try again.', isError: true);
       logger.w('Invalid PIN: $pin');
       return false;

@@ -30,8 +30,10 @@ class LessonContentCard extends StatelessWidget {
             height: 40.h(context),
             decoration: BoxDecoration(
               color:
-                  AppColors.learningColors[index %
-                      AppColors.learningColors.length],
+                  Utility.isAccessible(content.color)
+                      ? Utility.parseHexColors(content.color ?? '').first
+                      : AppColors.learningColors[index %
+                          AppColors.learningColors.length],
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
@@ -87,8 +89,10 @@ class LessonContentCard extends StatelessWidget {
             height: 50.h(context),
             decoration: BoxDecoration(
               color:
-                  AppColors.learningColors[index %
-                      AppColors.learningColors.length],
+                  content.color != null && content.color!.isNotEmpty
+                      ? Utility.parseHexColors(content.color!).first
+                      : AppColors.learningColors[index %
+                          AppColors.learningColors.length],
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(

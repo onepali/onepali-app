@@ -11,6 +11,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AuthProviderType? authType;
   final BuildContext context;
   final int totalLessonsCompleted;
+  final bool isGuest;
 
   const UserAppBar({
     super.key,
@@ -22,6 +23,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.authType,
     this.totalChildCount = 0,
     required this.context,
+    this.isGuest = false,
 
     this.totalLessonsCompleted = 0,
   }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
@@ -45,105 +47,141 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       decoration: BoxDecoration(color: AppColors.kWhite),
       child:
           isMobileLandScape
-              ? Row(
-                spacing: 8,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ? Column(
                 children: [
+                  if (isGuest) Gaps.verticalGapOf(35),
+
                   Row(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        onPressed:
-                            () => Utility.navigateMaterialRoute(
-                              context,
-                              DrawerScreen(
-                                data: childData,
-                                totalChildCount: totalChildCount,
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              if (!isGuest) {
+                                Utility.navigateMaterialRoute(
+                                  context,
+                                  DrawerScreen(
+                                    data: childData,
+                                    totalChildCount: totalChildCount,
+                                  ),
+                                );
+                              }
+                              // } else {
+                              //   Utility.navigate(
+                              //     context,
+                              //     AppRoutes.systemScreen,
+                              //   );
+                              // }
+                            },
+                            icon: CustomImage(
+                              isGuest ? Assets.userAvatar : profileImage,
+                              height: 45,
+                              width: 45,
+                              circular: true,
+                              isProfileImage: true,
+                              imageType:
+                                  isGuest
+                                      ? CustomImageType.local
+                                      : CustomImageType.network,
+                            ),
+                          ),
+                          Gaps.horizontalGapOf(10),
+                          if (isGuest)
+                            Text(
+                              name,
+                              style: AppStyles.text16PxBold.copyWith(
+                                color: AppColors.kPitchBlack,
                               ),
                             ),
-                        icon: CustomImage(
-                          profileImage,
-                          height: 45,
-                          width: 45,
-                          circular: true,
-                          isProfileImage: true,
-                          imageType: CustomImageType.network,
-                        ),
+                          if (!isGuest)
+                            if (totalLessonsCompleted == 5) ...[
+                              customInkwell(
+                                onTap: () {
+                                  Utility.navigate(
+                                    context,
+                                    AppRoutes.chooseRewardScreen,
+                                  );
+                                },
+                                child: LottieHelper.fromSource(
+                                  path: Assets.starRewardLottie,
+                                  height: 65,
+                                  width: 65,
+                                ),
+                              ),
+                            ] else ...[
+                              customInkwell(
+                                onTap: () {
+                                  Utility.navigate(
+                                    context,
+                                    AppRoutes.rewardCollectionScreen,
+                                  );
+                                },
+                                child: SvgHelper.fromSource(
+                                  path: Assets.reward,
+                                  height: 40,
+                                  width: 40,
+                                ),
+                              ),
+                            ],
+                        ],
                       ),
-                      Gaps.horizontalGapOf(10),
-                      if (totalLessonsCompleted == 5) ...[
-                        customInkwell(
-                          onTap: () {
-                            Utility.navigate(
-                              context,
-                              AppRoutes.chooseRewardScreen,
-                            );
-                          },
-                          child: LottieHelper.fromSource(
-                            path: Assets.starRewardLottie,
-                            height: 100,
-                            width: 100,
-                          ),
-                        ),
-                      ] else ...[
-                        customInkwell(
-                          onTap: () {
-                            Utility.navigate(
-                              context,
-                              AppRoutes.rewardCollectionScreen,
-                            );
-                          },
-                          child: SvgHelper.fromSource(
-                            path: Assets.reward,
-                            height: 40,
-                            width: 40,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      for (int i = 0; i < homeServices.length; i++)
-                        _buildTab(
-                          homeServices[i].icon ?? '',
-                          homeServices[i].name ?? '',
-                          selectedIndex == i
-                              ? AppColors.kSecondaryColor
-                              : AppColors.kGrey,
-                          () => onTabSelected(homeServices[i].name ?? ''),
-                          i,
-                          selectedIndex,
-                        ),
-                      Gaps.horizontalGapOf(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          for (int i = 0; i < homeServices.length; i++)
+                            _buildTab(
+                              homeServices[i].icon ?? '',
+                              homeServices[i].name ?? '',
+                              selectedIndex == i
+                                  ? AppColors.kSecondaryColor
+                                  : AppColors.kGrey,
+                              () => onTabSelected(homeServices[i].name ?? ''),
+                              i,
+                              selectedIndex,
+                            ),
+                          Gaps.horizontalGapOf(10),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               )
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed:
-                            () => Utility.navigateMaterialRoute(
+                        onPressed: () {
+                          if (!isGuest) {
+                            Utility.navigateMaterialRoute(
                               context,
                               TabDrawerScreen(
                                 data: childData,
                                 totalChildCount: totalChildCount,
                               ),
-                            ),
+                            );
+                          }
+                          //  else {
+                          //   Utility.navigate(context, AppRoutes.systemScreen);
+                          // }
+                        },
                         icon: CustomImage(
-                          profileImage,
+                          isGuest ? Assets.userAvatar : profileImage,
                           height: 45,
                           width: 45,
                           circular: true,
                           isProfileImage: true,
-                          imageType: CustomImageType.network,
+                          imageType:
+                              isGuest
+                                  ? CustomImageType.local
+                                  : CustomImageType.network,
                         ),
                       ),
                       Row(
@@ -167,7 +205,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                   // Gaps.verticalGapOf(8),
-                  buildProgressBar(),
+                  if (!isGuest) buildProgressBar(),
                 ],
               ),
     );
@@ -263,6 +301,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       icon: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // if (isGuest) Gaps.verticalGapOf(30),
           SvgHelper.fromSource(path: icon, height: 28, width: 28),
           if (isSelected) ...[
             Gaps.verticalGapOf(4),

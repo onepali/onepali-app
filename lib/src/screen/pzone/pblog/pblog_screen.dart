@@ -22,7 +22,8 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
       backgroundColor: AppColors.kWhite,
       body: Consumer<PzBlogProvider>(
         builder: (context, provider, _) {
-          if (provider.status == DataFetchStatus.loading) {
+          if (Utility.isAccessible(provider.blogs) &&
+              provider.status == DataFetchStatus.loading) {
             return CustomLoader();
           } else if (provider.blogs.isEmpty ||
               provider.status == DataFetchStatus.error) {

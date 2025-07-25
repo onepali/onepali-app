@@ -87,13 +87,23 @@ class CourseScreenState extends State<CourseScreen> {
                                             : chapter.nameNp,
                                     thumbnail: chapter.thumbnail,
                                     color: Colors.orange[200]!,
-                                    isLocked: false,
+                                    isLocked:
+                                        GuestUtil.isGuestUser() && catIdx > 0,
                                     isCompleted: false,
+                                    isGuestUser: GuestUtil.isGuestUser(),
                                     onTap: () {
-                                      Utility.navigateMaterialRoute(
-                                        context,
-                                        LessonScreen(chapter: chapter),
-                                      );
+                                      if (GuestUtil.isGuestUser() &&
+                                          catIdx > 0) {
+                                        // Show guest account prompt for locked lessons
+                                        GuestUtil.showGuestAccountPrompt(
+                                          context,
+                                        );
+                                      } else {
+                                        Utility.navigateMaterialRoute(
+                                          context,
+                                          LessonScreen(chapter: chapter),
+                                        );
+                                      }
                                     },
                                   ),
                                 );

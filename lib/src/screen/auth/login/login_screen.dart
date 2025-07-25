@@ -33,23 +33,22 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Welcome', style: AppStyles.text20PxMedium),
-                RichText(
-                  text: TextSpan(
-                    text: 'to ',
-                    style: AppStyles.text20PxMedium.copyWith(
-                      color: AppColors.kPitchBlack,
-                      fontFamily: AppConstants.defaultFontFamily,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'O Nepali',
-                        style: AppStyles.text20PxSemiBold.copyWith(
-                          color: AppColors.kButtonGreen,
-                          fontFamily: AppConstants.defaultFontFamily,
-                        ),
+                Row(
+                  children: [
+                    Text(
+                      'to',
+                      style: AppStyles.text20PxMedium.copyWith(
+                        color: AppColors.kPitchBlack,
+                        fontFamily: AppConstants.defaultFontFamily,
                       ),
-                    ],
-                  ),
+                    ),
+                    Gaps.horizontalGapOf(10),
+                    SvgHelper.fromSource(
+                      path: Assets.logoSvg,
+                      width: 40,
+                      height: 15,
+                    ),
+                  ],
                 ),
                 Gaps.verticalGapOf(15),
                 Text(

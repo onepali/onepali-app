@@ -48,12 +48,23 @@ class ChildUserProvider extends ChangeNotifier {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
-    if (user == null) {
-      logger.e('User is not authenticated.');
+    // Check if it's a guest user
+    bool isGuest = GuestUtil.isGuestUser();
+
+    if (user == null && !isGuest) {
+      logger.e('User is not authenticated and not a guest user.');
       handleError("User not signed in.");
       return;
     }
-    final String parentUid = user.uid;
+
+    // Skip further processing for guest users
+    if (isGuest) {
+      logger.i('Guest user detected. Skipping child user fetching.');
+      setStatus(DataFetchStatus.success);
+      return;
+    }
+
+    final String parentUid = user!.uid;
     logger.i('Parent UID: $user');
     logger.d('Current UID: ${FirebaseAuth.instance.currentUser?.uid}');
     logger.d('Target path: /users/$parentUid/children');
@@ -91,12 +102,24 @@ class ChildUserProvider extends ChangeNotifier {
     setStatus(DataFetchStatus.loading);
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
-    if (user == null) {
+
+    // Check if it's a guest user
+    bool isGuest = GuestUtil.isGuestUser();
+
+    if (user == null && !isGuest) {
       showCustomToaster('User not signed in.', isError: true);
       setStatus(DataFetchStatus.error);
       return;
     }
-    final String parentUid = user.uid;
+
+    // Skip further processing for guest users
+    if (isGuest) {
+      logger.i('Guest user detected. Skipping child user profile update.');
+      setStatus(DataFetchStatus.success);
+      return;
+    }
+
+    final String parentUid = user!.uid;
     try {
       await _firestore
           .collection('users')

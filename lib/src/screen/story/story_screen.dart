@@ -48,7 +48,11 @@ class _StoryScreenState extends State<StoryScreen> {
             final story = stories[i];
             return SizedBox(
               width: AppCardResponsive.getCardWidth(context),
-              child: StoryCard(story: story),
+              child: StoryCard(
+                story: story,
+                isGuestUser: GuestUtil.isGuestUser(),
+                isLocked: i > 0,
+              ),
             );
           },
         );

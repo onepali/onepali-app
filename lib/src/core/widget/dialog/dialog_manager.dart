@@ -13,6 +13,7 @@ class DialogManager {
     bool barrierDismissible = true,
     bool hasSingleButton = false,
     Function? onCancel,
+    bool isCross = false,
   }) {
     var isMobileLandScape =
         PlatformUtility.isMobile(context) &&
@@ -38,15 +39,37 @@ class DialogManager {
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: dialogMaxWidth),
             child: AlertDialog(
-              title: Text(
-                title,
-                style:
-                    isMobileLandScape
-                        ? AppStyles.text16PxSemiBold
-                        : isMobilePortrait
-                        ? AppStyles.text18PxSemiBold
-                        : AppStyles.text20PxSemiBold,
-                textAlign: TextAlign.center,
+              title: Row(
+                mainAxisAlignment:
+                    isCross
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style:
+                          isMobileLandScape
+                              ? AppStyles.text16PxSemiBold
+                              : isMobilePortrait
+                              ? AppStyles.text18PxSemiBold
+                              : AppStyles.text20PxSemiBold,
+                      textAlign: isCross ? TextAlign.start : TextAlign.center,
+                      maxLines: 2,
+                    ),
+                  ),
+                  if (isCross)
+                    IconButton(
+                      icon: const Icon(
+                        Icons.close,
+                        color: AppColors.kPitchBlack,
+                      ),
+
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                ],
               ),
               alignment: Alignment.center,
               contentPadding: EdgeInsets.symmetric(
@@ -64,6 +87,7 @@ class DialogManager {
                         : 20,
               ),
               actionsAlignment: MainAxisAlignment.center,
+
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -85,7 +109,10 @@ class DialogManager {
                     ),
                   if (image.isNotEmpty && isSvg)
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isCross ? 0.0 : 16.0,
+                        vertical: isCross ? 0.0 : 16.0,
+                      ),
                       child: SvgHelper.fromSource(
                         path: image,
                         height:
@@ -148,7 +175,7 @@ class DialogManager {
                           child: CustomMaterialButton(
                             onTap: () {
                               onConfirm();
-                              Navigator.of(context).pop();
+                              // Navigator.of(context).pop();
                             },
                             textStyle: AppStyles.text14PxMedium,
                             label: confirmButtonText,

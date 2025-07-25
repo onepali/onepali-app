@@ -45,7 +45,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 color: AppColors.kBlack,
               ),
               Gaps.verticalGapOf(8),
-              Text(context.tr('tagline'), style: AppStyles.text14PxMedium),
+              Text(
+                context.tr('tagline'),
+                style: AppStyles.text14PxMedium.copyWith(
+                  color: AppColors.kPrimaryColor,
+                ),
+              ),
               const Spacer(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -82,9 +87,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                   CustomMaterialButton(
                     label: context.tr('try_lesson_guest'),
-                    onTap: () {},
+                    onTap: () {
+                      Utility.navigate(context, AppRoutes.guestDashboardScreen);
+                    },
                     elevation: 0,
-
                     width: double.infinity,
                     textStyle: AppStyles.text16PxMedium,
                     showBorder: false,

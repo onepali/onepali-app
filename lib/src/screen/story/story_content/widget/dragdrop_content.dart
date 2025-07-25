@@ -71,8 +71,13 @@ class DragDropContentState extends State<DragDropContent> {
                 radius: 32,
                 width: 220,
                 elevation: 0,
-                onTap: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                onTap: () async {
+                  bool isGuest = GuestUtil.isGuestUser();
+                  if (isGuest) {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
                 },
                 icon: Icons.home,
               ),

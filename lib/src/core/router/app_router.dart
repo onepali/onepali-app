@@ -32,6 +32,7 @@ class AppRoutes {
 
   /// [Dashboard] Routes
   static const String dashboardScreen = '/dashboard';
+  static const String guestDashboardScreen = '/guest/dashboard';
 
   /// [User] Routes
   static const String userScreen = '/user';
@@ -92,6 +93,7 @@ class AppRoutes {
     rs6Screen: (context) => const RS6Screen(),
 
     dashboardScreen: (context) => const DashboardScreen(),
+    guestDashboardScreen: (context) => const GuestDashboardScreen(),
     userScreen: (context) => const UserScreen(),
 
     rewardScreen: (context) => const RewardScreen(),

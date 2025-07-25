@@ -50,10 +50,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-              child: Column(children: [_buildChildProfilesGrid()]),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+                child: Column(children: [_buildChildProfilesGrid()]),
+              ),
             ),
           ),
 
@@ -124,8 +126,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 );
               },
               child: Container(
-                height: 55,
-                width: 55,
+                height: 60,
+                width: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -136,16 +138,21 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     width: 3,
                   ),
                 ),
-                child: CustomImage(child.avatarUrl, height: 55, width: 55),
+                child: CustomImage(child.avatarUrl, height: 60, width: 60),
               ),
             ),
             Gaps.horizontalGapOf(15),
-            Text(
-              child.fullName.split(' ')[0],
-              style: AppStyles.text20PxMedium.copyWith(color: AppColors.kWhite),
+            SizedBox(
+              width: 150,
+              child: Text(
+                child.fullName.split(' ')[0],
+                style: AppStyles.text20PxMedium.copyWith(
+                  color: AppColors.kWhite,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            Gaps.horizontalGapOf(5),
-            const Icon(Icons.local_police, size: 22, color: AppColors.kYellow),
+            const Icon(Icons.local_police, size: 32, color: AppColors.kYellow),
           ],
         );
       } else {

@@ -49,6 +49,7 @@ class PzBlogProvider extends ChangeNotifier {
   }
 
   Future<void> incrementBlogView(String blogId) async {
+    logger.d('Incrementing blog view: $blogId');
     try {
       final FirebaseAuth auth = FirebaseAuth.instance;
       final User? user = auth.currentUser;

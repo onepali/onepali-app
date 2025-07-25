@@ -29,6 +29,7 @@ export 'auth/register/widget/rs_6.dart';
 
 /// [Dashboard] Screen
 export 'dashboard/dashboard_screen.dart';
+export 'dashboard/guest_dashboard_screen.dart';
 
 /// [User] Screen
 export 'user/user_screen.dart';
