@@ -161,6 +161,7 @@ class LessonContent {
   final String tooltip;
   final String correctAnswer;
   final String type;
+  final String? color;
 
   LessonContent({
     required this.nameEn,
@@ -172,6 +173,7 @@ class LessonContent {
     required this.tooltip,
     required this.correctAnswer,
     required this.type,
+    this.color,
   });
 
   factory LessonContent.fromJson(Map<String, dynamic> json) => LessonContent(
@@ -184,6 +186,7 @@ class LessonContent {
     tooltip: json["tooltip"] ?? "",
     correctAnswer: json["correct_answer"] ?? "",
     type: json["type"] ?? "",
+    color: json["color"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -196,6 +199,7 @@ class LessonContent {
     "tooltip": tooltip,
     "correct_answer": correctAnswer,
     "type": type,
+    "color": color,
   };
 }
 

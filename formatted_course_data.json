@@ -48,9 +48,10 @@
                                     "name_np": "चरा",
                                     "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fbird.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
                                     "lottie": "assets/lottie/animals/bird.json",
-                                    "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fbird_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
+                                    "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fbirds_s.mp3?alt=media&token=f8bd96f9-623b-4a58-8e06-707998a6b467",
                                     "word_audio": "audio/animals/bird_s.mp3",
-                                    "tooltip": "यो उड्न सक्ने जनावर हो।"
+                                    "tooltip": "यो उड्न सक्ने जनावर हो।",
+                                    "color": "#D4EB32"
                                 },
                                 {
                                     "name_en": "Cat",
@@ -59,7 +60,8 @@
                                     "lottie": "assets/lottie/animals/cat.json",
                                     "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fcat_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
                                     "word_audio": "audio/animals/cat_s.mp3",
-                                    "tooltip": "यो घरमा बस्ने जनावर हो।"
+                                    "tooltip": "यो घरमा बस्ने जनावर हो।",
+                                    "color": "#B98CF5"
                                 },
                                 {
                                     "name_en": "Dog",
@@ -68,7 +70,8 @@
                                     "lottie": "assets/lottie/animals/dog.json",
                                     "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fdog_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
                                     "word_audio": "audio/animals/dog_s.mp3",
-                                    "tooltip": "यो घरमा बस्ने जनावर हो।"
+                                    "tooltip": "यो घरमा बस्ने जनावर हो।",
+                                    "color": "#FF9A76"
                                 },
                                 {
                                     "name_en": "Fish",
@@ -77,7 +80,8 @@
                                     "lottie": "assets/lottie/animals/fish.json",
                                     "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Ffish_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
                                     "word_audio": "audio/animals/fish_s.mp3",
-                                    "tooltip": "यो पानीमा बस्ने जनावर हो।"
+                                    "tooltip": "यो पानीमा बस्ने जनावर हो।",
+                                    "color": "#32D0AA"
                                 },
                                 {
                                     "name_en": "Rabbit",
@@ -86,7 +90,8 @@
                                     "lottie": "assets/lottie/animals/rabbit.json",
                                     "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Frabbit_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
                                     "word_audio": "audio/animals/rabbit_s.mp3",
-                                    "tooltip": "यो गाजर खान मन पराउने जनावर हो।"
+                                    "tooltip": "यो गाजर खान मन पराउने जनावर हो।",
+                                    "color": "#007D28"
                                 },
                                 {
                                     "name_en": "Tortoise",
@@ -95,7 +100,8 @@
                                     "lottie": "assets/lottie/animals/tortoise.json",
                                     "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Ftortoise_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
                                     "word_audio": "audio/animals/tortoise_s.mp3",
-                                    "tooltip": "यो ढुंगा जस्तो देखिने जनावर हो।"
+                                    "tooltip": "यो ढुंगा जस्तो देखिने जनावर हो।",
+                                    "color": "#FFE682"
                                 },
                                 {
                                     "name_en": "Dog, Rabbit, Bird",
@@ -106,7 +112,8 @@
                                     "word_audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Frabbit_w.m4a?alt=media&token=81f340ca-d614-4bee-86e6-2b16fa9c9bc4",
                                     "tooltip": "यो घरमा बस्ने जनावर हो।",
                                     "correct_answer": "Rabbit",
-                                    "type": "tap_send"
+                                    "type": "tap_send",
+                                    "color": "#FF9A76, #007D28, #D4EB32"
                                 }
                             ]
                         }
