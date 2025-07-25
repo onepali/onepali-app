@@ -58,43 +58,8 @@ class AppInitializer {
     return AppRoutes.dashboardScreen;
   }
 
-  // // Function to check screen time after app loads
-  // static void checkScreenTimeAfterBoot() async {
-  //   // We'll call this after the app starts
-  //   try {
-  //     final currentChildId = await ChildLocalStorage.getCurrentChildId();
-  //     if (currentChildId != null) {
-  //       logger.i(
-  //         '🔍 Checking screen time limit for child $currentChildId on app start',
-  //       );
-  //       final isLimitExceeded = await ScreenTimeService.instance
-  //           .checkScreenTimeLimitExceeded(currentChildId);
-
-  //       if (isLimitExceeded) {
-  //         logger.w(
-  //           '⚠️ Screen time limit already exceeded for child $currentChildId on app start',
-  //         );
-  //         // Use navigatorKey to navigate to parent PIN screen
-  //         navigatorKey.currentState?.pushNamedAndRemoveUntil(
-  //           AppRoutes.parentPinScreen,
-  //           (route) => false,
-  //         );
-  //       }
-  //     }
-  //   } catch (e) {
-  //     logger.e('Error checking screen time on app start: $e');
-  //   }
-  // }
-
   static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     final initialRoute = getInitialRoute(logged, isParentLogged);
-
-    // // Schedule the screen time check to run after app initializes
-    // Misc.onLayoutRendered(() {
-    //   if (logged && !isParentLogged) {
-    //     checkScreenTimeAfterBoot();
-    //   }
-    // });
 
     return MaterialApp(
       title: AppConstants.appName,

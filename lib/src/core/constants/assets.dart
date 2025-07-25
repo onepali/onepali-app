@@ -68,6 +68,7 @@ class Assets {
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
   static String unsubscribe = 'unfav'.icon;
+  static String email = 'email'.icon;
 
   /// [Miscellaneous]
   static String successSvg = 'success'.svg;
