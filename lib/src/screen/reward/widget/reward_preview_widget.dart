@@ -12,15 +12,58 @@ class RewardPreviewWidget extends StatefulWidget {
 }
 
 class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
+  bool _isPlayingAudio = false;
+
   @override
   void initState() {
     super.initState();
     _updateReward();
+    _initializeAudio();
+  }
+
+  void _initializeAudio() {
+    if (widget.data.sAudio.isNotEmpty) {
+      logger.i('🎵 Reward audio path: ${widget.data.sAudio}');
+    }
   }
 
   Future<void> _updateReward() async {
     final provider = context.read<RewardProvider>();
     await provider.saveRewardForChild(widget.data);
+  }
+
+  Future<void> _playAudio() async {
+    try {
+      if (widget.data.sAudio.isNotEmpty) {
+        setState(() {
+          _isPlayingAudio = true;
+        });
+
+        final audioWidget = CustomAudioWidget(
+          audioPath: widget.data.sAudio,
+          audioSourceType: AudioSourceType.network,
+        );
+
+        await audioWidget.play();
+        await audioWidget.audioPlayer.onPlayerComplete.first;
+        await audioWidget.dispose();
+
+        setState(() {
+          _isPlayingAudio = false;
+        });
+      }
+    } catch (e) {
+      logger.e('Error playing reward audio: $e');
+      setState(() {
+        _isPlayingAudio = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // No need to dispose _audioWidget since we create it on-demand
+    super.dispose();
   }
 
   @override
@@ -89,7 +132,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                           CustomAvatarGlow(
                             glowColor: AppColors.kSecondaryColor,
                             glowShape: BoxShape.circle,
-                            visible: true,
+                            visible: _isPlayingAudio,
                             glowRadiusFactor: 0.2,
                             child: IconButton(
                               icon: SvgHelper.fromSource(
@@ -97,7 +140,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                                 height: audioButtonSize,
                                 width: audioButtonSize,
                               ),
-                              onPressed: () {},
+                              onPressed: _playAudio,
                             ),
                           ),
                         ],

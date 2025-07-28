@@ -42,9 +42,11 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
             setState(() {
               selectedIndex = index;
             });
-            Utility.navigateMaterialRoute(
+            Navigator.pushReplacement(
               context,
-              RewardPreviewWidget(data: rewards[index]),
+              MaterialPageRoute(
+                builder: (context) => RewardPreviewWidget(data: rewards[index]),
+              ),
             );
           },
           child: AnimatedContainer(

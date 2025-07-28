@@ -92,9 +92,10 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                       child: Center(
                         child:
                             isUnlocked
-                                ? CustomImage(
-                                  unlockedStickers[index].image,
-                                  boxFit: BoxFit.contain,
+                                ? SvgHelper.fromSource(
+                                  path: unlockedStickers[index].image,
+                                  type: SvgSourceType.network,
+                                  fit: BoxFit.contain,
                                 )
                                 : Text(
                                   '?',

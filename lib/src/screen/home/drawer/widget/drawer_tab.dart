@@ -152,7 +152,19 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               style: AppStyles.text14PxMedium.copyWith(color: AppColors.kWhite),
             ),
             Gaps.verticalGapOf(5),
-            const Icon(Icons.local_police, size: 30, color: AppColors.kYellow),
+            customInkwell(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  RewardCollectionWidget(),
+                );
+              },
+              child: const Icon(
+                Icons.local_police,
+                size: 30,
+                color: AppColors.kYellow,
+              ),
+            ),
           ],
         );
       } else {

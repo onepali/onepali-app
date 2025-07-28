@@ -263,7 +263,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
           Builder(
             builder: (context) {
               Future.microtask(() async {
-                if (!context.mounted) return;
                 final audioWidget = CustomAudioWidget(
                   audioPath: Assets.starBlast,
                 );

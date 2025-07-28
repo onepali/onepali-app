@@ -152,7 +152,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Icon(Icons.local_police, size: 32, color: AppColors.kYellow),
+            customInkwell(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  RewardCollectionWidget(),
+                );
+              },
+              child: const Icon(
+                Icons.local_police,
+                size: 32,
+                color: AppColors.kYellow,
+              ),
+            ),
           ],
         );
       } else {
