@@ -8,7 +8,6 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.aboutUsScreen,
     AppRoutes.contactScreen,
     AppRoutes.faqsScreen,
-
     AppRoutes.splashScreen,
     AppRoutes.loginScreen,
     AppRoutes.onboardingScreen,

@@ -17,6 +17,8 @@ class Assets {
 
   /// [Image] assets
   static String splashImage = 'splash'.gif;
+  static String mbSplashImage = 'mb_splash'.mp4;
+  static String tbSplashImage = 'tb_splash'.mp4;
 
   /// [Parent] Zone assets
   static String parentZoneImage = 'pz_danfe'.png;
@@ -122,5 +124,6 @@ extension AssetsExtension on String {
   String get parentSvg => 'assets/svg/parent/$this.svg';
   String get lottie => 'assets/lottie/$this.json';
   String get audio => '$this.mp3';
+  String get mp4 => 'assets/images/$this.mp4';
   String get json => 'assets/json/$this.json';
 }
