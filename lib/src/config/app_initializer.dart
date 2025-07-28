@@ -48,13 +48,24 @@ class AppInitializer {
   }
 
   static Future<bool> isParentLogged() async {
+    final SharedPreferencesService sharedPref = SharedPreferencesService();
+    var loggedIn = await sharedPref.getBoolPref(AppConstants.logged);
+    var userInfo = await sharedPref.getStringPref(AppConstants.userInfo);
     var logged = await ParentLocalStorage.isParentLogged();
-    return logged;
+
+    logger.d(
+      'Parent logged: $loggedIn, User info: $userInfo && ${userInfo != null}, Parent logged status: $logged',
+    );
+    return loggedIn && userInfo != null && logged;
   }
 
   static String getInitialRoute(bool logged, bool isParentLogged) {
     if (!logged) return AppRoutes.splashScreen;
     if (isParentLogged) return AppRoutes.parentDashboardScreen;
+
+    logger.d(
+      'User is logged in---> $logged, Parent logged in---> $isParentLogged',
+    );
     return AppRoutes.dashboardScreen;
   }
 

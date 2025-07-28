@@ -27,5 +27,9 @@ class ChildLocalStorage {
     return await prefs.getBoolPref(AppConstants.guestLogged);
   }
 
-  static Future<void> clear() async => await prefs.clear();
+  static Future<void> clear() async => {
+    await prefs.setStringPref(AppConstants.childIdKey, ''),
+    await prefs.setStringPref(AppConstants.avatarUrlKey, ''),
+    await prefs.setBoolPref(AppConstants.guestLogged, false),
+  };
 }

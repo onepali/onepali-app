@@ -21,8 +21,12 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
+    Misc.onLayoutRendered(() async {
       context.read<UserProvider>().fetchOwnProfile();
+      final childProvider = context.read<ChildUserProvider>();
+
+      await context.read<UserProvider>().fetchOwnProfile();
+      await childProvider.fetchChildUser();
     });
   }
 
@@ -38,6 +42,9 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
     final userProvider = context.watch<UserProvider>();
     final UserModel? userInfo = userProvider.user;
+    final childProvider = context.read<ChildUserProvider>();
+    final childData = childProvider.childUser;
+    final int childCount = childProvider.totalChildren;
 
     return Scaffold(
       appBar: PZAppBarWidget(
@@ -45,6 +52,8 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
         authProviderType: Utility.getAuthTypeFromUserInfo(
           userInfo?.authProvider ?? AuthProviderType.email.name,
         ),
+        childData: childData,
+        totalChildCount: childCount > 0 ? childCount : 0,
       ),
       body: _screen[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

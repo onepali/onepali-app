@@ -40,18 +40,28 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Widget _buildMobilePortraitSplash() {
-    return VideoPlayerHelper.forSplash(
+    return CustomVideoPlayer(
       videoPath: Assets.mbSplashImage,
       sourceType: VideoSourceType.asset,
       fit: BoxFit.cover,
+      autoPlay: true,
+      loop: false,
+      enableCaching: false,
+      showControls: false,
+      onVideoEnd: () {},
     );
   }
 
   Widget _buildTabletSplash() {
-    return VideoPlayerHelper.forSplash(
+    return CustomVideoPlayer(
       videoPath: Assets.tbSplashImage,
       sourceType: VideoSourceType.asset,
       fit: BoxFit.cover,
+      autoPlay: true,
+      loop: false,
+      enableCaching: false,
+      showControls: false,
+      onVideoEnd: () {},
     );
   }
 }

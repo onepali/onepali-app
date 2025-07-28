@@ -34,6 +34,9 @@ class AppRoutes {
   static const String dashboardScreen = '/dashboard';
   static const String guestDashboardScreen = '/guest/dashboard';
 
+  /// [Drawer] Routes
+  static const String drawerRoutes = '/drawer';
+
   /// [User] Routes
   static const String userScreen = '/user';
 

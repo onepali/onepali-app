@@ -6,6 +6,8 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
   final AuthProviderType? authProviderType;
+  final List<ChildUserModel> childData;
+  final int totalChildCount;
 
   const PZAppBarWidget({
     super.key,
@@ -13,6 +15,8 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.automaticallyImplyLeading = false,
     this.authProviderType,
+    required this.childData,
+    this.totalChildCount = 0,
   });
 
   @override
@@ -102,9 +106,29 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   text: 'Family',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
-                    Utility.navigate(context, AppRoutes.dashboardScreen);
                     ParentLocalStorage.setParentLogged(false);
                     ChildLocalStorage.clear();
+                    Future.delayed(const Duration(milliseconds: 150), () {
+                      if (isMobile) {
+                        Utility.navigateMaterialRoute(
+                          context,
+                          DrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          ),
+                          routeName: AppRoutes.drawerRoutes,
+                        );
+                      } else {
+                        Utility.navigateMaterialRoute(
+                          context,
+                          TabDrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          ),
+                          routeName: AppRoutes.drawerRoutes,
+                        );
+                      }
+                    });
                   },
                 ),
                 _buildMenuItem(

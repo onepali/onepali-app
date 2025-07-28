@@ -3,102 +3,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../src.dart';
 
-/// A reusable, optimized video player widget that supports both local assets and network videos.
-///
-/// Features:
-/// - Performance optimizations (RepaintBoundary, AutomaticKeepAliveClientMixin)
-/// - App lifecycle management (auto-pause/resume)
-/// - Memory management and proper disposal
-/// - Error handling with retry functionality
-/// - Caching support for network videos
-/// - Custom aspect ratio support
-///
-/// Example usage:
-///
-/// ```dart
-/// // For splash screens (optimized, no controls)
-/// VideoPlayerHelper.forSplash(
-///   videoPath: 'assets/videos/splash.mp4',
-///   sourceType: VideoSourceType.asset,
-/// )
-///
-/// // For regular videos with full control
-/// VideoPlayerHelper.fromSource(
-///   videoPath: 'https://example.com/video.mp4',
-///   sourceType: VideoSourceType.network,
-///   autoPlay: false,
-///   showControls: true,
-///   enableCaching: true,
-///   aspectRatio: 16/9,
-/// )
-///
-/// // Using the base widget with custom parameters
-/// CustomVideoPlayer(
-///   videoPath: 'assets/videos/intro.mp4',
-///   sourceType: VideoSourceType.asset,
-///   autoPlay: true,
-///   optimizeForPerformance: true,
-///   onVideoEnd: () => print('Video ended'),
-///   placeholder: CustomLoader(),
-/// )
-/// ```
-class VideoPlayerHelper {
-  /// Creates an optimized video player based on source type
-  static Widget fromSource({
-    required String videoPath,
-    VideoSourceType sourceType = VideoSourceType.asset,
-    bool autoPlay = true,
-    bool loop = false,
-    bool showControls = true,
-    BoxFit fit = BoxFit.cover,
-    VoidCallback? onVideoEnd,
-    VoidCallback? onVideoStart,
-    Widget? placeholder,
-    Widget? errorWidget,
-    bool enableCaching = true,
-    bool optimizeForPerformance = true,
-    double? aspectRatio,
-  }) {
-    return CustomVideoPlayer(
-      videoPath: videoPath,
-      sourceType: sourceType,
-      autoPlay: autoPlay,
-      loop: loop,
-      showControls: showControls,
-      fit: fit,
-      onVideoEnd: onVideoEnd,
-      onVideoStart: onVideoStart,
-      placeholder: placeholder,
-      errorWidget: errorWidget,
-      enableCaching: enableCaching,
-      optimizeForPerformance: optimizeForPerformance,
-      aspectRatio: aspectRatio,
-    );
-  }
-
-  /// Creates an optimized splash video player (no controls, auto-play, performance optimized)
-  static Widget forSplash({
-    required String videoPath,
-    VideoSourceType sourceType = VideoSourceType.asset,
-    VoidCallback? onVideoEnd,
-    BoxFit fit = BoxFit.cover,
-    double? aspectRatio,
-  }) {
-    return fromSource(
-      videoPath: videoPath,
-      sourceType: sourceType,
-      autoPlay: true,
-      loop: false,
-      showControls: false,
-      fit: fit,
-      onVideoEnd: onVideoEnd,
-      optimizeForPerformance: true,
-      enableCaching: sourceType == VideoSourceType.network,
-      aspectRatio: aspectRatio,
-    );
-  }
-}
-
 class CustomVideoPlayer extends StatefulWidget {
   final String videoPath;
   final VideoSourceType sourceType;
@@ -142,6 +46,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
   bool _hasError = false;
   String? _errorMessage;
   bool _isDisposed = false;
+  bool _hasCompleted = false;
   final bool _isVisible = true;
 
   @override
@@ -157,7 +62,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (_isDisposed) return;
+    if (_isDisposed || _hasCompleted) return;
 
     switch (state) {
       case AppLifecycleState.paused:
@@ -165,7 +70,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
         _pauseVideo();
         break;
       case AppLifecycleState.resumed:
-        if (widget.autoPlay && _isVisible) {
+        if (widget.autoPlay && _isVisible && !_hasCompleted) {
           _resumeVideo();
         }
         break;
@@ -183,7 +88,10 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
   }
 
   void _resumeVideo() {
-    if (_isInitialized && !_controller.value.isPlaying && widget.autoPlay) {
+    if (_isInitialized &&
+        !_controller.value.isPlaying &&
+        widget.autoPlay &&
+        !_hasCompleted) {
       _controller.play();
     }
   }
@@ -238,7 +146,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
       // Set volume to avoid audio conflicts
       _controller.setVolume(1.0);
 
-      if (widget.autoPlay && _isVisible) {
+      if (widget.autoPlay && _isVisible && !_hasCompleted) {
         await _controller.play();
         if (widget.onVideoStart != null) {
           widget.onVideoStart!();
@@ -274,9 +182,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
 
     // Check if video has ended
     final hasEnded = _controller.value.position >= _controller.value.duration;
-    if (hasEnded && widget.onVideoEnd != null) {
+    if (hasEnded && !_hasCompleted) {
+      _hasCompleted = true;
+
+      // Pause the video immediately to prevent background playback
+      _controller.pause();
+
       // Use post frame callback to avoid calling setState during build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      Misc.onLayoutRendered(() {
         if (!_isDisposed && widget.onVideoEnd != null) {
           widget.onVideoEnd!();
         }
@@ -431,7 +344,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
             children: [
               IconButton(
                 onPressed:
-                    _isDisposed
+                    _isDisposed || _hasCompleted
                         ? null
                         : () {
                           if (_controller.value.isPlaying) {
@@ -452,7 +365,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
               if (widget.loop)
                 IconButton(
                   onPressed:
-                      _isDisposed
+                      _isDisposed || _hasCompleted
                           ? null
                           : () {
                             _controller.seekTo(Duration.zero);
