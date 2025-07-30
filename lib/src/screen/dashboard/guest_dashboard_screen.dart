@@ -75,6 +75,7 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
           childData: [],
           context: context,
           isGuest: true,
+          playStarBlastAudio: false,
         ),
         body:
             _isLoading

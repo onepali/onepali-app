@@ -195,44 +195,44 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListTile(
-              leading: Container(
-                height: isMobilePortrait ? 40 : 48,
-                width: isMobilePortrait ? 40 : 48,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                ),
-                child: const Icon(Icons.assignment),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-              title: const Text('My plan'),
-              onTap: () {
-                Utility.navigate(context, AppRoutes.parentPlansScreen);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListTile(
-              leading: Container(
-                height: isMobilePortrait ? 40 : 48,
-                width: isMobilePortrait ? 40 : 48,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                ),
-                child: SvgHelper.fromSource(path: Assets.unsubscribe),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-              title: const Text('Cancel Subscription'),
-              onTap: () {},
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16),
+          //   child: ListTile(
+          //     leading: Container(
+          //       height: isMobilePortrait ? 40 : 48,
+          //       width: isMobilePortrait ? 40 : 48,
+          //       padding: const EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: AppColors.kLightGrey.withValues(alpha: 0.3),
+          //       ),
+          //       child: const Icon(Icons.assignment),
+          //     ),
+          //     contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+          //     title: const Text('My plan'),
+          //     onTap: () {
+          //       Utility.navigate(context, AppRoutes.parentPlansScreen);
+          //     },
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16),
+          //   child: ListTile(
+          //     leading: Container(
+          //       height: isMobilePortrait ? 40 : 48,
+          //       width: isMobilePortrait ? 40 : 48,
+          //       padding: const EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: AppColors.kLightGrey.withValues(alpha: 0.3),
+          //       ),
+          //       child: SvgHelper.fromSource(path: Assets.unsubscribe),
+          //     ),
+          //     contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+          //     title: const Text('Cancel Subscription'),
+          //     onTap: () {},
+          //   ),
+          // ),
           Gaps.verticalGapOf(24),
 
           Container(

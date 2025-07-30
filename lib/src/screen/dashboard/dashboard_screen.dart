@@ -136,6 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             totalStars: 0,
             totalLessonsCompleted: totalLessonsCompleted,
             totalChildCount: childCount > 0 ? childCount : 0,
+            playStarBlastAudio: true,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);
               if (idx != -1) {

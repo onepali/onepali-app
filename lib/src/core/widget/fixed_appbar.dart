@@ -12,6 +12,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final BuildContext context;
   final int totalLessonsCompleted;
   final bool isGuest;
+  final bool playStarBlastAudio;
 
   const UserAppBar({
     super.key,
@@ -24,7 +25,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.totalChildCount = 0,
     required this.context,
     this.isGuest = false,
-
+    this.playStarBlastAudio = false,
     this.totalLessonsCompleted = 0,
   }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
        assert(totalChildCount >= 0, 'Total child count must be non-negative'),
@@ -97,19 +98,46 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                               ),
                             ),
                           if (!isGuest)
-                            if (totalLessonsCompleted == 5) ...[
-                              customInkwell(
-                                onTap: () {
-                                  Utility.navigate(
-                                    context,
-                                    AppRoutes.chooseRewardScreen,
+                            if (
+                            // totalLessonsCompleted == 5 &&
+                            GlobalConfig.isUserTesting) ...[
+                              Builder(
+                                builder: (context) {
+                                  // Only play audio if playStarBlastAudio is true
+                                  if (playStarBlastAudio &&
+                                      _selectedTabIndex == 0) {
+                                    Misc.onLayoutRendered(() async {
+                                      final audioWidget = CustomAudioWidget(
+                                        audioPath: Assets.starBlast,
+                                        audioSourceType: AudioSourceType.asset,
+                                      );
+                                      await audioWidget.play();
+
+                                      Future.delayed(
+                                        const Duration(
+                                          milliseconds:
+                                              AppConstants.starBlastDuration,
+                                        ),
+                                        () async {
+                                          await audioWidget.dispose();
+                                        },
+                                      );
+                                    });
+                                  }
+                                  return customInkwell(
+                                    onTap: () {
+                                      Utility.navigate(
+                                        context,
+                                        AppRoutes.chooseRewardScreen,
+                                      );
+                                    },
+                                    child: LottieHelper.fromSource(
+                                      path: Assets.starRewardLottie,
+                                      height: 65,
+                                      width: 65,
+                                    ),
                                   );
                                 },
-                                child: LottieHelper.fromSource(
-                                  path: Assets.starRewardLottie,
-                                  height: 65,
-                                  width: 65,
-                                ),
                               ),
                             ] else ...[
                               customInkwell(
@@ -259,18 +287,31 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             ],
           );
         }),
-        if (totalLessonsCompleted == 5) ...[
+        if (
+        // totalLessonsCompleted == 5 &&
+        GlobalConfig.isUserTesting) ...[
           Builder(
             builder: (context) {
-              Future.microtask(() async {
-                final audioWidget = CustomAudioWidget(
-                  audioPath: Assets.starBlast,
-                );
-                await audioWidget.play();
-                Misc.delayed(AppConstants.starBlastDuration, () async {
-                  await audioWidget.dispose();
+              // Only play audio if playStarBlastAudio is true
+              if (playStarBlastAudio && _selectedTabIndex == 0) {
+                Misc.onLayoutRendered(() async {
+                  final audioWidget = CustomAudioWidget(
+                    audioPath: Assets.starBlast,
+                    audioSourceType: AudioSourceType.asset,
+                  );
+                  await audioWidget.play();
+
+                  Future.delayed(
+                    const Duration(
+                      milliseconds: AppConstants.starBlastDuration,
+                    ),
+                    () async {
+                      await audioWidget.dispose();
+                    },
+                  );
                 });
-              });
+              }
+
               return LottieHelper.fromSource(
                 path: Assets.starRewardLottie,
                 height: 40,
