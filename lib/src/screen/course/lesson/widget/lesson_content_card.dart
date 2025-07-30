@@ -112,12 +112,13 @@ class LessonContentCard extends StatelessWidget {
           // Details
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 content.nameNp.isNotEmpty ? content.nameNp : 'चरा',
                 style: AppStyles.text32PxBold.copyWith(
-                  color: AppColors.kSecondaryColor,
+                  color: AppColors.kDrawerBgColor,
+                  fontSize: 64,
                   fontFamily: 'Mukta',
                 ),
               ),

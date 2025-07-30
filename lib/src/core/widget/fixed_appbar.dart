@@ -14,6 +14,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isGuest;
   final bool playStarBlastAudio;
 
+  // Static variable to track star blast audio
+  static CustomAudioWidget? _starBlastAudioWidget;
+
   const UserAppBar({
     super.key,
     required this.name,
@@ -106,23 +109,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   // Only play audio if playStarBlastAudio is true
                                   if (playStarBlastAudio &&
                                       _selectedTabIndex == 0) {
-                                    Misc.onLayoutRendered(() async {
-                                      final audioWidget = CustomAudioWidget(
-                                        audioPath: Assets.starBlast,
-                                        audioSourceType: AudioSourceType.asset,
-                                      );
-                                      await audioWidget.play();
-
-                                      Future.delayed(
-                                        const Duration(
-                                          milliseconds:
-                                              AppConstants.starBlastDuration,
-                                        ),
-                                        () async {
-                                          await audioWidget.dispose();
-                                        },
-                                      );
-                                    });
+                                    _playStarBlastAudio();
                                   }
                                   return customInkwell(
                                     onTap: () {
@@ -245,6 +232,39 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     _selectedTabIndex = index;
   }
 
+  // Static method to stop star blast audio from anywhere
+  static Future<void> stopStarBlastAudio() async {
+    // Use the new channel-based approach
+    await CustomAudioWidget.stopStarBlast();
+    _starBlastAudioWidget = null;
+    logger.d('Star blast audio stopped and disposed');
+  }
+
+  // Common method to play star blast audio
+  static void _playStarBlastAudio() {
+    Misc.onLayoutRendered(() async {
+      try {
+        await stopStarBlastAudio();
+
+        _starBlastAudioWidget = CustomAudioWidget.starBlast(
+          audioPath: Assets.starBlast,
+          audioSourceType: AudioSourceType.asset,
+        );
+
+        await _starBlastAudioWidget!.play();
+
+        Future.delayed(
+          const Duration(milliseconds: AppConstants.starBlastDuration),
+          () async {
+            stopStarBlastAudio();
+          },
+        );
+      } catch (e) {
+        logger.e('Error playing star blast audio: $e');
+      }
+    });
+  }
+
   Widget buildProgressBar() {
     const totalSteps = 5;
     return Row(
@@ -294,22 +314,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             builder: (context) {
               // Only play audio if playStarBlastAudio is true
               if (playStarBlastAudio && _selectedTabIndex == 0) {
-                Misc.onLayoutRendered(() async {
-                  final audioWidget = CustomAudioWidget(
-                    audioPath: Assets.starBlast,
-                    audioSourceType: AudioSourceType.asset,
-                  );
-                  await audioWidget.play();
-
-                  Future.delayed(
-                    const Duration(
-                      milliseconds: AppConstants.starBlastDuration,
-                    ),
-                    () async {
-                      await audioWidget.dispose();
-                    },
-                  );
-                });
+                _playStarBlastAudio();
               }
 
               return LottieHelper.fromSource(

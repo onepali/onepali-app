@@ -143,8 +143,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 children: [
                   if (!isFirst && !isTapSendType)
                     Container(
-                      height: 17.h(context),
-                      width: 17.h(context),
+                      height: 11.h(context),
+                      width: 11.h(context),
                       decoration: BoxDecoration(
                         color: AppColors.kWhite,
                         shape: BoxShape.circle,
@@ -156,11 +156,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                           ),
                         ],
                       ),
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.leftArrow,
-                          height: 48,
-                          width: 48,
+                          height: 40,
+                          width: 40,
                           color: AppColors.kSecondaryColor,
                         ),
                         onPressed:
@@ -356,8 +357,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   ),
                   if (!isLast && !isTapSendType)
                     Container(
-                      height: 17.h(context),
-                      width: 17.h(context),
+                      height: 11.h(context),
+                      width: 11.h(context),
                       decoration: BoxDecoration(
                         color: AppColors.kWhite,
                         shape: BoxShape.circle,
@@ -369,11 +370,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                           ),
                         ],
                       ),
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.rightArrow,
-                          height: 48,
-                          width: 48,
+                          height: 40,
+                          width: 40,
                           color: AppColors.kSecondaryColor,
                         ),
                         onPressed:

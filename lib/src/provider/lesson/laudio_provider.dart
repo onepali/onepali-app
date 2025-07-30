@@ -64,6 +64,9 @@ class LessonAudioProvider extends ChangeNotifier {
     AudioSourceType audioSourceType = AudioSourceType.asset,
     bool forceReplay = false,
   }) async {
+    // Stop any existing lesson audio
+    await CustomAudioWidget.stopLesson();
+
     if (_isPlaying && !forceReplay) return;
     _isPlaying = true;
     notifyListeners();
@@ -83,7 +86,7 @@ class LessonAudioProvider extends ChangeNotifier {
           logger.i('Audio not cached, will stream from network: $audioPath');
         }
       }
-      final audioWidget = CustomAudioWidget(
+      final audioWidget = CustomAudioWidget.lesson(
         audioPath: sourcePath,
         audioSourceType: sourceType,
       );
@@ -180,6 +183,9 @@ class LessonAudioProvider extends ChangeNotifier {
   Future<void> playWordAudio(String audioPath) async {
     if (audioPath.isEmpty) return;
 
+    // Stop any existing lesson audio
+    await CustomAudioWidget.stopLesson();
+
     _isPlaying = true;
     notifyListeners();
 
@@ -197,7 +203,7 @@ class LessonAudioProvider extends ChangeNotifier {
         logger.i('Word audio not cached, will stream from network: $audioPath');
       }
 
-      final audioWidget = CustomAudioWidget(
+      final audioWidget = CustomAudioWidget.lesson(
         audioPath: sourcePath,
         audioSourceType: sourceType,
       );
@@ -231,7 +237,7 @@ class LessonAudioProvider extends ChangeNotifier {
         );
       }
 
-      final audioWidget = CustomAudioWidget(
+      final audioWidget = CustomAudioWidget.lesson(
         audioPath: sourcePath,
         audioSourceType: sourceType,
       );
@@ -250,6 +256,9 @@ class LessonAudioProvider extends ChangeNotifier {
       _isPlaying = false;
       notifyListeners();
       logger.d('Audio stopped and reset');
+
+      // Stop lesson audio using the new channel approach
+      await CustomAudioWidget.stopLesson();
     } catch (e) {
       logger.e('Error stopping audio: $e');
     }
