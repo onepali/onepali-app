@@ -25,6 +25,7 @@ class AppColors {
   static const Color kPink = Color(0xFFFFC0CB);
   static const Color kSkyBlue = Color(0xFFB8F2FF);
   static const Color kPureSkyBlue = Color(0xFF3296EB);
+  static const Color lessonBgColor = Color(0xFFFF9A76);
 
   /// [Button] Color
   static const Color kButtonGrey = Color(0xFFE1E1E1);

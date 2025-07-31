@@ -77,6 +77,18 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                   ),
                   // Right arrow to go to next lesson
                   Positioned(
+                    top: 16,
+                    right: 16,
+                    child: IconButton(
+                      icon: SvgHelper.fromSource(
+                        path: Assets.wrong,
+                        height: 40,
+                        width: 40,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                  Positioned(
                     right: 32,
                     top: 0,
                     bottom: 0,

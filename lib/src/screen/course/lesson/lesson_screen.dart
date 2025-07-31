@@ -51,6 +51,8 @@ class LessonScreen extends StatelessWidget {
                           lessons: chapter.lessons,
                           initialIndex: 0,
                           hasSound: true,
+                          nameNp: chapter.nameNp,
+                          nameEn: chapter.nameEn,
                         ),
                   ),
                 );

@@ -14,9 +14,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isGuest;
   final bool playStarBlastAudio;
 
-  // Static variable to track star blast audio
-  static CustomAudioWidget? _starBlastAudioWidget;
-
   const UserAppBar({
     super.key,
     required this.name,
@@ -103,12 +100,14 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                           if (!isGuest)
                             if (
                             // totalLessonsCompleted == 5 &&
-                            GlobalConfig.isUserTesting) ...[
+                            GlobalConfig.isUserTesting &&
+                                childData.isNotEmpty) ...[
                               Builder(
                                 builder: (context) {
                                   // Only play audio if playStarBlastAudio is true
                                   if (playStarBlastAudio &&
-                                      _selectedTabIndex == 0) {
+                                      _selectedTabIndex == 0 &&
+                                      childData.isNotEmpty) {
                                     _playStarBlastAudio();
                                   }
                                   return customInkwell(
@@ -122,6 +121,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       path: Assets.starRewardLottie,
                                       height: 65,
                                       width: 65,
+                                      repeat: false,
                                     ),
                                   );
                                 },
@@ -227,42 +227,65 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   static int _selectedTabIndex = 0;
+  static CustomAudioWidget? _starBlastAudioWidget;
+  static bool _isStarBlastPlaying = false;
 
   static void setTabIndex(int index) {
     _selectedTabIndex = index;
   }
 
-  // Static method to stop star blast audio from anywhere
-  static Future<void> stopStarBlastAudio() async {
-    // Use the new channel-based approach
-    await CustomAudioWidget.stopStarBlast();
-    _starBlastAudioWidget = null;
-    logger.d('Star blast audio stopped and disposed');
+  // Method to stop and dispose star blast audio
+  static Future<void> _stopStarBlastAudio() async {
+    if (_starBlastAudioWidget != null) {
+      try {
+        await _starBlastAudioWidget!.audioPlayer.stop();
+        await _starBlastAudioWidget!.dispose();
+        _starBlastAudioWidget = null;
+        _isStarBlastPlaying = false;
+        logger.d('Star blast audio stopped and disposed');
+      } catch (e) {
+        logger.e('Error stopping star blast audio: $e');
+      }
+    }
   }
 
   // Common method to play star blast audio
   static void _playStarBlastAudio() {
+    // Prevent multiple simultaneous plays
+    if (_isStarBlastPlaying) {
+      logger.d('Star blast audio already playing, skipping');
+      return;
+    }
+
     Misc.onLayoutRendered(() async {
       try {
-        await stopStarBlastAudio();
+        // Stop any existing audio first
+        await _stopStarBlastAudio();
 
-        _starBlastAudioWidget = CustomAudioWidget.starBlast(
+        _starBlastAudioWidget = CustomAudioWidget(
           audioPath: Assets.starBlast,
           audioSourceType: AudioSourceType.asset,
         );
 
+        _isStarBlastPlaying = true;
         await _starBlastAudioWidget!.play();
 
         Future.delayed(
           const Duration(milliseconds: AppConstants.starBlastDuration),
           () async {
-            stopStarBlastAudio();
+            await _stopStarBlastAudio();
           },
         );
       } catch (e) {
         logger.e('Error playing star blast audio: $e');
+        _isStarBlastPlaying = false;
       }
     });
+  }
+
+  // Public method to reset audio from outside
+  static Future<void> resetStarBlastAudio() async {
+    await _stopStarBlastAudio();
   }
 
   Widget buildProgressBar() {
@@ -309,11 +332,13 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         }),
         if (
         // totalLessonsCompleted == 5 &&
-        GlobalConfig.isUserTesting) ...[
+        GlobalConfig.isUserTesting && childData.isNotEmpty) ...[
           Builder(
             builder: (context) {
               // Only play audio if playStarBlastAudio is true
-              if (playStarBlastAudio && _selectedTabIndex == 0) {
+              if (playStarBlastAudio &&
+                  _selectedTabIndex == 0 &&
+                  childData.isNotEmpty) {
                 _playStarBlastAudio();
               }
 

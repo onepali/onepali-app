@@ -78,6 +78,11 @@ class AppConstants {
   static const String modalRoute = 'modal';
   static const String customDialogModal = 'custom_dialog';
 
+  /// Lesson Video Cache DB
+  static const String lessonVideoCacheDB = 'lesson_videos';
+  static const int lessonVideoCacheDays = 7;
+  static const int lessonVideoCacheMaxObjects = 50;
+
   /// Reward Outlined Stickers
   static List<String> rewardOutlinedStickers = [
     'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow_leopard_outline.svg?alt=media&token=499f6b1d-da05-45b1-8ca4-5eaad0311546',

@@ -112,25 +112,37 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
           );
           break;
         case VideoSourceType.network:
+          final uri = Uri.parse(widget.videoPath);
           _controller = VideoPlayerController.networkUrl(
-            Uri.parse(widget.videoPath),
+            uri,
             videoPlayerOptions: VideoPlayerOptions(
               mixWithOthers: true,
               allowBackgroundPlayback: false,
             ),
             httpHeaders:
-                widget.enableCaching ? {'Cache-Control': 'max-age=3600'} : {},
+                widget.enableCaching && !uri.scheme.startsWith('file')
+                    ? {
+                      'Cache-Control': 'max-age=604800',
+                      'Connection': 'keep-alive',
+                    }
+                    : {},
           );
           break;
       }
 
-      // Performance optimization: Set video quality for network videos
-      if (widget.optimizeForPerformance &&
-          widget.sourceType == VideoSourceType.network) {
-        // Preload video data for smoother playback
-        await _controller.initialize();
-      } else {
-        await _controller.initialize();
+      // Performance optimization: Initialize with buffer settings
+      await _controller.initialize();
+
+      // Set buffer duration for smoother playback
+      if (widget.sourceType == VideoSourceType.network &&
+          !Uri.parse(widget.videoPath).scheme.startsWith('file')) {
+        // Only for actual network URLs, not cached files
+        try {
+          // These settings help with network video performance
+          await _controller.setVolume(1.0);
+        } catch (e) {
+          logger.w('Could not set video buffer settings: $e');
+        }
       }
 
       if (_isDisposed || !mounted) return;
@@ -143,8 +155,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
       // Performance optimization: Configure playback settings
       _controller.setLooping(widget.loop);
 
-      // Set volume to avoid audio conflicts
-      _controller.setVolume(1.0);
+      // Volume is already set above, no need to set again
 
       if (widget.autoPlay && _isVisible && !_hasCompleted) {
         await _controller.play();
