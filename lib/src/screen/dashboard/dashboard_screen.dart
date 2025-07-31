@@ -129,6 +129,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: SafeArea(
         child: Scaffold(
           key: _scaffoldKey,
+          backgroundColor: AppColors.kWhite,
           appBar: UserAppBar(
             context: context,
             name: userInfo?.fullName ?? 'User',
@@ -137,6 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             totalLessonsCompleted: totalLessonsCompleted,
             totalChildCount: childCount > 0 ? childCount : 0,
             playStarBlastAudio: true,
+            menuColor: homeServices[_selectedTabIndex].color,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);
               if (idx != -1) {

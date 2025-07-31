@@ -31,6 +31,11 @@ class AppColors {
   static const Color kButtonGrey = Color(0xFFE1E1E1);
   static const Color kButtonGreen = Color(0xFF32D0AA);
 
+  /// [Menu] Color
+  static const Color kLessonColor = Color(0xFF003893);
+  static const Color kSongColor = Color(0xFFFA642D);
+  static const Color kStoryColor = Color(0xFF0F9696);
+
   /// Status Color
   static const Color successColor = Color(0xFF4CAF50);
   static const Color errorColor = Color(0xFFF44336);

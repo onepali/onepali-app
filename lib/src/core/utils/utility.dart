@@ -40,7 +40,7 @@ class Utility {
           ),
         ),
         Text(
-          title ?? "Or Continue with",
+          title ?? "Or continue with",
           style:
               titleStyle ??
               AppStyles.text12PxRegular.copyWith(color: AppColors.kPitchBlack),

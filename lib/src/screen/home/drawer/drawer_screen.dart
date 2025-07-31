@@ -52,6 +52,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           Expanded(
             child: SingleChildScrollView(
               child: Container(
+                height: MediaQuery.of(context).size.height,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
                 child: Column(children: [_buildChildProfilesGrid()]),

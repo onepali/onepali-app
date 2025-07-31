@@ -70,7 +70,7 @@ class CourseScreenState extends State<CourseScreen> {
                       ),
                       Gaps.verticalGapOf(8),
                       SizedBox(
-                        height: AppCardResponsive.getCardHeight(context),
+                        height: AppCardResponsive.getLessonCardHeight(context),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.symmetric(horizontal: 8),

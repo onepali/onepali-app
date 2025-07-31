@@ -152,6 +152,9 @@ class GoogleAuthProvider with ChangeNotifier {
       _user = null;
 
       authState.clear();
+      ChildLocalStorage.clear();
+      ParentLocalStorage.clear();
+      _sharedPrefs.clear();
       setStatus(DataFetchStatus.initial);
       notifyListeners();
 

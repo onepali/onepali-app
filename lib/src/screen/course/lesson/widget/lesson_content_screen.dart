@@ -39,7 +39,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       // For recommended lessons, use the provided initialIndex + 1 to account for intro screen
       _currentContentIndex = widget.initialIndex + 1;
       logger.d(
-        'Recommended lesson: setting initial index to ${_currentContentIndex} (content index: ${widget.initialIndex})',
+        'Recommended lesson: setting initial index to $_currentContentIndex (content index: ${widget.initialIndex})',
       );
     } else {
       // For regular lessons, start with intro screen (index 0)

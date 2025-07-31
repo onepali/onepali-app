@@ -13,7 +13,7 @@ class ChildUserProvider extends ChangeNotifier {
   List<ChildUserModel> _childUser = [];
   List<ChildUserModel> get childUser => _childUser;
 
-  int _totalChildren = 3;
+  int _totalChildren = 0;
   int get totalChildren => _totalChildren;
 
   Future<void> selectDefaultChildIfNeeded(BuildContext context) async {

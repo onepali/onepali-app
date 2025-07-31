@@ -13,6 +13,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int totalLessonsCompleted;
   final bool isGuest;
   final bool playStarBlastAudio;
+  final Color menuColor;
 
   const UserAppBar({
     super.key,
@@ -27,6 +28,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isGuest = false,
     this.playStarBlastAudio = false,
     this.totalLessonsCompleted = 0,
+    this.menuColor = AppColors.kLessonColor,
   }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
        assert(totalChildCount >= 0, 'Total child count must be non-negative'),
        assert(
@@ -36,7 +38,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.d('totalLessonsCompleted: $totalLessonsCompleted');
+    logger.d('totalChildCount: $totalChildCount');
     int selectedIndex = _selectedTabIndex;
     final isMobileLandScape =
         PlatformUtility.isMobile(context) &&
@@ -49,12 +51,13 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       child:
           isMobileLandScape
               ? Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isGuest) Gaps.verticalGapOf(35),
 
                   Row(
                     spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
@@ -97,7 +100,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 color: AppColors.kPitchBlack,
                               ),
                             ),
-                          if (!isGuest)
+                          if (!isGuest && totalChildCount > 0)
                             if (
                             // totalLessonsCompleted == 5 &&
                             GlobalConfig.isUserTesting &&
@@ -127,25 +130,27 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 },
                               ),
                             ] else ...[
-                              customInkwell(
-                                onTap: () {
-                                  Utility.navigate(
-                                    context,
-                                    AppRoutes.rewardCollectionScreen,
-                                  );
-                                },
-                                child: SvgHelper.fromSource(
-                                  path: Assets.reward,
-                                  height: 40,
-                                  width: 40,
+                              if (!isGuest && totalChildCount > 0)
+                                customInkwell(
+                                  onTap: () {
+                                    Utility.navigate(
+                                      context,
+                                      AppRoutes.rewardCollectionScreen,
+                                    );
+                                  },
+                                  child: SvgHelper.fromSource(
+                                    path: Assets.reward,
+                                    height: 40,
+                                    width: 40,
+                                  ),
                                 ),
-                              ),
                             ],
                         ],
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 10,
                         children: [
                           for (int i = 0; i < homeServices.length; i++)
                             _buildTab(
@@ -188,7 +193,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                           // }
                         },
                         icon: CustomImage(
-                          isGuest ? Assets.userAvatar : profileImage,
+                          isGuest ? Assets.parentAvatar : profileImage,
                           height: 45,
                           width: 45,
                           circular: true,
@@ -332,7 +337,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         }),
         if (
         // totalLessonsCompleted == 5 &&
-        GlobalConfig.isUserTesting && childData.isNotEmpty) ...[
+        GlobalConfig.isUserTesting && !isGuest && totalChildCount > 0) ...[
           Builder(
             builder: (context) {
               // Only play audio if playStarBlastAudio is true
@@ -351,7 +356,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
           ),
         ] else ...[
-          SvgHelper.fromSource(path: Assets.reward, height: 30, width: 30),
+          if (!isGuest && totalChildCount > 0)
+            SvgHelper.fromSource(path: Assets.reward, height: 30, width: 30),
         ],
       ],
     );
@@ -369,22 +375,28 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     return IconButton(
       onPressed: onTap,
       icon: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // if (isGuest) Gaps.verticalGapOf(30),
-          SvgHelper.fromSource(path: icon, height: 28, width: 28),
+          SvgHelper.fromSource(
+            path: icon,
+            height: 44,
+            width: 44,
+            // color: menuColor,
+          ),
           if (isSelected) ...[
             Gaps.verticalGapOf(4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: color,
+                color: menuColor,
                 borderRadius: BorderRadius.circular(20),
               ),
 
               child: Text(
                 label,
-                style: AppStyles.text10PxMedium.copyWith(
+                style: AppStyles.text12PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
@@ -398,7 +410,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(
     PlatformUtility.isMobile(context) && PlatformUtility.isLandscape(context)
-        ? 90
+        ? 110
         : 130,
   );
 }

@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Gaps.verticalGapOf(10),
+          // Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
             // Only show recommended card for non-guest users
             if (!isGuest) ...[

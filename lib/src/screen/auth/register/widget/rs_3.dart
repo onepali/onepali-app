@@ -43,8 +43,8 @@ class _RS3ScreenState extends State<RS3Screen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Create your Account', style: AppStyles.text20PxSemiBold),
-              SizedBox(height: 24),
+              Text('Create your account', style: AppStyles.text20PxSemiBold),
+              Gaps.verticalGapOf(24),
               TitleActionChild(
                 titlePadding: EdgeInsets.only(bottom: 8),
                 title: 'Name',
@@ -96,7 +96,6 @@ class _RS3ScreenState extends State<RS3Screen> {
           authState.setFullName(nameController.text.trim());
           authState.setYearOfBirth(selectedYear.year.toInt());
           Utility.navigate(context, AppRoutes.rs4Screen);
-
         }
       },
       backgroundColor: AppColors.kButtonGreen,

@@ -10,6 +10,7 @@ class LessonScreen extends StatelessWidget {
     final isTablet = PlatformUtility.isTablet(context);
     final isWeb = PlatformUtility.isWeb(context);
     final isLandscape = PlatformUtility.isLandscape(context);
+    final isMobileLandScape = PlatformUtility.isMobile(context) && isLandscape;
     double cardWidth;
     double listHeight;
     if (isWeb) {
@@ -19,9 +20,16 @@ class LessonScreen extends StatelessWidget {
       cardWidth = isLandscape ? 350 : 300;
       listHeight = isLandscape ? 260 : 350;
     } else {
-      cardWidth = isLandscape ? 320 : 260;
-      listHeight = isLandscape ? 220 : 320;
+      cardWidth =
+          isMobileLandScape ? AppCardResponsive.getCardWidth(context) : 260;
+      listHeight =
+          isMobileLandScape
+              ? AppCardResponsive.getLessonCardHeight(context) + 50
+              : 320;
     }
+    logger.d(
+      'LessonScreen: cardWidth: $cardWidth, listHeight: $listHeight, isTablet: $isTablet, isMobileLandScape: $isMobileLandScape, isWeb: $isWeb, isLandscape: $isLandscape',
+    );
     return Scaffold(
       appBar: CustomAppBar(
         title: chapter.nameEn.isNotEmpty ? chapter.nameEn : chapter.nameNp,

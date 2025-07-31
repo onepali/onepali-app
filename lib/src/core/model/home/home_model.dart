@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 
 class HomeServiceModel {
@@ -5,7 +6,14 @@ class HomeServiceModel {
   final String? icon;
   final String? tooltip;
   final String route;
-  const HomeServiceModel({this.name, this.icon, this.tooltip, this.route = ''});
+  final Color color;
+  const HomeServiceModel({
+    this.name,
+    this.icon,
+    this.tooltip,
+    this.route = '',
+    this.color = AppColors.kLessonColor,
+  });
 }
 
 // Games // Stories // Songs & Rhymes // Lessons
@@ -14,6 +22,7 @@ List<HomeServiceModel> homeServices = [
     name: 'Lessons',
     icon: Assets.lessons,
     tooltip: 'Lessons',
+    color: AppColors.kLessonColor,
     route: '',
   ),
   // HomeServiceModel(
@@ -23,15 +32,17 @@ List<HomeServiceModel> homeServices = [
   //   route: AppRoutes.comingSoon,
   // ),
   HomeServiceModel(
-    name: 'Songs & Rhymes',
+    name: 'Songs',
     icon: Assets.songsRhymes,
-    tooltip: 'Songs & Rhymes',
+    tooltip: 'Songs',
+    color: AppColors.kSongColor,
     route: AppRoutes.comingSoon,
   ),
   HomeServiceModel(
     name: 'Stories',
     icon: Assets.stories,
     tooltip: 'Stories',
+    color: AppColors.kStoryColor,
     route: AppRoutes.comingSoon,
   ),
 ];
