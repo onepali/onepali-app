@@ -62,8 +62,8 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         title,
         style:
             isMobilePortrait
-                ? AppStyles.text18PxSemiBold
-                : AppStyles.text26PxSemiBold,
+                ? AppStyles.text18PxSemiBold.copyWith(fontFamily: 'Poppins')
+                : AppStyles.text26PxSemiBold.copyWith(fontFamily: 'Poppins'),
       ),
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
@@ -106,7 +106,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   text: 'Family',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
-                    ParentLocalStorage.setParentLogged(false);
+                    // ParentLocalStorage.setParentLogged(false);
                     ChildLocalStorage.clear();
                     Future.delayed(const Duration(milliseconds: 150), () {
                       if (isMobile) {
@@ -134,7 +134,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 _buildMenuItem(
                   value: 'logout',
                   icon: Assets.logout,
-                  text: 'Logout',
+                  text: 'Log out',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
                     logoutBottomSheet(context);
@@ -148,7 +148,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Future logoutBottomSheet(context) {
     return BottomSheetManager.bottomModelSheet(
-      title: 'Do you want to logout?',
+      title: 'Do you want to log out?',
       action: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -166,7 +166,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           Gaps.horizontalGapOf(20),
           Expanded(
             child: CustomMaterialButton(
-              label: 'Logout',
+              label: 'Log out',
               height: 40,
               elevation: 0,
               onTap: () {

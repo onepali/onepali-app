@@ -53,6 +53,7 @@ class Assets {
   static String speak = 'speak'.icon;
   static String wrong = 'wrong'.icon;
   static String check = 'check'.icon;
+  static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;
   static String play = 'play'.icon;
   static String redo = 'redo'.icon;

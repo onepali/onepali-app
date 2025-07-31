@@ -292,7 +292,7 @@ class _LessonContentCardState extends State<LessonContentCard>
             CustomAvatarGlow(
               glowColor: AppColors.kSecondaryColor,
               glowShape: BoxShape.circle,
-              visible: widget.isPlaying,
+              visible: widget.isPlaying ,
               glowRadiusFactor: 0.2,
               child: IconButton(
                 icon: SvgHelper.fromSource(

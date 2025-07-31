@@ -39,11 +39,11 @@ class _NormalContentState extends State<NormalContent> {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: SvgHelper.fromSource(
             path: isLeft ? Assets.leftArrow : Assets.rightArrow,
-            height: 35,
-            width: 35,
+            height: 36,
+            width: 36,
           ),
         ),
       );
@@ -94,7 +94,7 @@ class _NormalContentState extends State<NormalContent> {
       children: [
         if (widget.content.image.isNotEmpty)
           Positioned.fill(
-            bottom: 50,
+            // bottom: 50,
             child: CustomImage(
               widget.content.image,
               imageType: CustomImageType.network,
@@ -135,7 +135,7 @@ class _NormalContentState extends State<NormalContent> {
               storyProvider.stopAudio();
               logger.d('[NormalContent] Wrong icon tapped, stopping audio');
             },
-            child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+            child: SvgHelper.fromSource(path: Assets.wrong, height: 45),
           ),
         ),
         // Left arrow (center vertically)
@@ -152,7 +152,7 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 16,
+          right: 25,
           top: 0,
           bottom: 0,
           child: Center(

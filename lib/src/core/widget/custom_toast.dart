@@ -16,7 +16,7 @@ void showCustomToaster(
             ? AppColors.kBlack
             : isError
             ? AppColors.errorColor
-            : AppColors.successColor,
+            : AppColors.kButtonGreen,
     textColor: AppColors.kWhite,
     fontSize: 14.0,
   );

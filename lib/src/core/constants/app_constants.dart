@@ -8,6 +8,7 @@ class AppConstants {
   static const String applicationId = 'com.onepali.app';
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
+  static const String supportMail = 'hello@onepali.fun';
 
   // Login Types
   static const String email = 'email';

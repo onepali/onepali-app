@@ -81,7 +81,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: const Text(
-              'Your Children',
+              'Your children',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),

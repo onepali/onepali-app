@@ -55,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
@@ -107,12 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLessons(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isWeb = PlatformUtility.isWeb(context);
-
     return SizedBox(
       height: AppCardResponsive.getLessonCardHeight(context) + 50,
-      child: CourseScreen(isMobile: !isTablet && !isWeb),
+      child: CourseScreen(isMobile: false),
     );
   }
 
@@ -177,10 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Stories',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      child: SizedBox(
-        height: _getCardHeight(context) + 32,
-        child: StoryScreen(),
-      ),
+      child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
     );
   }
 }

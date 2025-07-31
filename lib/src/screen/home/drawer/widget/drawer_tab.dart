@@ -90,7 +90,25 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
                 Gaps.horizontalGapOf(10),
                 InkWell(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () async {
+                    final isParentLogged =
+                        await ParentLocalStorage.isParentLogged();
+                    logger.d('isParentLogged: $isParentLogged');
+                    if (isParentLogged) {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      UserAppBar.setTabIndex(0);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => DashboardScreen(),
+                          settings: RouteSettings(
+                            name: AppRoutes.dashboardScreen,
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
                   child: Align(
                     alignment: Alignment.topRight,
                     child: Container(

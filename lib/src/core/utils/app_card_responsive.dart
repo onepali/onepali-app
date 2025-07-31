@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/utils/platform_utility.dart';
+import 'package:onepali/src/core/core.dart';
 
 class AppCardResponsive {
   static double getCardWidth(BuildContext context) {
@@ -7,13 +7,19 @@ class AppCardResponsive {
     final isMobile = PlatformUtility.isMobile(context);
     final isLandscape = PlatformUtility.isLandscape(context);
     final width = MediaQuery.of(context).size.width;
+    double result;
     if (isTablet) {
-      return isLandscape ? width * 0.45 : width * 0.36;
+      result = isLandscape ? width * 0.45 : width * 0.36;
     } else if (isMobile) {
-      return isLandscape ? width * 0.45 : width * 0.6;
+      result = isLandscape ? width * 0.45 : width * 0.6;
     } else {
-      return width * 0.4;
+      result = width * 0.4;
     }
+
+    logger.d(
+      'AppCardResponsive.getCardWidth: $result (width: $width, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape)',
+    );
+    return result;
   }
 
   static double getCardHeight(BuildContext context) {
@@ -21,13 +27,19 @@ class AppCardResponsive {
     final isMobile = PlatformUtility.isMobile(context);
     final isLandscape = PlatformUtility.isLandscape(context);
     final height = MediaQuery.of(context).size.height;
+    double result;
     if (isTablet) {
-      return isLandscape ? height * 0.45 : height * 0.5;
+      result = isLandscape ? height * 0.55 : height * 0.5;
     } else if (isMobile) {
-      return isLandscape ? height * 0.55 : height * 0.55;
+      result = isLandscape ? height * 0.55 : height * 0.55;
     } else {
-      return height * 0.5;
+      result = height * 0.5;
     }
+
+    logger.d(
+      'AppCardResponsive.getCardHeight: $result (height: $height, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape)',
+    );
+    return result;
   }
 
   static double getLessonCardHeight(BuildContext context) {
@@ -35,13 +47,19 @@ class AppCardResponsive {
     final isMobile = PlatformUtility.isMobile(context);
     final isLandscape = PlatformUtility.isLandscape(context);
     final height = MediaQuery.of(context).size.height;
+    double result;
     if (isTablet) {
-      return isLandscape ? height * 0.55 : height * 0.5;
+      result = isLandscape ? height * 0.55 : height * 0.5;
     } else if (isMobile) {
-      return isLandscape ? height * 0.55 : height * 0.55;
+      result = isLandscape ? height * 0.55 : height * 0.55;
     } else {
-      return height * 0.5;
+      result = height * 0.5;
     }
+
+    logger.d(
+      'AppCardResponsive.getLessonCardHeight: $result (height: $height, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape)',
+    );
+    return result;
   }
 
   static double getThumbnailHeight(BuildContext context) {

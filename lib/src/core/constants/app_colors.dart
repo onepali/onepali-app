@@ -30,6 +30,7 @@ class AppColors {
   /// [Button] Color
   static const Color kButtonGrey = Color(0xFFE1E1E1);
   static const Color kButtonGreen = Color(0xFF32D0AA);
+  static const Color kButtonRed = Color(0xFFFF96AA);
 
   /// [Menu] Color
   static const Color kLessonColor = Color(0xFF003893);
@@ -41,6 +42,8 @@ class AppColors {
   static const Color errorColor = Color(0xFFF44336);
   static const Color warningColor = Color(0xFFFFC107);
   static const Color infoColor = Color(0xFF2196F3);
+  static const Color thumbColor = Color(0xFFFFD200);
+  static const Color heartColor = Color(0xFFDC143C);
 
   static const List<Color> learningColors = [
     Color(0xFFFF6B6B), // learningRed

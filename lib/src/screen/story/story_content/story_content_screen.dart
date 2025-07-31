@@ -51,10 +51,10 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kSkyBlue,
-      body: SafeArea(
-        child: Consumer<StoryProvider>(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.kSkyBlue,
+        body: Consumer<StoryProvider>(
           builder: (context, provider, _) {
             final story = provider.currentStory ?? widget.story;
             final contentList = story.content;
@@ -73,6 +73,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                       story: story,
                       isRadius: false,
                       isRecommended: true,
+                      isIntro: true,
                     ),
                   ),
                   // Right arrow to go to next lesson
@@ -89,14 +90,14 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     ),
                   ),
                   Positioned(
-                    right: 32,
+                    right: 25,
                     top: 0,
                     bottom: 0,
                     child: GestureDetector(
                       onTap: () => provider.nextContent(context),
                       child: Container(
-                        width: 48,
-                        height: 48,
+                        height: 40,
+                        width: 40,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppColors.kWhite,

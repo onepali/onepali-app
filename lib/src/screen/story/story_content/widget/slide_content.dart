@@ -64,10 +64,9 @@ class SlideContentState extends State<SlideContent> {
     final screenWidth = MediaQuery.of(context).size.width;
     final char1Width = 120.0;
     final char2Width = 120.0;
-    final charPadding = 24.0;
     final sliderPadding = 32.0;
     final sliderWidth = screenWidth - sliderPadding * 2;
-    final maxPosition = sliderWidth - char1Width - char2Width - charPadding;
+    final maxPosition = sliderWidth - char1Width;
     // Images: content.image = background, content.characters = [char1, char2]
     final bgImage = widget.content.image;
     final charList = widget.content.characters ?? [];
@@ -101,7 +100,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Character 2 (static, right side)
         Positioned(
-          left: maxPosition + char1Width - charPadding,
+          right: sliderPadding + char2Width, // Position char2 at the right side
           bottom: 40,
           child: SvgHelper.fromSource(
             path: char2,
@@ -158,7 +157,7 @@ class SlideContentState extends State<SlideContent> {
             onTap: () {
               storyProvider.stopAudio();
             },
-            child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+            child: SvgHelper.fromSource(path: Assets.wrong, height: 45),
           ),
         ),
         // Left arrow (center vertically)
@@ -181,11 +180,11 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-                  height: 35,
-                  width: 35,
+                  height: 36,
+                  width: 36,
                 ),
               ),
             ),
@@ -193,7 +192,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 16,
+          right: 25,
           top: 0,
           bottom: 0,
           child: Center(
@@ -211,11 +210,11 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: SvgHelper.fromSource(
                   path: Assets.rightArrow,
-                  height: 35,
-                  width: 35,
+                  height: 36,
+                  width: 36,
                 ),
               ),
             ),

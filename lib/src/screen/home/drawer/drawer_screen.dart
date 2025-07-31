@@ -189,8 +189,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 50,
-                width: 50,
+                height: 60,
+                width: 60,
+                
                 decoration: BoxDecoration(
                   color: Colors.grey.shade600,
                   shape: BoxShape.circle,
@@ -237,7 +238,23 @@ class _DrawerScreenState extends State<DrawerScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InkWell(
-            onTap: () => Navigator.pop(context),
+            onTap: () async {
+              final isParentLogged = await ParentLocalStorage.isParentLogged();
+              logger.d('isParentLogged: $isParentLogged');
+
+              if (isParentLogged) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                UserAppBar.setTabIndex(0);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => DashboardScreen(),
+                    settings: RouteSettings(name: AppRoutes.dashboardScreen),
+                  ),
+                );
+              } else {
+                Navigator.pop(context);
+              }
+            },
             child: Align(
               alignment: Alignment.topRight,
               child: Container(

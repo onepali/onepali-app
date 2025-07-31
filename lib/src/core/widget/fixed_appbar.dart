@@ -108,11 +108,11 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                               Builder(
                                 builder: (context) {
                                   // Only play audio if playStarBlastAudio is true
-                                  if (playStarBlastAudio &&
-                                      _selectedTabIndex == 0 &&
-                                      childData.isNotEmpty) {
-                                    _playStarBlastAudio();
-                                  }
+                                  // if (playStarBlastAudio &&
+                                  //     _selectedTabIndex == 0 &&
+                                  //     childData.isNotEmpty) {
+                                  //   _playStarBlastAudio();
+                                  // }
                                   return customInkwell(
                                     onTap: () {
                                       Utility.navigate(
@@ -265,22 +265,22 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     Misc.onLayoutRendered(() async {
       try {
         // Stop any existing audio first
-        await _stopStarBlastAudio();
+        // await _stopStarBlastAudio();
 
-        _starBlastAudioWidget = CustomAudioWidget(
-          audioPath: Assets.starBlast,
-          audioSourceType: AudioSourceType.asset,
-        );
+        // _starBlastAudioWidget = CustomAudioWidget(
+        //   audioPath: Assets.starBlast,
+        //   audioSourceType: AudioSourceType.asset,
+        // );
 
-        _isStarBlastPlaying = true;
-        await _starBlastAudioWidget!.play();
+        // _isStarBlastPlaying = true;
+        // await _starBlastAudioWidget!.play();
 
-        Future.delayed(
-          const Duration(milliseconds: AppConstants.starBlastDuration),
-          () async {
-            await _stopStarBlastAudio();
-          },
-        );
+        // Future.delayed(
+        //   const Duration(milliseconds: AppConstants.starBlastDuration),
+        //   () async {
+        //     await _stopStarBlastAudio();
+        //   },
+        // );
       } catch (e) {
         logger.e('Error playing star blast audio: $e');
         _isStarBlastPlaying = false;

@@ -93,7 +93,7 @@ class RecommendedLessonsList extends StatelessWidget {
                         ? LinearProgressIndicator(
                           value: progressPercent,
                           backgroundColor: Colors.grey.shade300,
-                          color: AppColors.kOrange,
+                          color: AppColors.kRed,
                           minHeight: 2.5,
                           borderRadius: BorderRadius.circular(10),
                         )

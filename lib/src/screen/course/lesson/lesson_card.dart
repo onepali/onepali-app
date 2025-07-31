@@ -29,7 +29,7 @@ class LessonCard extends StatelessWidget {
     return GestureDetector(
       onTap: isLocked ? null : onTap,
       child: Container(
-        margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
@@ -53,9 +53,8 @@ class LessonCard extends StatelessWidget {
                         AppCardResponsive.getThumbnailHeight(context),
                     circular: false,
                   ),
-                  Gaps.verticalGapOf(20),
+                  Gaps.verticalGapOf(30),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
@@ -66,11 +65,7 @@ class LessonCard extends StatelessWidget {
                     ),
                     child: Text(
                       data.lessonName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        color: AppColors.kBlack,
-                      ),
+                      style: AppStyles.text16PxSemiBold,
                       textAlign: TextAlign.center,
                     ),
                   ),
