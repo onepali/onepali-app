@@ -6,6 +6,7 @@ class Assets {
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
   static String parentAvatar = 'parent_avatar'.png;
+  static String blueUserAvatar = 'blue_avatar'.png;
 
   static String patternBg = 'pattern_bg'.png;
   static String rewardBackground = 'reward_bg'.png;

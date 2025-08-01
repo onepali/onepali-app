@@ -201,11 +201,11 @@ class CourseScreenState extends State<CourseScreen> {
                                             : chapter.nameNp,
                                     thumbnail: chapter.thumbnail,
                                     color: Colors.orange[200]!,
-                                    isLocked: GuestUtil.isGuestUser(),
+                                    isLocked: category.chapters.length > 1,
                                     isCompleted: false,
                                     isGuestUser: GuestUtil.isGuestUser(),
                                     onTap: () {
-                                      if (GuestUtil.isGuestUser()) {
+                                      if (category.chapters.length > 1) {
                                         // Show guest account prompt for locked lessons
                                         GuestUtil.showGuestAccountPrompt(
                                           context,

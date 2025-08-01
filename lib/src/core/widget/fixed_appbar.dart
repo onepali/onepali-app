@@ -81,11 +81,11 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                               // }
                             },
                             icon: CustomImage(
-                              isGuest ? Assets.userAvatar : profileImage,
+                              isGuest ? Assets.blueUserAvatar : profileImage,
                               height: 45,
                               width: 45,
                               circular: true,
-                              isProfileImage: true,
+                              // isProfileImage: true,
                               imageType:
                                   isGuest
                                       ? CustomImageType.local

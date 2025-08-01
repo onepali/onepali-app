@@ -58,6 +58,7 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
         Utility.navigate(context, AppRoutes.onboardingScreen);
       },
       child: Scaffold(
+        backgroundColor: AppColors.kWhite,
         key: _scaffoldKey,
         appBar: UserAppBar(
           name: 'Guest',
