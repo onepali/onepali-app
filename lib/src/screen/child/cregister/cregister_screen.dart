@@ -38,7 +38,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
         title: '',
         showStepper: true,
         currentStep: 1,
-        totalSteps: 4,
+        totalSteps: 5,
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
@@ -97,7 +97,11 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
           final authState = context.read<AuthState>();
           authState.setChildName(nameController.text.trim());
           authState.setChildDob(selectedDate.toString());
-          Utility.navigateMaterialRoute(context, ChildRS1Screen());
+          Utility.navigateMaterialRoute(
+            context,
+            ChildRS1Screen(),
+            routeName: AppRoutes.childRS1Screen,
+          );
         }
       },
       backgroundColor: AppColors.kButtonGreen,

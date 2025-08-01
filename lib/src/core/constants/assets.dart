@@ -10,6 +10,7 @@ class Assets {
   static String patternBg = 'pattern_bg'.png;
   static String rewardBackground = 'reward_bg'.png;
   static String rewardPreviewBackground = 'reward_preview_bg'.png;
+  static String notificationOn = 'notification_on'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
   // Seal

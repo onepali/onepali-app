@@ -30,7 +30,7 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         title: '',
         showStepper: true,
         currentStep: 2,
-        totalSteps: 4,
+        totalSteps: 5,
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
@@ -48,11 +48,11 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: GridView.count(
-                  crossAxisCount: 5,
+                  crossAxisCount: 3,
                   mainAxisSpacing: 16,
                   controller: _scrollController,
                   crossAxisSpacing: 16,
-                  childAspectRatio: 2.3 / 1.5,
+                  childAspectRatio: 3 / 3,
                   children: List.generate(AppConstants.avatarList.length, (
                     index,
                   ) {
@@ -96,8 +96,9 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         ),
         child: CustomImage(
           icon,
-          height: 75,
-          width: 75,
+          height: 80,
+          width: 80,
+          cover: false,
           imageType: CustomImageType.local,
         ),
       ),
@@ -114,7 +115,11 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         }
         if (isUpdate) {
         } else {
-          Utility.navigateMaterialRoute(context, ChildRS2Screen());
+          Utility.navigateMaterialRoute(
+            context,
+            ChildRS2Screen(),
+            routeName: AppRoutes.childRS2Screen,
+          );
         }
       },
       backgroundColor: AppColors.kButtonGreen,

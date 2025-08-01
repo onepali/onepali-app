@@ -182,7 +182,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
               );
               return;
             } else {
-              Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+              Utility.navigateMaterialRoute(
+                context,
+                ChildRegisterScreen(),
+                routeName: AppRoutes.childRegisterScreen,
+              );
             }
           },
           child: Row(
@@ -191,7 +195,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               Container(
                 height: 60,
                 width: 60,
-                
+
                 decoration: BoxDecoration(
                   color: Colors.grey.shade600,
                   shape: BoxShape.circle,

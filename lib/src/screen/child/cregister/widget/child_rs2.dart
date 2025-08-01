@@ -21,7 +21,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         title: '',
         showStepper: true,
         currentStep: 3,
-        totalSteps: 4,
+        totalSteps: 5,
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
@@ -47,7 +47,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
                   ),
                 ),
                 child: CustomRangeSlider(
-                  min: 0,
+                  min: 5,
                   max: 120,
                   value: selectedRange,
                   onChanged: (val) {
@@ -107,7 +107,11 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         if (context.mounted) {
           showCustomToaster('Child account created successfully');
 
-          Utility.navigateMaterialRoute(context, ChildRS3Screen());
+          Utility.navigateMaterialRoute(
+            context,
+            ChildRS3Screen(),
+            routeName: AppRoutes.childRS3Screen,
+          );
         }
       },
       backgroundColor: AppColors.kButtonGreen,
