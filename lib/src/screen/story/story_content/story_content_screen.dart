@@ -37,14 +37,12 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   void dispose() {
-    // Use stored provider reference to avoid context access in dispose
     try {
-      _storyProvider?.stopAudio();
+      _storyProvider?.stopAudioAndResetIndex();
     } catch (e) {
       logger.e('Error stopping audio in dispose: $e');
     }
 
-    // End learning session when leaving story (context-free for safe disposal)
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
   }
@@ -76,7 +74,6 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                       isIntro: true,
                     ),
                   ),
-                  // Right arrow to go to next lesson
                   Positioned(
                     top: 16,
                     right: 16,
@@ -118,7 +115,6 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               );
             }
 
-            // Show content card for idx in 1..contentList.length (inclusive)
             if (idx > 0 && idx <= contentList.length) {
               final content = contentList[idx - 1];
               return Column(

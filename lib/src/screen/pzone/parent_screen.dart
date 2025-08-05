@@ -51,8 +51,14 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     final matched = await userProvider.isMatchedPin(pin);
     if (matched) {
       if (mounted) {
-        Utility.navigate(context, AppRoutes.parentDashboardScreen);
         ParentLocalStorage.setParentLogged(true);
+
+        // If coming from screen time limit, navigate to child user screen
+        if (widget.fromScreenTimeLimit) {
+          _navigateToChildUserScreen();
+        } else {
+          Utility.navigate(context, AppRoutes.parentDashboardScreen);
+        }
       }
     } else {
       _showError();
@@ -70,6 +76,29 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     await Future.delayed(const Duration(milliseconds: 300));
     _pinController.clear();
     setState(() => _isError = false);
+  }
+
+  void _navigateToChildUserScreen() async {
+    final childProvider = context.read<ChildUserProvider>();
+
+    // Fetch child users if not already loaded
+    if (childProvider.childUser.isEmpty) {
+      await childProvider.fetchChildUser();
+    }
+
+    // Get the current child
+    final currentChild = await childProvider.getCurrentChild();
+
+    if (currentChild != null && mounted) {
+      Utility.navigateMaterialRoute(
+        context,
+        CUserScreen(child: currentChild),
+        routeName: AppRoutes.childProfileScreen,
+      );
+    } else {
+      // If no current child, just proceed with the normal PIN flow
+      logger.w('No current child found, proceeding with PIN entry');
+    }
   }
 
   @override

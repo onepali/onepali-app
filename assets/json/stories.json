@@ -216,9 +216,16 @@
                 "character": [],
                 "conversation": [
                     {
-                        "id": "10",
-                        "messageEn": "After a while... Bunu wakes up.\nTara is already ahead.",
-                        "messageNp": "केही बेर पछि … बुनुको निद्रा खुल्छ ।\nधत्तेरिका ! तारा दाइ त टाढा पुगिसकेछन् ।",
+                        "id": "10a",
+                        "messageEn": "After a while... Bunu wakes up.",
+                        "messageNp": "केही बेर पछि … बुनुको निद्रा खुल्छ ।",
+                        "icon": "",
+                        "correct": false
+                    },
+                    {
+                        "id": "10b",
+                        "messageEn": "Tara is already ahead.",
+                        "messageNp": "धत्तेरिका ! तारा दाइ त टाढा पुगिसकेछन् ।",
                         "icon": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/stories%2Ficons%2Fic_rabbit.svg?alt=media&token=0a7e8406-52ad-4e67-8ff3-340ce19d8b03",
                         "correct": false
                     }

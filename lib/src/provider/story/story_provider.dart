@@ -21,6 +21,9 @@ class StoryProvider extends ChangeNotifier {
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
+  int _currentAudioIndex = 0;
+  int get currentAudioIndex => _currentAudioIndex;
+
   AudioPlayer? _audioPlayerInstance;
 
   Future<void> fetchStories() async {
@@ -63,6 +66,7 @@ class StoryProvider extends ChangeNotifier {
   void setCurrentStory(StoryModel story) {
     _currentStory = story;
     _currentContentIndex = 0;
+    _currentAudioIndex = 0;
     notifyListeners();
   }
 
@@ -145,6 +149,9 @@ class StoryProvider extends ChangeNotifier {
 
   Future<void> _playAudioCached(dynamic url) async {
     if (url == null) return;
+
+    await stopAudioAndResetIndex();
+
     if (url is String) {
       if (url.isEmpty) return;
       String sourcePath = url;
@@ -158,20 +165,43 @@ class StoryProvider extends ChangeNotifier {
       } catch (_) {}
       await playAudio(sourcePath, audioSourceType: sourceType);
     } else if (url is List) {
-      for (final u in url) {
-        if (u is String && u.isNotEmpty) {
-          String sourcePath = u;
-          AudioSourceType sourceType = AudioSourceType.network;
-          try {
-            final file = await DefaultCacheManager().getSingleFile(u);
-            if (file.existsSync()) {
-              sourcePath = file.path;
-              sourceType = AudioSourceType.asset;
-            }
-          } catch (_) {}
-          await playAudio(sourcePath, audioSourceType: sourceType);
+      _isPlaying = true;
+      notifyListeners();
+
+      try {
+        for (int i = 0; i < url.length; i++) {
+          final u = url[i];
+          if (u is String && u.isNotEmpty) {
+            _currentAudioIndex = i;
+            notifyListeners();
+
+            String sourcePath = u;
+            AudioSourceType sourceType = AudioSourceType.network;
+            try {
+              final file = await DefaultCacheManager().getSingleFile(u);
+              if (file.existsSync()) {
+                sourcePath = file.path;
+                sourceType = AudioSourceType.asset;
+              }
+            } catch (_) {}
+
+            // Play audio directly without calling playAudio() to avoid resetting index
+            logger.d('[StoryProvider] Playing audio from list: $u (index: $i)');
+            final audioWidget = CustomAudioWidget(
+              audioPath: sourcePath,
+              audioSourceType: sourceType,
+            );
+            _audioPlayerInstance = audioWidget.audioPlayer;
+            await audioWidget.play();
+            await audioWidget.audioPlayer.onPlayerComplete.first;
+          }
         }
+      } catch (e) {
+        logger.e('Audio play error in _playAudioCached: $e');
       }
+
+      _isPlaying = false;
+      notifyListeners();
     }
   }
 
@@ -181,6 +211,18 @@ class StoryProvider extends ChangeNotifier {
       await _audioPlayerInstance!.dispose();
       _audioPlayerInstance = null;
       _isPlaying = false;
+      // Don't reset _currentAudioIndex here - it should persist after audio completes
+      notifyListeners();
+    }
+  }
+
+  Future<void> stopAudioAndResetIndex() async {
+    if (_audioPlayerInstance != null) {
+      await _audioPlayerInstance!.stop();
+      await _audioPlayerInstance!.dispose();
+      _audioPlayerInstance = null;
+      _isPlaying = false;
+      _currentAudioIndex = 0; // Reset index when manually stopping
       notifyListeners();
     }
   }
@@ -192,8 +234,8 @@ class StoryProvider extends ChangeNotifier {
     logger.d(
       '[StoryProvider] playAudio called with url: $url, isPlaying: $_isPlaying',
     );
-    // Stop any currently playing audio before starting new
-    await stopAudio();
+    // Stop any currently playing audio before starting new and reset index
+    await stopAudioAndResetIndex();
     if (url == null ||
         (url is String && url.isEmpty) ||
         (url is List && url.isEmpty)) {
@@ -204,9 +246,13 @@ class StoryProvider extends ChangeNotifier {
     notifyListeners();
     try {
       if (url is List) {
-        for (final u in url) {
+        for (int i = 0; i < url.length; i++) {
+          final u = url[i];
           if (u is String && u.isNotEmpty) {
-            logger.d('[StoryProvider] Playing audio from list: $u');
+            _currentAudioIndex = i;
+            notifyListeners();
+
+            logger.d('[StoryProvider] Playing audio from list: $u (index: $i)');
             final audioWidget = CustomAudioWidget(
               audioPath: u,
               audioSourceType: audioSourceType,
