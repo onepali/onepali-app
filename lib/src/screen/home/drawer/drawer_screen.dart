@@ -99,20 +99,36 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 );
                 authState.setCurrentChildId(child.uid);
 
-                // // Check if the screen time limit is already exceeded before navigating
-                // logger.i(
-                //   '🔍 Checking screen time limit for child ${child.uid} before navigation',
-                // );
-                // final isLimitExceeded = await ScreenTimeService.instance
-                //     .checkScreenTimeLimitExceeded(child.uid);
+                // Update the provider's screen time enabled status
+                if (!mounted) return;
+                final childProvider = Provider.of<ChildUserProvider>(
+                  context,
+                  listen: false,
+                );
+                await childProvider.updateScreenTimeEnabledStatusByChildId(
+                  child.uid,
+                );
 
-                // if (isLimitExceeded) {
-                //   logger.w(
-                //     '⚠️ Screen time limit already exceeded for child ${child.uid}',
-                //   );
-                //   // Dialog is already shown by the check method
-                //   return; // Don't navigate to dashboard
-                // }
+                // Check if the screen time limit is already exceeded before navigating (only if enabled)
+                if (child.hasScreenTime && child.screenTime > 0) {
+                  logger.i(
+                    '🔍 Checking screen time limit for child ${child.uid} before navigation',
+                  );
+                  final isLimitExceeded = await ScreenTimeService.instance
+                      .checkScreenTimeLimitExceeded(child.uid);
+
+                  if (isLimitExceeded) {
+                    logger.w(
+                      '⚠️ Screen time limit already exceeded for child ${child.uid}',
+                    );
+                    // Dialog is already shown by the check method
+                    return; // Don't navigate to dashboard
+                  }
+                } else {
+                  logger.i(
+                    '🚫 Screen time disabled for child ${child.fullName}, skipping limit check',
+                  );
+                }
 
                 logger.i('🔄 Navigating to dashboard with new child');
                 // Navigator.of(context).pop();
@@ -155,10 +171,18 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ),
             customInkwell(
               onTap: () {
-                Utility.navigateMaterialRoute(
-                  context,
-                  RewardCollectionWidget(),
-                );
+                if (index == _selectedChildIndex) {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(),
+                  );
+                } else {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(childId: targetChild.uid),
+                  );
+                }
               },
               child: const Icon(
                 Icons.local_police,

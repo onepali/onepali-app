@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
@@ -16,6 +17,7 @@ class _CUserScreenState extends State<CUserScreen> {
   DateTime selectedDate = DateTime.now();
   double? selectedRange;
   String? selectedAvatar;
+  bool hasScreenTimeEnabled = false;
 
   @override
   void initState() {
@@ -24,6 +26,7 @@ class _CUserScreenState extends State<CUserScreen> {
     selectedRange = widget.child.screenTime;
     selectedDate = DateTime.parse(widget.child.dob);
     selectedAvatar = widget.child.avatarUrl;
+    hasScreenTimeEnabled = widget.child.hasScreenTime;
   }
 
   onYearSelected(DateTime date) {
@@ -92,42 +95,82 @@ class _CUserScreenState extends State<CUserScreen> {
                 ),
               ),
               Gaps.verticalGapOf(20),
-              TitleActionChild(
-                title: 'Screen Time',
-                titlePadding: EdgeInsets.only(bottom: 8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: AppColors.kButtonGrey.withValues(alpha: 0.5),
+              // Screen Time Toggle
+              ListTile(
+                title: Text('Screen Time', style: AppStyles.text16PxMedium),
+
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                trailing: CupertinoSwitch(
+                  value: hasScreenTimeEnabled,
+                  onChanged: (value) {
+                    setState(() {
+                      hasScreenTimeEnabled = value;
+                      if (!value) {
+                        selectedRange = 0;
+                      } else if (selectedRange == 0) {
+                        selectedRange = 30;
+                      }
+                    });
+                  },
+                  activeTrackColor: AppColors.kButtonGreen,
+                ),
+              ),
+              Gaps.verticalGapOf(10),
+              if (hasScreenTimeEnabled) ...[
+                TitleActionChild(
+                  title: 'Screen Time',
+                  titlePadding: EdgeInsets.only(bottom: 8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: AppColors.kButtonGrey.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    child: CustomRangeSlider(
+                      min: 5,
+                      max: 120,
+                      value: selectedRange ?? 30,
+                      onChanged: (val) {
+                        setState(() {
+                          selectedRange = val;
+                        });
+                      },
+                      recommended: selectedRange ?? 30,
                     ),
                   ),
-                  child: CustomRangeSlider(
-                    min: 5,
-                    max: 120,
-                    value: selectedRange ?? 0,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedRange = val;
-                      });
-                    },
-                    recommended: selectedRange ?? 0,
+                ),
+                Gaps.verticalGapOf(20),
+                Center(
+                  child: Text(
+                    'We will notify in the app when the time is up.',
+                    style: AppStyles.text14PxRegular,
+                    textAlign: TextAlign.center,
                   ),
                 ),
+              ] ,
+              Gaps.verticalGapOf(40),
+              CustomMaterialButton(
+                onTap: () async {
+                  _showDeleteConfirmationDialog();
+                },
+                isLoading:
+                    context.watch<ChildUserProvider>().status ==
+                    DataFetchStatus.loading,
+                label: 'Delete Profile',
+                textStyle: AppStyles.text16PxRegular.copyWith(
+                  color: AppColors.kRed,
+                ),
+                showBorder: false,
+                elevation: 0,
+                fillButton: false,
               ),
               Gaps.verticalGapOf(20),
-              Center(
-                child: Text(
-                  'We will notify in the app when the time is up.',
-                  style: AppStyles.text14PxRegular,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Gaps.verticalGapOf(40),
               CustomMaterialButton(
                 onTap: () async {
                   if (_formKey.currentState?.validate() ?? false) {
@@ -141,8 +184,10 @@ class _CUserScreenState extends State<CUserScreen> {
                           childUid: widget.child.uid,
                           fullName: _nameController.text.trim(),
                           dob: selectedDate.toString(),
-                          screenTime: selectedRange ?? 0,
+                          screenTime:
+                              hasScreenTimeEnabled ? (selectedRange ?? 0) : 0,
                           avatarUrl: avatarUrl,
+                          hasScreenTime: hasScreenTimeEnabled,
                         );
                     if (context.mounted) Navigator.pop(context);
                   }
@@ -203,5 +248,36 @@ class _CUserScreenState extends State<CUserScreen> {
     // Otherwise, upload and get URL
     final childUid = widget.child.uid;
     return await MediaUtility.uploadAvatarImage(avatar, childUid);
+  }
+
+  void _showDeleteConfirmationDialog() async {
+    DialogManager.showCustomDialog(
+      context: context,
+      title: 'Delete profile',
+      content:
+          'Are you sure you want to delete ${widget.child.fullName}\'s profile? This action cannot be undone and will remove all associated data.',
+      confirmButtonText: 'Delete',
+      onConfirm: () async {
+        final navigator = Navigator.of(context);
+        final childUserProvider = Provider.of<ChildUserProvider>(
+          context,
+          listen: false,
+        );
+
+        navigator.pop();
+
+        if (mounted) {
+          try {
+            await childUserProvider.deleteChildUser(widget.child.uid);
+            if (mounted &&
+                childUserProvider.status == DataFetchStatus.success) {
+              navigator.pop();
+            }
+          } catch (e) {
+            // we don't navigate back on error
+          }
+        }
+      },
+    );
   }
 }

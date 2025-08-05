@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../src.dart';
 
 class RewardCollectionWidget extends StatefulWidget {
-  const RewardCollectionWidget({super.key});
+  final String? childId;
+  const RewardCollectionWidget({super.key, this.childId});
 
   @override
   State<RewardCollectionWidget> createState() => _RewardCollectionWidgetState();
@@ -15,7 +16,13 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
   void initState() {
     super.initState();
     Misc.onLayoutRendered(() {
-      context.read<RewardProvider>().fetchChildRewards();
+      if (widget.childId != null) {
+        context.read<RewardProvider>().fetchChildRewards(
+          childId: widget.childId,
+        );
+      } else {
+        context.read<RewardProvider>().fetchChildRewards();
+      }
     });
   }
 
@@ -180,7 +187,10 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
           return Scaffold(
             backgroundColor: AppColors.kWhite,
             appBar: CustomAppBar(
-              title: 'My Sticker Collection',
+              title:
+                  widget.childId != null
+                      ? 'Sticker Collection'
+                      : 'My Sticker Collection',
               centerTitle: true,
               showBackButton: false,
               automaticallyImplyLeading: false,

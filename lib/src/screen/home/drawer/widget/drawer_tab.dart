@@ -64,6 +64,13 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     Navigator.of(context).pop(); // Remove overlay
     final authState = Provider.of<AuthState>(context, listen: false);
     authState.setCurrentChildId(child.uid);
+
+    final childProvider = Provider.of<ChildUserProvider>(
+      context,
+      listen: false,
+    );
+    await childProvider.updateScreenTimeEnabledStatusByChildId(child.uid);
+
     // Navigator.of(context).pop(); // Close the drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
     UserAppBar.setTabIndex(0);
@@ -172,10 +179,18 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             Gaps.verticalGapOf(5),
             customInkwell(
               onTap: () {
-                Utility.navigateMaterialRoute(
-                  context,
-                  RewardCollectionWidget(),
-                );
+                if (index == _selectedChildIndex) {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(),
+                  );
+                } else {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(childId: targetChild.uid),
+                  );
+                }
               },
               child: const Icon(
                 Icons.local_police,

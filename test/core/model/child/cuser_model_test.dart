@@ -14,6 +14,7 @@ void main() {
         'parent_uid': 'parent123',
         'role': 'child',
         'screen_time': 120.0,
+        'has_screen_time': true,
         'uid': 'child1',
       };
       final model = ChildUserModel.fromJson(json);
@@ -24,6 +25,7 @@ void main() {
       expect(model.parentUid, 'parent123');
       expect(model.role, 'child');
       expect(model.screenTime, 120.0);
+      expect(model.hasScreenTime, true);
       expect(model.dob, '2018-05-10');
       expect(model.createdAt, '2024-01-01T00:00:00.000');
       final toJson = model.toJson();
@@ -34,6 +36,7 @@ void main() {
       expect(toJson['parent_uid'], 'parent123');
       expect(toJson['role'], 'child');
       expect(toJson['screen_time'], 120.0);
+      expect(toJson['has_screen_time'], true);
       expect(toJson['dob'], '2018-05-10');
       expect(toJson['created_at'], '2024-01-01T00:00:00.000');
     });

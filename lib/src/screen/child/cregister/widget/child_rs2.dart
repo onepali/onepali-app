@@ -68,6 +68,55 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
               ),
               Gaps.verticalGapOf(40),
               _buildNextButton(context),
+              Gaps.verticalGapOf(20),
+              CustomMaterialButton(
+                onTap: () async {
+                  final authState = context.read<AuthState>();
+                  final childProvider = context.read<ChildAuthProvider>();
+                  final childUserProvider = context.read<ChildUserProvider>();
+                  final parentUser = FirebaseAuth.instance.currentUser;
+
+                  if (parentUser == null) {
+                    showCustomToaster('No parent user found', isError: true);
+                    logger.e('No parent user found');
+                    return;
+                  }
+
+                  authState.setChildScreenTime(0);
+                  logger.d(
+                    'Not now selected - setting screen time to 0 (no limit)',
+                  );
+
+                  await childProvider.createChildUser(
+                    childName: authState.childName ?? "",
+                    childDob: authState.childDob ?? "",
+                    screenTime: 0,
+                    hasScreenTime: false,
+                    avatarFilePath: authState.childAvatar ?? '',
+                    parentUid: parentUser.uid,
+                    parentEmail: parentUser.email ?? '',
+                  );
+
+                  await childUserProvider.fetchChildUser();
+
+                  if (context.mounted) {
+                    showCustomToaster('Child account created successfully');
+                    Utility.navigateMaterialRoute(
+                      context,
+                      ChildRS3Screen(),
+                      routeName: AppRoutes.childRS3Screen,
+                    );
+                  }
+                },
+                label: 'Not now',
+                isLoading:
+                    context.watch<ChildAuthProvider>().status ==
+                    DataFetchStatus.loading,
+                showBorder: false,
+                elevation: 0,
+                fillButton: true,
+                backgroundColor: AppColors.kButtonGrey,
+              ),
             ],
           ),
         ),
@@ -99,6 +148,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
           childName: authState.childName ?? "",
           childDob: authState.childDob ?? "",
           screenTime: selectedRange,
+          hasScreenTime: true, // User has set up screen time
           avatarFilePath: authState.childAvatar ?? '',
           parentUid: parentUser.uid,
           parentEmail: parentUser.email ?? '',
