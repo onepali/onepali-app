@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../src.dart';
@@ -53,7 +52,6 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       if (mounted) {
         ParentLocalStorage.setParentLogged(true);
 
-        // If coming from screen time limit, navigate to child user screen
         if (widget.fromScreenTimeLimit) {
           _navigateToChildUserScreen();
         } else {
@@ -92,7 +90,10 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     if (currentChild != null && mounted) {
       Utility.navigateMaterialRoute(
         context,
-        CUserScreen(child: currentChild),
+        CUserScreen(
+          child: currentChild,
+          isFromScreenTimeLimit: widget.fromScreenTimeLimit,
+        ),
         routeName: AppRoutes.childProfileScreen,
       );
     } else {
@@ -108,8 +109,13 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       canPop: !widget.fromScreenTimeLimit,
       onPopInvokedWithResult: (didPop, result) {
         if (widget.fromScreenTimeLimit && !didPop) {
-          logger.i('🚪 Exiting app from parent screen back button');
-          SystemNavigator.pop();
+          UserAppBar.setTabIndex(0);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => DashboardScreen(),
+              settings: RouteSettings(name: AppRoutes.dashboardScreen),
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -180,7 +186,15 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       logger.i(
                         '🚪 Exiting app from parent screen (from screen time limit)',
                       );
-                      SystemNavigator.pop();
+                      UserAppBar.setTabIndex(0);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => DashboardScreen(),
+                          settings: RouteSettings(
+                            name: AppRoutes.dashboardScreen,
+                          ),
+                        ),
+                      );
                     } else {
                       // Regular navigation back
                       Navigator.of(context).pop();

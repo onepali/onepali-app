@@ -5,7 +5,12 @@ import 'package:onepali/src/src.dart';
 
 class CUserScreen extends StatefulWidget {
   final ChildUserModel child;
-  const CUserScreen({super.key, required this.child});
+  final bool isFromScreenTimeLimit;
+  const CUserScreen({
+    super.key,
+    required this.child,
+    this.isFromScreenTimeLimit = false,
+  });
 
   @override
   State<CUserScreen> createState() => _CUserScreenState();
@@ -153,7 +158,7 @@ class _CUserScreenState extends State<CUserScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              ] ,
+              ],
               Gaps.verticalGapOf(40),
               CustomMaterialButton(
                 onTap: () async {
@@ -189,7 +194,19 @@ class _CUserScreenState extends State<CUserScreen> {
                           avatarUrl: avatarUrl,
                           hasScreenTime: hasScreenTimeEnabled,
                         );
-                    if (context.mounted) Navigator.pop(context);
+                    if (widget.isFromScreenTimeLimit) {
+                      UserAppBar.setTabIndex(0);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => DashboardScreen(),
+                          settings: RouteSettings(
+                            name: AppRoutes.dashboardScreen,
+                          ),
+                        ),
+                      );
+                    } else {
+                      if (context.mounted) Navigator.pop(context);
+                    }
                   }
                 },
                 isLoading:

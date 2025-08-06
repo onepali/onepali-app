@@ -166,6 +166,24 @@ class ChildUserProvider extends ChangeNotifier {
 
     final String parentUid = user!.uid;
     try {
+      final childDoc =
+          await _firestore
+              .collection('users')
+              .doc(parentUid)
+              .collection('children')
+              .doc(childUid)
+              .get();
+
+      double existingTotalUsed = 0.0;
+      if (childDoc.exists && childDoc.data() != null) {
+        final data = childDoc.data()!;
+        if (data['screenTimeTracking'] != null &&
+            data['screenTimeTracking']['totalUsed'] != null) {
+          existingTotalUsed =
+              (data['screenTimeTracking']['totalUsed'] as num).toDouble();
+        }
+      }
+
       // Prepare update data
       Map<String, dynamic> updateData = {
         'full_name': fullName,
@@ -174,7 +192,7 @@ class ChildUserProvider extends ChangeNotifier {
         'avatar_url': avatarUrl,
         'screenTimeTracking': {
           'totalAllowed': screenTime,
-          'totalUsed': 0.0,
+          'totalUsed': existingTotalUsed,
           'lastUpdated': DateTime.now().toIso8601String(),
         },
       };
@@ -195,7 +213,7 @@ class ChildUserProvider extends ChangeNotifier {
       if (idx != -1) {
         final newScreenTimeTracking = ScreenTimeModel(
           totalAllowed: screenTime,
-          totalUsed: 0.0,
+          totalUsed: existingTotalUsed,
           lastUpdated: DateTime.now(),
         );
 
