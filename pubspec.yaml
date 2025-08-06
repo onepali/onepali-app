@@ -16,7 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.2.1
   provider: ^6.1.5
-  firebase_auth: ^5.5.4
+  firebase_auth: ^5.7.0
   cloud_firestore: ^5.6.8
   google_sign_in: ^7.1.0
   flutter_facebook_auth: ^7.1.2
