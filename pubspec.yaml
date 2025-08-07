@@ -18,6 +18,7 @@ dependencies:
   provider: ^6.1.5
   firebase_auth: ^5.5.4
   cloud_firestore: ^5.6.8
+  firebase_app_check: ^0.3.2+9
   google_sign_in: ^7.1.0
   flutter_facebook_auth: ^7.1.2
   flutter_svg: ^2.2.0

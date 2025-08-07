@@ -337,6 +337,144 @@ class ChildUserProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> extendScreenTime({
+    required String childUid,
+    required double additionalMinutes,
+  }) async {
+    setStatus(DataFetchStatus.loading);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    bool isGuest = GuestUtil.isGuestUser();
+
+    if (user == null && !isGuest) {
+      showCustomToaster('User not signed in.', isError: true);
+      setStatus(DataFetchStatus.error);
+      return;
+    }
+
+    if (isGuest) {
+      logger.i('Guest user detected. Skipping screen time extension.');
+      setStatus(DataFetchStatus.success);
+      return;
+    }
+
+    final String parentUid = user!.uid;
+
+    try {
+      // Get the child document reference
+      final childDoc = _firestore
+          .collection('users')
+          .doc(parentUid)
+          .collection('children')
+          .doc(childUid);
+
+      // Get current child data
+      final docSnapshot = await childDoc.get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data()!;
+
+        // Get current screen time tracking data
+        Map<String, dynamic>? screenTimeTracking = data['screenTimeTracking'];
+        double newAllowed;
+        double currentUsed = 0.0;
+
+        if (screenTimeTracking != null) {
+          final currentAllowed =
+              (screenTimeTracking['totalAllowed'] as num?)?.toDouble() ?? 0.0;
+          currentUsed =
+              (screenTimeTracking['totalUsed'] as num?)?.toDouble() ?? 0.0;
+          newAllowed = currentAllowed + additionalMinutes;
+
+          // Get current screen_time value and extend it too
+          final currentScreenTime =
+              (data['screen_time'] as num?)?.toDouble() ?? 0.0;
+          final newScreenTime = currentScreenTime + additionalMinutes;
+
+          await childDoc.update({
+            'screenTimeTracking': {
+              'totalAllowed': newAllowed,
+              'totalUsed': currentUsed,
+              'lastUpdated': DateTime.now().toIso8601String(),
+            },
+            'screen_time': newScreenTime,
+          });
+
+          logger.i('Screen time extended by $additionalMinutes minutes.');
+          logger.i(
+            'New totalAllowed: $newAllowed, New screen_time: $newScreenTime',
+          );
+          logger.i('totalUsed remains: $currentUsed');
+        } else {
+          final child = _childUser.firstWhere((c) => c.uid == childUid);
+          final currentScreenTime = child.screenTime;
+          newAllowed = currentScreenTime + additionalMinutes;
+          final newScreenTime = currentScreenTime + additionalMinutes;
+
+          await childDoc.update({
+            'screenTimeTracking': {
+              'totalAllowed': newAllowed,
+              'totalUsed': 0.0,
+              'lastUpdated': DateTime.now().toIso8601String(),
+            },
+            'screen_time': newScreenTime,
+          });
+
+          logger.i(
+            'Created screen time tracking with extended limit: $newAllowed',
+          );
+          logger.i('Updated screen_time to: $newScreenTime');
+        }
+
+        final childIndex = _childUser.indexWhere((c) => c.uid == childUid);
+        if (childIndex != -1) {
+          final updatedChild = _childUser[childIndex];
+          final updatedScreenTimeTracking = ScreenTimeModel(
+            totalAllowed: newAllowed,
+            totalUsed: currentUsed,
+            lastUpdated: DateTime.now(),
+          );
+
+          final newScreenTimeValue =
+              updatedChild.screenTime + additionalMinutes;
+
+          _childUser[childIndex] = ChildUserModel(
+            avatarUrl: updatedChild.avatarUrl,
+            createdAt: updatedChild.createdAt,
+            dob: updatedChild.dob,
+            fullName: updatedChild.fullName,
+            parentEmail: updatedChild.parentEmail,
+            parentUid: updatedChild.parentUid,
+            role: updatedChild.role,
+            screenTime: newScreenTimeValue,
+            hasScreenTime: updatedChild.hasScreenTime,
+            uid: childUid,
+            screenTimeTracking: updatedScreenTimeTracking,
+            completedLessons: updatedChild.completedLessons,
+          );
+
+          logger.i('Updated local child data with extended screen time');
+          logger.i('Local screenTime updated to: $newScreenTimeValue');
+          notifyListeners();
+        }
+      } else {
+        throw Exception('Child document not found');
+      }
+
+      showCustomToaster('Screen time extended successfully!');
+      setStatus(DataFetchStatus.success);
+    } catch (e, s) {
+      logger.e('Error extending screen time: $e');
+      logger.e('Stack trace: $s');
+      showCustomToaster(
+        'Failed to extend screen time. Please try again.',
+        isError: true,
+      );
+      setStatus(DataFetchStatus.error);
+    }
+  }
+
   void handleError(String error) {
     _status = DataFetchStatus.error;
     showCustomToaster(error, isError: true);

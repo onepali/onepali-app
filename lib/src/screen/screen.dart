@@ -55,6 +55,7 @@ export 'child/cregister/widget/child_rs1.dart';
 export 'child/cregister/widget/child_rs2.dart';
 export 'child/cregister/widget/child_rs3.dart';
 export 'child/cregister/widget/child_rs4.dart';
+export 'child/cregister/extend_time_screen.dart';
 
 /// [Song] Screen
 export 'song/song_screen.dart';

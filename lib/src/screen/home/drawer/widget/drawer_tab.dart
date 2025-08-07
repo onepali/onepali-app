@@ -203,7 +203,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
       } else {
         return GestureDetector(
           onTap: () {
-            if (widget.totalChildCount >= 3) {
+            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
               DialogManager.showCustomDialog(
                 context: context,
                 title: 'You\'ve added 3 kids!',

@@ -155,7 +155,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     width: 3,
                   ),
                 ),
-                child: CustomImage(child.avatarUrl, height: 60, width: 60),
+                child: CustomImage(
+                  child.avatarUrl,
+                  height: 60,
+                  width: 60,
+                  isProfileImage: true,
+                ),
               ),
             ),
             Gaps.horizontalGapOf(15),
@@ -195,7 +200,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
       } else {
         return GestureDetector(
           onTap: () {
-            if (widget.totalChildCount >= 3) {
+            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
               DialogManager.showCustomDialog(
                 context: context,
                 title: 'You\'ve added 3 kids!',

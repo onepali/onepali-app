@@ -46,6 +46,7 @@ class Assets {
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
   static String starRewardLottie = 'rewards_star'.lottie;
+  static String alarmExtendLottie = 'alarm_extend'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;

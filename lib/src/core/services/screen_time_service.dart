@@ -334,32 +334,31 @@ class ScreenTimeService extends ChangeNotifier {
       image: Assets.timeUpSvg,
       isSvg: true,
       onConfirm: () {
-        logger.i(
-          ' User confirmed screen time dialog - navigating to parent PIN',
-        );
+        logger.i(' User requested to extend time - navigating to parent PIN');
 
-        // Close the dialog first
         Navigator.of(context).pop();
 
-        // Use a post-frame callback to ensure the dialog is fully closed
-        // before attempting to navigate to the parent PIN screen
         Misc.onLayoutRendered(() {
           try {
-            // Navigate to parent PIN screen using navigatorKey for global navigation
             navigatorKey.currentState?.pushNamedAndRemoveUntil(
               AppRoutes.parentPinScreen,
               (route) => false,
-              arguments: {'fromScreenTimeLimit': true},
+              arguments: {
+                'fromScreenTimeLimit': true,
+                'childId': _currentChildId,
+              },
             );
             logger.i('Navigation to parent PIN screen completed');
           } catch (e) {
             logger.e('Navigation error: $e');
-            // Fallback navigation method
             try {
               Navigator.of(context).pushNamedAndRemoveUntil(
                 AppRoutes.parentPinScreen,
                 (route) => false,
-                arguments: {'fromScreenTimeLimit': true},
+                arguments: {
+                  'fromScreenTimeLimit': true,
+                  'childId': _currentChildId,
+                },
               );
             } catch (e2) {
               logger.e('Fallback navigation failed: $e2');
@@ -534,6 +533,34 @@ class ScreenTimeService extends ChangeNotifier {
           DateTime.now(); // Reset session start time for new child
       logger.i(' Successfully switched to tracking child $childId');
     }
+
+    notifyListeners();
+  }
+
+  /// Extend current screen time limit
+  Future<void> extendTime(double additionalMinutes) async {
+    if (_currentScreenTime == null) {
+      logger.w(
+        'ScreenTimeService: Cannot extend time - no current screen time data',
+      );
+      return;
+    }
+
+    logger.i('ScreenTimeService: Extending time by $additionalMinutes minutes');
+
+    // Update the current screen time limit
+    final newLimit = _currentScreenTime!.totalAllowed + additionalMinutes;
+    _currentScreenTime = _currentScreenTime!.copyWith(totalAllowed: newLimit);
+
+    // Save the updated data
+    await _saveScreenTimeData();
+
+    logger.i(
+      'ScreenTimeService: Time extended successfully. New limit: ${_currentScreenTime!.totalAllowed.toStringAsFixed(1)} minutes',
+    );
+    logger.i(
+      'ScreenTimeService: Remaining time: ${_currentScreenTime!.remainingTime.toStringAsFixed(1)} minutes',
+    );
 
     notifyListeners();
   }

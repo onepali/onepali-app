@@ -5,8 +5,13 @@ import '../../src.dart';
 
 class ParentZoneScreen extends StatefulWidget {
   final bool fromScreenTimeLimit;
+  final String? childId;
 
-  const ParentZoneScreen({super.key, this.fromScreenTimeLimit = false});
+  const ParentZoneScreen({
+    super.key,
+    this.fromScreenTimeLimit = false,
+    this.childId,
+  });
 
   @override
   State<ParentZoneScreen> createState() => _ParentZoneScreenState();
@@ -22,7 +27,9 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UserProvider>().fetchOwnProfile();
+    Misc.onLayoutRendered(() {
+      context.read<UserProvider>().fetchOwnProfile();
+    });
   }
 
   @override
@@ -50,11 +57,14 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     final matched = await userProvider.isMatchedPin(pin);
     if (matched) {
       if (mounted) {
-        ParentLocalStorage.setParentLogged(true);
-
         if (widget.fromScreenTimeLimit) {
-          _navigateToChildUserScreen();
+          Utility.navigate(
+            context,
+            AppRoutes.extendTimeScreen,
+            arguments: {'childId': widget.childId},
+          );
         } else {
+          ParentLocalStorage.setParentLogged(true);
           Utility.navigate(context, AppRoutes.parentDashboardScreen);
         }
       }
@@ -74,32 +84,6 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     await Future.delayed(const Duration(milliseconds: 300));
     _pinController.clear();
     setState(() => _isError = false);
-  }
-
-  void _navigateToChildUserScreen() async {
-    final childProvider = context.read<ChildUserProvider>();
-
-    // Fetch child users if not already loaded
-    if (childProvider.childUser.isEmpty) {
-      await childProvider.fetchChildUser();
-    }
-
-    // Get the current child
-    final currentChild = await childProvider.getCurrentChild();
-
-    if (currentChild != null && mounted) {
-      Utility.navigateMaterialRoute(
-        context,
-        CUserScreen(
-          child: currentChild,
-          isFromScreenTimeLimit: widget.fromScreenTimeLimit,
-        ),
-        routeName: AppRoutes.childProfileScreen,
-      );
-    } else {
-      // If no current child, just proceed with the normal PIN flow
-      logger.w('No current child found, proceeding with PIN entry');
-    }
   }
 
   @override

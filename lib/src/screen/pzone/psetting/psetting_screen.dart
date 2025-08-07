@@ -109,7 +109,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               title: 'Add child',
               isAdd: true,
               onTap: () {
-                if (children.length >= 3) {
+                if (children.length >= 3 && !GlobalConfig.isUserTesting) {
                   DialogManager.showCustomDialog(
                     context: context,
                     title: 'You\'ve added 3 kids!',

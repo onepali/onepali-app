@@ -36,6 +36,7 @@ class AppRoutes {
   static const String childRS2Screen = '/child/register/step2';
   static const String childRS3Screen = '/child/register/step3';
   static const String childRS4Screen = '/child/register/step4';
+  static const String extendTimeScreen = '/child/extend-time';
 
   /// [Dashboard] Routes
   static const String dashboardScreen = '/dashboard';
@@ -106,6 +107,12 @@ class AppRoutes {
     childRS1Screen: (context) => const ChildRS1Screen(),
     childRS2Screen: (context) => const ChildRS2Screen(),
     childRS3Screen: (context) => const ChildRS3Screen(),
+    extendTimeScreen: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final childId = args?['childId'] as String?;
+      return ExtendTimeScreen(childId: childId);
+    },
 
     // childRS4Screen: (context) => const ChildRS4Screen(),
     dashboardScreen: (context) => const DashboardScreen(),
@@ -129,7 +136,11 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       final fromScreenTimeLimit = args?['fromScreenTimeLimit'] ?? false;
-      return ParentZoneScreen(fromScreenTimeLimit: fromScreenTimeLimit);
+      final childId = args?['childId'] as String?;
+      return ParentZoneScreen(
+        fromScreenTimeLimit: fromScreenTimeLimit,
+        childId: childId,
+      );
     },
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),

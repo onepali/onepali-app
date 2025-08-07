@@ -20,6 +20,9 @@ class AppInitializer {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    await AppCheckUtil.initialize();
+
     HttpOverrides.global = MyHttpOverrides();
     if (!kIsWeb) {
       await NotificationService.initialize();

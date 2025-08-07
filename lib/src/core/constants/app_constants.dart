@@ -96,6 +96,14 @@ class AppConstants {
     {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},
   ];
 
+  /// Extend [Time] Map
+  static Map<String, int> extendTimeMap = {
+    '5 mins': 5,
+    '10 mins': 10,
+    '15 mins': 15,
+    '20 mins': 20,
+  };
+
   // Notification Titles & Bodies [Daily Reminder]
   static const String dailyReminderTitle = "⏰ It's Time to Practice!";
   static const String dailyReminderBody =
