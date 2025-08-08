@@ -28,7 +28,7 @@ if (localPropertiesFile.exists()) {
 }
 
 val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 1
-val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
+val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
 android {
     namespace = "com.onepali.app"

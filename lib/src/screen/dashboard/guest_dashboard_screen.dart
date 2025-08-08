@@ -51,39 +51,37 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (result, value) async {
-          await setGuestLogged(false);
-          Utility.navigate(context, AppRoutes.onboardingScreen);
-        },
-        child: Scaffold(
-          backgroundColor: AppColors.kWhite,
-          key: _scaffoldKey,
-          appBar: UserAppBar(
-            name: 'Guest',
-            profileImage: '',
-            totalStars: 0,
-            onTabSelected: (tab) {
-              final idx = homeServices.indexWhere((e) => e.name == tab);
-              if (idx != -1) {
-                setState(() {
-                  _selectedTabIndex = idx;
-                });
-                UserAppBar.setTabIndex(idx);
-              }
-            },
-            childData: [],
-            context: context,
-            isGuest: true,
-            playStarBlastAudio: false,
-          ),
-          body:
-              _isLoading
-                  ? CustomLoader()
-                  : HomeScreen(selectedTabIndex: _selectedTabIndex),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (result, value) async {
+        await setGuestLogged(false);
+        Utility.navigate(context, AppRoutes.onboardingScreen);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.kWhite,
+        key: _scaffoldKey,
+        appBar: UserAppBar(
+          name: 'Guest',
+          profileImage: '',
+          totalStars: 0,
+          onTabSelected: (tab) {
+            final idx = homeServices.indexWhere((e) => e.name == tab);
+            if (idx != -1) {
+              setState(() {
+                _selectedTabIndex = idx;
+              });
+              UserAppBar.setTabIndex(idx);
+            }
+          },
+          childData: [],
+          context: context,
+          isGuest: true,
+          playStarBlastAudio: false,
         ),
+        body:
+            _isLoading
+                ? CustomLoader()
+                : HomeScreen(selectedTabIndex: _selectedTabIndex),
       ),
     );
   }
