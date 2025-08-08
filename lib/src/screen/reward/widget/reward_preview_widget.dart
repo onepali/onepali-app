@@ -76,11 +76,11 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
     final double descriptionFontSize = isMobileLandscape ? 16 : 22;
     final double paddingH = isMobileLandscape ? 16 : 32;
     final double paddingV = isMobileLandscape ? 10 : 18;
-    final double imageSize = isMobileLandscape ? 150 : 200;
+    final double imageSize = isMobileLandscape ? 230 : 270;
     final double audioButtonSize = isMobileLandscape ? 28 : 48;
     final double descriptionSizeBoxHeight =
         isMobileLandscape
-            ? MediaQuery.of(context).size.height * 0.7
+            ? MediaQuery.of(context).size.height * 0.8
             : MediaQuery.of(context).size.height * 0.5;
 
     return SafeArea(
@@ -146,13 +146,21 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                         ],
                       ),
                       SizedBox(height: paddingV),
+                      Text(
+                        widget.data.titleEn,
+                        style: AppStyles.text30PxSemiBold.copyWith(
+                          fontSize: titleFontSize,
+                          color: AppColors.kWhite,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: paddingV),
                       SizedBox(
                         width: descriptionSizeBoxHeight,
                         child: Text(
-                          widget.data.descriptionNp,
+                          widget.data.descriptionEn,
                           style: AppStyles.text22PxRegular.copyWith(
                             fontSize: descriptionFontSize,
-                            fontFamily: 'Mukta',
                             color: AppColors.kWhite,
                           ),
                           textAlign: TextAlign.start,

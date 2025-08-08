@@ -30,7 +30,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double stickerSize = isMobileLandscape ? 90 : 130;
+    final double stickerSize = isMobileLandscape ? 130 : 180;
     final double stickerMargin = isMobileLandscape ? 10 : 24;
 
     return Row(
@@ -90,7 +90,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final double titleFontSize = isMobileLandscape ? 20 : 28;
     final double titlePaddingH = isMobileLandscape ? 16 : 32;
     final double titlePaddingV = isMobileLandscape ? 10 : 18;
-    final double gap = isMobileLandscape ? 24 : 40;
+    final double gap = isMobileLandscape ? 32 : 40;
 
     return SafeArea(
       child: Scaffold(

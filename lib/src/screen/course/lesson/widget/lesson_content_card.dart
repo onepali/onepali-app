@@ -195,40 +195,49 @@ class _LessonContentCardState extends State<LessonContentCard>
       }
 
       // Show MP4 video (lottie field contains video paths)
-      return CustomVideoPlayer(
-        videoPath: videoPath,
-        sourceType: sourceType,
-        autoPlay: true,
-        loop: false,
-        showControls: false,
-        fit: BoxFit.cover,
-        enableCaching: true,
-        optimizeForPerformance: true,
-        placeholder: Container(
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: SizedBox(
           width: width,
           height: height,
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-        ),
-        onVideoStart: () {
-          logger.d('Video started playing');
-        },
-        onVideoEnd: () {
-          // When video ends, switch to image
-          setState(() {
-            _showLottie = false;
-          });
+          child: CustomVideoPlayer(
+            videoPath: videoPath,
+            sourceType: sourceType,
+            autoPlay: true,
+            loop: false,
+            showControls: false,
+            fit: BoxFit.cover,
+            enableCaching: true,
+            optimizeForPerformance: true,
+            placeholder: Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+            onVideoStart: () {
+              logger.d('Video started playing');
+            },
+            onVideoEnd: () {
+              // When video ends, switch to image
+              setState(() {
+                _showLottie = false;
+              });
 
-          // Always play wordAudio after video ends
-          if (widget.content.wordAudio.isNotEmpty) {
-            final audioProvider = context.read<LessonAudioProvider>();
-            audioProvider.playWordAudio(widget.content.wordAudio);
-          }
-        },
-        aspectRatio: 1.0, // Square aspect ratio for consistent layout
+              // Always play wordAudio after video ends
+              if (widget.content.wordAudio.isNotEmpty) {
+                final audioProvider = context.read<LessonAudioProvider>();
+                audioProvider.playWordAudio(widget.content.wordAudio);
+              }
+            },
+            aspectRatio: 1.0, // Square aspect ratio for consistent layout
+          ),
+        ),
       );
     } else {
       // Show image with tap functionality
@@ -292,7 +301,7 @@ class _LessonContentCardState extends State<LessonContentCard>
             CustomAvatarGlow(
               glowColor: AppColors.kSecondaryColor,
               glowShape: BoxShape.circle,
-              visible: widget.isPlaying ,
+              visible: widget.isPlaying,
               glowRadiusFactor: 0.2,
               child: IconButton(
                 icon: SvgHelper.fromSource(
