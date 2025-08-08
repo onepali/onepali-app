@@ -119,8 +119,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
         // Call lesson complete callback
         widget.onLessonComplete?.call();
 
-        // Auto-hide leopard after some time
-        Future.delayed(const Duration(seconds: 3), () {
+        Future.delayed(const Duration(seconds: 2), () {
           if (mounted) {
             setState(() {
               showLeopardAnimation = false;

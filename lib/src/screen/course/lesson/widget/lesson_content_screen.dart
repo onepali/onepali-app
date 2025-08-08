@@ -131,7 +131,37 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           _saveProgress(content, contentIndex);
         }
       }
+
+      if (_currentContentIndex >= widget.lesson.lessonContent.length) {
+        final lastContent = widget.lesson.lessonContent.last;
+        if (lastContent.type != 'tap_send') {
+          _completeRegularLesson();
+        }
+      }
     }
+  }
+
+  Future<void> _completeRegularLesson() async {
+    setState(() {
+      _showGoodRemark = true;
+    });
+
+    try {
+      final lessonProvider = context.read<LessonProvider>();
+      await lessonProvider.incrementTotalLessonsCompleted(
+        context,
+        widget.lesson.id,
+        widget.lesson.lessonName,
+      );
+    } catch (e) {
+      logger.e('Error completing lesson: $e');
+    }
+
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   void _previousContent() {
@@ -198,7 +228,26 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       },
                       onLessonComplete: () async {
                         await _saveProgress(content, contentIndex);
-                        await _completeLessonAndShowReward();
+                        // For tap_send lessons, don't trigger the main lesson completion
+                        // as TapSendLessonCard handles its own animation
+                        // Just save progress and close after a delay
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
+                        }
+
+                        // Close lesson after TapSendLessonCard animation
+                        Future.delayed(const Duration(seconds: 3), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
                       },
                       index: contentIndex,
                     )
@@ -263,31 +312,6 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     } catch (e) {
       logger.e('Error saving progress: $e');
     }
-  }
-
-  Future<void> _completeLessonAndShowReward() async {
-    // Mark lesson as completed
-    setState(() {
-      _showGoodRemark = true;
-    });
-
-    try {
-      final lessonProvider = context.read<LessonProvider>();
-      await lessonProvider.incrementTotalLessonsCompleted(
-        context,
-        widget.lesson.id,
-        widget.lesson.lessonName,
-      );
-    } catch (e) {
-      logger.e('Error completing lesson: $e');
-    }
-
-    // Auto-hide after delay and close lesson
-    Future.delayed(const Duration(seconds: 4), () {
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    });
   }
 
   @override
@@ -445,18 +469,55 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 // Show lesson content
                 _buildLessonContent(contentList[idx - 1], idx - 1),
 
-              // Show good remark at the end
-              if (_showGoodRemark)
+              // Show good remark at the end (only for non-tap_send lessons)
+              if (_showGoodRemark &&
+                  idx > 0 &&
+                  idx <= contentList.length &&
+                  contentList[idx - 1].type != 'tap_send')
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 500),
                   top: MediaQuery.of(context).size.height * 0.1,
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: CustomImage(
-                      Assets.goodRemark,
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.6,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.95),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomImage(
+                            Assets.goodRemark,
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            imageType: CustomImageType.local,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Excellent Work!',
+                            style: AppStyles.text24PxBold.copyWith(
+                              color: AppColors.kButtonGreen,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Lesson Completed Successfully',
+                            style: AppStyles.text16PxMedium.copyWith(
+                              color: AppColors.kSecondaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
