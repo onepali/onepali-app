@@ -58,6 +58,8 @@ class DefaultFirebaseOptions {
     projectId: 'o-nepali',
     databaseURL: 'https://o-nepali-default-rtdb.firebaseio.com',
     storageBucket: 'o-nepali.firebasestorage.app',
+    androidClientId:
+        '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -67,8 +69,10 @@ class DefaultFirebaseOptions {
     projectId: 'o-nepali',
     databaseURL: 'https://o-nepali-default-rtdb.firebaseio.com',
     storageBucket: 'o-nepali.firebasestorage.app',
-    androidClientId: '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
-    iosClientId: '259206374027-vp517itn9fo008tg1d9p2q2id8cmtqjj.apps.googleusercontent.com',
+    androidClientId:
+        '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
+    iosClientId:
+        '259206374027-vp517itn9fo008tg1d9p2q2id8cmtqjj.apps.googleusercontent.com',
     iosBundleId: 'com.onepali.app',
   );
 
@@ -79,8 +83,10 @@ class DefaultFirebaseOptions {
     projectId: 'o-nepali',
     databaseURL: 'https://o-nepali-default-rtdb.firebaseio.com',
     storageBucket: 'o-nepali.firebasestorage.app',
-    androidClientId: '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
-    iosClientId: '259206374027-vp517itn9fo008tg1d9p2q2id8cmtqjj.apps.googleusercontent.com',
+    androidClientId:
+        '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
+    iosClientId:
+        '259206374027-vp517itn9fo008tg1d9p2q2id8cmtqjj.apps.googleusercontent.com',
     iosBundleId: 'com.onepali.app',
   );
 
