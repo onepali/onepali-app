@@ -17,6 +17,23 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
 
   @override
   Widget build(BuildContext context) {
+    // Platform responsive variables
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double verticalGap1 = isTabletPortrait ? 80.0 : 50.0;
+    final double verticalGap2 = isTabletPortrait ? 80.0 : 50.0;
+    final double imageSize = isTabletPortrait ? 280.0 : 230.0;
+    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
+    final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
+    final double buttonSpacing = isTabletPortrait ? 20.0 : 15.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxRegular
+            : AppStyles.text16PxRegular;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: '',
@@ -26,22 +43,21 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Center(
+        padding: EdgeInsets.all(horizontalPadding),
+        child: Center(
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Gaps.verticalGapOf(50),
-
-                Text('Receive updates?', style: AppStyles.text16PxRegular),
-                Gaps.verticalGapOf(50),
+                Gaps.verticalGapOf(verticalGap1),
+                Text('Receive updates?', style: titleStyle),
+                Gaps.verticalGapOf(verticalGap2),
                 CustomImage(
                   Assets.notificationOn,
-                  height: 230,
-                  width: 230,
+                  height: imageSize,
+                  width: imageSize,
                   imageType: CustomImageType.local,
                   cover: false,
                 ),
@@ -51,17 +67,27 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: bottomPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_buildNextButton(context), Gaps.verticalGapOf(30)],
+          children: [
+            _buildNextButton(context, isTabletPortrait, buttonSpacing),
+            Gaps.verticalGapOf(buttonGap),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    double buttonSpacing,
+  ) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,16 +102,17 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
           },
           backgroundColor: AppColors.kButtonGreen,
           width: double.infinity,
+          textStyle: buttonTextStyle,
           elevation: 0,
         ),
-        Gaps.verticalGapOf(15),
+        Gaps.verticalGapOf(buttonSpacing),
         CustomMaterialButton(
           label: 'Not Now',
           onTap: () {
             Utility.navigate(context, AppRoutes.dashboardScreen);
           },
           backgroundColor: AppColors.kButtonGrey,
-          textStyle: AppStyles.text16PxMedium.copyWith(color: AppColors.kBlack),
+          textStyle: buttonTextStyle.copyWith(color: AppColors.kBlack),
           width: double.infinity,
           elevation: 0,
         ),

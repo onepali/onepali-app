@@ -19,7 +19,7 @@ class PBlogCard extends StatelessWidget {
           CustomImage(
             blog.coverImage,
             width: double.infinity,
-            height: isMobilePortrait ? 200 : 150,
+            height: isMobilePortrait ? 200 : 350,
             imageType: CustomImageType.network,
           ),
           Gaps.verticalGapOf(10),

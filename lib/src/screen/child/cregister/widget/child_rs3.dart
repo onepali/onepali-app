@@ -24,6 +24,34 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
     final childProvider = context.watch<ChildUserProvider>();
     final int childCount = childProvider.totalChildren;
 
+    // Platform responsive variables
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double verticalGap1 = isTabletPortrait ? 16.0 : 10.0;
+    final double verticalGap2 = isTabletPortrait ? 80.0 : 50.0;
+    final double verticalGap3 = isTabletPortrait ? 50.0 : 30.0;
+    final double imageSize = isTabletPortrait ? 240.0 : 180.0;
+    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
+    final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
+    final double buttonSpacing = isTabletPortrait ? 20.0 : 15.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
+    final TextStyle subtitleStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular;
+
+    final TextStyle noteStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: '',
@@ -33,50 +61,66 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Profile created!', style: AppStyles.text20PxSemiBold),
-              Gaps.verticalGapOf(10),
-              Text(
-                'Would you like to create another child\'s profile?',
-                style: AppStyles.text14PxRegular,
-                textAlign: TextAlign.center,
-              ),
-              Gaps.verticalGapOf(50),
-              SvgHelper.fromSource(
-                path: Assets.childSuccessSvg,
-                height: 180,
-                width: 180,
-              ),
-              Gaps.verticalGapOf(30),
-              Text(
-                'You can always add it later in the settings',
-                style: AppStyles.text14PxRegular,
-              ),
-            ],
+        padding: EdgeInsets.all(horizontalPadding),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Profile created!', style: titleStyle),
+                Gaps.verticalGapOf(verticalGap1),
+                Text(
+                  'Would you like to create another child\'s profile?',
+                  style: subtitleStyle,
+                  textAlign: TextAlign.center,
+                ),
+                Gaps.verticalGapOf(verticalGap2),
+                SvgHelper.fromSource(
+                  path: Assets.childSuccessSvg,
+                  height: imageSize,
+                  width: imageSize,
+                ),
+                Gaps.verticalGapOf(verticalGap3),
+                Text(
+                  'You can always add it later in the settings',
+                  style: noteStyle,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: bottomPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Gaps.verticalGapOf(30),
-            _buildNextButton(context, childCount),
-            Gaps.verticalGapOf(30),
+            Gaps.verticalGapOf(buttonGap),
+            _buildNextButton(
+              context,
+              childCount,
+              isTabletPortrait,
+              buttonSpacing,
+            ),
+            Gaps.verticalGapOf(buttonGap),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context, int childCount) {
+  Widget _buildNextButton(
+    BuildContext context,
+    int childCount,
+    bool isTabletPortrait,
+    double buttonSpacing,
+  ) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,7 +128,7 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
         CustomMaterialButton(
           label: 'Create',
           onTap: () {
-            if (childCount >= 3) {
+            if (childCount >= 3 && !GlobalConfig.isUserTesting) {
               DialogManager.showCustomDialog(
                 context: context,
                 title: 'You\'ve added 3 kids!',
@@ -100,9 +144,10 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
           },
           backgroundColor: AppColors.kButtonGreen,
           width: double.infinity,
+          textStyle: buttonTextStyle,
           elevation: 0,
         ),
-        Gaps.verticalGapOf(15),
+        Gaps.verticalGapOf(buttonSpacing),
         CustomMaterialButton(
           label: 'Not Now',
           onTap: () {
@@ -113,7 +158,7 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
             );
           },
           backgroundColor: AppColors.kButtonGrey,
-          textStyle: AppStyles.text16PxMedium.copyWith(color: AppColors.kBlack),
+          textStyle: buttonTextStyle.copyWith(color: AppColors.kBlack),
           width: double.infinity,
           elevation: 0,
         ),

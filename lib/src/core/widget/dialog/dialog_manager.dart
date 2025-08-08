@@ -28,7 +28,7 @@ class DialogManager {
             ? MediaQuery.of(context).size.width * 0.7
             : isMobilePortrait
             ? MediaQuery.of(context).size.width * 1.2
-            : MediaQuery.of(context).size.width * 0.6;
+            : MediaQuery.of(context).size.width * 1.5;
 
     return showDialog(
       context: context,

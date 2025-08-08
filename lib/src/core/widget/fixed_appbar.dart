@@ -45,18 +45,34 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         PlatformUtility.isLandscape(context);
     logger.d('UserAppBar: isMobileLandScape: $isMobileLandScape');
 
+    // Responsive variables
+    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final avatarSize = isTabletPortrait ? 60.0 : 45.0;
+    final rewardIconSize = isTabletPortrait ? 50.0 : 40.0;
+    final starRewardLottieSize = isTabletPortrait ? 85.0 : 65.0;
+    final tabIconSize = isTabletPortrait ? 60.0 : 44.0;
+    final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
+    final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
+    final guestTopGap = isTabletPortrait ? 50.0 : 35.0;
+    final tabSpacing = isTabletPortrait ? 15.0 : 10.0;
+    final nameTextStyle =
+        isTabletPortrait ? AppStyles.text24PxSemiBold : AppStyles.text16PxBold;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: verticalPadding,
+      ),
       decoration: BoxDecoration(color: AppColors.kWhite),
       child:
           isMobileLandScape
               ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (isGuest) Gaps.verticalGapOf(35),
+                  if (isGuest) Gaps.verticalGapOf(guestTopGap),
 
                   Row(
-                    spacing: 8,
+                    spacing: tabSpacing,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -82,8 +98,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                             },
                             icon: CustomImage(
                               isGuest ? Assets.blueUserAvatar : profileImage,
-                              height: 45,
-                              width: 45,
+                              height: avatarSize,
+                              width: avatarSize,
                               circular: true,
                               // isProfileImage: true,
                               imageType:
@@ -92,11 +108,11 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       : CustomImageType.network,
                             ),
                           ),
-                          Gaps.horizontalGapOf(10),
+                          Gaps.horizontalGapOf(tabSpacing),
                           if (isGuest)
                             Text(
                               name,
-                              style: AppStyles.text16PxBold.copyWith(
+                              style: nameTextStyle.copyWith(
                                 color: AppColors.kPitchBlack,
                               ),
                             ),
@@ -122,8 +138,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     },
                                     child: LottieHelper.fromSource(
                                       path: Assets.starRewardLottie,
-                                      height: 65,
-                                      width: 65,
+                                      height: starRewardLottieSize,
+                                      width: starRewardLottieSize,
                                       repeat: false,
                                     ),
                                   );
@@ -140,8 +156,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   },
                                   child: SvgHelper.fromSource(
                                     path: Assets.reward,
-                                    height: 40,
-                                    width: 40,
+                                    height: rewardIconSize,
+                                    width: rewardIconSize,
                                   ),
                                 ),
                             ],
@@ -150,7 +166,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 10,
+                        spacing: tabSpacing,
                         children: [
                           for (int i = 0; i < homeServices.length; i++)
                             _buildTab(
@@ -162,8 +178,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                               () => onTabSelected(homeServices[i].name ?? ''),
                               i,
                               selectedIndex,
+                              tabIconSize,
                             ),
-                          Gaps.horizontalGapOf(10),
+                          Gaps.horizontalGapOf(tabSpacing),
                         ],
                       ),
                     ],
@@ -172,41 +189,64 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
               )
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          if (!isGuest) {
-                            Utility.navigateMaterialRoute(
-                              context,
-                              TabDrawerScreen(
-                                data: childData,
-                                totalChildCount: totalChildCount,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  if (!isGuest) {
+                                    Utility.navigateMaterialRoute(
+                                      context,
+                                      TabDrawerScreen(
+                                        data: childData,
+                                        totalChildCount: totalChildCount,
+                                      ),
+                                    );
+                                  }
+                                  //  else {
+                                  //   Utility.navigate(context, AppRoutes.systemScreen);
+                                  // }
+                                },
+                                icon: CustomImage(
+                                  isGuest ? Assets.parentAvatar : profileImage,
+                                  height: avatarSize,
+                                  width: avatarSize,
+                                  circular: true,
+                                  isProfileImage: true,
+                                  imageType:
+                                      isGuest
+                                          ? CustomImageType.local
+                                          : CustomImageType.network,
+                                ),
                               ),
-                            );
-                          }
-                          //  else {
-                          //   Utility.navigate(context, AppRoutes.systemScreen);
-                          // }
-                        },
-                        icon: CustomImage(
-                          isGuest ? Assets.parentAvatar : profileImage,
-                          height: 45,
-                          width: 45,
-                          circular: true,
-                          isProfileImage: true,
-                          imageType:
-                              isGuest
-                                  ? CustomImageType.local
-                                  : CustomImageType.network,
-                        ),
+                              Gaps.horizontalGapOf(tabSpacing),
+                              if (!isGuest && totalChildCount > 0)
+                                Text(
+                                  name,
+                                  style: nameTextStyle.copyWith(
+                                    color: AppColors.kPitchBlack,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          if (!isGuest && totalChildCount > 0)
+                            buildProgressBar(),
+                        ],
                       ),
+
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: tabSpacing,
                         children: [
                           for (int i = 0; i < homeServices.length; i++)
                             _buildTab(
@@ -218,14 +258,14 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                               () => onTabSelected(homeServices[i].name ?? ''),
                               i,
                               selectedIndex,
+                              tabIconSize,
                             ),
-                          Gaps.horizontalGapOf(10),
+                          Gaps.horizontalGapOf(tabSpacing),
                         ],
                       ),
                     ],
                   ),
                   // Gaps.verticalGapOf(8),
-                  if (!isGuest) buildProgressBar(),
                 ],
               ),
     );
@@ -295,11 +335,18 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget buildProgressBar() {
     const totalSteps = 5;
+    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final progressBarHeight = isTabletPortrait ? 10.0 : 8.0;
+    final progressBarWidth = isTabletPortrait ? 50.0 : 40.0;
+    final circleSize = isTabletPortrait ? 16.0 : 12.0;
+    final rewardSize = isTabletPortrait ? 40.0 : 30.0;
+    final starLottieSize = isTabletPortrait ? 50.0 : 40.0;
+
     return Row(
       children: [
         Container(
-          height: 8,
-          width: 40,
+          height: progressBarHeight,
+          width: progressBarWidth,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color:
@@ -314,16 +361,16 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
           return Row(
             children: [
               Container(
-                height: 12,
-                width: 12,
+                height: circleSize,
+                width: circleSize,
                 decoration: BoxDecoration(
                   color: isFilled ? AppColors.kOrange : Colors.grey.shade300,
                   shape: BoxShape.circle,
                 ),
               ),
               Container(
-                height: 8,
-                width: 40,
+                height: progressBarHeight,
+                width: progressBarWidth,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                   color:
@@ -349,15 +396,19 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               return LottieHelper.fromSource(
                 path: Assets.starRewardLottie,
-                height: 40,
+                height: starLottieSize,
                 repeat: false,
-                width: 40,
+                width: starLottieSize,
               );
             },
           ),
         ] else ...[
           if (!isGuest && totalChildCount > 0)
-            SvgHelper.fromSource(path: Assets.reward, height: 30, width: 30),
+            SvgHelper.fromSource(
+              path: Assets.reward,
+              height: rewardSize,
+              width: rewardSize,
+            ),
         ],
       ],
     );
@@ -369,9 +420,15 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     Color color,
     VoidCallback onTap,
     int index,
-    int selectedIndex,
-  ) {
+    int selectedIndex, [
+    double? iconSize,
+  ]) {
     final bool isSelected = index == selectedIndex;
+    final effectiveIconSize = iconSize ?? 44.0;
+    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final labelTextStyle =
+        isTabletPortrait ? AppStyles.text14PxMedium : AppStyles.text12PxMedium;
+
     return IconButton(
       onPressed: onTap,
       icon: Column(
@@ -381,8 +438,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
           // if (isGuest) Gaps.verticalGapOf(30),
           SvgHelper.fromSource(
             path: icon,
-            height: 44,
-            width: 44,
+            height: effectiveIconSize,
+            width: effectiveIconSize,
             // color: menuColor,
           ),
           if (isSelected) ...[
@@ -396,9 +453,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               child: Text(
                 label,
-                style: AppStyles.text12PxMedium.copyWith(
-                  color: AppColors.kWhite,
-                ),
+                style: labelTextStyle.copyWith(color: AppColors.kWhite),
               ),
             ),
           ],
@@ -408,9 +463,18 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(
-    PlatformUtility.isMobile(context) && PlatformUtility.isLandscape(context)
-        ? 110
-        : 130,
-  );
+  Size get preferredSize {
+    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
+
+    if (isTabletLandscape) {
+      return const Size.fromHeight(160);
+    } else if (isTabletPortrait) {
+      return const Size.fromHeight(130);
+    } else {
+      return const Size.fromHeight(110);
+    }
+  }
 }
