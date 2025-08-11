@@ -6,44 +6,63 @@ class PzNotificationProvider extends ChangeNotifier {
   NotificationSettings? _settings;
   List<NotificationTemplate> _notifications = [];
   final PzNotificationRepo _repo = PzNotificationRepo();
-  bool _loading = false;
+  DataFetchStatus _status = DataFetchStatus.initial;
 
   NotificationSettings? get settings => _settings;
   List<NotificationTemplate> get notifications => _notifications;
-  bool get loading => _loading;
+  DataFetchStatus get status => _status;
+
+  void setStatus(DataFetchStatus status) {
+    _status = status;
+    notifyListeners();
+  }
 
   Future<void> getNotificationSetting() async {
-    _loading = true;
-    notifyListeners();
-    _settings = await _repo.fetchNotificationSettings();
-    _loading = false;
-    notifyListeners();
-    // Reschedule daily reminder if settings exist
-    if (_settings != null &&
-        _settings!.dailyReminderTime != null &&
-        _settings!.dailyReminderTime!.isNotEmpty) {
-      final t = TimeOfDay(
-        hour: int.parse(_settings!.dailyReminderTime!.split(':')[0]),
-        minute: int.parse(_settings!.dailyReminderTime!.split(':')[1]),
-      );
-      await NotificationService.scheduleDailyReminder(
-        time: t,
-        title: AppConstants.dailyReminderTitle,
-        body: AppConstants.dailyReminderBody,
-      );
-      await NotificationService.logPendingNotifications();
+    setStatus(DataFetchStatus.loading);
+    try {
+      _settings = await _repo.fetchNotificationSettings();
+      setStatus(DataFetchStatus.success);
+      // Reschedule daily reminder if settings exist
+      if (_settings != null &&
+          _settings!.dailyReminderTime != null &&
+          _settings!.dailyReminderTime!.isNotEmpty) {
+        final t = TimeOfDay(
+          hour: int.parse(_settings!.dailyReminderTime!.split(':')[0]),
+          minute: int.parse(_settings!.dailyReminderTime!.split(':')[1]),
+        );
+        await NotificationService.scheduleDailyReminder(
+          time: t,
+          title: AppConstants.dailyReminderTitle,
+          body: AppConstants.dailyReminderBody,
+        );
+        await NotificationService.logPendingNotifications();
+      }
+    } catch (e) {
+      logger.e('Error fetching notification settings: $e');
+      setStatus(DataFetchStatus.error);
+      showCustomToaster('Failed to load notification settings', isError: true);
     }
   }
 
   Future<void> getNotification() async {
-    _notifications = await _repo.fetchNotificationTemplates();
-    notifyListeners();
+    try {
+      _notifications = await _repo.fetchNotificationTemplates();
+      notifyListeners();
+    } catch (e) {
+      logger.e('Error fetching notifications: $e');
+      showCustomToaster('Failed to load notifications', isError: true);
+    }
   }
 
   Future<void> updateSettings(NotificationSettings newSettings) async {
-    _settings = newSettings;
-    notifyListeners();
-    await _repo.updateNotificationSettings(newSettings);
+    try {
+      _settings = newSettings;
+      notifyListeners();
+      await _repo.updateNotificationSettings(newSettings);
+    } catch (e) {
+      logger.e('Error updating notification settings: $e');
+      showCustomToaster('Failed to update settings', isError: true);
+    }
   }
 
   Future<void> ensureCollections() async {
@@ -97,18 +116,23 @@ class PzNotificationProvider extends ChangeNotifier {
 
   Future<void> updateDailyReminderTime(String time) async {
     if (_settings == null) return;
-    final updated = _settings!.copyWith(dailyReminderTime: time);
-    await updateSettings(updated);
-    // Schedule the daily notification
-    final t = TimeOfDay(
-      hour: int.parse(time.split(':')[0]),
-      minute: int.parse(time.split(':')[1]),
-    );
-    debugPrint('[UI] Scheduling daily reminder for $t');
-    await NotificationService.scheduleDailyReminder(
-      time: t,
-      title: AppConstants.dailyReminderTitle,
-      body: AppConstants.dailyReminderBody,
-    );
+    try {
+      final updated = _settings!.copyWith(dailyReminderTime: time);
+      await updateSettings(updated);
+      // Schedule the daily notification
+      final t = TimeOfDay(
+        hour: int.parse(time.split(':')[0]),
+        minute: int.parse(time.split(':')[1]),
+      );
+      debugPrint('[UI] Scheduling daily reminder for $t');
+      await NotificationService.scheduleDailyReminder(
+        time: t,
+        title: AppConstants.dailyReminderTitle,
+        body: AppConstants.dailyReminderBody,
+      );
+    } catch (e) {
+      logger.e('Error updating daily reminder time: $e');
+      showCustomToaster('Failed to update reminder time', isError: true);
+    }
   }
 }
