@@ -50,12 +50,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-                child: Column(children: [_buildChildProfilesGrid()]),
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [_buildChildProfilesGrid()],
+                ),
               ),
             ),
           ),
@@ -222,9 +226,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 60,
-                width: 60,
-
+                height: 55,
+                width: 55,
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade600,
                   shape: BoxShape.circle,
@@ -248,16 +252,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: items[index],
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            items
+                .map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: item,
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -267,76 +274,79 @@ class _DrawerScreenState extends State<DrawerScreen> {
       height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kPurple),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap: () async {
-              final isParentLogged = await ParentLocalStorage.isParentLogged();
-              logger.d('isParentLogged: $isParentLogged');
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () async {
+                final isParentLogged =
+                    await ParentLocalStorage.isParentLogged();
+                logger.d('isParentLogged: $isParentLogged');
 
-              if (isParentLogged) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                UserAppBar.setTabIndex(0);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (_) => DashboardScreen(),
-                    settings: RouteSettings(name: AppRoutes.dashboardScreen),
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-              }
-            },
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                margin: const EdgeInsets.only(right: 4, top: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.kButtonGrey,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.close,
-                  color: AppColors.kPitchBlack,
-                  size: 24,
-                ),
-              ),
-            ),
-          ),
-          for (int i = 0; i < drawerSettings.length; i++)
-            ListTile(
-              contentPadding: const EdgeInsets.only(bottom: 8.0),
-              onTap: () {
-                if (drawerSettings[i].route == AppRoutes.comingSoon) {
-                  showCustomToaster('This feature is coming soon.');
-                  return;
+                if (isParentLogged) {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  UserAppBar.setTabIndex(0);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => DashboardScreen(),
+                      settings: RouteSettings(name: AppRoutes.dashboardScreen),
+                    ),
+                  );
+                } else {
+                  Navigator.pop(context);
                 }
-                Utility.navigate(
-                  context,
-                  drawerSettings[i].route,
-                  arguments: drawerSettings[i].args,
-                );
               },
-
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgHelper.fromSource(
-                  path: drawerSettings[i].icon,
-                  height: 40,
-                  width: 40,
-                ),
-              ),
-              dense: true,
-              title: Text(
-                drawerSettings[i].name,
-                style: AppStyles.text18PxMedium.copyWith(
-                  color: AppColors.kWhite,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 4, top: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.kButtonGrey,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: const Icon(
+                    Icons.close,
+                    color: AppColors.kPitchBlack,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
-        ],
+            for (int i = 0; i < drawerSettings.length; i++)
+              ListTile(
+                contentPadding: const EdgeInsets.only(bottom: 8.0),
+                onTap: () {
+                  if (drawerSettings[i].route == AppRoutes.comingSoon) {
+                    showCustomToaster('This feature is coming soon.');
+                    return;
+                  }
+                  Utility.navigate(
+                    context,
+                    drawerSettings[i].route,
+                    arguments: drawerSettings[i].args,
+                  );
+                },
+
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgHelper.fromSource(
+                    path: drawerSettings[i].icon,
+                    height: 40,
+                    width: 40,
+                  ),
+                ),
+                dense: true,
+                title: Text(
+                  drawerSettings[i].name,
+                  style: AppStyles.text18PxMedium.copyWith(
+                    color: AppColors.kWhite,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
