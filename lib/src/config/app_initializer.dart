@@ -32,8 +32,7 @@ class AppInitializer {
     final String fixedTimeZone =
         deviceTimeZone == 'Asia/Katmandu' ? 'Asia/Kathmandu' : deviceTimeZone;
     tz.setLocalLocation(tz.getLocation(fixedTimeZone));
-
-    await ProviderConfig.pzNotificationProvider.getNotificationSetting();
+    // await ProviderConfig.pzNotificationProvider.getNotificationSetting();
 
     // Initialize guest user status
     await GuestUtil.init();

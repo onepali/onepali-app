@@ -17,6 +17,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
     Misc.onLayoutRendered(() async {
       final provider = context.read<PzNotificationProvider>();
       await provider.ensureCollections();
+
+      try {
+        await NotificationService.requestPermissions();
+      } catch (e) {
+        logger.w('Failed to request notification permissions: $e');
+      }
+
       if (provider.settings == null) {
         provider.getNotificationSetting();
       }

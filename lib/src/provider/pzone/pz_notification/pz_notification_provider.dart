@@ -22,7 +22,6 @@ class PzNotificationProvider extends ChangeNotifier {
     try {
       _settings = await _repo.fetchNotificationSettings();
       setStatus(DataFetchStatus.success);
-      // Reschedule daily reminder if settings exist
       if (_settings != null &&
           _settings!.dailyReminderTime != null &&
           _settings!.dailyReminderTime!.isNotEmpty) {
@@ -30,12 +29,18 @@ class PzNotificationProvider extends ChangeNotifier {
           hour: int.parse(_settings!.dailyReminderTime!.split(':')[0]),
           minute: int.parse(_settings!.dailyReminderTime!.split(':')[1]),
         );
-        await NotificationService.scheduleDailyReminder(
-          time: t,
-          title: AppConstants.dailyReminderTitle,
-          body: AppConstants.dailyReminderBody,
-        );
-        await NotificationService.logPendingNotifications();
+        try {
+          await NotificationService.scheduleDailyReminder(
+            time: t,
+            title: AppConstants.dailyReminderTitle,
+            body: AppConstants.dailyReminderBody,
+          );
+          await NotificationService.logPendingNotifications();
+        } catch (e) {
+          logger.w(
+            'Could not schedule notification (permissions may not be granted): $e',
+          );
+        }
       }
     } catch (e) {
       logger.e('Error fetching notification settings: $e');
@@ -125,11 +130,21 @@ class PzNotificationProvider extends ChangeNotifier {
         minute: int.parse(time.split(':')[1]),
       );
       debugPrint('[UI] Scheduling daily reminder for $t');
-      await NotificationService.scheduleDailyReminder(
-        time: t,
-        title: AppConstants.dailyReminderTitle,
-        body: AppConstants.dailyReminderBody,
-      );
+      try {
+        await NotificationService.scheduleDailyReminder(
+          time: t,
+          title: AppConstants.dailyReminderTitle,
+          body: AppConstants.dailyReminderBody,
+        );
+      } catch (e) {
+        logger.w(
+          'Could not schedule notification (permissions may not be granted): $e',
+        );
+        showCustomToaster(
+          'Reminder saved, but notification permissions may be needed',
+          isError: false,
+        );
+      }
     } catch (e) {
       logger.e('Error updating daily reminder time: $e');
       showCustomToaster('Failed to update reminder time', isError: true);

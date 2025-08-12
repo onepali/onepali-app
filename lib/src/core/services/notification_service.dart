@@ -24,8 +24,33 @@ class NotificationService {
         debugPrint('Notification tapped: \\${response.payload}');
       },
     );
+
+    // Don't request permissions during initialization
+    // Permissions will be requested when user first accesses notification settings
     logPendingNotifications();
 
+    // FCM foreground handler
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      final notification = message.notification;
+      if (notification != null) {
+        await showLocalNotification(
+          notification.title,
+          notification.body,
+          payload: message.data['payload'],
+        );
+      }
+    });
+
+    // FCM background & terminated tap handler
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Handle notification tap when app is in background or terminated
+      debugPrint('FCM notification tapped: \\${message.data}');
+      // You can navigate or perform logic here
+    });
+  }
+
+  // Request permissions when user first accesses notification settings
+  static Future<void> requestPermissions() async {
     // Request Android 13+ notification permission
     final androidImplementation =
         flutterLocalNotificationsPlugin
@@ -50,25 +75,6 @@ class NotificationService {
     debugPrint(
       '[NotificationService] FCM permission: ${fcmSettings.authorizationStatus}',
     );
-
-    // FCM foreground handler
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      final notification = message.notification;
-      if (notification != null) {
-        await showLocalNotification(
-          notification.title,
-          notification.body,
-          payload: message.data['payload'],
-        );
-      }
-    });
-
-    // FCM background & terminated tap handler
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Handle notification tap when app is in background or terminated
-      debugPrint('FCM notification tapped: \\${message.data}');
-      // You can navigate or perform logic here
-    });
   }
 
   // Show a local notification (with optional payload and sound)
