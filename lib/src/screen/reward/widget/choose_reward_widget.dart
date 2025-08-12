@@ -36,7 +36,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(rewards.length, (index) {
-        final isSelected = selectedIndex == index;
+        // final isSelected = selectedIndex == index;
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -54,13 +54,13 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
             margin: EdgeInsets.symmetric(horizontal: stickerMargin),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              border:
-                  isSelected
-                      ? Border.all(
-                        color: AppColors.kPurple.withValues(alpha: 0.8),
-                        width: 4,
-                      )
-                      : null,
+              // border:
+              //     isSelected
+              //         ? Border.all(
+              //           color: AppColors.kPurple.withValues(alpha: 0.8),
+              //           width: 4,
+              //         )
+              //         : null,
               borderRadius: BorderRadius.circular(18),
             ),
             child: SizedBox(
