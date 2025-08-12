@@ -165,6 +165,20 @@ class ChildUserProvider extends ChangeNotifier {
     }
 
     final String parentUid = user!.uid;
+
+    // Optional: Validate child name for duplicates within family
+    // final validation = await ChildNameValidator.validateChildName(
+    //   parentUid: parentUid,
+    //   childName: fullName,
+    //   excludeChildId: childUid, // Exclude current child from duplicate check
+    // );
+    //
+    // if (!validation.isValid) {
+    //   showCustomToaster(validation.message, isError: true);
+    //   setStatus(DataFetchStatus.error);
+    //   return;
+    // }
+
     try {
       final childDoc =
           await _firestore

@@ -105,7 +105,7 @@ class _CUserScreenState extends State<CUserScreen> {
                   keyboardType: TextInputType.name,
                   controller: _nameController,
                   prefixIcon: Icon(Icons.person_outline_rounded),
-                  validation: (value) => Validator.empty(value ?? ""),
+                  validation: (value) => Validator.name(value ?? ""),
                 ),
               ),
               Gaps.verticalGapOf(verticalGap2),

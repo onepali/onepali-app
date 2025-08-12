@@ -36,4 +36,30 @@ class Validator {
   static String? empty(String value) {
     return value.trim().isEmpty ? "This field is required" : null;
   }
+
+  /// Returns error message if invalid, null if valid.
+  /// Validates name to contain only letters, spaces, and common name characters.
+  static String? name(String name) {
+    if (name.trim().isEmpty) return "Name is required";
+
+    // Allow only letters (including Unicode letters for international names),
+    // spaces, hyphens, and apostrophes
+    final RegExp nameRegex = RegExp(r"^[\p{L}\s\-']+$", unicode: true);
+
+    if (!nameRegex.hasMatch(name.trim())) {
+      return "Name can only contain letters, spaces, hyphens and apostrophes";
+    }
+
+    // Check for consecutive spaces or special characters
+    if (name.trim().contains(RegExp(r'\s{2,}'))) {
+      return "Name cannot contain consecutive spaces";
+    }
+
+    // Check minimum length
+    if (name.trim().length < 2) {
+      return "Name must be at least 2 characters long";
+    }
+
+    return null;
+  }
 }

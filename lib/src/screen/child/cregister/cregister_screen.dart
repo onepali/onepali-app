@@ -72,7 +72,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
                     keyboardType: TextInputType.name,
                     controller: nameController,
                     prefixIcon: Icon(Icons.person_outline_rounded),
-                    validation: (value) => Validator.empty(value ?? ""),
+                    validation: (value) => Validator.name(value ?? ""),
                   ),
                 ),
                 Gaps.verticalGapOf(fieldGap),

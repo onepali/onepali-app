@@ -53,7 +53,7 @@ class _RS3ScreenState extends State<RS3Screen> {
                   keyboardType: TextInputType.name,
                   controller: nameController,
                   prefixIcon: Icon(Icons.person_outline_rounded),
-                  validation: (value) => Validator.empty(value ?? ""),
+                  validation: (value) => Validator.name(value ?? ""),
                 ),
               ),
               Gaps.verticalGapOf(20),

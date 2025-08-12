@@ -20,6 +20,17 @@ class ChildAuthProvider extends ChangeNotifier {
   }) async {
     setStatus(DataFetchStatus.loading);
     try {
+      // Validate child name (optional: check for duplicates within family)
+      // final validation = await ChildNameValidator.validateChildName(
+      //   parentUid: parentUid,
+      //   childName: childName,
+      // );
+      //
+      // if (!validation.isValid) {
+      //   setStatus(DataFetchStatus.error);
+      //   showCustomToaster(validation.message, isError: true);
+      //   return;
+      // }
       final childDoc =
           _firestore
               .collection('users')
