@@ -80,8 +80,8 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     child: IconButton(
                       icon: SvgHelper.fromSource(
                         path: Assets.wrong,
-                        height: 40,
-                        width: 40,
+                        height: AppConstants.kIconSize,
+                        width: AppConstants.kIconSize,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
@@ -93,8 +93,8 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     child: GestureDetector(
                       onTap: () => provider.nextContent(context),
                       child: Container(
-                        height: 40,
-                        width: 40,
+                        height: AppConstants.kIconSize,
+                        width: AppConstants.kIconSize,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppColors.kWhite,

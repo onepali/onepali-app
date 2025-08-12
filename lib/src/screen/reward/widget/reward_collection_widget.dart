@@ -35,7 +35,8 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
     final double stickerSize = isMobileLandscape ? 100 : 150;
     final double stickerMargin = isMobileLandscape ? 24 : 34;
     final double titleFontSize = isMobileLandscape ? 24 : 28;
-    final double wrongIconSize = isMobileLandscape ? 40 : 52;
+    final double wrongIconSize =
+        isMobileLandscape ? AppConstants.kIconSize : 52;
 
     return Consumer<RewardProvider>(
       builder: (context, rewardProvider, child) {

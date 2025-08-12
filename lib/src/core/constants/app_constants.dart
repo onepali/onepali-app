@@ -104,6 +104,9 @@ class AppConstants {
     '20 mins': 20,
   };
 
+  // Button & Other Sized
+  static const double kIconSize = 48.0;
+
   // Notification Titles & Bodies [Daily Reminder]
   static const String dailyReminderTitle = "⏰ It's Time to Practice!";
   static const String dailyReminderBody =

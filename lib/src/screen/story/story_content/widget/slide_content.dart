@@ -119,7 +119,11 @@ class SlideContentState extends State<SlideContent> {
             onTap: () {
               storyProvider.stopAudioAndResetIndex();
             },
-            child: SvgHelper.fromSource(path: Assets.wrong, height: 45),
+            child: SvgHelper.fromSource(
+              path: Assets.wrong,
+              height: AppConstants.kIconSize,
+              width: AppConstants.kIconSize,
+            ),
           ),
         ),
         Positioned(
@@ -144,8 +148,8 @@ class SlideContentState extends State<SlideContent> {
                 padding: const EdgeInsets.all(12),
                 child: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-                  height: 36,
-                  width: 36,
+                  height: AppConstants.kIconSize,
+                  width: AppConstants.kIconSize,
                 ),
               ),
             ),
@@ -174,8 +178,8 @@ class SlideContentState extends State<SlideContent> {
                 padding: const EdgeInsets.all(12),
                 child: SvgHelper.fromSource(
                   path: Assets.rightArrow,
-                  height: 36,
-                  width: 36,
+                  height: AppConstants.kIconSize,
+                  width: AppConstants.kIconSize,
                 ),
               ),
             ),

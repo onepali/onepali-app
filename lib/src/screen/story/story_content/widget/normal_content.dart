@@ -42,8 +42,8 @@ class _NormalContentState extends State<NormalContent> {
           padding: const EdgeInsets.all(12),
           child: SvgHelper.fromSource(
             path: isLeft ? Assets.leftArrow : Assets.rightArrow,
-            height: 36,
-            width: 36,
+            height: AppConstants.kIconSize,
+            width: AppConstants.kIconSize,
           ),
         ),
       );
@@ -94,7 +94,11 @@ class _NormalContentState extends State<NormalContent> {
               storyProvider.stopAudioAndResetIndex();
               logger.d('[NormalContent] Wrong icon tapped, stopping audio');
             },
-            child: SvgHelper.fromSource(path: Assets.wrong, height: 45),
+            child: SvgHelper.fromSource(
+              path: Assets.wrong,
+              height: AppConstants.kIconSize,
+              width: AppConstants.kIconSize,
+            ),
           ),
         ),
         // Left arrow (center vertically)

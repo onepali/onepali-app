@@ -100,8 +100,8 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                 child: IconButton(
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
-                    height: 40,
-                    width: 40,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
                     color: AppColors.kWhite,
                   ),
                   onPressed: () => Navigator.of(context).pop(),

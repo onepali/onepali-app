@@ -190,8 +190,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           // Previous button
           if (!isFirst && !isTapSendType)
             Container(
-              height: 48,
-              width: 48,
+              height: AppConstants.kIconSize,
+              width: AppConstants.kIconSize,
               decoration: BoxDecoration(
                 color: AppColors.kWhite,
                 shape: BoxShape.circle,
@@ -207,8 +207,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               child: IconButton(
                 icon: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-                  height: 30,
-                  width: 30,
+
                   color: AppColors.kSecondaryColor,
                 ),
                 onPressed: _previousContent,
@@ -354,8 +353,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 child: IconButton(
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
-                    height: 48,
-                    width: 48,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
                   ),
                   onPressed: () {
                     _saveCurrentProgress();
@@ -394,7 +393,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               widget.nameNp,
                               style: AppStyles.text24PxBold.copyWith(
                                 // color: AppColors.kSecondaryColor,
-                                fontSize: 30,
+                                fontSize: 40,
                                 fontFamily: 'Mukta',
                               ),
                               textAlign: TextAlign.center,
@@ -420,8 +419,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.wrong,
-                          height: 48,
-                          width: 48,
+                          height: AppConstants.kIconSize,
+                          width: AppConstants.kIconSize,
                         ),
                         onPressed: () {
                           _saveCurrentProgress();
@@ -437,8 +436,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       child: customInkwell(
                         onTap: _nextContent,
                         child: Container(
-                          height: 48,
-                          width: 48,
+                          height: AppConstants.kIconSize,
+                          width: AppConstants.kIconSize,
                           decoration: BoxDecoration(
                             color: AppColors.kWhite,
                             shape: BoxShape.circle,
