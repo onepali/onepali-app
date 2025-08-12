@@ -67,13 +67,48 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               return Stack(
                 children: [
                   Positioned.fill(
-                    child: StoryCard(
-                      story: story,
-                      isRadius: false,
-                      isRecommended: true,
-                      isIntro: true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.sunshineYellow,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Story thumbnail
+                          if (widget.story.thumbnail.isNotEmpty)
+                            SvgHelper.fromSource(
+                              path: widget.story.thumbnail,
+                              width: 180,
+                              height: 180,
+                              fit: BoxFit.contain,
+                              type: SvgSourceType.network,
+                            ),
+                          Gaps.verticalGapOf(10),
+                          // Lesson title
+                          Text(
+                            widget.story.nameNp,
+                            style: AppStyles.text24PxBold.copyWith(
+                              // color: AppColors.kSecondaryColor,
+                              fontSize: 40,
+                              fontFamily: 'Mukta',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          // Gaps.verticalGapOf(16),
+                          // Lesson description
+                          if (widget.story.nameEn.isNotEmpty)
+                            Text(
+                              widget.story.nameEn,
+                              style: AppStyles.text16PxMedium.copyWith(
+                                color: AppColors.kBlack,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
+
                   Positioned(
                     top: 16,
                     right: 16,
@@ -86,16 +121,16 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
+                  // Start button
                   Positioned(
                     right: 25,
                     top: 0,
                     bottom: 0,
-                    child: GestureDetector(
+                    child: customInkwell(
                       onTap: () => provider.nextContent(context),
                       child: Container(
                         height: AppConstants.kIconSize,
                         width: AppConstants.kIconSize,
-                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppColors.kWhite,
                           shape: BoxShape.circle,
@@ -107,7 +142,16 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                             ),
                           ],
                         ),
-                        child: SvgHelper.fromSource(path: Assets.rightArrow),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          // vertical: 2,
+                        ),
+                        child: SvgHelper.fromSource(
+                          path: Assets.rightArrow,
+                          // height: 30,
+                          // width: 30,
+                          color: AppColors.kSecondaryColor,
+                        ),
                       ),
                     ),
                   ),

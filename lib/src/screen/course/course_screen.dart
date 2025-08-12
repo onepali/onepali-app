@@ -109,7 +109,7 @@ class CourseScreenState extends State<CourseScreen> {
                                                   ? chapter.nameEn
                                                   : chapter.nameNp,
                                           thumbnail: chapter.thumbnail,
-                                          color: Colors.orange[200]!,
+                                          color: AppColors.lessonBgColor,
                                           isLocked:
                                               GuestUtil.isGuestUser() &&
                                               catIdx > 0,
@@ -200,7 +200,7 @@ class CourseScreenState extends State<CourseScreen> {
                                             ? chapter.nameEn
                                             : chapter.nameNp,
                                     thumbnail: chapter.thumbnail,
-                                    color: Colors.orange[200]!,
+                                    color: AppColors.lessonBgColor,
                                     isLocked: category.chapters.length > 1,
                                     isCompleted: false,
                                     isGuestUser: GuestUtil.isGuestUser(),

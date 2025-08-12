@@ -59,7 +59,7 @@ class LessonScreen extends StatelessWidget {
               width: cardWidth,
               child: LessonCard(
                 data: lesson,
-                color: Colors.teal[200]!,
+                color: AppColors.lessonBgColor,
                 isLocked: lesson.progress == 'locked',
                 isCompleted: lesson.progress == 'completed',
                 onTap: () {

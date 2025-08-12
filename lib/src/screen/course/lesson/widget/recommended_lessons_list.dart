@@ -85,7 +85,7 @@ class RecommendedLessonsList extends StatelessWidget {
               // height: AppCardResponsive.getCardHeight(context),
               child: LessonCard(
                 data: lesson,
-                color: Colors.teal[200]!,
+                color: AppColors.lessonBgColor,
                 isLocked: false,
                 isCompleted: progressPercent != null && progressPercent >= 1.0,
                 trailing:
