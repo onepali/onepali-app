@@ -37,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Scaffold(
           body: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: BoxDecoration(color: AppColors.kWhite),
             padding: EdgeInsets.all(containerPadding),
             child: Column(
               children: [

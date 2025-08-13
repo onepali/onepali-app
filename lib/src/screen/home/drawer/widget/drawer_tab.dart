@@ -164,7 +164,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                     color:
                         index == _selectedChildIndex
                             ? AppColors.kPrimaryColor
-                            : AppColors.transparent,
+                            : AppColors.kTransparentColor,
                     width: 2,
                   ),
                 ),

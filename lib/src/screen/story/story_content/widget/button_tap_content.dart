@@ -74,7 +74,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
               ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration: const BoxDecoration(color: AppColors.kWhite),
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +89,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   String label = opt.messageEn;
                   dynamic icon;
                   String iconType = '';
-                  Color textColor = isSelected ? Colors.white : Colors.black;
+                  Color textColor = isSelected ? AppColors.kWhite : AppColors.kBlack;
                   TextStyle? textStyle = AppStyles.text16PxBold.copyWith(
                     color: textColor,
                   );
@@ -99,9 +99,9 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                       icon = Assets.correct;
                       iconType = 'svg';
                       label = '';
-                      textColor = Colors.white;
+                      textColor = AppColors.kWhite;
                       textStyle = AppStyles.text16PxBold.copyWith(
-                        color: Colors.white,
+                        color: AppColors.kWhite,
                       );
                     } else if (isCorrect == false && !correct) {
                       bgColor = AppColors.kButtonRed;

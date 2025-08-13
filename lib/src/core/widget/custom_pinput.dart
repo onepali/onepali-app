@@ -89,7 +89,7 @@ class _CustomPinputState extends State<CustomPinput>
                 width: widget.boxSize,
                 height: widget.boxSize,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.kWhite,
                   borderRadius: BorderRadius.circular(widget.boxSize / 3),
                   border: Border.all(
                     color:
@@ -118,7 +118,7 @@ class _CustomPinputState extends State<CustomPinput>
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: AppColors.kBlack,
                     ),
                   ),
                 ),
@@ -143,8 +143,8 @@ class _CustomPinputState extends State<CustomPinput>
               border: InputBorder.none,
               counterText: '',
             ),
-            style: TextStyle(color: Colors.transparent),
-            cursorColor: Colors.transparent,
+            style: TextStyle(color: AppColors.kTransparentColor),
+            cursorColor: AppColors.kTransparentColor,
             onChanged: (val) {
               if (widget.validator != null) {
                 setState(() {

@@ -187,7 +187,7 @@ class _NormalContentState extends State<NormalContent> {
 
               return Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: AppColors.kWhite,
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 24,

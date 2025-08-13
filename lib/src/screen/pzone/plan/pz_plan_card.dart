@@ -28,7 +28,7 @@ class PlanCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.kWhite,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.grey.shade300, width: 2),
           ),
@@ -37,13 +37,13 @@ class PlanCard extends StatelessWidget {
             children: [
               const Text(
                 'Current plan',
-                style: TextStyle(fontSize: 16, color: Colors.black),
+                style: TextStyle(fontSize: 16, color: AppColors.kBlack),
               ),
               Text(
                 planName,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: Colors.black,
+                  color: AppColors.kBlack,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -56,7 +56,7 @@ class PlanCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.kWhite,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.shade300, width: 2),
             ),
@@ -65,13 +65,13 @@ class PlanCard extends StatelessWidget {
               children: [
                 const Text(
                   'Active from',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: TextStyle(fontSize: 16, color: AppColors.kBlack),
                 ),
                 Text(
                   formatDate(activeDate),
                   style: const TextStyle(
                     fontSize: 16,
-                    color: Colors.black,
+                    color: AppColors.kBlack,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -83,7 +83,7 @@ class PlanCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.kWhite,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.shade300, width: 2),
             ),
@@ -92,13 +92,13 @@ class PlanCard extends StatelessWidget {
               children: [
                 const Text(
                   'Available until',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: TextStyle(fontSize: 16, color: AppColors.kBlack),
                 ),
                 Text(
                   formatDate(expiryDate),
                   style: const TextStyle(
                     fontSize: 16,
-                    color: Colors.black,
+                    color: AppColors.kBlack,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

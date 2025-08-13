@@ -37,7 +37,7 @@ class DragDropContentState extends State<DragDropContent> {
     final charList = widget.content.characters ?? [];
     final char1 = charList.isNotEmpty ? charList[0] : null;
     final char2 = charList.length > 1 ? charList[1] : null;
-    final bgColor = const Color(0xFFB3F1FF);
+    final bgColor = AppColors.kLightGreenBackgroundColor;
 
     if (finished) {
       Future.delayed(const Duration(seconds: 3), () {
@@ -232,12 +232,12 @@ class DragDropContentState extends State<DragDropContent> {
         boxShadow: [
           if (!isDropped)
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
+              color: AppColors.kBlack.withValues(alpha: 0.08),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
         ],
-        border: showTryAgain ? Border.all(color: Colors.red, width: 2) : null,
+        border: showTryAgain ? Border.all(color: AppColors.kRed, width: 2) : null,
       ),
       child: Center(
         child: Text(

@@ -155,7 +155,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     color:
                         index == _selectedChildIndex
                             ? AppColors.kPrimaryColor
-                            : AppColors.transparent,
+                            : AppColors.kTransparentColor,
                     width: 3,
                   ),
                 ),

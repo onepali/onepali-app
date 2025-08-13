@@ -64,7 +64,7 @@ class _SystemScreenState extends State<SystemScreen>
                   : AppStyles.text18PxSemiBold.copyWith(
                     color: AppColors.kWhite,
                   ),
-          dividerColor: Colors.transparent,
+          dividerColor: AppColors.kTransparentColor,
           unselectedLabelStyle:
               isMobilePortrait
                   ? AppStyles.text14PxRegular.copyWith(

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepali/src/core/model/system/banner_model.dart';
+import 'package:onepali/src/src.dart';
 
 void main() {
   group('BannerModel', () {
@@ -10,14 +11,14 @@ void main() {
         title: 'Test Banner',
         description: 'Test Description',
         icon: Icons.star,
-        color: Colors.blue,
+        color: AppColors.kBlue,
         onTap: () {},
       );
 
       expect(banner.title, 'Test Banner');
       expect(banner.description, 'Test Description');
       expect(banner.icon, Icons.star);
-      expect(banner.color, Colors.blue);
+      expect(banner.color, AppColors.kBlue);
       expect(banner.onTap, isNotNull);
     });
 

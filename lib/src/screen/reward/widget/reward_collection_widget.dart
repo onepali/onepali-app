@@ -71,7 +71,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                       final colors = [
                         Colors.orange,
                         Colors.purple,
-                        Colors.red,
+                        AppColors.kRed,
                         Colors.teal,
                         Colors.blue,
                       ];
@@ -95,7 +95,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                         decoration: BoxDecoration(
                           color:
                               isUnlocked
-                                  ? AppColors.transparent
+                                  ? AppColors.kTransparentColor
                                   : colors[index % colors.length],
                           shape: shapes[index % shapes.length],
                           borderRadius:
@@ -106,7 +106,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                           border: Border.all(
                             color:
                                 isUnlocked
-                                    ? AppColors.transparent
+                                    ? AppColors.kTransparentColor
                                     : colors[index % colors.length],
                             width: 2,
                           ),
@@ -122,7 +122,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                                   : Text(
                                     '?',
                                     style: AppStyles.text24PxMedium.copyWith(
-                                      color: Colors.white,
+                                      color: AppColors.kWhite,
                                     ),
                                   ),
                         ),
@@ -136,13 +136,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                     runSpacing: stickerMargin,
                     children: List.generate(1, (index) {
                       final isUnlocked = index + 5 < unlockedStickers.length;
-                      final colors = [
-                        Colors.orange,
-                        Colors.purple,
-                        Colors.red,
-                        Colors.teal,
-                        Colors.blue,
-                      ];
+                      final colors = AppColors.rewardCollectionColors;
                       final shapes = [
                         BoxShape.circle,
                         BoxShape.rectangle,
@@ -163,7 +157,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                         decoration: BoxDecoration(
                           color:
                               isUnlocked
-                                  ? AppColors.transparent
+                                  ? AppColors.kTransparentColor
                                   : colors[index % colors.length],
                           shape: shapes[index % shapes.length],
                           borderRadius:
@@ -174,7 +168,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                           border: Border.all(
                             color:
                                 isUnlocked
-                                    ? AppColors.transparent
+                                    ? AppColors.kTransparentColor
                                     : colors[index % colors.length],
                             width: 2,
                           ),
@@ -189,7 +183,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                                   : Text(
                                     '?',
                                     style: AppStyles.text24PxMedium.copyWith(
-                                      color: Colors.white,
+                                      color: AppColors.kWhite,
                                     ),
                                   ),
                         ),

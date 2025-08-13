@@ -129,7 +129,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       Text(
                         'Parents only',
                         style: AppStyles.text40PxBold.copyWith(
-                          color: Colors.white,
+                          color: AppColors.kWhite,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -137,7 +137,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       Text(
                         'Enter your year of birth',
                         style: AppStyles.text20PxRegular.copyWith(
-                          color: Colors.white,
+                          color: AppColors.kWhite,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -148,7 +148,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                         boxSize: 56,
                         boxSpacing: 16,
                         activeColor: AppColors.kWhite,
-                        inactiveColor: Colors.white.withValues(alpha: 0.3),
+                        inactiveColor: AppColors.kWhite.withValues(alpha: 0.3),
                         errorColor: AppColors.kRed,
                         validator: (val) => _isError ? 'Invalid PIN' : null,
                       ),
@@ -186,13 +186,13 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: AppColors.kWhite.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(8),
                     child: const Icon(
                       Icons.close,
-                      color: Colors.white,
+                      color: AppColors.kWhite,
                       size: 32,
                     ),
                   ),

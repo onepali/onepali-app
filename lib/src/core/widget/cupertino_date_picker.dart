@@ -180,7 +180,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
 
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.kTransparentColor,
       isScrollControlled: true,
       routeSettings: const RouteSettings(name: AppConstants.datePickerModal),
       builder: (context) {
@@ -351,7 +351,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                         padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                         child: Text(
                           _error!,
-                          style: TextStyle(color: Colors.red, fontSize: 13),
+                          style: TextStyle(color: AppColors.kRed, fontSize: 13),
                         ),
                       ),
                   ],
@@ -386,7 +386,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
             widget.decoration ??
             BoxDecoration(
               color: AppColors.kLightGrey.withValues(alpha: 0.2),
-              border: Border.all(color: AppColors.transparent),
+              border: Border.all(color: AppColors.kTransparentColor),
               borderRadius: BorderRadius.circular(8),
             ),
         child: Row(

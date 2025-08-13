@@ -4,7 +4,8 @@ class AppColors {
   static const Color kPrimaryColor = Color(0xFFDC143C);
   static const Color kSecondaryColor = Color(0xFF003893);
   static const Color kBackgroundColor = Color(0xFFF5F5F5);
-  static const Color transparent = Colors.transparent;
+  static const Color kLightGreenBackgroundColor = Color(0xFFB3F1FF);
+  static const Color kTransparentColor = Colors.transparent;
   static const Color kDrawerBgColor = Color(0xFF1E1E1E);
 
   /// Braniuary Color
@@ -15,13 +16,13 @@ class AppColors {
   static const Color kDarkGrey = Color(0xFF505050);
   static const Color kRed = Color(0xFFFF0000);
   static const Color kGreen = Color(0xFF008000);
-  static const Color kBlue = Color(0xFF0000FF);
+  static const Color kBlue = Colors.blue;
   static const Color kYellow = Color(0xFFFFFF00);
   static const Color sunshineYellow = Color(0xFFFFE682);
   static const Color kOrange = Color(0xFFFFA500);
   static const Color kPitchBlack = Color(0xFF434343);
   static const Color kPurple = Color(0xFF5210BC);
-  static const Color kTeal = Color(0xFF008080);
+  static const Color kTeal = Colors.teal;
   static const Color kPink = Color(0xFFFFC0CB);
   static const Color kSkyBlue = Color(0xFFB8F2FF);
   static const Color kPureSkyBlue = Color(0xFF3296EB);
@@ -71,6 +72,14 @@ class AppColors {
     Color(0xFFFFC1CC), // learningLightPink
     Color(0xFFFFCBA4), // learningSoftOrange
     Color(0xFFA0E7E5), // learningLightTeal
+  ];
+
+  static const List<Color> rewardCollectionColors = [
+    kOrange,
+    kPurple,
+    kRed,
+    kTeal,
+    kBlue,
   ];
 
   // Log Colors

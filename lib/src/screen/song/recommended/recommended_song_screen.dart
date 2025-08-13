@@ -92,7 +92,7 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                         value: rec.progress.clamp(0.0, 1.0),
                         minHeight: 3,
                         borderRadius: BorderRadius.circular(30),
-                        backgroundColor: AppColors.transparent,
+                        backgroundColor: AppColors.kTransparentColor,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           AppColors.kRed,
                         ),
@@ -109,13 +109,13 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.orange.withValues(alpha: 0.8),
+                          color: AppColors.kOrange.withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           'Continue',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.kWhite,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

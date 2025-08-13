@@ -203,7 +203,7 @@ class SlideContentState extends State<SlideContent> {
                   Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.10),
+                      color: AppColors.kBlack.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
@@ -278,7 +278,7 @@ class SlideContentState extends State<SlideContent> {
 
               return Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: AppColors.kWhite,
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 24,
