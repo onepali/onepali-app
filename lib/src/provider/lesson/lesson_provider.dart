@@ -35,7 +35,7 @@ class LessonProvider extends ChangeNotifier {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(parentId)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc(childId)
               .get();
 
@@ -63,7 +63,7 @@ class LessonProvider extends ChangeNotifier {
       await _firestore
           .collection(AppConstants.usersCollection)
           .doc(parentId)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childId)
           .update({
             'completedLessons': {
@@ -267,7 +267,7 @@ class LessonProvider extends ChangeNotifier {
       await _firestore
           .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childId)
           .update({'totalLessonsCompleted': newTotal});
       logger.d('Updated totalLessonsCompleted for childId: $childId');

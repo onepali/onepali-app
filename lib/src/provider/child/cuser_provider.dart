@@ -117,7 +117,7 @@ class ChildUserProvider extends ChangeNotifier {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .get();
       _childUser =
           querySnapshot.docs
@@ -184,7 +184,7 @@ class ChildUserProvider extends ChangeNotifier {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc(childUid)
               .get();
 
@@ -219,7 +219,7 @@ class ChildUserProvider extends ChangeNotifier {
       await _firestore
           .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid)
           .update(updateData);
       // Update local list
@@ -316,7 +316,7 @@ class ChildUserProvider extends ChangeNotifier {
       DocumentReference childRef = _firestore
           .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid);
 
       batch.delete(childRef);
@@ -380,7 +380,7 @@ class ChildUserProvider extends ChangeNotifier {
       final childDoc = _firestore
           .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid);
 
       // Get current child data

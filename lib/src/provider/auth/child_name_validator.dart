@@ -14,7 +14,7 @@ class ChildNameValidator {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .where('full_name', isEqualTo: childName.trim())
               .get();
 

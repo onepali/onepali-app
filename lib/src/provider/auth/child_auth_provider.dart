@@ -35,7 +35,7 @@ class ChildAuthProvider extends ChangeNotifier {
           _firestore
               .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc();
       logger.d('Avatar file path: $avatarFilePath');
       String avatarUrl = await MediaUtility.uploadAvatarImage(

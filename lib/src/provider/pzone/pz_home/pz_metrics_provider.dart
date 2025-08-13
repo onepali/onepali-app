@@ -30,7 +30,7 @@ class PzMetricsProvider extends ChangeNotifier {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc(childUid)
               .get();
 
@@ -67,7 +67,7 @@ class PzMetricsProvider extends ChangeNotifier {
       await _firestore
           .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid)
           .update({
             'metrics': {
@@ -87,7 +87,7 @@ class PzMetricsProvider extends ChangeNotifier {
         await _firestore
             .collection(AppConstants.usersCollection)
             .doc(parentUid)
-            .collection('children')
+            .collection(AppConstants.childrenCollection)
             .doc(childUid)
             .set({
               'metrics': {

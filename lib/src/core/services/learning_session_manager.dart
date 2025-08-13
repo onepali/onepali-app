@@ -39,7 +39,7 @@ class LearningSessionManager {
       final docRef = firestore
           .collection(AppConstants.usersCollection)
           .doc(_currentParentUid!)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(_currentChildUid!);
 
       // Get current metrics

@@ -195,7 +195,7 @@ class ScreenTimeService extends ChangeNotifier {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(user.uid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc(_currentChildId!)
               .get();
 
@@ -248,7 +248,7 @@ class ScreenTimeService extends ChangeNotifier {
       await _firestore
           .collection(AppConstants.usersCollection)
           .doc(user.uid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(_currentChildId!)
           .update({'screenTimeTracking': _currentScreenTime!.toJson()});
 
@@ -456,7 +456,7 @@ class ScreenTimeService extends ChangeNotifier {
           await _firestore
               .collection(AppConstants.usersCollection)
               .doc(user.uid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc(childId)
               .get();
 
