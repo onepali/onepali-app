@@ -145,24 +145,25 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Word audio button
-            if (widget.content.wordAudio.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: CustomAvatarGlow(
-                  glowColor: AppColors.kSecondaryColor,
-                  glowShape: BoxShape.circle,
-                  visible: widget.isPlaying,
-                  glowRadiusFactor: 0.2,
-                  child: IconButton(
-                    icon: SvgHelper.fromSource(
-                      path: Assets.sound,
-                      height: 48,
-                      width: 48,
-                    ),
-                    onPressed: _playWordAudio,
-                  ),
-                ),
-              ),
+            Gaps.verticalGapOf(80),
+            // if (widget.content.wordAudio.isNotEmpty)
+            //   Container(
+            //     margin: const EdgeInsets.only(bottom: 20),
+            //     child: CustomAvatarGlow(
+            //       glowColor: AppColors.kSecondaryColor,
+            //       glowShape: BoxShape.circle,
+            //       visible: widget.isPlaying,
+            //       glowRadiusFactor: 0.2,
+            //       child: IconButton(
+            //         icon: SvgHelper.fromSource(
+            //           path: Assets.sound,
+            //           height: AppConstants.kIconSize,
+            //           width: AppConstants.kIconSize,
+            //         ),
+            //         onPressed: _playWordAudio,
+            //       ),
+            //     ),
+            //   ),
 
             // Options grid
             _buildOptionsGrid(isMobile, isTablet, isLandscape),

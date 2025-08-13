@@ -103,7 +103,11 @@ class SlideContentState extends State<SlideContent> {
                     );
                     storyProvider.playAudio(widget.content.audio);
                   },
-                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                  child: SvgHelper.fromSource(
+                    path: Assets.sound,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
+                  ),
                 );
                 return storyProvider.isPlaying
                     ? CustomAvatarGlow(child: soundIcon)

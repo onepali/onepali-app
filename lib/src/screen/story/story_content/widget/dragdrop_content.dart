@@ -230,7 +230,7 @@ class DragDropContentState extends State<DragDropContent> {
     BuildContext context, {
     bool showTryAgain = false,
   }) {
-    final colors = [const Color(0xFFFFAEBB), const Color(0xFF2DD4BF)];
+    final colors = [AppColors.kButtonGreen, AppColors.kButtonRed];
     return Container(
       width: 160,
       height: 50,

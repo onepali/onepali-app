@@ -1,3 +1,5 @@
+// import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
@@ -313,6 +315,22 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     }
   }
 
+  void _playWordAudio() async {
+    try {
+      if (_currentContentIndex > 0 &&
+          _currentContentIndex <= widget.lesson.lessonContent.length) {
+        final currentContent =
+            widget.lesson.lessonContent[_currentContentIndex - 1];
+        if (currentContent.wordAudio.isNotEmpty) {
+          final audioProvider = context.read<LessonAudioProvider>();
+          await audioProvider.playWordAudio(currentContent.wordAudio);
+        }
+      }
+    } catch (e) {
+      logger.e('Error playing word audio: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Safety check: ensure lesson has content
@@ -346,7 +364,24 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         body: SafeArea(
           child: Stack(
             children: [
-              // Close button
+              if (widget.hasSound && contentList.length == idx)
+                Positioned(
+                  top: 16,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: IconButton(
+                      icon: SvgHelper.fromSource(
+                        path: Assets.sound,
+                        height: AppConstants.kIconSize,
+                        width: AppConstants.kIconSize,
+                      ),
+                      onPressed: () {
+                        _playWordAudio();
+                      },
+                    ),
+                  ),
+                ),
               Positioned(
                 top: 16,
                 right: 16,
