@@ -98,7 +98,7 @@ class GoogleAuthProvider with ChangeNotifier {
       };
 
       final userDocRef = FirebaseFirestore.instance
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(firebaseUser.uid);
 
       final userModel = UserModel(

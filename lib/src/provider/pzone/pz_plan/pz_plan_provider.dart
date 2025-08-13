@@ -35,7 +35,11 @@ class PzPlanProvider extends ChangeNotifier {
   Future<void> fetchUserPlan() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-    final doc = await _firestore.collection('users').doc(user.uid).get();
+    final doc =
+        await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(user.uid)
+            .get();
     final data = doc.data() ?? {};
     final planId = data['plan_id'] ?? 'free';
     _currentPlan = _plans.firstWhere(
@@ -80,12 +84,15 @@ class PzPlanProvider extends ChangeNotifier {
       (p) => p.id == planId,
       orElse: () => _plans.first,
     );
-    await _firestore.collection('users').doc(user.uid).set({
-      'plan_id': planId,
-      'plan_name': plan.name,
-      'plan_active_date': now.toIso8601String(),
-      'plan_expiry_date': expiry.toIso8601String(),
-    }, SetOptions(merge: true));
+    await _firestore
+        .collection(AppConstants.usersCollection)
+        .doc(user.uid)
+        .set({
+          'plan_id': planId,
+          'plan_name': plan.name,
+          'plan_active_date': now.toIso8601String(),
+          'plan_expiry_date': expiry.toIso8601String(),
+        }, SetOptions(merge: true));
     await fetchUserPlan();
   }
 

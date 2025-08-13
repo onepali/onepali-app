@@ -33,7 +33,7 @@ class LessonProvider extends ChangeNotifier {
     try {
       final doc =
           await _firestore
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(parentId)
               .collection('children')
               .doc(childId)
@@ -61,7 +61,7 @@ class LessonProvider extends ChangeNotifier {
       // Update Firestore: nest totalLessonsCompleted and completedLessons under completedLessons object
       final newTotal = completedLessons.length;
       await _firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(parentId)
           .collection('children')
           .doc(childId)
@@ -265,7 +265,7 @@ class LessonProvider extends ChangeNotifier {
     );
     try {
       await _firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(parentUid)
           .collection('children')
           .doc(childId)

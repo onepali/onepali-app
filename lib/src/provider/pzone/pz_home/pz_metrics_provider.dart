@@ -28,7 +28,7 @@ class PzMetricsProvider extends ChangeNotifier {
     try {
       final doc =
           await _firestore
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(parentUid)
               .collection('children')
               .doc(childUid)
@@ -65,7 +65,7 @@ class PzMetricsProvider extends ChangeNotifier {
     notifyListeners();
     try {
       await _firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(parentUid)
           .collection('children')
           .doc(childUid)
@@ -85,7 +85,7 @@ class PzMetricsProvider extends ChangeNotifier {
       // If update fails (document or metrics field doesn't exist), create it with set
       try {
         await _firestore
-            .collection('users')
+            .collection(AppConstants.usersCollection)
             .doc(parentUid)
             .collection('children')
             .doc(childUid)

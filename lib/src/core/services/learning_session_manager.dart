@@ -37,7 +37,7 @@ class LearningSessionManager {
       // Update metrics directly with Firestore
       final firestore = FirebaseFirestore.instance;
       final docRef = firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(_currentParentUid!)
           .collection('children')
           .doc(_currentChildUid!);

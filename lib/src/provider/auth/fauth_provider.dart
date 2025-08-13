@@ -64,7 +64,7 @@ class FAuthProvider with ChangeNotifier {
         final user = firebaseUser;
         if (user != null) {
           final userDocRef = FirebaseFirestore.instance
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(user.uid);
 
           final userModel = UserModel(

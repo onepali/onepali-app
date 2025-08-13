@@ -33,7 +33,7 @@ class ChildAuthProvider extends ChangeNotifier {
       // }
       final childDoc =
           _firestore
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(parentUid)
               .collection('children')
               .doc();
