@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
 
 class PlanCard extends StatelessWidget {
   final String planName;
@@ -50,7 +51,7 @@ class PlanCard extends StatelessWidget {
           ),
         ),
         if (!isFree) ...[
-          const SizedBox(height: 16),
+          Gaps.verticalGapOf(16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -77,7 +78,7 @@ class PlanCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          Gaps.verticalGapOf(16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),

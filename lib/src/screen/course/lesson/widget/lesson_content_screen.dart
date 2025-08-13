@@ -536,14 +536,14 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             height: MediaQuery.of(context).size.height * 0.4,
                             imageType: CustomImageType.local,
                           ),
-                          const SizedBox(height: 16),
+                          Gaps.verticalGapOf(16),
                           Text(
                             'Excellent Work!',
                             style: AppStyles.text24PxBold.copyWith(
                               color: AppColors.kButtonGreen,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          Gaps.verticalGapOf(8),
                           Text(
                             'Lesson Completed Successfully',
                             style: AppStyles.text16PxMedium.copyWith(

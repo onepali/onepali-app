@@ -37,7 +37,7 @@ class PlanScreen extends StatelessWidget {
                       expiryDate: planProvider.expiryDate,
                       isFree: (plan?.id ?? 'free') == 'free',
                     ),
-                    const SizedBox(height: 24),
+                    Gaps.verticalGapOf(24),
                     Text(
                       (plan?.id ?? 'free') == 'free'
                           ? 'Upgrade to unlock more features.'

@@ -252,13 +252,13 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.error_outline, color: AppColors.kRed, size: 48),
-            const SizedBox(height: 16),
+            Gaps.verticalGapOf(16),
             Text(
               'Failed to load video',
               style: AppStyles.text16PxMedium.copyWith(color: AppColors.kRed),
             ),
             if (_errorMessage != null && _errorMessage!.isNotEmpty) ...[
-              const SizedBox(height: 8),
+              Gaps.verticalGapOf(8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
@@ -272,7 +272,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
                 ),
               ),
             ],
-            const SizedBox(height: 16),
+            Gaps.verticalGapOf(16),
             TextButton(
               onPressed: () {
                 setState(() {

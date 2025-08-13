@@ -164,12 +164,12 @@ class _LessonContentCardState extends State<LessonContentCard>
             color: Colors.grey[100],
             borderRadius: BorderRadius.circular(16),
           ),
-          child: const Center(
+          child:  Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircularProgressIndicator(strokeWidth: 2),
-                SizedBox(height: 8),
+                Gaps.verticalGapOf(8),
                 Text(
                   'Loading video...',
                   style: TextStyle(fontSize: 12, color: Colors.grey),

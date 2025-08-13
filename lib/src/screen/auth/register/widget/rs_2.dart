@@ -26,7 +26,7 @@ class _RS2ScreenState extends State<RS2Screen> {
               'Why is your child learning Nepali?',
               style: AppStyles.text20PxSemiBold,
             ),
-            SizedBox(height: 24),
+            Gaps.verticalGapOf(24),
             ...List.generate(
               AppConstants.whyLearningNepali.length,
               (index) => Padding(

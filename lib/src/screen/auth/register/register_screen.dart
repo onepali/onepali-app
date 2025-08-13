@@ -48,7 +48,7 @@ class RegisterScreen extends StatelessWidget {
                     Icon(Icons.circle, color: AppColors.kButtonGreen, size: 16),
                   ],
                 ),
-                SizedBox(width: 16),
+                Gaps.horizontalGapOf(16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

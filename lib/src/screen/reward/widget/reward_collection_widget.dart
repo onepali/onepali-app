@@ -129,7 +129,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                       );
                     }),
                   ),
-                  SizedBox(height: stickerMargin),
+                  Gaps.verticalGapOf(stickerMargin),
                   Wrap(
                     alignment: WrapAlignment.center,
                     spacing: stickerMargin,

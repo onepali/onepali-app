@@ -63,7 +63,7 @@ class _RS4ScreenState extends State<RS4Screen> {
                   textInputAction: TextInputAction.done,
                   validation: (value) => Validator.password(value ?? ""),
                 ),
-                SizedBox(height: 35),
+                Gaps.verticalGapOf(35),
                 _buildNextButton(context, isLoading),
 
                 Gaps.verticalGapOf(50),
