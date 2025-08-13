@@ -18,7 +18,8 @@ class StoryRepo {
     }
 
     try {
-      final querySnapshot = await _firestore.collection('stories').get();
+      final querySnapshot =
+          await _firestore.collection(AppConstants.storiesCollection).get();
       final List<StoryModel> stories = [];
       for (final doc in querySnapshot.docs) {
         final data = doc.data();

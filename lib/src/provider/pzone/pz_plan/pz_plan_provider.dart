@@ -21,7 +21,8 @@ class PzPlanProvider extends ChangeNotifier {
   Future<void> fetchPlans() async {
     setStatus(DataFetchStatus.loading);
     try {
-      final querySnapshot = await _firestore.collection('plans').get();
+      final querySnapshot =
+          await _firestore.collection(AppConstants.planCollection).get();
       final List<Map<String, dynamic>> planList =
           querySnapshot.docs.map((doc) => doc.data()).toList();
       _plans = pzPlanModelFromJson(jsonEncode(planList));

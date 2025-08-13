@@ -31,7 +31,6 @@ class AppConstants {
   /// Firebase Collection Names
   static const String usersCollection = 'users';
   static const String childrenCollection = 'children';
-  static const String lessonsCollection = 'lessons';
   static const String coursesCollection = 'courses';
   static const String storiesCollection = 'stories';
   static const String songsCollection = 'songs';
@@ -40,7 +39,11 @@ class AppConstants {
   static const String recomLessonCollection = 'recom_lesson';
   static const String childRewardCollection = 'creward';
   static const String rewardCollection = 'reward_collection';
-
+  static const String blogCollection = 'blogs';
+  static const String notificationCollection = 'notifications';
+  static const String notificationSettingCollection = 'notification_setting';
+  static const String planCollection = 'plans';
+  static const String onepaliCollection = 'onepali';
   // Database
   static const String RECOM_DB_PATH = 'onp_recom.db';
 

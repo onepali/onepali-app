@@ -27,7 +27,7 @@ class RewardProvider extends ChangeNotifier {
         });
         logger.d('Reward appended for childId: $childId');
       } else {
-        await _firestore.collection('creward').add({
+        await _firestore.collection(AppConstants.childRewardCollection).add({
           'childId': childId,
           'rewards': [rewardData],
         });
@@ -58,7 +58,7 @@ class RewardProvider extends ChangeNotifier {
     setStatus(DataFetchStatus.loading);
     try {
       final querySnapshot =
-          await _firestore.collection('reward_collection').get();
+          await _firestore.collection(AppConstants.rewardCollection).get();
       _rewards =
           querySnapshot.docs
               .map((doc) => RewardModel.fromJson(doc.data()))
@@ -131,7 +131,7 @@ class RewardProvider extends ChangeNotifier {
               .get();
 
       if (querySnapshot.docs.isEmpty) {
-        await _firestore.collection('creward').add({
+        await _firestore.collection(AppConstants.childRewardCollection).add({
           'childId': childId,
           'rewards': [],
         });
