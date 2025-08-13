@@ -126,7 +126,9 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                         padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                         child: Text(
                           _error!,
-                          style: TextStyle(color: AppColors.kRed, fontSize: 13),
+                          style: AppStyles.text12PxRegular.copyWith(
+                            color: AppColors.kRed,
+                          ),
                         ),
                       ),
                   ],
@@ -164,7 +166,7 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
           children: [
             Text(
               _displayText,
-              style: widget.textStyle ?? TextStyle(fontSize: 16),
+              style: widget.textStyle ?? AppStyles.text16PxRegular,
             ),
             Spacer(),
             Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),

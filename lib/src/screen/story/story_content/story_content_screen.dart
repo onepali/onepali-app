@@ -90,7 +90,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                             style: AppStyles.text24PxBold.copyWith(
                               // color: AppColors.kSecondaryColor,
                               fontSize: 40,
-                              fontFamily: 'Mukta',
+                              fontFamily: AppConstants.kMuktaFont,
                             ),
                             textAlign: TextAlign.center,
                           ),

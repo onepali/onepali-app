@@ -114,7 +114,7 @@ class _RecommendedSongScreenState extends State<RecommendedSongScreen> {
                         ),
                         child: Text(
                           'Continue',
-                          style: TextStyle(
+                          style: AppStyles.text14PxMedium.copyWith(
                             color: AppColors.kWhite,
                             fontWeight: FontWeight.bold,
                           ),

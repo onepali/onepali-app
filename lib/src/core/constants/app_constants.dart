@@ -3,12 +3,15 @@ import 'package:onepali/src/src.dart';
 class AppConstants {
   static const String appName = 'O Nepali';
   static const String appVersion = 'v1.0.0';
-  static const String defaultFontFamily = 'Poppins';
 
   static const String applicationId = 'com.onepali.app';
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
   static const String supportMail = 'hello@onepali.fun';
+
+  /// [Fonts]
+  static const String kMuktaFont = 'Mukta';
+  static const String kPoppinsFont = 'Poppins';
 
   // Login Types
   static const String email = 'email';

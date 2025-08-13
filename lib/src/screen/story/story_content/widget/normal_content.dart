@@ -176,7 +176,7 @@ class _NormalContentState extends State<NormalContent> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.text20PxMedium.copyWith(
-                            fontFamily: 'Mukta',
+                            fontFamily: AppConstants.kMuktaFont,
                           ),
                         ),
                       ],

@@ -164,7 +164,7 @@ class _LessonContentCardState extends State<LessonContentCard>
             color: Colors.grey[100],
             borderRadius: BorderRadius.circular(16),
           ),
-          child:  Center(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -172,7 +172,9 @@ class _LessonContentCardState extends State<LessonContentCard>
                 Gaps.verticalGapOf(8),
                 Text(
                   'Loading video...',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: AppStyles.text12PxRegular.copyWith(
+                    color: AppColors.kGrey,
+                  ),
                 ),
               ],
             ),
@@ -289,7 +291,7 @@ class _LessonContentCardState extends State<LessonContentCard>
             widget.content.nameNp.isNotEmpty ? widget.content.nameNp : 'चरा',
             style: AppStyles.text32PxBold.copyWith(
               color: AppColors.kSecondaryColor,
-              fontFamily: 'Mukta',
+              fontFamily: AppConstants.kMuktaFont,
             ),
           ),
           Text(
@@ -352,7 +354,7 @@ class _LessonContentCardState extends State<LessonContentCard>
                 style: AppStyles.text32PxBold.copyWith(
                   color: AppColors.kDrawerBgColor,
                   fontSize: 64,
-                  fontFamily: 'Mukta',
+                  fontFamily: AppConstants.kMuktaFont,
                 ),
               ),
               Text(

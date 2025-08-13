@@ -1,7 +1,6 @@
 // Tests for banner_model.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onepali/src/core/model/system/banner_model.dart';
 import 'package:onepali/src/src.dart';
 
 void main() {

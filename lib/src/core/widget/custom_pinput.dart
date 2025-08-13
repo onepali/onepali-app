@@ -115,9 +115,7 @@ class _CustomPinputState extends State<CustomPinput>
                   child: Text(
                     _inputList[index],
                     key: ValueKey(_inputList[index] + index.toString()),
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
+                    style: AppStyles.text24PxMedium.copyWith(
                       color: AppColors.kBlack,
                     ),
                   ),
@@ -143,7 +141,9 @@ class _CustomPinputState extends State<CustomPinput>
               border: InputBorder.none,
               counterText: '',
             ),
-            style: TextStyle(color: AppColors.kTransparentColor),
+            style: AppStyles.text14PxRegular.copyWith(
+              color: AppColors.kTransparentColor,
+            ),
             cursorColor: AppColors.kTransparentColor,
             onChanged: (val) {
               if (widget.validator != null) {
@@ -163,7 +163,9 @@ class _CustomPinputState extends State<CustomPinput>
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               _errorText!,
-              style: TextStyle(color: widget.errorColor, fontSize: 13),
+              style: AppStyles.text12PxRegular.copyWith(
+                color: widget.errorColor,
+              ),
             ),
           ),
       ],

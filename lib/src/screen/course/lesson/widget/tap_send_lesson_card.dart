@@ -257,7 +257,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                                 : option.textColor.isNotEmpty
                                 ? Utility.parseHexColors(option.textColor).first
                                 : AppColors.kBlack,
-                        fontFamily: 'Mukta',
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -340,7 +340,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                             isSelected
                                 ? AppColors.kWhite
                                 : AppColors.kSecondaryColor,
-                        fontFamily: 'Mukta',
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -407,7 +407,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                             isSelected
                                 ? AppColors.kWhite
                                 : AppColors.kSecondaryColor,
-                        fontFamily: 'Mukta',
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
                       textAlign: TextAlign.center,
                     ),

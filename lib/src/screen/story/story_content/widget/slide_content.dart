@@ -267,7 +267,7 @@ class SlideContentState extends State<SlideContent> {
                           lines[i],
                           textAlign: TextAlign.center,
                           style: AppStyles.text20PxMedium.copyWith(
-                            fontFamily: 'Mukta',
+                            fontFamily: AppConstants.kMuktaFont,
                           ),
                         ),
                       ],

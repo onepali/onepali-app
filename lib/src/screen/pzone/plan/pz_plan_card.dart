@@ -35,16 +35,16 @@ class PlanCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Current plan',
-                style: TextStyle(fontSize: 16, color: AppColors.kBlack),
+                style: AppStyles.text16PxRegular.copyWith(
+                  color: AppColors.kBlack,
+                ),
               ),
               Text(
                 planName,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: AppStyles.text16PxMedium.copyWith(
                   color: AppColors.kBlack,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -63,16 +63,16 @@ class PlanCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Active from',
-                  style: TextStyle(fontSize: 16, color: AppColors.kBlack),
+                  style: AppStyles.text16PxRegular.copyWith(
+                    color: AppColors.kBlack,
+                  ),
                 ),
                 Text(
                   formatDate(activeDate),
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: AppStyles.text16PxMedium.copyWith(
                     color: AppColors.kBlack,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -90,16 +90,11 @@ class PlanCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Available until',
-                  style: TextStyle(fontSize: 16, color: AppColors.kBlack),
-                ),
+                Text('Available until', style: AppStyles.text16PxRegular),
                 Text(
                   formatDate(expiryDate),
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: AppStyles.text16PxMedium.copyWith(
                     color: AppColors.kBlack,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],

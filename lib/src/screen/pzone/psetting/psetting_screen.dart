@@ -80,10 +80,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           Gaps.verticalGapOf(18),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: const Text(
-              'Your children',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
+            child: Text('Your children', style: AppStyles.text16PxMedium),
           ),
           Gaps.verticalGapOf(8),
           ...children.map(

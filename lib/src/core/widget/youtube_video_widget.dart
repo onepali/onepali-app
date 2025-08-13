@@ -90,7 +90,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
       title: widget.title,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Text(widget.info ?? '', style: const TextStyle(fontSize: 16)),
+        child: Text(widget.info ?? '', style: AppStyles.text16PxRegular),
       ),
     );
   }

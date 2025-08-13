@@ -124,7 +124,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                             style: AppStyles.text35PxBold.copyWith(
                               fontSize: titleFontSize,
                               color: AppColors.kWhite,
-                              fontFamily: 'Mukta',
+                              fontFamily: AppConstants.kMuktaFont,
                             ),
                             textAlign: TextAlign.center,
                           ),

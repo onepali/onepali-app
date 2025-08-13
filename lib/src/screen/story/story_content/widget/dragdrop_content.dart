@@ -237,14 +237,15 @@ class DragDropContentState extends State<DragDropContent> {
               offset: const Offset(0, 2),
             ),
         ],
-        border: showTryAgain ? Border.all(color: AppColors.kRed, width: 2) : null,
+        border:
+            showTryAgain ? Border.all(color: AppColors.kRed, width: 2) : null,
       ),
       child: Center(
         child: Text(
           showTryAgain ? 'Try Again!' : label,
           style: AppStyles.text18PxSemiBold.copyWith(
             color: AppColors.kBlack,
-            fontFamily: 'Mukta',
+            fontFamily: AppConstants.kMuktaFont,
           ),
         ),
       ),
