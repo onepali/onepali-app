@@ -38,7 +38,12 @@ class GoogleAuthProvider with ChangeNotifier {
       // Initialize GoogleSignIn
       await _initializeGoogleSignIn();
 
-      final GoogleSignInAccount googleUser = await _signInWithGoogle(context);
+      final GoogleSignInAccount? googleUser = await _signInWithGoogle(context);
+
+      if (googleUser == null) {
+        setStatus(DataFetchStatus.initial);
+        return;
+      }
 
       // Get authorization for required scopes
       final scopes = <String>["email", "profile", "openid"];
@@ -141,8 +146,10 @@ class GoogleAuthProvider with ChangeNotifier {
     } on PlatformException catch (e) {
       _handlePlatformException(context, e);
     } catch (e, s) {
-      logger.e('error ---> $e ----> stack --> $s');
-      handleError(e.toString(), context);
+      if (e is! GoogleSignInException) {
+        logger.e('error ---> $e ----> stack --> $s');
+        handleError(e.toString(), context);
+      }
     } finally {
       setStatus(DataFetchStatus.initial);
     }
@@ -183,13 +190,13 @@ class GoogleAuthProvider with ChangeNotifier {
     Utility.navigate(context, AppRoutes.dashboardScreen);
   }
 
-  Future<GoogleSignInAccount> _signInWithGoogle(BuildContext context) async {
+  Future<GoogleSignInAccount?> _signInWithGoogle(BuildContext context) async {
     try {
       return await googleSignIn.authenticate();
     } on GoogleSignInException catch (e) {
       logger.e('error ---> $e');
       _handleGoogleSignInException(context, e);
-      return Future.error(e);
+      return null;
     }
   }
 
@@ -206,6 +213,18 @@ class GoogleAuthProvider with ChangeNotifier {
     switch (e.code) {
       case GoogleSignInExceptionCode.canceled:
         message = "Sign in cancelled.";
+        break;
+      case GoogleSignInExceptionCode.clientConfigurationError:
+        message = "Client configuration error.";
+        break;
+      case GoogleSignInExceptionCode.userMismatch:
+        message = "User mismatch error.";
+        break;
+      case GoogleSignInExceptionCode.interrupted:
+        message = "Sign in interrupted.";
+        break;
+      case GoogleSignInExceptionCode.unknownError:
+        message = "Unknown error occurred.";
         break;
       default:
         message = "Sign in failed: ${e.description}";
