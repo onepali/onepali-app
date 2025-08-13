@@ -40,189 +40,205 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
 
     return Consumer<RewardProvider>(
       builder: (context, rewardProvider, child) {
-        if (rewardProvider.status == DataFetchStatus.loading) {
-          return CustomLoader();
-        } else {
-          final unlockedStickers = rewardProvider.childRewards.take(5).toList();
+        return StatusHandler(
+          status: rewardProvider.status,
+          hasData: true,
+          errorTitle: 'Error Loading Stickers',
+          errorMessage: 'Please try again later.',
+          onRetry: () {
+            if (widget.childId != null) {
+              context.read<RewardProvider>().fetchChildRewards(
+                childId: widget.childId,
+              );
+            } else {
+              context.read<RewardProvider>().fetchChildRewards();
+            }
+          },
+          successBuilder: () {
+            final unlockedStickers =
+                rewardProvider.childRewards.take(5).toList();
 
-          Widget stickerGrid() {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: stickerMargin,
-                  runSpacing: stickerMargin,
-                  children: List.generate(5, (index) {
-                    final isUnlocked = index < unlockedStickers.length;
-                    final colors = [
-                      Colors.orange,
-                      Colors.purple,
-                      Colors.red,
-                      Colors.teal,
-                      Colors.blue,
-                    ];
-                    final shapes = [
-                      BoxShape.circle,
-                      BoxShape.rectangle,
-                      BoxShape.circle,
-                      BoxShape.rectangle,
-                      BoxShape.circle,
-                    ];
-                    final borderRadius = [
-                      BorderRadius.circular(0), // Cone-like
-                      BorderRadius.circular(25), // Oval
-                      BorderRadius.circular(0),
-                      BorderRadius.circular(10),
-                      BorderRadius.circular(0),
-                    ];
-                    return Container(
-                      width: stickerSize,
-                      height: stickerSize,
-                      decoration: BoxDecoration(
-                        color:
-                            isUnlocked
-                                ? AppColors.transparent
-                                : colors[index % colors.length],
-                        shape: shapes[index % shapes.length],
-                        borderRadius:
-                            shapes[index % shapes.length] == BoxShape.rectangle
-                                ? borderRadius[index % borderRadius.length]
-                                : null,
-                        border: Border.all(
+            Widget stickerGrid() {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: stickerMargin,
+                    runSpacing: stickerMargin,
+                    children: List.generate(5, (index) {
+                      final isUnlocked = index < unlockedStickers.length;
+                      final colors = [
+                        Colors.orange,
+                        Colors.purple,
+                        Colors.red,
+                        Colors.teal,
+                        Colors.blue,
+                      ];
+                      final shapes = [
+                        BoxShape.circle,
+                        BoxShape.rectangle,
+                        BoxShape.circle,
+                        BoxShape.rectangle,
+                        BoxShape.circle,
+                      ];
+                      final borderRadius = [
+                        BorderRadius.circular(0), // Cone-like
+                        BorderRadius.circular(25), // Oval
+                        BorderRadius.circular(0),
+                        BorderRadius.circular(10),
+                        BorderRadius.circular(0),
+                      ];
+                      return Container(
+                        width: stickerSize,
+                        height: stickerSize,
+                        decoration: BoxDecoration(
                           color:
                               isUnlocked
                                   ? AppColors.transparent
                                   : colors[index % colors.length],
-                          width: 2,
+                          shape: shapes[index % shapes.length],
+                          borderRadius:
+                              shapes[index % shapes.length] ==
+                                      BoxShape.rectangle
+                                  ? borderRadius[index % borderRadius.length]
+                                  : null,
+                          border: Border.all(
+                            color:
+                                isUnlocked
+                                    ? AppColors.transparent
+                                    : colors[index % colors.length],
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child:
-                            isUnlocked
-                                ? SvgHelper.fromSource(
-                                  path: unlockedStickers[index].image,
-                                  type: SvgSourceType.network,
-                                  fit: BoxFit.contain,
-                                )
-                                : Text(
-                                  '?',
-                                  style: AppStyles.text24PxMedium.copyWith(
-                                    color: Colors.white,
+                        child: Center(
+                          child:
+                              isUnlocked
+                                  ? SvgHelper.fromSource(
+                                    path: unlockedStickers[index].image,
+                                    type: SvgSourceType.network,
+                                    fit: BoxFit.contain,
+                                  )
+                                  : Text(
+                                    '?',
+                                    style: AppStyles.text24PxMedium.copyWith(
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                      ),
-                    );
-                  }),
-                ),
-                SizedBox(height: stickerMargin),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: stickerMargin,
-                  runSpacing: stickerMargin,
-                  children: List.generate(1, (index) {
-                    final isUnlocked = index + 5 < unlockedStickers.length;
-                    final colors = [
-                      Colors.orange,
-                      Colors.purple,
-                      Colors.red,
-                      Colors.teal,
-                      Colors.blue,
-                    ];
-                    final shapes = [
-                      BoxShape.circle,
-                      BoxShape.rectangle,
-                      BoxShape.circle,
-                      BoxShape.rectangle,
-                      BoxShape.circle,
-                    ];
-                    final borderRadius = [
-                      BorderRadius.circular(0), // Cone-like
-                      BorderRadius.circular(50), // Oval
-                      BorderRadius.circular(0),
-                      BorderRadius.circular(50),
-                      BorderRadius.circular(0),
-                    ];
-                    return Container(
-                      width: stickerSize,
-                      height: stickerSize,
-                      decoration: BoxDecoration(
-                        color:
-                            isUnlocked
-                                ? AppColors.transparent
-                                : colors[index % colors.length],
-                        shape: shapes[index % shapes.length],
-                        borderRadius:
-                            shapes[index % shapes.length] == BoxShape.rectangle
-                                ? borderRadius[index % borderRadius.length]
-                                : null,
-                        border: Border.all(
+                        ),
+                      );
+                    }),
+                  ),
+                  SizedBox(height: stickerMargin),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: stickerMargin,
+                    runSpacing: stickerMargin,
+                    children: List.generate(1, (index) {
+                      final isUnlocked = index + 5 < unlockedStickers.length;
+                      final colors = [
+                        Colors.orange,
+                        Colors.purple,
+                        Colors.red,
+                        Colors.teal,
+                        Colors.blue,
+                      ];
+                      final shapes = [
+                        BoxShape.circle,
+                        BoxShape.rectangle,
+                        BoxShape.circle,
+                        BoxShape.rectangle,
+                        BoxShape.circle,
+                      ];
+                      final borderRadius = [
+                        BorderRadius.circular(0), // Cone-like
+                        BorderRadius.circular(50), // Oval
+                        BorderRadius.circular(0),
+                        BorderRadius.circular(50),
+                        BorderRadius.circular(0),
+                      ];
+                      return Container(
+                        width: stickerSize,
+                        height: stickerSize,
+                        decoration: BoxDecoration(
                           color:
                               isUnlocked
                                   ? AppColors.transparent
                                   : colors[index % colors.length],
-                          width: 2,
+                          shape: shapes[index % shapes.length],
+                          borderRadius:
+                              shapes[index % shapes.length] ==
+                                      BoxShape.rectangle
+                                  ? borderRadius[index % borderRadius.length]
+                                  : null,
+                          border: Border.all(
+                            color:
+                                isUnlocked
+                                    ? AppColors.transparent
+                                    : colors[index % colors.length],
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child:
-                            isUnlocked
-                                ? CustomImage(
-                                  unlockedStickers[index + 5].image,
-                                  boxFit: BoxFit.contain,
-                                )
-                                : Text(
-                                  '?',
-                                  style: AppStyles.text24PxMedium.copyWith(
-                                    color: Colors.white,
+                        child: Center(
+                          child:
+                              isUnlocked
+                                  ? CustomImage(
+                                    unlockedStickers[index + 5].image,
+                                    boxFit: BoxFit.contain,
+                                  )
+                                  : Text(
+                                    '?',
+                                    style: AppStyles.text24PxMedium.copyWith(
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                      ),
-                    );
-                  }),
-                ),
-              ],
-            );
-          }
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              );
+            }
 
-          return Scaffold(
-            backgroundColor: AppColors.kWhite,
-            appBar: CustomAppBar(
-              title:
-                  widget.childId != null
-                      ? 'Sticker Collection'
-                      : 'My Sticker Collection',
-              centerTitle: true,
-              showBackButton: false,
-              automaticallyImplyLeading: false,
-              leading: null,
-              titleStyle: AppStyles.text22PxSemiBold.copyWith(
-                fontSize: titleFontSize,
-                fontFamily: 'Luckiest Guy',
-                letterSpacing: 1.6,
-              ),
-              actions: [
-                customInkwell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: SvgHelper.fromSource(
-                      path: Assets.wrong,
-                      height: wrongIconSize,
-                      color: AppColors.kLightGrey,
+            return Scaffold(
+              backgroundColor: AppColors.kWhite,
+              appBar: CustomAppBar(
+                title:
+                    widget.childId != null
+                        ? 'Sticker Collection'
+                        : 'My Sticker Collection',
+                centerTitle: true,
+                showBackButton: false,
+                automaticallyImplyLeading: false,
+                leading: null,
+                titleStyle: AppStyles.text22PxSemiBold.copyWith(
+                  fontSize: titleFontSize,
+                  fontFamily: 'Luckiest Guy',
+                  letterSpacing: 1.6,
+                ),
+                actions: [
+                  customInkwell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: SvgHelper.fromSource(
+                        path: Assets.wrong,
+                        height: wrongIconSize,
+                        color: AppColors.kLightGrey,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            body: Center(child: stickerGrid()),
-          );
-        }
+                ],
+              ),
+              body: Center(child: stickerGrid()),
+            );
+          },
+        );
       },
     );
   }

@@ -78,27 +78,24 @@ class _SystemScreenState extends State<SystemScreen>
       ),
       body: Consumer<SystemProvider>(
         builder: (context, provider, child) {
-          if (provider.status == DataFetchStatus.loading) {
-            return CustomLoader();
-          }
-
-          if (provider.status == DataFetchStatus.error) {
-            return ErrorScreen(
-              title: 'Error Fetching Data',
-              message: 'Please try again later.',
-              onRetry: () {
-                context.read<SystemProvider>().fetchSystemData();
-              },
-            );
-          }
-
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              AboutUsScreen(aboutData: provider.aboutData),
-              ContactScreen(contactData: provider.contactData),
-              FaqsScreen(faqsData: provider.faqsData),
-            ],
+          return StatusHandler(
+            status: provider.status,
+            hasData: true,
+            errorTitle: 'Error Fetching Data',
+            errorMessage: 'Please try again later.',
+            onRetry: () {
+              context.read<SystemProvider>().fetchSystemData();
+            },
+            successBuilder: () {
+              return TabBarView(
+                controller: _tabController,
+                children: [
+                  AboutUsScreen(aboutData: provider.aboutData),
+                  ContactScreen(contactData: provider.contactData),
+                  FaqsScreen(faqsData: provider.faqsData),
+                ],
+              );
+            },
           );
         },
       ),

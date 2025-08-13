@@ -10,50 +10,52 @@ class PlanScreen extends StatelessWidget {
     return Consumer<PzPlanProvider>(
       builder: (context, planProvider, _) {
         final plan = planProvider.currentPlan;
-        return Scaffold(
-          appBar: CustomAppBar(
-            title: 'My Plan',
-            backgroundColor: AppColors.kWhite,
-          ),
-          backgroundColor: AppColors.kWhite,
-          body:
-              planProvider.status == DataFetchStatus.loading
-                  ? const CustomLoader()
-                  : Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
+        return StatusHandler(
+          status: planProvider.status,
+          hasData: true,
+          errorTitle: 'Error Loading Plan',
+          errorMessage: 'Please try again later.',
+          onRetry: () {},
+          successBuilder: () {
+            return Scaffold(
+              appBar: CustomAppBar(
+                title: 'My Plan',
+                backgroundColor: AppColors.kWhite,
+              ),
+              backgroundColor: AppColors.kWhite,
+              body: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PlanCard(
+                      planName: plan?.name ?? 'Free',
+                      activeDate: planProvider.activeDate,
+                      expiryDate: planProvider.expiryDate,
+                      isFree: (plan?.id ?? 'free') == 'free',
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PlanCard(
-                          planName: plan?.name ?? 'Free',
-                          activeDate: planProvider.activeDate,
-                          expiryDate: planProvider.expiryDate,
-                          isFree: (plan?.id ?? 'free') == 'free',
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          (plan?.id ?? 'free') == 'free'
-                              ? 'Upgrade to unlock more features.'
-                              : 'Any issues with your plan?',
-                          style: AppStyles.text14PxRegular,
-                        ),
-                        if ((plan?.id ?? 'free') == 'free')
-                          Text(
-                            'Contact customer support.',
-                            style: AppStyles.text14PxRegular.copyWith(
-                              color: AppColors.kBlue,
-                            ),
-                          ),
-                      ],
+                    const SizedBox(height: 24),
+                    Text(
+                      (plan?.id ?? 'free') == 'free'
+                          ? 'Upgrade to unlock more features.'
+                          : 'Any issues with your plan?',
+                      style: AppStyles.text14PxRegular,
                     ),
-                  ),
-          bottomNavigationBar:
-              planProvider.status == DataFetchStatus.loading
-                  ? null
-                  : ((plan?.id ?? 'free') == 'free'
+                    if ((plan?.id ?? 'free') == 'free')
+                      Text(
+                        'Contact customer support.',
+                        style: AppStyles.text14PxRegular.copyWith(
+                          color: AppColors.kBlue,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              bottomNavigationBar:
+                  ((plan?.id ?? 'free') == 'free'
                       ? Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: CustomMaterialButton(
@@ -64,6 +66,8 @@ class PlanScreen extends StatelessWidget {
                         ),
                       )
                       : null),
+            );
+          },
         );
       },
     );
