@@ -27,8 +27,8 @@ if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 1
-val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
+val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 2
+val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
 android {
     namespace = "com.onepali.app"

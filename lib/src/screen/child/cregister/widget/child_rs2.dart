@@ -16,25 +16,46 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
   @override
   Widget build(BuildContext context) {
     final authState = context.read<AuthState>();
+
+    // Platform responsive variables
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
+    final double sliderBottomGap = isTabletPortrait ? 36.0 : 26.0;
+    final double nextButtonGap = isTabletPortrait ? 50.0 : 40.0;
+    final double buttonSpacing = isTabletPortrait ? 32.0 : 20.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
+    final TextStyle noteStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: '',
         showStepper: true,
         currentStep: 3,
-        totalSteps: 4,
+        totalSteps: 5,
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Would you like to create a daily screen time limit for ${authState.childName}?',
-                style: AppStyles.text20PxSemiBold,
+                style: titleStyle,
               ),
-              Gaps.verticalGapOf(24),
+              Gaps.verticalGapOf(titleBottomGap),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -47,7 +68,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
                   ),
                 ),
                 child: CustomRangeSlider(
-                  min: 0,
+                  min: 5,
                   max: 120,
                   value: selectedRange,
                   onChanged: (val) {
@@ -58,16 +79,18 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
                   recommended: selectedRange,
                 ),
               ),
-              Gaps.verticalGapOf(26),
+              Gaps.verticalGapOf(sliderBottomGap),
               Center(
                 child: Text(
                   'We will notify ${authState.childName} when the time is up.',
-                  style: AppStyles.text14PxRegular,
-                  textAlign: TextAlign.end,
+                  style: noteStyle,
+                  textAlign: TextAlign.center,
                 ),
               ),
-              Gaps.verticalGapOf(40),
-              _buildNextButton(context),
+              Gaps.verticalGapOf(nextButtonGap),
+              _buildNextButton(context, isTabletPortrait),
+              Gaps.verticalGapOf(buttonSpacing),
+              _buildNotNowButton(context, isTabletPortrait),
             ],
           ),
         ),
@@ -75,9 +98,12 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
     final childProvider = context.watch<ChildAuthProvider>();
     final childUserProvider = context.watch<ChildUserProvider>();
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return CustomMaterialButton(
       label: 'Next',
@@ -99,6 +125,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
           childName: authState.childName ?? "",
           childDob: authState.childDob ?? "",
           screenTime: selectedRange,
+          hasScreenTime: true, // User has set up screen time
           avatarFilePath: authState.childAvatar ?? '',
           parentUid: parentUser.uid,
           parentEmail: parentUser.email ?? '',
@@ -107,12 +134,69 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         if (context.mounted) {
           showCustomToaster('Child account created successfully');
 
-          Utility.navigateMaterialRoute(context, ChildRS3Screen());
+          Utility.navigateMaterialRoute(
+            context,
+            ChildRS3Screen(),
+            routeName: AppRoutes.childRS3Screen,
+          );
         }
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
+      textStyle: buttonTextStyle,
       elevation: 0,
+    );
+  }
+
+  Widget _buildNotNowButton(BuildContext context, bool isTabletPortrait) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
+    return CustomMaterialButton(
+      onTap: () async {
+        final authState = context.read<AuthState>();
+        final childProvider = context.read<ChildAuthProvider>();
+        final childUserProvider = context.read<ChildUserProvider>();
+        final parentUser = FirebaseAuth.instance.currentUser;
+
+        if (parentUser == null) {
+          showCustomToaster('No parent user found', isError: true);
+          logger.e('No parent user found');
+          return;
+        }
+
+        authState.setChildScreenTime(0);
+        logger.d('Not now selected - setting screen time to 0 (no limit)');
+
+        await childProvider.createChildUser(
+          childName: authState.childName ?? "",
+          childDob: authState.childDob ?? "",
+          screenTime: 0,
+          hasScreenTime: false,
+          avatarFilePath: authState.childAvatar ?? '',
+          parentUid: parentUser.uid,
+          parentEmail: parentUser.email ?? '',
+        );
+
+        await childUserProvider.fetchChildUser();
+
+        if (context.mounted) {
+          showCustomToaster('Child account created successfully');
+          Utility.navigateMaterialRoute(
+            context,
+            ChildRS3Screen(),
+            routeName: AppRoutes.childRS3Screen,
+          );
+        }
+      },
+      label: 'Not now',
+      isLoading:
+          context.watch<ChildAuthProvider>().status == DataFetchStatus.loading,
+      showBorder: false,
+      elevation: 0,
+      fillButton: true,
+      backgroundColor: AppColors.kButtonGrey,
+      textStyle: buttonTextStyle.copyWith(color: AppColors.kBlack),
     );
   }
 }

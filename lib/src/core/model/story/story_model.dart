@@ -11,7 +11,7 @@ class StoryModel {
   final String nameNp;
   final String thumbnail;
   final String lottie;
-  final String audio;
+  final List<String> audio;
   final String tooltip;
   final String description;
   final List<Content> content;
@@ -32,7 +32,10 @@ class StoryModel {
     nameNp: json["nameNp"] ?? "",
     thumbnail: json["thumbnail"] ?? "",
     lottie: json["lottie"] ?? "",
-    audio: json["audio"] ?? "",
+    audio:
+        json["audio"] == null
+            ? []
+            : List<String>.from(json["audio"].map((x) => x.toString())),
     tooltip: json["tooltip"] ?? "",
     description: json["description"] ?? "",
     content:
@@ -48,7 +51,7 @@ class StoryModel {
     "nameNp": nameNp,
     "thumbnail": thumbnail,
     "lottie": lottie,
-    "audio": audio,
+    "audio": List<dynamic>.from(audio.map((x) => x.toString())),
     "tooltip": tooltip,
     "description": description,
     "content": List<dynamic>.from(content.map((x) => x.toJson())),

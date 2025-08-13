@@ -13,12 +13,24 @@ class ChildAuthProvider extends ChangeNotifier {
     required String childName,
     required String childDob,
     required double screenTime,
+    required bool hasScreenTime,
     required String avatarFilePath,
     required String parentUid,
     required String parentEmail,
   }) async {
     setStatus(DataFetchStatus.loading);
     try {
+      // Validate child name (optional: check for duplicates within family)
+      // final validation = await ChildNameValidator.validateChildName(
+      //   parentUid: parentUid,
+      //   childName: childName,
+      // );
+      //
+      // if (!validation.isValid) {
+      //   setStatus(DataFetchStatus.error);
+      //   showCustomToaster(validation.message, isError: true);
+      //   return;
+      // }
       final childDoc =
           _firestore
               .collection('users')
@@ -35,12 +47,14 @@ class ChildAuthProvider extends ChangeNotifier {
       logger.i('📋 Creating child data with screen time tracking:');
       logger.i('   - Child name: $childName');
       logger.i('   - Screen time limit: $screenTime minutes');
+      logger.i('   - Has screen time setup: $hasScreenTime');
 
       final childData = {
         'uid': childDoc.id,
         'full_name': childName,
         'dob': childDob,
         'screen_time': screenTime,
+        'has_screen_time': hasScreenTime,
         'avatar_url': avatarUrl,
         'role': 'child',
         'parent_uid': parentUid,

@@ -23,51 +23,13 @@ class SlideContentState extends State<SlideContent> {
 
   @override
   Widget build(BuildContext context) {
-    // Prepare all conversation rows
-    List<Widget> messageWidgets = [];
-    for (final conversation in widget.content.conversation) {
-      String? iconPath;
-      String messageNp = conversation.messageNp;
-      final colonIdx = messageNp.indexOf(':');
-      if (colonIdx != -1) {
-        iconPath = conversation.icon;
-        messageNp = messageNp.substring(colonIdx + 1).trimLeft();
-      }
-      final lines = messageNp.split('\n');
-      for (var i = 0; i < lines.length; i++) {
-        messageWidgets.add(
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (iconPath != null && iconPath.isNotEmpty && i == 0)
-                SvgHelper.fromSource(
-                  path: iconPath,
-                  height: 28,
-                  width: 28,
-                  type: SvgSourceType.network,
-                ),
-              if (iconPath != null && iconPath.isNotEmpty && i == 0)
-                Gaps.horizontalGapOf(12.0),
-              Text(
-                lines[i],
-                textAlign: TextAlign.center,
-                style: AppStyles.text20PxMedium.copyWith(fontFamily: 'Mukta'),
-              ),
-            ],
-          ),
-        );
-      }
-    }
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     final screenWidth = MediaQuery.of(context).size.width;
     final char1Width = 120.0;
     final char2Width = 120.0;
-    final charPadding = 24.0;
     final sliderPadding = 32.0;
     final sliderWidth = screenWidth - sliderPadding * 2;
-    final maxPosition = sliderWidth - char1Width - char2Width - charPadding;
+    final maxPosition = sliderWidth - char1Width;
     // Images: content.image = background, content.characters = [char1, char2]
     final bgImage = widget.content.image;
     final charList = widget.content.characters ?? [];
@@ -101,7 +63,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Character 2 (static, right side)
         Positioned(
-          left: maxPosition + char1Width - charPadding,
+          right: sliderPadding + char2Width, // Position char2 at the right side
           bottom: 40,
           child: SvgHelper.fromSource(
             path: char2,
@@ -150,18 +112,20 @@ class SlideContentState extends State<SlideContent> {
             ),
           ),
         ),
-        // Top right wrong icon
         Positioned(
           top: 24,
           right: 24,
           child: customInkwell(
             onTap: () {
-              storyProvider.stopAudio();
+              storyProvider.stopAudioAndResetIndex();
             },
-            child: SvgHelper.fromSource(path: Assets.wrong, height: 36),
+            child: SvgHelper.fromSource(
+              path: Assets.wrong,
+              height: AppConstants.kIconSize,
+              width: AppConstants.kIconSize,
+            ),
           ),
         ),
-        // Left arrow (center vertically)
         Positioned(
           left: 16,
           top: 0,
@@ -181,11 +145,11 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-                  height: 35,
-                  width: 35,
+                  height: AppConstants.kIconSize,
+                  width: AppConstants.kIconSize,
                 ),
               ),
             ),
@@ -193,7 +157,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 16,
+          right: 25,
           top: 0,
           bottom: 0,
           child: Center(
@@ -211,17 +175,16 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: SvgHelper.fromSource(
                   path: Assets.rightArrow,
-                  height: 35,
-                  width: 35,
+                  height: AppConstants.kIconSize,
+                  width: AppConstants.kIconSize,
                 ),
               ),
             ),
           ),
         ),
-        // Slide action bar (background and arrow)
         Positioned(
           left: 32,
           right: 32,
@@ -257,15 +220,72 @@ class SlideContentState extends State<SlideContent> {
         // Bottom white background with text
         Align(
           alignment: Alignment.bottomCenter,
-          child: Container(
-            width: double.infinity,
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: messageWidgets,
-            ),
+          child: Consumer<StoryProvider>(
+            builder: (context, storyProvider, _) {
+              // Prepare conversation rows based on current audio index
+              List<Widget> messageWidgets = [];
+
+              // Only show the conversation message corresponding to the current audio index
+              final currentAudioIndex = storyProvider.currentAudioIndex;
+
+              // Ensure we have conversations and the index is valid
+              if (widget.content.conversation.isNotEmpty &&
+                  currentAudioIndex < widget.content.conversation.length) {
+                final conversation =
+                    widget.content.conversation[currentAudioIndex];
+
+                final String iconPath = conversation.icon;
+                String messageNp = conversation.messageNp;
+
+                final colonIdx = messageNp.indexOf(':');
+                if (colonIdx != -1) {
+                  messageNp = messageNp.substring(colonIdx + 1).trimLeft();
+                }
+
+                final lines = messageNp.split('\n');
+                for (var i = 0; i < lines.length; i++) {
+                  messageWidgets.add(
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (iconPath.isNotEmpty && i == 0)
+                          SvgHelper.fromSource(
+                            path: iconPath,
+                            height: 28,
+                            width: 28,
+                            type: SvgSourceType.network,
+                          ),
+                        if (iconPath.isNotEmpty && i == 0)
+                          Gaps.horizontalGapOf(12.0),
+                        Text(
+                          lines[i],
+                          textAlign: TextAlign.center,
+                          style: AppStyles.text20PxMedium.copyWith(
+                            fontFamily: 'Mukta',
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }
+
+              return Container(
+                width: double.infinity,
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 24,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: messageWidgets,
+                ),
+              );
+            },
           ),
         ),
       ],

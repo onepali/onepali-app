@@ -62,8 +62,13 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
 
     // Parse colors if available
     List<String> colors = [];
+    List<String> textColors = [];
     if (Utility.isAccessible(widget.content.color)) {
       colors = widget.content.color!.split(', ');
+    }
+    if (Utility.isAccessible(widget.content.textColor)) {
+      textColors = widget.content.textColor!.split(', ');
+      logger.d('Parsed text colors: $textColors');
     }
 
     options = List.generate(nameEn.length, (index) {
@@ -73,6 +78,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
         image: images[index].trim(),
         audio: audios[index].trim(),
         color: index < colors.length ? colors[index].trim() : "",
+        textColor: index < textColors.length ? textColors[index].trim() : "",
       );
     });
   }
@@ -113,8 +119,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
         // Call lesson complete callback
         widget.onLessonComplete?.call();
 
-        // Auto-hide leopard after some time
-        Future.delayed(const Duration(seconds: 3), () {
+        Future.delayed(const Duration(seconds: 2), () {
           if (mounted) {
             setState(() {
               showLeopardAnimation = false;
@@ -248,7 +253,9 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                         color:
                             isSelected
                                 ? AppColors.kWhite
-                                : AppColors.kSecondaryColor,
+                                : option.textColor.isNotEmpty
+                                ? Utility.parseHexColors(option.textColor).first
+                                : AppColors.kBlack,
                         fontFamily: 'Mukta',
                       ),
                       textAlign: TextAlign.center,
@@ -267,7 +274,12 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                     Text(
                       option.nameEn,
                       style: AppStyles.text12PxSemiBold.copyWith(
-                        color: isSelected ? AppColors.kWhite : AppColors.kBlack,
+                        color:
+                            isSelected
+                                ? AppColors.kWhite
+                                : option.textColor.isNotEmpty
+                                ? Utility.parseHexColors(option.textColor).first
+                                : AppColors.kBlack,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -420,6 +432,7 @@ class TapSendOption {
   final String image;
   final String audio;
   final String color;
+  final String textColor;
 
   TapSendOption({
     required this.nameEn,
@@ -427,5 +440,6 @@ class TapSendOption {
     required this.image,
     required this.audio,
     this.color = "",
+    this.textColor = "",
   });
 }

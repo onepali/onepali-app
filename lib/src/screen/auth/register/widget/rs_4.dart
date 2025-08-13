@@ -33,43 +33,35 @@ class _RS4ScreenState extends State<RS4Screen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Create your Account', style: AppStyles.text20PxSemiBold),
-                SizedBox(height: 24),
-                TitleActionChild(
-                  titlePadding: EdgeInsets.only(bottom: 8),
-                  title: 'Email',
-                  child: CustomTextField(
-                    hintText: 'Enter your Email Address',
-                    keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
-                    prefixIcon: Icon(Icons.email_outlined),
-                    validation: (value) => Validator.email(value ?? ""),
-                  ),
+                Text('Create your account', style: AppStyles.text20PxSemiBold),
+                Gaps.verticalGapOf(24),
+                CustomTextField(
+                  hintText: 'Enter your Email Address',
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
+                  prefixIcon: Icon(Icons.email_outlined),
+                  validation: (value) => Validator.email(value ?? ""),
                 ),
                 Gaps.verticalGapOf(20),
-                TitleActionChild(
-                  title: 'Password',
-                  titlePadding: EdgeInsets.only(bottom: 8),
-                  child: CustomTextField(
-                    hintText: 'Enter a Password',
-                    isPasswordField: isObscure,
-                    controller: passwordController,
-                    prefixIcon: Icon(Icons.lock_outline_rounded),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        !isObscure
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          isObscure = !isObscure;
-                        });
-                      },
+                CustomTextField(
+                  hintText: 'Enter a Password',
+                  isPasswordField: isObscure,
+                  controller: passwordController,
+                  prefixIcon: Icon(Icons.lock_outline_rounded),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      !isObscure
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                     ),
-                    textInputAction: TextInputAction.done,
-                    validation: (value) => Validator.password(value ?? ""),
+                    onPressed: () {
+                      setState(() {
+                        isObscure = !isObscure;
+                      });
+                    },
                   ),
+                  textInputAction: TextInputAction.done,
+                  validation: (value) => Validator.password(value ?? ""),
                 ),
                 SizedBox(height: 35),
                 _buildNextButton(context, isLoading),

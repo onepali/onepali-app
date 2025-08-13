@@ -19,9 +19,9 @@ class PzBlogProvider extends ChangeNotifier {
   }
 
   void handleError(String error) {
-    _status = DataFetchStatus.error;
     showCustomToaster(error, isError: true);
-    notifyListeners();
+
+    setStatus(DataFetchStatus.error);
   }
 
   Future<void> fetchBlogs() async {
@@ -44,6 +44,7 @@ class PzBlogProvider extends ChangeNotifier {
       setStatus(DataFetchStatus.success);
     } catch (e) {
       logger.e('Error fetching blogs: $e');
+
       handleError(e.toString());
     }
   }

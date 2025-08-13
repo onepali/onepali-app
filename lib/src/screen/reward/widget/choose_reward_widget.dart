@@ -30,21 +30,23 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double stickerSize = isMobileLandscape ? 90 : 130;
+    final double stickerSize = isMobileLandscape ? 130 : 180;
     final double stickerMargin = isMobileLandscape ? 10 : 24;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(rewards.length, (index) {
-        final isSelected = selectedIndex == index;
+        // final isSelected = selectedIndex == index;
         return GestureDetector(
           onTap: () {
             setState(() {
               selectedIndex = index;
             });
-            Utility.navigateMaterialRoute(
+            Navigator.pushReplacement(
               context,
-              RewardPreviewWidget(data: rewards[index]),
+              MaterialPageRoute(
+                builder: (context) => RewardPreviewWidget(data: rewards[index]),
+              ),
             );
           },
           child: AnimatedContainer(
@@ -52,13 +54,13 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
             margin: EdgeInsets.symmetric(horizontal: stickerMargin),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              border:
-                  isSelected
-                      ? Border.all(
-                        color: AppColors.kPurple.withValues(alpha: 0.8),
-                        width: 4,
-                      )
-                      : null,
+              // border:
+              //     isSelected
+              //         ? Border.all(
+              //           color: AppColors.kPurple.withValues(alpha: 0.8),
+              //           width: 4,
+              //         )
+              //         : null,
               borderRadius: BorderRadius.circular(18),
             ),
             child: SizedBox(
@@ -88,7 +90,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final double titleFontSize = isMobileLandscape ? 20 : 28;
     final double titlePaddingH = isMobileLandscape ? 16 : 32;
     final double titlePaddingV = isMobileLandscape ? 10 : 18;
-    final double gap = isMobileLandscape ? 24 : 40;
+    final double gap = isMobileLandscape ? 32 : 40;
 
     return SafeArea(
       child: Scaffold(

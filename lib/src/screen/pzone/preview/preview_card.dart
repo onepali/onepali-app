@@ -24,9 +24,54 @@ class _PreviewCardState extends State<PreviewCard> {
 
   @override
   Widget build(BuildContext context) {
-    bool isMobile = PlatformUtility.isMobile(context);
-    bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
-    double horizontalPadding = isMobilePortrait ? 20 : 80;
+    // Platform responsive variables
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final bool isMobile = PlatformUtility.isMobile(context);
+    final bool isMobilePortrait =
+        isMobile && PlatformUtility.isPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding =
+        isTabletPortrait ? 32 : (isMobilePortrait ? 20 : 80);
+    final double verticalPadding = isTabletPortrait ? 24.0 : 12.0;
+    final double titleGap = isTabletPortrait ? 12.0 : 8.0;
+    final double subtitleGap = isTabletPortrait ? 24.0 : 18.0;
+    final double ratingGap = isTabletPortrait ? 8.0 : 4.0;
+    final double sectionGap = isTabletPortrait ? 32.0 : 24.0;
+    final double fieldGap = isTabletPortrait ? 32.0 : 20.0;
+    final double labelGap = isTabletPortrait ? 10.0 : 6.0;
+    final double characterCountGap = isTabletPortrait ? 12.0 : 8.0;
+    final double submitGap = isTabletPortrait ? 100.0 : 80.0;
+    final double buttonSpacing = isTabletPortrait ? 20.0 : 12.0;
+    final double starSize = isTabletPortrait ? 44.0 : 36.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text28PxSemiBold.copyWith(color: AppColors.kBlack)
+            : AppStyles.text22PxSemiBold.copyWith(color: AppColors.kBlack);
+
+    final TextStyle subtitleStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxRegular.copyWith(color: AppColors.kDarkGrey)
+            : AppStyles.text16PxRegular.copyWith(color: AppColors.kDarkGrey);
+
+    final TextStyle tapRateStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular.copyWith(color: AppColors.kDarkGrey)
+            : AppStyles.text14PxRegular.copyWith(color: AppColors.kDarkGrey);
+
+    final TextStyle labelStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxMedium.copyWith(color: AppColors.kBlack)
+            : AppStyles.text14PxMedium.copyWith(color: AppColors.kBlack);
+
+    final TextStyle characterCountStyle =
+        isTabletPortrait
+            ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
+            : AppStyles.text12PxRegular.copyWith(color: AppColors.kGrey);
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return Consumer<PzReviewProvider>(
       builder: (context, reviewProvider, child) {
@@ -37,27 +82,23 @@ class _PreviewCardState extends State<PreviewCard> {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: horizontalPadding,
-                  vertical: 12,
+                  vertical: verticalPadding,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       'Enjoying O Nepali',
-                      style: AppStyles.text22PxSemiBold.copyWith(
-                        color: AppColors.kBlack,
-                      ),
+                      style: titleStyle,
                       textAlign: TextAlign.center,
                     ),
-                    Gaps.verticalGapOf(8),
+                    Gaps.verticalGapOf(titleGap),
                     Text(
                       'Share your experience is helpful to other parents!',
-                      style: AppStyles.text16PxRegular.copyWith(
-                        color: AppColors.kDarkGrey,
-                      ),
+                      style: subtitleStyle,
                       textAlign: TextAlign.center,
                     ),
-                    Gaps.verticalGapOf(18),
+                    Gaps.verticalGapOf(subtitleGap),
                     // Rating bar
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -66,7 +107,7 @@ class _PreviewCardState extends State<PreviewCard> {
                           icon: Icon(
                             _rating > index ? Icons.star : Icons.star_border,
                             color: AppColors.kOrange,
-                            size: 36,
+                            size: starSize,
                           ),
                           onPressed: () {
                             setState(() {
@@ -76,24 +117,14 @@ class _PreviewCardState extends State<PreviewCard> {
                         );
                       }),
                     ),
-                    Gaps.verticalGapOf(4),
-                    Text(
-                      'Tap to rate',
-                      style: AppStyles.text14PxRegular.copyWith(
-                        color: AppColors.kDarkGrey,
-                      ),
-                    ),
-                    Gaps.verticalGapOf(24),
+                    Gaps.verticalGapOf(ratingGap),
+                    Text('Tap to rate', style: tapRateStyle),
+                    Gaps.verticalGapOf(sectionGap),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Review title',
-                        style: AppStyles.text14PxMedium.copyWith(
-                          color: AppColors.kBlack,
-                        ),
-                      ),
+                      child: Text('Review title', style: labelStyle),
                     ),
-                    Gaps.verticalGapOf(6),
+                    Gaps.verticalGapOf(labelGap),
                     CustomTextField(
                       hintText: 'e.g., My kid enjoyed the app!',
                       controller: _titleController,
@@ -101,17 +132,15 @@ class _PreviewCardState extends State<PreviewCard> {
                       paddingHorizontal: 12,
                       paddingVertical: 16,
                     ),
-                    Gaps.verticalGapOf(20),
+                    Gaps.verticalGapOf(fieldGap),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'What did your child enjoy the most? (Optional)',
-                        style: AppStyles.text14PxMedium.copyWith(
-                          color: AppColors.kBlack,
-                        ),
+                        style: labelStyle,
                       ),
                     ),
-                    Gaps.verticalGapOf(6),
+                    Gaps.verticalGapOf(labelGap),
                     CustomTextField(
                       hintText: 'How has it helped your child to learn?',
                       controller: _descController,
@@ -123,33 +152,32 @@ class _PreviewCardState extends State<PreviewCard> {
                         setState(() {}); // Update character count
                       },
                     ),
-                    Gaps.verticalGapOf(8),
+                    Gaps.verticalGapOf(characterCountGap),
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
                         '${_descController.text.length}/500 characters',
-                        style: AppStyles.text12PxRegular.copyWith(
-                          color: AppColors.kGrey,
-                        ),
+                        style: characterCountStyle,
                       ),
                     ),
-                    Gaps.verticalGapOf(80),
+                    Gaps.verticalGapOf(submitGap),
                     CustomMaterialButton(
                       label: 'Submit',
                       onTap: () => _handleSubmit(context, reviewProvider),
                       backgroundColor: AppColors.kButtonGreen,
                       elevation: 0,
                       radius: 10,
+                      textStyle: buttonTextStyle,
                       isLoading: reviewProvider.isLoading,
                     ),
-                    Gaps.verticalGapOf(12),
+                    Gaps.verticalGapOf(buttonSpacing),
                     CustomMaterialButton(
                       label: 'Not now',
                       onTap: () {
                         Navigator.of(context).pop();
                       },
                       backgroundColor: AppColors.kButtonGrey,
-                      textStyle: AppStyles.text16PxMedium,
+                      textStyle: buttonTextStyle,
                       elevation: 0,
                       radius: 10,
                     ),

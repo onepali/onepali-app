@@ -92,12 +92,12 @@ class _FaqsScreenState extends State<FaqsScreen> {
                 padding: EdgeInsets.all(isMobilePortrait ? 12 : 16),
                 decoration: BoxDecoration(
                   color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                  border: Border(
-                    left: BorderSide(
-                      color: AppColors.kPureSkyBlue,
-                      width: isMobilePortrait ? 4 : 6,
-                    ),
-                  ),
+                  // border: Border(
+                  //   left: BorderSide(
+                  //     color: AppColors.kPureSkyBlue,
+                  //     width: isMobilePortrait ? 4 : 6,
+                  //   ),
+                  // ),
                   borderRadius: BorderRadius.circular(
                     isMobilePortrait ? 8 : 12,
                   ),

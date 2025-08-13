@@ -30,9 +30,20 @@ class AppRoutes {
   static const String rs5Screen = '/register/step5';
   static const String rs6Screen = '/register/step6';
 
+  /// Child Register Routes
+  static const String childRegisterScreen = '/child/register';
+  static const String childRS1Screen = '/child/register/step1';
+  static const String childRS2Screen = '/child/register/step2';
+  static const String childRS3Screen = '/child/register/step3';
+  static const String childRS4Screen = '/child/register/step4';
+  static const String extendTimeScreen = '/child/extend-time';
+
   /// [Dashboard] Routes
   static const String dashboardScreen = '/dashboard';
   static const String guestDashboardScreen = '/guest/dashboard';
+
+  /// [Drawer] Routes
+  static const String drawerRoutes = '/drawer';
 
   /// [User] Routes
   static const String userScreen = '/user';
@@ -92,6 +103,18 @@ class AppRoutes {
     rs5Screen: (context) => const RS5Screen(),
     rs6Screen: (context) => const RS6Screen(),
 
+    childRegisterScreen: (context) => const ChildRegisterScreen(),
+    childRS1Screen: (context) => const ChildRS1Screen(),
+    childRS2Screen: (context) => const ChildRS2Screen(),
+    childRS3Screen: (context) => const ChildRS3Screen(),
+    extendTimeScreen: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final childId = args?['childId'] as String?;
+      return ExtendTimeScreen(childId: childId);
+    },
+
+    // childRS4Screen: (context) => const ChildRS4Screen(),
     dashboardScreen: (context) => const DashboardScreen(),
     guestDashboardScreen: (context) => const GuestDashboardScreen(),
     userScreen: (context) => const UserScreen(),
@@ -113,7 +136,11 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       final fromScreenTimeLimit = args?['fromScreenTimeLimit'] ?? false;
-      return ParentZoneScreen(fromScreenTimeLimit: fromScreenTimeLimit);
+      final childId = args?['childId'] as String?;
+      return ParentZoneScreen(
+        fromScreenTimeLimit: fromScreenTimeLimit,
+        childId: childId,
+      );
     },
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),

@@ -39,22 +39,26 @@ class _StoryScreenState extends State<StoryScreen> {
             },
           );
         }
-        return ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          itemCount: stories.length,
-          separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
-          itemBuilder: (context, i) {
-            final story = stories[i];
-            return SizedBox(
-              width: AppCardResponsive.getCardWidth(context),
-              child: StoryCard(
-                story: story,
-                isGuestUser: GuestUtil.isGuestUser(),
-                isLocked: i > 0,
-              ),
-            );
-          },
+        return SizedBox(
+          height: AppCardResponsive.getCardHeight(context),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            itemCount: stories.length,
+            separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
+            itemBuilder: (context, i) {
+              final story = stories[i];
+              return SizedBox(
+                width: AppCardResponsive.getCardWidth(context),
+                child: StoryCard(
+                  story: story,
+                  isGuestUser: GuestUtil.isGuestUser(),
+                  isLocked: i > 0,
+                ),
+              );
+            },
+          ),
         );
       },
     );

@@ -21,6 +21,13 @@ class GoogleAuthProvider with ChangeNotifier {
   final AuthState authState;
   GoogleAuthProvider({required this.authState});
 
+  Future<void> _initializeGoogleSignIn() async {
+    await googleSignIn.initialize(
+      serverClientId:
+          '259206374027-b3nr2e48sfburmacir4ob60914kve39u.apps.googleusercontent.com',
+    );
+  }
+
   Future<void> signInWithGoogle(
     BuildContext context, {
     bool isLogin = false,
@@ -28,6 +35,9 @@ class GoogleAuthProvider with ChangeNotifier {
     setStatus(DataFetchStatus.loading);
 
     try {
+      // Initialize GoogleSignIn
+      await _initializeGoogleSignIn();
+
       final GoogleSignInAccount googleUser = await _signInWithGoogle(context);
 
       // Get authorization for required scopes
@@ -152,6 +162,9 @@ class GoogleAuthProvider with ChangeNotifier {
       _user = null;
 
       authState.clear();
+      ChildLocalStorage.clear();
+      ParentLocalStorage.clear();
+      _sharedPrefs.clear();
       setStatus(DataFetchStatus.initial);
       notifyListeners();
 

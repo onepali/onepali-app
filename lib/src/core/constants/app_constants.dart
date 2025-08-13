@@ -8,6 +8,7 @@ class AppConstants {
   static const String applicationId = 'com.onepali.app';
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
+  static const String supportMail = 'hello@onepali.fun';
 
   // Login Types
   static const String email = 'email';
@@ -78,6 +79,11 @@ class AppConstants {
   static const String modalRoute = 'modal';
   static const String customDialogModal = 'custom_dialog';
 
+  /// Lesson Video Cache DB
+  static const String lessonVideoCacheDB = 'lesson_videos';
+  static const int lessonVideoCacheDays = 7;
+  static const int lessonVideoCacheMaxObjects = 50;
+
   /// Reward Outlined Stickers
   static List<String> rewardOutlinedStickers = [
     'https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/reward%2Fsnow_leopard_outline.svg?alt=media&token=499f6b1d-da05-45b1-8ca4-5eaad0311546',
@@ -89,6 +95,17 @@ class AppConstants {
     {'code': 'en', 'name': 'English', 'flag': 'assets/images/flags/en.png'},
     {'code': 'ne', 'name': 'नेपाली', 'flag': 'assets/images/flags/ne.png'},
   ];
+
+  /// Extend [Time] Map
+  static Map<String, int> extendTimeMap = {
+    '5 mins': 5,
+    '10 mins': 10,
+    '15 mins': 15,
+    '20 mins': 20,
+  };
+
+  // Button & Other Sized
+  static const double kIconSize = 48.0;
 
   // Notification Titles & Bodies [Daily Reminder]
   static const String dailyReminderTitle = "⏰ It's Time to Practice!";

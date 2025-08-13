@@ -58,6 +58,7 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
         Utility.navigate(context, AppRoutes.onboardingScreen);
       },
       child: Scaffold(
+        backgroundColor: AppColors.kWhite,
         key: _scaffoldKey,
         appBar: UserAppBar(
           name: 'Guest',
@@ -75,6 +76,7 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
           childData: [],
           context: context,
           isGuest: true,
+          playStarBlastAudio: false,
         ),
         body:
             _isLoading

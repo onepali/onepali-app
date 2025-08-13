@@ -143,7 +143,7 @@ class CustomImage extends StatelessWidget {
                     ? BorderRadius.circular(width ?? 0 / 2)
                     : BorderRadius.circular(borderRadius),
             child: Image.asset(
-              isProfileImage ? Assets.userAvatar : Assets.placeholder,
+              isProfileImage ? Assets.blueUserAvatar : Assets.placeholder,
               height: height,
               width: width,
               fit: cover ? BoxFit.cover : BoxFit.contain,

@@ -22,39 +22,37 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
       backgroundColor: AppColors.kWhite,
       body: Consumer<PzBlogProvider>(
         builder: (context, provider, _) {
-          if (Utility.isAccessible(provider.blogs) &&
-              provider.status == DataFetchStatus.loading) {
-            return CustomLoader();
-          } else if (provider.blogs.isEmpty ||
-              provider.status == DataFetchStatus.error) {
-            return ErrorScreen(
-              title: 'No Blogs Available',
-              message: 'Please check back later for new blogs.',
-              onRetry: () {
-                context.read<PzBlogProvider>().fetchBlogs();
-              },
-            );
-          }
-          return ListView.separated(
-            itemCount: provider.blogs.length,
-            separatorBuilder:
-                (context, index) => SizedBox(
-                  height: 50,
-                  child: Divider(color: AppColors.kLightGrey, thickness: 0.2),
+          return StatusHandler(
+            status: provider.status,
+            hasData: provider.blogs.isNotEmpty,
+            errorTitle: 'No Blogs Available',
+            errorMessage: 'Please check back later for new blogs.',
+            onRetry: () => context.read<PzBlogProvider>().fetchBlogs(),
+            successBuilder:
+                () => ListView.separated(
+                  itemCount: provider.blogs.length,
+                  separatorBuilder:
+                      (context, index) => SizedBox(
+                        height: 50,
+                        child: Divider(
+                          color: AppColors.kLightGrey,
+                          thickness: 0.2,
+                        ),
+                      ),
+                  itemBuilder: (context, index) {
+                    final blog = provider.blogs[index];
+                    return PBlogCard(
+                      blog: blog,
+                      onTap: () {
+                        Utility.navigateMaterialRoute(
+                          context,
+                          PBlogDetailScreen(data: blog),
+                          routeName: AppRoutes.blogDetailScreen,
+                        );
+                      },
+                    );
+                  },
                 ),
-            itemBuilder: (context, index) {
-              final blog = provider.blogs[index];
-              return PBlogCard(
-                blog: blog,
-                onTap: () {
-                  Utility.navigateMaterialRoute(
-                    context,
-                    PBlogDetailScreen(data: blog),
-                    routeName: AppRoutes.blogDetailScreen,
-                  );
-                },
-              );
-            },
           );
         },
       ),

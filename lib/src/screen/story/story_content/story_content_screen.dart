@@ -37,24 +37,22 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   void dispose() {
-    // Use stored provider reference to avoid context access in dispose
     try {
-      _storyProvider?.stopAudio();
+      _storyProvider?.stopAudioAndResetIndex();
     } catch (e) {
       logger.e('Error stopping audio in dispose: $e');
     }
 
-    // End learning session when leaving story (context-free for safe disposal)
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kSkyBlue,
-      body: SafeArea(
-        child: Consumer<StoryProvider>(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppColors.kSkyBlue,
+        body: Consumer<StoryProvider>(
           builder: (context, provider, _) {
             final story = provider.currentStory ?? widget.story;
             final contentList = story.content;
@@ -69,23 +67,70 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               return Stack(
                 children: [
                   Positioned.fill(
-                    child: StoryCard(
-                      story: story,
-                      isRadius: false,
-                      isRecommended: true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.sunshineYellow,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Story thumbnail
+                          if (widget.story.thumbnail.isNotEmpty)
+                            SvgHelper.fromSource(
+                              path: widget.story.thumbnail,
+                              width: 180,
+                              height: 180,
+                              fit: BoxFit.contain,
+                              type: SvgSourceType.network,
+                            ),
+                          Gaps.verticalGapOf(10),
+                          // Lesson title
+                          Text(
+                            widget.story.nameNp,
+                            style: AppStyles.text24PxBold.copyWith(
+                              // color: AppColors.kSecondaryColor,
+                              fontSize: 40,
+                              fontFamily: 'Mukta',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          // Gaps.verticalGapOf(16),
+                          // Lesson description
+                          if (widget.story.nameEn.isNotEmpty)
+                            Text(
+                              widget.story.nameEn,
+                              style: AppStyles.text16PxMedium.copyWith(
+                                color: AppColors.kBlack,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                  // Right arrow to go to next lesson
+
                   Positioned(
-                    right: 32,
+                    top: 16,
+                    right: 16,
+                    child: IconButton(
+                      icon: SvgHelper.fromSource(
+                        path: Assets.wrong,
+                        height: AppConstants.kIconSize,
+                        width: AppConstants.kIconSize,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                  // Start button
+                  Positioned(
+                    right: 25,
                     top: 0,
                     bottom: 0,
-                    child: GestureDetector(
+                    child: customInkwell(
                       onTap: () => provider.nextContent(context),
                       child: Container(
-                        width: 48,
-                        height: 48,
-                        padding: const EdgeInsets.all(12),
+                        height: AppConstants.kIconSize,
+                        width: AppConstants.kIconSize,
                         decoration: BoxDecoration(
                           color: AppColors.kWhite,
                           shape: BoxShape.circle,
@@ -97,7 +142,16 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                             ),
                           ],
                         ),
-                        child: SvgHelper.fromSource(path: Assets.rightArrow),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          // vertical: 2,
+                        ),
+                        child: SvgHelper.fromSource(
+                          path: Assets.rightArrow,
+                          // height: 30,
+                          // width: 30,
+                          color: AppColors.kSecondaryColor,
+                        ),
                       ),
                     ),
                   ),
@@ -105,7 +159,6 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               );
             }
 
-            // Show content card for idx in 1..contentList.length (inclusive)
             if (idx > 0 && idx <= contentList.length) {
               final content = contentList[idx - 1];
               return Column(

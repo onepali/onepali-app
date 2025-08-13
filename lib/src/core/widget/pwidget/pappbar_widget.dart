@@ -6,6 +6,8 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
   final AuthProviderType? authProviderType;
+  final List<ChildUserModel> childData;
+  final int totalChildCount;
 
   const PZAppBarWidget({
     super.key,
@@ -13,6 +15,8 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.automaticallyImplyLeading = false,
     this.authProviderType,
+    required this.childData,
+    this.totalChildCount = 0,
   });
 
   @override
@@ -58,8 +62,8 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         title,
         style:
             isMobilePortrait
-                ? AppStyles.text18PxSemiBold
-                : AppStyles.text26PxSemiBold,
+                ? AppStyles.text18PxSemiBold.copyWith(fontFamily: 'Poppins')
+                : AppStyles.text22PxSemiBold.copyWith(fontFamily: 'Poppins'),
       ),
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
@@ -102,15 +106,35 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   text: 'Family',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
-                    Utility.navigate(context, AppRoutes.dashboardScreen);
-                    ParentLocalStorage.setParentLogged(false);
+                    // ParentLocalStorage.setParentLogged(false);
                     ChildLocalStorage.clear();
+                    Future.delayed(const Duration(milliseconds: 150), () {
+                      if (isMobile) {
+                        Utility.navigateMaterialRoute(
+                          context,
+                          DrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          ),
+                          routeName: AppRoutes.drawerRoutes,
+                        );
+                      } else {
+                        Utility.navigateMaterialRoute(
+                          context,
+                          TabDrawerScreen(
+                            data: childData,
+                            totalChildCount: totalChildCount,
+                          ),
+                          routeName: AppRoutes.drawerRoutes,
+                        );
+                      }
+                    });
                   },
                 ),
                 _buildMenuItem(
                   value: 'logout',
                   icon: Assets.logout,
-                  text: 'Logout',
+                  text: 'Log out',
                   isMobilePortrait: isMobilePortrait,
                   onTap: () {
                     logoutBottomSheet(context);
@@ -123,8 +147,10 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Future logoutBottomSheet(context) {
+    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
     return BottomSheetManager.bottomModelSheet(
-      title: 'Do you want to logout?',
+      title: 'Do you want to log out?',
       action: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -132,18 +158,18 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             child: CustomMaterialButton(
               label: 'Cancel',
               elevation: 0,
-              height: 40,
+              height: isTabletPortrait ? 50 : 40,
               fillButton: false,
               onTap: () {
                 Navigator.pop(context);
               },
             ),
           ),
-          Gaps.horizontalGapOf(20),
+          Gaps.horizontalGapOf(isTabletPortrait ? 24 : 20),
           Expanded(
             child: CustomMaterialButton(
-              label: 'Logout',
-              height: 40,
+              label: 'Log out',
+              height: isTabletPortrait ? 50 : 40,
               elevation: 0,
               onTap: () {
                 Utility.authWiseLogout(

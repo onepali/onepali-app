@@ -5,6 +5,9 @@ library;
 /// [Global] App Utility
 export 'utility.dart';
 
+/// [App Check] Utility
+export 'app_check_util.dart';
+
 /// [Miscellaneous] Utility
 export 'misc_utility.dart';
 

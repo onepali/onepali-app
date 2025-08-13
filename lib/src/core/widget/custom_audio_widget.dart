@@ -23,7 +23,21 @@ class CustomAudioWidget {
       await _audioPlayer.play(DeviceFileSource(audioPath));
     } else {
       // Play from network URL
-      await _audioPlayer.play(UrlSource(audioPath));
+      await _audioPlayer.play(
+        UrlSource(audioPath),
+        ctx: AudioContext(
+          android: AudioContextAndroid(
+            stayAwake: false,
+            audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+            audioMode: AndroidAudioMode.normal,
+            contentType: AndroidContentType.speech,
+          ),
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playAndRecord,
+            options: const {AVAudioSessionOptions.duckOthers},
+          ),
+        ),
+      );
     }
   }
 

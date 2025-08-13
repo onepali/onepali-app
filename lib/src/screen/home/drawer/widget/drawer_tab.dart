@@ -64,6 +64,13 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     Navigator.of(context).pop(); // Remove overlay
     final authState = Provider.of<AuthState>(context, listen: false);
     authState.setCurrentChildId(child.uid);
+
+    final childProvider = Provider.of<ChildUserProvider>(
+      context,
+      listen: false,
+    );
+    await childProvider.updateScreenTimeEnabledStatusByChildId(child.uid);
+
     // Navigator.of(context).pop(); // Close the drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
     UserAppBar.setTabIndex(0);
@@ -90,7 +97,25 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
                 Gaps.horizontalGapOf(10),
                 InkWell(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () async {
+                    final isParentLogged =
+                        await ParentLocalStorage.isParentLogged();
+                    logger.d('isParentLogged: $isParentLogged');
+                    if (isParentLogged) {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      UserAppBar.setTabIndex(0);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => DashboardScreen(),
+                          settings: RouteSettings(
+                            name: AppRoutes.dashboardScreen,
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
                   child: Align(
                     alignment: Alignment.topRight,
                     child: Container(
@@ -152,13 +177,33 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               style: AppStyles.text14PxMedium.copyWith(color: AppColors.kWhite),
             ),
             Gaps.verticalGapOf(5),
-            const Icon(Icons.local_police, size: 30, color: AppColors.kYellow),
+            customInkwell(
+              onTap: () {
+                if (index == _selectedChildIndex) {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(),
+                  );
+                } else {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(childId: targetChild.uid),
+                  );
+                }
+              },
+              child: const Icon(
+                Icons.local_police,
+                size: 30,
+                color: AppColors.kYellow,
+              ),
+            ),
           ],
         );
       } else {
         return GestureDetector(
           onTap: () {
-            if (widget.totalChildCount >= 3) {
+            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
               DialogManager.showCustomDialog(
                 context: context,
                 title: 'You\'ve added 3 kids!',
@@ -169,7 +214,11 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               );
               return;
             } else {
-              Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+              Utility.navigateMaterialRoute(
+                context,
+                ChildRegisterScreen(),
+                routeName: AppRoutes.childRegisterScreen,
+              );
             }
           },
           child: Column(

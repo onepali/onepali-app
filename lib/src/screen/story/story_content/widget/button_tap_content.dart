@@ -88,6 +88,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   Color bgColor = AppColors.kButtonGrey;
                   String label = opt.messageEn;
                   dynamic icon;
+                  String iconType = '';
                   Color textColor = isSelected ? Colors.white : Colors.black;
                   TextStyle? textStyle = AppStyles.text16PxBold.copyWith(
                     color: textColor,
@@ -95,18 +96,19 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   if (isSelected) {
                     if (isCorrect == true && correct) {
                       bgColor = AppColors.kButtonGreen;
-                      icon = Icons.check;
+                      icon = Assets.correct;
+                      iconType = 'svg';
                       label = '';
                       textColor = Colors.white;
                       textStyle = AppStyles.text16PxBold.copyWith(
                         color: Colors.white,
                       );
                     } else if (isCorrect == false && !correct) {
-                      bgColor = AppColors.kRed;
+                      bgColor = AppColors.kButtonRed;
                       label = 'Try Again';
-                      textColor = Colors.white;
+                      textColor = AppColors.kDrawerBgColor;
                       textStyle = AppStyles.text16PxBold.copyWith(
-                        color: Colors.white,
+                        color: AppColors.kDrawerBgColor,
                       );
                     }
                   }
@@ -124,6 +126,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                       _handleTap(i, storyProvider);
                     },
                     label: label,
+                    iconType: iconType,
                     icon: icon,
                     fillButton: isSelected,
                   );

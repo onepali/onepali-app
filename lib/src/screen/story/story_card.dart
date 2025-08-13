@@ -8,6 +8,7 @@ class StoryCard extends StatelessWidget {
   final bool isRecommended;
   final bool isGuestUser;
   final bool isLocked;
+  final bool isIntro;
   const StoryCard({
     super.key,
     required this.story,
@@ -16,6 +17,7 @@ class StoryCard extends StatelessWidget {
     this.isRecommended = false,
     this.isGuestUser = false,
     this.isLocked = false,
+    this.isIntro = false,
   });
 
   @override
@@ -38,6 +40,8 @@ class StoryCard extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
+            height: double.infinity,
+
             decoration: BoxDecoration(
               color: AppColors.sunshineYellow,
               borderRadius:
@@ -45,7 +49,7 @@ class StoryCard extends StatelessWidget {
                       ? BorderRadius.circular(20)
                       : BorderRadius.zero,
             ),
-            padding: const EdgeInsets.all(16),
+            margin: !isIntro ? const EdgeInsets.symmetric(horizontal: 8) : null,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,35 +67,21 @@ class StoryCard extends StatelessWidget {
                             : AppCardResponsive.getThumbnailWidth(context),
                     type: SvgSourceType.network,
                   ),
-                Gaps.verticalGapOf(isRecommended ? 8.h(context) : 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      story.nameNp,
-                      style:
-                          isRecommended
-                              ? AppStyles.text22PxRegular.copyWith(
-                                fontWeight: FontWeight.bold,
-                              )
-                              : AppStyles.text18PxRegular.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                    Gaps.verticalGapOf(4),
-                    Text(
-                      story.nameEn,
-                      style:
-                          isRecommended
-                              ? AppStyles.text16PxRegular.copyWith(
-                                color: AppColors.kGrey,
-                              )
-                              : AppStyles.text14PxRegular.copyWith(
-                                color: AppColors.kGrey,
-                              ),
-                    ),
-                  ],
+                Gaps.verticalGapOf(isRecommended ? 8.h(context) : 30),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhite,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text(
+                    story.nameEn,
+                    style: AppStyles.text16PxSemiBold,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ],
             ),
@@ -103,13 +93,13 @@ class StoryCard extends StatelessWidget {
               bottom: -7.5,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
+                  horizontal: 20,
                   vertical: 8,
                 ),
                 child: LinearProgressIndicator(
                   value: progressPercent,
                   backgroundColor: Colors.grey.shade300,
-                  color: AppColors.kButtonGreen,
+                  color: AppColors.kRed,
                   minHeight: 2.5,
                   borderRadius: BorderRadius.circular(10),
                 ),

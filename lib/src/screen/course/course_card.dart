@@ -32,7 +32,7 @@ class CourseCard extends StatelessWidget {
     return GestureDetector(
       onTap: isLocked ? null : onTap,
       child: Container(
-        margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),

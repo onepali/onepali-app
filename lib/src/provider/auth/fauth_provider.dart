@@ -169,6 +169,9 @@ class FAuthProvider with ChangeNotifier {
 
       // Reset AuthState
       authState.clear();
+      ChildLocalStorage.clear();
+      ParentLocalStorage.clear();
+      _sharedPrefs.clear();
 
       setStatus(DataFetchStatus.initial);
       notifyListeners();
