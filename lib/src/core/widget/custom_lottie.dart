@@ -12,10 +12,19 @@ class LottieHelper {
     bool repeat = true,
     bool reverse = false,
     bool animate = true,
+    BoxFit fit = BoxFit.contain,
   }) {
     switch (type) {
       case LottieSourceType.asset:
-        return _buildAssetLottie(path, height, width, repeat, reverse, animate);
+        return _buildAssetLottie(
+          path,
+          height,
+          width,
+          repeat,
+          reverse,
+          animate,
+          fit,
+        );
       case LottieSourceType.network:
         return _buildNetworkLottie(
           path,
@@ -24,6 +33,7 @@ class LottieHelper {
           repeat,
           reverse,
           animate,
+          fit,
         );
     }
   }
@@ -35,12 +45,14 @@ class LottieHelper {
     bool repeat,
     bool reverse,
     bool animate,
+    BoxFit fit,
   ) {
     return Lottie.asset(
       assetName,
       height: height,
       width: width,
       repeat: repeat,
+      fit: fit,
       reverse: reverse,
       errorBuilder:
           (context, error, stackTrace) => Container(color: Colors.white),
@@ -56,6 +68,7 @@ class LottieHelper {
     bool repeat,
     bool reverse,
     bool animate,
+    BoxFit fit,
   ) {
     return Lottie.network(
       url,
@@ -64,6 +77,7 @@ class LottieHelper {
       repeat: repeat,
       reverse: reverse,
       animate: animate,
+      fit: fit,
       errorBuilder:
           (context, error, stackTrace) => Container(color: Colors.white),
     );

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../src.dart';
 
 class ParentZoneScreen extends StatefulWidget {
   final bool fromScreenTimeLimit;
+  final String? childId;
 
-  const ParentZoneScreen({super.key, this.fromScreenTimeLimit = false});
+  const ParentZoneScreen({
+    super.key,
+    this.fromScreenTimeLimit = false,
+    this.childId,
+  });
 
   @override
   State<ParentZoneScreen> createState() => _ParentZoneScreenState();
@@ -23,7 +27,9 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UserProvider>().fetchOwnProfile();
+    Misc.onLayoutRendered(() {
+      context.read<UserProvider>().fetchOwnProfile();
+    });
   }
 
   @override
@@ -51,8 +57,16 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     final matched = await userProvider.isMatchedPin(pin);
     if (matched) {
       if (mounted) {
-        Utility.navigate(context, AppRoutes.parentDashboardScreen);
-        ParentLocalStorage.setParentLogged(true);
+        if (widget.fromScreenTimeLimit) {
+          Utility.navigate(
+            context,
+            AppRoutes.extendTimeScreen,
+            arguments: {'childId': widget.childId},
+          );
+        } else {
+          ParentLocalStorage.setParentLogged(true);
+          Utility.navigate(context, AppRoutes.parentDashboardScreen);
+        }
       }
     } else {
       _showError();
@@ -79,8 +93,13 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       canPop: !widget.fromScreenTimeLimit,
       onPopInvokedWithResult: (didPop, result) {
         if (widget.fromScreenTimeLimit && !didPop) {
-          logger.i('🚪 Exiting app from parent screen back button');
-          SystemNavigator.pop();
+          UserAppBar.setTabIndex(0);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => DashboardScreen(),
+              settings: RouteSettings(name: AppRoutes.dashboardScreen),
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -151,7 +170,15 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       logger.i(
                         '🚪 Exiting app from parent screen (from screen time limit)',
                       );
-                      SystemNavigator.pop();
+                      UserAppBar.setTabIndex(0);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => DashboardScreen(),
+                          settings: RouteSettings(
+                            name: AppRoutes.dashboardScreen,
+                          ),
+                        ),
+                      );
                     } else {
                       // Regular navigation back
                       Navigator.of(context).pop();

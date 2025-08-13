@@ -32,29 +32,29 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome', style: AppStyles.text20PxMedium),
-                Row(
-                  children: [
-                    Text(
-                      'to',
-                      style: AppStyles.text20PxMedium.copyWith(
-                        color: AppColors.kPitchBlack,
-                        fontFamily: AppConstants.defaultFontFamily,
-                      ),
-                    ),
-                    Gaps.horizontalGapOf(10),
-                    SvgHelper.fromSource(
-                      path: Assets.logoSvg,
-                      width: 40,
-                      height: 15,
-                    ),
-                  ],
+                // Text('Welcome', style: AppStyles.text20PxMedium),
+                // Row(
+                //   children: [
+                //     Text(
+                //       'to',
+                //       style: AppStyles.text20PxMedium.copyWith(
+                //         color: AppColors.kPitchBlack,
+                //         fontFamily: AppConstants.defaultFontFamily,
+                //       ),
+                //     ),
+                //     Gaps.horizontalGapOf(10),
+                Center(
+                  child: SvgHelper.fromSource(
+                    path: Assets.logoSvg,
+                    width: 180,
+                    height: 28,
+                    color: AppColors.kDrawerBgColor,
+                  ),
                 ),
-                Gaps.verticalGapOf(15),
-                Text(
-                  'Sign in to your account',
-                  style: AppStyles.text14PxRegular,
-                ),
+                //   ],
+                // ),
+                Gaps.verticalGapOf(30),
+                Text('Sign in', style: AppStyles.text14PxRegular),
                 Gaps.verticalGapOf(20),
                 CustomTextField(
                   hintText: 'Email',
@@ -102,35 +102,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Gaps.verticalGapOf(35),
                 _buildNextButton(context, isLoading),
-                Gaps.verticalGapOf(50),
-                Utility.horizontalDividerTitle(title: 'Or Sign In With'),
+                Gaps.verticalGapOf(35),
+                Utility.horizontalDividerTitle(title: 'Or sign in with'),
                 Gaps.verticalGapOf(20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ReusableWidget.horizontalIconTitle(
-                      title: 'Google',
-                      icon: Assets.google,
-                      onTap: () async {
-                        final googleAuthProvider =
-                            context.read<GoogleAuthProvider>();
-                        await googleAuthProvider.signInWithGoogle(
-                          context,
-                          isLogin: true,
-                        );
-                      },
-                    ),
-                    Gaps.horizontalGapOf(20),
-                    ReusableWidget.horizontalIconTitle(
-                      title: 'Facebook',
-                      icon: Assets.facebook,
-                      onTap: () async {
-                        final facebookAuthProvider =
-                            context.read<FAuthProvider>();
-                        await facebookAuthProvider.signInWithFacebook(context);
-                      },
-                    ),
-                  ],
+                ReusableWidget.horizontalIconTitle(
+                  title: 'Continue with Google',
+                  icon: Assets.google,
+                  onTap: () async {
+                    final googleAuthProvider =
+                        context.read<GoogleAuthProvider>();
+                    await googleAuthProvider.signInWithGoogle(
+                      context,
+                      isLogin: true,
+                    );
+                  },
+                ),
+                Gaps.verticalGapOf(15),
+                ReusableWidget.horizontalIconTitle(
+                  title: 'Continue with Facebook',
+                  icon: Assets.facebook,
+                  onTap: () async {
+                    final facebookAuthProvider = context.read<FAuthProvider>();
+                    await facebookAuthProvider.signInWithFacebook(context);
+                  },
                 ),
               ],
             ),
@@ -150,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             children: [
               TextSpan(
-                text: 'Sign Up',
+                text: 'Sign up',
                 style: AppStyles.text14PxSemiBold.copyWith(
                   color: AppColors.kButtonGreen,
                   fontFamily: AppConstants.defaultFontFamily,
@@ -170,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildNextButton(BuildContext context, bool isLoading) {
     return CustomMaterialButton(
-      label: 'Login',
+      label: 'Log in',
       isLoading: isLoading,
       onTap:
           isLoading

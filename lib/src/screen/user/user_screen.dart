@@ -49,7 +49,7 @@ class _UserScreenState extends State<UserScreen> {
                   keyboardType: TextInputType.name,
                   controller: _nameController,
                   prefixIcon: Icon(Icons.person_outline_rounded),
-                  validation: (value) => Validator.empty(value ?? ""),
+                  validation: (value) => Validator.name(value ?? ""),
                 ),
               ),
               Gaps.verticalGapOf(20),

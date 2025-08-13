@@ -15,6 +15,7 @@ class GlobalConfig {
   // Crashlytics
   static const bool showCrashlytics = true;
   static const bool showFatalError = true;
+  static const bool isUserTesting = true;
 
   // Colors
   static const Color primaryColor = AppColors.kPrimaryColor;

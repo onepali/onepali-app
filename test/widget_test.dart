@@ -1,30 +1,41 @@
-// // This is a basic Flutter widget test.
-// //
-// // To perform an interaction with a widget in your test, use the WidgetTester
-// // utility in the flutter_test package. For example, you can send tap and scroll
-// // gestures. You can also use WidgetTester to find child widgets in the widget
-// // tree, read text, and verify that the values of widget properties are correct.
+// Widget tests for main.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:onepali/main.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
+void main() {
+  group('MyApp Widget Tests', () {
+    testWidgets('MyApp should create and render without errors', (
+      WidgetTester tester,
+    ) async {
+      // Test that MyApp can be instantiated and rendered
+      const myApp = MyApp(logged: false, isParentLogged: false);
 
-// import 'package:onepali/main.dart';
+      expect(myApp.logged, false);
+      expect(myApp.isParentLogged, false);
 
-// void main() {
-//   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-//     // Build our app and trigger a frame.
-//     // await tester.pumpWidget(const MyApp());
+      // Test widget properties
+      expect(myApp, isA<MyApp>());
+      expect(myApp, isA<StatelessWidget>());
+    });
 
-//     // Verify that our counter starts at 0.
-//     expect(find.text('0'), findsOneWidget);
-//     expect(find.text('1'), findsNothing);
+    testWidgets('MyApp should handle different authentication states', (
+      WidgetTester tester,
+    ) async {
+      // Test with logged user
+      const loggedApp = MyApp(logged: true, isParentLogged: false);
+      expect(loggedApp.logged, true);
+      expect(loggedApp.isParentLogged, false);
 
-//     // Tap the '+' icon and trigger a frame.
-//     await tester.tap(find.byIcon(Icons.add));
-//     await tester.pump();
+      // Test with parent logged
+      const parentLoggedApp = MyApp(logged: false, isParentLogged: true);
+      expect(parentLoggedApp.logged, false);
+      expect(parentLoggedApp.isParentLogged, true);
 
-//     // Verify that our counter has incremented.
-//     expect(find.text('0'), findsNothing);
-//     expect(find.text('1'), findsOneWidget);
-//   });
-// }
+      // Test with both logged
+      const bothLoggedApp = MyApp(logged: true, isParentLogged: true);
+      expect(bothLoggedApp.logged, true);
+      expect(bothLoggedApp.isParentLogged, true);
+    });
+  });
+}

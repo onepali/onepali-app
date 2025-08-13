@@ -33,10 +33,11 @@ class ContactScreen extends StatelessWidget {
             contactData?.title ?? 'Need help or have suggestions?',
             style:
                 isMobilePortrait
-                    ? AppStyles.text20PxBold.copyWith(
-                      color: AppColors.kSecondaryColor,
+                    ? AppStyles.text16PxSemiBold.copyWith(
+                      height: 1.6,
+                      color: AppColors.kBlack,
                     )
-                    : AppStyles.text28PxBold.copyWith(
+                    : AppStyles.text20PxBold.copyWith(
                       color: AppColors.kSecondaryColor,
                     ),
           ),

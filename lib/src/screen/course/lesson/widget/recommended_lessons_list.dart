@@ -50,10 +50,12 @@ class RecommendedLessonsList extends StatelessWidget {
         );
         final List<Lesson> recommendedLessonModels =
             allLessons
-                .where((l) => recommendedLessonIds.contains(l.id))
+                .where(
+                  (l) => recommendedLessonIds.contains(l.chapterId.toString()),
+                )
                 .toList();
         logger.d(
-          'Filtered recommended lessons count: \\${recommendedLessonModels.length}--- l.ids: \\${recommendedLessonModels.map((l) => l.id).join(', ')}',
+          'Filtered recommended lessons count: \\${recommendedLessonModels.length}--- l.chapterIds: \\${recommendedLessonModels.map((l) => l.chapterId).join(', ')}',
         );
 
         return ListView.separated(
@@ -64,10 +66,10 @@ class RecommendedLessonsList extends StatelessWidget {
           itemBuilder: (context, i) {
             final lesson = recommendedLessonModels[i];
             final rec = recommendedLessons.firstWhere(
-              (r) => r.lessonId == lesson.id,
+              (r) => r.lessonId == lesson.chapterId.toString(),
             );
             logger.d(
-              'Building LessonCard for lessonId: \${lesson.id}, title: \${lesson.lessonName}, progress: \${rec.progress}',
+              'Building LessonCard for lessonId: \${lesson.chapterId}, title: \${lesson.lessonName}, progress: \${rec.progress}',
             );
             double? progressPercent;
             if (lesson.lessonContent.isNotEmpty) {
@@ -83,7 +85,7 @@ class RecommendedLessonsList extends StatelessWidget {
               // height: AppCardResponsive.getCardHeight(context),
               child: LessonCard(
                 data: lesson,
-                color: Colors.teal[200]!,
+                color: AppColors.lessonBgColor,
                 isLocked: false,
                 isCompleted: progressPercent != null && progressPercent >= 1.0,
                 trailing:
@@ -91,7 +93,7 @@ class RecommendedLessonsList extends StatelessWidget {
                         ? LinearProgressIndicator(
                           value: progressPercent,
                           backgroundColor: Colors.grey.shade300,
-                          color: AppColors.kOrange,
+                          color: AppColors.kRed,
                           minHeight: 2.5,
                           borderRadius: BorderRadius.circular(10),
                         )
@@ -100,7 +102,7 @@ class RecommendedLessonsList extends StatelessWidget {
                   // Safety check for empty lesson content
                   if (lesson.lessonContent.isEmpty) {
                     logger.w(
-                      'Lesson ${lesson.id} has no content, cannot navigate',
+                      'Lesson ${lesson.chapterId} has no content, cannot navigate',
                     );
                     return;
                   }
@@ -111,18 +113,22 @@ class RecommendedLessonsList extends StatelessWidget {
 
                   // If lesson is completed (progress >= content length), start from beginning
                   // Otherwise, use the progress as starting point but clamp to valid range
+                  // Note: progress 0 means not started, progress 1 means first content item completed
                   if (rec.progress >= lesson.lessonContent.length) {
                     safeInitialIndex =
                         0; // Start from beginning for completed lessons
                     logger.d(
-                      'Lesson ${lesson.id} is completed, starting from beginning',
+                      'Lesson ${lesson.chapterId} is completed, starting from beginning',
                     );
+                  } else if (rec.progress == 0) {
+                    safeInitialIndex = 0; // Start from beginning if not started
                   } else {
+                    // Progress represents completed items, so current item is at progress index
                     safeInitialIndex = rec.progress.clamp(0, maxIndex);
                   }
 
                   logger.d(
-                    'Navigating to lesson: ${lesson.id}, content length: ${lesson.lessonContent.length}, progress: ${rec.progress}, safe index: $safeInitialIndex',
+                    'Navigating to lesson: ${lesson.chapterId}, content length: ${lesson.lessonContent.length}, progress: ${rec.progress}, safe index: $safeInitialIndex',
                   );
 
                   Utility.navigateMaterialRoute(
@@ -132,6 +138,19 @@ class RecommendedLessonsList extends StatelessWidget {
                       lessons: [lesson],
                       initialIndex: safeInitialIndex,
                       hasSound: true,
+                      isFromRecommended: true,
+                      nameNp: lessonProvider.courses
+                          .expand((courseModel) => courseModel.courses)
+                          .expand((course) => course.chapters)
+                          .where((chapter) => chapter.lessons.contains(lesson))
+                          .map((chapter) => chapter.nameNp)
+                          .join(', '),
+                      nameEn: lessonProvider.courses
+                          .expand((courseModel) => courseModel.courses)
+                          .expand((course) => course.chapters)
+                          .where((chapter) => chapter.lessons.contains(lesson))
+                          .map((chapter) => chapter.nameEn)
+                          .join(', '),
                     ),
                   );
                 },

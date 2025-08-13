@@ -41,6 +41,7 @@ class NormalConfettiContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showConfetti = isLast || (content.confetti.isNotEmpty);
+    logger.d('showConfetti: ${content.confetti} $showConfetti');
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -48,7 +49,10 @@ class NormalConfettiContent extends StatelessWidget {
         if (showConfetti)
           LottieHelper.fromSource(
             path: content.confetti,
-            repeat: true,
+            fit: BoxFit.cover,
+            repeat: false,
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height,
             type: LottieSourceType.network,
           ),
       ],

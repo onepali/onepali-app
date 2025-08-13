@@ -6,10 +6,12 @@ class Assets {
   static String placeholder = 'placeholder'.jpg;
   static String userAvatar = 'user_avatar'.png;
   static String parentAvatar = 'parent_avatar'.png;
+  static String blueUserAvatar = 'blue_avatar'.png;
 
   static String patternBg = 'pattern_bg'.png;
   static String rewardBackground = 'reward_bg'.png;
   static String rewardPreviewBackground = 'reward_preview_bg'.png;
+  static String notificationOn = 'notification_on'.png;
   static String leoChracterSvg = 'leo_character'.brandSvg;
 
   // Seal
@@ -17,6 +19,8 @@ class Assets {
 
   /// [Image] assets
   static String splashImage = 'splash'.gif;
+  static String mbSplashImage = 'mb_splash'.mp4;
+  static String tbSplashImage = 'tb_splash'.mp4;
 
   /// [Parent] Zone assets
   static String parentZoneImage = 'pz_danfe'.png;
@@ -42,6 +46,7 @@ class Assets {
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
   static String starRewardLottie = 'rewards_star'.lottie;
+  static String alarmExtendLottie = 'alarm_extend'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -51,6 +56,7 @@ class Assets {
   static String speak = 'speak'.icon;
   static String wrong = 'wrong'.icon;
   static String check = 'check'.icon;
+  static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;
   static String play = 'play'.icon;
   static String redo = 'redo'.icon;
@@ -122,5 +128,6 @@ extension AssetsExtension on String {
   String get parentSvg => 'assets/svg/parent/$this.svg';
   String get lottie => 'assets/lottie/$this.json';
   String get audio => '$this.mp3';
+  String get mp4 => 'assets/images/$this.mp4';
   String get json => 'assets/json/$this.json';
 }

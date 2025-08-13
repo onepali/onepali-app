@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../src.dart';
 
 class RewardCollectionWidget extends StatefulWidget {
-  const RewardCollectionWidget({super.key});
+  final String? childId;
+  const RewardCollectionWidget({super.key, this.childId});
 
   @override
   State<RewardCollectionWidget> createState() => _RewardCollectionWidgetState();
@@ -15,7 +16,13 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
   void initState() {
     super.initState();
     Misc.onLayoutRendered(() {
-      context.read<RewardProvider>().fetchChildRewards();
+      if (widget.childId != null) {
+        context.read<RewardProvider>().fetchChildRewards(
+          childId: widget.childId,
+        );
+      } else {
+        context.read<RewardProvider>().fetchChildRewards();
+      }
     });
   }
 
@@ -28,7 +35,8 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
     final double stickerSize = isMobileLandscape ? 100 : 150;
     final double stickerMargin = isMobileLandscape ? 24 : 34;
     final double titleFontSize = isMobileLandscape ? 24 : 28;
-    final double wrongIconSize = isMobileLandscape ? 40 : 52;
+    final double wrongIconSize =
+        isMobileLandscape ? AppConstants.kIconSize : 52;
 
     return Consumer<RewardProvider>(
       builder: (context, rewardProvider, child) {
@@ -92,9 +100,10 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                       child: Center(
                         child:
                             isUnlocked
-                                ? CustomImage(
-                                  unlockedStickers[index].image,
-                                  boxFit: BoxFit.contain,
+                                ? SvgHelper.fromSource(
+                                  path: unlockedStickers[index].image,
+                                  type: SvgSourceType.network,
+                                  fit: BoxFit.contain,
                                 )
                                 : Text(
                                   '?',
@@ -179,7 +188,10 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
           return Scaffold(
             backgroundColor: AppColors.kWhite,
             appBar: CustomAppBar(
-              title: 'My Sticker Collection',
+              title:
+                  widget.childId != null
+                      ? 'Sticker Collection'
+                      : 'My Sticker Collection',
               centerTitle: true,
               showBackButton: false,
               automaticallyImplyLeading: false,

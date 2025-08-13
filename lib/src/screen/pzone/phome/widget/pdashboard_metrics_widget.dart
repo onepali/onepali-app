@@ -130,7 +130,12 @@ class PDashboardMetricsWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Most practiced topics', style: AppStyles.text14PxMedium),
+                Center(
+                  child: Text(
+                    'Most practiced topics',
+                    style: AppStyles.text14PxMedium,
+                  ),
+                ),
                 Gaps.verticalGapOf(8),
                 ...List.generate(
                   mostPracticedTopics.length > 3

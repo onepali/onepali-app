@@ -10,4 +10,8 @@ class ParentLocalStorage {
   static Future<bool> isParentLogged() async {
     return await prefs.getBoolPref(AppConstants.parentDashboardLogged);
   }
+
+  static Future<void> clear() async {
+    await prefs.setBoolPref(AppConstants.parentDashboardLogged, false);
+  }
 }

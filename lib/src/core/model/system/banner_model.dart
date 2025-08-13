@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/navigator_key.dart';
+import 'package:onepali/src/core/widget/url_launcher.dart';
 import 'package:onepali/src/src.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -23,7 +24,7 @@ List<BannerModel> spreadBannerList = [
   BannerModel(
     title: 'Spread the word! Invite a friend.',
     icon: Icons.volunteer_activism_rounded,
-    color: AppColors.kRed,
+    color: AppColors.heartColor,
     onTap: () {
       SharePlus.instance.share(
         ShareParams(
@@ -37,7 +38,7 @@ List<BannerModel> spreadBannerList = [
   BannerModel(
     title: 'Enjoying O Nepali with your little one? We\'d love your review!',
     icon: Icons.thumb_up_rounded,
-    color: AppColors.kYellow,
+    color: AppColors.thumbColor,
     onTap: () {
       Utility.navigate(
         navigatorKey.currentContext ?? navigatorKey.currentState!.context,
@@ -50,7 +51,9 @@ List<BannerModel> spreadBannerList = [
     icon: Icons.textsms_rounded,
     color: AppColors.kPurple,
     onTap: () {
-      showCustomToaster('Coming Soon!');
+      launchInBrowser(
+        'mailto:${AppConstants.supportMail}?subject=O Nepali Feedback',
+      );
     },
   ),
 ];

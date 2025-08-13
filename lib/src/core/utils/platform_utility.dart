@@ -31,4 +31,9 @@ class PlatformUtility {
   static bool isPortrait(BuildContext context) {
     return MediaQuery.of(context).orientation == Orientation.portrait;
   }
+
+  /// Returns true if the device is a tablet in portrait orientation
+  static bool isTabletPortrait(BuildContext context) {
+    return isTablet(context) && isPortrait(context);
+  }
 }

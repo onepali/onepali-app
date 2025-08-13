@@ -18,6 +18,7 @@ class ChildUserModel {
   final String parentUid;
   final String role;
   final double screenTime;
+  final bool hasScreenTime;
   final ScreenTimeModel? screenTimeTracking;
   final String uid;
   final CompletedLessons? completedLessons;
@@ -31,6 +32,7 @@ class ChildUserModel {
     required this.parentUid,
     required this.role,
     required this.screenTime,
+    required this.hasScreenTime,
     required this.uid,
     this.screenTimeTracking,
     this.completedLessons,
@@ -45,6 +47,7 @@ class ChildUserModel {
     parentUid: json["parent_uid"] ?? "",
     role: json["role"] ?? "",
     screenTime: (json["screen_time"] ?? 0).toDouble(),
+    hasScreenTime: json["has_screen_time"] ?? false,
     uid: json["uid"] ?? "",
     screenTimeTracking:
         json["screenTimeTracking"] != null
@@ -97,6 +100,7 @@ class ChildUserModel {
     "parent_uid": parentUid,
     "role": role,
     "screen_time": screenTime,
+    "has_screen_time": hasScreenTime,
     "uid": uid,
     if (screenTimeTracking != null)
       "screenTimeTracking": screenTimeTracking!.toJson(),
@@ -125,6 +129,7 @@ class ChildUserModel {
       parentUid: parentUid,
       role: role,
       screenTime: screenTime,
+      hasScreenTime: hasScreenTime,
       uid: uid,
       screenTimeTracking: newScreenTimeTracking,
       completedLessons: completedLessons,

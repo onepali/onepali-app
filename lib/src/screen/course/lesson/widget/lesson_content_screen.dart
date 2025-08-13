@@ -8,12 +8,18 @@ class LessonContentScreen extends StatefulWidget {
   final List<Lesson> lessons;
   final int initialIndex;
   final bool hasSound;
+  final String nameNp;
+  final String nameEn;
+  final bool isFromRecommended;
   const LessonContentScreen({
     super.key,
     required this.lesson,
     required this.lessons,
     this.initialIndex = 0,
     this.hasSound = true,
+    required this.nameNp,
+    required this.nameEn,
+    this.isFromRecommended = false,
   });
 
   @override
@@ -22,10 +28,24 @@ class LessonContentScreen extends StatefulWidget {
 
 class _LessonContentScreenState extends State<LessonContentScreen> {
   bool _showGoodRemark = false;
+  int _currentContentIndex = 0; // Start with intro screen
 
   @override
   void initState() {
     super.initState();
+
+    // Set initial content index based on whether coming from recommended lessons
+    if (widget.isFromRecommended) {
+      // For recommended lessons, use the provided initialIndex + 1 to account for intro screen
+      _currentContentIndex = widget.initialIndex + 1;
+      logger.d(
+        'Recommended lesson: setting initial index to $_currentContentIndex (content index: ${widget.initialIndex})',
+      );
+    } else {
+      // For regular lessons, start with intro screen (index 0)
+      _currentContentIndex = 0;
+      logger.d('Regular lesson: starting with intro screen (index 0)');
+    }
 
     // Start learning session for metrics tracking (safe for initState)
     MetricsTrackingHelper.startLearningSessionSafe(context);
@@ -42,38 +62,17 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         return;
       }
 
-      // Clamp initial index to valid range
-      final maxIndex = widget.lesson.lessonContent.length - 1;
-      final safeIndex = widget.initialIndex.clamp(0, maxIndex);
-
-      logger.d(
-        'LessonContentScreen: initializing with index $safeIndex (requested: ${widget.initialIndex}, max: $maxIndex)',
-      );
-
       // Reset audio state first to ensure clean start
       audioProvider.resetAudioState();
-      audioProvider.resetIndex(safeIndex, widget.lesson.lessonContent.length);
-
-      final content = widget.lesson.lessonContent[safeIndex];
-      if (content.type == 'tap_send') {
-        // For tap_send lessons, play word audio first
-        if (content.wordAudio.isNotEmpty) {
-          await audioProvider.playWordAudio(content.wordAudio);
-        }
-      } else {
-        // For regular lessons, play content audio
-        if (content.audio.isNotEmpty) {
-          await audioProvider.playContentAudio(
-            widget.lesson.lessonContent,
-            audioSourceType: AudioSourceType.network,
-          );
-        }
-      }
+      // Don't set the audioProvider index here, we'll handle it per content
     });
   }
 
   @override
   void dispose() {
+    // Save current progress before leaving
+    _saveCurrentProgress();
+
     // Clean up audio when leaving the screen
     final audioProvider = context.read<LessonAudioProvider>();
     audioProvider.stopAudio();
@@ -82,11 +81,241 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     super.dispose();
   }
 
+  void _saveCurrentProgress() {
+    logger.d('_saveCurrentProgress called');
+    logger.d('widget.isFromRecommended: ${widget.isFromRecommended}');
+    logger.d('_currentContentIndex: $_currentContentIndex');
+    logger.d(
+      'lesson.lessonContent.length: ${widget.lesson.lessonContent.length}',
+    );
+
+    // Save progress when user exits the lesson
+    // Remove the isFromRecommended restriction - save progress for any lesson with content
+    if (_currentContentIndex > 0 &&
+        _currentContentIndex <= widget.lesson.lessonContent.length &&
+        widget.lesson.lessonContent.isNotEmpty) {
+      final contentIndex = _currentContentIndex - 1; // Convert to 0-based index
+      final content = widget.lesson.lessonContent[contentIndex];
+      logger.d(
+        'Saving current progress: contentIndex=$contentIndex, lessonId=${widget.lesson.chapterId}',
+      );
+      _saveProgress(content, contentIndex);
+    } else {
+      logger.d('Progress not saved - conditions not met:');
+      logger.d('  currentIndex > 0: ${_currentContentIndex > 0}');
+      logger.d(
+        '  currentIndex <= length: ${_currentContentIndex <= widget.lesson.lessonContent.length}',
+      );
+      logger.d(
+        '  has lesson content: ${widget.lesson.lessonContent.isNotEmpty}',
+      );
+    }
+  }
+
+  void _nextContent() {
+    if (_currentContentIndex < widget.lesson.lessonContent.length) {
+      setState(() {
+        _currentContentIndex++;
+      });
+
+      // Save progress after advancing (for any lesson with content)
+      if (_currentContentIndex > 1 && widget.lesson.lessonContent.isNotEmpty) {
+        final contentIndex =
+            _currentContentIndex - 2; // Previous content index (0-based)
+        if (contentIndex >= 0 &&
+            contentIndex < widget.lesson.lessonContent.length) {
+          final content = widget.lesson.lessonContent[contentIndex];
+          logger.d(
+            'Auto-saving progress after advancing to next content: contentIndex=$contentIndex',
+          );
+          _saveProgress(content, contentIndex);
+        }
+      }
+
+      if (_currentContentIndex >= widget.lesson.lessonContent.length) {
+        final lastContent = widget.lesson.lessonContent.last;
+        if (lastContent.type != 'tap_send') {
+          _completeRegularLesson();
+        }
+      }
+    }
+  }
+
+  Future<void> _completeRegularLesson() async {
+    setState(() {
+      _showGoodRemark = true;
+    });
+
+    try {
+      final lessonProvider = context.read<LessonProvider>();
+      await lessonProvider.incrementTotalLessonsCompleted(
+        context,
+        widget.lesson.id,
+        widget.lesson.lessonName,
+      );
+    } catch (e) {
+      logger.e('Error completing lesson: $e');
+    }
+
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
+  void _previousContent() {
+    if (_currentContentIndex > 0) {
+      setState(() {
+        _currentContentIndex--;
+      });
+    }
+  }
+
+  Widget _buildLessonContent(LessonContent content, int contentIndex) {
+    final isFirst = contentIndex == 0;
+    final isLast = contentIndex == widget.lesson.lessonContent.length - 1;
+    final isTapSendType = content.type == 'tap_send';
+
+    // Save progress when content is viewed (for any lesson with content)
+    Misc.onLayoutRendered(() {
+      _saveProgress(content, contentIndex);
+    });
+
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Previous button
+          if (!isFirst && !isTapSendType)
+            Container(
+              height: AppConstants.kIconSize,
+              width: AppConstants.kIconSize,
+              decoration: BoxDecoration(
+                color: AppColors.kWhite,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.kBlack.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              child: IconButton(
+                icon: SvgHelper.fromSource(
+                  path: Assets.leftArrow,
+
+                  color: AppColors.kSecondaryColor,
+                ),
+                onPressed: _previousContent,
+              ),
+            ),
+
+          // Main content
+          Expanded(
+            child:
+                isTapSendType
+                    ? TapSendLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
+                      },
+                      onLessonComplete: () async {
+                        await _saveProgress(content, contentIndex);
+                        // For tap_send lessons, don't trigger the main lesson completion
+                        // as TapSendLessonCard handles its own animation
+                        // Just save progress and close after a delay
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
+                        }
+
+                        // Close lesson after TapSendLessonCard animation
+                        Future.delayed(const Duration(seconds: 3), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                      index: contentIndex,
+                    )
+                    : LessonContentCard(
+                      content: content,
+                      isPlaying: false,
+                      hasSound: widget.hasSound,
+                      index: contentIndex,
+                    ),
+          ),
+
+          // Next button
+          if (!isLast && !isTapSendType)
+            Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                color: AppColors.kWhite,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.kBlack.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              child: IconButton(
+                icon: SvgHelper.fromSource(
+                  path: Assets.rightArrow,
+                  height: 30,
+                  width: 30,
+                  color: AppColors.kSecondaryColor,
+                ),
+                onPressed: _nextContent,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _saveProgress(LessonContent content, int contentIndex) async {
+    try {
+      final recommendedLessonProvider =
+          context.read<RecommendedLessonProvider>();
+      final childId = await ChildLocalStorage.getCurrentChildId();
+
+      if (childId!.isNotEmpty) {
+        await recommendedLessonProvider.saveOrUpdateLessonProgress(
+          childId: childId,
+          lessonId: widget.lesson.chapterId.toString(),
+          progress: contentIndex + 1,
+          title: content.nameNp,
+          image: content.image,
+        );
+        logger.d(
+          'Progress saved: lessonId=${widget.lesson.chapterId}, progress=${contentIndex + 1}',
+        );
+      }
+    } catch (e) {
+      logger.e('Error saving progress: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final audioProvider = context.watch<LessonAudioProvider>();
-
-    // Safety check: ensure lesson has content and currentIndex is valid
+    // Safety check: ensure lesson has content
     if (widget.lesson.lessonContent.isEmpty) {
       logger.w(
         'Lesson ${widget.lesson.id} has no content, showing empty state',
@@ -97,331 +326,202 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       );
     }
 
-    // Clamp current index to valid range
-    final maxIndex = widget.lesson.lessonContent.length - 1;
-    final safeCurrentIndex = audioProvider.currentIndex.clamp(0, maxIndex);
-
-    // If audioProvider has wrong index, reset it
-    if (audioProvider.currentIndex != safeCurrentIndex) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        audioProvider.resetIndex(
-          safeCurrentIndex,
-          widget.lesson.lessonContent.length,
-        );
-      });
-    }
-
-    final content = widget.lesson.lessonContent[safeCurrentIndex];
-    final isFirst = safeCurrentIndex == 0;
-    final isLast = safeCurrentIndex == widget.lesson.lessonContent.length - 1;
-    final isTapSendType = content.type == 'tap_send';
+    final contentList = widget.lesson.lessonContent;
+    final idx = _currentContentIndex;
 
     logger.d(
-      'LessonContentScreen: currentIndex: $safeCurrentIndex, isFirst: $isFirst, isLast: $isLast, type: ${content.type}',
+      'LessonContentScreen: total: ${contentList.length}, current: $idx, remaining: ${contentList.length - idx}',
     );
-    return Scaffold(
-      backgroundColor: AppColors.kWhite,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 16,
-              right: 16,
-              child: IconButton(
-                icon: SvgHelper.fromSource(
-                  path: Assets.wrong,
-                  height: 40,
-                  width: 40,
+
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, value) {
+        if (didPop) {
+          logger.d('PopScope: onPopInvoked called');
+          _saveCurrentProgress();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.kWhite,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              // Close button
+              Positioned(
+                top: 16,
+                right: 16,
+                child: IconButton(
+                  icon: SvgHelper.fromSource(
+                    path: Assets.wrong,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
+                  ),
+                  onPressed: () {
+                    _saveCurrentProgress();
+                    Navigator.of(context).pop();
+                  },
                 ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
-            ),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (!isFirst && !isTapSendType)
-                    Container(
-                      height: 17.h(context),
-                      width: 17.h(context),
-                      decoration: BoxDecoration(
-                        color: AppColors.kWhite,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.kBlack.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: SvgHelper.fromSource(
-                          path: Assets.leftArrow,
-                          height: 48,
-                          width: 48,
-                          color: AppColors.kSecondaryColor,
+
+              // Main content
+              if (idx == 0)
+                // Show lesson intro (similar to story intro)
+                Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.lessonBgColor,
                         ),
-                        onPressed:
-                            audioProvider.isPlaying
-                                ? null
-                                : () async {
-                                  audioProvider.navigateToPreviousContent(
-                                    widget.lesson.lessonContent,
-                                    context,
-                                    widget.lesson,
-                                  );
-                                  final safeIndex = audioProvider.currentIndex
-                                      .clamp(
-                                        0,
-                                        widget.lesson.lessonContent.length - 1,
-                                      );
-                                  final prevContent =
-                                      widget.lesson.lessonContent[safeIndex];
-                                  if (prevContent.audio.isNotEmpty) {
-                                    await audioProvider.playContentAudio(
-                                      widget.lesson.lessonContent,
-                                      audioSourceType: AudioSourceType.network,
-                                    );
-                                  }
-                                },
-                      ),
-                    ),
-                  Expanded(
-                    child:
-                        widget.lesson.lessonContent[safeCurrentIndex].type ==
-                                'tap_send'
-                            ? TapSendLessonCard(
-                              content: content,
-                              isPlaying: audioProvider.isPlaying,
-                              isLastItem:
-                                  safeCurrentIndex ==
-                                  widget.lesson.lessonContent.length - 1,
-                              onCorrectAnswer: () async {
-                                // Handle correct answer for non-last items
-                                final recommendedLessonProvider =
-                                    context.read<RecommendedLessonProvider>();
-                                final prefs = SharedPreferencesService();
-                                final childId =
-                                    await prefs.getStringPref(
-                                      AppConstants.childIdKey,
-                                    ) ??
-                                    '';
-                                if (childId.isNotEmpty) {
-                                  await recommendedLessonProvider
-                                      .saveOrUpdateLessonProgress(
-                                        childId: childId,
-                                        lessonId:
-                                            widget.lesson.chapterId.toString(),
-                                        progress: safeCurrentIndex + 1,
-                                        title: content.nameNp,
-                                        image: content.image,
-                                      );
-                                }
-
-                                // If last item, exit lesson instead of navigating
-                                if (safeCurrentIndex ==
-                                    widget.lesson.lessonContent.length - 1) {
-                                  setState(() {
-                                    _showGoodRemark = true;
-                                  });
-                                  final lessonProvider =
-                                      context.read<LessonProvider>();
-                                  final lessonId = widget.lesson.id;
-                                  final lessonName = widget.lesson.lessonName;
-                                  await lessonProvider
-                                      .incrementTotalLessonsCompleted(
-                                        context,
-                                        lessonId,
-                                        lessonName,
-                                      );
-                                  Future.delayed(
-                                    const Duration(seconds: 4),
-                                    () {
-                                      if (mounted) {
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
-                                  );
-                                } else {
-                                  // Move to next content
-                                  audioProvider.navigateToNextContent(
-                                    widget.lesson.lessonContent,
-                                    context,
-                                    widget.lesson,
-                                  );
-                                }
-                              },
-                              onLessonComplete: () async {
-                                // Handle lesson completion for last item
-                                final recommendedLessonProvider =
-                                    context.read<RecommendedLessonProvider>();
-                                final prefs = SharedPreferencesService();
-                                final childId =
-                                    await prefs.getStringPref(
-                                      AppConstants.childIdKey,
-                                    ) ??
-                                    '';
-                                if (childId.isNotEmpty) {
-                                  await recommendedLessonProvider
-                                      .saveOrUpdateLessonProgress(
-                                        childId: childId,
-                                        lessonId:
-                                            widget.lesson.chapterId.toString(),
-                                        progress: safeCurrentIndex + 1,
-                                        title: content.nameNp,
-                                        image: content.image,
-                                      );
-                                }
-
-                                // Mark lesson as completed
-                                setState(() {
-                                  _showGoodRemark = true;
-                                });
-
-                                final lessonProvider =
-                                    context.read<LessonProvider>();
-                                final lessonId = widget.lesson.id;
-                                final lessonName = widget.lesson.lessonName;
-                                await lessonProvider
-                                    .incrementTotalLessonsCompleted(
-                                      context,
-                                      lessonId,
-                                      lessonName,
-                                    );
-
-                                // Reset audio state for next play
-                                audioProvider.resetAudioState();
-
-                                // Auto-hide after delay and close lesson
-                                Future.delayed(const Duration(seconds: 4), () {
-                                  if (mounted) {
-                                    Navigator.of(context).pop();
-                                  }
-                                });
-                              },
-                              index: safeCurrentIndex,
-                            )
-                            : LessonContentCard(
-                              content: content,
-                              isPlaying: audioProvider.isPlaying,
-                              hasSound: widget.hasSound,
-                              onPlay: () async {
-                                // Always play from start when tapped
-                                await audioProvider.playContentAudio(
-                                  widget.lesson.lessonContent,
-                                  audioSourceType: AudioSourceType.network,
-                                  forceReplay: true,
-                                );
-                                if (!context.mounted) return;
-                                final recommendedLessonProvider =
-                                    context.read<RecommendedLessonProvider>();
-                                final prefs = SharedPreferencesService();
-                                final childId =
-                                    await prefs.getStringPref(
-                                      AppConstants.childIdKey,
-                                    ) ??
-                                    '';
-                                if (childId.isNotEmpty) {
-                                  await recommendedLessonProvider
-                                      .saveOrUpdateLessonProgress(
-                                        childId: childId,
-                                        lessonId:
-                                            widget.lesson.chapterId.toString(),
-                                        progress: safeCurrentIndex + 1,
-                                        title: content.nameNp,
-                                        image: content.image,
-                                      );
-                                }
-                                if (safeCurrentIndex ==
-                                    widget.lesson.lessonContent.length - 1) {
-                                  setState(() {
-                                    _showGoodRemark = true;
-                                  });
-                                  final lessonProvider =
-                                      context.read<LessonProvider>();
-                                  final lessonId = widget.lesson.id;
-                                  final lessonName = widget.lesson.lessonName;
-                                  await lessonProvider
-                                      .incrementTotalLessonsCompleted(
-                                        context,
-                                        lessonId,
-                                        lessonName,
-                                      );
-                                }
-                              },
-                              index: safeCurrentIndex,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Lesson thumbnail
+                            if (widget.lesson.thumbnail.isNotEmpty)
+                              CustomImage(
+                                widget.lesson.thumbnail,
+                                width: 180,
+                                height: 180,
+                                circular: false,
+                                cover: false,
+                                boxFit: BoxFit.contain,
+                                imageType: CustomImageType.network,
+                              ),
+                            Gaps.verticalGapOf(10),
+                            // Lesson title
+                            Text(
+                              widget.nameNp,
+                              style: AppStyles.text24PxBold.copyWith(
+                                // color: AppColors.kSecondaryColor,
+                                fontSize: 40,
+                                fontFamily: 'Mukta',
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                  ),
-                  if (!isLast && !isTapSendType)
-                    Container(
-                      height: 17.h(context),
-                      width: 17.h(context),
+                            // Gaps.verticalGapOf(16),
+                            // Lesson description
+                            if (widget.nameEn.isNotEmpty)
+                              Text(
+                                widget.nameEn,
+                                style: AppStyles.text16PxMedium.copyWith(
+                                  color: AppColors.kBlack,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: IconButton(
+                        icon: SvgHelper.fromSource(
+                          path: Assets.wrong,
+                          height: AppConstants.kIconSize,
+                          width: AppConstants.kIconSize,
+                        ),
+                        onPressed: () {
+                          _saveCurrentProgress();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                    // Start button
+                    Positioned(
+                      right: 25,
+                      top: 0,
+                      bottom: 0,
+                      child: customInkwell(
+                        onTap: _nextContent,
+                        child: Container(
+                          height: AppConstants.kIconSize,
+                          width: AppConstants.kIconSize,
+                          decoration: BoxDecoration(
+                            color: AppColors.kWhite,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.kBlack.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            // vertical: 2,
+                          ),
+                          child: SvgHelper.fromSource(
+                            path: Assets.rightArrow,
+                            // height: 30,
+                            // width: 30,
+                            color: AppColors.kSecondaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              else if (idx > 0 && idx <= contentList.length)
+                // Show lesson content
+                _buildLessonContent(contentList[idx - 1], idx - 1),
+
+              // Show good remark at the end (only for non-tap_send lessons)
+              if (_showGoodRemark &&
+                  idx > 0 &&
+                  idx <= contentList.length &&
+                  contentList[idx - 1].type != 'tap_send')
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 500),
+                  top: MediaQuery.of(context).size.height * 0.1,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.kWhite,
-                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.95),
+                        borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.kBlack.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
                           ),
                         ],
                       ),
-                      child: IconButton(
-                        icon: SvgHelper.fromSource(
-                          path: Assets.rightArrow,
-                          height: 48,
-                          width: 48,
-                          color: AppColors.kSecondaryColor,
-                        ),
-                        onPressed:
-                            audioProvider.isPlaying
-                                ? null
-                                : () async {
-                                  audioProvider.navigateToNextContent(
-                                    widget.lesson.lessonContent,
-                                    context,
-                                    widget.lesson,
-                                  );
-                                  final safeIndex = audioProvider.currentIndex
-                                      .clamp(
-                                        0,
-                                        widget.lesson.lessonContent.length - 1,
-                                      );
-                                  final nextContent =
-                                      widget.lesson.lessonContent[safeIndex];
-                                  if (nextContent.audio.isNotEmpty) {
-                                    await audioProvider.playContentAudio(
-                                      widget.lesson.lessonContent,
-                                      audioSourceType: AudioSourceType.network,
-                                    );
-                                  }
-                                },
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomImage(
+                            Assets.goodRemark,
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            imageType: CustomImageType.local,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Excellent Work!',
+                            style: AppStyles.text24PxBold.copyWith(
+                              color: AppColors.kButtonGreen,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Lesson Completed Successfully',
+                            style: AppStyles.text16PxMedium.copyWith(
+                              color: AppColors.kSecondaryColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                ],
-              ),
-            ),
-            // Show good remark image at last index only after audio played
-            if (_showGoodRemark && isLast)
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 500),
-                bottom: 0,
-                right: 0,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: 1.0,
-                  child: CustomImage(
-                    Assets.goodRemark,
-                    height: 150,
-                    width: 150,
-                    imageType: CustomImageType.local,
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

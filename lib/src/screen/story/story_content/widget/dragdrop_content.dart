@@ -76,7 +76,11 @@ class DragDropContentState extends State<DragDropContent> {
                   if (isGuest) {
                     Navigator.pop(context);
                   } else {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRoutes.dashboardScreen,
+                      (route) => false,
+                    );
                   }
                 },
                 icon: Icons.home,
@@ -100,15 +104,15 @@ class DragDropContentState extends State<DragDropContent> {
               if (char1 != null)
                 SvgHelper.fromSource(
                   path: char1,
-                  height: 20.h(context),
-                  width: 70.w(context),
+                  height: 30.h(context),
+                  width: 80.w(context),
                   type: SvgSourceType.network,
                 ),
               if (char2 != null)
                 SvgHelper.fromSource(
                   path: char2,
-                  height: 20.h(context),
-                  width: 70.w(context),
+                  height: 30.h(context),
+                  width: 80.w(context),
                   type: SvgSourceType.network,
                 ),
             ],
@@ -141,14 +145,15 @@ class DragDropContentState extends State<DragDropContent> {
                 builder: (context, candidate, rejected) {
                   final isMatched = droppedOn.contains(i) && correct[i];
                   return Container(
-                    width: 200,
-                    height: 60,
+                    width: 160,
+                    height: 50,
                     margin: const EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color:
+                          isMatched ? AppColors.kButtonGreen : Colors.grey[300],
                       borderRadius: BorderRadius.circular(48),
                       border: Border.all(
-                        color: Colors.white,
+                        color: AppColors.kWhite,
                         width: 6,
                         style: BorderStyle.solid,
                       ),
@@ -158,14 +163,16 @@ class DragDropContentState extends State<DragDropContent> {
                           isMatched
                               ? const Icon(
                                 Icons.check,
-                                color: Colors.green,
+                                color: AppColors.kWhite,
                                 size: 40,
                               )
                               : Text(
                                 conv[i].messageEn,
-                                style: AppStyles.text20PxSemiBold.copyWith(
+                                style: AppStyles.text16PxSemiBold.copyWith(
+                                  // Larger text
                                   color: AppColors.kGrey,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                     ),
                   );
@@ -173,7 +180,7 @@ class DragDropContentState extends State<DragDropContent> {
               );
             }),
           ),
-          Gaps.verticalGapOf(32),
+          Gaps.verticalGapOf(15),
           // Draggable buttons (messageNp)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -206,14 +213,6 @@ class DragDropContentState extends State<DragDropContent> {
                         showTryAgain: showTryAgain,
                       ),
                     ),
-                    if (showTryAgain)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: Text(
-                          'Try Again',
-                          style: TextStyle(color: Colors.red, fontSize: 14),
-                        ),
-                      ),
                   ],
                 ),
               );
@@ -233,11 +232,11 @@ class DragDropContentState extends State<DragDropContent> {
   }) {
     final colors = [const Color(0xFFFFAEBB), const Color(0xFF2DD4BF)];
     return Container(
-      width: 220,
-      height: 70,
+      width: 160,
+      height: 50,
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: colors[i % colors.length],
+        color: showTryAgain ? AppColors.kButtonRed : colors[i % colors.length],
         borderRadius: BorderRadius.circular(48),
         boxShadow: [
           if (!isDropped)
@@ -251,8 +250,8 @@ class DragDropContentState extends State<DragDropContent> {
       ),
       child: Center(
         child: Text(
-          label,
-          style: AppStyles.text20PxSemiBold.copyWith(
+          showTryAgain ? 'Try Again!' : label,
+          style: AppStyles.text18PxSemiBold.copyWith(
             color: AppColors.kBlack,
             fontFamily: 'Mukta',
           ),

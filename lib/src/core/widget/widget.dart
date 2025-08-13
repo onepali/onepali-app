@@ -75,6 +75,9 @@ export 'double_tap_trigger.dart';
 /// Custom [Youtube] Video Widget
 export 'youtube_video_widget.dart';
 
+/// Custom [Video] Player Widget
+export 'custom_video_player.dart';
+
 /// [Dialog] Widget
 export 'dialog/dialog_manager.dart';
 
@@ -86,6 +89,9 @@ export 'bottom_sheet_manager.dart';
 
 /// Custom [Loader]
 export 'custom_loader.dart';
+
+/// Status [Handler]
+export 'status_handler.dart';
 
 /// [Learning Session] Wrapper
 export 'learning_session_wrapper.dart';

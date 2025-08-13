@@ -50,11 +50,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-                child: Column(children: [_buildChildProfilesGrid()]),
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [_buildChildProfilesGrid()],
+                ),
               ),
             ),
           ),
@@ -98,20 +103,36 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 );
                 authState.setCurrentChildId(child.uid);
 
-                // // Check if the screen time limit is already exceeded before navigating
-                // logger.i(
-                //   '🔍 Checking screen time limit for child ${child.uid} before navigation',
-                // );
-                // final isLimitExceeded = await ScreenTimeService.instance
-                //     .checkScreenTimeLimitExceeded(child.uid);
+                // Update the provider's screen time enabled status
+                if (!mounted) return;
+                final childProvider = Provider.of<ChildUserProvider>(
+                  context,
+                  listen: false,
+                );
+                await childProvider.updateScreenTimeEnabledStatusByChildId(
+                  child.uid,
+                );
 
-                // if (isLimitExceeded) {
-                //   logger.w(
-                //     '⚠️ Screen time limit already exceeded for child ${child.uid}',
-                //   );
-                //   // Dialog is already shown by the check method
-                //   return; // Don't navigate to dashboard
-                // }
+                // Check if the screen time limit is already exceeded before navigating (only if enabled)
+                if (child.hasScreenTime && child.screenTime > 0) {
+                  logger.i(
+                    '🔍 Checking screen time limit for child ${child.uid} before navigation',
+                  );
+                  final isLimitExceeded = await ScreenTimeService.instance
+                      .checkScreenTimeLimitExceeded(child.uid);
+
+                  if (isLimitExceeded) {
+                    logger.w(
+                      '⚠️ Screen time limit already exceeded for child ${child.uid}',
+                    );
+                    // Dialog is already shown by the check method
+                    return; // Don't navigate to dashboard
+                  }
+                } else {
+                  logger.i(
+                    '🚫 Screen time disabled for child ${child.fullName}, skipping limit check',
+                  );
+                }
 
                 logger.i('🔄 Navigating to dashboard with new child');
                 // Navigator.of(context).pop();
@@ -138,7 +159,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     width: 3,
                   ),
                 ),
-                child: CustomImage(child.avatarUrl, height: 60, width: 60),
+                child: CustomImage(
+                  child.avatarUrl,
+                  height: 60,
+                  width: 60,
+                  isProfileImage: true,
+                ),
               ),
             ),
             Gaps.horizontalGapOf(15),
@@ -152,13 +178,33 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Icon(Icons.local_police, size: 32, color: AppColors.kYellow),
+            customInkwell(
+              onTap: () {
+                if (index == _selectedChildIndex) {
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(),
+                  );
+                } else {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    RewardCollectionWidget(childId: targetChild.uid),
+                  );
+                }
+              },
+              child: const Icon(
+                Icons.local_police,
+                size: 32,
+                color: AppColors.kYellow,
+              ),
+            ),
           ],
         );
       } else {
         return GestureDetector(
           onTap: () {
-            if (widget.totalChildCount >= 3) {
+            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
               DialogManager.showCustomDialog(
                 context: context,
                 title: 'You\'ve added 3 kids!',
@@ -169,15 +215,20 @@ class _DrawerScreenState extends State<DrawerScreen> {
               );
               return;
             } else {
-              Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+              Utility.navigateMaterialRoute(
+                context,
+                ChildRegisterScreen(),
+                routeName: AppRoutes.childRegisterScreen,
+              );
             }
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 50,
-                width: 50,
+                height: 55,
+                width: 55,
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade600,
                   shape: BoxShape.circle,
@@ -201,16 +252,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: items[index],
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            items
+                .map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: item,
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -220,60 +274,79 @@ class _DrawerScreenState extends State<DrawerScreen> {
       height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kPurple),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                margin: const EdgeInsets.only(right: 4, top: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.kButtonGrey,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.close,
-                  color: AppColors.kPitchBlack,
-                  size: 24,
-                ),
-              ),
-            ),
-          ),
-          for (int i = 0; i < drawerSettings.length; i++)
-            ListTile(
-              contentPadding: const EdgeInsets.only(bottom: 8.0),
-              onTap: () {
-                if (drawerSettings[i].route == AppRoutes.comingSoon) {
-                  showCustomToaster('This feature is coming soon.');
-                  return;
-                }
-                Utility.navigate(
-                  context,
-                  drawerSettings[i].route,
-                  arguments: drawerSettings[i].args,
-                );
-              },
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () async {
+                final isParentLogged =
+                    await ParentLocalStorage.isParentLogged();
+                logger.d('isParentLogged: $isParentLogged');
 
-              leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgHelper.fromSource(
-                  path: drawerSettings[i].icon,
-                  height: 40,
-                  width: 40,
-                ),
-              ),
-              dense: true,
-              title: Text(
-                drawerSettings[i].name,
-                style: AppStyles.text18PxMedium.copyWith(
-                  color: AppColors.kWhite,
+                if (isParentLogged) {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  UserAppBar.setTabIndex(0);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => DashboardScreen(),
+                      settings: RouteSettings(name: AppRoutes.dashboardScreen),
+                    ),
+                  );
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 4, top: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.kButtonGrey,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: const Icon(
+                    Icons.close,
+                    color: AppColors.kPitchBlack,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
-        ],
+            for (int i = 0; i < drawerSettings.length; i++)
+              ListTile(
+                contentPadding: const EdgeInsets.only(bottom: 8.0),
+                onTap: () {
+                  if (drawerSettings[i].route == AppRoutes.comingSoon) {
+                    showCustomToaster('This feature is coming soon.');
+                    return;
+                  }
+                  Utility.navigate(
+                    context,
+                    drawerSettings[i].route,
+                    arguments: drawerSettings[i].args,
+                  );
+                },
+
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgHelper.fromSource(
+                    path: drawerSettings[i].icon,
+                    height: 40,
+                    width: 40,
+                  ),
+                ),
+                dense: true,
+                title: Text(
+                  drawerSettings[i].name,
+                  style: AppStyles.text18PxMedium.copyWith(
+                    color: AppColors.kWhite,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

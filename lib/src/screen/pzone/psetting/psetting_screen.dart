@@ -81,7 +81,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: const Text(
-              'Your Children',
+              'Your children',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
@@ -109,7 +109,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               title: 'Add child',
               isAdd: true,
               onTap: () {
-                if (children.length >= 3) {
+                if (children.length >= 3 && !GlobalConfig.isUserTesting) {
                   DialogManager.showCustomDialog(
                     context: context,
                     title: 'You\'ve added 3 kids!',
@@ -119,7 +119,11 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                     onConfirm: () {},
                   );
                 } else {
-                  Utility.navigateMaterialRoute(context, ChildRegisterScreen());
+                  Utility.navigateMaterialRoute(
+                    context,
+                    ChildRegisterScreen(),
+                    routeName: AppRoutes.childRegisterScreen,
+                  );
                 }
               },
             ),
@@ -195,183 +199,183 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListTile(
-              leading: Container(
-                height: isMobilePortrait ? 40 : 48,
-                width: isMobilePortrait ? 40 : 48,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                ),
-                child: const Icon(Icons.assignment),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-              title: const Text('My plan'),
-              onTap: () {
-                Utility.navigate(context, AppRoutes.parentPlansScreen);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListTile(
-              leading: Container(
-                height: isMobilePortrait ? 40 : 48,
-                width: isMobilePortrait ? 40 : 48,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                ),
-                child: SvgHelper.fromSource(path: Assets.unsubscribe),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-              title: const Text('Cancel Subscription'),
-              onTap: () {},
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16),
+          //   child: ListTile(
+          //     leading: Container(
+          //       height: isMobilePortrait ? 40 : 48,
+          //       width: isMobilePortrait ? 40 : 48,
+          //       padding: const EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: AppColors.kLightGrey.withValues(alpha: 0.3),
+          //       ),
+          //       child: const Icon(Icons.assignment),
+          //     ),
+          //     contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+          //     title: const Text('My plan'),
+          //     onTap: () {
+          //       Utility.navigate(context, AppRoutes.parentPlansScreen);
+          //     },
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16),
+          //   child: ListTile(
+          //     leading: Container(
+          //       height: isMobilePortrait ? 40 : 48,
+          //       width: isMobilePortrait ? 40 : 48,
+          //       padding: const EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: AppColors.kLightGrey.withValues(alpha: 0.3),
+          //       ),
+          //       child: SvgHelper.fromSource(path: Assets.unsubscribe),
+          //     ),
+          //     contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+          //     title: const Text('Cancel Subscription'),
+          //     onTap: () {},
+          //   ),
+          // ),
           Gaps.verticalGapOf(24),
-
-          Container(
-            color: Colors.blue[50],
-            height: isMobilePortrait ? 130 : 80,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            child:
-                isMobilePortrait
-                    ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          spacing: 10,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Utility.navigateMaterialRoute(
-                                  context,
-                                  SystemScreen(initialIndex: 0),
-                                  routeName: AppRoutes.aboutUsScreen,
-                                );
-                              },
-                              child: Text(
-                                'About us',
-                                style:
-                                    isMobilePortrait
-                                        ? AppStyles.text16PxMedium
-                                        : AppStyles.text20PxMedium,
-                              ),
-                            ),
-
-                            GestureDetector(
-                              onTap: () {
-                                Utility.navigateMaterialRoute(
-                                  context,
-                                  SystemScreen(initialIndex: 1),
-                                  routeName: AppRoutes.contactScreen,
-                                );
-                              },
-                              child: Text(
-                                'Contact us',
-                                style:
-                                    isMobilePortrait
-                                        ? AppStyles.text16PxMedium
-                                        : AppStyles.text20PxMedium,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Utility.navigateMaterialRoute(
-                                  context,
-                                  SystemScreen(initialIndex: 2),
-                                  routeName: AppRoutes.faqsScreen,
-                                );
-                              },
-                              child: Text(
-                                'FAQ',
-                                style:
-                                    isMobilePortrait
-                                        ? AppStyles.text16PxMedium
-                                        : AppStyles.text20PxMedium,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // CustomImage(
-                        //   Assets.kidSafeSeal,
-                        //   height: 40,
-                        //   width: 110,
-                        //   imageType: CustomImageType.local,
-                        //   cover: false,
-                        // ),
-                      ],
-                    )
-                    : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Utility.navigateMaterialRoute(
-                              context,
-                              SystemScreen(initialIndex: 0),
-                              routeName: AppRoutes.aboutUsScreen,
-                            );
-                          },
-                          child: Text(
-                            'About us',
-                            style:
-                                isMobilePortrait
-                                    ? AppStyles.text16PxMedium
-                                    : AppStyles.text20PxMedium,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Utility.navigateMaterialRoute(
-                              context,
-                              SystemScreen(initialIndex: 1),
-                              routeName: AppRoutes.contactScreen,
-                            );
-                          },
-                          child: Text(
-                            'Contact us',
-                            style:
-                                isMobilePortrait
-                                    ? AppStyles.text16PxMedium
-                                    : AppStyles.text20PxMedium,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Utility.navigateMaterialRoute(
-                              context,
-                              SystemScreen(initialIndex: 2),
-                              routeName: AppRoutes.faqsScreen,
-                            );
-                          },
-                          child: Text(
-                            'FAQ',
-                            style:
-                                isMobilePortrait
-                                    ? AppStyles.text16PxMedium
-                                    : AppStyles.text20PxMedium,
-                          ),
-                        ),
-                        // CustomImage(
-                        //   Assets.kidSafeSeal,
-                        //   height: 60,
-                        //   width: 100,
-                        //   imageType: CustomImageType.local,
-                        //   cover: false,
-                        // ),
-                      ],
-                    ),
-          ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.blue[50],
+        height: isMobilePortrait ? 60 : 80,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child:
+        // isMobilePortrait
+        //     ? Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           mainAxisAlignment: MainAxisAlignment.start,
+        //           spacing: 10,
+        //           children: [
+        //             GestureDetector(
+        //               onTap: () {
+        //                 Utility.navigateMaterialRoute(
+        //                   context,
+        //                   SystemScreen(initialIndex: 0),
+        //                   routeName: AppRoutes.aboutUsScreen,
+        //                 );
+        //               },
+        //               child: Text(
+        //                 'About us',
+        //                 style:
+        //                     isMobilePortrait
+        //                         ? AppStyles.text16PxMedium
+        //                         : AppStyles.text20PxMedium,
+        //               ),
+        //             ),
+        //             GestureDetector(
+        //               onTap: () {
+        //                 Utility.navigateMaterialRoute(
+        //                   context,
+        //                   SystemScreen(initialIndex: 1),
+        //                   routeName: AppRoutes.contactScreen,
+        //                 );
+        //               },
+        //               child: Text(
+        //                 'Contact us',
+        //                 style:
+        //                     isMobilePortrait
+        //                         ? AppStyles.text16PxMedium
+        //                         : AppStyles.text20PxMedium,
+        //               ),
+        //             ),
+        //             GestureDetector(
+        //               onTap: () {
+        //                 Utility.navigateMaterialRoute(
+        //                   context,
+        //                   SystemScreen(initialIndex: 2),
+        //                   routeName: AppRoutes.faqsScreen,
+        //                 );
+        //               },
+        //               child: Text(
+        //                 'FAQ',
+        //                 style:
+        //                     isMobilePortrait
+        //                         ? AppStyles.text16PxMedium
+        //                         : AppStyles.text20PxMedium,
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //         // CustomImage(
+        //         //   Assets.kidSafeSeal,
+        //         //   height: 40,
+        //         //   width: 110,
+        //         //   imageType: CustomImageType.local,
+        //         //   cover: false,
+        //         // ),
+        //       ],
+        //     )
+        //     :
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  SystemScreen(initialIndex: 0),
+                  routeName: AppRoutes.aboutUsScreen,
+                );
+              },
+              child: Text(
+                'About us',
+                style:
+                    isMobilePortrait
+                        ? AppStyles.text16PxMedium
+                        : AppStyles.text20PxMedium,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  SystemScreen(initialIndex: 1),
+                  routeName: AppRoutes.contactScreen,
+                );
+              },
+              child: Text(
+                'Contact us',
+                style:
+                    isMobilePortrait
+                        ? AppStyles.text16PxMedium
+                        : AppStyles.text20PxMedium,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Utility.navigateMaterialRoute(
+                  context,
+                  SystemScreen(initialIndex: 2),
+                  routeName: AppRoutes.faqsScreen,
+                );
+              },
+              child: Text(
+                'FAQ',
+                style:
+                    isMobilePortrait
+                        ? AppStyles.text16PxMedium
+                        : AppStyles.text20PxMedium,
+              ),
+            ),
+            // CustomImage(
+            //   Assets.kidSafeSeal,
+            //   height: 60,
+            //   width: 100,
+            //   imageType: CustomImageType.local,
+            //   cover: false,
+            // ),
+          ],
+        ),
       ),
     );
   }

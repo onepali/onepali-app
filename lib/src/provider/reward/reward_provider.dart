@@ -70,20 +70,26 @@ class RewardProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchChildRewards() async {
+  Future<void> fetchChildRewards({String? childId}) async {
     setStatus(DataFetchStatus.loading);
-    await ensureCrewardCollectionExists();
-    final childId = await ChildLocalStorage.getCurrentChildId();
-    if (childId == null) {
+
+    final targetChildId =
+        childId ?? await ChildLocalStorage.getCurrentChildId();
+    if (targetChildId == null) {
       logger.e('Child ID not found');
       setStatus(DataFetchStatus.error);
       return;
     }
+
+    if (childId == null) {
+      await ensureCrewardCollectionExists();
+    }
+
     try {
       final querySnapshot =
           await _firestore
               .collection('creward')
-              .where('childId', isEqualTo: childId)
+              .where('childId', isEqualTo: targetChildId)
               .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -93,17 +99,19 @@ class RewardProvider extends ChangeNotifier {
             rewards != null
                 ? rewards.map((reward) => RewardModel.fromJson(reward)).toList()
                 : [];
-        logger.d('Fetched ${_childRewards.length} child rewards');
+        logger.d(
+          'Fetched ${_childRewards.length} child rewards for childId: $targetChildId',
+        );
       } else {
         _childRewards = [];
-        logger.d('No rewards found for childId: $childId');
+        logger.d('No rewards found for childId: $targetChildId');
       }
 
       setStatus(DataFetchStatus.success);
     } catch (e) {
       setStatus(DataFetchStatus.error);
       logger.e(
-        'Failed to fetch child rewards for childId: $childId. Error: $e',
+        'Failed to fetch child rewards for childId: $targetChildId. Error: $e',
       );
     }
   }

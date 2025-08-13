@@ -417,6 +417,9 @@ class AuthProvider with ChangeNotifier {
 
     // Reset AuthState
     authState.clear();
+    ChildLocalStorage.clear();
+    ParentLocalStorage.clear();
+    sharedPrefs.clear();
 
     setStatus(DataFetchStatus.initial);
     notifyListeners();

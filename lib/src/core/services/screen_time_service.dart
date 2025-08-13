@@ -23,6 +23,14 @@ class ScreenTimeService extends ChangeNotifier {
   Future<void> startTracking(String childId) async {
     logger.i(' ScreenTimeService: Starting tracking for child $childId');
 
+    final shouldTrack = await shouldEnableTrackingForChild(childId);
+    if (!shouldTrack) {
+      logger.i(
+        ' ScreenTimeService: Screen time tracking disabled for child $childId',
+      );
+      return;
+    }
+
     if (_isTracking && _currentChildId == childId) {
       logger.d('ScreenTimeService: Already tracking this child, skipping');
       return;
@@ -326,32 +334,31 @@ class ScreenTimeService extends ChangeNotifier {
       image: Assets.timeUpSvg,
       isSvg: true,
       onConfirm: () {
-        logger.i(
-          ' User confirmed screen time dialog - navigating to parent PIN',
-        );
+        logger.i(' User requested to extend time - navigating to parent PIN');
 
-        // Close the dialog first
         Navigator.of(context).pop();
 
-        // Use a post-frame callback to ensure the dialog is fully closed
-        // before attempting to navigate to the parent PIN screen
         Misc.onLayoutRendered(() {
           try {
-            // Navigate to parent PIN screen using navigatorKey for global navigation
             navigatorKey.currentState?.pushNamedAndRemoveUntil(
               AppRoutes.parentPinScreen,
               (route) => false,
-              arguments: {'fromScreenTimeLimit': true},
+              arguments: {
+                'fromScreenTimeLimit': true,
+                'childId': _currentChildId,
+              },
             );
             logger.i('Navigation to parent PIN screen completed');
           } catch (e) {
             logger.e('Navigation error: $e');
-            // Fallback navigation method
             try {
               Navigator.of(context).pushNamedAndRemoveUntil(
                 AppRoutes.parentPinScreen,
                 (route) => false,
-                arguments: {'fromScreenTimeLimit': true},
+                arguments: {
+                  'fromScreenTimeLimit': true,
+                  'childId': _currentChildId,
+                },
               );
             } catch (e2) {
               logger.e('Fallback navigation failed: $e2');
@@ -433,6 +440,48 @@ class ScreenTimeService extends ChangeNotifier {
     return await checkAndHandleExceededLimit(childId);
   }
 
+  /// Check if screen time tracking should be enabled for a child
+  /// This method fetches the child data from Firestore to check hasScreenTime flag
+  Future<bool> shouldEnableTrackingForChild(String childId) async {
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final User? user = auth.currentUser;
+
+      if (user == null) {
+        logger.w('No authenticated user found');
+        return false;
+      }
+
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('children')
+              .doc(childId)
+              .get();
+
+      if (!doc.exists) {
+        logger.w('Child document not found for ID: $childId');
+        return false;
+      }
+
+      final data = doc.data()!;
+      final hasScreenTime = data['has_screen_time'] ?? false;
+      final screenTime = (data['screen_time'] ?? 0).toDouble();
+
+      logger.d(
+        'Child $childId - hasScreenTime: $hasScreenTime, screenTime: $screenTime',
+      );
+
+      return hasScreenTime && screenTime > 0;
+    } catch (e) {
+      logger.e(
+        'Error checking if tracking should be enabled for child $childId: $e',
+      );
+      return false;
+    }
+  }
+
   /// Manually reset screen time (for testing or admin purposes)
   Future<void> resetScreenTime() async {
     if (_currentScreenTime != null) {
@@ -484,6 +533,34 @@ class ScreenTimeService extends ChangeNotifier {
           DateTime.now(); // Reset session start time for new child
       logger.i(' Successfully switched to tracking child $childId');
     }
+
+    notifyListeners();
+  }
+
+  /// Extend current screen time limit
+  Future<void> extendTime(double additionalMinutes) async {
+    if (_currentScreenTime == null) {
+      logger.w(
+        'ScreenTimeService: Cannot extend time - no current screen time data',
+      );
+      return;
+    }
+
+    logger.i('ScreenTimeService: Extending time by $additionalMinutes minutes');
+
+    // Update the current screen time limit
+    final newLimit = _currentScreenTime!.totalAllowed + additionalMinutes;
+    _currentScreenTime = _currentScreenTime!.copyWith(totalAllowed: newLimit);
+
+    // Save the updated data
+    await _saveScreenTimeData();
+
+    logger.i(
+      'ScreenTimeService: Time extended successfully. New limit: ${_currentScreenTime!.totalAllowed.toStringAsFixed(1)} minutes',
+    );
+    logger.i(
+      'ScreenTimeService: Remaining time: ${_currentScreenTime!.remainingTime.toStringAsFixed(1)} minutes',
+    );
 
     notifyListeners();
   }

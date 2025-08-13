@@ -13,8 +13,11 @@ class ChildUserProvider extends ChangeNotifier {
   List<ChildUserModel> _childUser = [];
   List<ChildUserModel> get childUser => _childUser;
 
-  int _totalChildren = 3;
+  int _totalChildren = 0;
   int get totalChildren => _totalChildren;
+
+  bool _hasScreenTimeEnabled = false;
+  bool get hasScreenTimeEnabled => _hasScreenTimeEnabled;
 
   Future<void> selectDefaultChildIfNeeded(BuildContext context) async {
     final currentChildId = await ChildLocalStorage.getCurrentChildId();
@@ -35,12 +38,52 @@ class ChildUserProvider extends ChangeNotifier {
   Future<ChildUserModel?> getCurrentChild() async {
     final currentChildId = await ChildLocalStorage.getCurrentChildId();
     if (currentChildId != null && _childUser.isNotEmpty) {
-      return _childUser.firstWhere(
+      final currentChild = _childUser.firstWhere(
         (c) => c.uid == currentChildId,
         orElse: () => _childUser.first,
       );
+      _updateScreenTimeEnabledStatus(currentChild);
+      return currentChild;
     }
     return null;
+  }
+
+  void _updateScreenTimeEnabledStatus(ChildUserModel child) {
+    final wasEnabled = _hasScreenTimeEnabled;
+    _hasScreenTimeEnabled = child.hasScreenTime;
+
+    if (wasEnabled != _hasScreenTimeEnabled) {
+      logger.i(
+        'Screen time enabled status changed: $_hasScreenTimeEnabled for child ${child.fullName}',
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateScreenTimeEnabledStatusByChildId(String childId) async {
+    final child = _childUser.firstWhere(
+      (c) => c.uid == childId,
+      orElse:
+          () =>
+              _childUser.isEmpty
+                  ? ChildUserModel(
+                    avatarUrl: '',
+                    createdAt: '',
+                    dob: '',
+                    fullName: '',
+                    parentEmail: '',
+                    parentUid: '',
+                    role: 'child',
+                    screenTime: 0,
+                    hasScreenTime: false,
+                    uid: '',
+                  )
+                  : _childUser.first,
+    );
+
+    if (child.uid == childId) {
+      _updateScreenTimeEnabledStatus(child);
+    }
   }
 
   Future<void> fetchChildUser() async {
@@ -83,6 +126,7 @@ class ChildUserProvider extends ChangeNotifier {
       logger.d('Fetched ${_childUser.length} child users');
       if (_childUser.isNotEmpty) {
         _totalChildren = _childUser.length;
+        await getCurrentChild();
       }
       setStatus(DataFetchStatus.success);
     } catch (e, s) {
@@ -98,6 +142,7 @@ class ChildUserProvider extends ChangeNotifier {
     required String dob,
     required double screenTime,
     required String avatarUrl,
+    bool? hasScreenTime,
   }) async {
     setStatus(DataFetchStatus.loading);
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -120,29 +165,69 @@ class ChildUserProvider extends ChangeNotifier {
     }
 
     final String parentUid = user!.uid;
+
+    // Optional: Validate child name for duplicates within family
+    // final validation = await ChildNameValidator.validateChildName(
+    //   parentUid: parentUid,
+    //   childName: fullName,
+    //   excludeChildId: childUid, // Exclude current child from duplicate check
+    // );
+    //
+    // if (!validation.isValid) {
+    //   showCustomToaster(validation.message, isError: true);
+    //   setStatus(DataFetchStatus.error);
+    //   return;
+    // }
+
     try {
+      final childDoc =
+          await _firestore
+              .collection('users')
+              .doc(parentUid)
+              .collection('children')
+              .doc(childUid)
+              .get();
+
+      double existingTotalUsed = 0.0;
+      if (childDoc.exists && childDoc.data() != null) {
+        final data = childDoc.data()!;
+        if (data['screenTimeTracking'] != null &&
+            data['screenTimeTracking']['totalUsed'] != null) {
+          existingTotalUsed =
+              (data['screenTimeTracking']['totalUsed'] as num).toDouble();
+        }
+      }
+
+      // Prepare update data
+      Map<String, dynamic> updateData = {
+        'full_name': fullName,
+        'dob': dob,
+        'screen_time': screenTime,
+        'avatar_url': avatarUrl,
+        'screenTimeTracking': {
+          'totalAllowed': screenTime,
+          'totalUsed': existingTotalUsed,
+          'lastUpdated': DateTime.now().toIso8601String(),
+        },
+      };
+
+      // Add hasScreenTime to update data if provided
+      if (hasScreenTime != null) {
+        updateData['has_screen_time'] = hasScreenTime;
+      }
+
       await _firestore
           .collection('users')
           .doc(parentUid)
           .collection('children')
           .doc(childUid)
-          .update({
-            'full_name': fullName,
-            'dob': dob,
-            'screen_time': screenTime,
-            'avatar_url': avatarUrl,
-            'screenTimeTracking': {
-              'totalAllowed': screenTime,
-              'totalUsed': 0.0,
-              'lastUpdated': DateTime.now().toIso8601String(),
-            },
-          });
+          .update(updateData);
       // Update local list
       int idx = _childUser.indexWhere((c) => c.uid == childUid);
       if (idx != -1) {
         final newScreenTimeTracking = ScreenTimeModel(
           totalAllowed: screenTime,
-          totalUsed: 0.0,
+          totalUsed: existingTotalUsed,
           lastUpdated: DateTime.now(),
         );
 
@@ -155,6 +240,7 @@ class ChildUserProvider extends ChangeNotifier {
           parentUid: _childUser[idx].parentUid,
           role: _childUser[idx].role,
           screenTime: screenTime,
+          hasScreenTime: hasScreenTime ?? _childUser[idx].hasScreenTime,
           uid: childUid,
           screenTimeTracking: newScreenTimeTracking,
           completedLessons: _childUser[idx].completedLessons,
@@ -172,6 +258,235 @@ class ChildUserProvider extends ChangeNotifier {
   void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
+  }
+
+  Future<void> deleteChildUser(String childUid) async {
+    setStatus(DataFetchStatus.loading);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    // Check if it's a guest user
+    bool isGuest = GuestUtil.isGuestUser();
+
+    if (user == null && !isGuest) {
+      showCustomToaster('User not signed in.', isError: true);
+      setStatus(DataFetchStatus.error);
+      return;
+    }
+
+    // Skip further processing for guest users
+    if (isGuest) {
+      logger.i('Guest user detected. Skipping child user deletion.');
+      setStatus(DataFetchStatus.success);
+      return;
+    }
+
+    final String parentUid = user!.uid;
+
+    try {
+      // Create a batch for atomic operations
+      WriteBatch batch = _firestore.batch();
+
+      // Delete child-related data from various collections
+      List<String> collections = [
+        'creward',
+        'notification_setting',
+        'recom_lesson',
+        'recom_song',
+        'recom_story',
+      ];
+
+      // Delete documents from child-related collections
+      for (String collectionName in collections) {
+        QuerySnapshot querySnapshot =
+            await _firestore
+                .collection(collectionName)
+                .where('childId', isEqualTo: childUid)
+                .get();
+
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          batch.delete(doc.reference);
+        }
+        logger.d(
+          'Queued ${querySnapshot.docs.length} documents for deletion from $collectionName',
+        );
+      }
+
+      // Delete the child document from the parent's children subcollection
+      DocumentReference childRef = _firestore
+          .collection('users')
+          .doc(parentUid)
+          .collection('children')
+          .doc(childUid);
+
+      batch.delete(childRef);
+      logger.d(
+        'Queued child document for deletion from users/$parentUid/children/$childUid',
+      );
+
+      // Commit the batch
+      await batch.commit();
+      logger.i(
+        'Successfully deleted child user and all related data for childUid: $childUid',
+      );
+
+      // Remove from local list and update state
+      _childUser.removeWhere((child) => child.uid == childUid);
+      _totalChildren = _childUser.length;
+
+      // Clear current child from local storage if it was the deleted child
+      final currentChildId = await ChildLocalStorage.getCurrentChildId();
+      if (currentChildId == childUid) {
+        await ChildLocalStorage.saveCurrentChildId('');
+        await ChildLocalStorage.saveCurrentAvatarUrl('');
+      }
+
+      showCustomToaster('Child profile deleted successfully.');
+      setStatus(DataFetchStatus.success);
+    } catch (e, s) {
+      logger.e('Error deleting child user: $e');
+      logger.e('Stack trace: $s');
+      showCustomToaster('Failed to delete child profile.', isError: true);
+      setStatus(DataFetchStatus.error);
+    }
+  }
+
+  Future<void> extendScreenTime({
+    required String childUid,
+    required double additionalMinutes,
+  }) async {
+    setStatus(DataFetchStatus.loading);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    bool isGuest = GuestUtil.isGuestUser();
+
+    if (user == null && !isGuest) {
+      showCustomToaster('User not signed in.', isError: true);
+      setStatus(DataFetchStatus.error);
+      return;
+    }
+
+    if (isGuest) {
+      logger.i('Guest user detected. Skipping screen time extension.');
+      setStatus(DataFetchStatus.success);
+      return;
+    }
+
+    final String parentUid = user!.uid;
+
+    try {
+      // Get the child document reference
+      final childDoc = _firestore
+          .collection('users')
+          .doc(parentUid)
+          .collection('children')
+          .doc(childUid);
+
+      // Get current child data
+      final docSnapshot = await childDoc.get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data()!;
+
+        // Get current screen time tracking data
+        Map<String, dynamic>? screenTimeTracking = data['screenTimeTracking'];
+        double newAllowed;
+        double currentUsed = 0.0;
+
+        if (screenTimeTracking != null) {
+          final currentAllowed =
+              (screenTimeTracking['totalAllowed'] as num?)?.toDouble() ?? 0.0;
+          currentUsed =
+              (screenTimeTracking['totalUsed'] as num?)?.toDouble() ?? 0.0;
+          newAllowed = currentAllowed + additionalMinutes;
+
+          // Get current screen_time value and extend it too
+          final currentScreenTime =
+              (data['screen_time'] as num?)?.toDouble() ?? 0.0;
+          final newScreenTime = currentScreenTime + additionalMinutes;
+
+          await childDoc.update({
+            'screenTimeTracking': {
+              'totalAllowed': newAllowed,
+              'totalUsed': currentUsed,
+              'lastUpdated': DateTime.now().toIso8601String(),
+            },
+            'screen_time': newScreenTime,
+          });
+
+          logger.i('Screen time extended by $additionalMinutes minutes.');
+          logger.i(
+            'New totalAllowed: $newAllowed, New screen_time: $newScreenTime',
+          );
+          logger.i('totalUsed remains: $currentUsed');
+        } else {
+          final child = _childUser.firstWhere((c) => c.uid == childUid);
+          final currentScreenTime = child.screenTime;
+          newAllowed = currentScreenTime + additionalMinutes;
+          final newScreenTime = currentScreenTime + additionalMinutes;
+
+          await childDoc.update({
+            'screenTimeTracking': {
+              'totalAllowed': newAllowed,
+              'totalUsed': 0.0,
+              'lastUpdated': DateTime.now().toIso8601String(),
+            },
+            'screen_time': newScreenTime,
+          });
+
+          logger.i(
+            'Created screen time tracking with extended limit: $newAllowed',
+          );
+          logger.i('Updated screen_time to: $newScreenTime');
+        }
+
+        final childIndex = _childUser.indexWhere((c) => c.uid == childUid);
+        if (childIndex != -1) {
+          final updatedChild = _childUser[childIndex];
+          final updatedScreenTimeTracking = ScreenTimeModel(
+            totalAllowed: newAllowed,
+            totalUsed: currentUsed,
+            lastUpdated: DateTime.now(),
+          );
+
+          final newScreenTimeValue =
+              updatedChild.screenTime + additionalMinutes;
+
+          _childUser[childIndex] = ChildUserModel(
+            avatarUrl: updatedChild.avatarUrl,
+            createdAt: updatedChild.createdAt,
+            dob: updatedChild.dob,
+            fullName: updatedChild.fullName,
+            parentEmail: updatedChild.parentEmail,
+            parentUid: updatedChild.parentUid,
+            role: updatedChild.role,
+            screenTime: newScreenTimeValue,
+            hasScreenTime: updatedChild.hasScreenTime,
+            uid: childUid,
+            screenTimeTracking: updatedScreenTimeTracking,
+            completedLessons: updatedChild.completedLessons,
+          );
+
+          logger.i('Updated local child data with extended screen time');
+          logger.i('Local screenTime updated to: $newScreenTimeValue');
+          notifyListeners();
+        }
+      } else {
+        throw Exception('Child document not found');
+      }
+
+      showCustomToaster('Screen time extended successfully!');
+      setStatus(DataFetchStatus.success);
+    } catch (e, s) {
+      logger.e('Error extending screen time: $e');
+      logger.e('Stack trace: $s');
+      showCustomToaster(
+        'Failed to extend screen time. Please try again.',
+        isError: true,
+      );
+      setStatus(DataFetchStatus.error);
+    }
   }
 
   void handleError(String error) {

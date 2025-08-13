@@ -42,7 +42,7 @@ class RecommendedStoriesList extends StatelessWidget {
           height: AppCardResponsive.getCardHeight(context),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: recommendedStoryModels.length,
             separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
             itemBuilder: (context, i) {

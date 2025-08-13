@@ -162,6 +162,7 @@ class LessonContent {
   final String correctAnswer;
   final String type;
   final String? color;
+  final String? textColor;
 
   LessonContent({
     required this.nameEn,
@@ -174,6 +175,7 @@ class LessonContent {
     required this.correctAnswer,
     required this.type,
     this.color,
+    this.textColor,
   });
 
   factory LessonContent.fromJson(Map<String, dynamic> json) => LessonContent(
@@ -187,6 +189,7 @@ class LessonContent {
     correctAnswer: json["correct_answer"] ?? "",
     type: json["type"] ?? "",
     color: json["color"] ?? "",
+    textColor: json["text_color"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -200,6 +203,7 @@ class LessonContent {
     "correct_answer": correctAnswer,
     "type": type,
     "color": color,
+    "text_color": textColor,
   };
 }
 

@@ -63,21 +63,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         logger.i('👦 Child selected: ${child.fullName} (${child.uid})');
 
-        // Check if the screen time limit is already exceeded
-        final isLimitExceeded = await ScreenTimeService.instance
-            .checkScreenTimeLimitExceeded(child.uid);
-
-        // If limit is not exceeded, start tracking
-        if (!isLimitExceeded) {
+        // Only initialize screen time tracking if child has screen time enabled
+        if (child.hasScreenTime && child.screenTime > 0) {
           logger.i(
-            '🕐 Starting screen time tracking for: ${child.fullName} (${child.uid})',
+            '✅ Child has screen time enabled (${child.screenTime} minutes)',
           );
-          await ScreenTimeService.instance.startTracking(child.uid);
+
+          // Check if the screen time limit is already exceeded
+          final isLimitExceeded = await ScreenTimeService.instance
+              .checkScreenTimeLimitExceeded(child.uid);
+
+          // If limit is not exceeded, start tracking
+          if (!isLimitExceeded) {
+            logger.i(
+              '🕐 Starting screen time tracking for: ${child.fullName} (${child.uid})',
+            );
+            await ScreenTimeService.instance.startTracking(child.uid);
+          } else {
+            logger.w(
+              '⚠️ Screen time limit already exceeded for child ${child.uid}',
+            );
+            // The dialog is already shown by checkScreenTimeLimitExceeded
+          }
         } else {
-          logger.w(
-            '⚠️ Screen time limit already exceeded for child ${child.uid}',
+          logger.i(
+            '🚫 Screen time tracking disabled for child: ${child.fullName}',
           );
-          // The dialog is already shown by checkScreenTimeLimitExceeded
         }
       } else {
         logger.w('⚠️ No children found in provider');
@@ -98,9 +109,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     final currentChildId = await ChildLocalStorage.getCurrentChildId();
     if (currentChildId != null && mounted) {
-      await ScreenTimeService.instance.checkScreenTimeLimitExceeded(
-        currentChildId,
+      final childProvider = context.read<ChildUserProvider>();
+      final child = childProvider.childUser.firstWhere(
+        (c) => c.uid == currentChildId,
+        orElse:
+            () =>
+                childProvider.childUser.isNotEmpty
+                    ? childProvider.childUser.first
+                    : ChildUserModel(
+                      avatarUrl: '',
+                      createdAt: '',
+                      dob: '',
+                      fullName: '',
+                      parentEmail: '',
+                      parentUid: '',
+                      role: 'child',
+                      screenTime: 0,
+                      hasScreenTime: false,
+                      uid: '',
+                    ),
       );
+
+      if (child.hasScreenTime && child.screenTime > 0) {
+        await ScreenTimeService.instance.checkScreenTimeLimitExceeded(
+          currentChildId,
+        );
+      }
     }
   }
 
@@ -129,6 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: SafeArea(
         child: Scaffold(
           key: _scaffoldKey,
+          backgroundColor: AppColors.kWhite,
           appBar: UserAppBar(
             context: context,
             name: userInfo?.fullName ?? 'User',
@@ -136,6 +171,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             totalStars: 0,
             totalLessonsCompleted: totalLessonsCompleted,
             totalChildCount: childCount > 0 ? childCount : 0,
+            playStarBlastAudio: true,
+            menuColor: homeServices[_selectedTabIndex].color,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);
               if (idx != -1) {

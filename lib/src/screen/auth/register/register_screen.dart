@@ -17,7 +17,7 @@ class RegisterScreen extends StatelessWidget {
           bottom: 0.0,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
@@ -69,7 +69,7 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const Spacer(),
+            Gaps.verticalGapOf(100),
             SvgHelper.fromSource(path: Assets.leoChracterSvg, height: 220),
           ],
         ),

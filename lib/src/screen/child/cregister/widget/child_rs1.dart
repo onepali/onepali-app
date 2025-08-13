@@ -25,16 +25,38 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
     final authState = context.read<AuthState>();
     final isUpdate = widget.isUpdate;
 
+    // Platform responsive variables
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final bool isMobile = PlatformUtility.isMobile(context);
+    final bool isMobilePortrait =
+        isMobile && PlatformUtility.isPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double titleBottomGap = isTabletPortrait ? 40.0 : 30.0;
+    final double gridHeight =
+        MediaQuery.of(context).size.height * (isTabletPortrait ? 0.65 : 0.6);
+    final int crossAxisCount =
+        isTabletPortrait ? 4 : (isMobilePortrait ? 3 : 5);
+    final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
+    final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
+    final double avatarSize = isTabletPortrait ? 100.0 : 80.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: '',
         showStepper: true,
         currentStep: 2,
-        totalSteps: 4,
+        totalSteps: 5,
       ),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,23 +64,25 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
             children: [
               Text(
                 'Let ${authState.childName} choose the character',
-                style: AppStyles.text20PxSemiBold,
+                style: titleStyle,
+                textAlign: TextAlign.center,
               ),
-              Gaps.verticalGapOf(30),
+              Gaps.verticalGapOf(titleBottomGap),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
+                height: gridHeight,
                 child: GridView.count(
-                  crossAxisCount: 5,
-                  mainAxisSpacing: 16,
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: mainAxisSpacing,
                   controller: _scrollController,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 2.3 / 1.5,
+                  crossAxisSpacing: crossAxisSpacing,
+                  childAspectRatio: 3 / 3,
                   children: List.generate(AppConstants.avatarList.length, (
                     index,
                   ) {
                     return _buildReferralCard(
                       AppConstants.avatarList[index],
                       _selectedIndex == index,
+                      avatarSize,
                       onTap: () {
                         setState(() {
                           _selectedIndex = index;
@@ -71,17 +95,21 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
                   }),
                 ),
               ),
-              _buildNextButton(context, isUpdate),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(horizontalPadding),
+        child: _buildNextButton(context, isUpdate, isTabletPortrait),
       ),
     );
   }
 
   Widget _buildReferralCard(
     String icon,
-    bool isSelected, {
+    bool isSelected,
+    double avatarSize, {
     required VoidCallback onTap,
   }) {
     return InkWell(
@@ -96,15 +124,23 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         ),
         child: CustomImage(
           icon,
-          height: 75,
-          width: 75,
+          height: avatarSize,
+          width: avatarSize,
+          cover: false,
           imageType: CustomImageType.local,
         ),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isUpdate) {
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isUpdate,
+    bool isTabletPortrait,
+  ) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return CustomMaterialButton(
       label: isUpdate ? 'Save' : 'Next',
       onTap: () {
@@ -114,11 +150,16 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         }
         if (isUpdate) {
         } else {
-          Utility.navigateMaterialRoute(context, ChildRS2Screen());
+          Utility.navigateMaterialRoute(
+            context,
+            ChildRS2Screen(),
+            routeName: AppRoutes.childRS2Screen,
+          );
         }
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
+      textStyle: buttonTextStyle,
       elevation: 0,
     );
   }
