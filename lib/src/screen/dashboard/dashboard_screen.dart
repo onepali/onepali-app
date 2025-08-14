@@ -14,8 +14,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedTabIndex = 0;
   String childProfileImage = '';
   int totalLessonsCompleted = 0;
+  double _appBarElevation = 0.0;
 
   // Moved to provider
+
+  void _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification) {
+      final double offset = notification.metrics.pixels;
+      final double newElevation = offset > 0 ? 4.0 : 0.0;
+
+      if (_appBarElevation != newElevation) {
+        setState(() {
+          _appBarElevation = newElevation;
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -173,6 +187,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             totalChildCount: childCount > 0 ? childCount : 0,
             playStarBlastAudio: true,
             menuColor: homeServices[_selectedTabIndex].color,
+            elevation: _appBarElevation,
             onTabSelected: (tab) {
               final idx = homeServices.indexWhere((e) => e.name == tab);
               if (idx != -1) {
@@ -187,7 +202,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               userInfo?.authProvider ?? AuthProviderType.email.name,
             ),
           ),
-          body: HomeScreen(selectedTabIndex: _selectedTabIndex),
+          body: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              _onScrollNotification(notification);
+              return false;
+            },
+            child: HomeScreen(selectedTabIndex: _selectedTabIndex),
+          ),
         ),
       ),
     );
