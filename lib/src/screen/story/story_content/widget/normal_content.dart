@@ -91,7 +91,7 @@ class _NormalContentState extends State<NormalContent> {
         // Top right wrong icon
         Positioned(
           top: 24,
-          right: 24,
+          right: 16,
           child: customInkwell(
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
@@ -119,7 +119,7 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 25,
+          right: 16,
           top: 0,
           bottom: 0,
           child: Center(

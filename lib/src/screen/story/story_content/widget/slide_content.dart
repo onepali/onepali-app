@@ -118,7 +118,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         Positioned(
           top: 24,
-          right: 24,
+          right: 16,
           child: customInkwell(
             onTap: () {
               storyProvider.stopAudioAndResetIndex();
@@ -161,7 +161,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 25,
+          right: 16,
           top: 0,
           bottom: 0,
           child: Center(
