@@ -43,7 +43,15 @@ class LessonProvider extends ChangeNotifier {
       if (doc.exists &&
           doc.data() != null &&
           doc.data()!['completedLessons'] != null) {
-        completedLessons = List.from(doc.data()!['completedLessons']);
+        final completedLessonsData = doc.data()!['completedLessons'];
+
+        // Handle both old format (direct list) and new format (nested object)
+        if (completedLessonsData is List) {
+          completedLessons = List.from(completedLessonsData);
+        } else if (completedLessonsData is Map &&
+            completedLessonsData['lessons'] != null) {
+          completedLessons = List.from(completedLessonsData['lessons']);
+        }
       }
 
       // Check if lesson already completed

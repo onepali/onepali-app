@@ -317,71 +317,92 @@ class _LessonContentCardState extends State<LessonContentCard>
         ],
       );
     } else {
-      // Mobile: Use Row layout
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 35.w(context),
-            height: 50.h(context),
-            decoration: BoxDecoration(
-              color:
-                  widget.content.color != null &&
-                          widget.content.color!.isNotEmpty
-                      ? Utility.parseHexColors(widget.content.color!).first
-                      : AppColors.learningColors[widget.index %
-                          AppColors.learningColors.length],
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Center(
-              child: _buildImageOrLottie(
-                width: 30.w(context),
-                height: 40.h(context),
-                isMobile: true,
-              ),
-            ),
-          ),
-          Gaps.horizontalGapOf(60),
-          // Details
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                widget.content.nameNp.isNotEmpty
-                    ? widget.content.nameNp
-                    : 'चरा',
-                style: AppStyles.text32PxBold.copyWith(
-                  color: AppColors.kDrawerBgColor,
-                  fontSize: 64,
-                  fontFamily: AppConstants.kMuktaFont,
-                ),
-              ),
-              Text(
-                widget.content.nameEn.isNotEmpty
-                    ? widget.content.nameEn
-                    : 'Bird',
-                style: AppStyles.text20PxBold,
-              ),
-              Gaps.verticalGapOf(16),
-              if (widget.hasSound)
-                CustomAvatarGlow(
-                  glowColor: AppColors.kSecondaryColor,
-                  glowShape: BoxShape.circle,
-                  visible: widget.isPlaying,
-                  glowRadiusFactor: 0.2,
-                  child: IconButton(
-                    icon: SvgHelper.fromSource(
-                      path: Assets.sound,
-                      height: 36,
-                      width: 36,
+      // Mobile: Use fixed-width sections for consistent layout
+      return SizedBox(
+        width: double.infinity,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Fixed-size image section (40% of screen width for better balance)
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: Center(
+                child: Container(
+                  width: 35.w(context),
+                  height: 50.h(context),
+                  decoration: BoxDecoration(
+                    color:
+                        widget.content.color != null &&
+                                widget.content.color!.isNotEmpty
+                            ? Utility.parseHexColors(
+                              widget.content.color!,
+                            ).first
+                            : AppColors.learningColors[widget.index %
+                                AppColors.learningColors.length],
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Center(
+                    child: _buildImageOrLottie(
+                      width: 30.w(context),
+                      height: 40.h(context),
+                      isMobile: true,
                     ),
-                    onPressed: _onSoundTap,
                   ),
                 ),
-            ],
-          ),
-        ],
+              ),
+            ),
+            // Fixed-size text section (60% of screen width for better balance)
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.3,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.content.nameNp.isNotEmpty
+                            ? widget.content.nameNp
+                            : 'चरा',
+                        style: AppStyles.text32PxBold.copyWith(
+                          color: AppColors.kDrawerBgColor,
+                          fontSize: 64,
+                          fontFamily: AppConstants.kMuktaFont,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        widget.content.nameEn.isNotEmpty
+                            ? widget.content.nameEn
+                            : 'Bird',
+                        style: AppStyles.text20PxBold,
+                        textAlign: TextAlign.center,
+                      ),
+                      Gaps.verticalGapOf(16),
+                      if (widget.hasSound)
+                        CustomAvatarGlow(
+                          glowColor: AppColors.kSecondaryColor,
+                          glowShape: BoxShape.circle,
+                          visible: widget.isPlaying,
+                          glowRadiusFactor: 0.2,
+                          child: IconButton(
+                            icon: SvgHelper.fromSource(
+                              path: Assets.sound,
+                              height: 36,
+                              width: 36,
+                            ),
+                            onPressed: _onSoundTap,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
   }

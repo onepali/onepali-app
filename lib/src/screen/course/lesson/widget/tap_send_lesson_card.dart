@@ -30,6 +30,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
   String? selectedAnswer;
   bool showLeopardAnimation = false;
   List<TapSendOption> options = [];
+  CustomAudioWidget? _goodFeedbackAudio;
 
   @override
   void initState() {
@@ -88,6 +89,29 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
     }
   }
 
+  void _playGoodFeedbackAudio() async {
+    try {
+      _goodFeedbackAudio = CustomAudioWidget(
+        audioPath: Assets.goodFeedback,
+        audioSourceType: AudioSourceType.asset,
+      );
+      await _goodFeedbackAudio!.play();
+    } catch (e) {
+      logger.e('Error playing good feedback audio: $e');
+    }
+  }
+
+  void _disposeGoodFeedbackAudio() async {
+    try {
+      if (_goodFeedbackAudio != null) {
+        await _goodFeedbackAudio!.dispose();
+        _goodFeedbackAudio = null;
+      }
+    } catch (e) {
+      logger.e('Error disposing good feedback audio: $e');
+    }
+  }
+
   void _onOptionTap(TapSendOption option) {
     setState(() {
       selectedAnswer = option.nameEn;
@@ -107,6 +131,9 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           showLeopardAnimation = true;
         });
 
+        // Play good feedback audio
+        _playGoodFeedbackAudio();
+
         // Reset audio and cache
         final audioProvider = context.read<LessonAudioProvider>();
         await audioProvider.stopAudio();
@@ -120,6 +147,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             setState(() {
               showLeopardAnimation = false;
             });
+            _disposeGoodFeedbackAudio();
           }
         });
       } else {
@@ -189,15 +217,15 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 800),
             curve: Curves.easeInOut,
-            bottom: 0,
-            right: 0,
+            bottom: -50,
+            right: -50,
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
               opacity: 1.0,
               child: CustomImage(
                 Assets.goodRemark,
-                height: 150,
-                width: 150,
+                height: 270,
+                width: 270,
                 imageType: CustomImageType.local,
               ),
             ),
@@ -398,6 +426,12 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             );
           }).toList(),
     );
+  }
+
+  @override
+  void dispose() {
+    _disposeGoodFeedbackAudio();
+    super.dispose();
   }
 }
 

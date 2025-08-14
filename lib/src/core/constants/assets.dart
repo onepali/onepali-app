@@ -111,6 +111,7 @@ class Assets {
 
   /// [Audio] assets
   static String eww = 'audio/eww'.audio;
+  static String goodFeedback = 'audio/sfx/good_feedback'.audio;
   static String starBlast = 'audio/sfx/star_blast.mp3';
 }
 
