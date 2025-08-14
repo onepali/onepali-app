@@ -85,6 +85,10 @@ class Assets {
   static String connectionSvg = 'connection'.svg;
   static String timeUpSvg = 'time_up'.svg;
   static String guestAvatar = 'guest_avatar'.svg;
+  static String trophyAv = 'trophy'.png;
+  static String medalAv = 'medal'.png;
+  static String starAv = 'star'.png;
+  static String achievement = 'achievement'.png;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;

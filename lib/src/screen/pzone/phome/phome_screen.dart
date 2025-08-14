@@ -15,10 +15,35 @@ class _PHomeScreenState extends State<PHomeScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
+    Misc.onLayoutRendered(() async {
       context.read<UserProvider>().fetchOwnProfile();
-      context.read<ChildUserProvider>().fetchChildUser();
+      await context.read<ChildUserProvider>().fetchChildUser();
+
+      // Set default selected child from local storage
+      await _setDefaultSelectedChild();
     });
+  }
+
+  Future<void> _setDefaultSelectedChild() async {
+    final currentChildId = await ChildLocalStorage.getCurrentChildId();
+    final children = context.read<ChildUserProvider>().childUser;
+
+    if (children.isNotEmpty) {
+      String defaultChildId;
+
+      // If current child ID exists and is valid, use it
+      if (currentChildId != null &&
+          currentChildId.isNotEmpty &&
+          children.any((child) => child.uid == currentChildId)) {
+        defaultChildId = currentChildId;
+      } else {
+        // Otherwise, use the first child as default
+        defaultChildId = children.first.uid;
+      }
+
+      // Set the selected child and fetch metrics
+      _onChildSelected(defaultChildId);
+    }
   }
 
   void _onChildSelected(String childUid) {
@@ -57,13 +82,6 @@ class _PHomeScreenState extends State<PHomeScreen> {
         final metrics = metricsProvider.metrics;
         final metricsStatus = metricsProvider.status;
         final childStatus = childProvider.status;
-
-        // Set first child as default if not selected
-        if (children.isNotEmpty && selectedChildUid == null) {
-          Misc.onLayoutRendered(() {
-            _onChildSelected(children.first.uid);
-          });
-        }
 
         return Scaffold(
           backgroundColor: AppColors.kBackgroundColor,

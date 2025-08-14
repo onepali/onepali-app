@@ -4,6 +4,20 @@ import 'package:flutter/material.dart';
 import '../../src.dart';
 
 class RewardProvider extends ChangeNotifier {
+  DataFetchStatus _status = DataFetchStatus.initial;
+  DataFetchStatus get status => _status;
+
+  List<RewardModel> _rewards = [];
+  List<RewardModel> get rewards => _rewards;
+
+  List<RewardModel> _childRewards = [];
+  List<RewardModel> get childRewards => _childRewards;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  int _totalStarBadge = 0;
+  int get totalStarBadge => _totalStarBadge;
+
   Future<void> saveRewardForChild(RewardModel reward) async {
     final childId = await ChildLocalStorage.getCurrentChildId();
     if (childId == null) {
@@ -37,17 +51,6 @@ class RewardProvider extends ChangeNotifier {
       logger.e('Failed to save reward for childId: $childId. Error: $e');
     }
   }
-
-  DataFetchStatus _status = DataFetchStatus.initial;
-  DataFetchStatus get status => _status;
-
-  List<RewardModel> _rewards = [];
-  List<RewardModel> get rewards => _rewards;
-
-  List<RewardModel> _childRewards = [];
-  List<RewardModel> get childRewards => _childRewards;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   setStatus(DataFetchStatus status) {
     _status = status;
@@ -99,6 +102,7 @@ class RewardProvider extends ChangeNotifier {
             rewards != null
                 ? rewards.map((reward) => RewardModel.fromJson(reward)).toList()
                 : [];
+        _totalStarBadge = _childRewards.length;
         logger.d(
           'Fetched ${_childRewards.length} child rewards for childId: $targetChildId',
         );
