@@ -12,6 +12,7 @@ class StoryContentScreen extends StatefulWidget {
 
 class _StoryContentScreenState extends State<StoryContentScreen> {
   StoryProvider? _storyProvider;
+  CustomAudioWidget? _storyAudio;
 
   @override
   void initState() {
@@ -35,10 +36,43 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
     });
   }
 
+  void _playStoryAudio() async {
+    if (widget.story.audio.isEmpty) return;
+
+    try {
+      // If there are multiple audio files, play the first one
+      final audioUrl =
+          widget.story.audio.isNotEmpty ? widget.story.audio.first : '';
+      if (audioUrl.isEmpty) return;
+
+      _storyAudio = CustomAudioWidget(
+        audioPath: audioUrl,
+        audioSourceType: AudioSourceType.network,
+      );
+      await _storyAudio!.play();
+      logger.d('Playing story audio: $audioUrl');
+    } catch (e) {
+      logger.e('Error playing story audio: $e');
+    }
+  }
+
+  void _disposeStoryAudio() async {
+    try {
+      if (_storyAudio != null) {
+        await _storyAudio!.dispose();
+        _storyAudio = null;
+        logger.d('Story audio disposed');
+      }
+    } catch (e) {
+      logger.e('Error disposing story audio: $e');
+    }
+  }
+
   @override
   void dispose() {
     try {
       _storyProvider?.stopAudioAndResetIndex();
+      _disposeStoryAudio();
     } catch (e) {
       logger.e('Error stopping audio in dispose: $e');
     }
@@ -64,6 +98,10 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
             );
 
             if (idx == 0) {
+              Misc.onLayoutRendered(() {
+                _playStoryAudio();
+              });
+
               return Stack(
                 children: [
                   Positioned.fill(
@@ -127,7 +165,10 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     top: 0,
                     bottom: 0,
                     child: customInkwell(
-                      onTap: () => provider.nextContent(context),
+                      onTap: () {
+                        _disposeStoryAudio();
+                        provider.nextContent(context);
+                      },
                       child: Container(
                         height: AppConstants.kIconSize,
                         width: AppConstants.kIconSize,
