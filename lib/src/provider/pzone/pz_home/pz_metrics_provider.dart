@@ -166,14 +166,17 @@ class PzMetricsProvider extends ChangeNotifier {
     // Increment completed activities
     final newCompletedActivities = _metrics!.completedActivities + 1;
 
-    // Update most practiced topics
+    // Update most practiced topics - add the new topic to the list
+    final updatedTopicsList = List<String>.from(_metrics!.mostPracticedTopics);
+    updatedTopicsList.add(topicName);
+
+    // Count occurrences of each topic
     final topicCounts = <String, int>{};
-    for (final topic in _metrics!.mostPracticedTopics) {
+    for (final topic in updatedTopicsList) {
       topicCounts[topic] = (topicCounts[topic] ?? 0) + 1;
     }
-    topicCounts[topicName] = (topicCounts[topicName] ?? 0) + 1;
 
-    // Sort topics by count and take top 5
+    // Sort topics by count (descending) and take top 5
     final sortedTopics =
         topicCounts.entries.toList()
           ..sort((a, b) => b.value.compareTo(a.value));
@@ -191,7 +194,7 @@ class PzMetricsProvider extends ChangeNotifier {
     );
 
     logger.d(
-      'Activity completed: $topicName ($activityType). Total activities: $newCompletedActivities',
+      'Activity completed: $topicName ($activityType). Total activities: $newCompletedActivities. Most practiced: $mostPracticedTopics',
     );
   }
 

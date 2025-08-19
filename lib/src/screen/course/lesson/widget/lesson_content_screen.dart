@@ -32,6 +32,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   bool _showGoodRemark = false;
   int _currentContentIndex = 0; // Start with intro screen
 
+  // Store provider references for safe disposal
+  LessonAudioProvider? _audioProvider;
+  RecommendedLessonProvider? _recommendedLessonProvider;
+
   @override
   void initState() {
     super.initState();
@@ -71,13 +75,21 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Store provider references for safe disposal
+    _audioProvider = context.read<LessonAudioProvider>();
+    _recommendedLessonProvider = context.read<RecommendedLessonProvider>();
+  }
+
+  @override
   void dispose() {
     // Save current progress before leaving
     _saveCurrentProgress();
 
     // Clean up audio when leaving the screen
-    final audioProvider = context.read<LessonAudioProvider>();
-    audioProvider.stopAudio();
+    _audioProvider?.stopAudio();
 
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
@@ -294,8 +306,15 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
   Future<void> _saveProgress(LessonContent content, int contentIndex) async {
     try {
-      final recommendedLessonProvider =
-          context.read<RecommendedLessonProvider>();
+      // Use stored provider reference instead of context.read
+      final recommendedLessonProvider = _recommendedLessonProvider;
+      if (recommendedLessonProvider == null) {
+        logger.w(
+          'RecommendedLessonProvider not available, skipping progress save',
+        );
+        return;
+      }
+
       final childId = await ChildLocalStorage.getCurrentChildId();
 
       if (childId!.isNotEmpty) {
@@ -310,8 +329,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           'Progress saved: lessonId=${widget.lesson.chapterId}, progress=${contentIndex + 1}',
         );
       }
-    } catch (e) {
+    } catch (e, s) {
       logger.e('Error saving progress: $e');
+      logger.e('Stack trace: $s');
     }
   }
 

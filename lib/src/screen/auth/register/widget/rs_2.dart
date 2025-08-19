@@ -14,19 +14,28 @@ class _RS2ScreenState extends State<RS2Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
+    final double cardBottomGap = isTabletPortrait ? 20.0 : 16.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 2),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Why is your child learning Nepali?',
-              style: AppStyles.text20PxSemiBold,
-            ),
-            Gaps.verticalGapOf(24),
+            Text('Why is your child learning Nepali?', style: titleStyle),
+            Gaps.verticalGapOf(titleBottomGap),
             ...List.generate(
               AppConstants.whyLearningNepali.length,
               (index) => Padding(
@@ -34,7 +43,7 @@ class _RS2ScreenState extends State<RS2Screen> {
                   bottom:
                       index == AppConstants.whyLearningNepali.length - 1
                           ? 0
-                          : 16,
+                          : cardBottomGap,
                 ),
                 child: _buildOptionCard(
                   AppConstants.whyLearningNepali[index],
@@ -44,11 +53,12 @@ class _RS2ScreenState extends State<RS2Screen> {
                       selectedIndex = index;
                     });
                   },
+                  isTabletPortrait: isTabletPortrait,
                 ),
               ),
             ),
             Spacer(),
-            _buildNextButton(context),
+            _buildNextButton(context, isTabletPortrait),
           ],
         ),
       ),
@@ -59,30 +69,46 @@ class _RS2ScreenState extends State<RS2Screen> {
     String text,
     bool isSelected, {
     required VoidCallback onTap,
+    required bool isTabletPortrait,
   }) {
+    final double verticalPadding = isTabletPortrait ? 20.0 : 16.0;
+    final double horizontalPadding = isTabletPortrait ? 24.0 : 20.0;
+    final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double borderWidth =
+        isSelected ? (isTabletPortrait ? 3.0 : 2.0) : 1.0;
+
+    final TextStyle textStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxRegular
+            : AppStyles.text16PxRegular;
+
     return InkWell(
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        padding: EdgeInsets.symmetric(
+          vertical: verticalPadding,
+          horizontal: horizontalPadding,
+        ),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.kButtonGreen : AppColors.kLightGrey,
-            width: isSelected ? 2 : 1,
+            width: borderWidth,
           ),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Text(
           text,
-          style: AppStyles.text16PxRegular.copyWith(
-            color: AppColors.kPitchBlack,
-          ),
+          style: textStyle.copyWith(color: AppColors.kPitchBlack),
         ),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
@@ -99,6 +125,7 @@ class _RS2ScreenState extends State<RS2Screen> {
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
+      textStyle: buttonTextStyle,
     );
   }
 }

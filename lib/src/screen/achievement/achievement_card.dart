@@ -5,39 +5,71 @@ class AchievementCard extends StatelessWidget {
   final AchievementModel achievement;
   final String dynamicValue;
   final VoidCallback? onTap;
-  final bool useFullHeight;
 
   const AchievementCard({
     super.key,
     required this.achievement,
     required this.dynamicValue,
     this.onTap,
-    this.useFullHeight = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
+    final isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
-    // Responsive values
-    final double cardWidth = isMobileLandscape ? 130 : 320;
-    final double cardHeight =
-        useFullHeight ? double.infinity : (isMobileLandscape ? 180 : 220);
-    final double titleFontSize = isMobileLandscape ? 16 : 18;
-    final double valueFontSize = isMobileLandscape ? 28 : 32;
-    final double imageSize = isMobileLandscape ? 50 : 60;
-    final double padding = isMobileLandscape ? 16 : 20;
+    // Responsive values based on device and orientation
+    double cardWidth;
+    double cardHeight;
+    double titleFontSize;
+    double valueFontSize;
+    double imageSize;
+    double padding;
+    double marginHorizontal;
+    double marginVertical;
+
+    if (isMobileLandscape) {
+      cardWidth = 130;
+      cardHeight = double.infinity;
+      titleFontSize = 16;
+      valueFontSize = 28;
+      imageSize = 50;
+      padding = 16;
+      marginHorizontal = 8;
+      marginVertical = 8;
+    } else if (isTabletLandscape) {
+      cardWidth = 200;
+      cardHeight = double.infinity;
+      titleFontSize = 17;
+      valueFontSize = 30;
+      imageSize = 55;
+      padding = 18;
+      marginHorizontal = 10;
+      marginVertical = 10;
+    } else {
+      cardWidth = 200;
+      cardHeight = double.infinity;
+      titleFontSize = 17;
+      valueFontSize = 30;
+      imageSize = 55;
+      padding = 18;
+      marginHorizontal = 10;
+      marginVertical = 10;
+    }
+
     final double borderRadius = 12.0;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: cardWidth,
-        height: useFullHeight ? null : cardHeight,
+        height: cardHeight,
         margin: EdgeInsets.symmetric(
-          horizontal: isMobileLandscape ? 8 : 12,
-          vertical: isMobileLandscape ? 8 : 12,
+          horizontal: marginHorizontal,
+          vertical: marginVertical,
         ),
         decoration: BoxDecoration(
           color: achievement.color ?? AppColors.kPrimaryColor,

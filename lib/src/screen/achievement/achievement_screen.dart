@@ -47,48 +47,60 @@ class _AchievementScreenState extends State<AchievementScreen> {
   }
 
   Widget buildAchievementGrid() {
-    final isMobile = PlatformUtility.isMobile(context);
-    final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
+    final isTablet = PlatformUtility.isTablet(context);
+    final isTabletLandScape = isTablet && PlatformUtility.isLandscape(context);
 
     var rewardProvider = context.watch<RewardProvider>();
     totalStarBadge = rewardProvider.totalStarBadge;
 
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child:
-          isMobileLandscape
-              ? ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: achievementList.length,
-                itemBuilder: (context, index) {
-                  final achievement = achievementList[index];
-                  final value = _getAchievementValue(achievement.id);
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: AchievementCard(
-                      achievement: achievement,
-                      dynamicValue: value,
-                      useFullHeight: true,
-                    ),
-                  );
-                },
-              )
-              : const SizedBox.shrink(),
+    // Responsive grid settings
+    final double horizontalPadding = isTabletLandScape ? 32.0 : 16.0;
+
+    return Center(
+      child: Container(
+        height:
+            isTabletLandScape
+                ? MediaQuery.of(context).size.height
+                : MediaQuery.of(context).size.height * 0.8,
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: 16,
+        ),
+        child: ListView.builder(
+          itemCount: achievementList.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final achievement = achievementList[index];
+            final value = _getAchievementValue(achievement.id);
+            return AchievementCard(
+              achievement: achievement,
+              dynamicValue: value,
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget buildCongratulationsSection() {
     final isMobile = PlatformUtility.isMobile(context);
+    final isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
-    final double titleFontSize = isMobileLandscape ? 18 : 24;
-    final double imageSize = isMobileLandscape ? 80 : 120;
-    final double paddingH = isMobileLandscape ? 16 : 24;
-    final double paddingV = isMobileLandscape ? 12 : 20;
+    final double titleFontSize =
+        isTabletLandScape ? 22 : (isMobileLandscape ? 20 : 24);
+    final double imageSize =
+        isTabletLandScape ? 100 : (isMobileLandscape ? 80 : 120);
+    final double paddingH = isTabletLandScape ? 20 : 16;
+    final double paddingV = isTabletLandScape ? 25 : 16;
 
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height:
+          isTabletLandScape
+              ? MediaQuery.of(context).size.height
+              : MediaQuery.of(context).size.height * 0.8,
       margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -107,15 +119,14 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   widget.name,
                   style: AppStyles.text24PxSemiBold.copyWith(
                     color: AppColors.kWhite,
-                    fontSize:
-                        isMobileLandscape && widget.name.length > 4 ? 20 : 24,
+                    fontSize: titleFontSize,
                   ),
                   maxLines: 2,
                 ),
               ),
             ],
           ),
-          Gaps.verticalGapOf(10),
+          Gaps.verticalGapOf(isTabletLandScape ? 20 : 10),
           Expanded(
             child: Container(
               width: double.infinity,
@@ -133,7 +144,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   Text(
                     'Your Nepali is improving!',
                     style: AppStyles.text22PxMedium.copyWith(
-                      fontSize: titleFontSize,
+                      fontSize: titleFontSize - 2,
                       color: AppColors.kBlack,
                     ),
                     textAlign: TextAlign.center,
@@ -159,6 +170,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.kBlack,
@@ -179,7 +193,10 @@ class _AchievementScreenState extends State<AchievementScreen> {
             // Content
             Row(
               children: [
-                SizedBox(width: 200, child: buildCongratulationsSection()),
+                SizedBox(
+                  width: isTabletLandScape ? 230 : 200,
+                  child: buildCongratulationsSection(),
+                ),
                 Expanded(child: buildAchievementGrid()),
               ],
             ),

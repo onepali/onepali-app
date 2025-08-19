@@ -33,11 +33,37 @@ class RS5Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 24.0;
+    final double titleBottomGap = isTabletPortrait ? 60.0 : 50.0;
+    final double iconSize = isTabletPortrait ? 50.0 : 40.0;
+    final double iconBottomGap = isTabletPortrait ? 60.0 : 50.0;
+    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
+    final double textGap = isTabletPortrait ? 12.0 : 8.0;
+    final double buttonGap = isTabletPortrait ? 20.0 : 16.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text28PxSemiBold
+            : AppStyles.text24PxSemiBold;
+
+    final TextStyle descriptionStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular;
+
+    final TextStyle spamTextStyle =
+        isTabletPortrait
+            ? AppStyles.text14PxRegular
+            : AppStyles.text12PxRegular;
+
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 5),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -45,17 +71,21 @@ class RS5Screen extends StatelessWidget {
             children: [
               Text(
                 'Check your email',
-                style: AppStyles.text24PxSemiBold,
+                style: titleStyle,
                 textAlign: TextAlign.center,
               ),
-              Gaps.verticalGapOf(50),
+              Gaps.verticalGapOf(titleBottomGap),
 
-              SvgHelper.fromSource(path: Assets.email, height: 40, width: 40),
+              SvgHelper.fromSource(
+                path: Assets.email,
+                height: iconSize,
+                width: iconSize,
+              ),
 
-              Gaps.verticalGapOf(50),
+              Gaps.verticalGapOf(iconBottomGap),
               Text(
                 'We sent a verification link to your email. Click the link to get started!',
-                style: AppStyles.text14PxRegular,
+                style: descriptionStyle,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -63,28 +93,30 @@ class RS5Screen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(bottomPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               'Can\'t find it? Check your spam folder.',
-              style: AppStyles.text12PxRegular.copyWith(
-                color: Colors.grey[700],
-              ),
+              style: spamTextStyle.copyWith(color: Colors.grey[700]),
               textAlign: TextAlign.center,
             ),
-            Gaps.verticalGapOf(8),
+            Gaps.verticalGapOf(textGap),
             CustomTextButton(
               text: 'Resend Verification Email',
               onPressed: () => _handleResend(context),
             ),
-            Gaps.verticalGapOf(16),
+            Gaps.verticalGapOf(buttonGap),
             CustomMaterialButton(
               label: 'I\'ve verified, Continue',
               elevation: 0,
               backgroundColor: AppColors.kButtonGreen,
               onTap: () => _handleNext(context),
+              textStyle:
+                  isTabletPortrait
+                      ? AppStyles.text18PxMedium
+                      : AppStyles.text16PxMedium,
             ),
           ],
         ),
