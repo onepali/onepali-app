@@ -51,7 +51,7 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
     TimeOfDay tempTime = selectedTime;
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.kTransparentColor,
       isScrollControlled: true,
 
       routeSettings: const RouteSettings(name: AppConstants.timePickerModal),
@@ -126,7 +126,9 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                         padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                         child: Text(
                           _error!,
-                          style: TextStyle(color: Colors.red, fontSize: 13),
+                          style: AppStyles.text12PxRegular.copyWith(
+                            color: AppColors.kRed,
+                          ),
                         ),
                       ),
                   ],
@@ -157,14 +159,14 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
             widget.decoration ??
             BoxDecoration(
               color: AppColors.kLightGrey.withValues(alpha: 0.2),
-              border: Border.all(color: AppColors.transparent),
+              border: Border.all(color: AppColors.kTransparentColor),
               borderRadius: BorderRadius.circular(8),
             ),
         child: Row(
           children: [
             Text(
               _displayText,
-              style: widget.textStyle ?? TextStyle(fontSize: 16),
+              style: widget.textStyle ?? AppStyles.text16PxRegular,
             ),
             Spacer(),
             Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),

@@ -40,16 +40,18 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
         decoration: BoxDecoration(color: AppColors.kWhite),
         child: Row(
           children: [
-            Icon(Icons.timer, size: 18, color: Colors.grey[600]),
+            Icon(Icons.timer, size: 18, color: AppColors.kGrey),
             Gaps.horizontalGapOf(4),
             Text(
               '${blog.readTimeMinutes} min read',
-              style: const TextStyle(fontSize: 13),
+              style: AppStyles.text12PxRegular.copyWith(color: AppColors.kGrey),
             ),
             const Spacer(),
             Text(
               'Published: ${DatetimeUtility.getFormattedDate(blog.createdAt)}',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: AppStyles.text12PxRegular.copyWith(
+                color: AppColors.kGrey.withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),
@@ -87,10 +89,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                         Expanded(
                           child: Text(
                             blog.authorName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
+                            style: AppStyles.text16PxMedium,
                           ),
                         ),
                         Icon(
@@ -101,7 +100,9 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                         Gaps.horizontalGapOf(2),
                         Text(
                           '${blog.viewCount}',
-                          style: const TextStyle(fontSize: 13),
+                          style: AppStyles.text12PxRegular.copyWith(
+                            color: AppColors.kGrey,
+                          ),
                         ),
                         Gaps.horizontalGapOf(10),
                       ],
@@ -127,7 +128,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                     // Gaps.verticalGapOf(18),
                     Text(
                       blog.content,
-                      style: const TextStyle(fontSize: 16, height: 1.5),
+                      style: AppStyles.text16PxRegular.copyWith(height: 1.5),
                     ),
                     Gaps.verticalGapOf(24),
                   ],

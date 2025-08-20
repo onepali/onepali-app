@@ -48,21 +48,15 @@ class CustomRangeSlider extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                min.toInt().toString(),
-                style: TextStyle(color: AppColors.kPitchBlack),
-              ),
+              Text(min.toInt().toString(), style: AppStyles.text14PxRegular),
               Text(
                 recommended.toInt().toString(),
-                style: TextStyle(
+                style: AppStyles.text14PxMedium.copyWith(
                   color: activeColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                max.toInt().toString(),
-                style: TextStyle(color: AppColors.kPitchBlack),
-              ),
+              Text(max.toInt().toString(), style: AppStyles.text14PxRegular),
             ],
           ),
         ),
@@ -86,14 +80,21 @@ class CustomRangeSlider extends StatelessWidget {
         if (label != null)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: Text(label!, style: TextStyle(color: AppColors.kPitchBlack)),
+            child: Text(
+              label!,
+              style: AppStyles.text14PxMedium.copyWith(
+                color: AppColors.kPitchBlack,
+              ),
+            ),
           )
         else
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               '${recommended.toInt()} minutes a day is recommended',
-              style: TextStyle(color: AppColors.kPitchBlack),
+              style: AppStyles.text14PxMedium.copyWith(
+                color: AppColors.kPitchBlack,
+              ),
             ),
           ),
       ],

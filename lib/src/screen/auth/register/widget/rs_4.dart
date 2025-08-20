@@ -17,6 +17,21 @@ class _RS4ScreenState extends State<RS4Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
+    final double fieldGap = isTabletPortrait ? 24.0 : 20.0;
+    final double buttonTopGap = isTabletPortrait ? 40.0 : 35.0;
+    final double dividerTopGap = isTabletPortrait ? 60.0 : 50.0;
+    final double socialButtonGap = isTabletPortrait ? 20.0 : 15.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
     final authProvider = context.watch<AuthProvider>();
     final gAuthStatus = context.watch<GoogleAuthProvider>().status;
     final fAuthStatus = context.watch<FAuthProvider>().status;
@@ -26,15 +41,15 @@ class _RS4ScreenState extends State<RS4Screen> {
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 4),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Create your account', style: AppStyles.text20PxSemiBold),
-                Gaps.verticalGapOf(24),
+                Text('Create your account', style: titleStyle),
+                Gaps.verticalGapOf(titleBottomGap),
                 CustomTextField(
                   hintText: 'Enter your Email Address',
                   keyboardType: TextInputType.emailAddress,
@@ -42,7 +57,7 @@ class _RS4ScreenState extends State<RS4Screen> {
                   prefixIcon: Icon(Icons.email_outlined),
                   validation: (value) => Validator.email(value ?? ""),
                 ),
-                Gaps.verticalGapOf(20),
+                Gaps.verticalGapOf(fieldGap),
                 CustomTextField(
                   hintText: 'Enter a Password',
                   isPasswordField: isObscure,
@@ -63,17 +78,17 @@ class _RS4ScreenState extends State<RS4Screen> {
                   textInputAction: TextInputAction.done,
                   validation: (value) => Validator.password(value ?? ""),
                 ),
-                SizedBox(height: 35),
-                _buildNextButton(context, isLoading),
+                Gaps.verticalGapOf(buttonTopGap),
+                _buildNextButton(context, isLoading, isTabletPortrait),
 
-                Gaps.verticalGapOf(50),
+                Gaps.verticalGapOf(dividerTopGap),
                 Utility.horizontalDividerTitle(),
-                Gaps.verticalGapOf(20),
+                Gaps.verticalGapOf(socialButtonGap),
                 gAuthStatus == DataFetchStatus.loading
                     ? Center(
                       child: SizedBox(
-                        height: 16,
-                        width: 16,
+                        height: isTabletPortrait ? 20 : 16,
+                        width: isTabletPortrait ? 20 : 16,
                         child: const CircularProgressIndicator.adaptive(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.kButtonGreen,
@@ -94,12 +109,12 @@ class _RS4ScreenState extends State<RS4Screen> {
                         );
                       },
                     ),
-                Gaps.verticalGapOf(15),
+                Gaps.verticalGapOf(socialButtonGap),
                 fAuthStatus == DataFetchStatus.loading
                     ? Center(
                       child: SizedBox(
-                        height: 16,
-                        width: 16,
+                        height: isTabletPortrait ? 20 : 16,
+                        width: isTabletPortrait ? 20 : 16,
                         child: const CircularProgressIndicator.adaptive(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.kButtonGreen,
@@ -125,7 +140,14 @@ class _RS4ScreenState extends State<RS4Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isLoading) {
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isLoading,
+    bool isTabletPortrait,
+  ) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return CustomMaterialButton(
       label: 'Next',
       isLoading: isLoading,
@@ -148,6 +170,7 @@ class _RS4ScreenState extends State<RS4Screen> {
               },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
+      textStyle: buttonTextStyle,
       elevation: 0,
     );
   }

@@ -36,7 +36,8 @@ class PzBlogProvider extends ChangeNotifier {
     }
 
     try {
-      final querySnapshot = await _firestore.collection('blogs').get();
+      final querySnapshot =
+          await _firestore.collection(AppConstants.blogCollection).get();
       final List<Map<String, dynamic>> blogList =
           querySnapshot.docs.map((doc) => doc.data()).toList();
       _blogs.clear();
@@ -60,7 +61,9 @@ class PzBlogProvider extends ChangeNotifier {
         handleError("User not signed in.");
         return;
       }
-      final blogRef = _firestore.collection('blogs').doc(blogId);
+      final blogRef = _firestore
+          .collection(AppConstants.blogCollection)
+          .doc(blogId);
       await blogRef.update({'viewCount': FieldValue.increment(1)});
       final index = _blogs.indexWhere((b) => b.id == blogId);
       if (index != -1) {

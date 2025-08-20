@@ -98,6 +98,10 @@ export 'story/story_content/widget/normal_content.dart';
 export 'reward/reward_screen.dart';
 export 'reward/reward_card.dart';
 
+/// [Achievement] Screen
+export 'achievement/achievement_screen.dart';
+export 'achievement/achievement_card.dart';
+
 /// [Reward] --> [Widget]
 export 'reward/widget/reward_collection_widget.dart';
 export 'reward/widget/choose_reward_widget.dart';

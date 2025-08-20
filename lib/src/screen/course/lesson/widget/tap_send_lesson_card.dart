@@ -28,9 +28,9 @@ class TapSendLessonCard extends StatefulWidget {
 
 class _TapSendLessonCardState extends State<TapSendLessonCard> {
   String? selectedAnswer;
-  bool showConfirmButton = false;
   bool showLeopardAnimation = false;
   List<TapSendOption> options = [];
+  CustomAudioWidget? _goodFeedbackAudio;
 
   @override
   void initState() {
@@ -46,7 +46,6 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
     if (oldWidget.index != widget.index) {
       setState(() {
         selectedAnswer = null;
-        showConfirmButton = false;
         showLeopardAnimation = false;
       });
       _parseOptions();
@@ -90,10 +89,32 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
     }
   }
 
+  void _playGoodFeedbackAudio() async {
+    try {
+      _goodFeedbackAudio = CustomAudioWidget(
+        audioPath: Assets.goodFeedback,
+        audioSourceType: AudioSourceType.asset,
+      );
+      await _goodFeedbackAudio!.play();
+    } catch (e) {
+      logger.e('Error playing good feedback audio: $e');
+    }
+  }
+
+  void _disposeGoodFeedbackAudio() async {
+    try {
+      if (_goodFeedbackAudio != null) {
+        await _goodFeedbackAudio!.dispose();
+        _goodFeedbackAudio = null;
+      }
+    } catch (e) {
+      logger.e('Error disposing good feedback audio: $e');
+    }
+  }
+
   void _onOptionTap(TapSendOption option) {
     setState(() {
       selectedAnswer = option.nameEn;
-      showConfirmButton = selectedAnswer == widget.content.correctAnswer;
     });
 
     // Play option audio
@@ -108,8 +129,10 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
       if (widget.isLastItem) {
         setState(() {
           showLeopardAnimation = true;
-          showConfirmButton = false;
         });
+
+        // Play good feedback audio
+        _playGoodFeedbackAudio();
 
         // Reset audio and cache
         final audioProvider = context.read<LessonAudioProvider>();
@@ -124,12 +147,17 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             setState(() {
               showLeopardAnimation = false;
             });
+            _disposeGoodFeedbackAudio();
           }
         });
       } else {
-        // For non-last items, proceed normally
         widget.onCorrectAnswer?.call();
       }
+    } else {
+      setState(() {
+        selectedAnswer = null;
+      });
+      showCustomToaster('Incorrect answer. Please try again.', isError: true);
     }
   }
 
@@ -145,41 +173,41 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Word audio button
-            if (widget.content.wordAudio.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: CustomAvatarGlow(
-                  glowColor: AppColors.kSecondaryColor,
-                  glowShape: BoxShape.circle,
-                  visible: widget.isPlaying,
-                  glowRadiusFactor: 0.2,
-                  child: IconButton(
-                    icon: SvgHelper.fromSource(
-                      path: Assets.sound,
-                      height: 48,
-                      width: 48,
-                    ),
-                    onPressed: _playWordAudio,
-                  ),
-                ),
-              ),
+            Gaps.verticalGapOf(80),
+            // if (widget.content.wordAudio.isNotEmpty)
+            //   Container(
+            //     margin: const EdgeInsets.only(bottom: 20),
+            //     child: CustomAvatarGlow(
+            //       glowColor: AppColors.kSecondaryColor,
+            //       glowShape: BoxShape.circle,
+            //       visible: widget.isPlaying,
+            //       glowRadiusFactor: 0.2,
+            //       child: IconButton(
+            //         icon: SvgHelper.fromSource(
+            //           path: Assets.sound,
+            //           height: AppConstants.kIconSize,
+            //           width: AppConstants.kIconSize,
+            //         ),
+            //         onPressed: _playWordAudio,
+            //       ),
+            //     ),
+            //   ),
 
             // Options grid
             _buildOptionsGrid(isMobile, isTablet, isLandscape),
 
             // Confirm button
-            if (showConfirmButton)
-              Container(
-                margin: const EdgeInsets.only(top: 40),
-                child: CustomMaterialButton(
-                  onTap: _onConfirm,
-                  elevation: 0,
-                  radius: 60,
-                  width: 200,
-                  label: 'CONFIRM',
-                  textStyle: AppStyles.text16PxBold,
-                ),
+            Container(
+              margin: const EdgeInsets.only(top: 40),
+              child: CustomMaterialButton(
+                onTap: _onConfirm,
+                elevation: 0,
+                radius: 60,
+                width: 200,
+                label: 'CONFIRM',
+                textStyle: AppStyles.text16PxBold,
               ),
+            ),
             Gaps.verticalGapOf(5),
           ],
         ),
@@ -189,15 +217,15 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 800),
             curve: Curves.easeInOut,
-            bottom: 0,
-            right: 0,
+            bottom: -50,
+            right: -50,
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
               opacity: 1.0,
               child: CustomImage(
                 Assets.goodRemark,
-                height: 150,
-                width: 150,
+                height: 270,
+                width: 270,
                 imageType: CustomImageType.local,
               ),
             ),
@@ -229,19 +257,14 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                 height: 40.h(context),
                 decoration: BoxDecoration(
                   color:
-                      isSelected
-                          ? AppColors.kSecondaryColor
-                          : option.color.isNotEmpty
+                      option.color.isNotEmpty
                           ? Utility.parseHexColors(option.color).first
                           : AppColors.learningColors[options.indexOf(option) %
                               AppColors.learningColors.length],
                   borderRadius: BorderRadius.circular(16),
                   border:
                       isSelected
-                          ? Border.all(
-                            color: AppColors.kSecondaryColor,
-                            width: 3,
-                          )
+                          ? Border.all(color: AppColors.kButtonGreen, width: 3)
                           : null,
                 ),
                 child: Column(
@@ -251,12 +274,10 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                       option.nameNp,
                       style: AppStyles.text20PxBold.copyWith(
                         color:
-                            isSelected
-                                ? AppColors.kWhite
-                                : option.textColor.isNotEmpty
+                            option.textColor.isNotEmpty
                                 ? Utility.parseHexColors(option.textColor).first
                                 : AppColors.kBlack,
-                        fontFamily: 'Mukta',
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -275,9 +296,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                       option.nameEn,
                       style: AppStyles.text12PxSemiBold.copyWith(
                         color:
-                            isSelected
-                                ? AppColors.kWhite
-                                : option.textColor.isNotEmpty
+                            option.textColor.isNotEmpty
                                 ? Utility.parseHexColors(option.textColor).first
                                 : AppColors.kBlack,
                       ),
@@ -304,19 +323,14 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                 height: isLandscape ? 250 : 280,
                 decoration: BoxDecoration(
                   color:
-                      isSelected
-                          ? AppColors.kSecondaryColor
-                          : option.color.isNotEmpty
+                      option.color.isNotEmpty
                           ? Utility.parseHexColors(option.color).first
                           : AppColors.learningColors[options.indexOf(option) %
                               AppColors.learningColors.length],
                   borderRadius: BorderRadius.circular(20),
                   border:
                       isSelected
-                          ? Border.all(
-                            color: AppColors.kSecondaryColor,
-                            width: 4,
-                          )
+                          ? Border.all(color: AppColors.kButtonGreen, width: 4)
                           : null,
                 ),
                 child: Column(
@@ -335,18 +349,15 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                     Text(
                       option.nameNp,
                       style: AppStyles.text20PxBold.copyWith(
-                        color:
-                            isSelected
-                                ? AppColors.kWhite
-                                : AppColors.kSecondaryColor,
-                        fontFamily: 'Mukta',
+                        color: AppColors.kSecondaryColor,
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     Text(
                       option.nameEn,
                       style: AppStyles.text16PxMedium.copyWith(
-                        color: isSelected ? AppColors.kWhite : AppColors.kBlack,
+                        color: AppColors.kBlack,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -371,19 +382,14 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                 height: 300,
                 decoration: BoxDecoration(
                   color:
-                      isSelected
-                          ? AppColors.kSecondaryColor
-                          : option.color.isNotEmpty
+                      option.color.isNotEmpty
                           ? Utility.parseHexColors(option.color).first
                           : AppColors.learningColors[options.indexOf(option) %
                               AppColors.learningColors.length],
                   borderRadius: BorderRadius.circular(24),
                   border:
                       isSelected
-                          ? Border.all(
-                            color: AppColors.kSecondaryColor,
-                            width: 4,
-                          )
+                          ? Border.all(color: AppColors.kButtonGreen, width: 4)
                           : null,
                 ),
                 child: Column(
@@ -402,18 +408,15 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                     Text(
                       option.nameNp,
                       style: AppStyles.text24PxBold.copyWith(
-                        color:
-                            isSelected
-                                ? AppColors.kWhite
-                                : AppColors.kSecondaryColor,
-                        fontFamily: 'Mukta',
+                        color: AppColors.kSecondaryColor,
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     Text(
                       option.nameEn,
                       style: AppStyles.text18PxMedium.copyWith(
-                        color: isSelected ? AppColors.kWhite : AppColors.kBlack,
+                        color: AppColors.kBlack,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -423,6 +426,12 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             );
           }).toList(),
     );
+  }
+
+  @override
+  void dispose() {
+    _disposeGoodFeedbackAudio();
+    super.dispose();
   }
 }
 

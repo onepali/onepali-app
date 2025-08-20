@@ -28,7 +28,8 @@ class SongProvider extends ChangeNotifier {
     }
 
     try {
-      final querySnapshot = await _firestore.collection('songs').get();
+      final querySnapshot =
+          await _firestore.collection(AppConstants.songsCollection).get();
       final List<Map<String, dynamic>> songList =
           querySnapshot.docs.map((doc) => doc.data()).toList();
       _songs.clear();

@@ -124,7 +124,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                             style: AppStyles.text35PxBold.copyWith(
                               fontSize: titleFontSize,
                               color: AppColors.kWhite,
-                              fontFamily: 'Mukta',
+                              fontFamily: AppConstants.kMuktaFont,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -145,7 +145,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                           ),
                         ],
                       ),
-                      SizedBox(height: paddingV),
+                      Gaps.verticalGapOf(paddingV),
                       Text(
                         widget.data.titleEn,
                         style: AppStyles.text30PxSemiBold.copyWith(
@@ -154,7 +154,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: paddingV),
+                      Gaps.verticalGapOf(paddingV),
                       SizedBox(
                         width: descriptionSizeBoxHeight,
                         child: Text(

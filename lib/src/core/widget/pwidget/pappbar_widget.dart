@@ -62,8 +62,12 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         title,
         style:
             isMobilePortrait
-                ? AppStyles.text18PxSemiBold.copyWith(fontFamily: 'Poppins')
-                : AppStyles.text22PxSemiBold.copyWith(fontFamily: 'Poppins'),
+                ? AppStyles.text18PxSemiBold.copyWith(
+                  fontFamily: AppConstants.kPoppinsFont,
+                )
+                : AppStyles.text22PxSemiBold.copyWith(
+                  fontFamily: AppConstants.kPoppinsFont,
+                ),
       ),
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,

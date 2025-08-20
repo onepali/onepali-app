@@ -38,11 +38,31 @@ class _RS6ScreenState extends State<RS6Screen>
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double lottieSize = isTabletPortrait ? 200.0 : 150.0;
+    final double svgSize = isTabletPortrait ? 240.0 : 180.0;
+    final double titleGap = isTabletPortrait ? 40.0 : 30.0;
+    final double subtitleGap = isTabletPortrait ? 16.0 : 10.0;
+    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
+    final TextStyle descriptionStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular;
+
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 6),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,8 +70,8 @@ class _RS6ScreenState extends State<RS6Screen>
             if (!_showSvg)
               Lottie.asset(
                 Assets.successLottie,
-                height: 150,
-                width: 150,
+                height: lottieSize,
+                width: lottieSize,
                 repeat: false,
                 controller: _lottieController,
                 onLoaded: (composition) {
@@ -62,28 +82,31 @@ class _RS6ScreenState extends State<RS6Screen>
             if (_showSvg)
               SvgHelper.fromSource(
                 path: Assets.successSvg,
-                height: 180,
-                width: 180,
+                height: svgSize,
+                width: svgSize,
               ),
-            Gaps.verticalGapOf(30),
-            Text('Account Setup Complete!', style: AppStyles.text20PxSemiBold),
-            Gaps.verticalGapOf(10),
+            Gaps.verticalGapOf(titleGap),
+            Text('Account Setup Complete!', style: titleStyle),
+            Gaps.verticalGapOf(subtitleGap),
             Text(
               'You\'re now part of a community helping children connect with their Nepali roots. Let the learning begin!',
-              style: AppStyles.text14PxRegular,
+              style: descriptionStyle,
               textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _buildNextButton(context),
+        padding: EdgeInsets.all(bottomPadding),
+        child: _buildNextButton(context, isTabletPortrait),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return CustomMaterialButton(
       label: 'Get Started',
       onTap: () {
@@ -91,6 +114,7 @@ class _RS6ScreenState extends State<RS6Screen>
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
+      textStyle: buttonTextStyle,
       elevation: 0,
     );
   }

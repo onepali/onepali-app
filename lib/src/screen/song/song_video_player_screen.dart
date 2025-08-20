@@ -88,7 +88,7 @@ class _SongVideoPlayerScreenState extends State<SongVideoPlayerScreen> {
       'SongVideoPlayerScreen: Building with songId=${widget.songId}, youtubeUrl=${widget.youtubeUrl}',
     );
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.kBlack,
       body: SafeArea(
         child: YoutubeVideoWidget(
           youtubeUrl: widget.youtubeUrl,

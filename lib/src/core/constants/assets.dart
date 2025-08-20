@@ -47,6 +47,7 @@ class Assets {
   static String preLoader = 'pre_loader'.lottie;
   static String starRewardLottie = 'rewards_star'.lottie;
   static String alarmExtendLottie = 'alarm_extend'.lottie;
+  static String completeConfettiLottie = 'complete_confetti'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
@@ -84,6 +85,10 @@ class Assets {
   static String connectionSvg = 'connection'.svg;
   static String timeUpSvg = 'time_up'.svg;
   static String guestAvatar = 'guest_avatar'.svg;
+  static String trophyAv = 'trophy'.png;
+  static String medalAv = 'medal'.png;
+  static String starAv = 'star'.png;
+  static String achievement = 'achievement'.png;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
@@ -110,6 +115,7 @@ class Assets {
 
   /// [Audio] assets
   static String eww = 'audio/eww'.audio;
+  static String goodFeedback = 'audio/sfx/good_feedback'.audio;
   static String starBlast = 'audio/sfx/star_blast.mp3';
 }
 

@@ -6,14 +6,20 @@ class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double topPadding = isTabletPortrait ? 48.0 : 32.0;
+
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 32.0,
+        padding: EdgeInsets.only(
+          left: horizontalPadding,
+          right: horizontalPadding,
+          top: topPadding,
           bottom: 0.0,
         ),
         child: Column(
@@ -22,60 +28,77 @@ class RegisterScreen extends StatelessWidget {
           children: [
             Text(
               'Welcome to O Nepali!',
-              style: AppStyles.text24PxSemiBold,
+              style:
+                  isTabletPortrait
+                      ? AppStyles.text28PxBold
+                      : AppStyles.text24PxSemiBold,
               textAlign: TextAlign.center,
             ),
-            Gaps.verticalGapOf(8),
+            Gaps.verticalGapOf(isTabletPortrait ? 12 : 8),
             Text(
               "Let's get started in 2 simple steps",
-              style: AppStyles.text14PxMedium.copyWith(
-                color: AppColors.kPitchBlack,
-              ),
+              style: (isTabletPortrait
+                      ? AppStyles.text16PxMedium
+                      : AppStyles.text14PxMedium)
+                  .copyWith(color: AppColors.kPitchBlack),
               textAlign: TextAlign.center,
             ),
-            Gaps.verticalGapOf(24),
+            Gaps.verticalGapOf(isTabletPortrait ? 32 : 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Column(
                   children: [
-                    Icon(Icons.circle, color: AppColors.kButtonGreen, size: 16),
+                    Icon(
+                      Icons.circle,
+                      color: AppColors.kButtonGreen,
+                      size: isTabletPortrait ? 20 : 16,
+                    ),
                     Container(
-                      width: 4,
-                      height: 25,
+                      width: isTabletPortrait ? 5 : 4,
+                      height: isTabletPortrait ? 32 : 25,
                       color: AppColors.kLightGrey,
                     ),
-                    Icon(Icons.circle, color: AppColors.kButtonGreen, size: 16),
+                    Icon(
+                      Icons.circle,
+                      color: AppColors.kButtonGreen,
+                      size: isTabletPortrait ? 20 : 16,
+                    ),
                   ],
                 ),
-                SizedBox(width: 16),
+                Gaps.horizontalGapOf(isTabletPortrait ? 20 : 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Understand your journey',
-                      style: AppStyles.text14PxRegular.copyWith(
-                        color: AppColors.kPitchBlack,
-                      ),
+                      style: (isTabletPortrait
+                              ? AppStyles.text16PxRegular
+                              : AppStyles.text14PxRegular)
+                          .copyWith(color: AppColors.kPitchBlack),
                     ),
-                    Gaps.verticalGapOf(18),
+                    Gaps.verticalGapOf(isTabletPortrait ? 24 : 18),
                     Text(
                       'Create your account',
-                      style: AppStyles.text14PxRegular.copyWith(
-                        color: AppColors.kPitchBlack,
-                      ),
+                      style: (isTabletPortrait
+                              ? AppStyles.text16PxRegular
+                              : AppStyles.text14PxRegular)
+                          .copyWith(color: AppColors.kPitchBlack),
                     ),
                   ],
                 ),
               ],
             ),
-            Gaps.verticalGapOf(100),
-            SvgHelper.fromSource(path: Assets.leoChracterSvg, height: 220),
+            Gaps.verticalGapOf(isTabletPortrait ? 120 : 100),
+            SvgHelper.fromSource(
+              path: Assets.leoChracterSvg,
+              height: isTabletPortrait ? 280 : 220,
+            ),
           ],
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(isTabletPortrait ? 24.0 : 16.0),
         decoration: BoxDecoration(
           color: AppColors.kWhite,
           boxShadow: [
@@ -98,6 +121,10 @@ class RegisterScreen extends StatelessWidget {
                 showBorder: false,
                 backgroundColor: AppColors.kButtonGreen,
                 width: double.infinity,
+                textStyle:
+                    isTabletPortrait
+                        ? AppStyles.text18PxMedium
+                        : AppStyles.text16PxMedium,
               ),
         ),
       ),

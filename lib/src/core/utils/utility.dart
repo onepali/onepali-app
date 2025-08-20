@@ -167,16 +167,18 @@ class Utility {
   static Future<void> saveFcmTokenToFirestore(String userId) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     if (fcmToken != null) {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'fcmToken': fcmToken,
-      }, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(userId)
+          .set({'fcmToken': fcmToken}, SetOptions(merge: true));
     }
 
     // Listen for token refresh
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'fcmToken': newToken,
-      }, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(userId)
+          .set({'fcmToken': newToken}, SetOptions(merge: true));
     });
   }
 }

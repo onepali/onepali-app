@@ -14,25 +14,37 @@ class _RS1ScreenState extends State<RS1Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
+    final int crossAxisCount = isTabletPortrait ? 3 : 2;
+    final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
+    final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
+    final double childAspectRatio = isTabletPortrait ? 1.3 : 1.2;
+
+    final TextStyle titleStyle =
+        isTabletPortrait
+            ? AppStyles.text24PxSemiBold
+            : AppStyles.text20PxSemiBold;
+
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 1),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'How did you hear about O Nepali?',
-              style: AppStyles.text20PxSemiBold,
-            ),
-            Gaps.verticalGapOf(24),
+            Text('How did you hear about O Nepali?', style: titleStyle),
+            Gaps.verticalGapOf(titleBottomGap),
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.2,
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: mainAxisSpacing,
+                crossAxisSpacing: crossAxisSpacing,
+                childAspectRatio: childAspectRatio,
                 children: List.generate(onboardList.length, (index) {
                   final option = onboardList[index];
                   return _buildReferralCard(
@@ -44,11 +56,12 @@ class _RS1ScreenState extends State<RS1Screen> {
                       });
                     },
                     icon: option.icon,
+                    isTabletPortrait: isTabletPortrait,
                   );
                 }),
               ),
             ),
-            _buildNextButton(context),
+            _buildNextButton(context, isTabletPortrait),
           ],
         ),
       ),
@@ -60,28 +73,38 @@ class _RS1ScreenState extends State<RS1Screen> {
     bool isSelected, {
     required VoidCallback onTap,
     String? icon,
+    required bool isTabletPortrait,
   }) {
+    final double iconSize = isTabletPortrait ? 40.0 : 30.0;
+    final double verticalGap = isTabletPortrait ? 16.0 : 12.0;
+    final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double borderWidth =
+        isSelected ? (isTabletPortrait ? 3.0 : 2.5) : 1.0;
+
+    final TextStyle textStyle =
+        isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular;
+
     return InkWell(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.kButtonGreen : AppColors.kLightGrey,
-            width: isSelected ? 2.5 : 1,
+            width: borderWidth,
           ),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgHelper.fromSource(path: icon ?? Assets.leoSvg, height: 30),
-            Gaps.verticalGapOf(12),
+            SvgHelper.fromSource(path: icon ?? Assets.leoSvg, height: iconSize),
+            Gaps.verticalGapOf(verticalGap),
             Text(
               text,
-              style: AppStyles.text14PxRegular.copyWith(
-                color: AppColors.kPitchBlack,
-              ),
+              style: textStyle.copyWith(color: AppColors.kPitchBlack),
               textAlign: TextAlign.center,
             ),
           ],
@@ -90,7 +113,10 @@ class _RS1ScreenState extends State<RS1Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context) {
+  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
@@ -105,6 +131,7 @@ class _RS1ScreenState extends State<RS1Screen> {
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
+      textStyle: buttonTextStyle,
       elevation: 0,
     );
   }

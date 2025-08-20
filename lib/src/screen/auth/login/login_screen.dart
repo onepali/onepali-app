@@ -140,14 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
             text: 'Don\'t have an account? ',
             style: AppStyles.text14PxRegular.copyWith(
               color: AppColors.kPitchBlack,
-              fontFamily: AppConstants.defaultFontFamily,
+              fontFamily: AppConstants.kPoppinsFont,
             ),
             children: [
               TextSpan(
                 text: 'Sign up',
                 style: AppStyles.text14PxSemiBold.copyWith(
                   color: AppColors.kButtonGreen,
-                  fontFamily: AppConstants.defaultFontFamily,
+                  fontFamily: AppConstants.kPoppinsFont,
                 ),
                 recognizer:
                     TapGestureRecognizer()

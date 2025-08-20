@@ -46,10 +46,7 @@ class PSettingCard extends StatelessWidget {
                             ? NetworkImage(avatarUrl!)
                             : AssetImage(Assets.parentAvatar) as ImageProvider,
                   ),
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
+          title: Text(title, style: AppStyles.text16PxMedium),
           contentPadding: EdgeInsets.zero,
           minVerticalPadding: 0,
           trailing:
