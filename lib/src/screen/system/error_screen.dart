@@ -93,7 +93,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             imageWidget,
-            SizedBox(width: 40),
+            Gaps.horizontalGapOf(40),
             Flexible(child: textContent),
           ],
         ),

@@ -29,6 +29,9 @@ export 'child/screen_time_model.dart';
 /// [Reward] Model
 export 'reward/reward_model.dart';
 
+/// [Achievement] Model
+export 'achievement/achievement_model.dart';
+
 //* ------------------------------- Child Models ------------------------------- *//
 
 /// [Song] Model

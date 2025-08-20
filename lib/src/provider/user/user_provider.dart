@@ -25,7 +25,7 @@ class UserProvider extends ChangeNotifier {
       }
       final doc =
           await FirebaseFirestore.instance
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(currentUser.uid)
               .get();
       if (doc.exists) {
@@ -76,7 +76,7 @@ class UserProvider extends ChangeNotifier {
     }
     try {
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(currentUser.uid)
           .update({'fullName': fullName, 'email': email});
       if (_user != null) {

@@ -288,7 +288,7 @@ class _CUserScreenState extends State<CUserScreen> {
                     radius: avatarRadius,
                     child:
                         selectedAvatar == AppConstants.avatarList[idx]
-                            ? Icon(Icons.check, color: Colors.white)
+                            ? Icon(Icons.check, color: AppColors.kWhite)
                             : null,
                   ),
                 ),

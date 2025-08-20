@@ -30,7 +30,7 @@ class DrawerCard extends StatelessWidget {
           color:
               isSelected
                   ? AppColors.kSecondaryColor.withValues(alpha: 0.1)
-                  : AppColors.transparent,
+                  : AppColors.kTransparentColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -46,7 +46,7 @@ class DrawerCard extends StatelessWidget {
                     color:
                         isSelected
                             ? AppColors.kSecondaryColor
-                            : AppColors.transparent,
+                            : AppColors.kTransparentColor,
                     width: 2,
                   ),
                 ),

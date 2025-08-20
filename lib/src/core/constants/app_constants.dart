@@ -3,12 +3,15 @@ import 'package:onepali/src/src.dart';
 class AppConstants {
   static const String appName = 'O Nepali';
   static const String appVersion = 'v1.0.0';
-  static const String defaultFontFamily = 'Poppins';
 
   static const String applicationId = 'com.onepali.app';
   static const String dotEnvFileName = '.env';
   static const String defaultLanguageCode = 'en';
   static const String supportMail = 'hello@onepali.fun';
+
+  /// [Fonts]
+  static const String kMuktaFont = 'Mukta';
+  static const String kPoppinsFont = 'Poppins';
 
   // Login Types
   static const String email = 'email';
@@ -28,7 +31,6 @@ class AppConstants {
   /// Firebase Collection Names
   static const String usersCollection = 'users';
   static const String childrenCollection = 'children';
-  static const String lessonsCollection = 'lessons';
   static const String coursesCollection = 'courses';
   static const String storiesCollection = 'stories';
   static const String songsCollection = 'songs';
@@ -37,7 +39,11 @@ class AppConstants {
   static const String recomLessonCollection = 'recom_lesson';
   static const String childRewardCollection = 'creward';
   static const String rewardCollection = 'reward_collection';
-
+  static const String blogCollection = 'blogs';
+  static const String notificationCollection = 'notifications';
+  static const String notificationSettingCollection = 'notification_setting';
+  static const String planCollection = 'plans';
+  static const String onepaliCollection = 'onepali';
   // Database
   static const String RECOM_DB_PATH = 'onp_recom.db';
 

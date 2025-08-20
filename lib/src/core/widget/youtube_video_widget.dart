@@ -90,7 +90,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
       title: widget.title,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Text(widget.info ?? '', style: const TextStyle(fontSize: 16)),
+        child: Text(widget.info ?? '', style: AppStyles.text16PxRegular),
       ),
     );
   }
@@ -126,13 +126,13 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
         player: YoutubePlayer(
           controller: _controller,
           showVideoProgressIndicator: true,
-          progressIndicatorColor: Colors.red,
+          progressIndicatorColor: AppColors.kRed,
           onReady: () {},
           topActions: [
             IconButton(
               icon: Icon(
                 _isLocked ? Icons.lock : Icons.lock_open,
-                color: Colors.white,
+                color: AppColors.kWhite,
               ),
               onPressed:
                   () => setState(() {
@@ -143,7 +143,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
             if (!_isLocked && widget.info != null) ...[
               const Spacer(),
               IconButton(
-                icon: const Icon(Icons.info_outline, color: Colors.white),
+                icon: const Icon(Icons.info_outline, color: AppColors.kWhite),
                 onPressed: () {
                   setState(() => _showInfo = !_showInfo);
                   if (!_isLocked && widget.info != null) {
@@ -154,7 +154,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
             ],
             if (!_isLocked) ...[
               GestureDetector(
-                child: const Icon(Icons.close, color: Colors.white),
+                child: const Icon(Icons.close, color: AppColors.kWhite),
                 onTap: () {
                   // Track progress before closing
                   if (widget.onProgress != null) {

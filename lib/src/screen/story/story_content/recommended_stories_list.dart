@@ -21,7 +21,7 @@ class RecommendedStoriesList extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Text(
               'Failed to load recommended stories.',
-              style: AppStyles.text16PxMedium.copyWith(color: Colors.red),
+              style: AppStyles.text16PxMedium.copyWith(color: AppColors.kRed),
             ),
           );
         }

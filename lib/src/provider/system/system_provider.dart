@@ -31,20 +31,30 @@ class SystemProvider extends ChangeNotifier {
     try {
       // Fetch About data
       final aboutDoc =
-          await _firestore.collection('onepali').doc('about').get();
+          await _firestore
+              .collection(AppConstants.onepaliCollection)
+              .doc('about')
+              .get();
       if (aboutDoc.exists && aboutDoc.data() != null) {
         _aboutData = AboutModel.fromJson(aboutDoc.data()!);
       }
 
       // Fetch Contact data
       final contactDoc =
-          await _firestore.collection('onepali').doc('contact').get();
+          await _firestore
+              .collection(AppConstants.onepaliCollection)
+              .doc('contact')
+              .get();
       if (contactDoc.exists && contactDoc.data() != null) {
         _contactData = ContactModel.fromJson(contactDoc.data()!);
       }
 
       // Fetch FAQs data
-      final faqsDoc = await _firestore.collection('onepali').doc('faqs').get();
+      final faqsDoc =
+          await _firestore
+              .collection(AppConstants.onepaliCollection)
+              .doc('faqs')
+              .get();
       if (faqsDoc.exists && faqsDoc.data() != null) {
         final faqsMap = faqsDoc.data()!;
         _faqsData.clear();

@@ -25,40 +25,40 @@ class _StoryScreenState extends State<StoryScreen> {
   Widget build(BuildContext context) {
     return Consumer<StoryProvider>(
       builder: (context, provider, _) {
-        if (provider.status == DataFetchStatus.loading) {
-          return const CustomLoader();
-        }
-
-        final stories = provider.stories;
-        if (stories.isEmpty && provider.status == DataFetchStatus.error) {
-          return ErrorScreen(
-            title: 'No Stories Found',
-            message: 'Please check back later for new stories.',
-            onRetry: () {
-              context.read<StoryProvider>().fetchStories();
-            },
-          );
-        }
-        return SizedBox(
-          height: AppCardResponsive.getCardHeight(context),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            itemCount: stories.length,
-            separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
-            itemBuilder: (context, i) {
-              final story = stories[i];
-              return SizedBox(
-                width: AppCardResponsive.getCardWidth(context),
-                child: StoryCard(
-                  story: story,
-                  isGuestUser: GuestUtil.isGuestUser(),
-                  isLocked: i > 0,
+        return StatusHandler(
+          status: provider.status,
+          hasData: provider.stories.isNotEmpty,
+          errorTitle: 'No Stories Found',
+          errorMessage: 'Please check back later for new stories.',
+          onRetry: () {
+            context.read<StoryProvider>().fetchStories();
+          },
+          successBuilder: () {
+            final stories = provider.stories;
+            return SizedBox(
+              height: AppCardResponsive.getCardHeight(context),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
                 ),
-              );
-            },
-          ),
+                itemCount: stories.length,
+                separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
+                itemBuilder: (context, i) {
+                  final story = stories[i];
+                  return SizedBox(
+                    width: AppCardResponsive.getCardWidth(context),
+                    child: StoryCard(
+                      story: story,
+                      isGuestUser: GuestUtil.isGuestUser(),
+                      isLocked: i > 0,
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         );
       },
     );

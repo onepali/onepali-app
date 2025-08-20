@@ -1,3 +1,5 @@
+// import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
@@ -29,6 +31,10 @@ class LessonContentScreen extends StatefulWidget {
 class _LessonContentScreenState extends State<LessonContentScreen> {
   bool _showGoodRemark = false;
   int _currentContentIndex = 0; // Start with intro screen
+
+  // Store provider references for safe disposal
+  LessonAudioProvider? _audioProvider;
+  RecommendedLessonProvider? _recommendedLessonProvider;
 
   @override
   void initState() {
@@ -69,13 +75,21 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Store provider references for safe disposal
+    _audioProvider = context.read<LessonAudioProvider>();
+    _recommendedLessonProvider = context.read<RecommendedLessonProvider>();
+  }
+
+  @override
   void dispose() {
     // Save current progress before leaving
     _saveCurrentProgress();
 
     // Clean up audio when leaving the screen
-    final audioProvider = context.read<LessonAudioProvider>();
-    audioProvider.stopAudio();
+    _audioProvider?.stopAudio();
 
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
@@ -292,8 +306,15 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
   Future<void> _saveProgress(LessonContent content, int contentIndex) async {
     try {
-      final recommendedLessonProvider =
-          context.read<RecommendedLessonProvider>();
+      // Use stored provider reference instead of context.read
+      final recommendedLessonProvider = _recommendedLessonProvider;
+      if (recommendedLessonProvider == null) {
+        logger.w(
+          'RecommendedLessonProvider not available, skipping progress save',
+        );
+        return;
+      }
+
       final childId = await ChildLocalStorage.getCurrentChildId();
 
       if (childId!.isNotEmpty) {
@@ -308,8 +329,25 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           'Progress saved: lessonId=${widget.lesson.chapterId}, progress=${contentIndex + 1}',
         );
       }
-    } catch (e) {
+    } catch (e, s) {
       logger.e('Error saving progress: $e');
+      logger.e('Stack trace: $s');
+    }
+  }
+
+  void _playWordAudio() async {
+    try {
+      if (_currentContentIndex > 0 &&
+          _currentContentIndex <= widget.lesson.lessonContent.length) {
+        final currentContent =
+            widget.lesson.lessonContent[_currentContentIndex - 1];
+        if (currentContent.wordAudio.isNotEmpty) {
+          final audioProvider = context.read<LessonAudioProvider>();
+          await audioProvider.playWordAudio(currentContent.wordAudio);
+        }
+      }
+    } catch (e) {
+      logger.e('Error playing word audio: $e');
     }
   }
 
@@ -346,7 +384,24 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         body: SafeArea(
           child: Stack(
             children: [
-              // Close button
+              if (widget.hasSound && contentList.length == idx)
+                Positioned(
+                  top: 16,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: IconButton(
+                      icon: SvgHelper.fromSource(
+                        path: Assets.sound,
+                        height: AppConstants.kIconSize,
+                        width: AppConstants.kIconSize,
+                      ),
+                      onPressed: () {
+                        _playWordAudio();
+                      },
+                    ),
+                  ),
+                ),
               Positioned(
                 top: 16,
                 right: 16,
@@ -394,7 +449,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               style: AppStyles.text24PxBold.copyWith(
                                 // color: AppColors.kSecondaryColor,
                                 fontSize: 40,
-                                fontFamily: 'Mukta',
+                                fontFamily: AppConstants.kMuktaFont,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -481,11 +536,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   child: Center(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.95),
+                        color: AppColors.kWhite.withValues(alpha: 0.95),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: AppColors.kBlack.withValues(alpha: 0.2),
                             blurRadius: 15,
                             offset: const Offset(0, 5),
                           ),
@@ -501,14 +556,14 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             height: MediaQuery.of(context).size.height * 0.4,
                             imageType: CustomImageType.local,
                           ),
-                          const SizedBox(height: 16),
+                          Gaps.verticalGapOf(16),
                           Text(
                             'Excellent Work!',
                             style: AppStyles.text24PxBold.copyWith(
                               color: AppColors.kButtonGreen,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          Gaps.verticalGapOf(8),
                           Text(
                             'Lesson Completed Successfully',
                             style: AppStyles.text16PxMedium.copyWith(

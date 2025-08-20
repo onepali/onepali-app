@@ -115,9 +115,9 @@ class ChildUserProvider extends ChangeNotifier {
     try {
       final querySnapshot =
           await _firestore
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .get();
       _childUser =
           querySnapshot.docs
@@ -182,9 +182,9 @@ class ChildUserProvider extends ChangeNotifier {
     try {
       final childDoc =
           await _firestore
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .doc(childUid)
               .get();
 
@@ -217,9 +217,9 @@ class ChildUserProvider extends ChangeNotifier {
       }
 
       await _firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid)
           .update(updateData);
       // Update local list
@@ -314,9 +314,9 @@ class ChildUserProvider extends ChangeNotifier {
 
       // Delete the child document from the parent's children subcollection
       DocumentReference childRef = _firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid);
 
       batch.delete(childRef);
@@ -378,9 +378,9 @@ class ChildUserProvider extends ChangeNotifier {
     try {
       // Get the child document reference
       final childDoc = _firestore
-          .collection('users')
+          .collection(AppConstants.usersCollection)
           .doc(parentUid)
-          .collection('children')
+          .collection(AppConstants.childrenCollection)
           .doc(childUid);
 
       // Get current child data

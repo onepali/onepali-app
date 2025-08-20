@@ -6,14 +6,14 @@ class ThemeConfig {
     brightness: Brightness.light,
     primaryColor: AppColors.kPrimaryColor,
     scaffoldBackgroundColor: AppColors.kBackgroundColor,
-    fontFamily: AppConstants.defaultFontFamily,
+    fontFamily: AppConstants.kPoppinsFont,
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.kWhite,
       foregroundColor: AppColors.kPitchBlack,
       elevation: 0,
       titleTextStyle: AppStyles.text18PxBold.copyWith(
         color: AppColors.kPitchBlack,
-        fontFamily: 'Mukta',
+        fontFamily: AppConstants.kMuktaFont,
       ),
     ),
     textTheme: TextTheme(

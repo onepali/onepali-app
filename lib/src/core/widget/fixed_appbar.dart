@@ -14,6 +14,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isGuest;
   final bool playStarBlastAudio;
   final Color menuColor;
+  final double elevation;
 
   const UserAppBar({
     super.key,
@@ -29,6 +30,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.playStarBlastAudio = false,
     this.totalLessonsCompleted = 0,
     this.menuColor = AppColors.kLessonColor,
+    this.elevation = 0.0,
   }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
        assert(totalChildCount >= 0, 'Total child count must be non-negative'),
        assert(
@@ -63,7 +65,19 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         horizontal: horizontalPadding,
         vertical: verticalPadding,
       ),
-      decoration: BoxDecoration(color: AppColors.kWhite),
+      decoration: BoxDecoration(
+        color: AppColors.kWhite,
+        boxShadow:
+            elevation > 0
+                ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: elevation,
+                    offset: Offset(0, elevation / 2),
+                  ),
+                ]
+                : null,
+      ),
       child:
           isMobileLandScape
               ? Column(

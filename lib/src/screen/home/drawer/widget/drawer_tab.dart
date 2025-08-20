@@ -164,7 +164,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                     color:
                         index == _selectedChildIndex
                             ? AppColors.kPrimaryColor
-                            : AppColors.transparent,
+                            : AppColors.kTransparentColor,
                     width: 2,
                   ),
                 ),
@@ -180,15 +180,24 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             customInkwell(
               onTap: () {
                 if (index == _selectedChildIndex) {
+                  final targetChild = widget.data[index];
+
                   Utility.navigateMaterialRoute(
                     context,
-                    RewardCollectionWidget(),
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                    ),
                   );
                 } else {
                   final targetChild = widget.data[index];
                   Utility.navigateMaterialRoute(
                     context,
-                    RewardCollectionWidget(childId: targetChild.uid),
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                      childId: targetChild.uid,
+                    ),
                   );
                 }
               },

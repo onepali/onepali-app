@@ -75,7 +75,11 @@ class _NormalContentState extends State<NormalContent> {
                     );
                     storyProvider.playAudio(widget.content.audio);
                   },
-                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                  child: SvgHelper.fromSource(
+                    path: Assets.sound,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
+                  ),
                 );
                 return storyProvider.isPlaying
                     ? CustomAvatarGlow(child: soundIcon)
@@ -87,7 +91,7 @@ class _NormalContentState extends State<NormalContent> {
         // Top right wrong icon
         Positioned(
           top: 24,
-          right: 24,
+          right: 16,
           child: customInkwell(
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
@@ -115,7 +119,7 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 25,
+          right: 16,
           top: 0,
           bottom: 0,
           child: Center(
@@ -172,7 +176,7 @@ class _NormalContentState extends State<NormalContent> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.text20PxMedium.copyWith(
-                            fontFamily: 'Mukta',
+                            fontFamily: AppConstants.kMuktaFont,
                           ),
                         ),
                       ],
@@ -183,7 +187,7 @@ class _NormalContentState extends State<NormalContent> {
 
               return Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: AppColors.kWhite,
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 24,

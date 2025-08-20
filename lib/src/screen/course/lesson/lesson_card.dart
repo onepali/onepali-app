@@ -99,7 +99,7 @@ class LessonCard extends StatelessWidget {
               Positioned(
                 top: 12,
                 right: 12,
-                child: Icon(Icons.lock, color: Colors.black, size: 22),
+                child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
               ),
           ],
         ),

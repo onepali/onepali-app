@@ -14,8 +14,3 @@ extension RadiusExtension on num {
 extension FontSizeExtension on num {
   double get f => toDouble();
 }
-
-// Example usage:
-// Container(padding: 12.p)
-// Container(borderRadius: 8.r)
-// Text('Hello', style: TextStyle(fontSize: 16.f))

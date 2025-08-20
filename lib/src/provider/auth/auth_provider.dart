@@ -105,7 +105,7 @@ class AuthProvider with ChangeNotifier {
       // Save UserModel to Firestore
       if (_user != null) {
         final userDocRef = FirebaseFirestore.instance
-            .collection('users')
+            .collection(AppConstants.usersCollection)
             .doc(_user!.uid);
 
         final userModel = UserModel(
@@ -309,7 +309,7 @@ class AuthProvider with ChangeNotifier {
       // Save UserModel to Firestore
       if (_user != null) {
         final userDocRef = FirebaseFirestore.instance
-            .collection('users')
+            .collection(AppConstants.usersCollection)
             .doc(_user!.uid);
 
         final userModel = UserModel(

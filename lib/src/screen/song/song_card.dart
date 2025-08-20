@@ -96,12 +96,12 @@ class SongCard extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: AppColors.kWhite.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Text(
                   data.titleEn,
-                  style: AppStyles.text14PxMedium.copyWith(color: Colors.black),
+                  style: AppStyles.text14PxMedium.copyWith(color: AppColors.kBlack),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                 ),

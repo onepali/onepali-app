@@ -103,7 +103,11 @@ class SlideContentState extends State<SlideContent> {
                     );
                     storyProvider.playAudio(widget.content.audio);
                   },
-                  child: SvgHelper.fromSource(path: Assets.sound, height: 40),
+                  child: SvgHelper.fromSource(
+                    path: Assets.sound,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
+                  ),
                 );
                 return storyProvider.isPlaying
                     ? CustomAvatarGlow(child: soundIcon)
@@ -114,7 +118,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         Positioned(
           top: 24,
-          right: 24,
+          right: 16,
           child: customInkwell(
             onTap: () {
               storyProvider.stopAudioAndResetIndex();
@@ -157,7 +161,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 25,
+          right: 16,
           top: 0,
           bottom: 0,
           child: Center(
@@ -199,7 +203,7 @@ class SlideContentState extends State<SlideContent> {
                   Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.10),
+                      color: AppColors.kBlack.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
@@ -263,7 +267,7 @@ class SlideContentState extends State<SlideContent> {
                           lines[i],
                           textAlign: TextAlign.center,
                           style: AppStyles.text20PxMedium.copyWith(
-                            fontFamily: 'Mukta',
+                            fontFamily: AppConstants.kMuktaFont,
                           ),
                         ),
                       ],
@@ -274,7 +278,7 @@ class SlideContentState extends State<SlideContent> {
 
               return Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: AppColors.kWhite,
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 24,

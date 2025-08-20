@@ -15,7 +15,7 @@ class CustomTextButton extends StatelessWidget {
     required this.onPressed,
     this.textStyle,
     this.padding,
-    this.backgroundColor = AppColors.transparent,
+    this.backgroundColor = AppColors.kTransparentColor,
     this.borderRadius,
   });
 

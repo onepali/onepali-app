@@ -21,7 +21,8 @@ class PzPlanProvider extends ChangeNotifier {
   Future<void> fetchPlans() async {
     setStatus(DataFetchStatus.loading);
     try {
-      final querySnapshot = await _firestore.collection('plans').get();
+      final querySnapshot =
+          await _firestore.collection(AppConstants.planCollection).get();
       final List<Map<String, dynamic>> planList =
           querySnapshot.docs.map((doc) => doc.data()).toList();
       _plans = pzPlanModelFromJson(jsonEncode(planList));
@@ -35,7 +36,11 @@ class PzPlanProvider extends ChangeNotifier {
   Future<void> fetchUserPlan() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-    final doc = await _firestore.collection('users').doc(user.uid).get();
+    final doc =
+        await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(user.uid)
+            .get();
     final data = doc.data() ?? {};
     final planId = data['plan_id'] ?? 'free';
     _currentPlan = _plans.firstWhere(
@@ -80,12 +85,15 @@ class PzPlanProvider extends ChangeNotifier {
       (p) => p.id == planId,
       orElse: () => _plans.first,
     );
-    await _firestore.collection('users').doc(user.uid).set({
-      'plan_id': planId,
-      'plan_name': plan.name,
-      'plan_active_date': now.toIso8601String(),
-      'plan_expiry_date': expiry.toIso8601String(),
-    }, SetOptions(merge: true));
+    await _firestore
+        .collection(AppConstants.usersCollection)
+        .doc(user.uid)
+        .set({
+          'plan_id': planId,
+          'plan_name': plan.name,
+          'plan_active_date': now.toIso8601String(),
+          'plan_expiry_date': expiry.toIso8601String(),
+        }, SetOptions(merge: true));
     await fetchUserPlan();
   }
 

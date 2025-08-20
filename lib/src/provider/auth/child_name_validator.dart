@@ -12,9 +12,9 @@ class ChildNameValidator {
     try {
       final querySnapshot =
           await _firestore
-              .collection('users')
+              .collection(AppConstants.usersCollection)
               .doc(parentUid)
-              .collection('children')
+              .collection(AppConstants.childrenCollection)
               .where('full_name', isEqualTo: childName.trim())
               .get();
 

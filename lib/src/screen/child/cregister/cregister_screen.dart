@@ -63,7 +63,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Personalize your Child Account', style: titleStyle),
-                SizedBox(height: titleBottomGap),
+                Gaps.verticalGapOf(titleBottomGap),
                 TitleActionChild(
                   titlePadding: EdgeInsets.only(bottom: 8),
                   title: 'Name',
@@ -89,7 +89,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
                 ),
                 // Gaps.verticalGapOf(5),
                 // InfoWidget.info('It will be the password for the parent zone.'),
-                SizedBox(height: buttonTopGap),
+                Gaps.verticalGapOf(buttonTopGap),
                 _buildNextButton(context, isTabletPortrait),
               ],
             ),

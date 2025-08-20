@@ -180,7 +180,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
 
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.kTransparentColor,
       isScrollControlled: true,
       routeSettings: const RouteSettings(name: AppConstants.datePickerModal),
       builder: (context) {
@@ -261,9 +261,8 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                                 Gaps.verticalGapOf(8),
                                 Text(
                                   'Format: YYYY-MM (e.g., 2024-03)',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
+                                  style: AppStyles.text12PxRegular.copyWith(
+                                    color: AppColors.kGrey,
                                   ),
                                 ),
                               ],
@@ -351,7 +350,9 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                         padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                         child: Text(
                           _error!,
-                          style: TextStyle(color: Colors.red, fontSize: 13),
+                          style: AppStyles.text12PxRegular.copyWith(
+                            color: AppColors.kRed,
+                          ),
                         ),
                       ),
                   ],
@@ -386,14 +387,14 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
             widget.decoration ??
             BoxDecoration(
               color: AppColors.kLightGrey.withValues(alpha: 0.2),
-              border: Border.all(color: AppColors.transparent),
+              border: Border.all(color: AppColors.kTransparentColor),
               borderRadius: BorderRadius.circular(8),
             ),
         child: Row(
           children: [
             Text(
               _displayText,
-              style: widget.textStyle ?? TextStyle(fontSize: 16),
+              style: widget.textStyle ?? AppStyles.text16PxMedium,
             ),
             Spacer(),
             Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),

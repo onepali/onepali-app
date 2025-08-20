@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/src.dart';
 
 class PlanCard extends StatelessWidget {
   final String planName;
@@ -27,78 +28,73 @@ class PlanCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.kWhite,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.grey.shade300, width: 2),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Current plan',
-                style: TextStyle(fontSize: 16, color: Colors.black),
+                style: AppStyles.text16PxRegular.copyWith(
+                  color: AppColors.kBlack,
+                ),
               ),
               Text(
                 planName,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
+                style: AppStyles.text16PxMedium.copyWith(
+                  color: AppColors.kBlack,
                 ),
               ),
             ],
           ),
         ),
         if (!isFree) ...[
-          const SizedBox(height: 16),
+          Gaps.verticalGapOf(16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.kWhite,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.shade300, width: 2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Active from',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: AppStyles.text16PxRegular.copyWith(
+                    color: AppColors.kBlack,
+                  ),
                 ),
                 Text(
                   formatDate(activeDate),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
+                  style: AppStyles.text16PxMedium.copyWith(
+                    color: AppColors.kBlack,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          Gaps.verticalGapOf(16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.kWhite,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.shade300, width: 2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Available until',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                ),
+                Text('Available until', style: AppStyles.text16PxRegular),
                 Text(
                   formatDate(expiryDate),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
+                  style: AppStyles.text16PxMedium.copyWith(
+                    color: AppColors.kBlack,
                   ),
                 ),
               ],

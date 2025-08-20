@@ -14,7 +14,7 @@ class BottomSheetManager {
 
     return showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppColors.transparent,
+      backgroundColor: AppColors.kTransparentColor,
       context: context,
       clipBehavior: Clip.antiAlias,
       routeSettings: const RouteSettings(name: AppConstants.bottomSheetModal),
@@ -112,7 +112,7 @@ class BottomSheetManager {
 
     return showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: AppColors.transparent,
+      backgroundColor: AppColors.kTransparentColor,
       context: context,
       clipBehavior: Clip.antiAlias,
       builder:

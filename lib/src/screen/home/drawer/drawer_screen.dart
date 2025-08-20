@@ -155,7 +155,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     color:
                         index == _selectedChildIndex
                             ? AppColors.kPrimaryColor
-                            : AppColors.transparent,
+                            : AppColors.kTransparentColor,
                     width: 3,
                   ),
                 ),
@@ -181,15 +181,24 @@ class _DrawerScreenState extends State<DrawerScreen> {
             customInkwell(
               onTap: () {
                 if (index == _selectedChildIndex) {
+                                    final targetChild = widget.data[index];
+
                   Utility.navigateMaterialRoute(
                     context,
-                    RewardCollectionWidget(),
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                    ),
                   );
                 } else {
                   final targetChild = widget.data[index];
                   Utility.navigateMaterialRoute(
                     context,
-                    RewardCollectionWidget(childId: targetChild.uid),
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                      childId: targetChild.uid,
+                    ),
                   );
                 }
               },
