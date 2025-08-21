@@ -161,6 +161,7 @@ class _CUserScreenState extends State<CUserScreen> {
                       min: 5,
                       max: 120,
                       value: selectedRange ?? 30,
+                      fiveMinuteSteps: true,
                       onChanged: (val) {
                         setState(() {
                           selectedRange = val;

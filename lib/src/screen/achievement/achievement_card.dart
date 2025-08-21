@@ -39,7 +39,7 @@ class AchievementCard extends StatelessWidget {
       imageSize = 50;
       padding = 16;
       marginHorizontal = 8;
-      marginVertical = 8;
+      marginVertical = 0;
     } else if (isTabletLandscape) {
       cardWidth = 200;
       cardHeight = double.infinity;

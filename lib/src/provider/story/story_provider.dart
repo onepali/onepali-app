@@ -39,20 +39,6 @@ class StoryProvider extends ChangeNotifier {
       final result = await _repo.fetchStories();
       _stories.clear();
       _stories.addAll(result);
-      // // Print the first story's data
-      // if (_stories.isNotEmpty) {
-      //   logger.d('First story: ${jsonEncode(_stories[0].toJson())}');
-      // }
-      // // Write all stories to a formatted JSON file (mobile/desktop only)
-      // final storiesJson = _stories.map((e) => e.toJson()).toList();
-      // final formattedJson = const JsonEncoder.withIndent(
-      //   '  ',
-      // ).convert(storiesJson);
-      // final file = File('stories_dump.json');
-      // await file.writeAsString(formattedJson);
-      logger.d(
-        'Fetched \\${_stories.length} stories ------ data: \\${_stories[0].toJson()}',
-      );
       _status = DataFetchStatus.success;
       notifyListeners();
     } catch (e) {

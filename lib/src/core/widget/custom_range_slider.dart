@@ -11,6 +11,7 @@ import 'package:onepali/src/src.dart';
 ///   value: 20,
 ///   onChanged: (val) {},
 ///   recommended: 20,
+///   fiveMinuteSteps: true, // Steps by 5-minute increments
 /// )
 /// ```
 class CustomRangeSlider extends StatelessWidget {
@@ -23,6 +24,7 @@ class CustomRangeSlider extends StatelessWidget {
   final Color activeColor;
   final Color inactiveColor;
   final Color thumbColor;
+  final bool fiveMinuteSteps;
 
   const CustomRangeSlider({
     super.key,
@@ -35,6 +37,7 @@ class CustomRangeSlider extends StatelessWidget {
     this.activeColor = AppColors.kRed,
     this.inactiveColor = AppColors.kButtonGrey,
     this.thumbColor = AppColors.kRed,
+    this.fiveMinuteSteps = false,
   });
 
   @override
@@ -74,7 +77,16 @@ class CustomRangeSlider extends StatelessWidget {
             min: min,
             max: max,
             value: value.clamp(min, max),
-            onChanged: onChanged,
+            divisions: fiveMinuteSteps ? ((max - min) / 5).round() : null,
+            onChanged: (newValue) {
+              if (fiveMinuteSteps) {
+                // Round to nearest 5-minute increment
+                final roundedValue = (newValue / 5).round() * 5;
+                onChanged(roundedValue.toDouble());
+              } else {
+                onChanged(newValue);
+              }
+            },
           ),
         ),
         if (label != null)

@@ -213,7 +213,9 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                 actions: [
                   customInkwell(
                     onTap: () {
-                      Navigator.of(context).pop();
+                      UserAppBar.setTabIndex(0);
+
+                      Utility.navigate(context, AppRoutes.dashboardScreen);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

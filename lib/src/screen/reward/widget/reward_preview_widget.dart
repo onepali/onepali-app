@@ -104,7 +104,11 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                     width: AppConstants.kIconSize,
                     color: AppColors.kWhite,
                   ),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed:
+                      () => Utility.navigate(
+                        context,
+                        AppRoutes.rewardCollectionScreen,
+                      ),
                 ),
               ),
               Row(

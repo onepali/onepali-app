@@ -50,7 +50,8 @@ class NormalConfettiContent extends StatelessWidget {
           LottieHelper.fromSource(
             path: content.confetti,
             fit: BoxFit.cover,
-            repeat: false,
+            repeat: true,
+
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height,
             type: LottieSourceType.network,
