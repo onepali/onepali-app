@@ -41,7 +41,6 @@ class Assets {
   /// [Lottie] assets
   static String logoLottie = 'onepali'.lottie;
   static String leoCharacterLottie = 'leo_character'.lottie;
-  static String bgTransition = 'bg_transition'.gif;
   static String successLottie = 'success'.lottie;
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
@@ -106,8 +105,8 @@ class Assets {
   static String download = 'download'.icon;
 
   /// [Json] assets
-  static String user = 'user'.json;
-  static String lessonJson = 'lesson'.json;
+  // static String user = 'user'.json;
+  // static String lessonJson = 'lesson'.json;
 
   /// [Localization] assets
   static String enJson = 'en'.json;

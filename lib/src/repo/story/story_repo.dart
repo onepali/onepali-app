@@ -25,7 +25,6 @@ class StoryRepo {
         final data = doc.data();
         try {
           stories.add(StoryModel.fromJson(data));
-          logger.d('Story added: ${data['thumbnail']}');
         } catch (e, s) {
           logger.d('error ---> $e $s');
         }

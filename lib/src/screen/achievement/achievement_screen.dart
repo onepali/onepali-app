@@ -54,7 +54,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
     totalStarBadge = rewardProvider.totalStarBadge;
 
     // Responsive grid settings
-    final double horizontalPadding = isTabletLandScape ? 32.0 : 16.0;
+    final double horizontalPadding = isTabletLandScape ? 32.0 : 0.0;
 
     return Center(
       child: Container(
@@ -64,7 +64,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 : MediaQuery.of(context).size.height * 0.8,
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
-          vertical: 16,
+          vertical: isTabletLandScape ? 16 : 0,
         ),
         child: ListView.builder(
           itemCount: achievementList.length,
@@ -101,7 +101,10 @@ class _AchievementScreenState extends State<AchievementScreen> {
           isTabletLandScape
               ? MediaQuery.of(context).size.height
               : MediaQuery.of(context).size.height * 0.8,
-      margin: EdgeInsets.symmetric(vertical: paddingV, horizontal: paddingH),
+      margin: EdgeInsets.symmetric(
+        vertical: paddingV,
+        horizontal: paddingH + 4,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

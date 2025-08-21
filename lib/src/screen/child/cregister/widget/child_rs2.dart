@@ -71,6 +71,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
                   min: 5,
                   max: 120,
                   value: selectedRange,
+                  fiveMinuteSteps: true,
                   onChanged: (val) {
                     setState(() {
                       selectedRange = val;

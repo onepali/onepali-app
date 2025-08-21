@@ -25,12 +25,20 @@ class RewardProvider extends ChangeNotifier {
       return;
     }
 
+    // Check if reward already exists for this child
+    if (await _isRewardAlreadyExists(childId, reward.id)) {
+      logger.d(
+        'Reward with ID ${reward.id} already exists for childId: $childId',
+      );
+      return;
+    }
+
     final rewardData = reward.toJson();
 
     try {
       final querySnapshot =
           await _firestore
-              .collection('creward')
+              .collection(AppConstants.childRewardCollection)
               .where('childId', isEqualTo: childId)
               .get();
 
@@ -49,6 +57,30 @@ class RewardProvider extends ChangeNotifier {
       }
     } catch (e) {
       logger.e('Failed to save reward for childId: $childId. Error: $e');
+    }
+  }
+
+  // Helper method to check if reward already exists for a child
+  Future<bool> _isRewardAlreadyExists(String childId, String rewardId) async {
+    try {
+      final querySnapshot =
+          await _firestore
+              .collection(AppConstants.childRewardCollection)
+              .where('childId', isEqualTo: childId)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final doc = querySnapshot.docs.first;
+        final rewards = doc.data()['rewards'] as List<dynamic>?;
+
+        if (rewards != null) {
+          return rewards.any((reward) => reward['id'] == rewardId);
+        }
+      }
+      return false;
+    } catch (e) {
+      logger.e('Error checking if reward exists: $e');
+      return false;
     }
   }
 
@@ -91,7 +123,7 @@ class RewardProvider extends ChangeNotifier {
     try {
       final querySnapshot =
           await _firestore
-              .collection('creward')
+              .collection(AppConstants.childRewardCollection)
               .where('childId', isEqualTo: targetChildId)
               .get();
 
@@ -130,7 +162,7 @@ class RewardProvider extends ChangeNotifier {
     try {
       final querySnapshot =
           await _firestore
-              .collection('creward')
+              .collection(AppConstants.childRewardCollection)
               .where('childId', isEqualTo: childId)
               .get();
 
