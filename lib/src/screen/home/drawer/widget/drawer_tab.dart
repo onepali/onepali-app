@@ -5,11 +5,13 @@ import 'package:provider/provider.dart';
 class TabDrawerScreen extends StatefulWidget {
   final List<ChildUserModel> data;
   final int totalChildCount;
+  final bool isParent;
 
   const TabDrawerScreen({
     super.key,
     required this.data,
     required this.totalChildCount,
+    this.isParent = false,
   });
 
   @override
@@ -145,115 +147,125 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
   }
 
   Widget _buildChildProfilesGrid() {
-    final items = List<Widget>.generate(widget.data.length + 1, (index) {
-      if (index < widget.data.length) {
-        final child = widget.data[index];
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                _onChildSelected(index);
-              },
-              child: Container(
-                height: 80,
-                width: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        index == _selectedChildIndex
-                            ? AppColors.kPrimaryColor
-                            : AppColors.kTransparentColor,
-                    width: 2,
-                  ),
-                ),
-                child: CustomImage(child.avatarUrl, height: 80, width: 80),
-              ),
-            ),
-            Gaps.verticalGapOf(8),
-            Text(
-              child.fullName.split(' ')[0],
-              style: AppStyles.text14PxMedium.copyWith(color: AppColors.kWhite),
-            ),
-            Gaps.verticalGapOf(5),
-            customInkwell(
-              onTap: () {
-                if (index == _selectedChildIndex) {
-                  final targetChild = widget.data[index];
-
-                  Utility.navigateMaterialRoute(
-                    context,
-                    AchievementScreen(
-                      name: targetChild.fullName,
-                      profileImage: targetChild.avatarUrl,
-                    ),
-                  );
-                } else {
-                  final targetChild = widget.data[index];
-                  Utility.navigateMaterialRoute(
-                    context,
-                    AchievementScreen(
-                      name: targetChild.fullName,
-                      profileImage: targetChild.avatarUrl,
-                      childId: targetChild.uid,
-                    ),
-                  );
-                }
-              },
-              child: const Icon(
-                Icons.local_police,
-                size: 30,
-                color: AppColors.kYellow,
-              ),
-            ),
-          ],
-        );
-      } else {
-        return GestureDetector(
-          onTap: () {
-            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
-              DialogManager.showCustomDialog(
-                context: context,
-                title: 'You\'ve added 3 kids!',
-                content:
-                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
-                confirmButtonText: 'Add for \$5',
-                onConfirm: () {},
-              );
-              return;
-            } else {
-              Utility.navigateMaterialRoute(
-                context,
-                ChildRegisterScreen(),
-                routeName: AppRoutes.childRegisterScreen,
-              );
-            }
-          },
-          child: Column(
+    final items = List<Widget>.generate(
+      widget.data.length +
+          (widget.isParent ? 0 : 1), // Only add 'Add Child' if not parent
+      (index) {
+        if (index < widget.data.length) {
+          final child = widget.data[index];
+          return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade600,
-                  shape: BoxShape.circle,
+              GestureDetector(
+                onTap: () {
+                  _onChildSelected(index);
+                },
+                child: Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color:
+                          index == _selectedChildIndex
+                              ? AppColors.kPrimaryColor
+                              : AppColors.kTransparentColor,
+                      width: 2,
+                    ),
+                  ),
+                  child: CustomImage(child.avatarUrl, height: 80, width: 80),
                 ),
-                child: const Icon(Icons.add, color: AppColors.kWhite, size: 36),
               ),
               Gaps.verticalGapOf(8),
               Text(
-                'Add child',
+                child.fullName.split(' ')[0],
                 style: AppStyles.text14PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
+              Gaps.verticalGapOf(5),
+              customInkwell(
+                onTap: () {
+                  if (index == _selectedChildIndex) {
+                    final targetChild = widget.data[index];
+                    Utility.navigateMaterialRoute(
+                      context,
+                      AchievementScreen(
+                        name: targetChild.fullName,
+                        profileImage: targetChild.avatarUrl,
+                      ),
+                    );
+                  } else {
+                    final targetChild = widget.data[index];
+                    Utility.navigateMaterialRoute(
+                      context,
+                      AchievementScreen(
+                        name: targetChild.fullName,
+                        profileImage: targetChild.avatarUrl,
+                        childId: targetChild.uid,
+                      ),
+                    );
+                  }
+                },
+                child: const Icon(
+                  Icons.local_police,
+                  size: 30,
+                  color: AppColors.kYellow,
+                ),
+              ),
             ],
-          ),
-        );
-      }
-    });
+          );
+        } else {
+          // Only show 'Add Child' if not parent
+          return GestureDetector(
+            onTap: () {
+              if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
+                DialogManager.showCustomDialog(
+                  context: context,
+                  title: 'You\'ve added 3 kids!',
+                  content:
+                      'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                  confirmButtonText: 'Add for \$5',
+                  onConfirm: () {},
+                );
+                return;
+              } else {
+                Utility.navigateMaterialRoute(
+                  context,
+                  ChildRegisterScreen(),
+                  routeName: AppRoutes.childRegisterScreen,
+                );
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade600,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: AppColors.kWhite,
+                    size: 36,
+                  ),
+                ),
+                Gaps.verticalGapOf(8),
+                Text(
+                  'Add child',
+                  style: AppStyles.text14PxMedium.copyWith(
+                    color: AppColors.kWhite,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
