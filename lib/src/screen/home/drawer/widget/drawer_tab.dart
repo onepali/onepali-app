@@ -313,11 +313,11 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               ),
             ),
           const Spacer(),
-          Text(
-            "${GlobalConfig.appVersion} • All rights reserved.",
-            style: AppStyles.text12PxRegular.copyWith(color: AppColors.kWhite),
-            textAlign: TextAlign.center,
-          ),
+          // Text(
+          //   "${GlobalConfig.appVersion} • All rights reserved.",
+          //   style: AppStyles.text12PxRegular.copyWith(color: AppColors.kWhite),
+          //   textAlign: TextAlign.center,
+          // ),
         ],
       ),
     );
