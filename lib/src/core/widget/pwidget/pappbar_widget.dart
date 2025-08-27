@@ -119,6 +119,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           DrawerScreen(
                             data: childData,
                             totalChildCount: totalChildCount,
+                            isParent: true,
                           ),
                           routeName: AppRoutes.drawerRoutes,
                         );
@@ -128,6 +129,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           TabDrawerScreen(
                             data: childData,
                             totalChildCount: totalChildCount,
+                            isParent: true,
                           ),
                           routeName: AppRoutes.drawerRoutes,
                         );
