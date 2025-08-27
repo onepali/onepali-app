@@ -58,13 +58,11 @@ class DefaultFirebaseOptions {
     projectId: 'o-nepali',
     databaseURL: 'https://o-nepali-default-rtdb.firebaseio.com',
     storageBucket: 'o-nepali.firebasestorage.app',
-    androidClientId:
-        '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBSVkqoFWbp54TaiztHepNoLLoLiNTCYlc',
-    appId: '1:259206374027:ios:eece64b49f4a9e9dc76a8e',
+    appId: '1:259206374027:ios:80fac7c7deff46b4c76a8e',
     messagingSenderId: '259206374027',
     projectId: 'o-nepali',
     databaseURL: 'https://o-nepali-default-rtdb.firebaseio.com',
@@ -72,8 +70,8 @@ class DefaultFirebaseOptions {
     androidClientId:
         '259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com',
     iosClientId:
-        '259206374027-vp517itn9fo008tg1d9p2q2id8cmtqjj.apps.googleusercontent.com',
-    iosBundleId: 'com.onepali.app',
+        '259206374027-krn41ok7sioklh1obf5q45u2bkosroao.apps.googleusercontent.com',
+    iosBundleId: 'fun.onepali.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
