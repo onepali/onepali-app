@@ -89,7 +89,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.45,
+            height: MediaQuery.of(context).size.height * 0.5,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
             decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
             child: Row(
@@ -161,8 +161,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                   _onChildSelected(index);
                 },
                 child: Container(
-                  height: 80,
-                  width: 80,
+                  height: 120,
+                  width: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -173,13 +173,13 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                       width: 2,
                     ),
                   ),
-                  child: CustomImage(child.avatarUrl, height: 80, width: 80),
+                  child: CustomImage(child.avatarUrl, height: 120, width: 120),
                 ),
               ),
               Gaps.verticalGapOf(8),
               Text(
                 child.fullName.split(' ')[0],
-                style: AppStyles.text14PxMedium.copyWith(
+                style: AppStyles.text18PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
@@ -209,7 +209,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 },
                 child: const Icon(
                   Icons.local_police,
-                  size: 30,
+                  size: 45,
                   color: AppColors.kYellow,
                 ),
               ),
@@ -256,7 +256,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 Gaps.verticalGapOf(8),
                 Text(
                   'Add child',
-                  style: AppStyles.text14PxMedium.copyWith(
+                  style: AppStyles.text18PxMedium.copyWith(
                     color: AppColors.kWhite,
                   ),
                 ),
@@ -300,14 +300,14 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: SvgHelper.fromSource(
                   path: drawerSettings[i].icon,
-                  height: 28,
-                  width: 28,
+                  height: 45,
+                  width: 45,
                 ),
               ),
               dense: true,
               title: Text(
                 drawerSettings[i].name,
-                style: AppStyles.text16PxMedium.copyWith(
+                style: AppStyles.text20PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
