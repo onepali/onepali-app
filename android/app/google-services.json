@@ -56,10 +56,10 @@
               "client_type": 3
             },
             {
-              "client_id": "259206374027-vp517itn9fo008tg1d9p2q2id8cmtqjj.apps.googleusercontent.com",
+              "client_id": "259206374027-krn41ok7sioklh1obf5q45u2bkosroao.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.onepali.app"
+                "bundle_id": "fun.onepali.app"
               }
             }
           ]
