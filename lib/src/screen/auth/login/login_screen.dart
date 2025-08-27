@@ -21,11 +21,21 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = context.watch<AuthProvider>();
     final isLoading = authProvider.status == DataFetchStatus.loading;
 
+    // Responsive variables
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
+    final double logoWidth = isTabletPortrait ? 240.0 : 180.0;
+    final double logoHeight = isTabletPortrait ? 38.0 : 28.0;
+    final double verticalSpacing = isTabletPortrait ? 40.0 : 30.0;
+    final double fieldSpacing = isTabletPortrait ? 24.0 : 20.0;
+    final double socialButtonSpacing = isTabletPortrait ? 20.0 : 15.0;
+    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
+
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -46,16 +56,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: SvgHelper.fromSource(
                     path: Assets.logoSvg,
-                    width: 180,
-                    height: 28,
+                    width: logoWidth,
+                    height: logoHeight,
                     color: AppColors.kDrawerBgColor,
                   ),
                 ),
                 //   ],
                 // ),
-                Gaps.verticalGapOf(30),
-                Text('Sign in', style: AppStyles.text14PxRegular),
-                Gaps.verticalGapOf(20),
+                Gaps.verticalGapOf(verticalSpacing),
+                Text(
+                  'Sign in',
+                  style:
+                      isTabletPortrait
+                          ? AppStyles.text16PxRegular
+                          : AppStyles.text14PxRegular,
+                ),
+                Gaps.verticalGapOf(fieldSpacing),
                 CustomTextField(
                   hintText: 'Email',
                   keyboardType: TextInputType.emailAddress,
@@ -63,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   prefixIcon: Icon(Icons.email_outlined),
                   validation: (value) => Validator.email(value ?? ""),
                 ),
-                Gaps.verticalGapOf(20),
+                Gaps.verticalGapOf(fieldSpacing),
                 CustomTextField(
                   hintText: 'Password',
                   isPasswordField: isObscure,
@@ -84,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputAction: TextInputAction.done,
                   validation: (value) => Validator.password(value ?? ""),
                 ),
-                Gaps.verticalGapOf(5),
+                Gaps.verticalGapOf(isTabletPortrait ? 8.0 : 5.0),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -94,17 +110,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       'Forgot password?',
                       textAlign: TextAlign.right,
-                      style: AppStyles.text14PxRegular.copyWith(
-                        color: AppColors.kButtonGreen,
-                      ),
+                      style: (isTabletPortrait
+                              ? AppStyles.text16PxRegular
+                              : AppStyles.text14PxRegular)
+                          .copyWith(color: AppColors.kButtonGreen),
                     ),
                   ),
                 ),
-                Gaps.verticalGapOf(35),
+                Gaps.verticalGapOf(isTabletPortrait ? 45.0 : 35.0),
                 _buildNextButton(context, isLoading),
-                Gaps.verticalGapOf(35),
+                Gaps.verticalGapOf(isTabletPortrait ? 45.0 : 35.0),
                 Utility.horizontalDividerTitle(title: 'Or sign in with'),
-                Gaps.verticalGapOf(20),
+                Gaps.verticalGapOf(fieldSpacing),
                 ReusableWidget.horizontalIconTitle(
                   title: 'Continue with Google',
                   icon: Assets.google,
@@ -117,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   },
                 ),
-                Gaps.verticalGapOf(15),
+                Gaps.verticalGapOf(socialButtonSpacing),
                 ReusableWidget.horizontalIconTitle(
                   title: 'Continue with Facebook',
                   icon: Assets.facebook,
@@ -132,23 +149,31 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: bottomPadding,
+        ),
         child: RichText(
           textAlign: TextAlign.center,
-
           text: TextSpan(
             text: 'Don\'t have an account? ',
-            style: AppStyles.text14PxRegular.copyWith(
-              color: AppColors.kPitchBlack,
-              fontFamily: AppConstants.kPoppinsFont,
-            ),
+            style: (isTabletPortrait
+                    ? AppStyles.text16PxRegular
+                    : AppStyles.text14PxRegular)
+                .copyWith(
+                  color: AppColors.kPitchBlack,
+                  fontFamily: AppConstants.kPoppinsFont,
+                ),
             children: [
               TextSpan(
                 text: 'Sign up',
-                style: AppStyles.text14PxSemiBold.copyWith(
-                  color: AppColors.kButtonGreen,
-                  fontFamily: AppConstants.kPoppinsFont,
-                ),
+                style: (isTabletPortrait
+                        ? AppStyles.text16PxSemiBold
+                        : AppStyles.text14PxSemiBold)
+                    .copyWith(
+                      color: AppColors.kButtonGreen,
+                      fontFamily: AppConstants.kPoppinsFont,
+                    ),
                 recognizer:
                     TapGestureRecognizer()
                       ..onTap = () {
@@ -163,6 +188,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildNextButton(BuildContext context, bool isLoading) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
     return CustomMaterialButton(
       label: 'Log in',
       isLoading: isLoading,
@@ -182,6 +209,12 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       elevation: 0,
+      textStyle:
+          isTabletPortrait
+              ? AppStyles.text18PxMedium
+              : AppStyles.text16PxMedium,
+      height: isTabletPortrait ? 56.0 : 48.0,
+      radius: isTabletPortrait ? 12.0 : 8.0,
     );
   }
 }
