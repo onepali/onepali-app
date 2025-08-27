@@ -241,8 +241,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  height: 60,
-                  width: 60,
+                  height: 120,
+                  width: 120,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade600,
                     shape: BoxShape.circle,
@@ -250,7 +250,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                   child: const Icon(
                     Icons.add,
                     color: AppColors.kWhite,
-                    size: 36,
+                    size: 80,
                   ),
                 ),
                 Gaps.verticalGapOf(8),
