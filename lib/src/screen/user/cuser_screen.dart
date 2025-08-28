@@ -143,32 +143,28 @@ class _CUserScreenState extends State<CUserScreen> {
               ),
               Gaps.verticalGapOf(verticalGap3),
               if (hasScreenTimeEnabled) ...[
-                TitleActionChild(
-                  title: 'Screen Time',
-                  titlePadding: EdgeInsets.only(bottom: 8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.kButtonGrey.withValues(alpha: 0.5),
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.kButtonGrey.withValues(alpha: 0.5),
-                      ),
-                    ),
-                    child: CustomRangeSlider(
-                      min: 5,
-                      max: 120,
-                      value: selectedRange ?? 30,
-                      fiveMinuteSteps: true,
-                      onChanged: (val) {
-                        setState(() {
-                          selectedRange = val;
-                        });
-                      },
-                      recommended: selectedRange ?? 30,
-                    ),
+                  ),
+                  child: CustomRangeSlider(
+                    min: 5,
+                    max: 120,
+                    value: selectedRange ?? 30,
+                    fiveMinuteSteps: true,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedRange = val;
+                      });
+                    },
+                    recommended: 20,
                   ),
                 ),
                 Gaps.verticalGapOf(verticalGap4),
