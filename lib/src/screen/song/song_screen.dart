@@ -32,8 +32,6 @@ class _SongScreenState extends State<SongScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var childs = context.watch<ChildUserProvider>().childUser;
-
     return Consumer<SongProvider>(
       builder: (context, songProvider, child) {
         return StatusHandler(

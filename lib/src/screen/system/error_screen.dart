@@ -14,7 +14,7 @@ class ErrorScreen extends StatefulWidget {
     this.isInternetError = false,
     this.isDataError = true,
     this.title,
-    this.message,
+    this.message, 
     this.onRetry,
     this.isShowButton = true,
   });
@@ -30,11 +30,27 @@ class _ErrorScreenState extends State<ErrorScreen> {
     final isTablet = PlatformUtility.isTablet(context);
     final isMobile = PlatformUtility.isMobile(context);
 
-    Widget imageWidget = SvgPicture.asset(
-      widget.isDataError ? Assets.dataSvg : Assets.connectionSvg,
-      height: isTablet || isMobile ? 250 : 180,
-      width: isTablet || isMobile ? 250 : 180,
-    );
+    // Use isInternetError to control the error type
+    final bool isInternetError = widget.isInternetError;
+    // final bool isDataError = widget.isDataError && !isInternetError;
+    Widget imageWidget;
+    if (isInternetError) {
+      imageWidget = LottieHelper.fromSource(
+        path: Assets.noInternetLottie,
+        type: LottieSourceType.asset,
+        height: isTablet || isMobile ? 250 : 180,
+        width: isTablet || isMobile ? 250 : 180,
+        repeat: true,
+        animate: true,
+        fit: BoxFit.contain,
+      );
+    } else {
+      imageWidget = SvgPicture.asset(
+        Assets.dataSvg,
+        height: isTablet || isMobile ? 250 : 180,
+        width: isTablet || isMobile ? 250 : 180,
+      );
+    }
 
     Widget textContent = Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -45,9 +61,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Text(
             widget.title ??
-                (widget.isDataError
-                    ? 'No Data Available'
-                    : 'No Internet Connection'),
+                (isInternetError ? "You're offline" : 'No Data Available'),
             style: AppStyles.text22PxSemiBold.copyWith(color: AppColors.kBlack),
             textAlign: TextAlign.center,
           ),
@@ -57,9 +71,9 @@ class _ErrorScreenState extends State<ErrorScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Text(
             widget.message ??
-                (widget.isDataError
-                    ? 'Please try again later.'
-                    : 'Please check your internet connection.'),
+                (isInternetError
+                    ? 'Oops, please check your connection to get back online.'
+                    : 'Please try again later.'),
             style: AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey),
             textAlign: TextAlign.center,
           ),
@@ -109,27 +123,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
       );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        if (widget.isInternetError)
-          Container(
-            color: AppColors.kPrimaryColor,
-            width: double.infinity,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'No Internet Connection !',
-              textAlign: TextAlign.center,
-              style: AppStyles.text16PxMedium.copyWith(color: AppColors.kWhite),
-            ),
-          ),
-        Expanded(
-          child: Scaffold(
-            backgroundColor: AppColors.kWhite,
-            body: errorContent,
-          ),
-        ),
-      ],
-    );
+    return Scaffold(backgroundColor: AppColors.kWhite, body: errorContent);
   }
 }

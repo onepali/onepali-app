@@ -47,6 +47,7 @@ class Assets {
   static String starRewardLottie = 'rewards_star'.lottie;
   static String alarmExtendLottie = 'alarm_extend'.lottie;
   static String completeConfettiLottie = 'complete_confetti'.lottie;
+  static String noInternetLottie = 'no_internet_found'.lottie;
 
   /// [Icons] assets
   static String rightArrow = 'right_arrow'.icon;
