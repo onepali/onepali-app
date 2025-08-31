@@ -116,11 +116,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                     onConfirm: () {},
                   );
                 } else {
-                  Utility.navigateMaterialRoute(
-                    context,
-                    ChildRegisterScreen(),
-                    routeName: AppRoutes.childRegisterScreen,
-                  );
+                  Utility.navigate(context, AppRoutes.childRegisterScreen);
                 }
               },
             ),

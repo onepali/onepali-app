@@ -230,11 +230,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 );
                 return;
               } else {
-                Utility.navigateMaterialRoute(
-                  context,
-                  ChildRegisterScreen(),
-                  routeName: AppRoutes.childRegisterScreen,
-                );
+                Utility.navigate(context, AppRoutes.childRegisterScreen);
               }
             },
             child: Column(

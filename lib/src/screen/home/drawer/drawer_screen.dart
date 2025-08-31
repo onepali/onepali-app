@@ -215,11 +215,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 );
                 return;
               } else {
-                Utility.navigateMaterialRoute(
-                  context,
-                  ChildRegisterScreen(),
-                  routeName: AppRoutes.childRegisterScreen,
-                );
+                Utility.navigate(context, AppRoutes.childRegisterScreen);
               }
             },
             child: Row(
@@ -290,6 +286,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 logger.d('isParentLogged: $isParentLogged');
 
                 if (isParentLogged) {
+                  ParentLocalStorage.setParentLogged(false);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                   UserAppBar.setTabIndex(0);
                   Navigator.of(context).pushReplacement(

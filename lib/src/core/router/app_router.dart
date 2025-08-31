@@ -44,6 +44,7 @@ class AppRoutes {
 
   /// [Drawer] Routes
   static const String drawerRoutes = '/drawer';
+  static const String tabDrawerRoutes = '/tab/drawer';
 
   /// [User] Routes
   static const String userScreen = '/user';
@@ -118,6 +119,33 @@ class AppRoutes {
     dashboardScreen: (context) => const DashboardScreen(),
     guestDashboardScreen: (context) => const GuestDashboardScreen(),
     userScreen: (context) => const UserScreen(),
+
+    drawerRoutes: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final data = args?['data'] as List<ChildUserModel>? ?? [];
+      final totalChildCount = args?['totalChildCount'] as int? ?? 0;
+      final authProviderType = args?['authProviderType'] as AuthProviderType?;
+      final isParent = args?['isParent'] as bool? ?? false;
+      return DrawerScreen(
+        data: data,
+        totalChildCount: totalChildCount,
+        authProviderType: authProviderType,
+        isParent: isParent,
+      );
+    },
+    tabDrawerRoutes: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final data = args?['data'] as List<ChildUserModel>? ?? [];
+      final totalChildCount = args?['totalChildCount'] as int? ?? 0;
+      final isParent = args?['isParent'] as bool? ?? false;
+      return TabDrawerScreen(
+        data: data,
+        totalChildCount: totalChildCount,
+        isParent: isParent,
+      );
+    },
 
     rewardScreen: (context) => const RewardScreen(),
     rewardCollectionScreen: (context) => const RewardCollectionWidget(),

@@ -131,7 +131,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                             totalChildCount: totalChildCount,
                             isParent: true,
                           ),
-                          routeName: AppRoutes.drawerRoutes,
+                          routeName: AppRoutes.tabDrawerRoutes,
                         );
                       }
                     });

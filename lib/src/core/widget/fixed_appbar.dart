@@ -101,6 +101,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     data: childData,
                                     totalChildCount: totalChildCount,
                                   ),
+                                  routeName: AppRoutes.drawerRoutes,
                                 );
                               }
                               // } else {
@@ -224,6 +225,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         data: childData,
                                         totalChildCount: totalChildCount,
                                       ),
+                                      routeName: AppRoutes.tabDrawerRoutes,
                                     );
                                   }
                                   //  else {
