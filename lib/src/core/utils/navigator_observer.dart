@@ -51,7 +51,8 @@ class OrientationRouteObserver extends NavigatorObserver {
             name == AppConstants.datePickerModal ||
             name == AppConstants.timePickerModal ||
             name == AppConstants.avatarPickerModal ||
-            name == AppConstants.customDialogModal)) {
+            name == AppConstants.customDialogModal ||
+            name == AppConstants.popupMenuModal)) {
       return true;
     }
 

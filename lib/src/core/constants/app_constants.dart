@@ -84,6 +84,7 @@ class AppConstants {
   static const String dialogModal = 'dialog';
   static const String modalRoute = 'modal';
   static const String customDialogModal = 'custom_dialog';
+  static const String popupMenuModal = 'popup_menu';
 
   /// Lesson Video Cache DB
   static const String lessonVideoCacheDB = 'lesson_videos';

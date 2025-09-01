@@ -205,6 +205,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  if (isGuest) Gaps.verticalGapOf(guestTopGap),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +233,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   // }
                                 },
                                 icon: CustomImage(
-                                  isGuest ? Assets.parentAvatar : profileImage,
+                                  isGuest
+                                      ? Assets.blueUserAvatar
+                                      : profileImage,
                                   height: avatarSize,
                                   width: avatarSize,
                                   circular: true,
@@ -485,7 +488,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         PlatformUtility.isLandscape(context);
 
     if (isTabletLandscape) {
-      return const Size.fromHeight(160);
+      return Size.fromHeight(isGuest ? 110 : 160);
     } else if (isTabletPortrait) {
       return const Size.fromHeight(130);
     } else {
