@@ -14,6 +14,16 @@ class LessonAudioProvider extends ChangeNotifier {
   bool get isPlaying => _isPlaying;
   int get currentIndex => _currentIndex;
 
+  /// Helper method to extract image as string from dynamic image field
+  String _getImageAsString(dynamic image) {
+    if (image is String) {
+      return image;
+    } else if (image is List && image.isNotEmpty) {
+      return image.first.toString();
+    }
+    return "";
+  }
+
   // Future<void> playAudio(List<Lesson> lessons) async {
   //   if (_isPlaying) return;
 
@@ -125,7 +135,7 @@ class LessonAudioProvider extends ChangeNotifier {
           lessonId: lesson.id.toString(),
           progress: _currentIndex + 1,
           title: contents[_currentIndex].nameNp ?? "",
-          image: contents[_currentIndex].image,
+          image: _getImageAsString(contents[_currentIndex].image),
         );
 
         // If this is the last content, mark lesson as completed for parent metrics
@@ -161,7 +171,7 @@ class LessonAudioProvider extends ChangeNotifier {
           lessonId: lesson.id.toString(),
           progress: _currentIndex + 1,
           title: contents[_currentIndex].nameNp ?? "",
-          image: contents[_currentIndex].image,
+          image: _getImageAsString(contents[_currentIndex].image),
         );
       }
     }
