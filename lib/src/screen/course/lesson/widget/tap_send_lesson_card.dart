@@ -54,10 +54,10 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
   }
 
   void _parseOptions() {
-    final nameEn = widget.content.nameEn.split(', ');
-    final nameNp = widget.content.nameNp.split(', ');
-    final images = widget.content.image.split(', ');
-    final audios = widget.content.audio.split(', ');
+    final nameEn = widget.content.nameEn?.split(', ');
+    final nameNp = widget.content.nameNp?.split(', ');
+    final images = widget.content.image?.split(', ');
+    final audios = widget.content.audio?.split(', ');
 
     // Parse colors if available
     List<String> colors = [];
@@ -70,12 +70,12 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
       logger.d('Parsed text colors: $textColors');
     }
 
-    options = List.generate(nameEn.length, (index) {
+    options = List.generate(nameEn?.length ?? 0, (index) {
       return TapSendOption(
-        nameEn: nameEn[index].trim(),
-        nameNp: nameNp[index].trim(),
-        image: images[index].trim(),
-        audio: audios[index].trim(),
+        nameEn: nameEn?[index].trim() ?? '',
+        nameNp: nameNp?[index].trim() ?? '',
+        image: images?[index].trim() ?? '',
+        audio: audios?[index].trim() ?? '',
         color: index < colors.length ? colors[index].trim() : "",
         textColor: index < textColors.length ? textColors[index].trim() : "",
       );
@@ -83,9 +83,9 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
   }
 
   void _playWordAudio() async {
-    if (widget.content.wordAudio.isNotEmpty) {
+    if (widget.content.wordAudio?.isNotEmpty == true) {
       final audioProvider = context.read<LessonAudioProvider>();
-      await audioProvider.playWordAudio(widget.content.wordAudio);
+      await audioProvider.playWordAudio(widget.content.wordAudio ?? "");
     }
   }
 

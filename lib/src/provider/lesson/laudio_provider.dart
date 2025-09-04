@@ -124,7 +124,7 @@ class LessonAudioProvider extends ChangeNotifier {
           childId: childId,
           lessonId: lesson.id.toString(),
           progress: _currentIndex + 1,
-          title: contents[_currentIndex].nameNp,
+          title: contents[_currentIndex].nameNp ?? "",
           image: contents[_currentIndex].image,
         );
 
@@ -160,7 +160,7 @@ class LessonAudioProvider extends ChangeNotifier {
           childId: childId,
           lessonId: lesson.id.toString(),
           progress: _currentIndex + 1,
-          title: contents[_currentIndex].nameNp,
+          title: contents[_currentIndex].nameNp ?? "",
           image: contents[_currentIndex].image,
         );
       }

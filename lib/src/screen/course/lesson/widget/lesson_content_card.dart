@@ -48,7 +48,7 @@ class _LessonContentCardState extends State<LessonContentCard>
     _lottieController = AnimationController(vsync: this);
 
     // Preload video if available
-    if (widget.content.lottie.isNotEmpty) {
+    if (widget.content.lottie?.isNotEmpty == true) {
       _preloadVideo();
     }
 
@@ -70,7 +70,7 @@ class _LessonContentCardState extends State<LessonContentCard>
       _isVideoLoading = false;
 
       // Preload new video
-      if (widget.content.lottie.isNotEmpty) {
+      if (widget.content.lottie?.isNotEmpty == true) {
         _preloadVideo();
       }
 
@@ -82,7 +82,7 @@ class _LessonContentCardState extends State<LessonContentCard>
   }
 
   Future<void> _preloadVideo() async {
-    if (widget.content.lottie.isEmpty) return;
+    if (widget.content.lottie?.isEmpty != false) return;
 
     setState(() {
       _isVideoLoading = true;
@@ -91,7 +91,7 @@ class _LessonContentCardState extends State<LessonContentCard>
     try {
       // Download and cache the video
       final file = await _videoCacheManager.getSingleFile(
-        widget.content.lottie,
+        widget.content.lottie!,
         headers: {
           'Cache-Control': 'max-age=604800', // Cache for 1 week
         },
@@ -121,7 +121,7 @@ class _LessonContentCardState extends State<LessonContentCard>
   }
 
   void _playLottieAnimation() async {
-    if (widget.content.lottie.isNotEmpty) {
+    if (widget.content.lottie?.isNotEmpty == true) {
       setState(() {
         _showLottie = true;
       });
@@ -134,16 +134,16 @@ class _LessonContentCardState extends State<LessonContentCard>
 
   void _onImageTap() {
     // Replay video when image is tapped
-    if (widget.content.lottie.isNotEmpty) {
+    if (widget.content.lottie?.isNotEmpty == true) {
       _playLottieAnimation();
     }
   }
 
   void _onSoundTap() {
     // Play wordAudio when sound icon is tapped (for subsequent plays)
-    if (widget.content.wordAudio.isNotEmpty) {
+    if (widget.content.wordAudio?.isNotEmpty == true) {
       final audioProvider = context.read<LessonAudioProvider>();
-      audioProvider.playWordAudio(widget.content.wordAudio);
+      audioProvider.playWordAudio(widget.content.wordAudio!);
     }
     // Also call the original onPlay callback if provided
     widget.onPlay?.call();
@@ -154,7 +154,7 @@ class _LessonContentCardState extends State<LessonContentCard>
     required double height,
     required bool isMobile,
   }) {
-    if (_showLottie && widget.content.lottie.isNotEmpty) {
+    if (_showLottie && widget.content.lottie?.isNotEmpty == true) {
       // Show loading indicator while video is being cached
       if (_isVideoLoading) {
         return Container(
@@ -192,7 +192,7 @@ class _LessonContentCardState extends State<LessonContentCard>
         sourceType = VideoSourceType.network;
       } else {
         // Use network URL directly
-        videoPath = widget.content.lottie;
+        videoPath = widget.content.lottie!;
         sourceType = VideoSourceType.network;
       }
 
@@ -232,9 +232,9 @@ class _LessonContentCardState extends State<LessonContentCard>
               });
 
               // Always play wordAudio after video ends
-              if (widget.content.wordAudio.isNotEmpty) {
+              if (widget.content.wordAudio?.isNotEmpty == true) {
                 final audioProvider = context.read<LessonAudioProvider>();
-                audioProvider.playWordAudio(widget.content.wordAudio);
+                audioProvider.playWordAudio(widget.content.wordAudio!);
               }
             },
             aspectRatio: 1.0, // Square aspect ratio for consistent layout
@@ -288,14 +288,18 @@ class _LessonContentCardState extends State<LessonContentCard>
           ),
           Gaps.verticalGapOf(20),
           Text(
-            widget.content.nameNp.isNotEmpty ? widget.content.nameNp : 'चरा',
+            (widget.content.nameNp?.isNotEmpty == true)
+                ? widget.content.nameNp!
+                : 'चरा',
             style: AppStyles.text32PxBold.copyWith(
               color: AppColors.kSecondaryColor,
               fontFamily: AppConstants.kMuktaFont,
             ),
           ),
           Text(
-            widget.content.nameEn.isNotEmpty ? widget.content.nameEn : 'Bird',
+            (widget.content.nameEn?.isNotEmpty == true)
+                ? widget.content.nameEn!
+                : 'Bird',
             style: AppStyles.text20PxBold,
           ),
           Gaps.verticalGapOf(16),
@@ -363,8 +367,8 @@ class _LessonContentCardState extends State<LessonContentCard>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        widget.content.nameNp.isNotEmpty
-                            ? widget.content.nameNp
+                        (widget.content.nameNp?.isNotEmpty == true)
+                            ? widget.content.nameNp!
                             : 'चरा',
                         style: AppStyles.text32PxBold.copyWith(
                           color: AppColors.kDrawerBgColor,
@@ -374,8 +378,8 @@ class _LessonContentCardState extends State<LessonContentCard>
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        widget.content.nameEn.isNotEmpty
-                            ? widget.content.nameEn
+                        (widget.content.nameEn?.isNotEmpty == true)
+                            ? widget.content.nameEn!
                             : 'Bird',
                         style: AppStyles.text20PxBold,
                         textAlign: TextAlign.center,

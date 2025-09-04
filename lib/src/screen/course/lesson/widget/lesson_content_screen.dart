@@ -322,7 +322,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           childId: childId,
           lessonId: widget.lesson.chapterId.toString(),
           progress: contentIndex + 1,
-          title: content.nameNp,
+          title: content.nameNp ?? "",
           image: content.image,
         );
         logger.d(
@@ -341,9 +341,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           _currentContentIndex <= widget.lesson.lessonContent.length) {
         final currentContent =
             widget.lesson.lessonContent[_currentContentIndex - 1];
-        if (currentContent.wordAudio.isNotEmpty) {
+        if (currentContent.wordAudio?.isNotEmpty == true) {
           final audioProvider = context.read<LessonAudioProvider>();
-          await audioProvider.playWordAudio(currentContent.wordAudio);
+          await audioProvider.playWordAudio(currentContent.wordAudio ?? '');
         }
       }
     } catch (e) {
