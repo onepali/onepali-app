@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import 'tap_send_lesson_card.dart';
 import 'tap_target_lesson_card.dart';
+import 'drag_to_match_lesson_card.dart';
 
 class LessonContentScreen extends StatefulWidget {
   final Lesson lesson;
@@ -150,7 +151,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       if (_currentContentIndex >= widget.lesson.lessonContent.length) {
         final lastContent = widget.lesson.lessonContent.last;
         if (lastContent.type != 'tap_send' &&
-            lastContent.type != 'tap_target') {
+            lastContent.type != 'tap_target' &&
+            lastContent.type != 'drag_to_match') {
           _completeRegularLesson();
         }
       }
@@ -193,6 +195,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final isLast = contentIndex == widget.lesson.lessonContent.length - 1;
     final isTapSendType = content.type == 'tap_send';
     final isTapTargetType = content.type == 'tap_target';
+    final isDragToMatchType = content.type == 'drag_to_match';
 
     // Save progress when content is viewed (for any lesson with content)
     Misc.onLayoutRendered(() {
@@ -205,7 +208,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Previous button
-          if (!isFirst && !isTapSendType && !isTapTargetType)
+          if (!isFirst &&
+              !isTapSendType &&
+              !isTapTargetType &&
+              !isDragToMatchType)
             Container(
               height: AppConstants.kIconSize,
               width: AppConstants.kIconSize,
@@ -295,6 +301,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             Navigator.of(context).pop();
                           }
                         });
+                      },
+                      index: contentIndex,
+                    )
+                    : isDragToMatchType
+                    ? DragToMatchLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
                       },
                       index: contentIndex,
                     )
@@ -571,7 +587,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   idx > 0 &&
                   idx <= contentList.length &&
                   contentList[idx - 1].type != 'tap_send' &&
-                  contentList[idx - 1].type != 'tap_target')
+                  contentList[idx - 1].type != 'tap_target' &&
+                  contentList[idx - 1].type != 'drag_to_match')
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 500),
                   top: MediaQuery.of(context).size.height * 0.1,
