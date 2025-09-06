@@ -262,7 +262,7 @@
                                             "id": "dog",
                                             "name_en": "Dog",
                                             "name_np": "कुकुर",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_dog.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdog_drag.svg?alt=media&token=4f92a851-171c-4c52-a81d-12a76d76d72a",
                                             "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdog_outline.svg?alt=media&token=8ea46991-1585-47b2-bcda-da85cd750fff",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fdog_s.mp3?alt=media&token=dab8ad9d-0920-491f-bb20-4f2da78fc6c2"
                                         },
@@ -270,7 +270,7 @@
                                             "id": "fish",
                                             "name_en": "Fish",
                                             "name_np": "माछा",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_fish.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Ffish_drag.svg?alt=media&token=23a1d9c0-800b-45ca-8298-cd21014b6971",
                                             "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Ffish_outline.svg?alt=media&token=defb2b27-f4ba-4455-86ee-28ff16b6e581",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Ffish_s.mp3?alt=media&token=4a84fe4d-f906-471b-837a-99a1b4098b8b"
                                         },
@@ -278,7 +278,7 @@
                                             "id": "rabbit",
                                             "name_en": "Rabbit",
                                             "name_np": "खरायो",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_rabbit.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Frabbit_drag.svg?alt=media&token=d282b753-b00e-4d48-be41-c1f08834a36e",
                                             "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Frabbit_outline.svg?alt=media&token=49363b9c-666c-446e-8fff-8fe5a4859cc9",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Frabbit_s.mp3?alt=media&token=f3caced3-7af8-4cd5-ae2c-5592f0450b26"
                                         },
@@ -286,7 +286,7 @@
                                             "id": "bird",
                                             "name_en": "Bird",
                                             "name_np": "चरा",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_bird.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fbird_drag.svg?alt=media&token=2e1bd222-3c71-4c56-932b-3a7dcb47d38b",
                                             "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fbird_outline.svg?alt=media&token=49406fd3-e66d-4bda-8b7f-3c832a33d17f",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fbirds_s.mp3?alt=media&token=f8bd96f9-623b-4a58-8e06-707998a6b467"
                                         },
@@ -294,7 +294,7 @@
                                             "id": "cat",
                                             "name_en": "Cat",
                                             "name_np": "बिरालो",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_cat.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fcat_drag.svg?alt=media&token=3abcd6b3-a1c5-479a-9486-a3a13bba0bcc",
                                             "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fcat_outline.svg?alt=media&token=51fa7032-149f-4ef9-b42f-8bf74cc87ef9",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fcat-s.mp3?alt=media&token=0b9be438-4683-4f66-aa74-8bfeaf064f56"
                                         },
@@ -302,7 +302,7 @@
                                             "id": "tortoise",
                                             "name_en": "Tortoise",
                                             "name_np": "कछुवा",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_tortoise.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Ftortoise_drag.svg?alt=media&token=a47b1ddf-df76-4348-8bba-a548955084bc",
                                             "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Ftortoise_outline.svg?alt=media&token=e51c8322-f2eb-4027-8bc9-94df2a22f775",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Ftortoise_s.mp3?alt=media&token=a97b86c9-7f02-4c80-adb4-718265c8d45f"
                                         }

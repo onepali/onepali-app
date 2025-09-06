@@ -277,9 +277,17 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         _allCompleted = true;
       });
 
-      // For regular lessons, don't auto-proceed - let user see the completed state
-      // The lesson content screen will handle navigation via next button
-      logger.d('All matches completed! Lesson ready for manual navigation.');
+      // Auto-complete the course after a brief delay to let user see the completion
+      Future.delayed(const Duration(seconds: 3), () {
+        if (widget.onLessonComplete != null) {
+          widget.onLessonComplete!();
+          logger.d('All matches completed! Auto-completing the course.');
+        }
+      });
+
+      logger.d(
+        'All matches completed! Course will auto-complete in 3 seconds.',
+      );
     } else {
       // Hide vocabulary box after showing it
       Future.delayed(const Duration(seconds: 2), () {
@@ -591,13 +599,13 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                     height: size,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.kBlack.withValues(alpha: 0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: AppColors.kBlack.withValues(alpha: 0.1),
+                      //     blurRadius: 4,
+                      //     offset: const Offset(0, 2),
+                      //   ),
+                      // ],
                     ),
                     child: SvgHelper.fromSource(
                       path: target.image ?? '',
@@ -747,38 +755,35 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     return [
       // Position 1 (bottom right, on grass)
       // Dog
-      {'left': startX + usableWidth * 0.9, 'top': startY + usableHeight * 0.9},
+      {
+        'left': startX + usableWidth * 0.15,
+        'top': startY + usableHeight * 0.44,
+      },
 
       // Position 2 (left side, on grass)
       // Fish
-      {
-        'left': startX + usableWidth * 0.17,
-        'top': startY + usableHeight * 0.76,
-      },
+      {'left': startX + usableWidth * 0.2, 'top': startY + usableHeight * 1.2},
 
       // Position 3 (center-left, near trees)
       // Rabbit
-      {'left': startX + usableWidth * 0.69, 'top': startY + usableHeight * 0.5},
+      {
+        'left': startX + usableWidth * 0.78,
+        'top': startY + usableHeight * 0.97,
+      },
 
       // Position 4 (in water area - bottom center)
       // Bird
       {
-        'left': startX + usableWidth * 0.18,
-        'top': startY + usableHeight * 1.22,
+        'left': startX + usableWidth * 0.80,
+        'top': startY + usableHeight * 0.015 - 41,
       },
 
       // Position 5 (on tree branch - top area)
       // Cat
-      {
-        'left': startX + usableWidth * 0.8,
-        'top': startY + usableHeight * 0.015 - 40,
-      },
+      {'left': startX + usableWidth * 0.68, 'top': startY + usableHeight * 0.4},
 
       // Tortoise
-      {
-        'left': startX + usableWidth * 0.25,
-        'top': startY + usableHeight * 0.55,
-      },
+      {'left': startX + usableWidth * 0.5, 'top': startY + usableHeight * 1.10},
 
       //Additional positions for more targets
       {'left': startX + usableWidth * 0.45, 'top': startY + usableHeight * 0.3},
@@ -799,23 +804,35 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     return [
       // Dog
-      {'left': startX + usableWidth * 0.1, 'top': bottomY}, // Bottom left
+      {
+        'left': startX + usableWidth * 0.0015,
+        'top': bottomY * 0.7,
+      }, // Bottom left
       // Fish
       {
-        'left': startX + usableWidth * 0.3,
-        'top': bottomY + 20,
+        'left': startX + usableWidth * 0.0015,
+        'top': bottomY * 0.6,
       }, // Bottom center-left
       // Rabbit
-      {'left': startX + usableWidth * 0.5, 'top': bottomY}, // Bottom center
+      {
+        'left': startX + usableWidth * 0.92,
+        'top': bottomY * 0.55,
+      }, // Bottom center
       // Bird
       {
-        'left': startX + usableWidth * 0.7,
-        'top': bottomY + 20,
+        'left': startX + usableWidth * 0.95,
+        'top': bottomY * 0.25,
       }, // Bottom center-right
       // Cat
-      {'left': startX + usableWidth * 0.9, 'top': bottomY}, // Bottom right
+      {
+        'left': startX + usableWidth * 0.0015,
+        'top': bottomY * 0.12,
+      }, // Bottom right
       // Tortoise
-      {'left': startX + usableWidth * 0.9, 'top': bottomY}, // Bottom right
+      {
+        'left': startX + usableWidth * 0.95,
+        'top': bottomY * 0.92,
+      }, // Bottom right
       // Additional positions if needed
       {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},
       {'left': startX + usableWidth * 0.6, 'top': bottomY + 40},
@@ -834,7 +851,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       case 'cat':
         return baseSizeMobile * 1.75; // Smaller animals
       case 'dog':
-        return baseSizeMobile * 1.65; // Medium-large animal
+        return baseSizeMobile * 2.85; // Medium-large animal
       case 'fish':
         return baseSizeMobile * 1.15; // Small animal
       case 'bird':
