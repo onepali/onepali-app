@@ -14,7 +14,7 @@ class ErrorScreen extends StatefulWidget {
     this.isInternetError = false,
     this.isDataError = true,
     this.title,
-    this.message, 
+    this.message,
     this.onRetry,
     this.isShowButton = true,
   });
@@ -35,15 +35,16 @@ class _ErrorScreenState extends State<ErrorScreen> {
     // final bool isDataError = widget.isDataError && !isInternetError;
     Widget imageWidget;
     if (isInternetError) {
-      imageWidget = LottieHelper.fromSource(
-        path: Assets.noInternetLottie,
-        type: LottieSourceType.asset,
-        height: isTablet || isMobile ? 250 : 180,
-        width: isTablet || isMobile ? 250 : 180,
-        repeat: true,
-        animate: true,
-        fit: BoxFit.contain,
-      );
+      imageWidget = const SizedBox.shrink();
+      // LottieHelper.fromSource(
+      //   path: Assets.noInternetLottie,
+      //   type: LottieSourceType.asset,
+      //   height: isTablet || isMobile ? 250 : 180,
+      //   width: isTablet || isMobile ? 250 : 180,
+      //   repeat: true,
+      //   animate: true,
+      //   fit: BoxFit.contain,
+      // );
     } else {
       imageWidget = SvgPicture.asset(
         Assets.dataSvg,

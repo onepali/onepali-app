@@ -461,28 +461,42 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
               },
             ),
 
-          // Success feedback animation
-          if (showCorrectFeedback)
+          // Success feedback animation - positioned on the correct target
+          if (showCorrectFeedback && selectedTargetId != null)
             AnimatedBuilder(
               animation: _feedbackController,
               child: LottieHelper.fromSource(
-                path: Assets.starRewardLottie,
-                height: 100,
-                width: 100,
+                path: widget.content.feedback?.correct?.animation ?? '',
+                height: 120,
+                width: 120,
                 repeat: false,
+                type: LottieSourceType.network,
               ),
               builder: (context, child) {
+                // Find the position of the selected target
+                final targetIndex =
+                    widget.content.tapTargets?.indexWhere(
+                      (target) => target.id == selectedTargetId,
+                    ) ??
+                    0;
+
+                final isMobile = PlatformUtility.isMobile(context);
+                final positions = _getTargetPositions(
+                  screenWidth,
+                  screenHeight,
+                  isMobile,
+                );
+                final position = positions[targetIndex % positions.length];
+
                 return Positioned(
-                  top: screenHeight * 0.2 + (30 * _feedbackController.value),
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Transform.scale(
-                      scale: _feedbackController.value,
-                      child: Opacity(
-                        opacity: _feedbackController.value,
-                        child: child,
-                      ),
+                  left:
+                      position['left']! - 10, // Center the lottie on the target
+                  top: position['top']! - 10,
+                  child: Transform.scale(
+                    scale: _feedbackController.value,
+                    child: Opacity(
+                      opacity: _feedbackController.value,
+                      child: child,
                     ),
                   ),
                 );

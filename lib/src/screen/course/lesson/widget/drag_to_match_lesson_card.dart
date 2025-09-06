@@ -50,11 +50,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   bool _showCorrectFeedback = false;
   bool _showIncorrectFeedback = false;
   bool showLeopardAnimation = false; // Controls leopard animation display
+  bool _showSuccessLottie = false; // Controls success lottie animation display
 
   // Sequential audio flow state
   int _currentAnimalIndex = 0;
   bool _isWaitingForMatch = false;
-  bool _hasPlayedCurrentAnimal = false;
 
   // Animation controllers
   late AnimationController _vocabularyController;
@@ -105,9 +105,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         _showCorrectFeedback = false;
         _showIncorrectFeedback = false;
         showLeopardAnimation = false;
+        _showSuccessLottie = false;
         _currentAnimalIndex = 0;
         _isWaitingForMatch = false;
-        _hasPlayedCurrentAnimal = false;
       });
       _disposeAllAudioWidgets();
 
@@ -225,7 +225,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     setState(() {
       _currentAnimalIndex = 0;
       _isWaitingForMatch = false;
-      _hasPlayedCurrentAnimal = false;
     });
 
     // Start with the first animal sound
@@ -262,7 +261,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     try {
       setState(() {
         _isWaitingForMatch = true;
-        _hasPlayedCurrentAnimal = true;
       });
 
       _animalSoundAudio?.dispose();
@@ -301,7 +299,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     setState(() {
       _isWaitingForMatch = false;
-      _hasPlayedCurrentAnimal = false;
     });
 
     // Play the same animal sound after a brief delay
@@ -385,6 +382,23 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       setState(() {
         _allCompleted = true;
       });
+
+      // Show success lottie animation if confettiOnComplete is true and it's the last item
+      if (widget.content.feedback?.confettiOnComplete == true &&
+          widget.isLastItem) {
+        setState(() {
+          _showSuccessLottie = true;
+        });
+
+        // Hide success lottie after 3 seconds
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted) {
+            setState(() {
+              _showSuccessLottie = false;
+            });
+          }
+        });
+      }
 
       // Show leopard animation for completion (only for last item)
       if (widget.isLastItem) {
@@ -561,6 +575,19 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
           // Feedback overlays
           if (_showCorrectFeedback) _buildCorrectFeedback(),
           if (_showIncorrectFeedback) _buildIncorrectFeedback(),
+
+          // Success lottie animation overlay (shown when all matches are completed, confetti is enabled, and is last item)
+          if (_showSuccessLottie)
+            Positioned.fill(
+              child: LottieHelper.fromSource(
+                path: Assets.lessonSuccessLottie,
+                type: LottieSourceType.asset,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                repeat: false,
+              ),
+            ),
 
           // Leopard animation from corner (shown when all matches are completed and is last item)
           if (showLeopardAnimation && _allCompleted && widget.isLastItem)
