@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
 /// A widget that displays an interactive park scene for drag_to_match type lessons.
@@ -48,6 +49,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   bool _allCompleted = false;
   bool _showCorrectFeedback = false;
   bool _showIncorrectFeedback = false;
+  bool showLeopardAnimation = false; // Controls leopard animation display
 
   // Animation controllers
   late AnimationController _vocabularyController;
@@ -76,9 +78,40 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _initializeAudioWidgets();
 
     // Start the lesson flow
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    Misc.onLayoutRendered(() {
       _startLessonFlow();
     });
+  }
+
+  @override
+  void didUpdateWidget(DragToMatchLessonCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // If the content changed (different index), dispose audio and reset state
+    if (oldWidget.index != widget.index) {
+      setState(() {
+        _completedMatches.clear();
+        _showVocabularyBox = false;
+        _currentMatchedItem = null;
+        _vocabularyText = null;
+        _totalMatches = 0;
+        _completedCount = 0;
+        _allCompleted = false;
+        _showCorrectFeedback = false;
+        _showIncorrectFeedback = false;
+        showLeopardAnimation = false;
+      });
+      _disposeAllAudioWidgets();
+
+      // Reinitialize for new content
+      _initializeDragTargets();
+      _initializeAudioWidgets();
+
+      // Start the lesson flow for new content
+      Misc.onLayoutRendered(() {
+        _startLessonFlow();
+      });
+    }
   }
 
   void _initializeAnimations() {
@@ -277,11 +310,40 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         _allCompleted = true;
       });
 
+      // Show leopard animation for completion
+      setState(() {
+        showLeopardAnimation = true;
+      });
+
+      // Dispose all audio widgets before proceeding
+      _disposeAllAudioWidgets();
+
+      // Reset audio provider state
+      try {
+        final audioProvider = Provider.of<LessonAudioProvider>(
+          context,
+          listen: false,
+        );
+        await audioProvider.stopAudio();
+        await audioProvider.clearCache();
+      } catch (e) {
+        logger.e('Error stopping audio: $e');
+      }
+
       // Auto-complete the course after a brief delay to let user see the completion
       Future.delayed(const Duration(seconds: 3), () {
         if (widget.onLessonComplete != null) {
           widget.onLessonComplete!();
           logger.d('All matches completed! Auto-completing the course.');
+        }
+      });
+
+      // Hide leopard animation after delay
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            showLeopardAnimation = false;
+          });
         }
       });
 
@@ -343,13 +405,23 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _bounceController.dispose();
     _shakeController.dispose();
 
+    _disposeAllAudioWidgets();
+
+    super.dispose();
+  }
+
+  void _disposeAllAudioWidgets() {
     _questionAudio?.dispose();
     _animalSoundAudio?.dispose();
     _correctFeedbackAudio?.dispose();
     _incorrectFeedbackAudio?.dispose();
     _vocabularyAudio?.dispose();
 
-    super.dispose();
+    _questionAudio = null;
+    _animalSoundAudio = null;
+    _correctFeedbackAudio = null;
+    _incorrectFeedbackAudio = null;
+    _vocabularyAudio = null;
   }
 
   @override
@@ -379,6 +451,25 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
           // Feedback overlays
           if (_showCorrectFeedback) _buildCorrectFeedback(),
           if (_showIncorrectFeedback) _buildIncorrectFeedback(),
+
+          // Leopard animation from corner (shown when all matches are completed)
+          if (showLeopardAnimation && _allCompleted)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeInOut,
+              bottom: -50,
+              right: -50,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity: 1.0,
+                child: CustomImage(
+                  Assets.goodRemark,
+                  height: 270,
+                  width: 270,
+                  imageType: CustomImageType.local,
+                ),
+              ),
+            ),
         ],
       ),
     );

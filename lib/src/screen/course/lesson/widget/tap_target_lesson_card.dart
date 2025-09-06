@@ -47,6 +47,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   int wrongAttempts = 0;
   bool showHintAnimation = false;
   bool showQuestionText = false; // Controls when to show the question text
+  // bool showLeopardAnimation = false; // Controls leopard animation display
   late AnimationController _feedbackController;
   late AnimationController _textController;
   late AnimationController _hintController;
@@ -71,7 +72,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     );
 
     // Start the lesson by playing the question audio
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    Misc.onLayoutRendered(() {
       _playQuestionAudio();
     });
   }
@@ -81,8 +82,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.index != widget.index) {
+      // Dispose audio before resetting state for new content
+      _disposeAudioWidgets();
+
       _resetState();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      Misc.onLayoutRendered(() {
         _playQuestionAudio();
       });
     }
@@ -97,6 +101,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     wrongAttempts = 0;
     showHintAnimation = false;
     showQuestionText = false;
+    // showLeopardAnimation = false;
     _feedbackController.reset();
     _textController.reset();
     _hintController.reset();
@@ -193,8 +198,44 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         if (widget.isLastItem) {
+          // Show leopard animation for last item
+          // setState(() {
+          //   showLeopardAnimation = true;
+          // });
+
+          // Stop and dispose all audio before calling lesson complete
+          _disposeAudioWidgets();
+
+          // Reset audio provider state
+          final audioProvider = context.read<LessonAudioProvider>();
+          audioProvider.stopAudio();
+          audioProvider.clearCache();
+
           widget.onLessonComplete?.call();
+
+          // Hide leopard animation after 2 seconds
+          // Future.delayed(const Duration(seconds: 2), () {
+          //   if (mounted) {
+          //     setState(() {
+          //       showLeopardAnimation = false;
+          //     });
+          //   }
+          // });
         } else {
+          // Dispose audio before moving to next content
+          _disposeAudioWidgets();
+
+          // Reset audio provider state to prevent background audio
+          try {
+            final audioProvider = Provider.of<LessonAudioProvider>(
+              context,
+              listen: false,
+            );
+            audioProvider.stopAudio();
+          } catch (e) {
+            logger.e('Error stopping audio provider: $e');
+          }
+
           widget.onCorrectAnswer?.call();
         }
       }
@@ -479,6 +520,25 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
           //             fontFamily: AppConstants.kMuktaFont,
           //           ),
           //         ),
+          //       ),
+          //     ),
+          //   ),
+
+          // Leopard animation from corner (only for last item)
+          // if (showLeopardAnimation && widget.isLastItem)
+          //   AnimatedPositioned(
+          //     duration: const Duration(milliseconds: 800),
+          //     curve: Curves.easeInOut,
+          //     bottom: -50,
+          //     right: -50,
+          //     child: AnimatedOpacity(
+          //       duration: const Duration(milliseconds: 500),
+          //       opacity: 1.0,
+          //       child: CustomImage(
+          //         Assets.goodRemark,
+          //         height: 270,
+          //         width: 270,
+          //         imageType: CustomImageType.local,
           //       ),
           //     ),
           //   ),
