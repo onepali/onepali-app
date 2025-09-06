@@ -312,6 +312,27 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       onCorrectAnswer: () {
                         _nextContent();
                       },
+                      onLessonComplete: () async {
+                        await _saveProgress(content, contentIndex);
+                        // For drag_to_match lessons, handle completion
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
+                        }
+
+                        // Close lesson after DragToMatchLessonCard animation
+                        Future.delayed(const Duration(seconds: 3), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
                       index: contentIndex,
                     )
                     : LessonContentCard(

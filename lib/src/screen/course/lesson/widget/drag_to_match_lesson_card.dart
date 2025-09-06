@@ -310,42 +310,55 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         _allCompleted = true;
       });
 
-      // Show leopard animation for completion
-      setState(() {
-        showLeopardAnimation = true;
-      });
+      // Show leopard animation for completion (only for last item)
+      if (widget.isLastItem) {
+        setState(() {
+          showLeopardAnimation = true;
+        });
+      }
 
       // Dispose all audio widgets before proceeding
       _disposeAllAudioWidgets();
 
-      // Reset audio provider state
-      try {
-        final audioProvider = Provider.of<LessonAudioProvider>(
-          context,
-          listen: false,
-        );
-        await audioProvider.stopAudio();
-        await audioProvider.clearCache();
-      } catch (e) {
-        logger.e('Error stopping audio: $e');
+      // Reset audio provider state only if this is the last item
+      if (widget.isLastItem) {
+        try {
+          final audioProvider = Provider.of<LessonAudioProvider>(
+            context,
+            listen: false,
+          );
+          await audioProvider.stopAudio();
+          await audioProvider.clearCache();
+        } catch (e) {
+          logger.e('Error stopping audio: $e');
+        }
       }
 
       // Auto-complete the course after a brief delay to let user see the completion
       Future.delayed(const Duration(seconds: 3), () {
-        if (widget.onLessonComplete != null) {
-          widget.onLessonComplete!();
-          logger.d('All matches completed! Auto-completing the course.');
+        if (mounted) {
+          if (widget.isLastItem) {
+            // Only call lesson complete if this is the last item in the lesson sequence
+            widget.onLessonComplete?.call();
+            logger.d('All matches completed! Last item - completing lesson.');
+          } else {
+            // For non-last items, call onCorrectAnswer to proceed to next content
+            widget.onCorrectAnswer?.call();
+            logger.d('All matches completed! Moving to next content.');
+          }
         }
       });
 
-      // Hide leopard animation after delay
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() {
-            showLeopardAnimation = false;
-          });
-        }
-      });
+      // Hide leopard animation after delay (only if it was shown for last item)
+      if (widget.isLastItem) {
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            setState(() {
+              showLeopardAnimation = false;
+            });
+          }
+        });
+      }
 
       logger.d(
         'All matches completed! Course will auto-complete in 3 seconds.',
@@ -452,8 +465,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
           if (_showCorrectFeedback) _buildCorrectFeedback(),
           if (_showIncorrectFeedback) _buildIncorrectFeedback(),
 
-          // Leopard animation from corner (shown when all matches are completed)
-          if (showLeopardAnimation && _allCompleted)
+          // Leopard animation from corner (shown when all matches are completed and is last item)
+          if (showLeopardAnimation && _allCompleted && widget.isLastItem)
             AnimatedPositioned(
               duration: const Duration(milliseconds: 800),
               curve: Curves.easeInOut,
@@ -723,49 +736,31 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       animation: _vocabularyAnimation,
       builder: (context, child) {
         return Positioned(
-          top: 50,
-          left: 20,
-          right: 20,
+          top: 100,
+          left: 50,
+          right: 50,
           child: Transform.scale(
             scale: _vocabularyAnimation.value,
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               decoration: BoxDecoration(
-                color: AppColors.kWhite,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.kButtonGreen, width: 3),
+                color: AppColors.kSecondaryColor,
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.kBlack.withValues(alpha: 0.2),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.check_circle,
-                    color: AppColors.kButtonGreen,
-                    size: 40,
-                  ),
-                  Gaps.verticalGapOf(8),
-                  Text(
-                    _vocabularyText ?? '',
-                    style: AppStyles.text24PxBold.copyWith(
-                      color: AppColors.kSecondaryColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Gaps.verticalGapOf(4),
-                  Text(
-                    'शाबास! (Shabash!)',
-                    style: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kButtonGreen,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+              child: Text(
+                _vocabularyText ?? '',
+                style: AppStyles.text24PxBold.copyWith(
+                  color: AppColors.kWhite,
+                  fontFamily: AppConstants.kMuktaFont,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),

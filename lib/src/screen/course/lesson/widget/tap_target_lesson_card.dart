@@ -198,29 +198,22 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         if (widget.isLastItem) {
-          // Show leopard animation for last item
-          // setState(() {
-          //   showLeopardAnimation = true;
-          // });
-
-          // Stop and dispose all audio before calling lesson complete
+          // For last item, dispose audio and call lesson complete
           _disposeAudioWidgets();
 
           // Reset audio provider state
-          final audioProvider = context.read<LessonAudioProvider>();
-          audioProvider.stopAudio();
-          audioProvider.clearCache();
+          try {
+            final audioProvider = Provider.of<LessonAudioProvider>(
+              context,
+              listen: false,
+            );
+            audioProvider.stopAudio();
+            audioProvider.clearCache();
+          } catch (e) {
+            logger.e('Error stopping audio provider: $e');
+          }
 
           widget.onLessonComplete?.call();
-
-          // Hide leopard animation after 2 seconds
-          // Future.delayed(const Duration(seconds: 2), () {
-          //   if (mounted) {
-          //     setState(() {
-          //       showLeopardAnimation = false;
-          //     });
-          //   }
-          // });
         } else {
           // Dispose audio before moving to next content
           _disposeAudioWidgets();

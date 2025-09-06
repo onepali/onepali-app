@@ -168,6 +168,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           }
         });
       } else {
+        // For non-last items, just move to next content
         widget.onCorrectAnswer?.call();
       }
     } else {
