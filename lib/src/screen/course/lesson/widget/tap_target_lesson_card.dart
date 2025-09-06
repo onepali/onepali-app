@@ -307,29 +307,39 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
   /// Get the appropriate size for different animals
   double _getTargetSizeForAnimal(String animalId, bool isMobile) {
-    final baseSizeMobile = isMobile ? 60.0 : 80.0;
+    final isTablet = PlatformUtility.isTablet(context);
+    final isLandscape = PlatformUtility.isLandscape(context);
+
+    // Base size depends on device type and orientation
+    final double baseSize;
+    if (isMobile) {
+      baseSize = 60.0;
+    } else {
+      // Tablet handling
+      baseSize = isLandscape ? 90.0 : 80.0; // Larger for landscape tablets
+    }
 
     switch (animalId.toLowerCase()) {
       case 'rabbit':
       case 'cat':
-        return baseSizeMobile * 1.75; // Smaller animals
+        return baseSize * 1.75; // Smaller animals
       case 'dog':
-        return baseSizeMobile * 1.65; // Medium-large animal
+        return baseSize * 2.35; // Medium-large animal
       case 'fish':
-        return baseSizeMobile * 1.15; // Small animal
+        return baseSize * 1.15; // Small animal
       case 'bird':
-        return baseSizeMobile * 1.15; // Small-medium animal
+        return baseSize * 1.15; // Small-medium animal
       case 'tortoise':
-        return baseSizeMobile * 1.15; // Medium animal
+        return baseSize * 1.35; // Medium animal
       case 'elephant':
-        return baseSizeMobile * 1.3; // Large animal
+        return baseSize * 1.3; // Large animal
       case 'tiger':
       case 'lion':
-        return baseSizeMobile * 1.2; // Large animals
+        return baseSize * 1.2; // Large animals
       case 'mouse':
-        return baseSizeMobile * 0.7; // Very small animal
+        return baseSize * 0.7; // Very small animal
       default:
-        return baseSizeMobile; // Default size
+        return baseSize; // Default size
     }
   }
 
@@ -345,14 +355,13 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   Widget _buildParkScene() {
     final isMobile = PlatformUtility.isMobile(context);
     final isTablet = PlatformUtility.isTablet(context);
+    final isLandscape = PlatformUtility.isLandscape(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     // Use responsive background image
-    final backgroundImage =
-        isMobile
-            ? widget.content.mbImage
-            : (isTablet ? widget.content.tbImage : widget.content.tbImage);
+    final backgroundImage = widget.content.mbImage;
+    logger.d('Using background image: $backgroundImage');
 
     return SizedBox(
       width: screenWidth,
@@ -368,6 +377,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 child: SvgHelper.fromSource(
                   path: backgroundImage!,
                   fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
                   type: SvgSourceType.network,
                 ),
               ),
@@ -650,45 +661,68 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     double screenHeight,
     bool isMobile,
   ) {
-    // Define relative positions for animals in the park scene
-    // These positions are designed to work with a typical park background
-    // Adjust these positions to match your specific park background layout
+    final isTablet = PlatformUtility.isTablet(context);
+    final isLandscape = PlatformUtility.isLandscape(context);
 
-    final double usableWidth = screenWidth * 0.9; // Leave some margin
-    final double usableHeight =
-        screenHeight * 0.5; // Use middle portion of screen
-    final double startX = screenWidth * 0.05; // Start with 5% margin
-    final double startY = screenHeight * 0.15; // Start from 15% down
+    // Adjust margins and usable space based on device type
+    final double marginX, marginY, usableWidthPercent, usableHeightPercent;
+
+    if (isMobile) {
+      marginX = screenWidth * 0.05; // 5% margin
+      marginY = screenHeight * 0.15; // 15% from top
+      usableWidthPercent = 0.9; // 90% of width
+      usableHeightPercent = 0.5; // 50% of height
+    } else {
+      // Tablet handling
+      marginX = screenWidth * 0.08; // 8% margin
+      marginY = isLandscape ? screenHeight * 0.12 : screenHeight * 0.18;
+      usableWidthPercent = isLandscape ? 0.85 : 0.82;
+      usableHeightPercent = isLandscape ? 0.7 : 0.55;
+    }
+
+    final double usableWidth = screenWidth * usableWidthPercent;
+    final double usableHeight = screenHeight * usableHeightPercent;
+    final double startX = marginX;
+    final double startY = marginY;
 
     return [
       // Rabbit position (bottom right, on grass)
-      {'left': startX + usableWidth * 0.9, 'top': startY + usableHeight * 0.9},
+      {
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.82 : 0.9),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.78 : 0.9),
+      },
 
       // Dog position (left side, on grass)
       {
-        'left': startX + usableWidth * 0.17,
-        'top': startY + usableHeight * 0.76,
+        'left': startX + usableWidth * 0.12,
+        'top': startY + usableHeight * 0.45,
       },
 
       // Cat position (center-left, near trees)
-      {'left': startX + usableWidth * 0.69, 'top': startY + usableHeight * 0.5},
+      {
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.67 : 0.69),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.5),
+      },
 
       // Fish position (in water area - bottom center)
       {
-        'left': startX + usableWidth * 0.18,
-        'top': startY + usableHeight * 1.22,
+        'left': startX + usableWidth * 0.12,
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.9 : 1.22),
       },
 
       // Bird position (on tree branch - top area)
       {
-        'left': startX + usableWidth * 0.8,
-        'top': startY + usableHeight * 0.015 - 40,
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.84 : 0.8),
+        'top':
+            startY +
+            usableHeight *
+                (isTablet && isLandscape ? 0.015 - 0.05 : 0.015 - 40),
       },
 
       // Tortoise position (center-right, on grass)
       {
-        'left': startX + usableWidth * 0.55,
-        'top': startY + usableHeight * 1.15,
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.55),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 1.15),
       },
 
       // Additional positions for more animals

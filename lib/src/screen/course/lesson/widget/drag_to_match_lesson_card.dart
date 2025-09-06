@@ -960,13 +960,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         screenHeight * 0.5; // Use middle portion of screen
     final double startX = screenWidth * 0.05; // Start with 5% margin
     final double startY = screenHeight * 0.15; // Start from 15% down
-
+    final isTabletLandscape =
+        !isMobile &&
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return [
       // Position 1 (bottom right, on grass)
       // Dog
       {
-        'left': startX + usableWidth * 0.15,
-        'top': startY + usableHeight * 0.44,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.17 : 0.15),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.44),
       },
 
       // Position 2 (left side, on grass)
@@ -977,22 +980,30 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Rabbit
       {
         'left': startX + usableWidth * 0.78,
-        'top': startY + usableHeight * 0.97,
+        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 0.97),
       },
 
       // Position 4 (in water area - bottom center)
       // Bird
       {
-        'left': startX + usableWidth * 0.80,
-        'top': startY + usableHeight * 0.015 - 41,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.80),
+        'top':
+            startY +
+            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 41),
       },
 
       // Position 5 (on tree branch - top area)
       // Cat
-      {'left': startX + usableWidth * 0.68, 'top': startY + usableHeight * 0.4},
+      {
+        'left': startX + usableWidth * (isTabletLandscape ? 0.7 : 0.68),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.4),
+      },
 
       // Tortoise
-      {'left': startX + usableWidth * 0.5, 'top': startY + usableHeight * 1.10},
+      {
+        'left': startX + usableWidth * 0.5,
+        'top': startY + usableHeight * (isTabletLandscape ? 1.2 : 1.10),
+      },
 
       //Additional positions for more targets
       {'left': startX + usableWidth * 0.45, 'top': startY + usableHeight * 0.3},
@@ -1010,11 +1021,14 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     final double usableWidth = screenWidth * 0.9; // Leave some margin
     final double startX = screenWidth * 0.05; // Start with 5% margin
     final double bottomY = screenHeight * 0.8; // Bottom area
-
+    final isTabletLandscape =
+        !isMobile &&
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return [
       // Dog
       {
-        'left': startX + usableWidth * 0.0015,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.0015 : 0.0015),
         'top': bottomY * 0.75,
       }, // Bottom left
       // Fish
@@ -1053,6 +1067,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   /// Using the same sizing logic as tap_target_lesson_card.dart
   double _getTargetSizeForItem(String itemId, bool isMobile) {
     final baseSizeMobile = isMobile ? 60.0 : 80.0;
+    // final isTabletLandscape =
+    //     !isMobile &&
+    //     PlatformUtility.isTablet(context) &&
+    //     PlatformUtility.isLandscape(context);
 
     // For drag-to-match, we use slightly larger sizes than tap_target
     switch (itemId.toLowerCase()) {
