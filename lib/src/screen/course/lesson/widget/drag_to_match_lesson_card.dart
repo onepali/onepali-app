@@ -1015,7 +1015,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Dog
       {
         'left': startX + usableWidth * 0.0015,
-        'top': bottomY * 0.7,
+        'top': bottomY * 0.75,
       }, // Bottom left
       // Fish
       {
@@ -1082,6 +1082,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   double _getDraggableItemSizeForItem(String itemId, bool isMobile) {
     // Slightly smaller than targets for better UX
     final targetSize = _getTargetSizeForItem(itemId, isMobile);
-    return targetSize * 0.85; // 15% smaller than target
+    final isDog = itemId.toLowerCase() == 'dog';
+    final size = isDog ? targetSize * 0.55 : targetSize * 0.85;
+
+    return size; // 15% smaller than target
   }
 }
