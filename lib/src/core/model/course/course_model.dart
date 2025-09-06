@@ -320,6 +320,7 @@ class DragTargets {
   final String? image;
   final String? imageOutline;
   final String? audio;
+  final String? wordAudio;
 
   DragTargets({
     this.id,
@@ -328,15 +329,17 @@ class DragTargets {
     this.image,
     this.imageOutline,
     this.audio,
+    this.wordAudio,
   });
 
-  factory DragTargets.fromJson(Map<String, dynamic> json) =>  DragTargets(
+  factory DragTargets.fromJson(Map<String, dynamic> json) => DragTargets(
     id: json["id"] ?? "",
     nameEn: json["name_en"] ?? "",
     nameNp: json["name_np"] ?? "",
     image: json["image"] ?? "",
     imageOutline: json["image_outline"] ?? "",
     audio: json["audio"] ?? "",
+    wordAudio: json["word_audio"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -346,6 +349,7 @@ class DragTargets {
     if (image != null) "image": image,
     if (imageOutline != null) "image_outline": imageOutline,
     if (audio != null) "audio": audio,
+    if (wordAudio != null) "word_audio": wordAudio,
   };
 }
 

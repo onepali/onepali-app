@@ -51,6 +51,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   bool _showIncorrectFeedback = false;
   bool showLeopardAnimation = false; // Controls leopard animation display
 
+  // Sequential audio flow state
+  int _currentAnimalIndex = 0;
+  bool _isWaitingForMatch = false;
+  bool _hasPlayedCurrentAnimal = false;
+
   // Animation controllers
   late AnimationController _vocabularyController;
   late AnimationController _feedbackController;
@@ -100,6 +105,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         _showCorrectFeedback = false;
         _showIncorrectFeedback = false;
         showLeopardAnimation = false;
+        _currentAnimalIndex = 0;
+        _isWaitingForMatch = false;
+        _hasPlayedCurrentAnimal = false;
       });
       _disposeAllAudioWidgets();
 
@@ -185,9 +193,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       );
     }
 
-    if (widget.content.feedback?.incorrect?.audio?.isNotEmpty == true) {
+    if (widget.content.feedback?.incorrect?.wordAudio?.isNotEmpty == true) {
       _incorrectFeedbackAudio = CustomAudioWidget(
-        audioPath: widget.content.feedback!.incorrect!.audio!,
+        audioPath: widget.content.feedback!.incorrect!.wordAudio!,
         audioSourceType: AudioSourceType.network,
       );
     }
@@ -197,7 +205,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     // Step 1: Play Nepali audio question
     await _playQuestionAudio();
 
-    // Step 2: Start playing animal sounds continuously
+    // Step 2: Start sequential animal sound flow
     _startAnimalSounds();
   }
 
@@ -213,51 +221,118 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   }
 
   void _startAnimalSounds() {
-    // Play animal sounds for each drag target periodically
+    // Initialize sequential flow
+    setState(() {
+      _currentAnimalIndex = 0;
+      _isWaitingForMatch = false;
+      _hasPlayedCurrentAnimal = false;
+    });
+
+    // Start with the first animal sound
     if (widget.content.dragTargets?.isNotEmpty == true) {
-      _playNextAnimalSound(0);
+      _playCurrentAnimalSound();
     }
   }
 
-  void _playNextAnimalSound(int index) async {
-    if (index >= widget.content.dragTargets!.length || _allCompleted) return;
+  void _playCurrentAnimalSound() async {
+    if (_allCompleted ||
+        widget.content.dragTargets?.isEmpty == true ||
+        _currentAnimalIndex >= widget.content.dragTargets!.length) {
+      return;
+    }
 
-    final target = widget.content.dragTargets![index];
-    if (target.audio?.isNotEmpty == true &&
-        !(_completedMatches[target.id] ?? false)) {
-      try {
-        _animalSoundAudio?.dispose();
-        _animalSoundAudio = CustomAudioWidget(
-          audioPath: target.audio!,
-          audioSourceType: AudioSourceType.network,
-        );
-        await _animalSoundAudio!.play();
-        logger.d('Playing animal sound for ${target.nameEn}');
-      } catch (e) {
-        logger.e('Error playing animal sound: $e');
+    // Find the next incomplete animal to play
+    while (_currentAnimalIndex < widget.content.dragTargets!.length) {
+      final target = widget.content.dragTargets![_currentAnimalIndex];
+      final isCompleted = _completedMatches[target.id] ?? false;
+
+      if (!isCompleted && target.audio?.isNotEmpty == true) {
+        break;
       }
+      _currentAnimalIndex++;
     }
 
-    // Continue to next animal sound after a delay, but only if not all completed
-    if (!_allCompleted) {
-      Future.delayed(const Duration(seconds: 3), () {
-        final nextIndex = (index + 1) % widget.content.dragTargets!.length;
-        _playNextAnimalSound(nextIndex);
-      });
+    // If we've gone through all animals, we're done
+    if (_currentAnimalIndex >= widget.content.dragTargets!.length) {
+      return;
     }
+
+    final target = widget.content.dragTargets![_currentAnimalIndex];
+
+    try {
+      setState(() {
+        _isWaitingForMatch = true;
+        _hasPlayedCurrentAnimal = true;
+      });
+
+      _animalSoundAudio?.dispose();
+      _animalSoundAudio = CustomAudioWidget(
+        audioPath: target.audio!,
+        audioSourceType: AudioSourceType.network,
+      );
+      await _animalSoundAudio!.play();
+      logger.d(
+        'Playing animal sound for ${target.nameEn} (index: $_currentAnimalIndex)',
+      );
+    } catch (e) {
+      logger.e('Error playing animal sound: $e');
+    }
+  }
+
+  void _playNextAnimalSound() {
+    // Move to next animal and play its sound
+    _currentAnimalIndex++;
+    _playCurrentAnimalSound();
+  }
+
+  void _replayCurrentAnimalSound() {
+    // Ensure we don't go beyond the available targets
+    if (_currentAnimalIndex >= widget.content.dragTargets!.length) {
+      return;
+    }
+
+    // Get the current target that should be playing
+    final target = widget.content.dragTargets![_currentAnimalIndex];
+
+    // Only replay if this animal is not completed yet
+    if (_completedMatches[target.id] ?? false) {
+      return;
+    }
+
+    setState(() {
+      _isWaitingForMatch = false;
+      _hasPlayedCurrentAnimal = false;
+    });
+
+    // Play the same animal sound after a brief delay
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted && !_allCompleted) {
+        _playCurrentAnimalSound();
+        logger.d('Replaying current animal sound: ${target.nameEn}');
+      }
+    });
   }
 
   void _onDragTargetAccept(String targetId, String draggedId) async {
+    if (!_isWaitingForMatch) return; // Only accept drags when waiting for match
+
+    // Get the current animal that should be matched based on the sound being played
+    final currentTarget = widget.content.dragTargets![_currentAnimalIndex];
+    final expectedAnimalId = currentTarget.id;
+
     final target = widget.content.dragTargets!.firstWhere(
       (t) => t.id == targetId,
       orElse: () => DragTargets(),
     );
 
-    if (targetId == draggedId) {
-      // Step 4: Correct match
+    // Check if:
+    // 1. The dragged item matches the drop target (targetId == draggedId)
+    // 2. AND the dragged animal is the same as the currently playing animal sound
+    if (targetId == draggedId && draggedId == expectedAnimalId) {
+      // CORRECT: Right animal dragged to right place AND matches current sound
       await _handleCorrectMatch(target);
     } else {
-      // Step 5: Incorrect match
+      // INCORRECT: Either wrong animal or doesn't match current sound
       await _handleIncorrectMatch();
     }
   }
@@ -270,6 +345,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       _vocabularyText = target.nameNp;
       _showVocabularyBox = true;
       _showCorrectFeedback = true;
+      _isWaitingForMatch = false;
     });
 
     // Haptic feedback
@@ -285,11 +361,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     }
 
     // Play vocabulary audio
-    if (target.audio?.isNotEmpty == true) {
+    if (target.wordAudio?.isNotEmpty == true) {
       try {
         _vocabularyAudio?.dispose();
         _vocabularyAudio = CustomAudioWidget(
-          audioPath: target.audio!,
+          audioPath: target.wordAudio!,
           audioSourceType: AudioSourceType.network,
         );
         await _vocabularyAudio!.play();
@@ -364,13 +440,18 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         'All matches completed! Course will auto-complete in 3 seconds.',
       );
     } else {
-      // Hide vocabulary box after showing it
+      // Hide vocabulary box after showing it and play next animal sound
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _showVocabularyBox = false;
           _showCorrectFeedback = false;
         });
         _vocabularyController.reverse();
+
+        // Play next animal sound after a short delay
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _playNextAnimalSound();
+        });
       });
     }
 
@@ -382,33 +463,49 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   Future<void> _handleIncorrectMatch() async {
     setState(() {
       _showIncorrectFeedback = true;
+      _isWaitingForMatch = false;
     });
 
-    // Haptic feedback
+    // Haptic feedback for wrong answer
     HapticFeedback.heavyImpact();
 
-    // Play incorrect feedback audio (try again)
+    // Show shake animation for incorrect feedback
+    _shakeController.forward().then((_) {
+      _shakeController.reverse();
+    });
+
+    // Play incorrect feedback audio first (try again - "फेरि प्रयास गर्नुहोस्")
     if (_incorrectFeedbackAudio != null) {
       try {
         await _incorrectFeedbackAudio!.play();
+        logger.d('Playing incorrect feedback audio: try again');
       } catch (e) {
         logger.e('Error playing incorrect feedback audio: $e');
       }
     }
 
-    // Shake animation
-    _shakeController.forward().then((_) {
-      _shakeController.reverse();
-    });
-
-    // Hide incorrect feedback after a delay
+    // Hide incorrect feedback after showing it
     Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _showIncorrectFeedback = false;
-      });
+      if (mounted) {
+        setState(() {
+          _showIncorrectFeedback = false;
+        });
+      }
     });
 
-    logger.d('Incorrect match attempted');
+    // Reset stickers back to original position (handled by UI rebuild)
+    // The draggable items will automatically return to their original positions
+    // because we're not changing any completion state
+
+    // After feedback audio finishes, replay ONLY the current animal sound
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted && !_allCompleted) {
+        logger.d('Replaying current animal sound after incorrect match');
+        _replayCurrentAnimalSound();
+      }
+    });
+
+    logger.d('Incorrect match - will reset and replay current animal sound');
   }
 
   @override
@@ -734,33 +831,32 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   Widget _buildVocabularyBox() {
     return AnimatedBuilder(
       animation: _vocabularyAnimation,
+
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.kSecondaryColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          _vocabularyText ?? '',
+          style: AppStyles.text24PxBold.copyWith(
+            color: AppColors.kWhite,
+            fontFamily: AppConstants.kMuktaFont,
+          ),
+        ),
+      ),
       builder: (context, child) {
         return Positioned(
-          top: 100,
-          left: 50,
-          right: 50,
-          child: Transform.scale(
-            scale: _vocabularyAnimation.value,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              decoration: BoxDecoration(
-                color: AppColors.kSecondaryColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.kBlack.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(
-                _vocabularyText ?? '',
-                style: AppStyles.text24PxBold.copyWith(
-                  color: AppColors.kWhite,
-                  fontFamily: AppConstants.kMuktaFont,
-                ),
-                textAlign: TextAlign.center,
+          top: 40 + (20 * _vocabularyController.value),
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Transform.scale(
+              scale: 0.8 + (0.2 * _vocabularyController.value),
+              child: Opacity(
+                opacity: _vocabularyController.value,
+                child: child,
               ),
             ),
           ),
