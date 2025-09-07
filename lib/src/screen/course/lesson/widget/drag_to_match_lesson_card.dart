@@ -206,7 +206,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     await _playQuestionAudio();
 
     // Step 2: Start sequential animal sound flow
-    _startAnimalSounds();
+    Future.delayed(const Duration(seconds: 2), () {
+      _startAnimalSounds();
+    });
   }
 
   Future<void> _playQuestionAudio() async {
@@ -357,7 +359,13 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       }
     }
 
-    // Play vocabulary audio
+    // Show vocabulary box animation
+    _vocabularyController.forward();
+    _bounceController.forward().then((_) {
+      _bounceController.reverse();
+    });
+
+    // Play vocabulary audio and wait for it to complete
     if (target.wordAudio?.isNotEmpty == true) {
       try {
         _vocabularyAudio?.dispose();
@@ -371,17 +379,14 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       }
     }
 
-    // Show vocabulary box animation
-    _vocabularyController.forward();
-    _bounceController.forward().then((_) {
-      _bounceController.reverse();
-    });
-
     // Check if all matches are completed
     if (_completedCount >= _totalMatches) {
       setState(() {
         _allCompleted = true;
       });
+
+      // Wait a bit after vocabulary audio, then show success lottie animation
+      await Future.delayed(const Duration(milliseconds: 1500));
 
       // Show success lottie animation if confettiOnComplete is true and it's the last item
       if (widget.content.feedback?.confettiOnComplete == true &&

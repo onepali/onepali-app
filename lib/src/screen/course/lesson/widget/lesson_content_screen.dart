@@ -327,7 +327,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         }
 
                         // Close lesson after DragToMatchLessonCard animation
-                        Future.delayed(const Duration(seconds: 3), () {
+                        Future.delayed(const Duration(milliseconds: 500), () {
                           if (mounted) {
                             Navigator.of(context).pop();
                           }
