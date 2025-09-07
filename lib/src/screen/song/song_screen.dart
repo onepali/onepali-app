@@ -39,6 +39,7 @@ class _SongScreenState extends State<SongScreen> {
           hasData: songProvider.songs.isNotEmpty,
           errorTitle: 'No Songs Available',
           errorMessage: 'Please check back later for new songs.',
+          checkConnectivity: false,
           onRetry: () {
             context.read<SongProvider>().fetchSongs();
           },

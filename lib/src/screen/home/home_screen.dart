@@ -15,11 +15,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late int _selectedTabIndex;
+  final ConnectivityService _connectivityService = ConnectivityService();
+  bool _isConnected = true;
 
   @override
   void initState() {
     super.initState();
     _selectedTabIndex = widget.selectedTabIndex;
+    _checkInitialConnectivity();
+    _listenToConnectivityChanges();
+  }
+
+  Future<void> _checkInitialConnectivity() async {
+    final isConnected = await _connectivityService.isConnected();
+    if (mounted) {
+      setState(() {
+        _isConnected = isConnected;
+      });
+    }
+  }
+
+  void _listenToConnectivityChanges() {
+    _connectivityService.onNetworkTypeChanged.listen((networkType) {
+      final isConnected = networkType != NetworkType.none;
+      if (mounted && _isConnected != isConnected) {
+        setState(() {
+          _isConnected = isConnected;
+        });
+      }
+    });
   }
 
   @override
@@ -39,6 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // Check if user is guest
     bool isGuest = GuestUtil.isGuestUser();
+
+    // If offline, show single error screen for the current module
+    if (!_isConnected) {
+      return _buildOfflineError(isGuest);
+    }
 
     // Fetch data for the selected tab only when needed (and not a guest user)
     if (!isGuest) {
@@ -82,6 +111,47 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildOfflineError(bool isGuest) {
+    VoidCallback onRetry;
+
+    switch (_selectedTabIndex) {
+      case 0:
+        onRetry = () {
+          context.read<LessonProvider>().fetchCourses();
+          if (!isGuest) {
+            context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
+          }
+        };
+        break;
+      case 1:
+        onRetry = () {
+          context.read<SongProvider>().fetchSongs();
+          if (!isGuest) {
+            context.read<RcmSongProvider>().fetchRecommendedSongs();
+          }
+        };
+        break;
+      case 2:
+        onRetry = () {
+          context.read<StoryProvider>().fetchStories();
+          if (!isGuest) {
+            context.read<RecommendedStoryProvider>().fetchRecommendedStories();
+          }
+        };
+        break;
+      default:
+        onRetry = () {};
+    }
+
+    return ErrorScreen(
+      title: "You're offline",
+      message: "Oops, please check your connection to get back online.",
+      onRetry: onRetry,
+      isInternetError: true,
+      isDataError: false,
     );
   }
 

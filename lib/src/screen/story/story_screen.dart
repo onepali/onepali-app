@@ -30,6 +30,7 @@ class _StoryScreenState extends State<StoryScreen> {
           hasData: provider.stories.isNotEmpty,
           errorTitle: 'No Stories Found',
           errorMessage: 'Please check back later for new stories.',
+          checkConnectivity: false,
           onRetry: () {
             context.read<StoryProvider>().fetchStories();
           },
