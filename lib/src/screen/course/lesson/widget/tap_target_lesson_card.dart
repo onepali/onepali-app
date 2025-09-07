@@ -307,7 +307,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
   /// Get the appropriate size for different animals
   double _getTargetSizeForAnimal(String animalId, bool isMobile) {
-    final isTablet = PlatformUtility.isTablet(context);
+    // final isTablet = PlatformUtility.isTablet(context);
     final isLandscape = PlatformUtility.isLandscape(context);
 
     // Base size depends on device type and orientation
@@ -353,9 +353,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   }
 
   Widget _buildParkScene() {
-    final isMobile = PlatformUtility.isMobile(context);
-    final isTablet = PlatformUtility.isTablet(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
+    // final isMobile = PlatformUtility.isMobile(context);
+    // final isTablet = PlatformUtility.isTablet(context);
+    // final isLandscape = PlatformUtility.isLandscape(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -716,7 +716,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
         'top':
             startY +
             usableHeight *
-                (isTablet && isLandscape ? 0.015 - 0.05 : 0.015 - 40),
+                (isTablet && isLandscape ? 0.015 - 0.05 : 0.015 - 0.23),
       },
 
       // Tortoise position (center-right, on grass)

@@ -994,7 +994,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.80),
         'top':
             startY +
-            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 41),
+            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 0.23),
       },
 
       // Position 5 (on tree branch - top area)
