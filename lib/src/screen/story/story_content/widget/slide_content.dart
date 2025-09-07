@@ -138,6 +138,8 @@ class SlideContentState extends State<SlideContent> {
             child: GestureDetector(
               onTap: () => storyProvider.previousContent(),
               child: Container(
+                height: AppConstants.kIconSize,
+                width: AppConstants.kIconSize,
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
                   shape: BoxShape.circle,
@@ -149,11 +151,15 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  // vertical: 2,
+                ),
                 child: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-                  height: AppConstants.kIconSize,
-                  width: AppConstants.kIconSize,
+                  // height: 30,
+                  // width: 30,
+                  color: AppColors.kSecondaryColor,
                 ),
               ),
             ),
@@ -168,6 +174,8 @@ class SlideContentState extends State<SlideContent> {
             child: GestureDetector(
               onTap: () => storyProvider.nextContent(context),
               child: Container(
+                height: AppConstants.kIconSize,
+                width: AppConstants.kIconSize,
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
                   shape: BoxShape.circle,
@@ -179,11 +187,15 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  // vertical: 2,
+                ),
                 child: SvgHelper.fromSource(
                   path: Assets.rightArrow,
-                  height: AppConstants.kIconSize,
-                  width: AppConstants.kIconSize,
+                  // height: 30,
+                  // width: 30,
+                  color: AppColors.kSecondaryColor,
                 ),
               ),
             ),
