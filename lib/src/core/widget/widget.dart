@@ -7,6 +7,9 @@ export 'custom_behaviour.dart';
 export 'custom_material_button.dart';
 export 'custom_text_button.dart';
 
+/// [Offline] Banner
+export 'offline_banner.dart';
+
 /// Custom [Svg]
 export 'custom_svg.dart';
 

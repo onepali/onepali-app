@@ -44,4 +44,9 @@ import UserNotifications
                                       withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
     super.userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler)
   }
+  
+  // // Handle URL schemes for Facebook authentication and other providers
+  // override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+  //   return super.application(app, open: url, options: options)
+  // }
 }

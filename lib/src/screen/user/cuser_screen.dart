@@ -164,7 +164,7 @@ class _CUserScreenState extends State<CUserScreen> {
                         selectedRange = val;
                       });
                     },
-                    recommended: 20,
+                    recommended: selectedRange ?? 30,
                   ),
                 ),
                 Gaps.verticalGapOf(verticalGap4),

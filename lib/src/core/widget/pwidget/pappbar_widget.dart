@@ -74,6 +74,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       actionsPadding: EdgeInsets.only(right: isMobilePortrait ? 8 : 16),
       actions: [
         PopupMenuButton<String>(
+          routeSettings: const RouteSettings(name: AppConstants.popupMenuModal),
           icon: Icon(
             Icons.arrow_drop_down_outlined,
             size: isMobilePortrait ? 40 : 48,
@@ -131,7 +132,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                             totalChildCount: totalChildCount,
                             isParent: true,
                           ),
-                          routeName: AppRoutes.drawerRoutes,
+                          routeName: AppRoutes.tabDrawerRoutes,
                         );
                       }
                     });

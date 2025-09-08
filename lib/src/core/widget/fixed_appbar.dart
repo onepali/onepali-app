@@ -55,7 +55,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final tabIconSize = isTabletPortrait ? 60.0 : 44.0;
     final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
     final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
-    final guestTopGap = isTabletPortrait ? 50.0 : 35.0;
+    final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
     final tabSpacing = isTabletPortrait ? 15.0 : 10.0;
     final nameTextStyle =
         isTabletPortrait ? AppStyles.text24PxSemiBold : AppStyles.text16PxBold;
@@ -84,7 +84,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isGuest) Gaps.verticalGapOf(guestTopGap),
-
                   Row(
                     spacing: tabSpacing,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,6 +100,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     data: childData,
                                     totalChildCount: totalChildCount,
                                   ),
+                                  routeName: AppRoutes.drawerRoutes,
                                 );
                               }
                               // } else {
@@ -205,6 +205,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  if (isGuest) Gaps.verticalGapOf(guestTopGap),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,6 +225,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         data: childData,
                                         totalChildCount: totalChildCount,
                                       ),
+                                      routeName: AppRoutes.tabDrawerRoutes,
                                     );
                                   }
                                   //  else {
@@ -231,7 +233,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   // }
                                 },
                                 icon: CustomImage(
-                                  isGuest ? Assets.parentAvatar : profileImage,
+                                  isGuest
+                                      ? Assets.blueUserAvatar
+                                      : profileImage,
                                   height: avatarSize,
                                   width: avatarSize,
                                   circular: true,
@@ -484,7 +488,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         PlatformUtility.isLandscape(context);
 
     if (isTabletLandscape) {
-      return const Size.fromHeight(160);
+      return Size.fromHeight(isGuest ? 110 : 160);
     } else if (isTabletPortrait) {
       return const Size.fromHeight(130);
     } else {
