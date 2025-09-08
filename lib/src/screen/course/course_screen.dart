@@ -32,6 +32,7 @@ class CourseScreenState extends State<CourseScreen> {
           hasData: lessonProvider.courses.isNotEmpty,
           errorTitle: 'No Courses Available',
           errorMessage: 'Please check back later for new courses.',
+          checkConnectivity: false,
           onRetry: () {
             context.read<LessonProvider>().fetchCourses();
           },

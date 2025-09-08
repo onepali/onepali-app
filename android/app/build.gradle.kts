@@ -27,7 +27,7 @@ if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 7
+val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 10
 val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
 android {
@@ -52,7 +52,7 @@ android {
     defaultConfig {
         applicationId = "com.onepali.app"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = flutterVersionCode
         versionName = flutterVersionName
     }

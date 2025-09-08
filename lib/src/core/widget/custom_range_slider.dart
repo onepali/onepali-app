@@ -103,7 +103,7 @@ class CustomRangeSlider extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              '${recommended.toInt()} minutes a day is recommended',
+              '20 minutes a day is recommended',
               style: AppStyles.text14PxMedium.copyWith(
                 color: AppColors.kPitchBlack,
               ),

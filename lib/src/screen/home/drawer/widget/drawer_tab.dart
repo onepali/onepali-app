@@ -76,9 +76,12 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     // Navigator.of(context).pop(); // Close the drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
     UserAppBar.setTabIndex(0);
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (_) => DashboardScreen()));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => DashboardScreen(),
+        settings: RouteSettings(name: AppRoutes.dashboardScreen),
+      ),
+    );
   }
 
   @override
@@ -230,11 +233,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 );
                 return;
               } else {
-                Utility.navigateMaterialRoute(
-                  context,
-                  ChildRegisterScreen(),
-                  routeName: AppRoutes.childRegisterScreen,
-                );
+                Utility.navigate(context, AppRoutes.childRegisterScreen);
               }
             },
             child: Column(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import 'tap_send_lesson_card.dart';
+import 'tap_target_lesson_card.dart';
+import 'drag_to_match_lesson_card.dart';
 
 class LessonContentScreen extends StatefulWidget {
   final Lesson lesson;
@@ -148,7 +150,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
       if (_currentContentIndex >= widget.lesson.lessonContent.length) {
         final lastContent = widget.lesson.lessonContent.last;
-        if (lastContent.type != 'tap_send') {
+        if (lastContent.type != 'tap_send' &&
+            lastContent.type != 'tap_target' &&
+            lastContent.type != 'drag_to_match') {
           _completeRegularLesson();
         }
       }
@@ -190,6 +194,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final isFirst = contentIndex == 0;
     final isLast = contentIndex == widget.lesson.lessonContent.length - 1;
     final isTapSendType = content.type == 'tap_send';
+    final isTapTargetType = content.type == 'tap_target';
+    final isDragToMatchType = content.type == 'drag_to_match';
 
     // Save progress when content is viewed (for any lesson with content)
     Misc.onLayoutRendered(() {
@@ -202,7 +208,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Previous button
-          if (!isFirst && !isTapSendType)
+          if (!isFirst &&
+              !isTapSendType &&
+              !isTapTargetType &&
+              !isDragToMatchType)
             Container(
               height: AppConstants.kIconSize,
               width: AppConstants.kIconSize,
@@ -264,6 +273,68 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       },
                       index: contentIndex,
                     )
+                    : isTapTargetType
+                    ? TapTargetLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
+                      },
+                      onLessonComplete: () async {
+                        await _saveProgress(content, contentIndex);
+                        // For tap_target lessons, handle completion
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
+                        }
+
+                        // Close lesson after TapTargetLessonCard animation
+                        Future.delayed(const Duration(seconds: 3), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                      index: contentIndex,
+                    )
+                    : isDragToMatchType
+                    ? DragToMatchLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
+                      },
+                      onLessonComplete: () async {
+                        await _saveProgress(content, contentIndex);
+                        // For drag_to_match lessons, handle completion
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
+                        }
+
+                        // Close lesson after DragToMatchLessonCard animation
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                      index: contentIndex,
+                    )
                     : LessonContentCard(
                       content: content,
                       isPlaying: false,
@@ -273,7 +344,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           ),
 
           // Next button
-          if (!isLast && !isTapSendType)
+          if (!isLast && !isTapSendType && !isTapTargetType)
             Container(
               height: 48,
               width: 48,
@@ -318,12 +389,21 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       final childId = await ChildLocalStorage.getCurrentChildId();
 
       if (childId!.isNotEmpty) {
+        // Handle image field that can be either String or List
+        String imageUrl = "";
+        if (content.image is String) {
+          imageUrl = content.image as String;
+        } else if (content.image is List &&
+            (content.image as List).isNotEmpty) {
+          imageUrl = (content.image as List).first.toString();
+        }
+
         await recommendedLessonProvider.saveOrUpdateLessonProgress(
           childId: childId,
           lessonId: widget.lesson.chapterId.toString(),
           progress: contentIndex + 1,
-          title: content.nameNp,
-          image: content.image,
+          title: content.nameNp ?? "",
+          image: imageUrl,
         );
         logger.d(
           'Progress saved: lessonId=${widget.lesson.chapterId}, progress=${contentIndex + 1}',
@@ -341,9 +421,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           _currentContentIndex <= widget.lesson.lessonContent.length) {
         final currentContent =
             widget.lesson.lessonContent[_currentContentIndex - 1];
-        if (currentContent.wordAudio.isNotEmpty) {
+        if (currentContent.wordAudio?.isNotEmpty == true) {
           final audioProvider = context.read<LessonAudioProvider>();
-          await audioProvider.playWordAudio(currentContent.wordAudio);
+          await audioProvider.playWordAudio(currentContent.wordAudio ?? '');
         }
       }
     } catch (e) {
@@ -527,7 +607,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               if (_showGoodRemark &&
                   idx > 0 &&
                   idx <= contentList.length &&
-                  contentList[idx - 1].type != 'tap_send')
+                  contentList[idx - 1].type != 'tap_send' &&
+                  contentList[idx - 1].type != 'tap_target' &&
+                  contentList[idx - 1].type != 'drag_to_match')
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 500),
                   top: MediaQuery.of(context).size.height * 0.1,

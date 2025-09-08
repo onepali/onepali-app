@@ -32,8 +32,6 @@ class _SongScreenState extends State<SongScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var childs = context.watch<ChildUserProvider>().childUser;
-
     return Consumer<SongProvider>(
       builder: (context, songProvider, child) {
         return StatusHandler(
@@ -41,6 +39,7 @@ class _SongScreenState extends State<SongScreen> {
           hasData: songProvider.songs.isNotEmpty,
           errorTitle: 'No Songs Available',
           errorMessage: 'Please check back later for new songs.',
+          checkConnectivity: false,
           onRetry: () {
             context.read<SongProvider>().fetchSongs();
           },

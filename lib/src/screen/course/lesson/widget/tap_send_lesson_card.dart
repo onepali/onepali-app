@@ -54,38 +54,55 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
   }
 
   void _parseOptions() {
-    final nameEn = widget.content.nameEn.split(', ');
-    final nameNp = widget.content.nameNp.split(', ');
-    final images = widget.content.image.split(', ');
-    final audios = widget.content.audio.split(', ');
+    // Handle both string (comma-separated) and array formats
+    final nameEn = _parseStringOrArray(widget.content.nameEn);
+    final nameNp = _parseStringOrArray(widget.content.nameNp);
+    final images = _parseStringOrArray(widget.content.image);
+    final audios = _parseStringOrArray(widget.content.audio);
 
     // Parse colors if available
     List<String> colors = [];
     List<String> textColors = [];
     if (Utility.isAccessible(widget.content.color)) {
-      colors = widget.content.color!.split(', ');
+      colors = _parseStringOrArray(widget.content.color);
     }
     if (Utility.isAccessible(widget.content.textColor)) {
-      textColors = widget.content.textColor!.split(', ');
+      textColors = _parseStringOrArray(widget.content.textColor);
       logger.d('Parsed text colors: $textColors');
     }
 
     options = List.generate(nameEn.length, (index) {
       return TapSendOption(
         nameEn: nameEn[index].trim(),
-        nameNp: nameNp[index].trim(),
-        image: images[index].trim(),
-        audio: audios[index].trim(),
+        nameNp: index < nameNp.length ? nameNp[index].trim() : '',
+        image: index < images.length ? images[index].trim() : '',
+        audio: index < audios.length ? audios[index].trim() : '',
         color: index < colors.length ? colors[index].trim() : "",
         textColor: index < textColors.length ? textColors[index].trim() : "",
       );
     });
   }
 
+  /// Helper method to parse both string (comma-separated) and array formats
+  List<String> _parseStringOrArray(dynamic value) {
+    if (value == null) return [];
+
+    if (value is List) {
+      // If it's already a list, convert to List<String>
+      return value.map((item) => item.toString()).toList();
+    } else if (value is String) {
+      // If it's a string, split by comma and space
+      return value.split(', ');
+    } else {
+      // If it's neither, convert to string and return as single-item list
+      return [value.toString()];
+    }
+  }
+
   void _playWordAudio() async {
-    if (widget.content.wordAudio.isNotEmpty) {
+    if (widget.content.wordAudio?.isNotEmpty == true) {
       final audioProvider = context.read<LessonAudioProvider>();
-      await audioProvider.playWordAudio(widget.content.wordAudio);
+      await audioProvider.playWordAudio(widget.content.wordAudio ?? "");
     }
   }
 
@@ -151,6 +168,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
           }
         });
       } else {
+        // For non-last items, just move to next content
         widget.onCorrectAnswer?.call();
       }
     } else {

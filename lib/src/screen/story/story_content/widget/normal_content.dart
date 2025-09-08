@@ -28,6 +28,8 @@ class _NormalContentState extends State<NormalContent> {
       return GestureDetector(
         onTap: onTap,
         child: Container(
+          height: AppConstants.kIconSize,
+          width: AppConstants.kIconSize,
           decoration: BoxDecoration(
             color: AppColors.kWhite,
             shape: BoxShape.circle,
@@ -39,11 +41,15 @@ class _NormalContentState extends State<NormalContent> {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            // vertical: 2,
+          ),
           child: SvgHelper.fromSource(
             path: isLeft ? Assets.leftArrow : Assets.rightArrow,
-            height: AppConstants.kIconSize,
-            width: AppConstants.kIconSize,
+            // height: 30,
+            // width: 30,
+            color: AppColors.kSecondaryColor,
           ),
         ),
       );
