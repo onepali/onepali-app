@@ -6,7 +6,7 @@
             "name_np": "पूर्व-विद्यालय",
             "thumbnail": "assets/images/categories/preschool.png",
             "audio": "audio/categories/preschool_intro.m4a",
-            "age_group": "3-5",
+            "age_group": "",
             "categoryName": "Pre-School",
             "type": "course",
             "tags": [
@@ -34,7 +34,7 @@
                         {
                             "id": "basic1",
                             "chapter_id": "animals",
-                            "lesson_name": "Basic 1",
+                            "lesson_name": "Animals",
                             "short_info": "This lesson introduces basic animals like rabbit, fish, cat, dog, and bird.",
                             "type": "lesson",
                             "progress": "unlocked",
@@ -106,15 +106,31 @@
                                 {
                                     "name_en": "Dog, Rabbit, Bird",
                                     "name_np": "कुकुर, खरायो, चरा",
-                                    "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdog.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64, https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Frabbit.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64, https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fbird.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
+                                    "image": [
+                                        "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdog.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
+                                        "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Frabbit.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
+                                        "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fbird.png?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64"
+                                    ],
                                     "lottie": "assets/lottie/animals/tortoise.json",
-                                    "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fdog_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64, https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Frabbit_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64, https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fbirds_s.mp3?alt=media&token=f8bd96f9-623b-4a58-8e06-707998a6b467",
+                                    "audio": [
+                                        "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fdog_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
+                                        "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Frabbit_s.mp3?alt=media&token=07fa86fb-b522-482a-b2bc-872fa0dcdb64",
+                                        "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fbirds_s.mp3?alt=media&token=f8bd96f9-623b-4a58-8e06-707998a6b467"
+                                    ],
                                     "word_audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Frabbit_w.m4a?alt=media&token=81f340ca-d614-4bee-86e6-2b16fa9c9bc4",
                                     "tooltip": "यो घरमा बस्ने जनावर हो।",
                                     "correct_answer": "Rabbit",
                                     "type": "tap_send",
-                                    "color": "#FF9A76, #007D28, #D4EB32",
-                                    "text_color": "#000000, #FFFFFF, #000000"
+                                    "color": [
+                                        "#FF9A76",
+                                        "#007D28",
+                                        "#D4EB32"
+                                    ],
+                                    "text_color": [
+                                        "#000000",
+                                        "#FFFFFF",
+                                        "#000000"
+                                    ]
                                 },
                                 {
                                     "step_id": "tt_1",
