@@ -1071,7 +1071,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   /// Get the appropriate size for different animals/items
   /// Using the same sizing logic as tap_target_lesson_card.dart
   double _getTargetSizeForItem(String itemId, bool isMobile) {
-    final baseSizeMobile = isMobile ? 60.0 : 80.0;
+    final baseSizeMobile = isMobile ? 60.0 : 110.0;
     // final isTabletLandscape =
     //     !isMobile &&
     //     PlatformUtility.isTablet(context) &&

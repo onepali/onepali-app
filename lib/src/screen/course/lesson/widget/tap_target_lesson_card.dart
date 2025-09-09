@@ -316,7 +316,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       baseSize = 60.0;
     } else {
       // Tablet handling
-      baseSize = isLandscape ? 90.0 : 80.0; // Larger for landscape tablets
+      baseSize = isLandscape ? 120.0 : 80.0; // Larger for landscape tablets
     }
 
     switch (animalId.toLowerCase()) {
@@ -694,13 +694,13 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
       // Dog position (left side, on grass)
       {
-        'left': startX + usableWidth * 0.12,
-        'top': startY + usableHeight * 0.45,
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.15 : 0.12),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.46 : 0.45),
       },
 
       // Cat position (center-left, near trees)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.67 : 0.69),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.69),
         'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.5),
       },
 
@@ -712,7 +712,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
       // Bird position (on tree branch - top area)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.84 : 0.8),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.87 : 0.8),
         'top':
             startY +
             usableHeight *
