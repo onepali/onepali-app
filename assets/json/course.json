@@ -172,7 +172,7 @@
                                             "id": "bird",
                                             "name_en": "Bird",
                                             "name_np": "चरा",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_bird.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_bird_2.svg?alt=media&token=d9fda2e4-5eb6-40c5-a50f-2da92c901b30",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fw_bird.mp3?alt=media&token=6c0958c0-a0bb-4744-a3f9-2350a2f1d05d"
                                         },
                                         {
@@ -239,7 +239,7 @@
                                             "id": "bird",
                                             "name_en": "Bird",
                                             "name_np": "चरा",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_bird.svg?alt=media&token=8b2ca1a1-7d58-48bb-82b7-6e41cb0f8a21",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fdm_bird_2.svg?alt=media&token=d9fda2e4-5eb6-40c5-a50f-2da92c901b30",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fw_bird.mp3?alt=media&token=6c0958c0-a0bb-4744-a3f9-2350a2f1d05d"
                                         },
                                         {
@@ -305,8 +305,8 @@
                                             "id": "bird",
                                             "name_en": "Bird",
                                             "name_np": "चरा",
-                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fbird_drag.svg?alt=media&token=90a28bd2-501c-4f3e-a359-9f1d6f52be7c",
-                                            "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fbird_outline.svg?alt=media&token=f1f15c15-b715-42f6-97db-be408d3a9e09",
+                                            "image": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fbird_drag_2.svg?alt=media&token=76830ac6-b7e9-44d0-8221-44f38a97ea90",
+                                            "image_outline": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fanimal%2Fdrag_match%2Fbird_outline_2.svg?alt=media&token=a49ac74e-1e2f-4b5c-9eb0-699901080cc8",
                                             "audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fbirds_s.mp3?alt=media&token=f8bd96f9-623b-4a58-8e06-707998a6b467",
                                             "word_audio": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/lessons%2Fbasic1%2Fsound%2Fw_bird.mp3?alt=media&token=6c0958c0-a0bb-4744-a3f9-2350a2f1d05d"
                                         },
