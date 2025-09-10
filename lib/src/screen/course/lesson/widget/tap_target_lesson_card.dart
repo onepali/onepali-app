@@ -313,7 +313,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     // Base size depends on device type and orientation
     final double baseSize;
     if (isMobile) {
-      baseSize = 60.0;
+      baseSize = 80.0;
     } else {
       // Tablet handling
       baseSize = isLandscape ? 120.0 : 80.0; // Larger for landscape tablets
@@ -444,12 +444,13 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.kSecondaryColor,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(50),
                 ),
                 child: Text(
                   selectedTargetNameNp!,
                   style: AppStyles.text24PxBold.copyWith(
                     color: AppColors.kWhite,
+                    fontSize: 40,
                     fontFamily: AppConstants.kMuktaFont,
                   ),
                 ),
@@ -631,23 +632,23 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     return Container(
       width: targetSize,
       height: targetSize,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border:
-            isSelected
-                ? Border.all(color: AppColors.kSecondaryColor, width: 3)
-                : null,
-        boxShadow:
-            isSelected
-                ? [
-                  BoxShadow(
-                    color: AppColors.kSecondaryColor.withValues(alpha: 0.5),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ]
-                : null,
-      ),
+      // decoration: BoxDecoration(
+      //   shape: BoxShape.circle,
+      //   border:
+      //       isSelected
+      //           ? Border.all(color: AppColors.kSecondaryColor, width: 3)
+      //           : null,
+      //   boxShadow:
+      //       isSelected
+      //           ? [
+      //             BoxShadow(
+      //               color: AppColors.kSecondaryColor.withValues(alpha: 0.5),
+      //               blurRadius: 10,
+      //               spreadRadius: 2,
+      //             ),
+      //           ]
+      //           : null,
+      // ),
       child: SvgHelper.fromSource(
         path: target.image ?? '',
         fit: BoxFit.contain,
@@ -688,41 +689,41 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     return [
       // Rabbit position (bottom right, on grass)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.82 : 0.9),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.78 : 0.9),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.82 : 0.8),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.78 : 0.6),
       },
 
       // Dog position (left side, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.15 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.46 : 0.45),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.46 : 0.23),
       },
 
       // Cat position (center-left, near trees)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.69),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.5),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.62),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.25),
       },
 
       // Fish position (in water area - bottom center)
       {
-        'left': startX + usableWidth * 0.12,
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.9 : 1.22),
+        'left': startX + usableWidth * 0.22,
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.9 : 1.01),
       },
 
       // Bird position (on tree branch - top area)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.87 : 0.8),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.87 : 0.07),
         'top':
             startY +
             usableHeight *
-                (isTablet && isLandscape ? 0.015 - 0.05 : 0.015 - 0.23),
+                (isTablet && isLandscape ? 0.015 - 0.05 : 0.01 - 0.18),
       },
 
       // Tortoise position (center-right, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.55),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 1.15),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 0.9),
       },
 
       // Additional positions for more animals
