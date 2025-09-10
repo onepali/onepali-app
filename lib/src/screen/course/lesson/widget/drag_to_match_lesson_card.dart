@@ -974,40 +974,43 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Dog
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.17 : 0.15),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.44),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.23),
       },
 
       // Position 2 (left side, on grass)
       // Fish
-      {'left': startX + usableWidth * 0.2, 'top': startY + usableHeight * 1.2},
+      {
+        'left': startX + usableWidth * (isTabletLandscape ? 0.0015 : 0.22),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 1),
+      },
 
       // Position 3 (center-left, near trees)
       // Rabbit
       {
-        'left': startX + usableWidth * 0.78,
-        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 0.97),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.35 : 0.75),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 0.75),
       },
 
       // Position 4 (in water area - bottom center)
       // Bird
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.80),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.15),
         'top':
             startY +
-            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 0.23),
+            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 0.19),
       },
 
       // Position 5 (on tree branch - top area)
       // Cat
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.7 : 0.68),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.4),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.7 : 0.65),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.25),
       },
 
       // Tortoise
       {
         'left': startX + usableWidth * 0.5,
-        'top': startY + usableHeight * (isTabletLandscape ? 1.2 : 1.10),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.2 : 0.97),
       },
 
       //Additional positions for more targets
@@ -1033,33 +1036,40 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     return [
       // Dog
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.0015 : 0.0015),
-        'top': bottomY * 0.75,
+        'left':
+            startX +
+            usableWidth * (isTabletLandscape ? 0.0015 : 0.0015 - 0.025),
+        'top': bottomY * (isTabletLandscape ? 0.75 : 0.7),
       }, // Bottom left
       // Fish
       {
-        'left': startX + usableWidth * 0.0015,
-        'top': bottomY * 0.6,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.4 : 0.9),
+        'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
       }, // Bottom center-left
       // Rabbit
       {
-        'left': startX + usableWidth * 0.92,
-        'top': bottomY * 0.55,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.4 : 0.88),
+        'top': bottomY * (isTabletLandscape ? 0.35 : 0.35),
       }, // Bottom center
       // Bird
       {
-        'left': startX + usableWidth * 0.95,
-        'top': bottomY * 0.25,
+        'left':
+            startX +
+            usableWidth * (isTabletLandscape ? 0.0015 : 0.0015 - 0.025),
+        'top': bottomY * (isTabletLandscape ? 0.35 : 0.5),
       }, // Bottom center-right
       // Cat
       {
-        'left': startX + usableWidth * 0.0015,
-        'top': bottomY * 0.12,
+        'left':
+            startX +
+            usableWidth * (isTabletLandscape ? 0.0015 : 0.0015 - 0.025),
+        'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
       }, // Bottom right
       // Tortoise
       {
-        'left': startX + usableWidth * 0.95,
-        'top': bottomY * 0.92,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.4 : 0.92),
+
+        'top': bottomY * (isTabletLandscape ? 0.35 : 0.75),
       }, // Bottom right
       // Additional positions if needed
       {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},
@@ -1071,7 +1081,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   /// Get the appropriate size for different animals/items
   /// Using the same sizing logic as tap_target_lesson_card.dart
   double _getTargetSizeForItem(String itemId, bool isMobile) {
-    final baseSizeMobile = isMobile ? 60.0 : 110.0;
+    final baseSizeMobile = isMobile ? 70.0 : 110.0;
     // final isTabletLandscape =
     //     !isMobile &&
     //     PlatformUtility.isTablet(context) &&
