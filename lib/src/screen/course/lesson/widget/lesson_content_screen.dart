@@ -1,5 +1,7 @@
 // import 'dart:math';
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
@@ -221,8 +223,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               !isTapTargetType &&
               !isDragToMatchType)
             Container(
-              height: AppConstants.kIconSize,
-              width: AppConstants.kIconSize,
+              height:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
+              width:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
               decoration: BoxDecoration(
                 color: AppColors.kWhite,
                 shape: BoxShape.circle,
@@ -238,7 +248,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               child: IconButton(
                 icon: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-                  height: AppConstants.kIconSize,
+                  height:
+                      PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context)
+                          ? 80
+                          : AppConstants.kIconSize,
                   width: AppConstants.kIconSize,
                   color: AppColors.kSecondaryColor,
                 ),
@@ -355,8 +369,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           // Next button
           if (!isLast && !isTapSendType && !isTapTargetType)
             Container(
-              height: 48,
-              width: 48,
+              height:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
+              width:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
               decoration: BoxDecoration(
                 color: AppColors.kWhite,
                 shape: BoxShape.circle,
@@ -372,8 +394,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               child: IconButton(
                 icon: SvgHelper.fromSource(
                   path: Assets.rightArrow,
-                  height: 30,
-                  width: 30,
+                  height:
+                      PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context)
+                          ? 80
+                          : AppConstants.kIconSize,
+                  width:
+                      PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context)
+                          ? 80
+                          : AppConstants.kIconSize,
                   color: AppColors.kSecondaryColor,
                 ),
                 onPressed: _nextContent,
@@ -497,8 +527,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 child: IconButton(
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
+                    height:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
+                    width:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
                   ),
                   onPressed: () {
                     _saveCurrentProgress();
@@ -524,8 +562,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             if (widget.lesson.thumbnail.isNotEmpty)
                               CustomImage(
                                 widget.lesson.thumbnail,
-                                width: 180,
-                                height: 180,
+                                width:
+                                    PlatformUtility.isTablet(context) &&
+                                            PlatformUtility.isLandscape(context)
+                                        ? 300
+                                        : 180,
+                                height:
+                                    PlatformUtility.isTablet(context) &&
+                                            PlatformUtility.isLandscape(context)
+                                        ? 300
+                                        : 180,
                                 circular: false,
                                 cover: false,
                                 boxFit: BoxFit.contain,
@@ -537,7 +583,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               widget.nameNp,
                               style: AppStyles.text24PxBold.copyWith(
                                 // color: AppColors.kSecondaryColor,
-                                fontSize: 40,
+                                fontSize:
+                                    PlatformUtility.isTablet(context) &&
+                                            PlatformUtility.isLandscape(context)
+                                        ? 64
+                                        : 40,
                                 fontFamily: AppConstants.kMuktaFont,
                               ),
                               textAlign: TextAlign.center,
@@ -549,6 +599,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                 widget.nameEn,
                                 style: AppStyles.text16PxMedium.copyWith(
                                   color: AppColors.kBlack,
+                                  fontSize:
+                                      PlatformUtility.isTablet(context) &&
+                                              PlatformUtility.isLandscape(
+                                                context,
+                                              )
+                                          ? 32
+                                          : 16,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -559,12 +616,22 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
                     Positioned(
                       top: 16,
-                      right: 16,
+                      right: 34,
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.wrong,
-                          height: AppConstants.kIconSize,
-                          width: AppConstants.kIconSize,
+                          height:
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? AppConstants.kIconSize +
+                                      AppConstants.kIconSize
+                                  : AppConstants.kIconSize,
+                          width:
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? AppConstants.kIconSize +
+                                      AppConstants.kIconSize
+                                  : AppConstants.kIconSize,
                         ),
                         onPressed: () {
                           _saveCurrentProgress();
@@ -577,30 +644,46 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       right: 25,
                       top: 0,
                       bottom: 0,
-                      child: customInkwell(
-                        onTap: _nextContent,
-                        child: Container(
-                          height: AppConstants.kIconSize,
-                          width: AppConstants.kIconSize,
-                          decoration: BoxDecoration(
-                            color: AppColors.kWhite,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.kBlack.withValues(alpha: 0.1),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            // vertical: 2,
-                          ),
-                          child: SvgHelper.fromSource(
+                      child: Container(
+                        height:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? AppConstants.kIconSize +
+                                    AppConstants.kIconSize
+                                : AppConstants.kIconSize,
+                        width:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? AppConstants.kIconSize +
+                                    AppConstants.kIconSize
+                                : AppConstants.kIconSize,
+                        decoration: BoxDecoration(
+                          color: AppColors.kWhite,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kBlack.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
+
+                        child: IconButton(
+                          onPressed: _nextContent,
+                          icon: SvgHelper.fromSource(
                             path: Assets.rightArrow,
-                            // height: 30,
-                            // width: 30,
+                            height:
+                                PlatformUtility.isTablet(context) &&
+                                        PlatformUtility.isLandscape(context)
+                                    ? 80
+                                    : AppConstants.kIconSize,
+                            width:
+                                PlatformUtility.isTablet(context) &&
+                                        PlatformUtility.isLandscape(context)
+                                    ? 80
+                                    : AppConstants.kIconSize,
                             color: AppColors.kSecondaryColor,
                           ),
                         ),

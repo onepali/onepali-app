@@ -248,8 +248,8 @@ class _LessonContentCardState extends State<LessonContentCard>
         child: CustomImage(
           widget.content.image,
           borderRadius: 16,
-          height: isMobile ? height : 120,
-          width: isMobile ? width : 120,
+          height: height,
+          width: width,
           cover: false,
           boxFit: BoxFit.cover,
           circular: false,
@@ -268,8 +268,8 @@ class _LessonContentCardState extends State<LessonContentCard>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 50.h(context),
-            height: 40.h(context),
+            width: 70.h(context),
+            height: 50.h(context),
             decoration: BoxDecoration(
               color:
                   Utility.isAccessible(widget.content.color)
@@ -280,8 +280,8 @@ class _LessonContentCardState extends State<LessonContentCard>
             ),
             child: Center(
               child: _buildImageOrLottie(
-                width: 120,
-                height: 120,
+                width: 40.h(context),
+                height: 25.h(context),
                 isMobile: false,
               ),
             ),
@@ -294,13 +294,14 @@ class _LessonContentCardState extends State<LessonContentCard>
             style: AppStyles.text32PxBold.copyWith(
               color: AppColors.kSecondaryColor,
               fontFamily: AppConstants.kMuktaFont,
+              fontSize: 64,
             ),
           ),
           Text(
             (widget.content.nameEn?.isNotEmpty == true)
                 ? widget.content.nameEn!
                 : 'Bird',
-            style: AppStyles.text20PxBold,
+            style: AppStyles.text20PxBold.copyWith(fontSize: 32),
           ),
           Gaps.verticalGapOf(16),
           if (widget.hasSound)
@@ -312,8 +313,8 @@ class _LessonContentCardState extends State<LessonContentCard>
               child: IconButton(
                 icon: SvgHelper.fromSource(
                   path: Assets.sound,
-                  height: 48,
-                  width: 48,
+                  height: 60,
+                  width: 60,
                 ),
                 onPressed: _onSoundTap,
               ),

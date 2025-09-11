@@ -221,9 +221,14 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                 onTap: _onConfirm,
                 elevation: 0,
                 radius: 60,
-                width: 200,
+                height: isTablet && isLandscape ? 10.h(context) : 50,
+                width: isTablet && isLandscape ? 30.w(context) : 200,
                 label: 'CONFIRM',
-                textStyle: AppStyles.text16PxBold,
+
+                textStyle:
+                    isTablet && isLandscape
+                        ? AppStyles.text24PxBold
+                        : AppStyles.text16PxBold,
               ),
             ),
             Gaps.verticalGapOf(5),
@@ -337,8 +342,8 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             return GestureDetector(
               onTap: () => _onOptionTap(option),
               child: Container(
-                width: isLandscape ? 200 : 180,
-                height: isLandscape ? 250 : 280,
+                width: isLandscape ? 25.w(context) : 180,
+                height: isLandscape ? 50.h(context) : 280,
                 decoration: BoxDecoration(
                   color:
                       option.color.isNotEmpty
@@ -356,19 +361,21 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                   children: [
                     CustomImage(
                       option.image,
-                      height: isLandscape ? 120 : 140,
-                      width: isLandscape ? 120 : 140,
+                      height: isLandscape ? 10.w(context) : 140,
+                      width: isLandscape ? 30.h(context) : 140,
                       cover: false,
                       boxFit: BoxFit.cover,
                       circular: false,
                       imageType: CustomImageType.network,
                     ),
-                    Gaps.verticalGapOf(16),
+                    Gaps.verticalGapOf(30),
                     Text(
                       option.nameNp,
                       style: AppStyles.text20PxBold.copyWith(
                         color: AppColors.kSecondaryColor,
                         fontFamily: AppConstants.kMuktaFont,
+                        fontWeight: FontWeight.bold,
+                        fontSize: isLandscape ? 50 : 24,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -376,6 +383,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                       option.nameEn,
                       style: AppStyles.text16PxMedium.copyWith(
                         color: AppColors.kBlack,
+                        fontSize: isLandscape ? 28 : 16,
                       ),
                       textAlign: TextAlign.center,
                     ),
