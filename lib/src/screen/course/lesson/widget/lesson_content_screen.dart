@@ -44,11 +44,19 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
     // Set initial content index based on whether coming from recommended lessons
     if (widget.isFromRecommended) {
-      // For recommended lessons, use the provided initialIndex + 1 to account for intro screen
-      _currentContentIndex = widget.initialIndex + 1;
-      logger.d(
-        'Recommended lesson: setting initial index to $_currentContentIndex (content index: ${widget.initialIndex})',
-      );
+      // For recommended lessons, if initialIndex is 0 (not started), show intro screen
+      // Otherwise, use the provided initialIndex + 1 to account for intro screen
+      if (widget.initialIndex == 0) {
+        _currentContentIndex = 0; // Show intro screen for unstarted lessons
+        logger.d(
+          'Recommended lesson: not started, showing intro screen (index 0)',
+        );
+      } else {
+        _currentContentIndex = widget.initialIndex + 1;
+        logger.d(
+          'Recommended lesson: setting initial index to $_currentContentIndex (content index: ${widget.initialIndex})',
+        );
+      }
     } else {
       // For regular lessons, start with intro screen (index 0)
       _currentContentIndex = 0;
@@ -207,8 +215,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Previous button
-          if (!isFirst &&
+          // Previous button - show on first content item to go back to intro, or on other items (except special types)
+          if ((isFirst || !isFirst) &&
               !isTapSendType &&
               !isTapTargetType &&
               !isDragToMatchType)
@@ -230,7 +238,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               child: IconButton(
                 icon: SvgHelper.fromSource(
                   path: Assets.leftArrow,
-
+                  height: AppConstants.kIconSize,
+                  width: AppConstants.kIconSize,
                   color: AppColors.kSecondaryColor,
                 ),
                 onPressed: _previousContent,
