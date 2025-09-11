@@ -316,7 +316,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       baseSize = 80.0;
     } else {
       // Tablet handling
-      baseSize = isLandscape ? 120.0 : 80.0; // Larger for landscape tablets
+      baseSize = isLandscape ? 150.0 : 80.0; // Larger for landscape tablets
     }
 
     switch (animalId.toLowerCase()) {
@@ -450,7 +450,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                   selectedTargetNameNp!,
                   style: AppStyles.text24PxBold.copyWith(
                     color: AppColors.kWhite,
-                    fontSize: 40,
+                    fontSize:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? 64
+                            : 40,
                     fontFamily: AppConstants.kMuktaFont,
                   ),
                 ),
@@ -697,30 +701,30 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Rabbit position (bottom right, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.82 : 0.8),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.78 : 0.6),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.65 : 0.6),
       },
 
       // Dog position (left side, on grass)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.15 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.46 : 0.32),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.12 : 0.12),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.32),
       },
 
       // Cat position (center-left, near trees)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.6),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.64 : 0.6),
         'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.38),
       },
 
       // Fish position (in water area - bottom center)
       {
-        'left': startX + usableWidth * 0.22,
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.9 : 1.01),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.18 : 0.22),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.8 : 1.01),
       },
 
       // Bird position (on tree branch - top area)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.87 : 0.07),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.04 : 0.07),
         'top':
             startY +
             usableHeight *
