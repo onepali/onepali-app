@@ -221,7 +221,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                 onTap: _onConfirm,
                 elevation: 0,
                 radius: 60,
-                height: isTablet && isLandscape ? 10.h(context) : 50,
+                height: isTablet && isLandscape ? 10.h(context) : 48,
                 width: isTablet && isLandscape ? 30.w(context) : 200,
                 label: 'CONFIRM',
 

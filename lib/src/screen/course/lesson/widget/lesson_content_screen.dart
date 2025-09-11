@@ -1,6 +1,6 @@
 // import 'dart:math';
 
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -616,7 +616,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
                     Positioned(
                       top: 16,
-                      right: 34,
+                      right: 24,
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.wrong,
@@ -641,7 +641,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     ),
                     // Start button
                     Positioned(
-                      right: 25,
+                      right: 16,
                       top: 0,
                       bottom: 0,
                       child: Container(
@@ -668,10 +668,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             ),
                           ],
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 24),
-
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: IconButton(
-                          onPressed: _nextContent,
                           icon: SvgHelper.fromSource(
                             path: Assets.rightArrow,
                             height:
@@ -686,6 +685,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                     : AppConstants.kIconSize,
                             color: AppColors.kSecondaryColor,
                           ),
+                          onPressed: _nextContent,
                         ),
                       ),
                     ),
