@@ -68,6 +68,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   CustomAudioWidget? _correctFeedbackAudio;
   CustomAudioWidget? _incorrectFeedbackAudio;
   CustomAudioWidget? _vocabularyAudio;
+  CustomAudioWidget? _confettiFeedbackAudio;
+  CustomAudioWidget? _goodRemarkAudio;
 
   // Animation values
   late Animation<double> _vocabularyAnimation;
@@ -198,6 +200,28 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         audioPath: widget.content.feedback!.incorrect!.wordAudio!,
         audioSourceType: AudioSourceType.network,
       );
+    }
+
+    // Initialize confetti feedback audio from assets
+    try {
+      _confettiFeedbackAudio = CustomAudioWidget(
+        audioPath: Assets.confettiFeedback,
+        audioSourceType: AudioSourceType.asset,
+      );
+      logger.d('Confetti feedback audio initialized successfully');
+    } catch (e) {
+      logger.e('Error initializing confetti feedback audio: $e');
+    }
+
+    // Initialize good remark audio from assets
+    try {
+      _goodRemarkAudio = CustomAudioWidget(
+        audioPath: Assets.goodFeedback,
+        audioSourceType: AudioSourceType.asset,
+      );
+      logger.d('Good remark audio initialized successfully');
+    } catch (e) {
+      logger.e('Error initializing good remark audio: $e');
     }
   }
 
@@ -395,25 +419,104 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
           _showSuccessLottie = true;
         });
 
-        // Hide success lottie after 3 seconds
-        Future.delayed(const Duration(seconds: 3), () {
-          if (mounted) {
+        // Play confetti feedback audio simultaneously with lottie animation (don't await)
+        bool confettiAudioFinished = false;
+        bool confettiAnimationFinished = false;
+
+        void checkIfBothFinished() {
+          if (confettiAudioFinished && confettiAnimationFinished && mounted) {
             setState(() {
               _showSuccessLottie = false;
+              showLeopardAnimation = true;
             });
-          }
-        });
-      }
+            logger.d(
+              'Showing leopard animation after both confetti and audio finished',
+            );
 
-      // Show leopard animation for completion (only for last item)
-      if (widget.isLastItem) {
+            // Play good remark audio after both confetti animation and audio finish
+            try {
+              if (_goodRemarkAudio != null) {
+                logger.d(
+                  'Starting good remark audio after confetti completion',
+                );
+                _goodRemarkAudio!
+                    .play()
+                    .then((_) {
+                      logger.d('Good remark audio finished playing');
+                    })
+                    .catchError((e) {
+                      logger.e('Error playing good remark audio: $e');
+                    });
+              } else {
+                logger.w('Good remark audio widget is null');
+              }
+            } catch (e) {
+              logger.e('Error starting good remark audio: $e');
+            }
+          }
+        }
+
+        try {
+          if (_confettiFeedbackAudio != null) {
+            logger.d('Starting confetti feedback audio with lottie animation');
+            _confettiFeedbackAudio!
+                .play()
+                .then((_) {
+                  logger.d('Confetti feedback audio finished playing');
+                  confettiAudioFinished = true;
+                  checkIfBothFinished();
+                })
+                .catchError((e) {
+                  logger.e('Error playing confetti feedback audio: $e');
+                  confettiAudioFinished =
+                      true; // Consider it finished even on error
+                  checkIfBothFinished();
+                });
+
+            logger.d('Confetti feedback audio play() call initiated');
+          } else {
+            logger.w('Confetti feedback audio widget is null');
+            confettiAudioFinished = true; // Skip audio
+            checkIfBothFinished();
+          }
+        } catch (e) {
+          logger.e('Error starting confetti feedback audio: $e');
+          confettiAudioFinished = true; // Consider it finished even on error
+          checkIfBothFinished();
+        }
+
+        // Wait for confetti animation to complete (typically 3-4 seconds for lottie)
+        Future.delayed(const Duration(seconds: 4), () {
+          logger.d('Confetti animation duration completed');
+          confettiAnimationFinished = true;
+          checkIfBothFinished();
+        });
+      } else if (widget.isLastItem) {
+        // Show leopard animation for completion (only for last item) when confetti is not enabled
         setState(() {
           showLeopardAnimation = true;
         });
-      }
 
-      // Dispose all audio widgets before proceeding
-      _disposeAllAudioWidgets();
+        // Play good remark audio
+        try {
+          if (_goodRemarkAudio != null) {
+            logger.d('Starting good remark audio (no confetti)');
+            _goodRemarkAudio!
+                .play()
+                .then((_) {
+                  logger.d('Good remark audio finished playing (no confetti)');
+                })
+                .catchError((e) {
+                  logger.e('Error playing good remark audio (no confetti): $e');
+                });
+            logger.d('Good remark audio play() call initiated (no confetti)');
+          } else {
+            logger.w('Good remark audio widget is null (no confetti)');
+          }
+        } catch (e) {
+          logger.e('Error starting good remark audio (no confetti): $e');
+        }
+      }
 
       // Reset audio provider state only if this is the last item
       if (widget.isLastItem) {
@@ -430,7 +533,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       }
 
       // Auto-complete the course after a brief delay to let user see the completion
-      Future.delayed(const Duration(seconds: 3), () {
+      Future.delayed(const Duration(seconds: 9), () {
         if (mounted) {
           if (widget.isLastItem) {
             // Only call lesson complete if this is the last item in the lesson sequence
@@ -446,11 +549,31 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
       // Hide leopard animation after delay (only if it was shown for last item)
       if (widget.isLastItem) {
-        Future.delayed(const Duration(seconds: 2), () {
+        // Adjust timing based on whether confetti was shown
+        final hideDelay =
+            widget.content.feedback?.confettiOnComplete == true
+                ? const Duration(
+                  seconds: 8,
+                ) // Hide after confetti animation (4s) + good remark audio (3-4s)
+                : const Duration(
+                  seconds: 4,
+                ); // Hide after good remark audio only
+
+        Future.delayed(hideDelay, () {
           if (mounted) {
             setState(() {
               showLeopardAnimation = false;
             });
+
+            // Dispose audio widgets after all animations and audio are complete
+            _disposeAllAudioWidgets();
+          }
+        });
+      } else {
+        // For non-last items, dispose audio widgets after a shorter delay
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            _disposeAllAudioWidgets();
           }
         });
       }
@@ -545,12 +668,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _correctFeedbackAudio?.dispose();
     _incorrectFeedbackAudio?.dispose();
     _vocabularyAudio?.dispose();
+    _confettiFeedbackAudio?.dispose();
+    _goodRemarkAudio?.dispose();
 
     _questionAudio = null;
     _animalSoundAudio = null;
     _correctFeedbackAudio = null;
     _incorrectFeedbackAudio = null;
     _vocabularyAudio = null;
+    _confettiFeedbackAudio = null;
+    _goodRemarkAudio = null;
   }
 
   @override
