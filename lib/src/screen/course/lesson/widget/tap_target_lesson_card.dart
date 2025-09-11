@@ -330,7 +330,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       case 'bird':
         return baseSize * 1.15; // Small-medium animal
       case 'tortoise':
-        return baseSize * 1.35; // Medium animal
+        return baseSize * 1.25; // Medium animal
       case 'elephant':
         return baseSize * 1.3; // Large animal
       case 'tiger':
@@ -629,6 +629,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     double targetSize,
     bool isSelected,
   ) {
+    // Check if this is a rabbit to apply horizontal flip
+    final bool isRabbit = target.id?.toLowerCase() == 'rabbit';
+
     return Container(
       width: targetSize,
       height: targetSize,
@@ -649,10 +652,14 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       //           ]
       //           : null,
       // ),
-      child: SvgHelper.fromSource(
-        path: target.image ?? '',
-        fit: BoxFit.contain,
-        type: SvgSourceType.network,
+      child: Transform(
+        alignment: Alignment.center,
+        transform: isRabbit ? Matrix4.rotationY(3.14159) : Matrix4.identity(),
+        child: SvgHelper.fromSource(
+          path: target.image ?? '',
+          fit: BoxFit.contain,
+          type: SvgSourceType.network,
+        ),
       ),
     );
   }
@@ -702,7 +709,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Cat position (center-left, near trees)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.6),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.35),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.38),
       },
 
       // Fish position (in water area - bottom center)
