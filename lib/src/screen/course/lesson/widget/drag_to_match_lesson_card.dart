@@ -739,6 +739,22 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                 ),
               ),
             ),
+
+          // Close button in top right
+          Positioned(
+            top: 16,
+            right: 16,
+            child: IconButton(
+              icon: SvgHelper.fromSource(
+                path: Assets.wrong,
+                height: AppConstants.kIconSize,
+                width: AppConstants.kIconSize,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -1173,12 +1189,12 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Fish
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.4 : 0.9),
-        'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
+        'top': bottomY * (isTabletLandscape ? 0.15 : 0.23),
       }, // Bottom center-left
       // Rabbit
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.4 : 0.88),
-        'top': bottomY * (isTabletLandscape ? 0.35 : 0.35),
+        'top': bottomY * (isTabletLandscape ? 0.35 : 0.45),
       }, // Bottom center
       // Bird
       {
@@ -1198,7 +1214,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.4 : 0.92),
 
-        'top': bottomY * (isTabletLandscape ? 0.35 : 0.75),
+        'top': bottomY * (isTabletLandscape ? 0.35 : 0.85),
       }, // Bottom right
       // Additional positions if needed
       {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},

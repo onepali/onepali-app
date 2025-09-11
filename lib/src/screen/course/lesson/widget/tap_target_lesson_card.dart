@@ -365,7 +365,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
     return SizedBox(
       width: screenWidth,
-      height: screenHeight * 0.7,
+      height: screenHeight,
       // decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
       child: Stack(
         children: [
@@ -745,7 +745,28 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child: _buildParkScene(),
+      child: Stack(
+        children: [
+          // Main park scene content
+          _buildParkScene(),
+
+          // Close button in top right
+          Positioned(
+            top: 16,
+            right: 16,
+            child: IconButton(
+              icon: SvgHelper.fromSource(
+                path: Assets.wrong,
+                height: AppConstants.kIconSize,
+                width: AppConstants.kIconSize,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
