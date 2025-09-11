@@ -680,16 +680,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                     return Container(
                       width: size,
                       height: size,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border:
-                            candidateData.isNotEmpty
-                                ? Border.all(
-                                  color: AppColors.kPureSkyBlue,
-                                  width: 3,
-                                )
-                                : null,
-                      ),
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(12),
+                      //   border:
+                      //       candidateData.isNotEmpty
+                      //           ? Border.all(
+                      //             color: AppColors.kPureSkyBlue,
+                      //             width: 3,
+                      //           )
+                      //           : null,
+                      // ),
                       child:
                           isCompleted
                               ? _buildCompletedTarget(target)
@@ -794,16 +794,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                   feedback: Container(
                     width: size,
                     height: size,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.kBlack.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                    // decoration: BoxDecoration(
+                    //   borderRadius: BorderRadius.circular(12),
+                    //   boxShadow: [
+                    //     BoxShadow(
+                    //       color: AppColors.kBlack.withValues(alpha: 0.3),
+                    //       blurRadius: 8,
+                    //       offset: const Offset(0, 4),
+                    //     ),
+                    //   ],
+                    // ),
                     child: SvgHelper.fromSource(
                       path: target.image ?? '',
                       type: SvgSourceType.network,
@@ -816,15 +816,15 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                   childWhenDragging: Container(
                     width: size,
                     height: size,
-                    decoration: BoxDecoration(
-                      color: AppColors.kLightGrey.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.kGrey,
-                        width: 2,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
+                    // decoration: BoxDecoration(
+                    //   color: AppColors.kLightGrey.withValues(alpha: 0.5),
+                    //   borderRadius: BorderRadius.circular(12),
+                    //   border: Border.all(
+                    //     color: AppColors.kGrey,
+                    //     width: 2,
+                    //     style: BorderStyle.solid,
+                    //   ),
+                    // ),
                   ),
                   child: Container(
                     key: _dragItemKeys[target.id!],
@@ -865,15 +865,17 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       animation: _vocabularyAnimation,
 
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.kSecondaryColor,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(60),
         ),
         child: Text(
           _vocabularyText ?? '',
           style: AppStyles.text24PxBold.copyWith(
             color: AppColors.kWhite,
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
             fontFamily: AppConstants.kMuktaFont,
           ),
         ),
@@ -1003,14 +1005,14 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Position 5 (on tree branch - top area)
       // Cat
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.7 : 0.65),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.25),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.7 : 0.6),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.45),
       },
 
       // Tortoise
       {
-        'left': startX + usableWidth * 0.5,
-        'top': startY + usableHeight * (isTabletLandscape ? 1.2 : 0.97),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.55 : 0.48),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.2 : 0.99),
       },
 
       //Additional positions for more targets

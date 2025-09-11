@@ -439,7 +439,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
               animation: _textController,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: 24,
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
@@ -696,13 +696,13 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Dog position (left side, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.15 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.46 : 0.23),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.46 : 0.32),
       },
 
       // Cat position (center-left, near trees)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.62),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.25),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.69 : 0.6),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.35),
       },
 
       // Fish position (in water area - bottom center)
@@ -722,7 +722,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
       // Tortoise position (center-right, on grass)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.55),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.5),
         'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 0.9),
       },
 
