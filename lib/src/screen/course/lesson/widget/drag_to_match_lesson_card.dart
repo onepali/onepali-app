@@ -1,3 +1,5 @@
+// import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +70,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   CustomAudioWidget? _correctFeedbackAudio;
   CustomAudioWidget? _incorrectFeedbackAudio;
   CustomAudioWidget? _vocabularyAudio;
+  CustomAudioWidget? _confettiFeedbackAudio;
+  CustomAudioWidget? _goodRemarkAudio;
 
   // Animation values
   late Animation<double> _vocabularyAnimation;
@@ -198,6 +202,28 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         audioPath: widget.content.feedback!.incorrect!.wordAudio!,
         audioSourceType: AudioSourceType.network,
       );
+    }
+
+    // Initialize confetti feedback audio from assets
+    try {
+      _confettiFeedbackAudio = CustomAudioWidget(
+        audioPath: Assets.confettiFeedback,
+        audioSourceType: AudioSourceType.asset,
+      );
+      logger.d('Confetti feedback audio initialized successfully');
+    } catch (e) {
+      logger.e('Error initializing confetti feedback audio: $e');
+    }
+
+    // Initialize good remark audio from assets
+    try {
+      _goodRemarkAudio = CustomAudioWidget(
+        audioPath: Assets.goodFeedback,
+        audioSourceType: AudioSourceType.asset,
+      );
+      logger.d('Good remark audio initialized successfully');
+    } catch (e) {
+      logger.e('Error initializing good remark audio: $e');
     }
   }
 
@@ -395,25 +421,104 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
           _showSuccessLottie = true;
         });
 
-        // Hide success lottie after 3 seconds
-        Future.delayed(const Duration(seconds: 3), () {
-          if (mounted) {
+        // Play confetti feedback audio simultaneously with lottie animation (don't await)
+        bool confettiAudioFinished = false;
+        bool confettiAnimationFinished = false;
+
+        void checkIfBothFinished() {
+          if (confettiAudioFinished && confettiAnimationFinished && mounted) {
             setState(() {
               _showSuccessLottie = false;
+              showLeopardAnimation = true;
             });
-          }
-        });
-      }
+            logger.d(
+              'Showing leopard animation after both confetti and audio finished',
+            );
 
-      // Show leopard animation for completion (only for last item)
-      if (widget.isLastItem) {
+            // Play good remark audio after both confetti animation and audio finish
+            try {
+              if (_goodRemarkAudio != null) {
+                logger.d(
+                  'Starting good remark audio after confetti completion',
+                );
+                _goodRemarkAudio!
+                    .play()
+                    .then((_) {
+                      logger.d('Good remark audio finished playing');
+                    })
+                    .catchError((e) {
+                      logger.e('Error playing good remark audio: $e');
+                    });
+              } else {
+                logger.w('Good remark audio widget is null');
+              }
+            } catch (e) {
+              logger.e('Error starting good remark audio: $e');
+            }
+          }
+        }
+
+        try {
+          if (_confettiFeedbackAudio != null) {
+            logger.d('Starting confetti feedback audio with lottie animation');
+            _confettiFeedbackAudio!
+                .play()
+                .then((_) {
+                  logger.d('Confetti feedback audio finished playing');
+                  confettiAudioFinished = true;
+                  checkIfBothFinished();
+                })
+                .catchError((e) {
+                  logger.e('Error playing confetti feedback audio: $e');
+                  confettiAudioFinished =
+                      true; // Consider it finished even on error
+                  checkIfBothFinished();
+                });
+
+            logger.d('Confetti feedback audio play() call initiated');
+          } else {
+            logger.w('Confetti feedback audio widget is null');
+            confettiAudioFinished = true; // Skip audio
+            checkIfBothFinished();
+          }
+        } catch (e) {
+          logger.e('Error starting confetti feedback audio: $e');
+          confettiAudioFinished = true; // Consider it finished even on error
+          checkIfBothFinished();
+        }
+
+        // Wait for confetti animation to complete (typically 3-4 seconds for lottie)
+        Future.delayed(const Duration(seconds: 4), () {
+          logger.d('Confetti animation duration completed');
+          confettiAnimationFinished = true;
+          checkIfBothFinished();
+        });
+      } else if (widget.isLastItem) {
+        // Show leopard animation for completion (only for last item) when confetti is not enabled
         setState(() {
           showLeopardAnimation = true;
         });
-      }
 
-      // Dispose all audio widgets before proceeding
-      _disposeAllAudioWidgets();
+        // Play good remark audio
+        try {
+          if (_goodRemarkAudio != null) {
+            logger.d('Starting good remark audio (no confetti)');
+            _goodRemarkAudio!
+                .play()
+                .then((_) {
+                  logger.d('Good remark audio finished playing (no confetti)');
+                })
+                .catchError((e) {
+                  logger.e('Error playing good remark audio (no confetti): $e');
+                });
+            logger.d('Good remark audio play() call initiated (no confetti)');
+          } else {
+            logger.w('Good remark audio widget is null (no confetti)');
+          }
+        } catch (e) {
+          logger.e('Error starting good remark audio (no confetti): $e');
+        }
+      }
 
       // Reset audio provider state only if this is the last item
       if (widget.isLastItem) {
@@ -430,7 +535,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       }
 
       // Auto-complete the course after a brief delay to let user see the completion
-      Future.delayed(const Duration(seconds: 3), () {
+      Future.delayed(const Duration(seconds: 9), () {
         if (mounted) {
           if (widget.isLastItem) {
             // Only call lesson complete if this is the last item in the lesson sequence
@@ -446,11 +551,31 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
       // Hide leopard animation after delay (only if it was shown for last item)
       if (widget.isLastItem) {
-        Future.delayed(const Duration(seconds: 2), () {
+        // Adjust timing based on whether confetti was shown
+        final hideDelay =
+            widget.content.feedback?.confettiOnComplete == true
+                ? const Duration(
+                  seconds: 8,
+                ) // Hide after confetti animation (4s) + good remark audio (3-4s)
+                : const Duration(
+                  seconds: 4,
+                ); // Hide after good remark audio only
+
+        Future.delayed(hideDelay, () {
           if (mounted) {
             setState(() {
               showLeopardAnimation = false;
             });
+
+            // Dispose audio widgets after all animations and audio are complete
+            _disposeAllAudioWidgets();
+          }
+        });
+      } else {
+        // For non-last items, dispose audio widgets after a shorter delay
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            _disposeAllAudioWidgets();
           }
         });
       }
@@ -545,12 +670,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _correctFeedbackAudio?.dispose();
     _incorrectFeedbackAudio?.dispose();
     _vocabularyAudio?.dispose();
+    _confettiFeedbackAudio?.dispose();
+    _goodRemarkAudio?.dispose();
 
     _questionAudio = null;
     _animalSoundAudio = null;
     _correctFeedbackAudio = null;
     _incorrectFeedbackAudio = null;
     _vocabularyAudio = null;
+    _confettiFeedbackAudio = null;
+    _goodRemarkAudio = null;
   }
 
   @override
@@ -612,6 +741,22 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                 ),
               ),
             ),
+
+          // Close button in top right
+          Positioned(
+            top: 16,
+            right: 16,
+            child: IconButton(
+              icon: SvgHelper.fromSource(
+                path: Assets.wrong,
+                height: AppConstants.kIconSize,
+                width: AppConstants.kIconSize,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -680,16 +825,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                     return Container(
                       width: size,
                       height: size,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border:
-                            candidateData.isNotEmpty
-                                ? Border.all(
-                                  color: AppColors.kPureSkyBlue,
-                                  width: 3,
-                                )
-                                : null,
-                      ),
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(12),
+                      //   border:
+                      //       candidateData.isNotEmpty
+                      //           ? Border.all(
+                      //             color: AppColors.kPureSkyBlue,
+                      //             width: 3,
+                      //           )
+                      //           : null,
+                      // ),
                       child:
                           isCompleted
                               ? _buildCompletedTarget(target)
@@ -794,16 +939,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                   feedback: Container(
                     width: size,
                     height: size,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.kBlack.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                    // decoration: BoxDecoration(
+                    //   borderRadius: BorderRadius.circular(12),
+                    //   boxShadow: [
+                    //     BoxShadow(
+                    //       color: AppColors.kBlack.withValues(alpha: 0.3),
+                    //       blurRadius: 8,
+                    //       offset: const Offset(0, 4),
+                    //     ),
+                    //   ],
+                    // ),
                     child: SvgHelper.fromSource(
                       path: target.image ?? '',
                       type: SvgSourceType.network,
@@ -816,15 +961,15 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                   childWhenDragging: Container(
                     width: size,
                     height: size,
-                    decoration: BoxDecoration(
-                      color: AppColors.kLightGrey.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.kGrey,
-                        width: 2,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
+                    // decoration: BoxDecoration(
+                    //   color: AppColors.kLightGrey.withValues(alpha: 0.5),
+                    //   borderRadius: BorderRadius.circular(12),
+                    //   border: Border.all(
+                    //     color: AppColors.kGrey,
+                    //     width: 2,
+                    //     style: BorderStyle.solid,
+                    //   ),
+                    // ),
                   ),
                   child: Container(
                     key: _dragItemKeys[target.id!],
@@ -865,15 +1010,17 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       animation: _vocabularyAnimation,
 
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.kSecondaryColor,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(60),
         ),
         child: Text(
           _vocabularyText ?? '',
           style: AppStyles.text24PxBold.copyWith(
             color: AppColors.kWhite,
+            fontSize: PlatformUtility.isTablet(context) ? 60 : 40,
+            fontWeight: FontWeight.bold,
             fontFamily: AppConstants.kMuktaFont,
           ),
         ),
@@ -973,41 +1120,44 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Position 1 (bottom right, on grass)
       // Dog
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.17 : 0.15),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.44),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.12 : 0.15),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.33 : 0.25),
       },
 
       // Position 2 (left side, on grass)
       // Fish
-      {'left': startX + usableWidth * 0.2, 'top': startY + usableHeight * 1.2},
+      {
+        'left': startX + usableWidth * (isTabletLandscape ? 0.18 : 0.22),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 1),
+      },
 
       // Position 3 (center-left, near trees)
       // Rabbit
       {
-        'left': startX + usableWidth * 0.78,
-        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 0.97),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.75 : 0.75),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.02 : 0.75),
       },
 
       // Position 4 (in water area - bottom center)
       // Bird
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.80),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.15 : 0.15),
         'top':
             startY +
-            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 0.23),
+            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 0.19),
       },
 
       // Position 5 (on tree branch - top area)
       // Cat
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.7 : 0.68),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.4),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.61 : 0.6),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.45),
       },
 
       // Tortoise
       {
-        'left': startX + usableWidth * 0.5,
-        'top': startY + usableHeight * (isTabletLandscape ? 1.2 : 1.10),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.45 : 0.48),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.1 : 0.99),
       },
 
       //Additional positions for more targets
@@ -1023,7 +1173,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   ) {
     // Position draggable items at the bottom area of the screen
     // Using similar screen-based calculation as targets
-    final double usableWidth = screenWidth * 0.9; // Leave some margin
+    final double usableWidth =
+        screenWidth * (isMobile ? 0.9 : 1.6); // Leave some margin
     final double startX = screenWidth * 0.05; // Start with 5% margin
     final double bottomY = screenHeight * 0.8; // Bottom area
     final isTabletLandscape =
@@ -1033,33 +1184,40 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     return [
       // Dog
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.0015 : 0.0015),
-        'top': bottomY * 0.75,
+        'left':
+            startX +
+            usableWidth * (isTabletLandscape ? 0.0015 - 0.025 : 0.0015 - 0.025),
+        'top': bottomY * (isTabletLandscape ? 0.85 : 0.7),
       }, // Bottom left
       // Fish
       {
-        'left': startX + usableWidth * 0.0015,
-        'top': bottomY * 0.6,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.9),
+        'top': bottomY * (isTabletLandscape ? 0.15 : 0.23),
       }, // Bottom center-left
       // Rabbit
       {
-        'left': startX + usableWidth * 0.92,
-        'top': bottomY * 0.55,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.88),
+        'top': bottomY * (isTabletLandscape ? 0.45 : 0.45),
       }, // Bottom center
       // Bird
       {
-        'left': startX + usableWidth * 0.95,
-        'top': bottomY * 0.25,
+        'left':
+            startX +
+            usableWidth * (isTabletLandscape ? 0.0015 - 0.025 : 0.0015 - 0.025),
+        'top': bottomY * (isTabletLandscape ? 0.55 : 0.5),
       }, // Bottom center-right
       // Cat
       {
-        'left': startX + usableWidth * 0.0015,
-        'top': bottomY * 0.12,
+        'left':
+            startX +
+            usableWidth * (isTabletLandscape ? 0.0015 - 0.025 : 0.0015 - 0.025),
+        'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
       }, // Bottom right
       // Tortoise
       {
-        'left': startX + usableWidth * 0.95,
-        'top': bottomY * 0.92,
+        'left': startX + usableWidth * (isTabletLandscape ? 0.52 : 0.92),
+
+        'top': bottomY * (isTabletLandscape ? 0.85 : 0.85),
       }, // Bottom right
       // Additional positions if needed
       {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},
@@ -1071,7 +1229,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   /// Get the appropriate size for different animals/items
   /// Using the same sizing logic as tap_target_lesson_card.dart
   double _getTargetSizeForItem(String itemId, bool isMobile) {
-    final baseSizeMobile = isMobile ? 60.0 : 80.0;
+    final baseSizeMobile = isMobile ? 70.0 : 140.0;
     // final isTabletLandscape =
     //     !isMobile &&
     //     PlatformUtility.isTablet(context) &&
@@ -1080,6 +1238,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     // For drag-to-match, we use slightly larger sizes than tap_target
     switch (itemId.toLowerCase()) {
       case 'rabbit':
+        return baseSizeMobile * (isMobile ? 1.75 : 1.55); // Small animal
       case 'cat':
         return baseSizeMobile * 1.75; // Smaller animals
       case 'dog':
@@ -1106,7 +1265,13 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     // Slightly smaller than targets for better UX
     final targetSize = _getTargetSizeForItem(itemId, isMobile);
     final isDog = itemId.toLowerCase() == 'dog';
-    final size = isDog ? targetSize * 0.55 : targetSize * 0.85;
+    final isFish = itemId.toLowerCase() == 'fish';
+    final size =
+        isDog
+            ? targetSize * (isMobile ? 0.55 : 0.5)
+            : isFish
+            ? targetSize * (isMobile ? 0.85 : 1.05)
+            : targetSize * 0.85;
 
     return size; // 15% smaller than target
   }
