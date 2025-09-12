@@ -321,8 +321,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
     switch (animalId.toLowerCase()) {
       case 'rabbit':
+        return baseSize * 1.75; // Small animal
       case 'cat':
-        return baseSize * 1.75; // Smaller animals
+        return baseSize * 1.55; // Smaller animals
       case 'dog':
         return baseSize * 2.35; // Medium-large animal
       case 'fish':
@@ -330,7 +331,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       case 'bird':
         return baseSize * 1.15; // Small-medium animal
       case 'tortoise':
-        return baseSize * 1.25; // Medium animal
+        return baseSize * 1.15; // Medium animal
       case 'elephant':
         return baseSize * 1.3; // Large animal
       case 'tiger':
@@ -399,39 +400,39 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
             }),
 
           // Show question text at the top only when audio is playing or during reminders
-          if (widget.content.text?.isNotEmpty == true && showQuestionText)
-            Positioned(
-              top: 20,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kSecondaryColor.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.kBlack.withValues(alpha: 0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    widget.content.text!,
-                    style: AppStyles.text18PxBold.copyWith(
-                      color: AppColors.kWhite,
-                      fontFamily: AppConstants.kMuktaFont,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
+          // if (widget.content.text?.isNotEmpty == true && showQuestionText)
+          //   Positioned(
+          //     top: 20,
+          //     left: 0,
+          //     right: 0,
+          //     child: Center(
+          //       child: Container(
+          //         padding: const EdgeInsets.symmetric(
+          //           horizontal: 20,
+          //           vertical: 12,
+          //         ),
+          //         decoration: BoxDecoration(
+          //           color: AppColors.kSecondaryColor.withValues(alpha: 0.9),
+          //           borderRadius: BorderRadius.circular(20),
+          //           boxShadow: [
+          //             BoxShadow(
+          //               color: AppColors.kBlack.withValues(alpha: 0.2),
+          //               blurRadius: 8,
+          //               offset: const Offset(0, 2),
+          //             ),
+          //           ],
+          //         ),
+          //         child: Text(
+          //           widget.content.text!,
+          //           style: AppStyles.text18PxBold.copyWith(
+          //             color: AppColors.kWhite,
+          //             fontFamily: AppConstants.kMuktaFont,
+          //           ),
+          //           textAlign: TextAlign.center,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
 
           // Show Nepali text on top when correct target is selected
           if (showCorrectFeedback && selectedTargetNameNp != null)
@@ -713,7 +714,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Cat position (center-left, near trees)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.64 : 0.6),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.38),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.46),
       },
 
       // Fish position (in water area - bottom center)
@@ -733,8 +734,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
       // Tortoise position (center-right, on grass)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.5),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 0.9),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.49),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 0.94),
       },
 
       // Additional positions for more animals
