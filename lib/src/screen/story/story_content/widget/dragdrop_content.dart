@@ -71,7 +71,11 @@ class DragDropContentState extends State<DragDropContent> {
                   if (char1 != null)
                     SvgHelper.fromSource(
                       path: char1,
-                      height: 30.h(context),
+                      height:
+                          PlatformUtility.isTablet(context) &&
+                                  PlatformUtility.isLandscape(context)
+                              ? 25.h(context)
+                              : 25.h(context),
                       width: 80.w(context),
                       type: SvgSourceType.network,
                     ),
@@ -84,7 +88,12 @@ class DragDropContentState extends State<DragDropContent> {
                     ),
                 ],
               ),
-              Gaps.verticalGapOf(32),
+              Gaps.verticalGapOf(
+                PlatformUtility.isTablet(context) &&
+                        PlatformUtility.isLandscape(context)
+                    ? 48
+                    : 32,
+              ),
               // Drop targets (messageEn)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,8 +121,16 @@ class DragDropContentState extends State<DragDropContent> {
                     builder: (context, candidate, rejected) {
                       final isMatched = droppedOn.contains(i) && correct[i];
                       return Container(
-                        width: 160,
-                        height: 50,
+                        width:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 300
+                                : 160,
+                        height:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 80
+                                : 48,
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           color:
@@ -140,6 +157,13 @@ class DragDropContentState extends State<DragDropContent> {
                                     style: AppStyles.text16PxSemiBold.copyWith(
                                       // Larger text
                                       color: AppColors.kGrey,
+                                      fontSize:
+                                          PlatformUtility.isTablet(context) &&
+                                                  PlatformUtility.isLandscape(
+                                                    context,
+                                                  )
+                                              ? 28
+                                              : 16,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -149,7 +173,12 @@ class DragDropContentState extends State<DragDropContent> {
                   );
                 }),
               ),
-              Gaps.verticalGapOf(15),
+              Gaps.verticalGapOf(
+                PlatformUtility.isTablet(context) &&
+                        PlatformUtility.isLandscape(context)
+                    ? 30
+                    : 15,
+              ),
               // Draggable buttons (messageNp)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -223,8 +252,16 @@ class DragDropContentState extends State<DragDropContent> {
   }) {
     final colors = [AppColors.kButtonGreen, AppColors.kButtonRed];
     return Container(
-      width: 160,
-      height: 50,
+      width:
+          PlatformUtility.isTablet(context) &&
+                  PlatformUtility.isLandscape(context)
+              ? 300
+              : 160,
+      height:
+          PlatformUtility.isTablet(context) &&
+                  PlatformUtility.isLandscape(context)
+              ? 80
+              : 48,
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         color: showTryAgain ? AppColors.kButtonRed : colors[i % colors.length],
@@ -245,6 +282,11 @@ class DragDropContentState extends State<DragDropContent> {
           showTryAgain ? 'Try Again!' : label,
           style: AppStyles.text18PxSemiBold.copyWith(
             color: AppColors.kBlack,
+            fontSize:
+                PlatformUtility.isTablet(context) &&
+                        PlatformUtility.isLandscape(context)
+                    ? 32
+                    : 18,
             fontFamily: AppConstants.kMuktaFont,
           ),
         ),

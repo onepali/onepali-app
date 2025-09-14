@@ -105,8 +105,16 @@ class SlideContentState extends State<SlideContent> {
                   },
                   child: SvgHelper.fromSource(
                     path: Assets.sound,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
+                    height:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
+                    width:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
                   ),
                 );
                 return storyProvider.isPlaying
@@ -118,28 +126,44 @@ class SlideContentState extends State<SlideContent> {
         ),
         Positioned(
           top: 24,
-          right: 16,
+          right: 28,
           child: customInkwell(
             onTap: () {
               storyProvider.stopAudioAndResetIndex();
             },
             child: SvgHelper.fromSource(
               path: Assets.wrong,
-              height: AppConstants.kIconSize,
-              width: AppConstants.kIconSize,
+              height:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
+              width:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
             ),
           ),
         ),
         Positioned(
-          left: 16,
+          left: 28,
           top: 0,
           bottom: 0,
           child: Center(
             child: GestureDetector(
               onTap: () => storyProvider.previousContent(),
               child: Container(
-                height: AppConstants.kIconSize,
-                width: AppConstants.kIconSize,
+                height:
+                    PlatformUtility.isTablet(context) &&
+                            PlatformUtility.isLandscape(context)
+                        ? AppConstants.kIconSize + AppConstants.kIconSize
+                        : AppConstants.kIconSize,
+                width:
+                    PlatformUtility.isTablet(context) &&
+                            PlatformUtility.isLandscape(context)
+                        ? AppConstants.kIconSize + AppConstants.kIconSize
+                        : AppConstants.kIconSize,
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
                   shape: BoxShape.circle,
@@ -152,7 +176,7 @@ class SlideContentState extends State<SlideContent> {
                   ],
                 ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
+                  horizontal: 24,
                   // vertical: 2,
                 ),
                 child: SvgHelper.fromSource(
@@ -167,15 +191,23 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 16,
+          right: 28,
           top: 0,
           bottom: 0,
           child: Center(
             child: GestureDetector(
               onTap: () => storyProvider.nextContent(context),
               child: Container(
-                height: AppConstants.kIconSize,
-                width: AppConstants.kIconSize,
+                height:
+                    PlatformUtility.isTablet(context) &&
+                            PlatformUtility.isLandscape(context)
+                        ? AppConstants.kIconSize + AppConstants.kIconSize
+                        : AppConstants.kIconSize,
+                width:
+                    PlatformUtility.isTablet(context) &&
+                            PlatformUtility.isLandscape(context)
+                        ? AppConstants.kIconSize + AppConstants.kIconSize
+                        : AppConstants.kIconSize,
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
                   shape: BoxShape.circle,
@@ -188,7 +220,7 @@ class SlideContentState extends State<SlideContent> {
                   ],
                 ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
+                  horizontal: 24,
                   // vertical: 2,
                 ),
                 child: SvgHelper.fromSource(
@@ -204,7 +236,11 @@ class SlideContentState extends State<SlideContent> {
         Positioned(
           left: 32,
           right: 32,
-          bottom: 70,
+          bottom:
+              PlatformUtility.isTablet(context) &&
+                      PlatformUtility.isLandscape(context)
+                  ? 80
+                  : 70,
           child: IgnorePointer(
             child: AnimatedOpacity(
               opacity: _completed ? 0.0 : 1.0,
@@ -213,18 +249,35 @@ class SlideContentState extends State<SlideContent> {
                 alignment: Alignment.centerLeft,
                 children: [
                   Container(
-                    height: 48,
+                    height:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? 70
+                            : 48,
                     decoration: BoxDecoration(
                       color: AppColors.kBlack.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? 35
+                            : 24,
+                      ),
                     ),
                   ),
                   Positioned(
                     left: 12 + _position,
                     child: SvgHelper.fromSource(
                       path: Assets.scrollRightArrow,
-                      height: 44,
-                      width: 44,
+                      height:
+                          PlatformUtility.isTablet(context) &&
+                                  PlatformUtility.isLandscape(context)
+                              ? 70
+                              : 44,
+                      width:
+                          PlatformUtility.isTablet(context) &&
+                                  PlatformUtility.isLandscape(context)
+                              ? 70
+                              : 44,
                       type: SvgSourceType.asset,
                     ),
                   ),
@@ -233,6 +286,7 @@ class SlideContentState extends State<SlideContent> {
             ),
           ),
         ),
+
         // Bottom white background with text
         Align(
           alignment: Alignment.bottomCenter,
@@ -280,6 +334,11 @@ class SlideContentState extends State<SlideContent> {
                           textAlign: TextAlign.center,
                           style: AppStyles.text20PxMedium.copyWith(
                             fontFamily: AppConstants.kMuktaFont,
+                            fontSize:
+                                PlatformUtility.isTablet(context) &&
+                                        PlatformUtility.isLandscape(context)
+                                    ? 32
+                                    : 20,
                           ),
                         ),
                       ],

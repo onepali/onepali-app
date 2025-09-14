@@ -116,18 +116,30 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                           if (widget.story.thumbnail.isNotEmpty)
                             SvgHelper.fromSource(
                               path: widget.story.thumbnail,
-                              width: 180,
-                              height: 180,
+                              width:
+                                  PlatformUtility.isTablet(context) &&
+                                          PlatformUtility.isLandscape(context)
+                                      ? 300
+                                      : 180,
+                              height:
+                                  PlatformUtility.isTablet(context) &&
+                                          PlatformUtility.isLandscape(context)
+                                      ? 300
+                                      : 180,
                               fit: BoxFit.contain,
                               type: SvgSourceType.network,
                             ),
-                          Gaps.verticalGapOf(10),
+                          Gaps.verticalGapOf(30),
                           // Lesson title
                           Text(
                             widget.story.nameNp,
                             style: AppStyles.text24PxBold.copyWith(
                               // color: AppColors.kSecondaryColor,
-                              fontSize: 40,
+                              fontSize:
+                                  PlatformUtility.isTablet(context) &&
+                                          PlatformUtility.isLandscape(context)
+                                      ? 64
+                                      : 40,
                               fontFamily: AppConstants.kMuktaFont,
                             ),
                             textAlign: TextAlign.center,
@@ -139,6 +151,11 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                               widget.story.nameEn,
                               style: AppStyles.text16PxMedium.copyWith(
                                 color: AppColors.kBlack,
+                                fontSize:
+                                    PlatformUtility.isTablet(context) &&
+                                            PlatformUtility.isLandscape(context)
+                                        ? 32
+                                        : 16,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -149,19 +166,29 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
                   Positioned(
                     top: 16,
-                    right: 16,
+                    right: 24,
                     child: IconButton(
                       icon: SvgHelper.fromSource(
                         path: Assets.wrong,
-                        height: AppConstants.kIconSize,
-                        width: AppConstants.kIconSize,
+                        height:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? AppConstants.kIconSize +
+                                    AppConstants.kIconSize
+                                : AppConstants.kIconSize,
+                        width:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? AppConstants.kIconSize +
+                                    AppConstants.kIconSize
+                                : AppConstants.kIconSize,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
                   // Start button
                   Positioned(
-                    right: 25,
+                    right: 16,
                     top: 0,
                     bottom: 0,
                     child: customInkwell(
@@ -170,8 +197,18 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                         provider.nextContent(context);
                       },
                       child: Container(
-                        height: AppConstants.kIconSize,
-                        width: AppConstants.kIconSize,
+                        height:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? AppConstants.kIconSize +
+                                    AppConstants.kIconSize
+                                : AppConstants.kIconSize,
+                        width:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? AppConstants.kIconSize +
+                                    AppConstants.kIconSize
+                                : AppConstants.kIconSize,
                         decoration: BoxDecoration(
                           color: AppColors.kWhite,
                           shape: BoxShape.circle,
@@ -183,14 +220,21 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          // vertical: 2,
-                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+
                         child: SvgHelper.fromSource(
                           path: Assets.rightArrow,
-                          // height: 30,
-                          // width: 30,
+                          height:
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? 80
+                                  : AppConstants.kIconSize,
+                          width:
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? 80
+                                  : AppConstants.kIconSize,
                           color: AppColors.kSecondaryColor,
                         ),
                       ),
