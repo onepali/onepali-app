@@ -34,6 +34,7 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.childRS2Screen,
     AppRoutes.childRS3Screen,
     AppRoutes.childRS4Screen,
+    AppRoutes.printableScreen,
   ];
 
   // Helper method to check if a route is a modal that shouldn't change orientation
