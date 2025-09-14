@@ -41,6 +41,9 @@ export 'recommended/recommended_lesson_provider.dart';
 /// [Story] Provider
 export 'story/story_provider.dart';
 
+/// [Printables] Provider
+export 'printables/printables_provider.dart';
+
 //* ------------------------------- PZone Provider ------------------------------- *//
 
 /// PZ [Home] Provider

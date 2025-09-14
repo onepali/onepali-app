@@ -88,7 +88,7 @@ class _PHomeScreenState extends State<PHomeScreen> {
           body: StatusHandler(
             status: childStatus,
             hasData: children.isNotEmpty,
-            errorTitle: 'No Child Found',
+            errorTitle: 'No child found',
             errorMessage: 'Please add a child to view metrics.',
             onRetry: () {
               context.read<ChildUserProvider>().fetchChildUser();

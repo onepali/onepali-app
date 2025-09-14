@@ -1,0 +1,69 @@
+[
+    {
+        "id": "pr_animals",
+        "lesson_id": "basic1",
+        "chapter_id": "animals",
+        "title": "Animals",
+        "description": "Learn about different animals through fun worksheets and activities",
+        "thumbnail": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fpr_preview_1.jpg?alt=media&token=34e3331a-c0c4-46fd-b707-9fd5c2b814b4",
+        "total_worksheets": 3,
+        "lessons": [
+            {
+                "id": "ws_animals_1",
+                "title": "Animals 1",
+                "worksheet": {
+                    "preview_image": "images/worksheets/animals_1_preview.png",
+                    "pdf_url": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fworksheet_animal_1.pdf?alt=media&token=c341a394-ec46-4723-b7b1-b87e774962b4",
+                    "level": "preschool"
+                }
+            },
+            {
+                "id": "ws_animals_2",
+                "title": "Animals 2",
+                "worksheet": {
+                    "preview_image": "images/worksheets/animals_2_preview.png",
+                    "pdf_url": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fworksheet_animal_2.pdf?alt=media&token=c341a394-ec46-4723-b7b1-b87e774962b4",
+                    "level": "preschool"
+                }
+            },
+            {
+                "id": "ws_animals_3",
+                "title": "Animals 3",
+                "worksheet": {
+                    "preview_image": "images/worksheets/animals_3_preview.png",
+                    "pdf_url": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fworksheet_animal_3.pdf?alt=media&token=c341a394-ec46-4723-b7b1-b87e774962b4",
+                    "level": "preschool"
+                }
+            }
+        ]
+    },
+    {
+        "id": "pr_alphabets",
+        "lesson_id": "basic2",
+        "chapter_id": "alphabets",
+        "title": "Alphabets",
+        "description": "Master the English alphabet through interactive worksheets",
+        "thumbnail": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fpr_preview_1.jpg?alt=media&token=34e3331a-c0c4-46fd-b707-9fd5c2b814b4",
+        "total_worksheets": 2,
+        "lessons": [
+            {
+                "id": "ws_alphabets_1",
+                "title": "Alphabets 1",
+                "worksheet": {
+                    "preview_image": "images/worksheets/animals_3_preview.png",
+                    "pdf_url": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fworksheet_animal_3.pdf?alt=media&token=c341a394-ec46-4723-b7b1-b87e774962b4",
+                    "level": "preschool"
+                }
+            },
+            {
+                "id": "ws_alphabets_2",
+                "title": "Alphabets 2",
+                "worksheet": {
+                    "preview_image": "images/worksheets/animals_2_preview.png",
+                    "pdf_url": "https://firebasestorage.googleapis.com/v0/b/o-nepali.firebasestorage.app/o/printables%2FPre-School%2Fworksheet_animal_2.pdf?alt=media&token=c341a394-ec46-4723-b7b1-b87e774962b4",
+                    "level": "preschool"
+                }
+            }
+        ]
+    }
+]

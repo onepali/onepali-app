@@ -107,6 +107,11 @@ export 'reward/widget/reward_collection_widget.dart';
 export 'reward/widget/choose_reward_widget.dart';
 export 'reward/widget/reward_preview_widget.dart';
 
+/// [Printables] Screen
+export 'printables/printables_screen.dart';
+export 'printables/printables_card.dart';
+export 'printables/printable_detail_screen.dart';
+
 //* -------------------------------------- PARENT ZONE SCREEN EXPORTS -------------------------------------- *//
 
 /// [Parent] --> [Dashboard]

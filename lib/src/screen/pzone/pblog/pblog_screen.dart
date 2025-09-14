@@ -25,7 +25,7 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
           return StatusHandler(
             status: provider.status,
             hasData: provider.blogs.isNotEmpty,
-            errorTitle: 'No Blogs Available',
+            errorTitle: 'No blogs available',
             errorMessage: 'Please check back later for new blogs.',
             onRetry: () => context.read<PzBlogProvider>().fetchBlogs(),
             successBuilder:

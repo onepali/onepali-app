@@ -24,7 +24,7 @@ List<BannerModel> spreadBannerList = [
   BannerModel(
     title: 'Spread the word! Invite a friend.',
     icon: Icons.volunteer_activism_rounded,
-    color: AppColors.heartColor,
+    color: AppColors.kPrimaryColor,
     onTap: () {
       SharePlus.instance.share(
         ShareParams(

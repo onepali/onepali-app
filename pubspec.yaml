@@ -49,6 +49,8 @@ dependencies:
 
   # Storage & File System
   shared_preferences: ^2.5.3
+  permission_handler: ^11.0.1
+  path_provider: ^2.1.4
 
   # Notifications & Device Features
   flutter_local_notifications: ^19.3.0
@@ -107,3 +109,9 @@ flutter:
     - family: Luckiest Guy
       fonts:
         - asset: assets/fonts/LuckiestGuy-Regular.ttf
+    - family: DM Sans
+      fonts:
+        - asset: assets/fonts/DMSans-Regular.ttf
+        - asset: assets/fonts/DMSans-Medium.ttf
+        - asset: assets/fonts/DMSans-SemiBold.ttf
+        - asset: assets/fonts/DMSans-Bold.ttf

@@ -112,8 +112,18 @@ class CustomMaterialButton extends StatelessWidget {
       elevation: elevation,
       height: height,
       minWidth: width,
-      color: !isDisabled && fillButton ? backgroundColor : AppColors.kWhite,
-      disabledColor: isDisabled ? AppColors.kGrey : null,
+      color:
+          isLoading
+              ? backgroundColor.withValues(alpha: 0.3)
+              : !isDisabled && fillButton
+              ? backgroundColor
+              : AppColors.kWhite,
+      disabledColor:
+          isLoading
+              ? backgroundColor.withValues(alpha: 0.3)
+              : isDisabled
+              ? AppColors.kGrey
+              : null,
       child:
           isLoading
               ? SizedBox(

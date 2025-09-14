@@ -13,7 +13,7 @@ class PlanScreen extends StatelessWidget {
         return StatusHandler(
           status: planProvider.status,
           hasData: true,
-          errorTitle: 'Error Loading Plan',
+          errorTitle: 'Error loading plan',
           errorMessage: 'Please try again later.',
           onRetry: () {},
           successBuilder: () {

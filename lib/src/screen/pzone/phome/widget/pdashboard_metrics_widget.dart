@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_styles.dart';
-import '../../../../core/widget/gaps.dart';
+
+import '../../../../src.dart';
 
 class PDashboardMetricsWidget extends StatelessWidget {
   final int averageDailyLearningTime;
@@ -50,14 +49,21 @@ class PDashboardMetricsWidget extends StatelessWidget {
                                     : AppStyles.text40PxSemiBold,
                           ),
                           Gaps.horizontalGapOf(8),
-                          Text('mins', style: AppStyles.text14PxRegular),
+                          Text(
+                            'mins',
+                            style: AppStyles.text14PxRegular.copyWith(
+                              fontFamily: AppConstants.kDMSansFont,
+                            ),
+                          ),
                         ],
                       ),
                       Gaps.verticalGapOf(8),
                       Text(
                         'Average daily learning time',
                         textAlign: TextAlign.center,
-                        style: AppStyles.text14PxMedium,
+                        style: AppStyles.text14PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        ),
                       ),
                     ],
                   ),
@@ -78,7 +84,9 @@ class PDashboardMetricsWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Most practiced topics',
-                          style: AppStyles.text14PxMedium,
+                          style: AppStyles.text14PxMedium.copyWith(
+                            fontFamily: AppConstants.kDMSansFont,
+                          ),
                         ),
                         Gaps.verticalGapOf(8),
                         ...List.generate(
@@ -101,6 +109,7 @@ class PDashboardMetricsWidget extends StatelessWidget {
                               '${i + 1}. ${mostPracticedTopics[i]}',
                               style: AppStyles.text14PxMedium.copyWith(
                                 color: colors[i % colors.length],
+                                fontFamily: AppConstants.kDMSansFont,
                               ),
                             ),
                           ),
@@ -133,7 +142,9 @@ class PDashboardMetricsWidget extends StatelessWidget {
                 Center(
                   child: Text(
                     'Most practiced topics',
-                    style: AppStyles.text14PxMedium,
+                    style: AppStyles.text14PxMedium.copyWith(
+                      fontFamily: AppConstants.kDMSansFont,
+                    ),
                   ),
                 ),
                 Gaps.verticalGapOf(8),
@@ -154,7 +165,9 @@ class PDashboardMetricsWidget extends StatelessWidget {
                     ),
                     child: Text(
                       '${i + 1}. ${mostPracticedTopics[i]}',
-                      style: AppStyles.text14PxMedium,
+                      style: AppStyles.text14PxMedium.copyWith(
+                        fontFamily: AppConstants.kDMSansFont,
+                      ),
                       // .copyWith(
                       //   color: colors[i % colors.length],
                       // )

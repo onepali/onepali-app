@@ -31,6 +31,6 @@ List<SettingModel> drawerSettings = [
     name: 'Printables',
     desciption: 'Access and manage printable resources',
     icon: Assets.download,
-    route: AppRoutes.comingSoon,
+    route: AppRoutes.printableScreen,
   ),
 ];

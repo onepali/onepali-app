@@ -28,7 +28,7 @@ class _StoryScreenState extends State<StoryScreen> {
         return StatusHandler(
           status: provider.status,
           hasData: provider.stories.isNotEmpty,
-          errorTitle: 'No Stories Found',
+          errorTitle: 'No stories found',
           errorMessage: 'Please check back later for new stories.',
           checkConnectivity: false,
           onRetry: () {

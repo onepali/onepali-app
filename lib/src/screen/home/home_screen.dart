@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, provider, child) {
         if (!(provider.hasData)) return const SizedBox();
         return TitleActionChild(
-          title: 'Recommended Lessons',
+          title: 'Recommended lessons',
           titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -189,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Songs',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
-      subTitle: 'VIEW ALL',
+      subTitle: 'View all',
       subTitleStyle: AppStyles.text14PxMedium.copyWith(
         color: AppColors.kSecondaryColor,
       ),
@@ -207,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, provider, child) {
         if (!provider.hasData) return const SizedBox();
         return TitleActionChild(
-          title: 'Recommended Songs',
+          title: 'Recommended songs',
           titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, provider, child) {
         if (!provider.hasData) return const SizedBox();
         return TitleActionChild(
-          title: 'Recommended Stories',
+          title: 'Recommended stories',
           titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildStories(BuildContext context) {
     return TitleActionChild(
-      title: 'Stories',
+      title: 'Level 1',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
       child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),

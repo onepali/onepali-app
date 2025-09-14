@@ -33,7 +33,14 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(blog.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(
+          blog.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppStyles.text16PxSemiBold.copyWith(
+            fontFamily: AppConstants.kPoppinsFont,
+          ),
+        ),
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16.0),
@@ -44,13 +51,17 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
             Gaps.horizontalGapOf(4),
             Text(
               '${blog.readTimeMinutes} min read',
-              style: AppStyles.text12PxRegular.copyWith(color: AppColors.kGrey),
+              style: AppStyles.text12PxRegular.copyWith(
+                color: AppColors.kGrey,
+                fontFamily: AppConstants.kDMSansFont,
+              ),
             ),
             const Spacer(),
             Text(
               'Published: ${DatetimeUtility.getFormattedDate(blog.createdAt)}',
               style: AppStyles.text12PxRegular.copyWith(
                 color: AppColors.kGrey.withValues(alpha: 0.7),
+                fontFamily: AppConstants.kDMSansFont,
               ),
             ),
           ],
@@ -102,6 +113,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                           '${blog.viewCount}',
                           style: AppStyles.text12PxRegular.copyWith(
                             color: AppColors.kGrey,
+                            fontFamily: AppConstants.kDMSansFont,
                           ),
                         ),
                         Gaps.horizontalGapOf(10),
@@ -128,7 +140,10 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                     // Gaps.verticalGapOf(18),
                     Text(
                       blog.content,
-                      style: AppStyles.text16PxRegular.copyWith(height: 1.5),
+                      style: AppStyles.text16PxRegular.copyWith(
+                        height: 1.5,
+                        fontFamily: AppConstants.kDMSansFont,
+                      ),
                     ),
                     Gaps.verticalGapOf(24),
                   ],

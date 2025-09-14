@@ -41,7 +41,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return StatusHandler(
           status: provider.status,
           hasData: provider.settings != null,
-          errorTitle: 'Failed to Load Settings',
+          errorTitle: 'Failed to load settings',
           errorMessage: 'Please try again to load notification settings.',
           onRetry: () => provider.getNotificationSetting(),
           successBuilder: () {

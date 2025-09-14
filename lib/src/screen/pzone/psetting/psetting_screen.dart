@@ -80,7 +80,12 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           Gaps.verticalGapOf(18),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text('Your children', style: AppStyles.text16PxMedium),
+            child: Text(
+              'Your children',
+              style: AppStyles.text16PxMedium.copyWith(
+                fontFamily: AppConstants.kDMSansFont,
+              ),
+            ),
           ),
           Gaps.verticalGapOf(8),
           ...children.map(
@@ -152,17 +157,18 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                               banner.title,
                               style:
                                   isMobilePortrait
-                                      ? AppStyles.text14PxRegular
-                                      : AppStyles.text16PxRegular,
+                                      ? AppStyles.text14PxRegular.copyWith(
+                                        fontFamily: AppConstants.kDMSansFont,
+                                      )
+                                      : AppStyles.text16PxRegular.copyWith(
+                                        fontFamily: AppConstants.kDMSansFont,
+                                      ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
                           ),
                           Gaps.horizontalGapOf(8),
-                          Icon(
-                            banner.icon,
-                            color: banner.color.withValues(alpha: 0.7),
-                          ),
+                          Icon(banner.icon, color: banner.color),
                         ],
                       ),
                     ),
@@ -186,7 +192,12 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 child: const Icon(Icons.notifications),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-              title: const Text('Notifications'),
+              title: Text(
+                'Notifications',
+                style: AppStyles.text16PxMedium.copyWith(
+                  fontFamily: AppConstants.kDMSansFont,
+                ),
+              ),
               onTap: () {
                 Utility.navigate(context, AppRoutes.parentNotificationScreen);
               },
@@ -324,8 +335,12 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 'About us',
                 style:
                     isMobilePortrait
-                        ? AppStyles.text16PxMedium
-                        : AppStyles.text20PxMedium,
+                        ? AppStyles.text16PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        )
+                        : AppStyles.text20PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        ),
               ),
             ),
             GestureDetector(
@@ -340,8 +355,12 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 'Contact us',
                 style:
                     isMobilePortrait
-                        ? AppStyles.text16PxMedium
-                        : AppStyles.text20PxMedium,
+                        ? AppStyles.text16PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        )
+                        : AppStyles.text20PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        ),
               ),
             ),
             GestureDetector(
@@ -356,8 +375,12 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 'FAQ',
                 style:
                     isMobilePortrait
-                        ? AppStyles.text16PxMedium
-                        : AppStyles.text20PxMedium,
+                        ? AppStyles.text16PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        )
+                        : AppStyles.text20PxMedium.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                        ),
               ),
             ),
             // CustomImage(
