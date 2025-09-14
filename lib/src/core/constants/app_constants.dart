@@ -44,6 +44,8 @@ class AppConstants {
   static const String notificationSettingCollection = 'notification_setting';
   static const String planCollection = 'plans';
   static const String onepaliCollection = 'onepali';
+  static const String printableCollection = 'printables';
+
   // Database
   static const String RECOM_DB_PATH = 'onp_recom.db';
 
