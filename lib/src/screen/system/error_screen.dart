@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/src.dart';
 
 class ErrorScreen extends StatefulWidget {
@@ -33,25 +32,26 @@ class _ErrorScreenState extends State<ErrorScreen> {
     // Use isInternetError to control the error type
     final bool isInternetError = widget.isInternetError;
     // final bool isDataError = widget.isDataError && !isInternetError;
-    Widget imageWidget;
-    if (isInternetError) {
-      imageWidget = const SizedBox.shrink();
-      // LottieHelper.fromSource(
-      //   path: Assets.noInternetLottie,
-      //   type: LottieSourceType.asset,
-      //   height: isTablet || isMobile ? 250 : 180,
-      //   width: isTablet || isMobile ? 250 : 180,
-      //   repeat: true,
-      //   animate: true,
-      //   fit: BoxFit.contain,
-      // );
-    } else {
-      imageWidget = SvgPicture.asset(
-        Assets.dataSvg,
-        height: isTablet || isMobile ? 250 : 180,
-        width: isTablet || isMobile ? 250 : 180,
-      );
-    }
+    // Widget imageWidget;
+    // if (isInternetError) {
+    //   imageWidget = const SizedBox.shrink();
+    //   // LottieHelper.fromSource(
+    //   //   path: Assets.noInternetLottie,
+    //   //   type: LottieSourceType.asset,
+    //   //   height: isTablet || isMobile ? 250 : 180,
+    //   //   width: isTablet || isMobile ? 250 : 180,
+    //   //   repeat: true,
+    //   //   animate: true,
+    //   //   fit: BoxFit.contain,
+    //   // );
+    // } else {
+    //   // imageWidget = SvgPicture.asset(
+    //   //   Assets.dataSvg,
+    //   //   height: isTablet || isMobile ? 250 : 180,
+    //   //   width: isTablet || isMobile ? 250 : 180,
+    //   // );
+    //   imageWidget = const SizedBox.shrink();
+    // }
 
     Widget textContent = Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -107,8 +107,8 @@ class _ErrorScreenState extends State<ErrorScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            imageWidget,
-            Gaps.horizontalGapOf(40),
+            // imageWidget,
+            // Gaps.horizontalGapOf(40),
             Flexible(child: textContent),
           ],
         ),
@@ -119,7 +119,10 @@ class _ErrorScreenState extends State<ErrorScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          children: [imageWidget, Gaps.verticalGapOf(20), textContent],
+          children: [
+            // imageWidget, Gaps.verticalGapOf(20),
+            textContent,
+          ],
         ),
       );
     }
