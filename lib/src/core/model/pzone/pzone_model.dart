@@ -14,7 +14,7 @@ class PZServiceModel {
 
 List<PZServiceModel> pzoneBottomModel = [
   PZServiceModel(
-    label: 'Progress Report',
+    label: 'Progress report',
     icon: Assets.parentHome,
     route: AppRoutes.parentDashboardScreen,
   ),

@@ -74,16 +74,20 @@ class _FaqsScreenState extends State<FaqsScreen> {
                       ? _expandedIndex == index
                           ? AppStyles.text16PxSemiBold.copyWith(
                             color: AppColors.kSecondaryColor,
+                            fontFamily: AppConstants.kDMSansFont,
                           )
                           : AppStyles.text16PxMedium.copyWith(
                             color: AppColors.kPitchBlack,
+                            fontFamily: AppConstants.kDMSansFont,
                           )
                       : _expandedIndex == index
                       ? AppStyles.text20PxSemiBold.copyWith(
                         color: AppColors.kSecondaryColor,
+                        fontFamily: AppConstants.kDMSansFont,
                       )
                       : AppStyles.text20PxMedium.copyWith(
                         color: AppColors.kPitchBlack,
+                        fontFamily: AppConstants.kDMSansFont,
                       ),
             ),
             children: [
@@ -108,10 +112,12 @@ class _FaqsScreenState extends State<FaqsScreen> {
                       isMobilePortrait
                           ? AppStyles.text16PxRegular.copyWith(
                             height: 1.5,
+                            fontFamily: AppConstants.kDMSansFont,
                             color: AppColors.kBlack,
                           )
                           : AppStyles.text18PxRegular.copyWith(
                             height: 1.5,
+                            fontFamily: AppConstants.kDMSansFont,
                             color: AppColors.kBlack,
                           ),
                 ),

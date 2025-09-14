@@ -18,8 +18,14 @@ class ContactScreen extends StatelessWidget {
           'No contact information available',
           style:
               isMobilePortrait
-                  ? AppStyles.text16PxRegular.copyWith(color: Colors.grey)
-                  : AppStyles.text20PxRegular.copyWith(color: Colors.grey),
+                  ? AppStyles.text16PxRegular.copyWith(
+                    color: Colors.grey,
+                    fontFamily: AppConstants.kDMSansFont,
+                  )
+                  : AppStyles.text20PxRegular.copyWith(
+                    color: Colors.grey,
+                    fontFamily: AppConstants.kDMSansFont,
+                  ),
         ),
       );
     }
@@ -35,9 +41,11 @@ class ContactScreen extends StatelessWidget {
                 isMobilePortrait
                     ? AppStyles.text16PxSemiBold.copyWith(
                       height: 1.6,
+                      fontFamily: AppConstants.kDMSansFont,
                       color: AppColors.kBlack,
                     )
                     : AppStyles.text20PxBold.copyWith(
+                      fontFamily: AppConstants.kDMSansFont,
                       color: AppColors.kSecondaryColor,
                     ),
           ),
@@ -48,10 +56,12 @@ class ContactScreen extends StatelessWidget {
                 isMobilePortrait
                     ? AppStyles.text16PxRegular.copyWith(
                       height: 1.6,
+                      fontFamily: AppConstants.kDMSansFont,
                       color: AppColors.kBlack,
                     )
                     : AppStyles.text20PxRegular.copyWith(
                       height: 1.6,
+                      fontFamily: AppConstants.kDMSansFont,
                       color: AppColors.kBlack,
                     ),
           ),

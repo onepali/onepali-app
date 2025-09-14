@@ -44,8 +44,12 @@ class PBlogCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style:
                   isMobilePortrait
-                      ? AppStyles.text14PxRegular
-                      : AppStyles.text16PxRegular,
+                      ? AppStyles.text14PxRegular.copyWith(
+                        fontFamily: AppConstants.kDMSansFont,
+                      )
+                      : AppStyles.text16PxRegular.copyWith(
+                        fontFamily: AppConstants.kDMSansFont,
+                      ),
             ),
           ),
         ],

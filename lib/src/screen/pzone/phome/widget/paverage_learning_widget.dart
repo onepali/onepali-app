@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_styles.dart';
-import '../../../../core/widget/gaps.dart';
+
+import '../../../../src.dart';
 
 class PAverageLearningWidget extends StatelessWidget {
   final int completedActivities;
@@ -45,7 +44,9 @@ class PAverageLearningWidget extends StatelessWidget {
                   Text(
                     'Completed activities',
                     textAlign: TextAlign.center,
-                    style: AppStyles.text14PxMedium,
+                    style: AppStyles.text14PxMedium.copyWith(
+                      fontFamily: AppConstants.kDMSansFont,
+                    ),
                   ),
                 ],
               ),
@@ -82,7 +83,9 @@ class PAverageLearningWidget extends StatelessWidget {
                   Text(
                     'Answer success rate',
                     textAlign: TextAlign.center,
-                    style: AppStyles.text14PxMedium,
+                    style: AppStyles.text14PxMedium.copyWith(
+                      fontFamily: AppConstants.kDMSansFont,
+                    ),
                   ),
                 ],
               ),

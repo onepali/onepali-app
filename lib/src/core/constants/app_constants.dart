@@ -12,6 +12,7 @@ class AppConstants {
   /// [Fonts]
   static const String kMuktaFont = 'Mukta';
   static const String kPoppinsFont = 'Poppins';
+  static const String kDMSansFont = 'DM Sans';
 
   // Login Types
   static const String email = 'email';
