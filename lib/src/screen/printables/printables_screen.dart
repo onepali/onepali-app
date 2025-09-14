@@ -45,7 +45,7 @@ class _PrintablesScreenState extends State<PrintablesScreen> {
         return StatusHandler(
           status: printablesProvider.status,
           hasData: printablesProvider.printables.isNotEmpty,
-          errorTitle: 'No Printables Available',
+          errorTitle: 'No printables available',
           errorMessage: 'Please check back later for new printables.',
           onRetry: () {
             context.read<PrintablesProvider>().fetchPrintables();

@@ -37,7 +37,7 @@ class _SongScreenState extends State<SongScreen> {
         return StatusHandler(
           status: songProvider.status,
           hasData: songProvider.songs.isNotEmpty,
-          errorTitle: 'No Songs Available',
+          errorTitle: 'No songs available',
           errorMessage: 'Please check back later for new songs.',
           checkConnectivity: false,
           onRetry: () {

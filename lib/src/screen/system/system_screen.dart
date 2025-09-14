@@ -81,7 +81,7 @@ class _SystemScreenState extends State<SystemScreen>
           return StatusHandler(
             status: provider.status,
             hasData: true,
-            errorTitle: 'Error Fetching Data',
+            errorTitle: 'Error fetching data',
             errorMessage: 'Please try again later.',
             onRetry: () {
               context.read<SystemProvider>().fetchSystemData();
