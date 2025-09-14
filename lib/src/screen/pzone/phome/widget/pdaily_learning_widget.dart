@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_styles.dart';
-import '../../../../core/widget/gaps.dart';
+import '../../../../src.dart';
 
 class PDailyLearningWidget extends StatelessWidget {
   final int dayStreak;
@@ -27,7 +25,12 @@ class PDailyLearningWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('Days learning', style: AppStyles.text14PxMedium),
+          Text(
+            'Days learning',
+            style: AppStyles.text14PxMedium.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            ),
+          ),
           Gaps.verticalGapOf(8),
           Text(
             '$dayStreak/7',
@@ -43,7 +46,12 @@ class PDailyLearningWidget extends StatelessWidget {
               final checked = weeklyStreak.length > i && weeklyStreak[i];
               return Column(
                 children: [
-                  Text(days[i], style: AppStyles.text12PxRegular),
+                  Text(
+                    days[i],
+                    style: AppStyles.text12PxRegular.copyWith(
+                      fontFamily: AppConstants.kDMSansFont,
+                    ),
+                  ),
                   Gaps.verticalGapOf(4),
                   Icon(
                     checked ? Icons.check_circle : Icons.radio_button_unchecked,

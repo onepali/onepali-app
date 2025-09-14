@@ -74,182 +74,176 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Widget _buildChildProfilesGrid() {
-    final items = List<Widget>.generate(
-      widget.data.length +
-          (widget.isParent ? 0 : 1), // Only add 'Add Child' if not parent
-      (index) {
-        if (index < widget.data.length) {
-          final child = widget.data[index];
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                onTap: () async {
+    final items = List<
+      Widget
+    >.generate(widget.data.length + (widget.isParent ? 1 : 0), (index) {
+      if (index < widget.data.length) {
+        final child = widget.data[index];
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                logger.i(
+                  '👆 DrawerScreen: Child selected - ${child.fullName} (${child.uid})',
+                );
+                setState(() {
+                  _selectedChildIndex = index;
+                });
+                logger.i('🛑 Stopping tracking for previous child');
+                await ScreenTimeService.instance.stopTracking();
+                logger.d('💾 Saving child data to local storage');
+                await ChildLocalStorage.saveCurrentChildId(child.uid);
+                await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
+                if (!mounted) return;
+                final authState = Provider.of<AuthState>(
+                  context,
+                  listen: false,
+                );
+                authState.setCurrentChildId(child.uid);
+                if (!mounted) return;
+                final childProvider = Provider.of<ChildUserProvider>(
+                  context,
+                  listen: false,
+                );
+                await childProvider.updateScreenTimeEnabledStatusByChildId(
+                  child.uid,
+                );
+                if (child.hasScreenTime && child.screenTime > 0) {
                   logger.i(
-                    '👆 DrawerScreen: Child selected - ${child.fullName} (${child.uid})',
+                    '🔍 Checking screen time limit for child ${child.uid} before navigation',
                   );
-                  setState(() {
-                    _selectedChildIndex = index;
-                  });
-                  logger.i('🛑 Stopping tracking for previous child');
-                  await ScreenTimeService.instance.stopTracking();
-                  logger.d('💾 Saving child data to local storage');
-                  await ChildLocalStorage.saveCurrentChildId(child.uid);
-                  await ChildLocalStorage.saveCurrentAvatarUrl(child.avatarUrl);
-                  if (!mounted) return;
-                  final authState = Provider.of<AuthState>(
-                    context,
-                    listen: false,
-                  );
-                  authState.setCurrentChildId(child.uid);
-                  if (!mounted) return;
-                  final childProvider = Provider.of<ChildUserProvider>(
-                    context,
-                    listen: false,
-                  );
-                  await childProvider.updateScreenTimeEnabledStatusByChildId(
-                    child.uid,
-                  );
-                  if (child.hasScreenTime && child.screenTime > 0) {
-                    logger.i(
-                      '🔍 Checking screen time limit for child ${child.uid} before navigation',
+                  final isLimitExceeded = await ScreenTimeService.instance
+                      .checkScreenTimeLimitExceeded(child.uid);
+                  if (isLimitExceeded) {
+                    logger.w(
+                      '⚠️ Screen time limit already exceeded for child ${child.uid}',
                     );
-                    final isLimitExceeded = await ScreenTimeService.instance
-                        .checkScreenTimeLimitExceeded(child.uid);
-                    if (isLimitExceeded) {
-                      logger.w(
-                        '⚠️ Screen time limit already exceeded for child ${child.uid}',
-                      );
-                      return;
-                    }
-                  } else {
-                    logger.i(
-                      '🚫 Screen time disabled for child ${child.fullName}, skipping limit check',
-                    );
+                    return;
                   }
-                  logger.i('🔄 Navigating to dashboard with new child');
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                  UserAppBar.setTabIndex(0);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => DashboardScreen(),
-                      settings: RouteSettings(name: AppRoutes.dashboardScreen),
-                    ),
+                } else {
+                  logger.i(
+                    '🚫 Screen time disabled for child ${child.fullName}, skipping limit check',
                   );
-                },
-                child: Container(
+                }
+                logger.i('🔄 Navigating to dashboard with new child');
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                UserAppBar.setTabIndex(0);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => DashboardScreen(),
+                    settings: RouteSettings(name: AppRoutes.dashboardScreen),
+                  ),
+                );
+              },
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color:
+                        index == _selectedChildIndex
+                            ? AppColors.kPrimaryColor
+                            : AppColors.kTransparentColor,
+                    width: 3,
+                  ),
+                ),
+                child: CustomImage(
+                  child.avatarUrl,
                   height: 60,
                   width: 60,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color:
-                          index == _selectedChildIndex
-                              ? AppColors.kPrimaryColor
-                              : AppColors.kTransparentColor,
-                      width: 3,
-                    ),
-                  ),
-                  child: CustomImage(
-                    child.avatarUrl,
-                    height: 60,
-                    width: 60,
-                    isProfileImage: true,
-                  ),
+                  isProfileImage: true,
                 ),
+              ),
+            ),
+            Gaps.horizontalGapOf(15),
+            SizedBox(
+              width: 150,
+              child: Text(
+                child.fullName.split(' ')[0],
+                style: AppStyles.text20PxMedium.copyWith(
+                  color: AppColors.kWhite,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            customInkwell(
+              onTap: () {
+                if (index == _selectedChildIndex) {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                    ),
+                  );
+                } else {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                      childId: targetChild.uid,
+                    ),
+                  );
+                }
+              },
+              child: const Icon(
+                Icons.local_police,
+                size: 32,
+                color: AppColors.kYellow,
+              ),
+            ),
+          ],
+        );
+      } else {
+        // Only show 'Add Child' if in parent zone
+        return GestureDetector(
+          onTap: () {
+            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
+              DialogManager.showCustomDialog(
+                context: context,
+                title: 'You\'ve added 3 kids!',
+                content:
+                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                confirmButtonText: 'Add for \$5',
+                onConfirm: () {},
+              );
+              return;
+            } else {
+              Utility.navigate(context, AppRoutes.childRegisterScreen);
+            }
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 55,
+                width: 55,
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade600,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.add, color: AppColors.kWhite, size: 36),
               ),
               Gaps.horizontalGapOf(15),
-              SizedBox(
-                width: 150,
-                child: Text(
-                  child.fullName.split(' ')[0],
-                  style: AppStyles.text20PxMedium.copyWith(
-                    color: AppColors.kWhite,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              customInkwell(
-                onTap: () {
-                  if (index == _selectedChildIndex) {
-                    final targetChild = widget.data[index];
-                    Utility.navigateMaterialRoute(
-                      context,
-                      AchievementScreen(
-                        name: targetChild.fullName,
-                        profileImage: targetChild.avatarUrl,
-                      ),
-                    );
-                  } else {
-                    final targetChild = widget.data[index];
-                    Utility.navigateMaterialRoute(
-                      context,
-                      AchievementScreen(
-                        name: targetChild.fullName,
-                        profileImage: targetChild.avatarUrl,
-                        childId: targetChild.uid,
-                      ),
-                    );
-                  }
-                },
-                child: const Icon(
-                  Icons.local_police,
-                  size: 32,
-                  color: AppColors.kYellow,
+              Text(
+                'Add child',
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: AppStyles.text20PxMedium.copyWith(
+                  color: AppColors.kWhite,
                 ),
               ),
             ],
-          );
-        } else {
-          // Only show 'Add Child' if not parent
-          return GestureDetector(
-            onTap: () {
-              if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
-                DialogManager.showCustomDialog(
-                  context: context,
-                  title: 'You\'ve added 3 kids!',
-                  content:
-                      'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
-                  confirmButtonText: 'Add for \$5',
-                  onConfirm: () {},
-                );
-                return;
-              } else {
-                Utility.navigate(context, AppRoutes.childRegisterScreen);
-              }
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 55,
-                  width: 55,
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade600,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: AppColors.kWhite,
-                    size: 36,
-                  ),
-                ),
-                Gaps.horizontalGapOf(15),
-                Text(
-                  'Add child',
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  style: AppStyles.text20PxMedium.copyWith(
-                    color: AppColors.kWhite,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-      },
-    );
+          ),
+        );
+      }
+    });
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),

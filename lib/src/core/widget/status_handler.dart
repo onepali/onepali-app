@@ -70,7 +70,7 @@ class _StatusHandlerState extends State<StatusHandler> {
 
       case DataFetchStatus.error:
         return ErrorScreen(
-          title: widget.errorTitle ?? 'Error Fetching Data',
+          title: widget.errorTitle ?? 'Error fetching data',
           message: widget.errorMessage ?? 'Please try again later.',
           onRetry: widget.onRetry,
           isInternetError: widget.checkConnectivity ? !_isConnected : false,
@@ -89,7 +89,7 @@ class _StatusHandlerState extends State<StatusHandler> {
             );
           }
           return ErrorScreen(
-            title: widget.errorTitle ?? 'No Data Available',
+            title: widget.errorTitle ?? 'No data available',
             message: widget.errorMessage ?? 'Please check back later.',
             onRetry: widget.onRetry,
             isInternetError: false,

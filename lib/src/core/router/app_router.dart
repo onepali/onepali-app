@@ -61,6 +61,9 @@ class AppRoutes {
   static const String childProfileScreen = '/cprofile/update';
   static const String parentProfileScreen = '/pz_profile/update';
 
+  /// [Printable] Routes
+  static const String printableScreen = '/printables';
+
   //*--------- Parent Zone Routes ---------*/
   /// [Parent] Routes
   static const String parentDashboardScreen = '/parent/dashboard';
@@ -157,6 +160,7 @@ class AppRoutes {
           child: ModalRoute.of(context)?.settings.arguments as ChildUserModel,
         ),
     parentProfileScreen: (context) => const UserScreen(),
+    printableScreen: (context) => const PrintablesScreen(),
 
     // Parent Zone Routes
     parentDashboardScreen: (context) => const ParentDashboardScreen(),

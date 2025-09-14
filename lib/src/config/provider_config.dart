@@ -47,6 +47,9 @@ class ProviderConfig {
   /// [Reward] Provider
   static final RewardProvider rewardProvider = RewardProvider();
 
+  /// [Printables] Provider
+  static final PrintablesProvider printablesProvider = PrintablesProvider();
+
   //* --------------------------- PZone Provider --------------------------- *//
 
   /// PZ [Home] Provider
@@ -106,6 +109,10 @@ class ProviderConfig {
     ChangeNotifierProvider<StoryProvider>(create: (_) => storyProvider),
     ChangeNotifierProvider<RewardProvider>(create: (_) => rewardProvider),
 
+    ChangeNotifierProvider<PrintablesProvider>(
+      create: (_) => printablesProvider,
+    ),
+
     //* --------------------------- PZone Provider --------------------------- *//
     // ChangeNotifierProvider<PzHomeProvider>(create: (_) => pzHomeProvider),
     ChangeNotifierProvider<PzMetricsProvider>(create: (_) => pzMetricsProvider),
@@ -147,6 +154,7 @@ class ProviderConfig {
     songProvider.dispose();
     storyProvider.dispose();
     rewardProvider.dispose();
+    printablesProvider.dispose();
 
     // PZone Providers
     // pzHomeProvider.dispose();

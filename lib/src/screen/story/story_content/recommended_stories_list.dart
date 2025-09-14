@@ -23,7 +23,7 @@ class RecommendedStoriesList extends StatelessWidget {
         return StatusHandler(
           status: recommendedProvider.status,
           hasData: recommendedStoryModels.isNotEmpty,
-          errorTitle: 'No Recommended Stories',
+          errorTitle: 'No recommended stories',
           errorMessage: 'Please check back later for new stories.',
           checkConnectivity: false,
           onRetry: () {

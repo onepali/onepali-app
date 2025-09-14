@@ -43,7 +43,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
         return StatusHandler(
           status: rewardProvider.status,
           hasData: true,
-          errorTitle: 'Error Loading Stickers',
+          errorTitle: 'Error loading stickers',
           errorMessage: 'Please try again later.',
           onRetry: () {
             if (widget.childId != null) {

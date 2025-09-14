@@ -30,7 +30,7 @@ class CourseScreenState extends State<CourseScreen> {
         return StatusHandler(
           status: lessonProvider.status,
           hasData: lessonProvider.courses.isNotEmpty,
-          errorTitle: 'No Courses Available',
+          errorTitle: 'No courses available',
           errorMessage: 'Please check back later for new courses.',
           checkConnectivity: false,
           onRetry: () {

@@ -18,8 +18,14 @@ class AboutUsScreen extends StatelessWidget {
           'No about information available',
           style:
               isMobilePortrait
-                  ? AppStyles.text16PxRegular.copyWith(color: Colors.grey)
-                  : AppStyles.text20PxRegular.copyWith(color: Colors.grey),
+                  ? AppStyles.text16PxRegular.copyWith(
+                    color: Colors.grey,
+                    fontFamily: AppConstants.kDMSansFont,
+                  )
+                  : AppStyles.text20PxRegular.copyWith(
+                    color: Colors.grey,
+                    fontFamily: AppConstants.kDMSansFont,
+                  ),
         ),
       );
     }
@@ -48,10 +54,12 @@ class AboutUsScreen extends StatelessWidget {
                     ? AppStyles.text16PxRegular.copyWith(
                       height: 1.6,
                       color: AppColors.kBlack,
+                      fontFamily: AppConstants.kDMSansFont,
                     )
                     : AppStyles.text20PxRegular.copyWith(
                       height: 1.6,
                       color: AppColors.kBlack,
+                      fontFamily: AppConstants.kDMSansFont,
                     ),
           ),
 

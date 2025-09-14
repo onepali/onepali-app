@@ -44,7 +44,12 @@ class PHomeCard extends StatelessWidget {
               child: DropdownButton<String>(
                 value: selectedChildUid,
                 isExpanded: true,
-                hint: const Text('Select Child'),
+                hint: Text(
+                  'Select child',
+                  style: AppStyles.text16PxRegular.copyWith(
+                    fontFamily: AppConstants.kDMSansFont,
+                  ),
+                ),
                 items:
                     children.map((child) {
                       return DropdownMenuItem<String>(
@@ -60,7 +65,12 @@ class PHomeCard extends StatelessWidget {
                                       : null,
                             ),
                             Gaps.horizontalGapOf(12),
-                            Text(child.fullName),
+                            Text(
+                              child.fullName,
+                              style: AppStyles.text16PxRegular.copyWith(
+                                fontFamily: AppConstants.kDMSansFont,
+                              ),
+                            ),
                           ],
                         ),
                       );
