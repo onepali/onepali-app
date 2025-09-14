@@ -45,6 +45,9 @@ export 'recommended/recommended_lesson_model.dart';
 /// [Course] Model
 export 'course/course_model.dart';
 
+/// [Printables] Model
+export 'printables/printable_model.dart';
+
 /// [Story] Model
 export 'story/story_model.dart';
 
