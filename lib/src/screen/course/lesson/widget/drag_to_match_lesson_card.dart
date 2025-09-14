@@ -822,7 +822,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                     _onDragTargetAccept(target.id!, details.data);
                   },
                   builder: (context, candidateData, rejectedData) {
-                    return Container(
+                    return SizedBox(
                       width: size,
                       height: size,
                       // decoration: BoxDecoration(
@@ -936,7 +936,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                         : Offset.zero,
                 child: Draggable<String>(
                   data: target.id!,
-                  feedback: Container(
+                  feedback: SizedBox(
                     width: size,
                     height: size,
                     // decoration: BoxDecoration(
@@ -958,7 +958,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                       fit: BoxFit.contain,
                     ),
                   ),
-                  childWhenDragging: Container(
+                  childWhenDragging: SizedBox(
                     width: size,
                     height: size,
                     // decoration: BoxDecoration(

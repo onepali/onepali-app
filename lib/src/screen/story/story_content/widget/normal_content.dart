@@ -28,8 +28,16 @@ class _NormalContentState extends State<NormalContent> {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          height: AppConstants.kIconSize,
-          width: AppConstants.kIconSize,
+          height:
+              PlatformUtility.isTablet(context) &&
+                      PlatformUtility.isLandscape(context)
+                  ? AppConstants.kIconSize + AppConstants.kIconSize
+                  : AppConstants.kIconSize,
+          width:
+              PlatformUtility.isTablet(context) &&
+                      PlatformUtility.isLandscape(context)
+                  ? AppConstants.kIconSize + AppConstants.kIconSize
+                  : AppConstants.kIconSize,
           decoration: BoxDecoration(
             color: AppColors.kWhite,
             shape: BoxShape.circle,
@@ -42,9 +50,11 @@ class _NormalContentState extends State<NormalContent> {
             ],
           ),
           padding: const EdgeInsets.symmetric(
-            horizontal: 14,
+            horizontal: 24,
             // vertical: 2,
           ),
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+
           child: SvgHelper.fromSource(
             path: isLeft ? Assets.leftArrow : Assets.rightArrow,
             // height: 30,
@@ -83,8 +93,16 @@ class _NormalContentState extends State<NormalContent> {
                   },
                   child: SvgHelper.fromSource(
                     path: Assets.sound,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
+                    height:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
+                    width:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
                   ),
                 );
                 return storyProvider.isPlaying
@@ -97,7 +115,7 @@ class _NormalContentState extends State<NormalContent> {
         // Top right wrong icon
         Positioned(
           top: 24,
-          right: 16,
+          right: 28,
           child: customInkwell(
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
@@ -106,8 +124,16 @@ class _NormalContentState extends State<NormalContent> {
             },
             child: SvgHelper.fromSource(
               path: Assets.wrong,
-              height: AppConstants.kIconSize,
-              width: AppConstants.kIconSize,
+              height:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
+              width:
+                  PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? AppConstants.kIconSize + AppConstants.kIconSize
+                      : AppConstants.kIconSize,
             ),
           ),
         ),
@@ -170,8 +196,16 @@ class _NormalContentState extends State<NormalContent> {
                         if (iconPath.isNotEmpty && i == 0)
                           SvgHelper.fromSource(
                             path: iconPath,
-                            height: 26,
-                            width: 26,
+                            height:
+                                PlatformUtility.isTablet(context) &&
+                                        PlatformUtility.isLandscape(context)
+                                    ? 40
+                                    : 26,
+                            width:
+                                PlatformUtility.isTablet(context) &&
+                                        PlatformUtility.isLandscape(context)
+                                    ? 40
+                                    : 26,
                             type: SvgSourceType.network,
                           ),
                         if (iconPath.isNotEmpty && i == 0)
@@ -183,6 +217,11 @@ class _NormalContentState extends State<NormalContent> {
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.text20PxMedium.copyWith(
                             fontFamily: AppConstants.kMuktaFont,
+                            fontSize:
+                                PlatformUtility.isTablet(context) &&
+                                        PlatformUtility.isLandscape(context)
+                                    ? 32
+                                    : 20,
                           ),
                         ),
                       ],

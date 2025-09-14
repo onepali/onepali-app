@@ -89,9 +89,15 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   String label = opt.messageEn;
                   dynamic icon;
                   String iconType = '';
-                  Color textColor = isSelected ? AppColors.kWhite : AppColors.kBlack;
+                  Color textColor =
+                      isSelected ? AppColors.kWhite : AppColors.kBlack;
                   TextStyle? textStyle = AppStyles.text16PxBold.copyWith(
                     color: textColor,
+                    fontSize:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? 32
+                            : 16,
                   );
                   if (isSelected) {
                     if (isCorrect == true && correct) {
@@ -102,6 +108,11 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                       textColor = AppColors.kWhite;
                       textStyle = AppStyles.text16PxBold.copyWith(
                         color: AppColors.kWhite,
+                        fontSize:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 28
+                                : 16,
                       );
                     } else if (isCorrect == false && !correct) {
                       bgColor = AppColors.kButtonRed;
@@ -109,6 +120,11 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                       textColor = AppColors.kDrawerBgColor;
                       textStyle = AppStyles.text16PxBold.copyWith(
                         color: AppColors.kDrawerBgColor,
+                        fontSize:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 28
+                                : 16,
                       );
                     }
                   }
@@ -117,8 +133,17 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                     showBorder: true,
                     elevation: 0,
                     radius: 60,
+                    height:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? 60
+                            : 48,
                     textStyle: textStyle,
-                    width: 120,
+                    width:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? 220
+                            : 120,
                     onTap: () {
                       if (isCorrect == true && correct) {
                         return;
@@ -152,8 +177,16 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   },
                   child: SvgHelper.fromSource(
                     path: Assets.sound,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
+                    height:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
+                    width:
+                        PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context)
+                            ? AppConstants.kIconSize + AppConstants.kIconSize
+                            : AppConstants.kIconSize,
                   ),
                 );
                 return storyProvider.isPlaying

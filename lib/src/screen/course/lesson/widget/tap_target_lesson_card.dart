@@ -637,7 +637,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     // Check if this is a rabbit to apply horizontal flip
     final bool isRabbit = target.id?.toLowerCase() == 'rabbit';
 
-    return Container(
+    return SizedBox(
       width: targetSize,
       height: targetSize,
       // decoration: BoxDecoration(
