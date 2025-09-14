@@ -159,10 +159,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                             ),
                           ),
                           Gaps.horizontalGapOf(8),
-                          Icon(
-                            banner.icon,
-                            color: banner.color.withValues(alpha: 0.7),
-                          ),
+                          Icon(banner.icon, color: banner.color),
                         ],
                       ),
                     ),
