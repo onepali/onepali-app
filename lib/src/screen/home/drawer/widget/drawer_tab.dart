@@ -152,7 +152,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
   Widget _buildChildProfilesGrid() {
     final items = List<Widget>.generate(
       widget.data.length +
-          (widget.isParent ? 0 : 1), // Only add 'Add Child' if not parent
+          (widget.isParent ? 1 : 0), // Only add 'Add Child' if in parent zone
       (index) {
         if (index < widget.data.length) {
           final child = widget.data[index];
@@ -219,7 +219,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             ],
           );
         } else {
-          // Only show 'Add Child' if not parent
+          // Only show 'Add Child' if in parent zone
           return GestureDetector(
             onTap: () {
               if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
