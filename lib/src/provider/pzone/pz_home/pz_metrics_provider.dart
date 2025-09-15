@@ -77,6 +77,7 @@ class PzMetricsProvider extends ChangeNotifier {
               'weeklyStreak': newMetrics.weeklyStreak,
               'averageDailyLearningTime': newMetrics.averageDailyLearningTime,
               'mostPracticedTopics': newMetrics.mostPracticedTopics,
+              'topicCounts': newMetrics.topicCounts,
             },
           });
       _metrics = newMetrics;
@@ -97,6 +98,7 @@ class PzMetricsProvider extends ChangeNotifier {
                 'weeklyStreak': newMetrics.weeklyStreak,
                 'averageDailyLearningTime': newMetrics.averageDailyLearningTime,
                 'mostPracticedTopics': newMetrics.mostPracticedTopics,
+                'topicCounts': newMetrics.topicCounts,
               },
             }, SetOptions(merge: true));
         _metrics = newMetrics;
@@ -121,7 +123,23 @@ class PzMetricsProvider extends ChangeNotifier {
     required String parentUid,
     required String childUid,
   }) async {
-    if (_sessionStartTime == null || _metrics == null) return;
+    if (_sessionStartTime == null) return;
+
+    // If metrics are null, fetch them first
+    if (_metrics == null) {
+      logger.w(
+        'PzMetricsProvider.endLearningSession - _metrics is null, fetching metrics first',
+      );
+      await fetchMetrics(parentUid: parentUid, childUid: childUid);
+
+      // If still null after fetching, abort
+      if (_metrics == null) {
+        logger.e(
+          'PzMetricsProvider.endLearningSession - failed to fetch metrics, aborting',
+        );
+        return;
+      }
+    }
 
     final sessionDuration =
         DateTime.now().difference(_sessionStartTime!).inMinutes;
@@ -161,30 +179,47 @@ class PzMetricsProvider extends ChangeNotifier {
     required String topicName, // e.g., "Alphabets", "Animals", "Festival Songs"
     required ActivityType activityType, // lesson, story, song
   }) async {
-    if (_metrics == null) return;
+    logger.d(
+      'PzMetricsProvider.trackActivityCompletion called: $topicName ($activityType), parentUid: $parentUid, childUid: $childUid',
+    );
+
+    // If metrics are null, fetch them first
+    if (_metrics == null) {
+      logger.w(
+        'PzMetricsProvider.trackActivityCompletion - _metrics is null, fetching metrics first',
+      );
+      await fetchMetrics(parentUid: parentUid, childUid: childUid);
+
+      // If still null after fetching, abort
+      if (_metrics == null) {
+        logger.e(
+          'PzMetricsProvider.trackActivityCompletion - failed to fetch metrics, aborting',
+        );
+        return;
+      }
+    }
+
+    logger.d(
+      'PzMetricsProvider.trackActivityCompletion - current completedActivities: ${_metrics!.completedActivities}',
+    );
 
     // Increment completed activities
     final newCompletedActivities = _metrics!.completedActivities + 1;
 
-    // Update most practiced topics - add the new topic to the list
-    final updatedTopicsList = List<String>.from(_metrics!.mostPracticedTopics);
-    updatedTopicsList.add(topicName);
+    // Update topic counts - increment count for this topic
+    final updatedTopicCounts = Map<String, int>.from(_metrics!.topicCounts);
+    updatedTopicCounts[topicName] = (updatedTopicCounts[topicName] ?? 0) + 1;
 
-    // Count occurrences of each topic
-    final topicCounts = <String, int>{};
-    for (final topic in updatedTopicsList) {
-      topicCounts[topic] = (topicCounts[topic] ?? 0) + 1;
-    }
-
-    // Sort topics by count (descending) and take top 5
+    // Sort topics by count (descending) and take top 5 for display
     final sortedTopics =
-        topicCounts.entries.toList()
+        updatedTopicCounts.entries.toList()
           ..sort((a, b) => b.value.compareTo(a.value));
     final mostPracticedTopics = sortedTopics.take(5).map((e) => e.key).toList();
 
     final updatedMetrics = _metrics!.copyWith(
       completedActivities: newCompletedActivities,
       mostPracticedTopics: mostPracticedTopics,
+      topicCounts: updatedTopicCounts,
     );
 
     await updateMetrics(
@@ -205,7 +240,21 @@ class PzMetricsProvider extends ChangeNotifier {
     required bool isCorrect,
     required String topicName,
   }) async {
-    if (_metrics == null) return;
+    // If metrics are null, fetch them first
+    if (_metrics == null) {
+      logger.w(
+        'PzMetricsProvider.trackAnswer - _metrics is null, fetching metrics first',
+      );
+      await fetchMetrics(parentUid: parentUid, childUid: childUid);
+
+      // If still null after fetching, abort
+      if (_metrics == null) {
+        logger.e(
+          'PzMetricsProvider.trackAnswer - failed to fetch metrics, aborting',
+        );
+        return;
+      }
+    }
 
     // Update session tracking
     _sessionCorrectAnswers[topicName] =

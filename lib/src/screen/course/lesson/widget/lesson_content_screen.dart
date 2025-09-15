@@ -181,6 +181,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         widget.lesson.id,
         widget.lesson.lessonName,
       );
+
+      // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+      await MetricsTrackingHelper.trackLessonCompletion(
+        context: context,
+        lessonId: widget.lesson.id.toString(),
+        topicName: widget.lesson.lessonName,
+      );
     } catch (e) {
       logger.e('Error completing lesson: $e');
     }
@@ -283,6 +290,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             widget.lesson.id,
                             widget.lesson.lessonName,
                           );
+
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
                         } catch (e) {
                           logger.e('Error completing lesson: $e');
                         }
@@ -314,6 +328,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             widget.lesson.id,
                             widget.lesson.lessonName,
                           );
+
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
                         } catch (e) {
                           logger.e('Error completing lesson: $e');
                         }
@@ -336,14 +357,33 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         _nextContent();
                       },
                       onLessonComplete: () async {
+                        logger.d(
+                          'DragToMatchLessonCard onLessonComplete callback started',
+                        );
                         await _saveProgress(content, contentIndex);
                         // For drag_to_match lessons, handle completion
                         try {
+                          logger.d(
+                            'Calling incrementTotalLessonsCompleted for lesson: ${widget.lesson.id}',
+                          );
                           final lessonProvider = context.read<LessonProvider>();
                           await lessonProvider.incrementTotalLessonsCompleted(
                             context,
                             widget.lesson.id,
                             widget.lesson.lessonName,
+                          );
+
+                          logger.d(
+                            'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
+                          );
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
+                          logger.d(
+                            'MetricsTrackingHelper.trackLessonCompletion completed for lesson: ${widget.lesson.id}',
                           );
                         } catch (e) {
                           logger.e('Error completing lesson: $e');

@@ -35,6 +35,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
     final metricsProvider = context.read<PzMetricsProvider>();
     final userProvider = context.read<UserProvider>();
 
+    logger.d('Fetching achievement data for childId: ${widget.childId}');
     await rewardProvider.fetchChildRewards(childId: widget.childId);
 
     // Fetch metrics data
@@ -71,6 +72,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
     totalStarBadge = rewardProvider.totalStarBadge;
     completedActivities = metricsProvider.metrics?.completedActivities ?? 0;
     dayStreak = metricsProvider.metrics?.dayStreak ?? 0;
+    logger.d(
+      'AchievementScreen - totalStarBadge: $totalStarBadge, completedActivities: $completedActivities, dayStreak: $dayStreak',
+    );
 
     // Responsive grid settings
     final double horizontalPadding = isTabletLandScape ? 32.0 : 0.0;
