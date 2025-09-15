@@ -108,28 +108,29 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
           child: Stack(
             children: [
               if (isTablet)
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 32, bottom: 16),
-                    child: CustomImage(
-                      Assets.parentZoneImage,
-                      imageType: CustomImageType.local,
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      boxFit: BoxFit.contain,
-                    ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: CustomImage(
+                    Assets.parentZoneImage,
+                    imageType: CustomImageType.local,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    boxFit: BoxFit.contain,
                   ),
                 ),
-              Center(
+              Align(
+                alignment: !isTablet ? Alignment.center : Alignment.topCenter,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      if (isTablet) Gaps.verticalGapOf(80),
                       Text(
                         'Parents only',
                         style: AppStyles.text40PxBold.copyWith(
                           color: AppColors.kWhite,
+                          fontSize: isTablet ? 52 : 40,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -138,6 +139,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                         'Enter your year of birth',
                         style: AppStyles.text20PxRegular.copyWith(
                           color: AppColors.kWhite,
+                          fontSize: isTablet ? 24 : 20,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -145,7 +147,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       CustomPinput(
                         length: 4,
                         controller: _pinController,
-                        boxSize: 56,
+                        boxSize: isTablet ? 70 : 56,
                         boxSpacing: 16,
                         activeColor: AppColors.kWhite,
                         inactiveColor: AppColors.kWhite.withValues(alpha: 0.3),
@@ -184,17 +186,10 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.kWhite.withValues(alpha: 0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: const Icon(
-                      Icons.close,
-                      color: AppColors.kWhite,
-                      size: 32,
-                    ),
+                  child: SvgHelper.fromSource(
+                    path: Assets.wrong,
+                    color: AppColors.kButtonGrey,
+                    height: 64,
                   ),
                 ),
               ),

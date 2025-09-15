@@ -34,7 +34,7 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
     final double verticalGap3 = isTabletPortrait ? 50.0 : 30.0;
     final double imageSize = isTabletPortrait ? 240.0 : 180.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
-    final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
+    // final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
     final double buttonSpacing = isTabletPortrait ? 20.0 : 15.0;
 
     final TextStyle titleStyle =
@@ -92,21 +92,15 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: bottomPadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Gaps.verticalGapOf(buttonGap),
-            _buildNextButton(
-              context,
-              childCount,
-              isTabletPortrait,
-              buttonSpacing,
-            ),
-            Gaps.verticalGapOf(buttonGap),
-          ],
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: bottomPadding),
+          child: _buildNextButton(
+            context,
+            childCount,
+            isTabletPortrait,
+            buttonSpacing,
+          ),
         ),
       ),
     );

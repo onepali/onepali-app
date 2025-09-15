@@ -97,35 +97,37 @@ class RegisterScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(isTabletPortrait ? 24.0 : 16.0),
-        decoration: BoxDecoration(
-          color: AppColors.kWhite,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.kGrey.withValues(alpha: 0.2),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: Offset(0, -1),
-            ),
-          ],
-        ),
-        child: Builder(
-          builder:
-              (context) => CustomMaterialButton(
-                label: 'Continue',
-                onTap: () {
-                  Utility.navigate(context, AppRoutes.rs1Screen);
-                },
-                elevation: 0,
-                showBorder: false,
-                backgroundColor: AppColors.kButtonGreen,
-                width: double.infinity,
-                textStyle:
-                    isTabletPortrait
-                        ? AppStyles.text18PxMedium
-                        : AppStyles.text16PxMedium,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: EdgeInsets.all(isTabletPortrait ? 24.0 : 16.0),
+          decoration: BoxDecoration(
+            color: AppColors.kWhite,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.kGrey.withValues(alpha: 0.2),
+                spreadRadius: 0,
+                blurRadius: 2,
+                offset: Offset(0, -1),
               ),
+            ],
+          ),
+          child: Builder(
+            builder:
+                (context) => CustomMaterialButton(
+                  label: 'Continue',
+                  onTap: () {
+                    Utility.navigate(context, AppRoutes.rs1Screen);
+                  },
+                  elevation: 0,
+                  showBorder: false,
+                  backgroundColor: AppColors.kButtonGreen,
+                  width: double.infinity,
+                  textStyle:
+                      isTabletPortrait
+                          ? AppStyles.text18PxMedium
+                          : AppStyles.text16PxMedium,
+                ),
+          ),
         ),
       ),
     );

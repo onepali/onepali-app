@@ -25,7 +25,7 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
     final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
     final double sliderBottomGap = isTabletPortrait ? 36.0 : 26.0;
     final double nextButtonGap = isTabletPortrait ? 50.0 : 40.0;
-    final double buttonSpacing = isTabletPortrait ? 32.0 : 20.0;
+    final double buttonSpacing = isTabletPortrait ? 25.0 : 20.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
@@ -89,9 +89,21 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
                 ),
               ),
               Gaps.verticalGapOf(nextButtonGap),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               _buildNextButton(context, isTabletPortrait),
               Gaps.verticalGapOf(buttonSpacing),
               _buildNotNowButton(context, isTabletPortrait),
+              Gaps.verticalGapOf(buttonSpacing),
             ],
           ),
         ),

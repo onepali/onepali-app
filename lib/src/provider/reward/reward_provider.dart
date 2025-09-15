@@ -110,6 +110,7 @@ class RewardProvider extends ChangeNotifier {
 
     final targetChildId =
         childId ?? await ChildLocalStorage.getCurrentChildId();
+    logger.d('fetchChildRewards - targetChildId: $targetChildId');
     if (targetChildId == null) {
       logger.e('Child ID not found');
       setStatus(DataFetchStatus.error);

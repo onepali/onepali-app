@@ -227,8 +227,8 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
 
                 textStyle:
                     isTablet && isLandscape
-                        ? AppStyles.text24PxBold
-                        : AppStyles.text16PxBold,
+                        ? AppStyles.text32PxBold
+                        : AppStyles.text18PxBold,
               ),
             ),
             Gaps.verticalGapOf(5),
@@ -359,6 +359,24 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(
+                      option.nameNp,
+                      style: AppStyles.text20PxBold.copyWith(
+                        color:
+                            option.nameEn.contains('rabbit')
+                                ? AppColors.kWhite
+                                : (option.textColor.isNotEmpty
+                                    ? Utility.parseHexColors(
+                                      option.textColor,
+                                    ).first
+                                    : AppColors.kBlack),
+                        fontFamily: AppConstants.kMuktaFont,
+                        fontWeight: FontWeight.bold,
+                        fontSize: isLandscape ? 50 : 24,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Gaps.verticalGapOf(15),
                     CustomImage(
                       option.image,
                       height: isLandscape ? 10.w(context) : 140,
@@ -369,20 +387,16 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
                       imageType: CustomImageType.network,
                     ),
                     Gaps.verticalGapOf(30),
-                    Text(
-                      option.nameNp,
-                      style: AppStyles.text20PxBold.copyWith(
-                        color: AppColors.kSecondaryColor,
-                        fontFamily: AppConstants.kMuktaFont,
-                        fontWeight: FontWeight.bold,
-                        fontSize: isLandscape ? 50 : 24,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+
                     Text(
                       option.nameEn,
                       style: AppStyles.text16PxMedium.copyWith(
-                        color: AppColors.kBlack,
+                        color:
+                            option.textColor.isNotEmpty
+                                ? Utility.parseHexColors(option.textColor).first
+                                : option.nameEn.contains('rabbit')
+                                ? AppColors.kWhite
+                                : AppColors.kBlack,
                         fontSize: isLandscape ? 28 : 16,
                       ),
                       textAlign: TextAlign.center,

@@ -54,18 +54,17 @@ class _PHomeScreenState extends State<PHomeScreen> {
     // Fetch metrics for selected child
     final parentUid = context.read<UserProvider>().userId;
     if (parentUid != null) {
-      context.read<PzMetricsProvider>().fetchMetrics(
-        parentUid: parentUid,
-        childUid: childUid,
-      )
-      // .then((_) {
-      //   if (!mounted) return;
-      //   context.read<PzMetricsProvider>().checkAndResetWeeklyStreak(
-      //     parentUid: parentUid,
-      //     childUid: childUid,
-      //   );
-      // })
-      ;
+      context
+          .read<PzMetricsProvider>()
+          .fetchMetrics(parentUid: parentUid, childUid: childUid)
+          .then((_) {
+            if (!mounted) return;
+
+            context.read<PzMetricsProvider>().checkAndResetWeeklyStreak(
+              parentUid: parentUid,
+              childUid: childUid,
+            );
+          });
     }
   }
 
