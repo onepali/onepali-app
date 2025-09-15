@@ -74,16 +74,30 @@ class MetricsTrackingHelper {
     required String topicName,
   }) async {
     try {
+      logger.d(
+        'trackLessonCompletion called for lessonId: $lessonId, topicName: $topicName',
+      );
+
       final userProvider = context.read<UserProvider>();
       // final authState = context.read<AuthState>();
 
       final parentUid = userProvider.userId;
       final childUid = await ChildLocalStorage.getCurrentChildId();
 
+      logger.d(
+        'trackLessonCompletion - parentUid: $parentUid, childUid: $childUid',
+      );
+
       // final childUid = authState.currentChildId;
 
       if (parentUid != null && childUid != null) {
-        if (!context.mounted) return;
+        if (!context.mounted) {
+          logger.w('trackLessonCompletion - context not mounted, aborting');
+          return;
+        }
+        logger.d(
+          'trackLessonCompletion - calling LessonProvider.trackLessonCompletion',
+        );
         await context.read<LessonProvider>().trackLessonCompletion(
           parentUid: parentUid,
           childUid: childUid,
@@ -91,6 +105,11 @@ class MetricsTrackingHelper {
           topicName: topicName,
           context: context,
         );
+        logger.d(
+          'trackLessonCompletion - LessonProvider.trackLessonCompletion completed',
+        );
+      } else {
+        logger.w('trackLessonCompletion - missing parentUid or childUid');
       }
     } catch (e) {
       logger.e('Error tracking lesson completion: $e');

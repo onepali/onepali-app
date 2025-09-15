@@ -32,14 +32,14 @@ class AchievementCard extends StatelessWidget {
     double marginVertical;
 
     if (isMobileLandscape) {
-      cardWidth = 130;
+      cardWidth = 20.w(context);
       cardHeight = double.infinity;
       titleFontSize = 16;
       valueFontSize = 28;
-      imageSize = 50;
+      imageSize = 65;
       padding = 16;
       marginHorizontal = 8;
-      marginVertical = 0;
+      marginVertical = 5;
     } else if (isTabletLandscape) {
       cardWidth = 200;
       cardHeight = double.infinity;
@@ -99,11 +99,19 @@ class AchievementCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              Gaps.verticalGapOf(isMobileLandscape ? 8 : 12),
+              Text(
+                achievement.subtitle,
+                textAlign: TextAlign.center,
+                style: AppStyles.text16PxRegular.copyWith(
+                  fontFamily: AppConstants.kDMSansFont,
+                ),
+              ),
 
               // Middle - Icon (takes remaining space)
               Expanded(
                 child: Align(
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment.center,
                   child: CustomImage(
                     achievement.imageUrl,
                     boxFit: BoxFit.contain,
@@ -115,7 +123,7 @@ class AchievementCard extends StatelessWidget {
               ),
 
               // Bottom section with title
-              Gaps.verticalGapOf(40),
+              Gaps.verticalGapOf(16),
               Text(
                 achievement.title,
                 style: AppStyles.text18PxMedium.copyWith(

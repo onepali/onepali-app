@@ -12,6 +12,7 @@ void main() {
         weeklyStreak: [true, true, false, true, true, false, true],
         averageDailyLearningTime: 30,
         mostPracticedTopics: ['Math', 'Science', 'English'],
+        topicCounts: {'Math': 5, 'Science': 3, 'English': 2},
       );
 
       expect(model.completedActivities, 10);
@@ -76,6 +77,7 @@ void main() {
         weeklyStreak: [false, true, true, false, false, true, true],
         averageDailyLearningTime: 25,
         mostPracticedTopics: ['Art', 'Music'],
+        topicCounts: {'Art': 4, 'Music': 3},
       );
 
       final json = model.toJson();
@@ -103,6 +105,7 @@ void main() {
         weeklyStreak: List.filled(7, false),
         averageDailyLearningTime: 30,
         mostPracticedTopics: ['Math'],
+        topicCounts: {'Math': 10},
       );
 
       final updated = original.copyWith(
@@ -126,6 +129,7 @@ void main() {
         weeklyStreak: List.filled(7, true),
         averageDailyLearningTime: 30,
         mostPracticedTopics: ['Math'],
+        topicCounts: {'Math': 10},
       );
 
       final copy = original.copyWith();
@@ -146,6 +150,7 @@ void main() {
         weeklyStreak: [true, false, true, false, true, false, true],
         averageDailyLearningTime: 0,
         mostPracticedTopics: [],
+        topicCounts: {},
       );
 
       expect(model.weeklyStreak.length, 7);

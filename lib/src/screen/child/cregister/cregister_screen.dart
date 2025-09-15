@@ -90,10 +90,20 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
                 // Gaps.verticalGapOf(5),
                 // InfoWidget.info('It will be the password for the parent zone.'),
                 Gaps.verticalGapOf(buttonTopGap),
-                _buildNextButton(context, isTabletPortrait),
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: horizontalPadding,
+            right: horizontalPadding,
+            bottom: isTabletPortrait ? 24.0 : 16.0,
+            top: 0,
+          ),
+          child: _buildNextButton(context, isTabletPortrait),
         ),
       ),
     );

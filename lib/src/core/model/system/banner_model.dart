@@ -29,8 +29,8 @@ List<BannerModel> spreadBannerList = [
       SharePlus.instance.share(
         ShareParams(
           text:
-              'Check out O Nepali, the app that makes learning Nepali fun for kids! Download it now: ${AppConstants.kAppLink}',
-          title: 'O Nepali - Fun Nepali Learning App',
+              'Discover interactive lessons with daily conversations and cultural stories.! Download it now: ${AppConstants.kAppLink}',
+          title: 'O Nepali – Learn Nepali the fun way for your child!',
         ),
       );
     },

@@ -218,9 +218,15 @@ class LessonProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     try {
+      logger.d(
+        'LessonProvider.trackLessonCompletion called for lessonId: $lessonId, topicName: $topicName',
+      );
       // Get the metrics provider
       final metricsProvider = context.read<PzMetricsProvider>();
 
+      logger.d(
+        'Calling PzMetricsProvider.trackActivityCompletion for lesson: $lessonId',
+      );
       // Track the activity completion
       await metricsProvider.trackActivityCompletion(
         parentUid: parentUid,

@@ -64,7 +64,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
               isMobilePortrait ? 16 : 24,
               isMobilePortrait ? 16 : 24,
             ),
-            iconColor: AppColors.kSecondaryColor,
+            iconColor: AppColors.kDrawerBgColor,
             collapsedIconColor: AppColors.kPitchBlack,
 
             title: Text(
@@ -73,7 +73,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
                   isMobilePortrait
                       ? _expandedIndex == index
                           ? AppStyles.text16PxSemiBold.copyWith(
-                            color: AppColors.kSecondaryColor,
+                            color: AppColors.kDrawerBgColor,
                             fontFamily: AppConstants.kDMSansFont,
                           )
                           : AppStyles.text16PxMedium.copyWith(
@@ -82,7 +82,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
                           )
                       : _expandedIndex == index
                       ? AppStyles.text20PxSemiBold.copyWith(
-                        color: AppColors.kSecondaryColor,
+                        color: AppColors.kDrawerBgColor,
                         fontFamily: AppConstants.kDMSansFont,
                       )
                       : AppStyles.text20PxMedium.copyWith(
@@ -113,12 +113,12 @@ class _FaqsScreenState extends State<FaqsScreen> {
                           ? AppStyles.text16PxRegular.copyWith(
                             height: 1.5,
                             fontFamily: AppConstants.kDMSansFont,
-                            color: AppColors.kBlack,
+                            color: AppColors.kDrawerBgColor,
                           )
                           : AppStyles.text18PxRegular.copyWith(
                             height: 1.5,
                             fontFamily: AppConstants.kDMSansFont,
-                            color: AppColors.kBlack,
+                            color: AppColors.kDrawerBgColor,
                           ),
                 ),
               ),

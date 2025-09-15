@@ -72,12 +72,15 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double titleFontSize = isMobileLandscape ? 28 : 35;
+    final double titleFontSize = isMobileLandscape ? 40 : 64;
     final double descriptionFontSize = isMobileLandscape ? 16 : 22;
     final double paddingH = isMobileLandscape ? 16 : 32;
     final double paddingV = isMobileLandscape ? 10 : 18;
     final double imageSize = isMobileLandscape ? 230 : 270;
-    final double audioButtonSize = isMobileLandscape ? 28 : 48;
+    final double audioButtonSize =
+        isMobileLandscape
+            ? AppConstants.kIconSize
+            : AppConstants.kIconSize + AppConstants.kIconSize;
     final double descriptionSizeBoxHeight =
         isMobileLandscape
             ? MediaQuery.of(context).size.height * 0.8
@@ -104,6 +107,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                     width: AppConstants.kIconSize,
                     color: AppColors.kWhite,
                   ),
+                  padding: const EdgeInsets.only(top: 16, right: 16),
                   onPressed:
                       () => Utility.navigate(
                         context,
@@ -112,73 +116,85 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.data.titleNp,
-                            style: AppStyles.text35PxBold.copyWith(
-                              fontSize: titleFontSize,
-                              color: AppColors.kWhite,
-                              fontFamily: AppConstants.kMuktaFont,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Gaps.horizontalGapOf(paddingH),
-                          CustomAvatarGlow(
-                            glowColor: AppColors.kSecondaryColor,
-                            glowShape: BoxShape.circle,
-                            visible: _isPlayingAudio,
-                            glowRadiusFactor: 0.2,
-                            child: IconButton(
-                              icon: SvgHelper.fromSource(
-                                path: Assets.sound,
-                                height: audioButtonSize,
-                                width: audioButtonSize,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: isMobileLandscape ? 80 : 120,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.data.titleNp,
+                              style: AppStyles.text35PxBold.copyWith(
+                                fontSize: titleFontSize,
+                                color: AppColors.kWhite,
+                                fontFamily: AppConstants.kMuktaFont,
                               ),
-                              onPressed: _playAudio,
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
-                      ),
-                      Gaps.verticalGapOf(paddingV),
-                      Text(
-                        widget.data.titleEn,
-                        style: AppStyles.text30PxSemiBold.copyWith(
-                          fontSize: titleFontSize,
-                          color: AppColors.kWhite,
+                            Gaps.horizontalGapOf(paddingH),
+                            CustomAvatarGlow(
+                              glowColor: AppColors.kSecondaryColor,
+                              glowShape: BoxShape.circle,
+                              visible: _isPlayingAudio,
+                              glowRadiusFactor: 0.2,
+                              child: IconButton(
+                                icon: SvgHelper.fromSource(
+                                  path: Assets.sound,
+                                  height: audioButtonSize,
+                                  width: audioButtonSize,
+                                ),
+                                onPressed: _playAudio,
+                              ),
+                            ),
+                          ],
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Gaps.verticalGapOf(paddingV),
-                      SizedBox(
-                        width: descriptionSizeBoxHeight,
-                        child: Text(
-                          widget.data.descriptionEn,
-                          style: AppStyles.text22PxRegular.copyWith(
-                            fontSize: descriptionFontSize,
+                        Gaps.verticalGapOf(
+                          paddingV + (isMobileLandscape ? 20 : 30),
+                        ),
+                        Text(
+                          widget.data.titleEn,
+                          style: AppStyles.text30PxSemiBold.copyWith(
+                            fontSize: isMobileLandscape ? 24 : 30,
                             color: AppColors.kWhite,
                           ),
-                          textAlign: TextAlign.start,
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+                        Gaps.verticalGapOf(paddingV),
+                        SizedBox(
+                          width: descriptionSizeBoxHeight,
+                          child: Text(
+                            widget.data.descriptionEn,
+                            style: AppStyles.text22PxRegular.copyWith(
+                              fontSize: descriptionFontSize,
+                              color: AppColors.kWhite,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: imageSize,
-                    height: imageSize,
-                    child: SvgHelper.fromSource(
-                      path: widget.data.image,
-                      fit: BoxFit.contain,
-                      type: SvgSourceType.network,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: isMobileLandscape ? 60 : 80,
+                    ),
+                    child: SizedBox(
+                      width: imageSize,
+                      height: imageSize,
+                      child: SvgHelper.fromSource(
+                        path: widget.data.image,
+                        fit: BoxFit.contain,
+                        type: SvgSourceType.network,
+                      ),
                     ),
                   ),
                 ],

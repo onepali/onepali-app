@@ -35,6 +35,9 @@ class SlideContentState extends State<SlideContent> {
     final charList = widget.content.characters ?? [];
     final char1 = charList.isNotEmpty ? charList[0] : widget.content.image;
     final char2 = charList.length > 1 ? charList[1] : widget.content.image;
+    bool isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
 
     void handleDrag(double dx) async {
       if (_completed) return;
@@ -64,7 +67,7 @@ class SlideContentState extends State<SlideContent> {
         // Character 2 (static, right side)
         Positioned(
           right: sliderPadding + char2Width, // Position char2 at the right side
-          bottom: 40,
+          bottom: 55,
           child: SvgHelper.fromSource(
             path: char2,
             height: 30.h(context),
@@ -75,7 +78,7 @@ class SlideContentState extends State<SlideContent> {
         // Character 1 (draggable)
         Positioned(
           left: sliderPadding + _position,
-          bottom: 55,
+          bottom: 70,
           child: GestureDetector(
             onHorizontalDragUpdate: (details) {
               handleDrag(details.delta.dx);
@@ -175,8 +178,8 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTabletLandScape ? 24 : 16,
                   // vertical: 2,
                 ),
                 child: SvgHelper.fromSource(
@@ -219,8 +222,8 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTabletLandScape ? 24 : 16,
                   // vertical: 2,
                 ),
                 child: SvgHelper.fromSource(
@@ -239,7 +242,7 @@ class SlideContentState extends State<SlideContent> {
           bottom:
               PlatformUtility.isTablet(context) &&
                       PlatformUtility.isLandscape(context)
-                  ? 80
+                  ? 120
                   : 70,
           child: IgnorePointer(
             child: AnimatedOpacity(
@@ -329,16 +332,21 @@ class SlideContentState extends State<SlideContent> {
                           ),
                         if (iconPath.isNotEmpty && i == 0)
                           Gaps.horizontalGapOf(12.0),
-                        Text(
-                          lines[i],
-                          textAlign: TextAlign.center,
-                          style: AppStyles.text20PxMedium.copyWith(
-                            fontFamily: AppConstants.kMuktaFont,
-                            fontSize:
-                                PlatformUtility.isTablet(context) &&
-                                        PlatformUtility.isLandscape(context)
-                                    ? 32
-                                    : 20,
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: isTabletLandScape ? 8 : 0,
+                          ),
+                          child: Text(
+                            lines[i],
+                            textAlign: TextAlign.center,
+                            style: AppStyles.text20PxMedium.copyWith(
+                              fontFamily: AppConstants.kMuktaFont,
+                              fontSize:
+                                  PlatformUtility.isTablet(context) &&
+                                          PlatformUtility.isLandscape(context)
+                                      ? 40
+                                      : 20,
+                            ),
                           ),
                         ),
                       ],

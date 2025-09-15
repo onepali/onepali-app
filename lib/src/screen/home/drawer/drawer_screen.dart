@@ -170,26 +170,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ),
             customInkwell(
               onTap: () {
-                if (index == _selectedChildIndex) {
-                  final targetChild = widget.data[index];
-                  Utility.navigateMaterialRoute(
-                    context,
-                    AchievementScreen(
-                      name: targetChild.fullName,
-                      profileImage: targetChild.avatarUrl,
-                    ),
-                  );
-                } else {
-                  final targetChild = widget.data[index];
-                  Utility.navigateMaterialRoute(
-                    context,
-                    AchievementScreen(
-                      name: targetChild.fullName,
-                      profileImage: targetChild.avatarUrl,
-                      childId: targetChild.uid,
-                    ),
-                  );
-                }
+                final targetChild = widget.data[index];
+                Utility.navigateMaterialRoute(
+                  context,
+                  AchievementScreen(
+                    name: targetChild.fullName,
+                    profileImage: targetChild.avatarUrl,
+                    childId: targetChild.uid,
+                  ),
+                );
               },
               child: const Icon(
                 Icons.local_police,

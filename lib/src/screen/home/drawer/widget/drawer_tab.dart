@@ -189,26 +189,15 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               Gaps.verticalGapOf(5),
               customInkwell(
                 onTap: () {
-                  if (index == _selectedChildIndex) {
-                    final targetChild = widget.data[index];
-                    Utility.navigateMaterialRoute(
-                      context,
-                      AchievementScreen(
-                        name: targetChild.fullName,
-                        profileImage: targetChild.avatarUrl,
-                      ),
-                    );
-                  } else {
-                    final targetChild = widget.data[index];
-                    Utility.navigateMaterialRoute(
-                      context,
-                      AchievementScreen(
-                        name: targetChild.fullName,
-                        profileImage: targetChild.avatarUrl,
-                        childId: targetChild.uid,
-                      ),
-                    );
-                  }
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                      childId: targetChild.uid,
+                    ),
+                  );
                 },
                 child: const Icon(
                   Icons.local_police,
@@ -290,7 +279,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
         children: [
           for (int i = 0; i < drawerSettings.length; i++)
             ListTile(
-              contentPadding: const EdgeInsets.only(bottom: 8.0),
+              contentPadding: const EdgeInsets.only(bottom: 8.0, left: 45.0),
               onTap: () {
                 Utility.navigate(context, drawerSettings[i].route);
               },

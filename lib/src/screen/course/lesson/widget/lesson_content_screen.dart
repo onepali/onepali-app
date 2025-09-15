@@ -181,6 +181,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         widget.lesson.id,
         widget.lesson.lessonName,
       );
+
+      // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+      await MetricsTrackingHelper.trackLessonCompletion(
+        context: context,
+        lessonId: widget.lesson.id.toString(),
+        topicName: widget.lesson.lessonName,
+      );
     } catch (e) {
       logger.e('Error completing lesson: $e');
     }
@@ -283,6 +290,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             widget.lesson.id,
                             widget.lesson.lessonName,
                           );
+
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
                         } catch (e) {
                           logger.e('Error completing lesson: $e');
                         }
@@ -314,6 +328,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             widget.lesson.id,
                             widget.lesson.lessonName,
                           );
+
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
                         } catch (e) {
                           logger.e('Error completing lesson: $e');
                         }
@@ -336,14 +357,33 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         _nextContent();
                       },
                       onLessonComplete: () async {
+                        logger.d(
+                          'DragToMatchLessonCard onLessonComplete callback started',
+                        );
                         await _saveProgress(content, contentIndex);
                         // For drag_to_match lessons, handle completion
                         try {
+                          logger.d(
+                            'Calling incrementTotalLessonsCompleted for lesson: ${widget.lesson.id}',
+                          );
                           final lessonProvider = context.read<LessonProvider>();
                           await lessonProvider.incrementTotalLessonsCompleted(
                             context,
                             widget.lesson.id,
                             widget.lesson.lessonName,
+                          );
+
+                          logger.d(
+                            'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
+                          );
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
+                          logger.d(
+                            'MetricsTrackingHelper.trackLessonCompletion completed for lesson: ${widget.lesson.id}',
                           );
                         } catch (e) {
                           logger.e('Error completing lesson: $e');
@@ -565,7 +605,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                 width:
                                     PlatformUtility.isTablet(context) &&
                                             PlatformUtility.isLandscape(context)
-                                        ? 300
+                                        ? 475
                                         : 180,
                                 height:
                                     PlatformUtility.isTablet(context) &&
@@ -577,7 +617,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                 boxFit: BoxFit.contain,
                                 imageType: CustomImageType.network,
                               ),
-                            Gaps.verticalGapOf(10),
+                            Gaps.verticalGapOf(
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? 15
+                                  : 10,
+                            ),
                             // Lesson title
                             Text(
                               widget.nameNp,
@@ -592,7 +637,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            // Gaps.verticalGapOf(16),
+                            if (PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context))
+                              Gaps.verticalGapOf(10),
                             // Lesson description
                             if (widget.nameEn.isNotEmpty)
                               Text(
@@ -616,7 +663,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
                     Positioned(
                       top: 16,
-                      right: 24,
+                      right: 16,
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.wrong,
@@ -668,7 +715,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             ),
                           ],
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: IconButton(
                           icon: SvgHelper.fromSource(

@@ -4,6 +4,7 @@ import 'package:onepali/src/src.dart';
 class AchievementModel {
   final String id;
   final String title;
+  final String subtitle;
   final String value;
   final String imageUrl;
   final Color? color;
@@ -11,6 +12,7 @@ class AchievementModel {
   AchievementModel({
     required this.id,
     required this.title,
+    required this.subtitle,
     required this.value,
     required this.imageUrl,
     this.color,
@@ -21,6 +23,7 @@ class AchievementModel {
     return AchievementModel(
       id: json['id'],
       title: json['title'] ?? "",
+      subtitle: json['subtitle'] ?? "",
       value: json['value'] ?? "",
       imageUrl: json['imageUrl'] ?? "",
     );
@@ -31,6 +34,7 @@ List<AchievementModel> achievementList = [
   AchievementModel(
     id: "1",
     title: "Practice Hero Trophy",
+    subtitle: "days streak",
     value: "0",
     imageUrl: Assets.trophyAv,
     color: AppColors.kPureSkyBlue,
@@ -38,6 +42,7 @@ List<AchievementModel> achievementList = [
   AchievementModel(
     id: "2",
     title: "Learning Champion Medal",
+    subtitle: "Completed activities",
     value: "0",
     imageUrl: Assets.medalAv,
     color: AppColors.kButtonRed,
@@ -45,6 +50,7 @@ List<AchievementModel> achievementList = [
   AchievementModel(
     id: "3",
     title: "Star Collector Badge",
+    subtitle: "Total stars collected",
     value: "0",
     imageUrl: Assets.starAv,
     color: AppColors.kButtonGreen,

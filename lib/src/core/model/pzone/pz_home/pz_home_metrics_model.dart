@@ -5,6 +5,7 @@ class PzHomeMetricsModel {
   final List<bool> weeklyStreak;
   final int averageDailyLearningTime;
   final List<String> mostPracticedTopics;
+  final Map<String, int> topicCounts; // New field to track topic counts
 
   PzHomeMetricsModel({
     required this.completedActivities,
@@ -13,6 +14,7 @@ class PzHomeMetricsModel {
     required this.weeklyStreak,
     required this.averageDailyLearningTime,
     required this.mostPracticedTopics,
+    required this.topicCounts,
   });
 
   factory PzHomeMetricsModel.fromJson(Map<String, dynamic>? map) {
@@ -24,8 +26,19 @@ class PzHomeMetricsModel {
         weeklyStreak: List.filled(7, false),
         averageDailyLearningTime: 0,
         mostPracticedTopics: [],
+        topicCounts: {},
       );
     }
+
+    // Parse topic counts from Firebase
+    Map<String, int> parsedTopicCounts = {};
+    if (map['topicCounts'] != null) {
+      final topicCountsMap = map['topicCounts'] as Map<String, dynamic>;
+      parsedTopicCounts = topicCountsMap.map(
+        (key, value) => MapEntry(key, value as int),
+      );
+    }
+
     return PzHomeMetricsModel(
       completedActivities: map['completedActivities'] ?? 0,
       answerSuccessRate: (map['answerSuccessRate'] ?? 0).toDouble(),
@@ -39,6 +52,7 @@ class PzHomeMetricsModel {
               ?.map((e) => e.toString())
               .toList() ??
           [],
+      topicCounts: parsedTopicCounts,
     );
   }
 
@@ -50,6 +64,7 @@ class PzHomeMetricsModel {
       'weeklyStreak': weeklyStreak,
       'averageDailyLearningTime': averageDailyLearningTime,
       'mostPracticedTopics': mostPracticedTopics,
+      'topicCounts': topicCounts,
     };
   }
 
@@ -60,6 +75,7 @@ class PzHomeMetricsModel {
     List<bool>? weeklyStreak,
     int? averageDailyLearningTime,
     List<String>? mostPracticedTopics,
+    Map<String, int>? topicCounts,
   }) {
     return PzHomeMetricsModel(
       completedActivities: completedActivities ?? this.completedActivities,
@@ -69,6 +85,7 @@ class PzHomeMetricsModel {
       averageDailyLearningTime:
           averageDailyLearningTime ?? this.averageDailyLearningTime,
       mostPracticedTopics: mostPracticedTopics ?? this.mostPracticedTopics,
+      topicCounts: topicCounts ?? this.topicCounts,
     );
   }
 }

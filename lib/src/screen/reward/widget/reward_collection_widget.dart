@@ -26,17 +26,27 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
     });
   }
 
+  void _showRewardPopup(BuildContext context, RewardModel reward) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => RewardStickerPopup(reward: reward),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double stickerSize = isMobileLandscape ? 100 : 150;
+    final double stickerSize = isMobileLandscape ? 130 : 180;
     final double stickerMargin = isMobileLandscape ? 24 : 34;
     final double titleFontSize = isMobileLandscape ? 24 : 28;
     final double wrongIconSize =
-        isMobileLandscape ? AppConstants.kIconSize : 52;
+        isMobileLandscape
+            ? AppConstants.kIconSize
+            : AppConstants.kIconSize + AppConstants.kIconSize;
 
     return Consumer<RewardProvider>(
       builder: (context, rewardProvider, child) {
@@ -59,138 +69,159 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                 rewardProvider.childRewards.take(5).toList();
 
             Widget stickerGrid() {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: stickerMargin,
-                    runSpacing: stickerMargin,
-                    children: List.generate(5, (index) {
-                      final isUnlocked = index < unlockedStickers.length;
-                      final colors = [
-                        Colors.orange,
-                        Colors.purple,
-                        AppColors.kRed,
-                        Colors.teal,
-                        Colors.blue,
-                      ];
-                      final shapes = [
-                        BoxShape.circle,
-                        BoxShape.rectangle,
-                        BoxShape.circle,
-                        BoxShape.rectangle,
-                        BoxShape.circle,
-                      ];
-                      final borderRadius = [
-                        BorderRadius.circular(0), // Cone-like
-                        BorderRadius.circular(25), // Oval
-                        BorderRadius.circular(0),
-                        BorderRadius.circular(10),
-                        BorderRadius.circular(0),
-                      ];
-                      return Container(
-                        width: stickerSize,
-                        height: stickerSize,
-                        decoration: BoxDecoration(
-                          color:
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Gaps.verticalGapOf(stickerMargin),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: stickerMargin,
+                      runSpacing: stickerMargin,
+                      children: List.generate(5, (index) {
+                        final isUnlocked = index < unlockedStickers.length;
+                        final colors = [
+                          Colors.orange,
+                          Colors.purple,
+                          AppColors.kRed,
+                          Colors.teal,
+                          Colors.blue,
+                        ];
+                        final shapes = [
+                          BoxShape.circle,
+                          BoxShape.rectangle,
+                          BoxShape.circle,
+                          BoxShape.rectangle,
+                          BoxShape.circle,
+                        ];
+                        final borderRadius = [
+                          BorderRadius.circular(0), // Cone-like
+                          BorderRadius.circular(25), // Oval
+                          BorderRadius.circular(0),
+                          BorderRadius.circular(10),
+                          BorderRadius.circular(0),
+                        ];
+                        return GestureDetector(
+                          onTap:
                               isUnlocked
-                                  ? AppColors.kTransparentColor
-                                  : colors[index % colors.length],
-                          shape: shapes[index % shapes.length],
-                          borderRadius:
-                              shapes[index % shapes.length] ==
-                                      BoxShape.rectangle
-                                  ? borderRadius[index % borderRadius.length]
-                                  : null,
-                          border: Border.all(
-                            color:
-                                isUnlocked
-                                    ? AppColors.kTransparentColor
-                                    : colors[index % colors.length],
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child:
-                              isUnlocked
-                                  ? SvgHelper.fromSource(
-                                    path: unlockedStickers[index].image,
-                                    type: SvgSourceType.network,
-                                    fit: BoxFit.contain,
+                                  ? () => _showRewardPopup(
+                                    context,
+                                    unlockedStickers[index],
                                   )
-                                  : Text(
-                                    '?',
-                                    style: AppStyles.text24PxMedium.copyWith(
-                                      color: AppColors.kWhite,
-                                    ),
-                                  ),
-                        ),
-                      );
-                    }),
-                  ),
-                  Gaps.verticalGapOf(stickerMargin),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: stickerMargin,
-                    runSpacing: stickerMargin,
-                    children: List.generate(1, (index) {
-                      final isUnlocked = index + 5 < unlockedStickers.length;
-                      final colors = AppColors.rewardCollectionColors;
-                      final shapes = [
-                        BoxShape.circle,
-                        BoxShape.rectangle,
-                        BoxShape.circle,
-                        BoxShape.rectangle,
-                        BoxShape.circle,
-                      ];
-                      final borderRadius = [
-                        BorderRadius.circular(0), // Cone-like
-                        BorderRadius.circular(50), // Oval
-                        BorderRadius.circular(0),
-                        BorderRadius.circular(50),
-                        BorderRadius.circular(0),
-                      ];
-                      return Container(
-                        width: stickerSize,
-                        height: stickerSize,
-                        decoration: BoxDecoration(
-                          color:
-                              isUnlocked
-                                  ? AppColors.kTransparentColor
-                                  : colors[index % colors.length],
-                          shape: shapes[index % shapes.length],
-                          borderRadius:
-                              shapes[index % shapes.length] ==
-                                      BoxShape.rectangle
-                                  ? borderRadius[index % borderRadius.length]
                                   : null,
-                          border: Border.all(
-                            color:
-                                isUnlocked
-                                    ? AppColors.kTransparentColor
-                                    : colors[index % colors.length],
-                            width: 2,
+                          child: Container(
+                            width: stickerSize,
+                            height: stickerSize,
+                            decoration: BoxDecoration(
+                              color:
+                                  isUnlocked
+                                      ? AppColors.kTransparentColor
+                                      : colors[index % colors.length],
+                              shape: shapes[index % shapes.length],
+                              borderRadius:
+                                  shapes[index % shapes.length] ==
+                                          BoxShape.rectangle
+                                      ? borderRadius[index %
+                                          borderRadius.length]
+                                      : null,
+                              border: Border.all(
+                                color:
+                                    isUnlocked
+                                        ? AppColors.kTransparentColor
+                                        : colors[index % colors.length],
+                                width: 2,
+                              ),
+                            ),
+                            child: Center(
+                              child:
+                                  isUnlocked
+                                      ? SvgHelper.fromSource(
+                                        path: unlockedStickers[index].image,
+                                        type: SvgSourceType.network,
+                                        fit: BoxFit.contain,
+                                      )
+                                      : Text(
+                                        '?',
+                                        style: AppStyles.text24PxMedium
+                                            .copyWith(color: AppColors.kWhite),
+                                      ),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child:
+                        );
+                      }),
+                    ),
+                    Gaps.verticalGapOf(stickerMargin),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: stickerMargin,
+                      runSpacing: stickerMargin,
+                      children: List.generate(1, (index) {
+                        final isUnlocked = index + 5 < unlockedStickers.length;
+                        final colors = AppColors.rewardCollectionColors;
+                        final shapes = [
+                          BoxShape.circle,
+                          BoxShape.rectangle,
+                          BoxShape.circle,
+                          BoxShape.rectangle,
+                          BoxShape.circle,
+                        ];
+                        final borderRadius = [
+                          BorderRadius.circular(0), // Cone-like
+                          BorderRadius.circular(50), // Oval
+                          BorderRadius.circular(0),
+                          BorderRadius.circular(50),
+                          BorderRadius.circular(0),
+                        ];
+                        return GestureDetector(
+                          onTap:
                               isUnlocked
-                                  ? CustomImage(
-                                    unlockedStickers[index + 5].image,
-                                    boxFit: BoxFit.contain,
+                                  ? () => _showRewardPopup(
+                                    context,
+                                    unlockedStickers[index + 5],
                                   )
-                                  : Text(
-                                    '?',
-                                    style: AppStyles.text24PxMedium.copyWith(
-                                      color: AppColors.kWhite,
-                                    ),
-                                  ),
-                        ),
-                      );
-                    }),
-                  ),
-                ],
+                                  : null,
+                          child: Container(
+                            width: stickerSize,
+                            height: stickerSize,
+                            decoration: BoxDecoration(
+                              color:
+                                  isUnlocked
+                                      ? AppColors.kTransparentColor
+                                      : colors[index % colors.length],
+                              shape: shapes[index % shapes.length],
+                              borderRadius:
+                                  shapes[index % shapes.length] ==
+                                          BoxShape.rectangle
+                                      ? borderRadius[index %
+                                          borderRadius.length]
+                                      : null,
+                              border: Border.all(
+                                color:
+                                    isUnlocked
+                                        ? AppColors.kTransparentColor
+                                        : colors[index % colors.length],
+                                width: 2,
+                              ),
+                            ),
+                            child: Center(
+                              child:
+                                  isUnlocked
+                                      ? CustomImage(
+                                        unlockedStickers[index + 5].image,
+                                        boxFit: BoxFit.contain,
+                                      )
+                                      : Text(
+                                        '?',
+                                        style: AppStyles.text24PxMedium
+                                            .copyWith(color: AppColors.kWhite),
+                                      ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
               );
             }
 

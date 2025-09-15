@@ -106,6 +106,7 @@ export 'achievement/achievement_card.dart';
 export 'reward/widget/reward_collection_widget.dart';
 export 'reward/widget/choose_reward_widget.dart';
 export 'reward/widget/reward_preview_widget.dart';
+export 'reward/widget/reward_sticker_popup.dart';
 
 /// [Printables] Screen
 export 'printables/printables_screen.dart';

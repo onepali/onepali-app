@@ -83,6 +83,9 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.kSkyBlue,
@@ -119,7 +122,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                               width:
                                   PlatformUtility.isTablet(context) &&
                                           PlatformUtility.isLandscape(context)
-                                      ? 300
+                                      ? 475
                                       : 180,
                               height:
                                   PlatformUtility.isTablet(context) &&
@@ -129,8 +132,12 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                               fit: BoxFit.contain,
                               type: SvgSourceType.network,
                             ),
-                          Gaps.verticalGapOf(30),
-                          // Lesson title
+                          Gaps.verticalGapOf(
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 30
+                                : 10,
+                          ), // Lesson title
                           Text(
                             widget.story.nameNp,
                             style: AppStyles.text24PxBold.copyWith(
@@ -144,8 +151,9 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          // Gaps.verticalGapOf(16),
-                          // Lesson description
+                          if (PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context))
+                            Gaps.verticalGapOf(10), // Lesson description
                           if (widget.story.nameEn.isNotEmpty)
                             Text(
                               widget.story.nameEn,
@@ -166,7 +174,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
                   Positioned(
                     top: 16,
-                    right: 24,
+                    right: 20,
                     child: IconButton(
                       icon: SvgHelper.fromSource(
                         path: Assets.wrong,
@@ -221,8 +229,10 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                           ],
                         ),
                         margin: const EdgeInsets.symmetric(horizontal: 16),
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
 
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isTabletLandScape ? 24 : 16,
+                        ),
                         child: SvgHelper.fromSource(
                           path: Assets.rightArrow,
                           height:

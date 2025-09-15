@@ -80,7 +80,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
-                spacing: 30,
+                spacing: 120,
                 children: List.generate(options.length, (i) {
                   final opt = options[i];
                   final correct = opt.correct == true;
