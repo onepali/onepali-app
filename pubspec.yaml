@@ -45,7 +45,7 @@ dependencies:
 
   # Networking & HTTP
   http: ^1.4.0
-  connectivity_plus: ^6.1.4
+  connectivity_plus: ^7.0.0
 
   # Storage & File System
   shared_preferences: ^2.5.3
