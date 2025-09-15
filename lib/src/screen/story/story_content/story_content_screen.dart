@@ -119,7 +119,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                               width:
                                   PlatformUtility.isTablet(context) &&
                                           PlatformUtility.isLandscape(context)
-                                      ? 300
+                                      ? 475
                                       : 180,
                               height:
                                   PlatformUtility.isTablet(context) &&
@@ -129,8 +129,12 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                               fit: BoxFit.contain,
                               type: SvgSourceType.network,
                             ),
-                          Gaps.verticalGapOf(30),
-                          // Lesson title
+                          Gaps.verticalGapOf(
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 30
+                                : 10,
+                          ), // Lesson title
                           Text(
                             widget.story.nameNp,
                             style: AppStyles.text24PxBold.copyWith(
@@ -144,8 +148,9 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          // Gaps.verticalGapOf(16),
-                          // Lesson description
+                          if (PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context))
+                            Gaps.verticalGapOf(10), // Lesson description
                           if (widget.story.nameEn.isNotEmpty)
                             Text(
                               widget.story.nameEn,
@@ -166,7 +171,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
                   Positioned(
                     top: 16,
-                    right: 24,
+                    right: 20,
                     child: IconButton(
                       icon: SvgHelper.fromSource(
                         path: Assets.wrong,

@@ -210,18 +210,21 @@ class _NormalContentState extends State<NormalContent> {
                           ),
                         if (iconPath.isNotEmpty && i == 0)
                           Gaps.horizontalGapOf(12.0),
-                        Text(
-                          lines[i],
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.text20PxMedium.copyWith(
-                            fontFamily: AppConstants.kMuktaFont,
-                            fontSize:
-                                PlatformUtility.isTablet(context) &&
-                                        PlatformUtility.isLandscape(context)
-                                    ? 32
-                                    : 20,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text(
+                            lines[i],
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppStyles.text20PxMedium.copyWith(
+                              fontFamily: AppConstants.kMuktaFont,
+                              fontSize:
+                                  PlatformUtility.isTablet(context) &&
+                                          PlatformUtility.isLandscape(context)
+                                      ? 40
+                                      : 20,
+                            ),
                           ),
                         ),
                       ],

@@ -285,8 +285,9 @@ class DragDropContentState extends State<DragDropContent> {
             fontSize:
                 PlatformUtility.isTablet(context) &&
                         PlatformUtility.isLandscape(context)
-                    ? 32
+                    ? 48
                     : 18,
+            fontWeight: FontWeight.bold,
             fontFamily: AppConstants.kMuktaFont,
           ),
         ),
