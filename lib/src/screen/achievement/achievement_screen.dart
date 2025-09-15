@@ -19,6 +19,8 @@ class AchievementScreen extends StatefulWidget {
 
 class _AchievementScreenState extends State<AchievementScreen> {
   int totalStarBadge = 0;
+  int completedActivities = 0;
+  int dayStreak = 0;
 
   @override
   void initState() {
@@ -30,16 +32,28 @@ class _AchievementScreenState extends State<AchievementScreen> {
 
   Future<void> _fetchData() async {
     final rewardProvider = context.read<RewardProvider>();
+    final metricsProvider = context.read<PzMetricsProvider>();
+    final userProvider = context.read<UserProvider>();
+
     await rewardProvider.fetchChildRewards(childId: widget.childId);
+
+    // Fetch metrics data
+    final parentUid = userProvider.userId;
+    if (parentUid != null && widget.childId != null) {
+      await metricsProvider.fetchMetrics(
+        parentUid: parentUid,
+        childUid: widget.childId!,
+      );
+    }
   }
 
   String _getAchievementValue(id) {
     switch (id) {
-      case "1":
-        return "0";
-      case "2":
-        return "0";
-      case "3":
+      case "1": // Practice Hero Trophy - Day Streak
+        return dayStreak.toString();
+      case "2": // Learning Champion Medal - Completed Activities
+        return completedActivities.toString();
+      case "3": // Star Collector Badge - Total Stars
         return totalStarBadge.toString();
       default:
         return "0";
@@ -51,7 +65,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
     final isTabletLandScape = isTablet && PlatformUtility.isLandscape(context);
 
     var rewardProvider = context.watch<RewardProvider>();
+    var metricsProvider = context.watch<PzMetricsProvider>();
+
+    // Update local variables with real data
     totalStarBadge = rewardProvider.totalStarBadge;
+    completedActivities = metricsProvider.metrics?.completedActivities ?? 0;
+    dayStreak = metricsProvider.metrics?.dayStreak ?? 0;
 
     // Responsive grid settings
     final double horizontalPadding = isTabletLandScape ? 32.0 : 0.0;
