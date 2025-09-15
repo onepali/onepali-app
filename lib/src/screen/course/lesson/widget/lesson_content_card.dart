@@ -382,7 +382,7 @@ class _LessonContentCardState extends State<LessonContentCard>
                         (widget.content.nameEn?.isNotEmpty == true)
                             ? widget.content.nameEn!
                             : 'Bird',
-                        style: AppStyles.text20PxBold,
+                        style: AppStyles.text20PxMedium,
                         textAlign: TextAlign.center,
                       ),
                       Gaps.verticalGapOf(16),

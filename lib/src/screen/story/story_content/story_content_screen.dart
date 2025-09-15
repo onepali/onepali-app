@@ -83,6 +83,9 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.kSkyBlue,
@@ -226,8 +229,10 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                           ],
                         ),
                         margin: const EdgeInsets.symmetric(horizontal: 16),
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
 
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isTabletLandScape ? 24 : 16,
+                        ),
                         child: SvgHelper.fromSource(
                           path: Assets.rightArrow,
                           height:

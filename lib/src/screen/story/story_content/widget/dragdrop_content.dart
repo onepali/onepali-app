@@ -162,8 +162,8 @@ class DragDropContentState extends State<DragDropContent> {
                                                   PlatformUtility.isLandscape(
                                                     context,
                                                   )
-                                              ? 28
-                                              : 16,
+                                              ? 32
+                                              : 22,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -263,6 +263,7 @@ class DragDropContentState extends State<DragDropContent> {
               ? 80
               : 48,
       margin: const EdgeInsets.symmetric(horizontal: 8),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: showTryAgain ? AppColors.kButtonRed : colors[i % colors.length],
         borderRadius: BorderRadius.circular(48),
@@ -277,20 +278,19 @@ class DragDropContentState extends State<DragDropContent> {
         border:
             showTryAgain ? Border.all(color: AppColors.kRed, width: 2) : null,
       ),
-      child: Center(
-        child: Text(
-          showTryAgain ? 'Try Again!' : label,
-          style: AppStyles.text18PxSemiBold.copyWith(
-            color: AppColors.kBlack,
-            fontSize:
-                PlatformUtility.isTablet(context) &&
-                        PlatformUtility.isLandscape(context)
-                    ? 48
-                    : 18,
-            fontWeight: FontWeight.bold,
-            fontFamily: AppConstants.kMuktaFont,
-          ),
+      child: Text(
+        showTryAgain ? 'Try Again!' : label,
+        style: AppStyles.text18PxSemiBold.copyWith(
+          color: AppColors.kBlack,
+          fontSize:
+              PlatformUtility.isTablet(context) &&
+                      PlatformUtility.isLandscape(context)
+                  ? 48
+                  : 30,
+          fontWeight: FontWeight.bold,
+          fontFamily: AppConstants.kMuktaFont,
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }

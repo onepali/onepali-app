@@ -24,6 +24,9 @@ class _NormalContentState extends State<NormalContent> {
   @override
   Widget build(BuildContext context) {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+    bool isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     Widget arrowButton({required bool isLeft, required VoidCallback onTap}) {
       return GestureDetector(
         onTap: onTap,
@@ -49,8 +52,8 @@ class _NormalContentState extends State<NormalContent> {
               ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
+          padding: EdgeInsets.symmetric(
+            horizontal: isTabletLandScape ? 24 : 16,
             // vertical: 2,
           ),
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -211,7 +214,9 @@ class _NormalContentState extends State<NormalContent> {
                         if (iconPath.isNotEmpty && i == 0)
                           Gaps.horizontalGapOf(12.0),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          padding: EdgeInsets.symmetric(
+                            vertical: isTabletLandScape ? 8 : 0,
+                          ),
                           child: Text(
                             lines[i],
                             textAlign: TextAlign.center,

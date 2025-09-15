@@ -84,9 +84,9 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 72.0,
-                  vertical: 32,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobilePortrait ? 24 : 72.0,
+                  vertical: isMobilePortrait ? 16 : 32,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,6 +148,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                         height: 1.5,
                         fontFamily: AppConstants.kDMSansFont,
                       ),
+                      textAlign: TextAlign.justify,
                     ),
                     Gaps.verticalGapOf(24),
                   ],

@@ -35,6 +35,9 @@ class SlideContentState extends State<SlideContent> {
     final charList = widget.content.characters ?? [];
     final char1 = charList.isNotEmpty ? charList[0] : widget.content.image;
     final char2 = charList.length > 1 ? charList[1] : widget.content.image;
+    bool isTabletLandScape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
 
     void handleDrag(double dx) async {
       if (_completed) return;
@@ -175,8 +178,8 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTabletLandScape ? 24 : 16,
                   // vertical: 2,
                 ),
                 child: SvgHelper.fromSource(
@@ -219,8 +222,8 @@ class SlideContentState extends State<SlideContent> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTabletLandScape ? 24 : 16,
                   // vertical: 2,
                 ),
                 child: SvgHelper.fromSource(
@@ -330,7 +333,9 @@ class SlideContentState extends State<SlideContent> {
                         if (iconPath.isNotEmpty && i == 0)
                           Gaps.horizontalGapOf(12.0),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          padding: EdgeInsets.symmetric(
+                            vertical: isTabletLandScape ? 8 : 0,
+                          ),
                           child: Text(
                             lines[i],
                             textAlign: TextAlign.center,
