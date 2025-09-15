@@ -565,7 +565,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                 width:
                                     PlatformUtility.isTablet(context) &&
                                             PlatformUtility.isLandscape(context)
-                                        ? 300
+                                        ? 475
                                         : 180,
                                 height:
                                     PlatformUtility.isTablet(context) &&
@@ -577,7 +577,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                                 boxFit: BoxFit.contain,
                                 imageType: CustomImageType.network,
                               ),
-                            Gaps.verticalGapOf(10),
+                            Gaps.verticalGapOf(
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? 15
+                                  : 10,
+                            ),
                             // Lesson title
                             Text(
                               widget.nameNp,
@@ -592,7 +597,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            // Gaps.verticalGapOf(16),
+                            if (PlatformUtility.isTablet(context) &&
+                                PlatformUtility.isLandscape(context))
+                              Gaps.verticalGapOf(10),
                             // Lesson description
                             if (widget.nameEn.isNotEmpty)
                               Text(
@@ -616,7 +623,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
                     Positioned(
                       top: 16,
-                      right: 24,
+                      right: 16,
                       child: IconButton(
                         icon: SvgHelper.fromSource(
                           path: Assets.wrong,
@@ -668,7 +675,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                             ),
                           ],
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: IconButton(
                           icon: SvgHelper.fromSource(

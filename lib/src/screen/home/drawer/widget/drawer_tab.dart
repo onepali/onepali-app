@@ -290,7 +290,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
         children: [
           for (int i = 0; i < drawerSettings.length; i++)
             ListTile(
-              contentPadding: const EdgeInsets.only(bottom: 8.0),
+              contentPadding: const EdgeInsets.only(bottom: 8.0, left: 45.0),
               onTap: () {
                 Utility.navigate(context, drawerSettings[i].route);
               },

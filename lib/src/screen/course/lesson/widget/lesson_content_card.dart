@@ -292,7 +292,7 @@ class _LessonContentCardState extends State<LessonContentCard>
                 ? widget.content.nameNp!
                 : 'चरा',
             style: AppStyles.text32PxBold.copyWith(
-              color: AppColors.kSecondaryColor,
+              color: AppColors.kDrawerBgColor,
               fontFamily: AppConstants.kMuktaFont,
               fontSize: 64,
             ),
@@ -301,12 +301,12 @@ class _LessonContentCardState extends State<LessonContentCard>
             (widget.content.nameEn?.isNotEmpty == true)
                 ? widget.content.nameEn!
                 : 'Bird',
-            style: AppStyles.text20PxBold.copyWith(fontSize: 32),
+            style: AppStyles.text20PxMedium.copyWith(fontSize: 32),
           ),
           Gaps.verticalGapOf(16),
           if (widget.hasSound)
             CustomAvatarGlow(
-              glowColor: AppColors.kSecondaryColor,
+              glowColor: AppColors.kDrawerBgColor,
               glowShape: BoxShape.circle,
               visible: widget.isPlaying,
               glowRadiusFactor: 0.2,
