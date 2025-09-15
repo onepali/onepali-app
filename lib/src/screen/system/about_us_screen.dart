@@ -53,12 +53,12 @@ class AboutUsScreen extends StatelessWidget {
                 isMobilePortrait
                     ? AppStyles.text16PxRegular.copyWith(
                       height: 1.6,
-                      color: AppColors.kBlack,
+                      color: AppColors.kDrawerBgColor,
                       fontFamily: AppConstants.kDMSansFont,
                     )
                     : AppStyles.text20PxRegular.copyWith(
                       height: 1.6,
-                      color: AppColors.kBlack,
+                      color: AppColors.kDrawerBgColor,
                       fontFamily: AppConstants.kDMSansFont,
                     ),
           ),

@@ -42,11 +42,11 @@ class ContactScreen extends StatelessWidget {
                     ? AppStyles.text16PxSemiBold.copyWith(
                       height: 1.6,
                       fontFamily: AppConstants.kDMSansFont,
-                      color: AppColors.kBlack,
+                      color: AppColors.kDrawerBgColor,
                     )
                     : AppStyles.text20PxBold.copyWith(
                       fontFamily: AppConstants.kDMSansFont,
-                      color: AppColors.kSecondaryColor,
+                      color: AppColors.kDrawerBgColor,
                     ),
           ),
           Gaps.verticalGapOf(isMobilePortrait ? 16 : 24),
@@ -57,12 +57,12 @@ class ContactScreen extends StatelessWidget {
                     ? AppStyles.text16PxRegular.copyWith(
                       height: 1.6,
                       fontFamily: AppConstants.kDMSansFont,
-                      color: AppColors.kBlack,
+                      color: AppColors.kDrawerBgColor,
                     )
                     : AppStyles.text20PxRegular.copyWith(
                       height: 1.6,
                       fontFamily: AppConstants.kDMSansFont,
-                      color: AppColors.kBlack,
+                      color: AppColors.kDrawerBgColor,
                     ),
           ),
           // Gaps.verticalGapOf(isMobilePortrait ? 100 : 150),

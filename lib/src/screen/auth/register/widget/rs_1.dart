@@ -57,6 +57,7 @@ class _RS1ScreenState extends State<RS1Screen> {
                     },
                     icon: option.icon,
                     isTabletPortrait: isTabletPortrait,
+                    color: option.color,
                   );
                 }),
               ),
@@ -74,6 +75,7 @@ class _RS1ScreenState extends State<RS1Screen> {
     required VoidCallback onTap,
     String? icon,
     required bool isTabletPortrait,
+    Color? color,
   }) {
     final double iconSize = isTabletPortrait ? 40.0 : 30.0;
     final double verticalGap = isTabletPortrait ? 16.0 : 12.0;
@@ -100,7 +102,11 @@ class _RS1ScreenState extends State<RS1Screen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgHelper.fromSource(path: icon ?? Assets.leoSvg, height: iconSize),
+            SvgHelper.fromSource(
+              path: icon ?? Assets.leoSvg,
+              height: iconSize,
+              color: color,
+            ),
             Gaps.verticalGapOf(verticalGap),
             Text(
               text,

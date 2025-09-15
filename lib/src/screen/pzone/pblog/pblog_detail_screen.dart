@@ -32,6 +32,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
       return const Scaffold(body: Center(child: Text('Blog data is loading')));
     }
     return Scaffold(
+      backgroundColor: AppColors.kWhite,
       appBar: AppBar(
         title: Text(
           blog.title,
@@ -83,7 +84,10 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 72.0,
+                  vertical: 32,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -49,26 +49,32 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
       _error = null;
     });
     TimeOfDay tempTime = selectedTime;
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
-      backgroundColor: AppColors.kTransparentColor,
-      isScrollControlled: true,
-
-      routeSettings: const RouteSettings(name: AppConstants.timePickerModal),
+      barrierDismissible: true,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return Container(
+                constraints: BoxConstraints(
+                  // maxWidth: 400,
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                ),
+                margin: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
                   borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                  top: 16,
-                ),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -133,9 +139,9 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                       ),
                   ],
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
     );
