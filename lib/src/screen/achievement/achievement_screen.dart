@@ -35,15 +35,22 @@ class _AchievementScreenState extends State<AchievementScreen> {
     final metricsProvider = context.read<PzMetricsProvider>();
     final userProvider = context.read<UserProvider>();
 
-    logger.d('Fetching achievement data for childId: ${widget.childId}');
-    await rewardProvider.fetchChildRewards(childId: widget.childId);
+    // Get childId from parameter or fallback to local storage
+    String? targetChildId = widget.childId;
+    if (targetChildId == null || targetChildId.isEmpty) {
+      targetChildId = await ChildLocalStorage.getCurrentChildId();
+      logger.d('Using fallback childId from local storage: $targetChildId');
+    }
+
+    logger.d('Fetching achievement data for childId: $targetChildId');
+    await rewardProvider.fetchChildRewards(childId: targetChildId);
 
     // Fetch metrics data
     final parentUid = userProvider.userId;
-    if (parentUid != null && widget.childId != null) {
+    if (parentUid != null && targetChildId != null) {
       await metricsProvider.fetchMetrics(
         parentUid: parentUid,
-        childUid: widget.childId!,
+        childUid: targetChildId,
       );
     }
   }
