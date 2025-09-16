@@ -30,8 +30,15 @@ class RecommendedStoriesList extends StatelessWidget {
             recommendedProvider.fetchRecommendedStories();
           },
           successBuilder: () {
+            bool isTablet = PlatformUtility.isTablet(context);
+            double cardHeight =
+                isTablet
+                    ? AppCardResponsive.getCardHeight(context) *
+                        0.8 // 20% smaller for tablets
+                    : AppCardResponsive.getCardHeight(context);
+
             return SizedBox(
-              height: AppCardResponsive.getCardHeight(context),
+              height: cardHeight,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(

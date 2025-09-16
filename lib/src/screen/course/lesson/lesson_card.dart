@@ -26,6 +26,9 @@ class LessonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return GestureDetector(
       onTap: isLocked ? null : onTap,
       child: Container(
@@ -65,7 +68,9 @@ class LessonCard extends StatelessWidget {
                     ),
                     child: Text(
                       data.lessonName,
-                      style: AppStyles.text16PxSemiBold,
+                      style: AppStyles.text16PxMedium.copyWith(
+                        fontSize: isTabletLandscape ? 24 : 16,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),

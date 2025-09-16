@@ -23,6 +23,9 @@ class StoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     logger.d('StoryCard: \\${story.thumbnail}');
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
 
     return customInkwell(
       onTap: () {
@@ -79,7 +82,9 @@ class StoryCard extends StatelessWidget {
                   ),
                   child: Text(
                     story.nameEn,
-                    style: AppStyles.text16PxSemiBold,
+                    style: AppStyles.text16PxMedium.copyWith(
+                      fontSize: isTabletLandscape ? 24 : 16,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),

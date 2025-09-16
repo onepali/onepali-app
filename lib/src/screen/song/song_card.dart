@@ -18,6 +18,9 @@ class SongCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return GestureDetector(
       onTap: () async {
         logger.d(
@@ -90,7 +93,7 @@ class SongCard extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: EdgeInsets.only(bottom: isTabletLandscape ? 24 : 12),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 8,
@@ -101,7 +104,9 @@ class SongCard extends StatelessWidget {
                 ),
                 child: Text(
                   data.titleEn,
-                  style: AppStyles.text14PxMedium.copyWith(color: AppColors.kBlack),
+                  style: AppStyles.text16PxMedium.copyWith(
+                    fontSize: isTabletLandscape ? 24 : 16,
+                  ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                 ),

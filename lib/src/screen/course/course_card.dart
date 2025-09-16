@@ -26,6 +26,9 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     logger.d(
       'CourseCard: title: $title, isLocked: $isLocked, isCompleted: $thumbnail',
     );
@@ -66,7 +69,9 @@ class CourseCard extends StatelessWidget {
                     ),
                     child: Text(
                       title,
-                      style: AppStyles.text16PxSemiBold,
+                      style: AppStyles.text16PxMedium.copyWith(
+                        fontSize: isTabletLandscape ? 24 : 16,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),

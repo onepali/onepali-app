@@ -22,6 +22,9 @@ class CourseScreenState extends State<CourseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return Consumer<LessonProvider>(
       builder: (context, lessonProvider, child) {
         logger.d(
@@ -67,6 +70,8 @@ class CourseScreenState extends State<CourseScreen> {
                                   : category.nameNp,
                               style: AppStyles.text20PxSemiBold.copyWith(
                                 color: AppColors.kBlack,
+                                fontSize: isTabletLandscape ? 24 : 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -76,13 +81,18 @@ class CourseScreenState extends State<CourseScreen> {
                               final cardWidth = AppCardResponsive.getCardWidth(
                                 context,
                               );
-                              final cardHeight =
-                                  AppCardResponsive.getLessonCardHeight(
-                                    context,
-                                  );
                               final isTablet = PlatformUtility.isTablet(
                                 context,
                               );
+                              final cardHeight =
+                                  isTablet
+                                      ? AppCardResponsive.getLessonCardHeight(
+                                            context,
+                                          ) *
+                                          0.8 // 20% smaller for tablets
+                                      : AppCardResponsive.getLessonCardHeight(
+                                        context,
+                                      );
                               final isMobile = PlatformUtility.isMobile(
                                 context,
                               );
@@ -165,13 +175,18 @@ class CourseScreenState extends State<CourseScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8, left: 8),
+                      padding: EdgeInsets.only(
+                        bottom: isTabletLandscape ? 21 : 8,
+                        left: isTabletLandscape ? 24 : 16,
+                      ),
                       child: Text(
                         category.nameEn.isNotEmpty
                             ? category.nameEn
                             : category.nameNp,
                         style: AppStyles.text20PxSemiBold.copyWith(
                           color: AppColors.kBlack,
+                          fontSize: isTabletLandscape ? 24 : 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -182,9 +197,16 @@ class CourseScreenState extends State<CourseScreen> {
                           final cardWidth = AppCardResponsive.getCardWidth(
                             context,
                           );
-                          final cardHeight =
-                              AppCardResponsive.getLessonCardHeight(context);
                           final isTablet = PlatformUtility.isTablet(context);
+                          final cardHeight =
+                              isTablet
+                                  ? AppCardResponsive.getLessonCardHeight(
+                                        context,
+                                      ) *
+                                      0.8 // 20% smaller for tablets
+                                  : AppCardResponsive.getLessonCardHeight(
+                                    context,
+                                  );
                           final isMobile = PlatformUtility.isMobile(context);
                           final isLandscape = PlatformUtility.isLandscape(
                             context,

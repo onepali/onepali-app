@@ -141,7 +141,6 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               ],
             ),
           ),
-
           // Settings section
           Expanded(child: _buildSettingsSection()),
         ],
@@ -164,8 +163,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                   _onChildSelected(index);
                 },
                 child: Container(
-                  height: 120,
-                  width: 120,
+                  height: 160,
+                  width: 160,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -176,17 +175,17 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                       width: 2,
                     ),
                   ),
-                  child: CustomImage(child.avatarUrl, height: 120, width: 120),
+                  child: CustomImage(child.avatarUrl, height: 160, width: 160),
                 ),
               ),
-              Gaps.verticalGapOf(8),
+              Gaps.verticalGapOf(16),
               Text(
                 child.fullName.split(' ')[0],
-                style: AppStyles.text18PxMedium.copyWith(
+                style: AppStyles.text24PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
-              Gaps.verticalGapOf(5),
+              Gaps.verticalGapOf(16),
               customInkwell(
                 onTap: () {
                   final targetChild = widget.data[index];
@@ -201,7 +200,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 },
                 child: const Icon(
                   Icons.local_police,
-                  size: 45,
+                  size: 64,
                   color: AppColors.kYellow,
                 ),
               ),
@@ -272,14 +271,16 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
   Widget _buildSettingsSection() {
     return Container(
       height: MediaQuery.of(context).size.height,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kPurple),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Gaps.verticalGapOf(40),
+
           for (int i = 0; i < drawerSettings.length; i++)
             ListTile(
-              contentPadding: const EdgeInsets.only(bottom: 8.0, left: 45.0),
+              contentPadding: const EdgeInsets.only(bottom: 30.0, left: 45.0),
               onTap: () {
                 Utility.navigate(context, drawerSettings[i].route);
               },
@@ -295,7 +296,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               dense: true,
               title: Text(
                 drawerSettings[i].name,
-                style: AppStyles.text20PxMedium.copyWith(
+                style: AppStyles.text26PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
