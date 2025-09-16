@@ -90,6 +90,7 @@ class Assets {
   static String medalAv = 'medal'.png;
   static String starAv = 'star'.png;
   static String achievement = 'achievement'.png;
+  static String achievementTab = 'achievement_tab'.png;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
