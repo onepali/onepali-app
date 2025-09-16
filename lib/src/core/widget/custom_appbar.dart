@@ -36,11 +36,41 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = PlatformUtility.isTablet(context);
+    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
+
+    // Responsive sizing
+    final double stepperHorizontalPadding = isTablet ? 24.0 : 16.0;
+    final double iconSize = isTablet ? 28.0 : 24.0;
+
+    // Responsive text style
+    final TextStyle responsiveTitleStyle =
+        titleStyle ??
+        (isTabletPortrait
+            ? AppStyles.text22PxMedium.copyWith(
+              color: AppColors.kBlack,
+              fontFamily: AppConstants.kPoppinsFont,
+            )
+            : isTabletLandscape
+            ? AppStyles.text20PxMedium.copyWith(
+              color: AppColors.kBlack,
+              fontFamily: AppConstants.kPoppinsFont,
+            )
+            : AppStyles.text18PxMedium.copyWith(
+              color: AppColors.kBlack,
+              fontFamily: AppConstants.kPoppinsFont,
+            ));
+
     return AppBar(
       title:
           (showStepper && currentStep != null)
               ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: stepperHorizontalPadding,
+                ),
                 child: HorizontalStepper(
                   currentStep: currentStep!,
                   totalSteps: totalSteps,
@@ -48,15 +78,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               )
               : titleWidget ??
                   (title != null
-                      ? Text(
-                        title!,
-                        style:
-                            titleStyle ??
-                            AppStyles.text18PxMedium.copyWith(
-                              color: AppColors.kBlack,
-                              fontFamily: AppConstants.kPoppinsFont,
-                            ),
-                      )
+                      ? Text(title!, style: responsiveTitleStyle)
                       : null),
       centerTitle: centerTitle,
       automaticallyImplyLeading: automaticallyImplyLeading ?? true,
@@ -64,6 +86,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           showBackButton
               ? (leading ??
                   IconButton(
+                    iconSize: iconSize,
                     icon: Icon(
                       Icons.arrow_back_outlined,
                       color: AppColors.kBlack,
@@ -78,5 +101,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize {
+    // Default toolbar height is 56.0, but we can adjust for tablets
+    final double toolbarHeight = kToolbarHeight;
+    return Size.fromHeight(toolbarHeight);
+  }
 }

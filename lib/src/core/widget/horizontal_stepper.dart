@@ -17,18 +17,25 @@ class HorizontalStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = PlatformUtility.isTablet(context);
+
+    // Responsive sizing for tablet
+    final double responsiveStepHeight =
+        isTablet ? stepIndicatorHeight + 1.0 : stepIndicatorHeight;
+    final double responsiveSpacing = isTablet ? spacing + 2.0 : spacing;
+
     return Row(
       children: List.generate(totalSteps, (index) {
         bool isActive = index < currentStep;
         return Expanded(
           child: Container(
             margin: EdgeInsets.only(
-              right: index == totalSteps - 1 ? 0 : spacing,
+              right: index == totalSteps - 1 ? 0 : responsiveSpacing,
             ),
-            height: stepIndicatorHeight,
+            height: responsiveStepHeight,
             decoration: BoxDecoration(
               color: isActive ? AppColors.kButtonGreen : AppColors.kLightGrey,
-              borderRadius: BorderRadius.circular(stepIndicatorHeight / 2),
+              borderRadius: BorderRadius.circular(responsiveStepHeight / 2),
             ),
           ),
         );

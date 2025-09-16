@@ -13,12 +13,10 @@ class LessonScreen extends StatelessWidget {
     final isMobile = PlatformUtility.isMobile(context);
     double cardWidth;
     double listHeight;
-    if (isWeb) {
-      cardWidth = 400;
-      listHeight = 320;
-    } else if (isTablet) {
-      cardWidth = isLandscape ? 350 : 300;
-      listHeight = isLandscape ? 260 : 350;
+    if (isTablet) {
+      cardWidth = isLandscape ? AppCardResponsive.getCardWidth(context) : 300;
+      listHeight =
+          isLandscape ? AppCardResponsive.getLessonCardHeight(context) : 350;
       // Make list height smaller for tablets
       listHeight = listHeight * 0.8; // 20% smaller for tablets
     } else if (isMobile) {
