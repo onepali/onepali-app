@@ -70,7 +70,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
 
   Widget buildAchievementGrid() {
     final isTablet = PlatformUtility.isTablet(context);
-    final isTabletLandScape = isTablet && PlatformUtility.isLandscape(context);
 
     var rewardProvider = context.watch<RewardProvider>();
     var metricsProvider = context.watch<PzMetricsProvider>();
@@ -83,37 +82,51 @@ class _AchievementScreenState extends State<AchievementScreen> {
       'AchievementScreen - totalStarBadge: $totalStarBadge, completedActivities: $completedActivities, dayStreak: $dayStreak',
     );
 
-    // Responsive grid settings
-    final double horizontalPadding = isTabletLandScape ? 32.0 : 0.0;
-
-    return Center(
-      child: Container(
-        height:
-            isTabletLandScape
-                ? MediaQuery.of(context).size.height
-                : MediaQuery.of(context).size.height * 0.8,
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: isTabletLandScape ? 16 : 0,
+    if (isTablet) {
+      // For tablets, use a horizontal row layout
+      return Row(
+        children:
+            achievementList.map((achievement) {
+              final value = _getAchievementValue(achievement.id);
+              return Expanded(
+                child: AchievementTabCard(
+                  achievement: achievement,
+                  dynamicValue: value,
+                  onTap: () {},
+                ),
+              );
+            }).toList(),
+      );
+    } else {
+      // Mobile layout - horizontal scroll
+      final double horizontalPadding = 0.0;
+      return Center(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 0,
+          ),
+          child: ListView.builder(
+            itemCount: achievementList.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final achievement = achievementList[index];
+              final value = _getAchievementValue(achievement.id);
+              return AchievementCard(
+                achievement: achievement,
+                dynamicValue: value,
+              );
+            },
+          ),
         ),
-        child: ListView.builder(
-          itemCount: achievementList.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            final achievement = achievementList[index];
-            final value = _getAchievementValue(achievement.id);
-            return AchievementCard(
-              achievement: achievement,
-              dynamicValue: value,
-            );
-          },
-        ),
-      ),
-    );
+      );
+    }
   }
 
   Widget buildCongratulationsSection() {
     final isMobile = PlatformUtility.isMobile(context);
+    final isTablet = PlatformUtility.isTablet(context);
     final isTabletLandScape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
@@ -122,90 +135,193 @@ class _AchievementScreenState extends State<AchievementScreen> {
     final double titleFontSize =
         isTabletLandScape ? 22 : (isMobileLandscape ? 20 : 24);
     final double imageSize =
-        isTabletLandScape ? 100 : (isMobileLandscape ? 80 : 120);
-    final double paddingH = isTabletLandScape ? 20 : 16;
-    final double paddingV = isTabletLandScape ? 25 : 16;
+        isTabletLandScape ? 150 : (isMobileLandscape ? 80 : 120);
+    final double paddingH = isTabletLandScape ? 50 : 16;
+    final double paddingV = isTabletLandScape ? 50 : 16;
 
-    return Container(
-      height:
-          isTabletLandScape
-              ? MediaQuery.of(context).size.height
-              : MediaQuery.of(context).size.height * 0.8,
-      margin: EdgeInsets.symmetric(
-        vertical: paddingV,
-        horizontal: paddingH + 4,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    if (isTablet && !isMobile && isTabletLandScape) {
+      // Tablet layout - Row with avatar/name on left, congratulations on right
+      return Stack(
         children: [
-          Row(
-            children: [
-              CustomImage(
-                widget.profileImage,
-                width: imageSize,
-                height: imageSize,
-              ),
-              Gaps.horizontalGapOf(10),
-              Expanded(
-                child: Text(
-                  widget.name,
-                  style: AppStyles.text24PxSemiBold.copyWith(
-                    color: AppColors.kWhite,
-                    fontSize: titleFontSize,
-                  ),
-                  maxLines: 2,
-                ),
-              ),
-            ],
-          ),
-          Gaps.verticalGapOf(isTabletLandScape ? 20 : 10),
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: paddingH,
-                vertical: paddingV,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.sunshineYellow,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Your Nepali is improving!',
-                    style: AppStyles.text22PxMedium.copyWith(
-                      fontSize: titleFontSize - 2,
-                      color: AppColors.kBlack,
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left side - Avatar with green border and name
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomImage(
+                      widget.profileImage,
+                      width: imageSize,
+                      height: imageSize,
+                      circular: true,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Gaps.verticalGapOf(4),
-                  Expanded(
-                    child: Center(
-                      child: CustomImage(
-                        Assets.achievement,
-                        boxFit: BoxFit.contain,
-                        imageType: CustomImageType.local,
+                    Gaps.verticalGapOf(12),
+                    Text(
+                      widget.name,
+                      style: AppStyles.text24PxSemiBold.copyWith(
+                        color: AppColors.kWhite,
+                        fontSize: isTabletLandScape ? 40 : titleFontSize,
                       ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+
+                Gaps.horizontalGapOf(24),
+
+                // Right side - Congratulations message
+                Expanded(
+                  child: Container(
+                    height: 200,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: paddingH,
+                      vertical: paddingV,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.sunshineYellow,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Your Nepali is improving!',
+                          style: AppStyles.text22PxMedium.copyWith(
+                            fontSize: 26,
+                            color: AppColors.kBlack,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Gaps.horizontalGapOf(16),
+                      ],
                     ),
                   ),
-                ],
+                ),
+                Gaps.horizontalGapOf(24),
+
+                customInkwell(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgHelper.fromSource(
+                    path: Assets.wrong,
+                    color: AppColors.kButtonGrey,
+                    height: AppConstants.kIconSize + AppConstants.kIconSize,
+                    width: AppConstants.kIconSize + AppConstants.kIconSize,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Positioned(
+            top: 20,
+            right: 160,
+
+            child: SizedBox(
+              width: 30.w(context),
+              height: 32.h(context),
+              child: CustomImage(
+                Assets.achievementTab,
+                boxFit: BoxFit.contain,
+
+                imageType: CustomImageType.local,
               ),
             ),
           ),
         ],
-      ),
-    );
+      );
+    } else {
+      // Mobile layout - original unchanged
+      return Container(
+        height:
+            isTabletLandScape
+                ? MediaQuery.of(context).size.height
+                : MediaQuery.of(context).size.height * 0.8,
+        margin: EdgeInsets.symmetric(
+          vertical: paddingV,
+          horizontal: paddingH + 4,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Mobile layout - original row format (unchanged)
+            Row(
+              children: [
+                CustomImage(
+                  widget.profileImage,
+                  width: imageSize,
+                  height: imageSize,
+                ),
+                Gaps.horizontalGapOf(10),
+                Expanded(
+                  child: Text(
+                    widget.name,
+                    style: AppStyles.text24PxSemiBold.copyWith(
+                      color: AppColors.kWhite,
+                      fontSize: titleFontSize,
+                    ),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
+            Gaps.verticalGapOf(isTabletLandScape ? 20 : 10),
+
+            // Message container
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: paddingH,
+                  vertical: paddingV,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.sunshineYellow,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Your Nepali is improving!',
+                      style: AppStyles.text22PxMedium.copyWith(
+                        fontSize: titleFontSize - 2,
+                        color: AppColors.kBlack,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Gaps.verticalGapOf(4),
+                    Expanded(
+                      child: Center(
+                        child: CustomImage(
+                          Assets.achievement,
+                          boxFit: BoxFit.contain,
+                          imageType: CustomImageType.local,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isTabletLandScape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
+    final bool isTablet = PlatformUtility.isTablet(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.kBlack,
@@ -224,30 +340,40 @@ class _AchievementScreenState extends State<AchievementScreen> {
             ),
 
             // Content
-            Row(
-              children: [
-                SizedBox(
-                  width: isTabletLandScape ? 230 : 200,
-                  child: buildCongratulationsSection(),
-                ),
-                Expanded(child: buildAchievementGrid()),
-              ],
-            ),
+            if (isTablet)
+              // Tablet layout - Column structure
+              Column(
+                children: [
+                  // Congratulations section at top
+                  buildCongratulationsSection(),
+                  // Achievement cards below
+                  Expanded(child: buildAchievementGrid()),
+                ],
+              )
+            else
+              // Mobile layout - Row structure
+              Row(
+                children: [
+                  SizedBox(width: 200, child: buildCongratulationsSection()),
+                  Expanded(child: buildAchievementGrid()),
+                ],
+              ),
 
             // Close button at top-right corner
-            Positioned(
-              top: 16,
-              right: 8,
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: SvgHelper.fromSource(
-                  path: Assets.wrong,
-                  color: AppColors.kButtonGrey,
-                  height: AppConstants.kIconSize,
-                  width: AppConstants.kIconSize,
+            if (!isTablet)
+              Positioned(
+                top: 16,
+                right: 8,
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: SvgHelper.fromSource(
+                    path: Assets.wrong,
+                    color: AppColors.kButtonGrey,
+                    height: AppConstants.kIconSize,
+                    width: AppConstants.kIconSize,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
