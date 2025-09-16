@@ -19,6 +19,8 @@ class LessonScreen extends StatelessWidget {
     } else if (isTablet) {
       cardWidth = isLandscape ? 350 : 300;
       listHeight = isLandscape ? 260 : 350;
+      // Make list height smaller for tablets
+      listHeight = listHeight * 0.8; // 20% smaller for tablets
     } else if (isMobile) {
       cardWidth = AppCardResponsive.getCardWidth(context);
       listHeight = AppCardResponsive.getLessonCardHeight(context);

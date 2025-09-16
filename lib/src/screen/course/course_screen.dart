@@ -81,13 +81,18 @@ class CourseScreenState extends State<CourseScreen> {
                               final cardWidth = AppCardResponsive.getCardWidth(
                                 context,
                               );
-                              final cardHeight =
-                                  AppCardResponsive.getLessonCardHeight(
-                                    context,
-                                  );
                               final isTablet = PlatformUtility.isTablet(
                                 context,
                               );
+                              final cardHeight =
+                                  isTablet
+                                      ? AppCardResponsive.getLessonCardHeight(
+                                            context,
+                                          ) *
+                                          0.8 // 20% smaller for tablets
+                                      : AppCardResponsive.getLessonCardHeight(
+                                        context,
+                                      );
                               final isMobile = PlatformUtility.isMobile(
                                 context,
                               );
@@ -192,9 +197,16 @@ class CourseScreenState extends State<CourseScreen> {
                           final cardWidth = AppCardResponsive.getCardWidth(
                             context,
                           );
-                          final cardHeight =
-                              AppCardResponsive.getLessonCardHeight(context);
                           final isTablet = PlatformUtility.isTablet(context);
+                          final cardHeight =
+                              isTablet
+                                  ? AppCardResponsive.getLessonCardHeight(
+                                        context,
+                                      ) *
+                                      0.8 // 20% smaller for tablets
+                                  : AppCardResponsive.getLessonCardHeight(
+                                    context,
+                                  );
                           final isMobile = PlatformUtility.isMobile(context);
                           final isLandscape = PlatformUtility.isLandscape(
                             context,

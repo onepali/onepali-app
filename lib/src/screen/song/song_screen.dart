@@ -27,7 +27,11 @@ class _SongScreenState extends State<SongScreen> {
   }
 
   double _getCardHeight(BuildContext context) {
-    return AppCardResponsive.getCardHeight(context);
+    bool isTablet = PlatformUtility.isTablet(context);
+    return isTablet
+        ? AppCardResponsive.getCardHeight(context) *
+            0.8 // 20% smaller for tablets
+        : AppCardResponsive.getCardHeight(context);
   }
 
   @override

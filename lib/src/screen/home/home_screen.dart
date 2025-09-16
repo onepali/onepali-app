@@ -56,8 +56,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  double _getCardHeight(BuildContext context) =>
-      AppCardResponsive.getCardHeight(context);
+  double _getCardHeight(BuildContext context) {
+    bool isTablet = PlatformUtility.isTablet(context);
+    return isTablet
+        ? AppCardResponsive.getCardHeight(context) *
+            0.8 // 20% smaller for tablets
+        : AppCardResponsive.getCardHeight(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,8 +191,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLessons(BuildContext context) {
+    bool isTablet = PlatformUtility.isTablet(context);
+    double lessonCardHeight =
+        isTablet
+            ? AppCardResponsive.getLessonCardHeight(context) *
+                0.8 // 20% smaller for tablets
+            : AppCardResponsive.getLessonCardHeight(context);
+
     return SizedBox(
-      height: AppCardResponsive.getLessonCardHeight(context) + 50,
+      height: lessonCardHeight + 50,
       child: CourseScreen(isMobile: false),
     );
   }
