@@ -193,9 +193,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSongCard(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return TitleActionChild(
       title: 'Songs',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+      titlePadding: EdgeInsets.only(
+        bottom: isTabletLandscape ? 21 : 8,
+        left: isTabletLandscape ? 24 : 16,
+      ),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(
         color: AppColors.kBlack,
         fontSize:

@@ -32,6 +32,9 @@ class _SongScreenState extends State<SongScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return Consumer<SongProvider>(
       builder: (context, songProvider, child) {
         return StatusHandler(
@@ -67,7 +70,7 @@ class _SongScreenState extends State<SongScreen> {
                 children: [
                   if (widget.showCategoryList)
                     SizedBox(
-                      height: 48,
+                      height: isTabletLandscape ? 60 : 48,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: categories.length,
@@ -86,6 +89,7 @@ class _SongScreenState extends State<SongScreen> {
                                       selectedCategory == cat
                                           ? AppColors.kWhite
                                           : AppColors.kPitchBlack,
+                                  fontSize: isTabletLandscape ? 18 : 14,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -117,6 +121,7 @@ class _SongScreenState extends State<SongScreen> {
                     child: ListView.builder(
                       itemCount: songs.length,
                       scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                       itemBuilder: (context, index) {
                         final song = songs[index];
                         logger.d(
