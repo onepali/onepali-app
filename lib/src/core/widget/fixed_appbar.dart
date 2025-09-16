@@ -58,7 +58,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
     final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
     final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
-    final tabSpacing = isTabletPortrait ? 15.0 : 10.0;
+    final tabSpacing = isTabletPortrait ? 25.0 : 10.0;
     final nameTextStyle =
         isTabletPortrait ? AppStyles.text32PxBold : AppStyles.text16PxBold;
 
@@ -259,7 +259,12 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                             ],
                           ),
                           if (!isGuest && totalChildCount > 0)
-                            buildProgressBar(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: buildProgressBar(),
+                            ),
                         ],
                       ),
 
@@ -268,7 +273,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: tabSpacing,
                         children: [
-                          for (int i = 0; i < homeServices.length; i++)
+                          for (int i = 0; i < homeServices.length; i++) ...[
                             _buildTab(
                               homeServices[i].icon ?? '',
                               homeServices[i].name ?? '',
@@ -280,7 +285,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                               selectedIndex,
                               tabIconSize,
                             ),
-                          Gaps.horizontalGapOf(tabSpacing),
+                            if (i != homeServices.length - 1)
+                              Gaps.horizontalGapOf(tabSpacing),
+                          ],
                         ],
                       ),
                     ],
@@ -469,9 +476,11 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   ]) {
     final bool isSelected = index == selectedIndex;
     final effectiveIconSize = iconSize ?? 44.0;
-    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final isTabletPortrait =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     final labelTextStyle =
-        isTabletPortrait ? AppStyles.text14PxMedium : AppStyles.text12PxMedium;
+        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text12PxMedium;
 
     return IconButton(
       onPressed: onTap,
@@ -487,9 +496,12 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             // color: menuColor,
           ),
           if (isSelected) ...[
-            Gaps.verticalGapOf(4),
+            Gaps.verticalGapOf(isTabletPortrait ? 15 : 4),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: EdgeInsets.symmetric(
+                horizontal: isTabletPortrait ? 14 : 8,
+                vertical: 2,
+              ),
               decoration: BoxDecoration(
                 color: menuColor,
                 borderRadius: BorderRadius.circular(20),

@@ -158,14 +158,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Consumer<RecommendedLessonProvider> _buildRecommendedLessonCard(
     BuildContext context,
   ) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return Consumer<RecommendedLessonProvider>(
       builder: (context, provider, child) {
         if (!(provider.hasData)) return const SizedBox();
         return TitleActionChild(
           title: 'Recommended lessons',
-          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titlePadding: EdgeInsets.only(
+            bottom: isTabletLandscape ? 21 : 8,
+            left: isTabletLandscape ? 24 : 16,
+          ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
+            fontSize: isTabletLandscape ? 24 : 20,
+            fontWeight: FontWeight.bold,
           ),
 
           child: SizedBox(
@@ -188,10 +196,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return TitleActionChild(
       title: 'Songs',
       titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(
+        color: AppColors.kBlack,
+        fontSize:
+            PlatformUtility.isTablet(context) &&
+                    PlatformUtility.isLandscape(context)
+                ? 24
+                : 20,
+        fontWeight: FontWeight.bold,
+      ),
       subTitle: 'View all',
       subTitleStyle: AppStyles.text14PxMedium.copyWith(
         color: AppColors.kSecondaryColor,
+        fontWeight: FontWeight.w500,
+        fontSize:
+            PlatformUtility.isTablet(context) &&
+                    PlatformUtility.isLandscape(context)
+                ? 18
+                : 14,
       ),
       onTap: () {
         Navigator.of(context).push(
@@ -203,14 +225,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecommendedSongCard(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return Consumer<RcmSongProvider>(
       builder: (context, provider, child) {
         if (!provider.hasData) return const SizedBox();
         return TitleActionChild(
           title: 'Recommended songs',
-          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titlePadding: EdgeInsets.only(
+            bottom: isTabletLandscape ? 21 : 8,
+            left: isTabletLandscape ? 24 : 16,
+          ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
+            fontSize: isTabletLandscape ? 24 : 20,
+            fontWeight: FontWeight.bold,
           ),
           child: SizedBox(
             height: _getCardHeight(context),
@@ -222,14 +252,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecommendedStoryCard(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
+
     return Consumer<RecommendedStoryProvider>(
       builder: (context, provider, child) {
         if (!provider.hasData) return const SizedBox();
         return TitleActionChild(
           title: 'Recommended stories',
-          titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
+          titlePadding: EdgeInsets.only(
+            bottom: isTabletLandscape ? 21 : 8,
+            left: isTabletLandscape ? 24 : 16,
+          ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
+            fontSize: isTabletLandscape ? 24 : 20,
+            fontWeight: FontWeight.bold,
           ),
           child: SizedBox(
             height: _getCardHeight(context),
@@ -241,10 +280,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStories(BuildContext context) {
+    bool isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
     return TitleActionChild(
       title: 'Level 1',
-      titlePadding: const EdgeInsets.only(bottom: 8, left: 16),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(color: AppColors.kBlack),
+      titlePadding: EdgeInsets.only(
+        bottom: isTabletLandscape ? 21 : 8,
+        left: isTabletLandscape ? 24 : 16,
+      ),
+      titleStyle: AppStyles.text20PxSemiBold.copyWith(
+        color: AppColors.kBlack,
+        fontSize: isTabletLandscape ? 24 : 20,
+        fontWeight: FontWeight.bold,
+      ),
       child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
     );
   }
