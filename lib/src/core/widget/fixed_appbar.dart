@@ -48,17 +48,19 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     logger.d('UserAppBar: isMobileLandScape: $isMobileLandScape');
 
     // Responsive variables
-    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
-    final avatarSize = isTabletPortrait ? 60.0 : 45.0;
+    final isTabletPortrait =
+        (PlatformUtility.isTablet(context) &&
+            PlatformUtility.isLandscape(context));
+    final avatarSize = isTabletPortrait ? 64.0 : 45.0;
     final rewardIconSize = isTabletPortrait ? 50.0 : 40.0;
     final starRewardLottieSize = isTabletPortrait ? 85.0 : 65.0;
-    final tabIconSize = isTabletPortrait ? 60.0 : 44.0;
+    final tabIconSize = isTabletPortrait ? 56.0 : 44.0;
     final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
     final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
     final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
     final tabSpacing = isTabletPortrait ? 15.0 : 10.0;
     final nameTextStyle =
-        isTabletPortrait ? AppStyles.text24PxSemiBold : AppStyles.text16PxBold;
+        isTabletPortrait ? AppStyles.text32PxBold : AppStyles.text16PxBold;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -352,54 +354,41 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget buildProgressBar() {
-    const totalSteps = 5;
-    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
-    final progressBarHeight = isTabletPortrait ? 10.0 : 8.0;
-    final progressBarWidth = isTabletPortrait ? 50.0 : 40.0;
+    const totalSteps = 4;
+    final isTabletPortrait =
+        (PlatformUtility.isTablet(context) &&
+            PlatformUtility.isLandscape(context));
+    final progressBarHeight = isTabletPortrait ? 12.0 : 8.0;
+    final connectorLength = isTabletPortrait ? 100.0 : 40.0;
     final circleSize = isTabletPortrait ? 16.0 : 12.0;
-    final rewardSize = isTabletPortrait ? 40.0 : 30.0;
-    final starLottieSize = isTabletPortrait ? 50.0 : 40.0;
+    final rewardSize = isTabletPortrait ? 56.0 : 30.0;
+    final starLottieSize = isTabletPortrait ? 56.0 : 40.0;
 
     return Row(
       children: [
-        Container(
-          height: progressBarHeight,
-          width: progressBarWidth,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color:
-                totalLessonsCompleted > 0
-                    ? AppColors.kOrange.withValues(alpha: 0.2)
-                    : Colors.grey.shade300,
+        for (int i = 0; i < totalSteps; i++) ...[
+          _buildDottedConnector(
+            isActive: totalLessonsCompleted > i,
+            length: connectorLength,
+            height: progressBarHeight,
           ),
+
+          // Progress dot
+          _buildProgressDot(
+            isCompleted: totalLessonsCompleted > i,
+            isLastStep: i == totalSteps - 1,
+            circleSize: circleSize,
+          ),
+        ],
+
+        // Final dotted connector after last dot
+        _buildDottedConnector(
+          isActive: totalLessonsCompleted >= totalSteps,
+          length: connectorLength,
+          height: progressBarHeight,
         ),
-        ...List.generate(totalSteps - 1, (index) {
-          final isFilled = totalLessonsCompleted > index;
-          final isBarFilled = totalLessonsCompleted > (index + 1);
-          return Row(
-            children: [
-              Container(
-                height: circleSize,
-                width: circleSize,
-                decoration: BoxDecoration(
-                  color: isFilled ? AppColors.kOrange : Colors.grey.shade300,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Container(
-                height: progressBarHeight,
-                width: progressBarWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color:
-                      isBarFilled
-                          ? AppColors.kOrange.withValues(alpha: 0.2)
-                          : Colors.grey.shade300,
-                ),
-              ),
-            ],
-          );
-        }),
+
+        // Reward icon
         if (
         // totalLessonsCompleted == 5 &&
         GlobalConfig.isUserTesting && !isGuest && totalChildCount > 0) ...[
@@ -429,6 +418,43 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
         ],
       ],
+    );
+  }
+
+  Widget _buildProgressDot({
+    required bool isCompleted,
+    required bool isLastStep,
+    required double circleSize,
+  }) {
+    return Container(
+      width: circleSize,
+      height: circleSize,
+      decoration: BoxDecoration(
+        color: isCompleted ? AppColors.kOrange : Colors.grey.shade300,
+        shape: BoxShape.circle,
+      ),
+      child:
+          isLastStep && isCompleted
+              ? Icon(
+                Icons.star,
+                color: AppColors.kWhite,
+                size: circleSize * 0.6,
+              )
+              : null,
+    );
+  }
+
+  Widget _buildDottedConnector({
+    required bool isActive,
+    required double length,
+    required double height,
+  }) {
+    return CustomPaint(
+      size: Size(length, height),
+      painter: DottedLinePainter(
+        color: isActive ? AppColors.sunshineYellow : Colors.grey.shade300,
+        strokeWidth: height,
+      ),
     );
   }
 
@@ -468,7 +494,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                 color: menuColor,
                 borderRadius: BorderRadius.circular(20),
               ),
-
               child: Text(
                 label,
                 style: labelTextStyle.copyWith(color: AppColors.kWhite),
@@ -495,4 +520,36 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       return const Size.fromHeight(110);
     }
   }
+}
+
+class DottedLinePainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+
+  DottedLinePainter({required this.color, required this.strokeWidth});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round;
+
+    const dashWidth = 4.0;
+    const dashSpace = 3.0;
+    double startX = 0.0;
+
+    while (startX < size.width) {
+      canvas.drawLine(
+        Offset(startX, size.height / 2),
+        Offset(startX + dashWidth, size.height / 2),
+        paint,
+      );
+      startX += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
