@@ -53,7 +53,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             PlatformUtility.isLandscape(context));
     final avatarSize = isTabletPortrait ? 64.0 : 45.0;
     final rewardIconSize = isTabletPortrait ? 50.0 : 40.0;
-    final starRewardLottieSize = isTabletPortrait ? 85.0 : 65.0;
+    final starRewardLottieSize = isTabletPortrait ? 85.0 : 40.0;
     final tabIconSize = isTabletPortrait ? 56.0 : 44.0;
     final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
     final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
