@@ -73,10 +73,10 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
 
     // Responsive values
     final double titleFontSize = isMobileLandscape ? 40 : 64;
-    final double descriptionFontSize = isMobileLandscape ? 16 : 22;
+    final double descriptionFontSize = isMobileLandscape ? 16 : 28;
     final double paddingH = isMobileLandscape ? 16 : 32;
     final double paddingV = isMobileLandscape ? 10 : 18;
-    final double imageSize = isMobileLandscape ? 230 : 270;
+    final double imageSize = isMobileLandscape ? 230 : 500;
     final double audioButtonSize =
         isMobileLandscape
             ? AppConstants.kIconSize
@@ -103,8 +103,14 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                 child: IconButton(
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
+                    height:
+                        isMobileLandscape
+                            ? AppConstants.kIconSize
+                            : AppConstants.kIconSize + AppConstants.kIconSize,
+                    width:
+                        isMobileLandscape
+                            ? AppConstants.kIconSize
+                            : AppConstants.kIconSize + AppConstants.kIconSize,
                     color: AppColors.kWhite,
                   ),
                   padding: const EdgeInsets.only(top: 16, right: 16),
@@ -163,7 +169,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                         Text(
                           widget.data.titleEn,
                           style: AppStyles.text30PxSemiBold.copyWith(
-                            fontSize: isMobileLandscape ? 24 : 30,
+                            fontSize: isMobileLandscape ? 24 : 40,
                             color: AppColors.kWhite,
                           ),
                           textAlign: TextAlign.center,

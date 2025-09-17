@@ -105,6 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     CustomMaterialButton(
                       label: context.tr('try_lesson_guest'),
                       onTap: () {
+                        UserAppBar.setTabIndex(0);
                         Utility.navigate(
                           context,
                           AppRoutes.guestDashboardScreen,
