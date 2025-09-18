@@ -27,6 +27,49 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double imageHeight =
+        isMobile ? (isMobilePortrait ? 200 : 150) : 250; // Enhanced for tablet
+    final double horizontalPadding =
+        isMobile
+            ? (isMobilePortrait ? 24 : 72.0)
+            : 100.0; // Enhanced for tablet
+    final double verticalPadding =
+        isMobile ? (isMobilePortrait ? 16 : 32) : 40; // Enhanced for tablet
+    final double bottomPadding = isMobile ? 16.0 : 24.0;
+    final double avatarSize = isMobile ? 40 : 50;
+    final double iconSize = isMobile ? 18 : 22;
+
+    final TextStyle titleStyleAppBar =
+        isMobile
+            ? AppStyles.text16PxSemiBold.copyWith(
+              fontFamily: AppConstants.kPoppinsFont,
+            )
+            : AppStyles.text20PxSemiBold.copyWith(
+              fontFamily: AppConstants.kPoppinsFont,
+            );
+
+    final TextStyle titleStyleMain =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text20PxSemiBold
+                : AppStyles.text24PxSemiBold)
+            : AppStyles.text28PxSemiBold; // Enhanced for tablet
+
+    final TextStyle authorStyle =
+        isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium;
+
+    final TextStyle contentStyle =
+        isMobile
+            ? AppStyles.text16PxRegular.copyWith(
+              height: 1.5,
+              fontFamily: AppConstants.kDMSansFont,
+            )
+            : AppStyles.text18PxRegular.copyWith(
+              height: 1.6,
+              fontFamily: AppConstants.kDMSansFont,
+            ); // Enhanced for tablet
+
     var blog = widget.data;
     if (blog == null) {
       return const Scaffold(body: Center(child: Text('Blog data is loading')));
@@ -38,23 +81,22 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
           blog.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppStyles.text16PxSemiBold.copyWith(
-            fontFamily: AppConstants.kPoppinsFont,
-          ),
+          style: titleStyleAppBar,
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(bottomPadding),
         decoration: BoxDecoration(color: AppColors.kWhite),
         child: Row(
           children: [
-            Icon(Icons.timer, size: 18, color: AppColors.kGrey),
+            Icon(Icons.timer, size: iconSize, color: AppColors.kGrey),
             Gaps.horizontalGapOf(4),
             Text(
               '${blog.readTimeMinutes} min read',
               style: AppStyles.text12PxRegular.copyWith(
                 color: AppColors.kGrey,
                 fontFamily: AppConstants.kDMSansFont,
+                fontSize: isMobile ? 12.0 : 16.0,
               ),
             ),
             const Spacer(),
@@ -63,6 +105,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
               style: AppStyles.text12PxRegular.copyWith(
                 color: AppColors.kGrey.withValues(alpha: 0.7),
                 fontFamily: AppConstants.kDMSansFont,
+                fontSize: isMobile ? 12.0 : 16.0,
               ),
             ),
           ],
@@ -79,14 +122,14 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                 child: CustomImage(
                   blog.coverImage,
                   width: double.infinity,
-                  height: isMobilePortrait ? 200 : 150,
+                  height: imageHeight,
                   imageType: CustomImageType.network,
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: isMobilePortrait ? 24 : 72.0,
-                  vertical: isMobilePortrait ? 16 : 32,
+                  horizontal: horizontalPadding,
+                  vertical: verticalPadding,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,21 +138,18 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                       children: [
                         CustomImage(
                           blog.authorAvatar,
-                          width: 40,
-                          height: 40,
-                          borderRadius: 20,
+                          width: avatarSize,
+                          height: avatarSize,
+                          borderRadius: avatarSize / 2,
                           imageType: CustomImageType.network,
                         ),
                         Gaps.horizontalGapOf(10),
                         Expanded(
-                          child: Text(
-                            blog.authorName,
-                            style: AppStyles.text16PxMedium,
-                          ),
+                          child: Text(blog.authorName, style: authorStyle),
                         ),
                         Icon(
                           Icons.visibility,
-                          size: 18,
+                          size: iconSize,
                           color: Colors.grey[600],
                         ),
                         Gaps.horizontalGapOf(2),
@@ -118,19 +158,14 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                           style: AppStyles.text12PxRegular.copyWith(
                             color: AppColors.kGrey,
                             fontFamily: AppConstants.kDMSansFont,
+                            fontSize: isMobile ? 12.0 : 16.0,
                           ),
                         ),
                         Gaps.horizontalGapOf(10),
                       ],
                     ),
                     Gaps.verticalGapOf(16),
-                    Text(
-                      blog.title,
-                      style:
-                          isMobilePortrait
-                              ? AppStyles.text20PxSemiBold
-                              : AppStyles.text24PxSemiBold,
-                    ),
+                    Text(blog.title, style: titleStyleMain),
                     Gaps.verticalGapOf(10),
                     // Row(
                     //   mainAxisAlignment: MainAxisAlignment.start,
@@ -144,10 +179,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                     // Gaps.verticalGapOf(18),
                     Text(
                       blog.content,
-                      style: AppStyles.text16PxRegular.copyWith(
-                        height: 1.5,
-                        fontFamily: AppConstants.kDMSansFont,
-                      ),
+                      style: contentStyle,
                       textAlign: TextAlign.justify,
                     ),
                     Gaps.verticalGapOf(24),

@@ -11,6 +11,32 @@ class PBlogCard extends StatelessWidget {
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double imageHeight = isMobile ? (isMobilePortrait ? 200 : 350) : 400;
+    final double horizontalPadding = isMobile ? 12.0 : 20.0;
+    final double verticalGap1 = isMobile ? 10 : 16;
+    final double verticalGap2 = isMobile ? 5 : 8;
+
+    final TextStyle titleStyle =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxSemiBold
+                : AppStyles.text20PxSemiBold)
+            : AppStyles.text24PxSemiBold;
+
+    final TextStyle contentStyle =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text14PxRegular.copyWith(
+                  fontFamily: AppConstants.kDMSansFont,
+                )
+                : AppStyles.text16PxRegular.copyWith(
+                  fontFamily: AppConstants.kDMSansFont,
+                ))
+            : AppStyles.text18PxRegular.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
     return InkWell(
       onTap: onTap,
       child: Column(
@@ -19,37 +45,27 @@ class PBlogCard extends StatelessWidget {
           CustomImage(
             blog.coverImage,
             width: double.infinity,
-            height: isMobilePortrait ? 200 : 350,
+            height: imageHeight,
             imageType: CustomImageType.network,
           ),
-          Gaps.verticalGapOf(10),
+          Gaps.verticalGapOf(verticalGap1),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Text(
               blog.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style:
-                  isMobilePortrait
-                      ? AppStyles.text16PxSemiBold
-                      : AppStyles.text20PxSemiBold,
+              style: titleStyle,
             ),
           ),
-          Gaps.verticalGapOf(5),
+          Gaps.verticalGapOf(verticalGap2),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Text(
               blog.content,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style:
-                  isMobilePortrait
-                      ? AppStyles.text14PxRegular.copyWith(
-                        fontFamily: AppConstants.kDMSansFont,
-                      )
-                      : AppStyles.text16PxRegular.copyWith(
-                        fontFamily: AppConstants.kDMSansFont,
-                      ),
+              style: contentStyle,
             ),
           ),
         ],
