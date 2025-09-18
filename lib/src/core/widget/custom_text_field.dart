@@ -57,6 +57,31 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double responsiveBorderRadius =
+        isTabletPortrait ? 12.0 : borderRadius;
+    final double responsivePaddingHorizontal =
+        paddingHorizontal ?? (isTabletPortrait ? 16.0 : 0.0);
+    final double responsivePaddingVertical =
+        paddingVertical ?? (isTabletPortrait ? 16.0 : 0.0);
+    final double iconHeight = isTabletPortrait ? 28.0 : 22.0;
+    final double iconWidth = isTabletPortrait ? 48.0 : 40.0;
+    final double focusedBorderWidth = isTabletPortrait ? 2.5 : 2.0;
+
+    final TextStyle textStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxRegular
+            : AppStyles.text14PxRegular;
+    final TextStyle hintStyle = (isTabletPortrait
+            ? AppStyles.text16PxRegular
+            : AppStyles.text14PxRegular)
+        .copyWith(color: AppColors.kGrey);
+    final TextStyle errorStyle = (isTabletPortrait
+            ? AppStyles.text14PxRegular
+            : AppStyles.text12PxRegular)
+        .copyWith(color: AppColors.kRed);
     return TextFormField(
       controller: controller,
       keyboardType:
@@ -89,14 +114,13 @@ class CustomTextField extends StatelessWidget {
       textInputAction: textInputAction,
       obscureText: isPasswordField,
       obscuringCharacter: '*',
-      style: AppStyles.text14PxRegular,
+      style: textStyle,
       decoration: InputDecoration(
         fillColor: AppColors.kLightGrey.withValues(alpha: 0.2),
-        hintStyle: AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey),
-
+        hintStyle: hintStyle,
         filled: true,
         isDense: true,
-        errorStyle: AppStyles.text12PxRegular.copyWith(color: AppColors.kRed),
+        errorStyle: errorStyle,
         prefixIcon:
             prefixIcon ??
             (icon != null
@@ -104,8 +128,8 @@ class CustomTextField extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 22.0,
-                      width: 40.0,
+                      height: iconHeight,
+                      width: iconWidth,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(icon!),
@@ -119,28 +143,37 @@ class CustomTextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: AppColors.kTransparentColor),
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(responsiveBorderRadius),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.kButtonGreen, width: 2),
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+          borderSide: BorderSide(
+            color: AppColors.kButtonGreen,
+            width: focusedBorderWidth,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(responsiveBorderRadius),
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.kRed),
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+          borderRadius: BorderRadius.all(
+            Radius.circular(responsiveBorderRadius),
+          ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.kButtonGreen),
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+          borderRadius: BorderRadius.all(
+            Radius.circular(responsiveBorderRadius),
+          ),
         ),
         hintText: hintText,
         contentPadding:
             contentPadding
                 ? EdgeInsets.symmetric(
-                  horizontal: paddingHorizontal ?? 0,
-                  vertical: paddingVertical ?? 0,
+                  horizontal: responsivePaddingHorizontal,
+                  vertical: responsivePaddingVertical,
                 )
-                : const EdgeInsets.all(12.0),
+                : EdgeInsets.all(isTabletPortrait ? 16.0 : 12.0),
       ),
     );
   }

@@ -23,11 +23,15 @@ class _RS1ScreenState extends State<RS1Screen> {
     final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double childAspectRatio = isTabletPortrait ? 1.3 : 1.2;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 1),
@@ -62,7 +66,13 @@ class _RS1ScreenState extends State<RS1Screen> {
                 }),
               ),
             ),
-            _buildNextButton(context, isTabletPortrait),
+            _buildNextButton(
+              context,
+              isTabletPortrait,
+              buttonTextStyle,
+              buttonHeight,
+              buttonRadius,
+            ),
           ],
         ),
       ),
@@ -82,6 +92,7 @@ class _RS1ScreenState extends State<RS1Screen> {
     final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
     final double borderWidth =
         isSelected ? (isTabletPortrait ? 3.0 : 2.5) : 1.0;
+    final double cardPadding = isTabletPortrait ? 16.0 : 12.0;
 
     final TextStyle textStyle =
         isTabletPortrait
@@ -91,6 +102,7 @@ class _RS1ScreenState extends State<RS1Screen> {
     return InkWell(
       onTap: onTap,
       child: Container(
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.kButtonGreen : AppColors.kLightGrey,
@@ -119,10 +131,13 @@ class _RS1ScreenState extends State<RS1Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
+  ) {
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
@@ -138,6 +153,8 @@ class _RS1ScreenState extends State<RS1Screen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }

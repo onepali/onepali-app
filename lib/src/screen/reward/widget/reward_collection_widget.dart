@@ -42,7 +42,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
     // Responsive values
     final double stickerSize = isMobileLandscape ? 130 : 180;
     final double stickerMargin = isMobileLandscape ? 24 : 34;
-    final double titleFontSize = isMobileLandscape ? 24 : 28;
+    final double titleFontSize = isMobileLandscape ? 24 : 64;
     final double wrongIconSize =
         isMobileLandscape
             ? AppConstants.kIconSize
@@ -227,20 +227,22 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
 
             return Scaffold(
               backgroundColor: AppColors.kWhite,
-              appBar: CustomAppBar(
-                title:
-                    widget.childId != null
-                        ? 'Sticker Collection'
-                        : 'My Sticker Collection',
+              appBar: AppBar(
+                title: Text(
+                  widget.childId != null
+                      ? 'Sticker Collection'
+                      : 'My Sticker Collection',
+                  style: AppStyles.text22PxSemiBold.copyWith(
+                    fontSize: titleFontSize,
+                    fontFamily: 'Luckiest Guy',
+                    letterSpacing: 1.6,
+                  ),
+                ),
                 centerTitle: true,
-                showBackButton: false,
+                toolbarHeight: isMobileLandscape ? 56 : 80,
                 automaticallyImplyLeading: false,
                 leading: null,
-                titleStyle: AppStyles.text22PxSemiBold.copyWith(
-                  fontSize: titleFontSize,
-                  fontFamily: 'Luckiest Guy',
-                  letterSpacing: 1.6,
-                ),
+
                 actions: [
                   customInkwell(
                     onTap: () {
@@ -256,6 +258,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                       child: SvgHelper.fromSource(
                         path: Assets.wrong,
                         height: wrongIconSize,
+                        width: wrongIconSize,
                         color: AppColors.kLightGrey,
                       ),
                     ),

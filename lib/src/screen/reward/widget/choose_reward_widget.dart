@@ -30,7 +30,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double stickerSize = isMobileLandscape ? 130 : 180;
+    final double stickerSize = isMobileLandscape ? 130 : 300;
     final double stickerMargin = isMobileLandscape ? 10 : 24;
 
     return Row(
@@ -87,8 +87,8 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
     // Responsive values
-    final double titleFontSize = isMobileLandscape ? 20 : 28;
-    final double titlePaddingH = isMobileLandscape ? 16 : 32;
+    final double titleFontSize = isMobileLandscape ? 20 : 45;
+    final double titlePaddingH = isMobileLandscape ? 16 : 40;
     final double titlePaddingV = isMobileLandscape ? 10 : 18;
     final double gap = isMobileLandscape ? 32 : 40;
 
@@ -107,6 +107,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
                 ),
               ),
             ),
+            if (!isMobileLandscape) Gaps.verticalGapOf(100),
             Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -118,11 +119,11 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.kWhite,
-                      borderRadius: BorderRadius.circular(32),
+                      borderRadius: BorderRadius.circular(60),
                     ),
                     child: Text(
                       'Choose your new sticker!',
-                      style: AppStyles.text22PxMedium.copyWith(
+                      style: AppStyles.text22PxSemiBold.copyWith(
                         fontSize: titleFontSize,
                       ),
                     ),

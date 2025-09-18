@@ -54,11 +54,16 @@ class _PHomeScreenState extends State<PHomeScreen> {
     // Fetch metrics for selected child
     final parentUid = context.read<UserProvider>().userId;
     if (parentUid != null) {
+      // First, debug what's actually in Firestore
+      context.read<PzMetricsProvider>().debugFirestoreData(parentUid, childUid);
+
       context
           .read<PzMetricsProvider>()
           .fetchMetrics(parentUid: parentUid, childUid: childUid)
           .then((_) {
             if (!mounted) return;
+            // Log current week state for debugging
+            context.read<PzMetricsProvider>().logCurrentWeekState(childUid);
 
             context.read<PzMetricsProvider>().checkAndResetWeeklyStreak(
               parentUid: parentUid,

@@ -24,15 +24,20 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double verticalGap1 = isTabletPortrait ? 80.0 : 50.0;
     final double verticalGap2 = isTabletPortrait ? 80.0 : 50.0;
-    final double imageSize = isTabletPortrait ? 280.0 : 230.0;
+    final double imageSize = isTabletPortrait ? 300.0 : 230.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
-    final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
+    // final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
     final double buttonSpacing = isTabletPortrait ? 20.0 : 15.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
             ? AppStyles.text18PxRegular
             : AppStyles.text16PxRegular;
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -66,15 +71,23 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: bottomPadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildNextButton(context, isTabletPortrait, buttonSpacing),
-            Gaps.verticalGapOf(buttonGap),
-          ],
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: bottomPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildNextButton(
+                context,
+                isTabletPortrait,
+                buttonSpacing,
+                buttonTextStyle,
+                buttonHeight,
+                buttonRadius,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -84,10 +97,10 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
     BuildContext context,
     bool isTabletPortrait,
     double buttonSpacing,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
   ) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,6 +116,8 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
           backgroundColor: AppColors.kButtonGreen,
           width: double.infinity,
           textStyle: buttonTextStyle,
+          height: buttonHeight,
+          radius: buttonRadius,
           elevation: 0,
         ),
         Gaps.verticalGapOf(buttonSpacing),
@@ -114,6 +129,8 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
           backgroundColor: AppColors.kButtonGrey,
           textStyle: buttonTextStyle.copyWith(color: AppColors.kBlack),
           width: double.infinity,
+          height: buttonHeight,
+          radius: buttonRadius,
           elevation: 0,
         ),
       ],

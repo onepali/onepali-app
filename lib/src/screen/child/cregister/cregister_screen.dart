@@ -40,11 +40,20 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
     final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
     final double fieldGap = isTabletPortrait ? 32.0 : 20.0;
     final double buttonTopGap = isTabletPortrait ? 32.0 : 20.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
+    final TextStyle titleActionTextStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxSemiBold
+            : AppStyles.text14PxSemiBold;
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -67,6 +76,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
                 TitleActionChild(
                   titlePadding: EdgeInsets.only(bottom: 8),
                   title: 'Name',
+                  titleStyle: titleActionTextStyle,
                   child: CustomTextField(
                     hintText: 'Enter your Full Name',
                     keyboardType: TextInputType.name,
@@ -78,6 +88,7 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
                 Gaps.verticalGapOf(fieldGap),
                 TitleActionChild(
                   title: 'Birthday',
+                  titleStyle: titleActionTextStyle,
                   titlePadding: EdgeInsets.only(bottom: 8),
                   child: CupertinoDatePickerField(
                     initialDate: selectedDate,
@@ -100,19 +111,28 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
           padding: EdgeInsets.only(
             left: horizontalPadding,
             right: horizontalPadding,
-            bottom: isTabletPortrait ? 24.0 : 16.0,
+            // bottom: isTabletPortrait ? 24.0 : 16.0,
             top: 0,
           ),
-          child: _buildNextButton(context, isTabletPortrait),
+          child: _buildNextButton(
+            context,
+            isTabletPortrait,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
+  ) {
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
@@ -130,6 +150,8 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }

@@ -49,6 +49,17 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
       _error = null;
     });
     TimeOfDay tempTime = selectedTime;
+
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing for dialog
+    final double dialogMargin = isTabletPortrait ? 24.0 : 16.0;
+    final double dialogPadding = isTabletPortrait ? 24.0 : 16.0;
+    final double borderRadius = isTabletPortrait ? 24.0 : 20.0;
+    final double handleWidth = isTabletPortrait ? 50.0 : 40.0;
+    final double handleHeight = isTabletPortrait ? 5.0 : 4.0;
+    final double pickerHeight = isTabletPortrait ? 240.0 : 200.0;
+
     await showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -59,13 +70,12 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
             builder: (context, setModalState) {
               return Container(
                 constraints: BoxConstraints(
-                  // maxWidth: 400,
                   maxHeight: MediaQuery.of(context).size.height * 0.6,
                 ),
-                margin: const EdgeInsets.all(16.0),
+                margin: EdgeInsets.all(dialogMargin),
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(borderRadius),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.3),
@@ -74,7 +84,7 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(dialogPadding),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -84,12 +94,12 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                         color: AppColors.kButtonGrey,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      height: 4,
-                      width: 40,
+                      height: handleHeight,
+                      width: handleWidth,
                     ),
                     Gaps.verticalGapOf(16),
                     SizedBox(
-                      height: 200,
+                      height: pickerHeight,
                       child: _CupertinoTimePickerWidget(
                         initialTime: selectedTime,
                         onTimeChanged: (time) {
@@ -103,6 +113,10 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                       children: [
                         CustomTextButton(
                           text: 'Cancel',
+                          textStyle: AppStyles.text14PxMedium.copyWith(
+                            color: AppColors.kGrey,
+                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -110,6 +124,10 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                         Gaps.horizontalGapOf(8),
                         CustomTextButton(
                           text: 'Select',
+                          textStyle: AppStyles.text14PxMedium.copyWith(
+                            color: AppColors.kButtonGreen,
+                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                          ),
                           onPressed: () {
                             final error = widget.validator?.call(tempTime);
                             if (error != null) {
@@ -134,6 +152,7 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
                           _error!,
                           style: AppStyles.text12PxRegular.copyWith(
                             color: AppColors.kRed,
+                            fontSize: isTabletPortrait ? 16.0 : 12.0,
                           ),
                         ),
                       ),
@@ -157,25 +176,43 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double verticalPadding = isTabletPortrait ? 16.0 : 12.0;
+    final double horizontalPadding = isTabletPortrait ? 16.0 : 12.0;
+    final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double iconSize = isTabletPortrait ? 28.0 : 24.0;
+
+    final TextStyle textStyle =
+        widget.textStyle ??
+        (isTabletPortrait
+            ? AppStyles.text18PxMedium
+            : AppStyles.text16PxRegular);
+
     return GestureDetector(
       onTap: () => _showPicker(context),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        padding: EdgeInsets.symmetric(
+          vertical: verticalPadding,
+          horizontal: horizontalPadding,
+        ),
         decoration:
             widget.decoration ??
             BoxDecoration(
               color: AppColors.kLightGrey.withValues(alpha: 0.2),
               border: Border.all(color: AppColors.kTransparentColor),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
         child: Row(
           children: [
-            Text(
-              _displayText,
-              style: widget.textStyle ?? AppStyles.text16PxRegular,
-            ),
+            Text(_displayText, style: textStyle),
             Spacer(),
-            Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: Colors.grey,
+              size: isTabletPortrait ? iconSize : null,
+            ),
           ],
         ),
       ),
@@ -223,12 +260,15 @@ class _CupertinoTimePickerWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final double itemExtent = isTabletPortrait ? 40.0 : 32.0;
+
     final hourPicker = Expanded(
       child: CupertinoPicker(
         scrollController: FixedExtentScrollController(
           initialItem: (selectedHour - 1) % 12,
         ),
-        itemExtent: 32,
+        itemExtent: itemExtent,
         onSelectedItemChanged: (index) {
           setState(() {
             selectedHour = (index + 1);
@@ -237,7 +277,15 @@ class _CupertinoTimePickerWidgetState
         },
         children: [
           for (int i = 1; i <= 12; i++)
-            Center(child: Text(i.toString().padLeft(2, '0'))),
+            Center(
+              child: Text(
+                i.toString().padLeft(2, '0'),
+                style:
+                    isTabletPortrait
+                        ? AppStyles.text28PxMedium
+                        : AppStyles.text16PxMedium,
+              ),
+            ),
         ],
       ),
     );
@@ -247,7 +295,7 @@ class _CupertinoTimePickerWidgetState
         scrollController: FixedExtentScrollController(
           initialItem: selectedMinute,
         ),
-        itemExtent: 32,
+        itemExtent: itemExtent,
         onSelectedItemChanged: (index) {
           setState(() {
             selectedMinute = index;
@@ -256,7 +304,15 @@ class _CupertinoTimePickerWidgetState
         },
         children: [
           for (int i = 0; i < 60; i++)
-            Center(child: Text(i.toString().padLeft(2, '0'))),
+            Center(
+              child: Text(
+                i.toString().padLeft(2, '0'),
+                style:
+                    isTabletPortrait
+                        ? AppStyles.text28PxMedium
+                        : AppStyles.text16PxMedium,
+              ),
+            ),
         ],
       ),
     );
@@ -266,14 +322,33 @@ class _CupertinoTimePickerWidgetState
         scrollController: FixedExtentScrollController(
           initialItem: selectedPeriod == DayPeriod.am ? 0 : 1,
         ),
-        itemExtent: 32,
+        itemExtent: itemExtent,
         onSelectedItemChanged: (index) {
           setState(() {
             selectedPeriod = index == 0 ? DayPeriod.am : DayPeriod.pm;
             _onChanged();
           });
         },
-        children: const [Center(child: Text('AM')), Center(child: Text('PM'))],
+        children: [
+          Center(
+            child: Text(
+              'AM',
+              style:
+                  isTabletPortrait
+                      ? AppStyles.text28PxMedium
+                      : AppStyles.text16PxMedium,
+            ),
+          ),
+          Center(
+            child: Text(
+              'PM',
+              style:
+                  isTabletPortrait
+                      ? AppStyles.text28PxMedium
+                      : AppStyles.text16PxMedium,
+            ),
+          ),
+        ],
       ),
     );
 

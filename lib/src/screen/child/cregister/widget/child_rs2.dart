@@ -26,6 +26,8 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
     final double sliderBottomGap = isTabletPortrait ? 36.0 : 26.0;
     final double nextButtonGap = isTabletPortrait ? 50.0 : 40.0;
     final double buttonSpacing = isTabletPortrait ? 25.0 : 20.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
@@ -36,6 +38,9 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         isTabletPortrait
             ? AppStyles.text16PxRegular
             : AppStyles.text14PxRegular;
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -98,12 +103,23 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildNextButton(context, isTabletPortrait),
+              _buildNextButton(
+                context,
+                isTabletPortrait,
+                buttonTextStyle,
+                buttonHeight,
+                buttonRadius,
+              ),
               Gaps.verticalGapOf(buttonSpacing),
-              _buildNotNowButton(context, isTabletPortrait),
-              Gaps.verticalGapOf(buttonSpacing),
+              _buildNotNowButton(
+                context,
+                isTabletPortrait,
+                buttonTextStyle,
+                buttonHeight,
+                buttonRadius,
+              ),
             ],
           ),
         ),
@@ -111,12 +127,15 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
+  ) {
     final childProvider = context.watch<ChildAuthProvider>();
     final childUserProvider = context.watch<ChildUserProvider>();
-
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return CustomMaterialButton(
       label: 'Next',
@@ -157,14 +176,19 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }
 
-  Widget _buildNotNowButton(BuildContext context, bool isTabletPortrait) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
+  Widget _buildNotNowButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
+  ) {
     return CustomMaterialButton(
       onTap: () async {
         final authState = context.read<AuthState>();
@@ -210,6 +234,8 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
       fillButton: true,
       backgroundColor: AppColors.kButtonGrey,
       textStyle: buttonTextStyle.copyWith(color: AppColors.kBlack),
+      height: buttonHeight,
+      radius: buttonRadius,
     );
   }
 }
