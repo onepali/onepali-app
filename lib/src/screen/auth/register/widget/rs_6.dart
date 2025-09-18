@@ -47,6 +47,8 @@ class _RS6ScreenState extends State<RS6Screen>
     final double titleGap = isTabletPortrait ? 40.0 : 30.0;
     final double subtitleGap = isTabletPortrait ? 16.0 : 10.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
@@ -57,6 +59,9 @@ class _RS6ScreenState extends State<RS6Screen>
         isTabletPortrait
             ? AppStyles.text16PxRegular
             : AppStyles.text14PxRegular;
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 6),
@@ -96,25 +101,41 @@ class _RS6ScreenState extends State<RS6Screen>
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(bottomPadding),
-        child: _buildNextButton(context, isTabletPortrait),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(bottomPadding),
+          child: _buildNextButton(
+            context,
+            isTabletPortrait,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
+  ) {
     return CustomMaterialButton(
       label: 'Get Started',
       onTap: () {
-        Utility.navigate(context, AppRoutes.loginScreen);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          AppRoutes.onboardingScreen,
+          (Route<dynamic> route) => false,
+        );
       },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }

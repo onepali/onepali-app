@@ -7,6 +7,8 @@ class ReusableWidget {
     String? icon,
     String? title,
     VoidCallback? onTap,
+    double? height,
+    TextStyle? textStyle,
   }) {
     return GestureDetector(
       onTap: () {
@@ -16,7 +18,7 @@ class ReusableWidget {
       },
 
       child: Container(
-        height: 45,
+        height: height ?? 45,
         padding: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -36,7 +38,7 @@ class ReusableWidget {
             Gaps.horizontalGapOf(15),
             Text(
               title ?? 'Sign in with Google',
-              style: AppStyles.text14PxRegular,
+              style: textStyle ?? AppStyles.text14PxRegular,
             ),
           ],
         ),

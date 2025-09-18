@@ -34,8 +34,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = PlatformUtility.isMobile(context);
-    final bool isMobilePortrait =
-        isMobile && PlatformUtility.isPortrait(context);
+
+    // Responsive sizing and styling
+    final double horizontalPadding = isMobile ? 24.0 : 32.0;
+    final double containerPadding = isMobile ? 16.0 : 20.0;
+    final double verticalGap1 = isMobile ? 16.0 : 20.0;
+    final double verticalGap2 = isMobile ? 24.0 : 30.0;
+    final double borderRadius = isMobile ? 8.0 : 12.0;
+
+    final TextStyle titleStyle =
+        isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium;
+    final TextStyle subtitleStyle =
+        isMobile ? AppStyles.text14PxRegular : AppStyles.text16PxRegular;
+
     return Consumer<PzNotificationProvider>(
       builder: (context, provider, _) {
         return StatusHandler(
@@ -50,17 +61,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
               appBar: CustomAppBar(title: 'Notification'),
               backgroundColor: AppColors.kWhite,
               body: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(horizontalPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ListTile(
                       title: Text(
                         'Enable All Notifications',
-                        style:
-                            isMobilePortrait
-                                ? AppStyles.text16PxMedium
-                                : AppStyles.text18PxMedium,
+                        style: titleStyle,
                       ),
                       dense: true,
                       contentPadding: EdgeInsets.zero,
@@ -78,27 +86,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 : AppColors.kGrey,
                       ),
                     ),
-                    Gaps.verticalGapOf(16),
+                    Gaps.verticalGapOf(verticalGap1),
                     Container(
                       decoration: BoxDecoration(
                         color: AppColors.kWhite,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(borderRadius),
                         border: Border.all(
                           color: AppColors.kButtonGrey,
                           width: 1,
                         ),
                       ),
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(containerPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ListTile(
                             title: Text(
                               'Daily Practice Reminder',
-                              style:
-                                  isMobilePortrait
-                                      ? AppStyles.text14PxRegular
-                                      : AppStyles.text16PxRegular,
+                              style: subtitleStyle,
                             ),
                             dense: true,
                             contentPadding: EdgeInsets.zero,
@@ -140,24 +145,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         ],
                       ),
                     ),
-                    Gaps.verticalGapOf(16),
+                    Gaps.verticalGapOf(verticalGap1),
                     Container(
                       decoration: BoxDecoration(
                         color: AppColors.kWhite,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(borderRadius),
                         border: Border.all(
                           color: AppColors.kButtonGrey,
                           width: 1,
                         ),
                       ),
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(containerPadding),
                       child: ListTile(
                         title: Text(
                           'Weekly Progress Report',
-                          style:
-                              isMobilePortrait
-                                  ? AppStyles.text14PxRegular
-                                  : AppStyles.text16PxRegular,
+                          style: subtitleStyle,
                         ),
                         dense: true,
                         contentPadding: EdgeInsets.zero,
@@ -173,25 +175,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         ),
                       ),
                     ),
-                    Gaps.verticalGapOf(16),
+                    Gaps.verticalGapOf(verticalGap1),
                     Container(
                       decoration: BoxDecoration(
                         color: AppColors.kWhite,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(borderRadius),
                         border: Border.all(
                           color: AppColors.kButtonGrey,
                           width: 1,
                         ),
                       ),
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(containerPadding),
                       child: ListTile(
-                        title: Text(
-                          'News and Updates',
-                          style:
-                              isMobilePortrait
-                                  ? AppStyles.text14PxRegular
-                                  : AppStyles.text16PxRegular,
-                        ),
+                        title: Text('News and Updates', style: subtitleStyle),
                         dense: true,
                         contentPadding: EdgeInsets.zero,
                         trailing: CupertinoSwitch(
@@ -206,7 +202,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         ),
                       ),
                     ),
-                    Gaps.verticalGapOf(24),
+                    Gaps.verticalGapOf(verticalGap2),
                   ],
                 ),
               ),

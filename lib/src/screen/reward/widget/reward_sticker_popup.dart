@@ -70,25 +70,26 @@ class RewardStickerPopup extends StatelessWidget {
                   width:
                       isMobileLandscape
                           ? AppConstants.kIconSize
-                          : AppConstants.kIconSize + AppConstants.kIconSize,
+                          : AppConstants.kIconSize + 10,
                   height:
                       isMobileLandscape
                           ? AppConstants.kIconSize
-                          : AppConstants.kIconSize + AppConstants.kIconSize,
+                          : AppConstants.kIconSize + 10,
                   decoration: BoxDecoration(
                     color: AppColors.kLightGrey.withValues(alpha: 0.3),
                     shape: BoxShape.circle,
                   ),
                   child: SvgHelper.fromSource(
                     path: Assets.wrong,
+                    color: AppColors.kLightGrey,
                     height:
                         isMobileLandscape
                             ? AppConstants.kIconSize
-                            : AppConstants.kIconSize + AppConstants.kIconSize,
+                            : AppConstants.kIconSize + 10,
                     width:
                         isMobileLandscape
                             ? AppConstants.kIconSize
-                            : AppConstants.kIconSize + AppConstants.kIconSize,
+                            : AppConstants.kIconSize + 10,
                   ),
                 ),
               ),
@@ -139,7 +140,7 @@ class RewardStickerPopup extends StatelessWidget {
                       fontFamily: AppConstants.kMuktaFont,
                     ),
                   ),
-                  Gaps.horizontalGapOf(8),
+                  Gaps.horizontalGapOf(isMobileLandscape ? 8 : 12),
                   if (reward.sAudio.isNotEmpty)
                     IconButton(
                       onPressed: () => _playAudio(),
@@ -148,13 +149,11 @@ class RewardStickerPopup extends StatelessWidget {
                         height:
                             isMobileLandscape
                                 ? AppConstants.kIconSize - 10
-                                : AppConstants.kIconSize +
-                                    AppConstants.kIconSize,
+                                : AppConstants.kIconSize + 10,
                         width:
                             isMobileLandscape
                                 ? AppConstants.kIconSize - 10
-                                : AppConstants.kIconSize +
-                                    AppConstants.kIconSize,
+                                : AppConstants.kIconSize + 10,
                       ),
                     ),
                 ],
@@ -224,7 +223,7 @@ class RewardStickerPopup extends StatelessWidget {
   // Responsive sizing methods
   double _getDialogWidth(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 500;
-    if (isTabletLandscape) return 600;
+    if (isTabletLandscape) return 700;
     return 350; // Portrait
   }
 
@@ -242,7 +241,7 @@ class RewardStickerPopup extends StatelessWidget {
 
   double _getSubtitleFontSize(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 20;
-    if (isTabletLandscape) return 24;
+    if (isTabletLandscape) return 32;
     return 26; // Portrait
   }
 
@@ -251,7 +250,7 @@ class RewardStickerPopup extends StatelessWidget {
     bool isTabletLandscape,
   ) {
     if (isMobileLandscape) return 14;
-    if (isTabletLandscape) return 16;
+    if (isTabletLandscape) return 24;
     return 18; // Portrait
   }
 
@@ -263,7 +262,7 @@ class RewardStickerPopup extends StatelessWidget {
 
   double _getPadding(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 16;
-    if (isTabletLandscape) return 20;
+    if (isTabletLandscape) return 32;
     return 24; // Portrait
   }
 }

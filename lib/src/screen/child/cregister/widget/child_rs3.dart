@@ -32,10 +32,12 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
     final double verticalGap1 = isTabletPortrait ? 16.0 : 10.0;
     final double verticalGap2 = isTabletPortrait ? 80.0 : 50.0;
     final double verticalGap3 = isTabletPortrait ? 50.0 : 30.0;
-    final double imageSize = isTabletPortrait ? 240.0 : 180.0;
+    final double imageSize = isTabletPortrait ? 300.0 : 180.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
     // final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
     final double buttonSpacing = isTabletPortrait ? 20.0 : 15.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
@@ -51,6 +53,9 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
         isTabletPortrait
             ? AppStyles.text16PxRegular
             : AppStyles.text14PxRegular;
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -100,6 +105,9 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
             childCount,
             isTabletPortrait,
             buttonSpacing,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
           ),
         ),
       ),
@@ -111,10 +119,10 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
     int childCount,
     bool isTabletPortrait,
     double buttonSpacing,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
   ) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,6 +147,8 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
           backgroundColor: AppColors.kButtonGreen,
           width: double.infinity,
           textStyle: buttonTextStyle,
+          height: buttonHeight,
+          radius: buttonRadius,
           elevation: 0,
         ),
         Gaps.verticalGapOf(buttonSpacing),
@@ -154,6 +164,8 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
           backgroundColor: AppColors.kButtonGrey,
           textStyle: buttonTextStyle.copyWith(color: AppColors.kBlack),
           width: double.infinity,
+          height: buttonHeight,
+          radius: buttonRadius,
           elevation: 0,
         ),
       ],

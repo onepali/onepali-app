@@ -26,12 +26,20 @@ class _RS4ScreenState extends State<RS4Screen> {
     final double buttonTopGap = isTabletPortrait ? 40.0 : 35.0;
     final double dividerTopGap = isTabletPortrait ? 60.0 : 50.0;
     final double socialButtonGap = isTabletPortrait ? 20.0 : 15.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double loadingIndicatorSize = isTabletPortrait ? 20.0 : 16.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
-
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
+    final TextStyle signInButtonTextStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxRegular
+            : AppStyles.text14PxRegular;
     final authProvider = context.watch<AuthProvider>();
     final gAuthStatus = context.watch<GoogleAuthProvider>().status;
     final fAuthStatus = context.watch<FAuthProvider>().status;
@@ -79,16 +87,25 @@ class _RS4ScreenState extends State<RS4Screen> {
                   validation: (value) => Validator.password(value ?? ""),
                 ),
                 Gaps.verticalGapOf(buttonTopGap),
-                _buildNextButton(context, isLoading, isTabletPortrait),
+                _buildNextButton(
+                  context,
+                  isLoading,
+                  isTabletPortrait,
+                  buttonTextStyle,
+                  buttonHeight,
+                  buttonRadius,
+                ),
 
                 Gaps.verticalGapOf(dividerTopGap),
-                Utility.horizontalDividerTitle(),
+                Utility.horizontalDividerTitle(
+                  titleStyle: signInButtonTextStyle,
+                ),
                 Gaps.verticalGapOf(socialButtonGap),
                 gAuthStatus == DataFetchStatus.loading
                     ? Center(
                       child: SizedBox(
-                        height: isTabletPortrait ? 20 : 16,
-                        width: isTabletPortrait ? 20 : 16,
+                        height: loadingIndicatorSize,
+                        width: loadingIndicatorSize,
                         child: const CircularProgressIndicator.adaptive(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.kButtonGreen,
@@ -100,6 +117,8 @@ class _RS4ScreenState extends State<RS4Screen> {
                     : ReusableWidget.horizontalIconTitle(
                       title: 'Continue with Google',
                       icon: Assets.google,
+                      height: buttonHeight,
+                      textStyle: signInButtonTextStyle,
                       onTap: () async {
                         final googleAuthProvider =
                             context.read<GoogleAuthProvider>();
@@ -113,8 +132,8 @@ class _RS4ScreenState extends State<RS4Screen> {
                 fAuthStatus == DataFetchStatus.loading
                     ? Center(
                       child: SizedBox(
-                        height: isTabletPortrait ? 20 : 16,
-                        width: isTabletPortrait ? 20 : 16,
+                        height: loadingIndicatorSize,
+                        width: loadingIndicatorSize,
                         child: const CircularProgressIndicator.adaptive(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.kButtonGreen,
@@ -125,6 +144,9 @@ class _RS4ScreenState extends State<RS4Screen> {
                     )
                     : ReusableWidget.horizontalIconTitle(
                       title: 'Continue with Facebook',
+                      height: buttonHeight,
+                      textStyle: signInButtonTextStyle,
+
                       icon: Assets.facebook,
                       onTap: () async {
                         final facebookAuthProvider =
@@ -144,10 +166,10 @@ class _RS4ScreenState extends State<RS4Screen> {
     BuildContext context,
     bool isLoading,
     bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
   ) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
     return CustomMaterialButton(
       label: 'Next',
       isLoading: isLoading,
@@ -171,6 +193,8 @@ class _RS4ScreenState extends State<RS4Screen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }

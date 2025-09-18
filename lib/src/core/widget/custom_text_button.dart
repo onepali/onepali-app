@@ -33,7 +33,9 @@ class CustomTextButton extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: AppStyles.text14PxMedium.copyWith(color: AppColors.kButtonGreen),
+        style:
+            textStyle ??
+            AppStyles.text14PxMedium.copyWith(color: AppColors.kButtonGreen),
       ),
     );
   }

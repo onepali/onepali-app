@@ -38,11 +38,13 @@ class RS5Screen extends StatelessWidget {
     // Responsive sizing and styling
     final double horizontalPadding = isTabletPortrait ? 32.0 : 24.0;
     final double titleBottomGap = isTabletPortrait ? 60.0 : 50.0;
-    final double iconSize = isTabletPortrait ? 50.0 : 40.0;
+    final double iconSize = isTabletPortrait ? 60.0 : 40.0;
     final double iconBottomGap = isTabletPortrait ? 60.0 : 50.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
     final double textGap = isTabletPortrait ? 12.0 : 8.0;
     final double buttonGap = isTabletPortrait ? 20.0 : 16.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
@@ -58,6 +60,14 @@ class RS5Screen extends StatelessWidget {
         isTabletPortrait
             ? AppStyles.text14PxRegular
             : AppStyles.text12PxRegular;
+
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
+
+    final TextStyle resendButtonTextStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxRegular
+            : AppStyles.text14PxRegular;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 5),
@@ -92,33 +102,35 @@ class RS5Screen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(bottomPadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Can\'t find it? Check your spam folder.',
-              style: spamTextStyle.copyWith(color: Colors.grey[700]),
-              textAlign: TextAlign.center,
-            ),
-            Gaps.verticalGapOf(textGap),
-            CustomTextButton(
-              text: 'Resend Verification Email',
-              onPressed: () => _handleResend(context),
-            ),
-            Gaps.verticalGapOf(buttonGap),
-            CustomMaterialButton(
-              label: 'I\'ve verified, Continue',
-              elevation: 0,
-              backgroundColor: AppColors.kButtonGreen,
-              onTap: () => _handleNext(context),
-              textStyle:
-                  isTabletPortrait
-                      ? AppStyles.text18PxMedium
-                      : AppStyles.text16PxMedium,
-            ),
-          ],
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(bottomPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Can\'t find it? Check your spam folder.',
+                style: spamTextStyle.copyWith(color: Colors.grey[700]),
+                textAlign: TextAlign.center,
+              ),
+              Gaps.verticalGapOf(textGap),
+              CustomTextButton(
+                text: 'Resend Verification Email',
+                textStyle: resendButtonTextStyle,
+                onPressed: () => _handleResend(context),
+              ),
+              Gaps.verticalGapOf(buttonGap),
+              CustomMaterialButton(
+                label: 'I\'ve verified, Continue',
+                elevation: 0,
+                backgroundColor: AppColors.kButtonGreen,
+                onTap: () => _handleNext(context),
+                textStyle: buttonTextStyle,
+                height: buttonHeight,
+                radius: buttonRadius,
+              ),
+            ],
+          ),
         ),
       ),
     );

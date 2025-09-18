@@ -57,6 +57,59 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double horizontalPadding = isMobile ? 16.0 : 24.0;
+    final double verticalGap1 = isMobile ? 18.0 : 24.0;
+    final double verticalGap2 = isMobile ? 8.0 : 12.0;
+    final double verticalGap3 = isMobile ? 10.0 : 16.0;
+    final double bannerHeight = isMobile ? 100.0 : 120.0;
+    final double bannerMarginVertical = isMobile ? 12.0 : 16.0;
+    final double bannerPadding = isMobile ? 12.0 : 16.0;
+    final double bannerBorderRadius = isMobile ? 8.0 : 12.0;
+    final double iconSize = isMobile ? (isMobilePortrait ? 40.0 : 48.0) : 56.0;
+    final double bottomNavHeight = isMobile ? 60.0 : 100.0;
+    final double bottomNavPadding = isMobile ? 12.0 : 16.0;
+
+    final TextStyle childrenHeaderStyle =
+        isMobile
+            ? AppStyles.text16PxMedium.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            )
+            : AppStyles.text20PxMedium.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
+    final TextStyle bannerTextStyle =
+        isMobile
+            ? AppStyles.text14PxRegular.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            )
+            : AppStyles.text18PxRegular.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
+    final TextStyle notificationTitleStyle =
+        isMobile
+            ? AppStyles.text16PxMedium.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            )
+            : AppStyles.text20PxMedium.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
+    final TextStyle bottomNavTextStyle =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxMedium.copyWith(
+                  fontFamily: AppConstants.kDMSansFont,
+                )
+                : AppStyles.text20PxMedium.copyWith(
+                  fontFamily: AppConstants.kDMSansFont,
+                ))
+            : AppStyles.text24PxMedium.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: ListView(
@@ -64,7 +117,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           // Parent card
           if (parent != null)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: PSettingCard(
                 title: parent.fullName,
                 avatarUrl: null,
@@ -77,20 +130,18 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 },
               ),
             ),
-          Gaps.verticalGapOf(18),
+          Gaps.verticalGapOf(verticalGap1),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              'Your children',
-              style: AppStyles.text16PxMedium.copyWith(
-                fontFamily: AppConstants.kDMSansFont,
-              ),
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: verticalGap2,
             ),
+            child: Text('Your children', style: childrenHeaderStyle),
           ),
-          Gaps.verticalGapOf(8),
+          Gaps.verticalGapOf(verticalGap2),
           ...children.map(
             (child) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: PSettingCard(
                 title: child.fullName,
                 avatarUrl: child.avatarUrl,
@@ -106,7 +157,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           ),
           // Add child button with restrictions
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: PSettingCard(
               title: 'Add child',
               isAdd: true,
@@ -126,11 +177,11 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               },
             ),
           ),
-          Gaps.verticalGapOf(10),
+          Gaps.verticalGapOf(verticalGap3),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: SizedBox(
-              height: 100,
+              height: bannerHeight,
               child: PageView.builder(
                 controller: _bannerPageController,
                 itemCount: _banners.length,
@@ -144,25 +195,20 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                   return GestureDetector(
                     onTap: banner.onTap,
                     child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 12),
-                      padding: const EdgeInsets.all(12),
+                      margin: EdgeInsets.symmetric(
+                        vertical: bannerMarginVertical,
+                      ),
+                      padding: EdgeInsets.all(bannerPadding),
                       decoration: BoxDecoration(
                         color: banner.color.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(bannerBorderRadius),
                       ),
                       child: Row(
                         children: [
                           Expanded(
                             child: Text(
                               banner.title,
-                              style:
-                                  isMobilePortrait
-                                      ? AppStyles.text14PxRegular.copyWith(
-                                        fontFamily: AppConstants.kDMSansFont,
-                                      )
-                                      : AppStyles.text16PxRegular.copyWith(
-                                        fontFamily: AppConstants.kDMSansFont,
-                                      ),
+                              style: bannerTextStyle,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
@@ -177,13 +223,13 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               ),
             ),
           ),
-          Gaps.verticalGapOf(10),
+          Gaps.verticalGapOf(verticalGap3),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: ListTile(
               leading: Container(
-                height: isMobilePortrait ? 40 : 48,
-                width: isMobilePortrait ? 40 : 48,
+                height: iconSize,
+                width: iconSize,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -192,12 +238,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 child: const Icon(Icons.notifications),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-              title: Text(
-                'Notifications',
-                style: AppStyles.text16PxMedium.copyWith(
-                  fontFamily: AppConstants.kDMSansFont,
-                ),
-              ),
+              title: Text('Notifications', style: notificationTitleStyle),
               onTap: () {
                 Utility.navigate(context, AppRoutes.parentNotificationScreen);
               },
@@ -246,8 +287,11 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
       ),
       bottomNavigationBar: Container(
         color: Colors.blue[50],
-        height: isMobilePortrait ? 60 : 80,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        height: bottomNavHeight,
+        padding: EdgeInsets.symmetric(
+          horizontal: bottomNavPadding,
+          vertical: bottomNavPadding,
+        ),
         child:
         // isMobilePortrait
         //     ? Row(
@@ -331,17 +375,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                   routeName: AppRoutes.aboutUsScreen,
                 );
               },
-              child: Text(
-                'About us',
-                style:
-                    isMobilePortrait
-                        ? AppStyles.text16PxMedium.copyWith(
-                          fontFamily: AppConstants.kDMSansFont,
-                        )
-                        : AppStyles.text20PxMedium.copyWith(
-                          fontFamily: AppConstants.kDMSansFont,
-                        ),
-              ),
+              child: Text('About us', style: bottomNavTextStyle),
             ),
             GestureDetector(
               onTap: () {
@@ -351,17 +385,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                   routeName: AppRoutes.contactScreen,
                 );
               },
-              child: Text(
-                'Contact us',
-                style:
-                    isMobilePortrait
-                        ? AppStyles.text16PxMedium.copyWith(
-                          fontFamily: AppConstants.kDMSansFont,
-                        )
-                        : AppStyles.text20PxMedium.copyWith(
-                          fontFamily: AppConstants.kDMSansFont,
-                        ),
-              ),
+              child: Text('Contact us', style: bottomNavTextStyle),
             ),
             GestureDetector(
               onTap: () {
@@ -371,17 +395,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                   routeName: AppRoutes.faqsScreen,
                 );
               },
-              child: Text(
-                'FAQ',
-                style:
-                    isMobilePortrait
-                        ? AppStyles.text16PxMedium.copyWith(
-                          fontFamily: AppConstants.kDMSansFont,
-                        )
-                        : AppStyles.text20PxMedium.copyWith(
-                          fontFamily: AppConstants.kDMSansFont,
-                        ),
-              ),
+              child: Text('FAQ', style: bottomNavTextStyle),
             ),
             // CustomImage(
             //   Assets.kidSafeSeal,

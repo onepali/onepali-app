@@ -73,8 +73,16 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
   }
 
   Widget _buildSearchBar() {
+    final bool isMobile = PlatformUtility.isMobile(context);
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double searchBarMargin = isMobile ? 16.0 : 20.0;
+    final double searchBarVerticalPadding = isMobile ? 12.0 : 16.0;
+    final double searchBarBorderRadius = isMobile ? 12.0 : 16.0;
+    final double searchBarHorizontalPadding = isMobile ? 16.0 : 20.0;
+
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(searchBarMargin),
       child: TextFormField(
         controller: _searchController,
         focusNode: _searchFocusNode,
@@ -103,12 +111,12 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
           filled: true,
           fillColor: AppColors.kBackgroundColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(searchBarBorderRadius),
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: searchBarHorizontalPadding,
+            vertical: searchBarVerticalPadding,
           ),
         ),
       ),
@@ -116,8 +124,13 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
   }
 
   Widget _buildDownloadAllButton(PrintablesProvider provider) {
+    final bool isMobile = PlatformUtility.isMobile(context);
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double buttonMargin = isMobile ? 16.0 : 20.0;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: buttonMargin),
       child: CustomMaterialButton(
         onTap:
             provider.isDownloading
@@ -126,6 +139,9 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
                   await provider.downloadAllWorksheets(widget.printable);
                 },
         elevation: 0,
+        height: isMobile ? 48 : 56,
+        textStyle:
+            isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium,
         isLoading: provider.isDownloading,
         label: 'Download all (${widget.printable.totalWorksheets})',
       ),
@@ -133,6 +149,17 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
   }
 
   Widget _buildWorksheetsList(PrintablesProvider provider) {
+    final bool isMobile = PlatformUtility.isMobile(context);
+    final bool isMobilePortrait =
+        isMobile && MediaQuery.of(context).orientation == Orientation.portrait;
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double gridPadding = isMobile ? 16.0 : 20.0;
+    final double crossAxisSpacing = isMobile ? 12.0 : 16.0;
+    final double mainAxisSpacing = isMobile ? 12.0 : 16.0;
+    final int crossAxisCount = isMobile ? (isMobilePortrait ? 3 : 4) : 4;
+    final double childAspectRatio = isMobile ? (2 / 2) : (2.2 / 2);
+
     // Filter lessons based on search query
     final filteredLessons =
         widget.printable.lessons.where((lesson) {
@@ -168,12 +195,12 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(gridPadding),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 2 / 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisCount: crossAxisCount,
+        childAspectRatio: childAspectRatio,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisSpacing: mainAxisSpacing,
       ),
       itemCount: filteredLessons.length,
       itemBuilder: (context, index) {
@@ -199,28 +226,36 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
     required bool isDownloading,
     required PrintablesProvider provider,
   }) {
+    final bool isMobile = PlatformUtility.isMobile(context);
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double cardPadding = isMobile ? 16.0 : 20.0;
+    final double cardBorderRadius = isMobile ? 12.0 : 16.0;
+    final double borderWidth = isSelected ? 1.5 : 1.0;
+    final TextStyle textStyle =
+        isMobile
+            ? AppStyles.text16PxRegular.copyWith(color: AppColors.kBlack)
+            : AppStyles.text18PxMedium.copyWith(color: AppColors.kBlack);
+
     return GestureDetector(
       onTap: () {
         provider.toggleWorksheetSelection(lesson.id);
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color:
               isSelected
                   ? AppColors.kButtonGreen.withValues(alpha: 0.2)
                   : AppColors.kWhite,
 
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.kLightGrey,
-            width: isSelected ? 1.5 : 1,
-          ),
+          borderRadius: BorderRadius.circular(cardBorderRadius),
+          border: Border.all(color: AppColors.kLightGrey, width: borderWidth),
         ),
         alignment: Alignment.center,
         child: Text(
           lesson.title,
-          style: AppStyles.text16PxRegular.copyWith(color: AppColors.kBlack),
+          style: textStyle,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -232,8 +267,13 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
   Widget? _buildBottomBar(PrintablesProvider provider, int selectedCount) {
     if (selectedCount == 0) return null;
 
+    final bool isMobile = PlatformUtility.isMobile(context);
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double bottomBarPadding = isMobile ? 16.0 : 20.0;
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(bottomBarPadding),
       decoration: const BoxDecoration(
         color: AppColors.kWhite,
         border: Border(
@@ -264,6 +304,9 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
                   },
           isLoading: provider.isDownloading,
           radius: 60,
+          height: isMobile ? 48 : 56,
+          textStyle:
+              isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium,
           elevation: 0,
           label:
               'Download $selectedCount worksheet${selectedCount > 1 ? 's' : ''}',
