@@ -106,7 +106,7 @@ class RegisterScreen extends StatelessWidget {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(bottomPadding),
+          padding: EdgeInsets.symmetric(horizontal: bottomPadding),
           decoration: BoxDecoration(
             color: AppColors.kWhite,
             boxShadow: [
