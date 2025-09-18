@@ -41,7 +41,7 @@ class _RS3ScreenState extends State<RS3Screen> {
     final double fieldGap = isTabletPortrait ? 24.0 : 20.0;
     final double infoTopGap = isTabletPortrait ? 8.0 : 5.0;
     final double titlePadding = isTabletPortrait ? 12.0 : 8.0;
-    final double buttonHeight = isTabletPortrait ? 64.0 : 48.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
@@ -49,7 +49,7 @@ class _RS3ScreenState extends State<RS3Screen> {
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
     final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
     final TextStyle titleActionTextStyle =
         isTabletPortrait
             ? AppStyles.text18PxSemiBold

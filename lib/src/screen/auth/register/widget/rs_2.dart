@@ -20,7 +20,7 @@ class _RS2ScreenState extends State<RS2Screen> {
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
     final double cardBottomGap = isTabletPortrait ? 20.0 : 16.0;
-    final double buttonHeight = isTabletPortrait ? 64.0 : 48.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
@@ -28,7 +28,7 @@ class _RS2ScreenState extends State<RS2Screen> {
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
     final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 2),

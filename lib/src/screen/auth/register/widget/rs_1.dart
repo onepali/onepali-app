@@ -23,7 +23,7 @@ class _RS1ScreenState extends State<RS1Screen> {
     final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double childAspectRatio = isTabletPortrait ? 1.3 : 1.2;
-    final double buttonHeight = isTabletPortrait ? 64.0 : 48.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
@@ -31,7 +31,7 @@ class _RS1ScreenState extends State<RS1Screen> {
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
     final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 1),

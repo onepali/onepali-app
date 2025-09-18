@@ -11,7 +11,7 @@ class RegisterScreen extends StatelessWidget {
     // Responsive sizing and styling
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double topPadding = isTabletPortrait ? 48.0 : 32.0;
-    final double buttonHeight = isTabletPortrait ? 64.0 : 48.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
     final double titleGap = isTabletPortrait ? 12.0 : 8.0;
     final double subtitleGap = isTabletPortrait ? 32.0 : 24.0;
@@ -25,7 +25,7 @@ class RegisterScreen extends StatelessWidget {
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
 
     final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
+        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
     final TextStyle titleStyle =
         isTabletPortrait ? AppStyles.text32PxBold : AppStyles.text24PxSemiBold;
     final TextStyle subtitleStyle = (isTabletPortrait
