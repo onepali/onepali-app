@@ -40,12 +40,17 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         isTabletPortrait ? 4 : (isMobilePortrait ? 3 : 5);
     final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
-    final double avatarSize = isTabletPortrait ? 100.0 : 80.0;
+    final double avatarSize = isTabletPortrait ? 150.0 : 80.0;
+    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double avatarBorderSize = isTabletPortrait ? 3.5 : 2.5;
 
     final TextStyle titleStyle =
         isTabletPortrait
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -83,6 +88,7 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
                       AppConstants.avatarList[index],
                       _selectedIndex == index,
                       avatarSize,
+                      avatarBorderSize,
                       onTap: () {
                         setState(() {
                           _selectedIndex = index;
@@ -101,7 +107,14 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(horizontalPadding),
-        child: _buildNextButton(context, isUpdate, isTabletPortrait),
+        child: _buildNextButton(
+          context,
+          isUpdate,
+          isTabletPortrait,
+          buttonTextStyle,
+          buttonHeight,
+          buttonRadius,
+        ),
       ),
     );
   }
@@ -109,7 +122,8 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
   Widget _buildReferralCard(
     String icon,
     bool isSelected,
-    double avatarSize, {
+    double avatarSize,
+    double avatarBorderSize, {
     required VoidCallback onTap,
   }) {
     return InkWell(
@@ -118,7 +132,7 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.kButtonGreen : AppColors.kLightGrey,
-            width: isSelected ? 2.5 : 1,
+            width: isSelected ? avatarBorderSize : 1,
           ),
           shape: BoxShape.circle,
         ),
@@ -137,10 +151,10 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
     BuildContext context,
     bool isUpdate,
     bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
   ) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
     return CustomMaterialButton(
       label: isUpdate ? 'Save' : 'Next',
       onTap: () {
@@ -160,6 +174,8 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }

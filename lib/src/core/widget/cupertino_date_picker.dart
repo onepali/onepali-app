@@ -576,7 +576,7 @@ class _CupertinoDatePickerWidgetState
                         i.toString().padLeft(2, '0'),
                         style:
                             isTabletPortrait
-                                ? AppStyles.text18PxMedium
+                                ? AppStyles.text28PxMedium
                                 : AppStyles.text16PxMedium,
                       ),
                     ),
