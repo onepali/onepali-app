@@ -8,30 +8,57 @@ class AboutUsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = PlatformUtility.isMobile(context);
     final bool isMobilePortrait =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isPortrait(context);
+        isMobile && PlatformUtility.isPortrait(context);
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double containerPadding =
+        isMobile ? (isMobilePortrait ? 16.0 : 32.0) : 40.0;
+
+    final TextStyle noDataStyle =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxRegular.copyWith(
+                  color: Colors.grey,
+                  fontFamily: AppConstants.kDMSansFont,
+                )
+                : AppStyles.text20PxRegular.copyWith(
+                  color: Colors.grey,
+                  fontFamily: AppConstants.kDMSansFont,
+                ))
+            : AppStyles.text24PxRegular.copyWith(
+              color: Colors.grey,
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
+    final TextStyle infoStyle =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxRegular.copyWith(
+                  height: 1.6,
+                  color: AppColors.kDrawerBgColor,
+                  fontFamily: AppConstants.kDMSansFont,
+                )
+                : AppStyles.text20PxRegular.copyWith(
+                  height: 1.6,
+                  color: AppColors.kDrawerBgColor,
+                  fontFamily: AppConstants.kDMSansFont,
+                ))
+            : AppStyles.text22PxRegular.copyWith(
+              height: 1.7,
+              color: AppColors.kDrawerBgColor,
+              fontFamily: AppConstants.kDMSansFont,
+            );
 
     if (aboutData == null) {
       return Center(
-        child: Text(
-          'No about information available',
-          style:
-              isMobilePortrait
-                  ? AppStyles.text16PxRegular.copyWith(
-                    color: Colors.grey,
-                    fontFamily: AppConstants.kDMSansFont,
-                  )
-                  : AppStyles.text20PxRegular.copyWith(
-                    color: Colors.grey,
-                    fontFamily: AppConstants.kDMSansFont,
-                  ),
-        ),
+        child: Text('No about information available', style: noDataStyle),
       );
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(isMobilePortrait ? 16.0 : 32.0),
+      padding: EdgeInsets.all(containerPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,21 +74,7 @@ class AboutUsScreen extends StatelessWidget {
           //           ),
           // ),
           // Gaps.verticalGapOf(isMobilePortrait ? 16 : 24),
-          Text(
-            aboutData?.info ?? "",
-            style:
-                isMobilePortrait
-                    ? AppStyles.text16PxRegular.copyWith(
-                      height: 1.6,
-                      color: AppColors.kDrawerBgColor,
-                      fontFamily: AppConstants.kDMSansFont,
-                    )
-                    : AppStyles.text20PxRegular.copyWith(
-                      height: 1.6,
-                      color: AppColors.kDrawerBgColor,
-                      fontFamily: AppConstants.kDMSansFont,
-                    ),
-          ),
+          Text(aboutData?.info ?? "", style: infoStyle),
 
           // Gaps.verticalGapOf(isMobilePortrait ? 24 : 32),
           // Container(

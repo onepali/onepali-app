@@ -15,9 +15,74 @@ class _FaqsScreenState extends State<FaqsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = PlatformUtility.isMobile(context);
     final bool isMobilePortrait =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isPortrait(context);
+        isMobile && PlatformUtility.isPortrait(context);
+
+    // Responsive sizing - mobile stays same, tablet gets enhanced
+    final double bottomMargin = isMobile ? (isMobilePortrait ? 12 : 20) : 24;
+    final double tilePaddingHorizontal =
+        isMobile ? (isMobilePortrait ? 16 : 24) : 32;
+    final double tilePaddingVertical =
+        isMobile ? (isMobilePortrait ? 8 : 12) : 16;
+    final double childrenPaddingHorizontal =
+        isMobile ? (isMobilePortrait ? 16 : 24) : 32;
+    final double childrenPaddingBottom =
+        isMobile ? (isMobilePortrait ? 16 : 24) : 32;
+    final double answerPadding = isMobile ? (isMobilePortrait ? 12 : 16) : 20;
+    final double answerBorderRadius =
+        isMobile ? (isMobilePortrait ? 8 : 12) : 16;
+
+    final TextStyle titleStyleExpanded =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxSemiBold.copyWith(
+                  color: AppColors.kDrawerBgColor,
+                  fontFamily: AppConstants.kDMSansFont,
+                )
+                : AppStyles.text20PxSemiBold.copyWith(
+                  color: AppColors.kDrawerBgColor,
+                  fontFamily: AppConstants.kDMSansFont,
+                ))
+            : AppStyles.text24PxSemiBold.copyWith(
+              color: AppColors.kDrawerBgColor,
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
+    final TextStyle titleStyleCollapsed =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxMedium.copyWith(
+                  color: AppColors.kPitchBlack,
+                  fontFamily: AppConstants.kDMSansFont,
+                )
+                : AppStyles.text20PxMedium.copyWith(
+                  color: AppColors.kPitchBlack,
+                  fontFamily: AppConstants.kDMSansFont,
+                ))
+            : AppStyles.text24PxMedium.copyWith(
+              color: AppColors.kPitchBlack,
+              fontFamily: AppConstants.kDMSansFont,
+            );
+
+    final TextStyle answerStyle =
+        isMobile
+            ? (isMobilePortrait
+                ? AppStyles.text16PxRegular.copyWith(
+                  height: 1.5,
+                  fontFamily: AppConstants.kDMSansFont,
+                  color: AppColors.kDrawerBgColor,
+                )
+                : AppStyles.text18PxRegular.copyWith(
+                  height: 1.5,
+                  fontFamily: AppConstants.kDMSansFont,
+                  color: AppColors.kDrawerBgColor,
+                ))
+            : AppStyles.text20PxRegular.copyWith(
+              height: 1.6,
+              fontFamily: AppConstants.kDMSansFont,
+              color: AppColors.kDrawerBgColor,
+            );
 
     if (widget.faqsData.isEmpty) {
       return ErrorScreen(
@@ -38,7 +103,7 @@ class _FaqsScreenState extends State<FaqsScreen> {
       itemBuilder: (context, index) {
         final faq = widget.faqsData[index];
         return Container(
-          margin: EdgeInsets.only(bottom: isMobilePortrait ? 12 : 20),
+          margin: EdgeInsets.only(bottom: bottomMargin),
 
           color:
               _expandedIndex == index
@@ -55,14 +120,14 @@ class _FaqsScreenState extends State<FaqsScreen> {
             shape: LinearBorder.none,
 
             tilePadding: EdgeInsets.symmetric(
-              horizontal: isMobilePortrait ? 16 : 24,
-              vertical: isMobilePortrait ? 8 : 12,
+              horizontal: tilePaddingHorizontal,
+              vertical: tilePaddingVertical,
             ),
             childrenPadding: EdgeInsets.fromLTRB(
-              isMobilePortrait ? 16 : 24,
+              childrenPaddingHorizontal,
               0,
-              isMobilePortrait ? 16 : 24,
-              isMobilePortrait ? 16 : 24,
+              childrenPaddingHorizontal,
+              childrenPaddingBottom,
             ),
             iconColor: AppColors.kDrawerBgColor,
             collapsedIconColor: AppColors.kPitchBlack,
@@ -70,30 +135,14 @@ class _FaqsScreenState extends State<FaqsScreen> {
             title: Text(
               faq.title,
               style:
-                  isMobilePortrait
-                      ? _expandedIndex == index
-                          ? AppStyles.text16PxSemiBold.copyWith(
-                            color: AppColors.kDrawerBgColor,
-                            fontFamily: AppConstants.kDMSansFont,
-                          )
-                          : AppStyles.text16PxMedium.copyWith(
-                            color: AppColors.kPitchBlack,
-                            fontFamily: AppConstants.kDMSansFont,
-                          )
-                      : _expandedIndex == index
-                      ? AppStyles.text20PxSemiBold.copyWith(
-                        color: AppColors.kDrawerBgColor,
-                        fontFamily: AppConstants.kDMSansFont,
-                      )
-                      : AppStyles.text20PxMedium.copyWith(
-                        color: AppColors.kPitchBlack,
-                        fontFamily: AppConstants.kDMSansFont,
-                      ),
+                  _expandedIndex == index
+                      ? titleStyleExpanded
+                      : titleStyleCollapsed,
             ),
             children: [
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(isMobilePortrait ? 12 : 16),
+                padding: EdgeInsets.all(answerPadding),
                 decoration: BoxDecoration(
                   color: AppColors.kLightGrey.withValues(alpha: 0.3),
                   // border: Border(
@@ -102,25 +151,9 @@ class _FaqsScreenState extends State<FaqsScreen> {
                   //     width: isMobilePortrait ? 4 : 6,
                   //   ),
                   // ),
-                  borderRadius: BorderRadius.circular(
-                    isMobilePortrait ? 8 : 12,
-                  ),
+                  borderRadius: BorderRadius.circular(answerBorderRadius),
                 ),
-                child: Text(
-                  faq.answer,
-                  style:
-                      isMobilePortrait
-                          ? AppStyles.text16PxRegular.copyWith(
-                            height: 1.5,
-                            fontFamily: AppConstants.kDMSansFont,
-                            color: AppColors.kDrawerBgColor,
-                          )
-                          : AppStyles.text18PxRegular.copyWith(
-                            height: 1.5,
-                            fontFamily: AppConstants.kDMSansFont,
-                            color: AppColors.kDrawerBgColor,
-                          ),
-                ),
+                child: Text(faq.answer, style: answerStyle),
               ),
             ],
           ),

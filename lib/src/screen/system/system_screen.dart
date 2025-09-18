@@ -60,18 +60,24 @@ class _SystemScreenState extends State<SystemScreen>
 
           labelStyle:
               isMobilePortrait
-                  ? AppStyles.text14PxSemiBold.copyWith(color: AppColors.kWhite)
+                  ? AppStyles.text14PxSemiBold.copyWith(
+                    color: AppColors.kWhite,
+                    fontFamily: AppConstants.kPoppinsFont,
+                  )
                   : AppStyles.text18PxSemiBold.copyWith(
+                    fontFamily: AppConstants.kPoppinsFont,
                     color: AppColors.kWhite,
                   ),
           dividerColor: AppColors.kTransparentColor,
           unselectedLabelStyle:
               isMobilePortrait
-                  ? AppStyles.text14PxRegular.copyWith(
+                  ? AppStyles.text14PxMedium.copyWith(
                     color: AppColors.kWhite.withValues(alpha: 0.7),
+                    fontFamily: AppConstants.kPoppinsFont,
                   )
-                  : AppStyles.text18PxRegular.copyWith(
+                  : AppStyles.text18PxMedium.copyWith(
                     color: AppColors.kWhite.withValues(alpha: 0.7),
+                    fontFamily: AppConstants.kPoppinsFont,
                   ),
           tabs: AppConstants.sysTab.map((tab) => Tab(text: tab)).toList(),
         ),
