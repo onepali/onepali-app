@@ -11,7 +11,31 @@ class RegisterScreen extends StatelessWidget {
     // Responsive sizing and styling
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double topPadding = isTabletPortrait ? 48.0 : 32.0;
+    final double buttonHeight = isTabletPortrait ? 64.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double titleGap = isTabletPortrait ? 12.0 : 8.0;
+    final double subtitleGap = isTabletPortrait ? 32.0 : 24.0;
+    final double stepGap = isTabletPortrait ? 28.0 : 18.0;
+    final double charactersGap = isTabletPortrait ? 200.0 : 100.0;
+    final double characterHeight = isTabletPortrait ? 380.0 : 220.0;
+    final double stepIconSize = isTabletPortrait ? 20.0 : 16.0;
+    final double stepLineWidth = isTabletPortrait ? 5.0 : 4.0;
+    final double stepLineHeight = isTabletPortrait ? 40.0 : 25.0;
+    final double stepTextSpacing = isTabletPortrait ? 20.0 : 16.0;
+    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
 
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
+    final TextStyle titleStyle =
+        isTabletPortrait ? AppStyles.text32PxBold : AppStyles.text24PxSemiBold;
+    final TextStyle subtitleStyle = (isTabletPortrait
+            ? AppStyles.text18PxMedium
+            : AppStyles.text14PxMedium)
+        .copyWith(color: AppColors.kPitchBlack);
+    final TextStyle stepTextStyle = (isTabletPortrait
+            ? AppStyles.text18PxRegular
+            : AppStyles.text14PxRegular)
+        .copyWith(color: AppColors.kPitchBlack);
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
@@ -28,78 +52,61 @@ class RegisterScreen extends StatelessWidget {
           children: [
             Text(
               'Welcome to O Nepali!',
-              style:
-                  isTabletPortrait
-                      ? AppStyles.text28PxBold
-                      : AppStyles.text24PxSemiBold,
+              style: titleStyle,
               textAlign: TextAlign.center,
             ),
-            Gaps.verticalGapOf(isTabletPortrait ? 12 : 8),
+            Gaps.verticalGapOf(titleGap),
             Text(
               "Let's get started in 2 simple steps",
-              style: (isTabletPortrait
-                      ? AppStyles.text16PxMedium
-                      : AppStyles.text14PxMedium)
-                  .copyWith(color: AppColors.kPitchBlack),
+              style: subtitleStyle,
               textAlign: TextAlign.center,
             ),
-            Gaps.verticalGapOf(isTabletPortrait ? 32 : 24),
+            Gaps.verticalGapOf(subtitleGap),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   children: [
                     Icon(
                       Icons.circle,
                       color: AppColors.kButtonGreen,
-                      size: isTabletPortrait ? 20 : 16,
+                      size: stepIconSize,
                     ),
                     Container(
-                      width: isTabletPortrait ? 5 : 4,
-                      height: isTabletPortrait ? 32 : 25,
+                      width: stepLineWidth,
+                      height: stepLineHeight,
                       color: AppColors.kLightGrey,
                     ),
                     Icon(
                       Icons.circle,
                       color: AppColors.kButtonGreen,
-                      size: isTabletPortrait ? 20 : 16,
+                      size: stepIconSize,
                     ),
                   ],
                 ),
-                Gaps.horizontalGapOf(isTabletPortrait ? 20 : 16),
+                Gaps.horizontalGapOf(stepTextSpacing),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Understand your journey',
-                      style: (isTabletPortrait
-                              ? AppStyles.text16PxRegular
-                              : AppStyles.text14PxRegular)
-                          .copyWith(color: AppColors.kPitchBlack),
-                    ),
-                    Gaps.verticalGapOf(isTabletPortrait ? 24 : 18),
-                    Text(
-                      'Create your account',
-                      style: (isTabletPortrait
-                              ? AppStyles.text16PxRegular
-                              : AppStyles.text14PxRegular)
-                          .copyWith(color: AppColors.kPitchBlack),
-                    ),
+                    Text('Understand your journey', style: stepTextStyle),
+                    Gaps.verticalGapOf(stepGap),
+                    Text('Create your account', style: stepTextStyle),
                   ],
                 ),
               ],
             ),
-            Gaps.verticalGapOf(isTabletPortrait ? 120 : 100),
+            Gaps.verticalGapOf(charactersGap),
             SvgHelper.fromSource(
               path: Assets.leoChracterSvg,
-              height: isTabletPortrait ? 280 : 220,
+              height: characterHeight,
             ),
           ],
         ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(isTabletPortrait ? 24.0 : 16.0),
+          padding: EdgeInsets.all(bottomPadding),
           decoration: BoxDecoration(
             color: AppColors.kWhite,
             boxShadow: [
@@ -119,13 +126,12 @@ class RegisterScreen extends StatelessWidget {
                     Utility.navigate(context, AppRoutes.rs1Screen);
                   },
                   elevation: 0,
+                  radius: buttonRadius,
+                  height: buttonHeight,
                   showBorder: false,
                   backgroundColor: AppColors.kButtonGreen,
                   width: double.infinity,
-                  textStyle:
-                      isTabletPortrait
-                          ? AppStyles.text18PxMedium
-                          : AppStyles.text16PxMedium,
+                  textStyle: buttonTextStyle,
                 ),
           ),
         ),

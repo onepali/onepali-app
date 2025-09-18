@@ -14,19 +14,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Responsive variables
     final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
     final topSpacing = isTabletPortrait ? 120.0 : 100.0;
-    final logoContainerSize = isTabletPortrait ? 200.0 : 150.0;
-    final logoSize = isTabletPortrait ? 140.0 : 100.0;
-    final brandLogoWidth = isTabletPortrait ? 55.0 : 40.0;
-    final brandLogoHeight = isTabletPortrait ? 48.0 : 35.0;
+    final logoContainerSize = isTabletPortrait ? 240.0 : 150.0;
+    final logoSize = isTabletPortrait ? 200.0 : 100.0;
+    final brandLogoWidth = isTabletPortrait ? 120.0 : 40.0;
+    final brandLogoHeight = isTabletPortrait ? 70.0 : 35.0;
     final taglineGap = isTabletPortrait ? 12.0 : 8.0;
     final buttonGap = isTabletPortrait ? 16.0 : 10.0;
     final containerPadding = isTabletPortrait ? 32.0 : 20.0;
-    final buttonHeight = isTabletPortrait ? 56.0 : 48.0;
+    final buttonHeight = isTabletPortrait ? 64.0 : 48.0;
     final buttonRadius = isTabletPortrait ? 12.0 : 8.0;
     final taglineStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text14PxMedium;
+        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text14PxMedium;
     final buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
 
     return SafeArea(
       child: PopScope(

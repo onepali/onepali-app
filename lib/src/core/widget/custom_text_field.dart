@@ -57,6 +57,7 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
     return TextFormField(
       controller: controller,
       keyboardType:

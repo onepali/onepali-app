@@ -40,11 +40,20 @@ class _RS3ScreenState extends State<RS3Screen> {
     final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
     final double fieldGap = isTabletPortrait ? 24.0 : 20.0;
     final double infoTopGap = isTabletPortrait ? 8.0 : 5.0;
+    final double titlePadding = isTabletPortrait ? 12.0 : 8.0;
+    final double buttonHeight = isTabletPortrait ? 64.0 : 48.0;
+    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
     final TextStyle titleStyle =
         isTabletPortrait
             ? AppStyles.text24PxSemiBold
             : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle =
+        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text16PxMedium;
+    final TextStyle titleActionTextStyle =
+        isTabletPortrait
+            ? AppStyles.text18PxSemiBold
+            : AppStyles.text14PxSemiBold;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 3),
@@ -59,10 +68,9 @@ class _RS3ScreenState extends State<RS3Screen> {
               Text('Create your account', style: titleStyle),
               Gaps.verticalGapOf(titleBottomGap),
               TitleActionChild(
-                titlePadding: EdgeInsets.only(
-                  bottom: isTabletPortrait ? 12 : 8,
-                ),
+                titlePadding: EdgeInsets.only(bottom: titlePadding),
                 title: 'Name',
+                titleStyle: titleActionTextStyle,
                 child: CustomTextField(
                   hintText: 'Enter your Full Name',
                   keyboardType: TextInputType.name,
@@ -74,9 +82,9 @@ class _RS3ScreenState extends State<RS3Screen> {
               Gaps.verticalGapOf(fieldGap),
               TitleActionChild(
                 title: 'Year of Birth',
-                titlePadding: EdgeInsets.only(
-                  bottom: isTabletPortrait ? 12 : 8,
-                ),
+                titleStyle: titleActionTextStyle,
+
+                titlePadding: EdgeInsets.only(bottom: titlePadding),
                 child: CupertinoDatePickerField(
                   initialDate: selectedYear,
                   onDateChanged: onYearSelected,
@@ -93,9 +101,18 @@ class _RS3ScreenState extends State<RS3Screen> {
                 ),
               ),
               Gaps.verticalGapOf(infoTopGap),
-              InfoWidget.info('It will be the password for the parent zone.'),
+              InfoWidget.info(
+                'It will be the password for the parent zone.',
+                isTablet: isTabletPortrait,
+              ),
               Spacer(),
-              _buildNextButton(context, isTabletPortrait),
+              _buildNextButton(
+                context,
+                isTabletPortrait,
+                buttonTextStyle,
+                buttonHeight,
+                buttonRadius,
+              ),
             ],
           ),
         ),
@@ -103,10 +120,13 @@ class _RS3ScreenState extends State<RS3Screen> {
     );
   }
 
-  Widget _buildNextButton(BuildContext context, bool isTabletPortrait) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
-
+  Widget _buildNextButton(
+    BuildContext context,
+    bool isTabletPortrait,
+    TextStyle buttonTextStyle,
+    double buttonHeight,
+    double buttonRadius,
+  ) {
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
@@ -121,6 +141,8 @@ class _RS3ScreenState extends State<RS3Screen> {
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,
+      height: buttonHeight,
+      radius: buttonRadius,
       elevation: 0,
     );
   }
