@@ -178,6 +178,16 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
     final DateTime maxDate =
         widget.lastDate ?? DateTime(widget.maxYear, 12, 31);
 
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing for dialog
+    final double dialogMargin = isTabletPortrait ? 24.0 : 16.0;
+    final double dialogPadding = isTabletPortrait ? 24.0 : 16.0;
+    final double borderRadius = isTabletPortrait ? 24.0 : 20.0;
+    final double handleWidth = isTabletPortrait ? 50.0 : 40.0;
+    final double handleHeight = isTabletPortrait ? 5.0 : 4.0;
+    final double pickerHeight = isTabletPortrait ? 240.0 : 200.0;
+
     await showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -190,10 +200,10 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.8,
                 ),
-                margin: const EdgeInsets.all(16.0),
+                margin: EdgeInsets.all(dialogMargin),
                 decoration: BoxDecoration(
                   color: AppColors.kWhite,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(borderRadius),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.3),
@@ -202,7 +212,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(dialogPadding),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -212,8 +222,8 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                         color: AppColors.kButtonGrey,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      height: 4,
-                      width: 40,
+                      height: handleHeight,
+                      width: handleWidth,
                     ),
                     Gaps.verticalGapOf(16),
                     // Year/Month input toggle button
@@ -221,6 +231,10 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomTextButton(
+                          textStyle: AppStyles.text14PxMedium.copyWith(
+                            color: AppColors.kButtonGreen,
+                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                          ),
                           text:
                               _showYearInput
                                   ? 'Use Picker'
@@ -277,7 +291,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                           ),
                         )
                         : SizedBox(
-                          height: 200,
+                          height: pickerHeight,
                           child: _CupertinoDatePickerWidget(
                             initialDate:
                                 selectedDate.isAfter(maxDate)
@@ -307,6 +321,10 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                       children: [
                         CustomTextButton(
                           text: 'Cancel',
+                          textStyle: AppStyles.text14PxMedium.copyWith(
+                            color: AppColors.kGrey,
+                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -314,6 +332,10 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                         Gaps.horizontalGapOf(8),
                         CustomTextButton(
                           text: 'Select',
+                          textStyle: AppStyles.text14PxMedium.copyWith(
+                            color: AppColors.kButtonGreen,
+                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                          ),
                           onPressed: () {
                             String? error;
 
@@ -358,6 +380,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                           _error!,
                           style: AppStyles.text12PxRegular.copyWith(
                             color: AppColors.kRed,
+                            fontSize: isTabletPortrait ? 16.0 : 12.0,
                           ),
                         ),
                       ),
@@ -385,25 +408,43 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+
+    // Responsive sizing and styling
+    final double verticalPadding = isTabletPortrait ? 16.0 : 12.0;
+    final double horizontalPadding = isTabletPortrait ? 16.0 : 12.0;
+    final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double iconSize = isTabletPortrait ? 28.0 : 24.0;
+
+    final TextStyle textStyle =
+        widget.textStyle ??
+        (isTabletPortrait
+            ? AppStyles.text18PxMedium
+            : AppStyles.text16PxMedium);
+
     return GestureDetector(
       onTap: () => _showPicker(context),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        padding: EdgeInsets.symmetric(
+          vertical: verticalPadding,
+          horizontal: horizontalPadding,
+        ),
         decoration:
             widget.decoration ??
             BoxDecoration(
               color: AppColors.kLightGrey.withValues(alpha: 0.2),
               border: Border.all(color: AppColors.kTransparentColor),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
         child: Row(
           children: [
-            Text(
-              _displayText,
-              style: widget.textStyle ?? AppStyles.text16PxMedium,
-            ),
+            Text(_displayText, style: textStyle),
             Spacer(),
-            Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: Colors.grey,
+              size: iconSize,
+            ),
           ],
         ),
       ),
@@ -463,6 +504,9 @@ class _CupertinoDatePickerWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    final double itemExtent = isTabletPortrait ? 40.0 : 32.0;
+
     final int maxYear = widget.lastDate?.year ?? widget.maxYear;
     final int maxMonth = widget.lastDate?.month ?? 12;
     final int maxDay = widget.lastDate?.day ?? 31;
@@ -472,7 +516,7 @@ class _CupertinoDatePickerWidgetState
         scrollController: FixedExtentScrollController(
           initialItem: selectedYear - widget.minYear,
         ),
-        itemExtent: 32,
+        itemExtent: itemExtent,
         onSelectedItemChanged: (index) {
           setState(() {
             selectedYear = widget.minYear + index;
@@ -485,7 +529,15 @@ class _CupertinoDatePickerWidgetState
         },
         children: [
           for (int i = widget.minYear; i <= maxYear; i++)
-            Center(child: Text(i.toString())),
+            Center(
+              child: Text(
+                i.toString(),
+                style:
+                    isTabletPortrait
+                        ? AppStyles.text28PxMedium
+                        : AppStyles.text16PxMedium,
+              ),
+            ),
         ],
       ),
     );
@@ -497,7 +549,7 @@ class _CupertinoDatePickerWidgetState
                 scrollController: FixedExtentScrollController(
                   initialItem: selectedMonth - 1,
                 ),
-                itemExtent: 32,
+                itemExtent: itemExtent,
                 onSelectedItemChanged: (index) {
                   setState(() {
                     selectedMonth = index + 1;
@@ -519,7 +571,15 @@ class _CupertinoDatePickerWidgetState
                             : 12);
                     i++
                   )
-                    Center(child: Text(i.toString().padLeft(2, '0'))),
+                    Center(
+                      child: Text(
+                        i.toString().padLeft(2, '0'),
+                        style:
+                            isTabletPortrait
+                                ? AppStyles.text18PxMedium
+                                : AppStyles.text16PxMedium,
+                      ),
+                    ),
                 ],
               ),
             )
@@ -532,7 +592,7 @@ class _CupertinoDatePickerWidgetState
                 scrollController: FixedExtentScrollController(
                   initialItem: selectedDay - 1,
                 ),
-                itemExtent: 32,
+                itemExtent: itemExtent,
                 onSelectedItemChanged: (index) {
                   setState(() {
                     selectedDay = index + 1;
@@ -556,7 +616,15 @@ class _CupertinoDatePickerWidgetState
                             : daysInMonth);
                     i++
                   )
-                    Center(child: Text(i.toString().padLeft(2, '0'))),
+                    Center(
+                      child: Text(
+                        i.toString().padLeft(2, '0'),
+                        style:
+                            isTabletPortrait
+                                ? AppStyles.text18PxMedium
+                                : AppStyles.text16PxMedium,
+                      ),
+                    ),
                 ],
               ),
             )
