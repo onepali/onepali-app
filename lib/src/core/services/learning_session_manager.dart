@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core.dart';
 
 class LearningSessionManager {
@@ -34,6 +33,16 @@ class LearningSessionManager {
       final sessionDuration =
           DateTime.now().difference(_sessionStartTime!).inMinutes;
 
+      logger.w('🚨 LearningSessionManager.endSession() called');
+      logger.w(
+        '🚨 This method used to update metrics directly, but now deferred to PzMetricsProvider',
+      );
+      logger.w('🚨 Session duration: ${sessionDuration}min');
+
+      // DISABLED: Direct Firestore updates to prevent conflicts with PzMetricsProvider
+      // The PzMetricsProvider.endLearningSession() should handle all metric updates
+
+      /*
       // Update metrics directly with Firestore
       final firestore = FirebaseFirestore.instance;
       final docRef = firestore
@@ -75,6 +84,11 @@ class LearningSessionManager {
           'Learning session ended. Duration: ${sessionDuration}min, New average: ${newAverageTime}min',
         );
       }
+      */
+
+      logger.i(
+        '✅ Session tracking completed (metrics update handled by PzMetricsProvider)',
+      );
     } catch (e) {
       logger.e('Error ending learning session: $e');
     } finally {

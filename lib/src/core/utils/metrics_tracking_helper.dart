@@ -52,6 +52,21 @@ class MetricsTrackingHelper {
       // Use session manager (doesn't require context to be mounted)
       await LearningSessionManager().endSession();
       logger.d('Learning session ended via session manager');
+
+      // ALSO call PzMetricsProvider to actually update the metrics
+      if (context.mounted) {
+        final userProvider = context.read<UserProvider>();
+        final parentUid = userProvider.userId;
+        final childUid = await ChildLocalStorage.getCurrentChildId();
+
+        if (parentUid != null && childUid != null) {
+          await context.read<PzMetricsProvider>().endLearningSession(
+            parentUid: parentUid,
+            childUid: childUid,
+          );
+          logger.d('Learning session metrics updated via PzMetricsProvider');
+        }
+      }
     } catch (e) {
       logger.e('Error ending learning session: $e');
     }
@@ -62,6 +77,12 @@ class MetricsTrackingHelper {
     try {
       await LearningSessionManager().endSession();
       logger.d('Learning session ended safely via session manager');
+      logger.w(
+        '⚠️  Note: PzMetricsProvider.endLearningSession() not called (no context available)',
+      );
+      logger.w(
+        '⚠️  Metrics may not be updated unless endLearningSession is called elsewhere',
+      );
     } catch (e) {
       logger.e('Error ending learning session safely: $e');
     }
