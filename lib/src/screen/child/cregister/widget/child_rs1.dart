@@ -105,15 +105,17 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(horizontalPadding),
-        child: _buildNextButton(
-          context,
-          isUpdate,
-          isTabletPortrait,
-          buttonTextStyle,
-          buttonHeight,
-          buttonRadius,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: _buildNextButton(
+            context,
+            isUpdate,
+            isTabletPortrait,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
+          ),
         ),
       ),
     );

@@ -83,9 +83,6 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTabletLandScape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.kSkyBlue,
@@ -174,79 +171,25 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
                   Positioned(
                     top: 16,
-                    right: 20,
-                    child: IconButton(
-                      icon: SvgHelper.fromSource(
-                        path: Assets.wrong,
-                        height:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? AppConstants.kIconSize +
-                                    AppConstants.kIconSize
-                                : AppConstants.kIconSize,
-                        width:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? AppConstants.kIconSize +
-                                    AppConstants.kIconSize
-                                : AppConstants.kIconSize,
-                      ),
+                    right: Dimensions.kIconMargin(context),
+                    child: CircularButtonWidget(
+                      type: CircularButtonType.close,
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
                   // Start button
                   Positioned(
-                    right: 16,
+                    right: Dimensions.kIconMargin(context),
                     top: 0,
                     bottom: 0,
-                    child: customInkwell(
-                      onTap: () {
-                        _disposeStoryAudio();
-                        provider.nextContent(context);
-                      },
-                      child: Container(
-                        height:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? AppConstants.kIconSize +
-                                    AppConstants.kIconSize
-                                : AppConstants.kIconSize,
-                        width:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? AppConstants.kIconSize +
-                                    AppConstants.kIconSize
-                                : AppConstants.kIconSize,
-                        decoration: BoxDecoration(
-                          color: AppColors.kWhite,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.kBlack.withValues(alpha: 0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
-
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isTabletLandScape ? 24 : 16,
-                        ),
-                        child: SvgHelper.fromSource(
-                          path: Assets.rightArrow,
-                          height:
-                              PlatformUtility.isTablet(context) &&
-                                      PlatformUtility.isLandscape(context)
-                                  ? 80
-                                  : AppConstants.kIconSize,
-                          width:
-                              PlatformUtility.isTablet(context) &&
-                                      PlatformUtility.isLandscape(context)
-                                  ? 80
-                                  : AppConstants.kIconSize,
-                          color: AppColors.kSecondaryColor,
-                        ),
+                    child: Center(
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.rightArrow,
+                        onPressed: () {
+                          _disposeStoryAudio();
+                          provider.nextContent(context);
+                        },
+                        // margin: const EdgeInsets.symmetric(horizontal: 16),
                       ),
                     ),
                   ),

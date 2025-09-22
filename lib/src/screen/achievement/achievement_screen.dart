@@ -206,14 +206,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 ),
                 Gaps.horizontalGapOf(24),
 
-                customInkwell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    color: AppColors.kButtonGrey,
-                    height: AppConstants.kIconSize + AppConstants.kIconSize,
-                    width: AppConstants.kIconSize + AppConstants.kIconSize,
-                  ),
+                CircularButtonWidget(
+                  onPressed: () => Navigator.pop(context),
+                  type: CircularButtonType.close,
                 ),
               ],
             ),
@@ -363,15 +358,10 @@ class _AchievementScreenState extends State<AchievementScreen> {
             if (!isTablet)
               Positioned(
                 top: 16,
-                right: 8,
-                child: IconButton(
+                right: Dimensions.kIconMargin(context) - 8,
+                child: CircularButtonWidget(
                   onPressed: () => Navigator.pop(context),
-                  icon: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    color: AppColors.kButtonGrey,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
-                  ),
+                  type: CircularButtonType.close,
                 ),
               ),
           ],

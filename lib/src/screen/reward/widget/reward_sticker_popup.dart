@@ -63,35 +63,10 @@ class RewardStickerPopup extends StatelessWidget {
             // Close button
             Positioned(
               top: 16,
-              right: 16,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width:
-                      isMobileLandscape
-                          ? AppConstants.kIconSize
-                          : AppConstants.kIconSize + 10,
-                  height:
-                      isMobileLandscape
-                          ? AppConstants.kIconSize
-                          : AppConstants.kIconSize + 10,
-                  decoration: BoxDecoration(
-                    color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    color: AppColors.kLightGrey,
-                    height:
-                        isMobileLandscape
-                            ? AppConstants.kIconSize
-                            : AppConstants.kIconSize + 10,
-                    width:
-                        isMobileLandscape
-                            ? AppConstants.kIconSize
-                            : AppConstants.kIconSize + 10,
-                  ),
-                ),
+              right: Dimensions.kIconMargin(context) - 8,
+              child: CircularButtonWidget(
+                onPressed: () => Navigator.of(context).pop(),
+                type: CircularButtonType.close,
               ),
             ),
             // Content
@@ -104,6 +79,7 @@ class RewardStickerPopup extends StatelessWidget {
                 imageSize,
                 padding,
                 isMobileLandscape,
+                context,
               ),
             ),
           ],
@@ -119,6 +95,7 @@ class RewardStickerPopup extends StatelessWidget {
     double imageSize,
     double padding,
     bool isMobileLandscape,
+    BuildContext context,
   ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,14 +123,8 @@ class RewardStickerPopup extends StatelessWidget {
                       onPressed: () => _playAudio(),
                       icon: SvgHelper.fromSource(
                         path: Assets.sound,
-                        height:
-                            isMobileLandscape
-                                ? AppConstants.kIconSize - 10
-                                : AppConstants.kIconSize + 10,
-                        width:
-                            isMobileLandscape
-                                ? AppConstants.kIconSize - 10
-                                : AppConstants.kIconSize + 10,
+                        height: Dimensions.kIconSize(context),
+                        width: Dimensions.kIconSize(context),
                       ),
                     ),
                 ],

@@ -745,13 +745,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
           // Close button in top right
           Positioned(
             top: 16,
-            right: 16,
-            child: IconButton(
-              icon: SvgHelper.fromSource(
-                path: Assets.wrong,
-                height: AppConstants.kIconSize,
-                width: AppConstants.kIconSize,
-              ),
+            right: Dimensions.kIconMargin(context),
+            child: CircularButtonWidget(
+              type: CircularButtonType.close,
               onPressed: () {
                 Navigator.of(context).pop();
               },

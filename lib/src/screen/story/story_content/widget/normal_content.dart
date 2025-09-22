@@ -28,43 +28,13 @@ class _NormalContentState extends State<NormalContent> {
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
     Widget arrowButton({required bool isLeft, required VoidCallback onTap}) {
-      return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height:
-              PlatformUtility.isTablet(context) &&
-                      PlatformUtility.isLandscape(context)
-                  ? AppConstants.kIconSize + AppConstants.kIconSize
-                  : AppConstants.kIconSize,
-          width:
-              PlatformUtility.isTablet(context) &&
-                      PlatformUtility.isLandscape(context)
-                  ? AppConstants.kIconSize + AppConstants.kIconSize
-                  : AppConstants.kIconSize,
-          decoration: BoxDecoration(
-            color: AppColors.kWhite,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.kBlack.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: isTabletLandScape ? 24 : 16,
-            // vertical: 2,
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-
-          child: SvgHelper.fromSource(
-            path: isLeft ? Assets.leftArrow : Assets.rightArrow,
-            // height: 30,
-            // width: 30,
-            color: AppColors.kSecondaryColor,
-          ),
-        ),
+      return CircularButtonWidget(
+        type:
+            isLeft
+                ? CircularButtonType.leftArrow
+                : CircularButtonType.rightArrow,
+        onPressed: onTap,
+        // margin: const EdgeInsets.symmetric(horizontal: 16),
       );
     }
 
@@ -96,16 +66,8 @@ class _NormalContentState extends State<NormalContent> {
                   },
                   child: SvgHelper.fromSource(
                     path: Assets.sound,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                   ),
                 );
                 return storyProvider.isPlaying
@@ -117,32 +79,20 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Top right wrong icon
         Positioned(
-          top: 24,
-          right: 28,
-          child: customInkwell(
-            onTap: () {
+          top: 16,
+          right: Dimensions.kIconMargin(context),
+          child: CircularButtonWidget(
+            onPressed: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               storyProvider.stopAudioAndResetIndex();
               logger.d('[NormalContent] Wrong icon tapped, stopping audio');
             },
-            child: SvgHelper.fromSource(
-              path: Assets.wrong,
-              height:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              width:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-            ),
+            type: CircularButtonType.close,
           ),
         ),
         // Left arrow (center vertically)
         Positioned(
-          left: 16,
+          left: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
@@ -154,7 +104,7 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 16,
+          right: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
