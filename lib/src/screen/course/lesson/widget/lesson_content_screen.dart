@@ -229,42 +229,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               !isTapSendType &&
               !isTapTargetType &&
               !isDragToMatchType)
-            Container(
-              height:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              width:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              decoration: BoxDecoration(
-                color: AppColors.kWhite,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.kBlack.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              child: IconButton(
-                icon: SvgHelper.fromSource(
-                  path: Assets.leftArrow,
-                  height:
-                      PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context)
-                          ? 80
-                          : AppConstants.kIconSize,
-                  width: AppConstants.kIconSize,
-                  color: AppColors.kSecondaryColor,
-                ),
-                onPressed: _previousContent,
-              ),
+            CircularButtonWidget(
+              type: CircularButtonType.leftArrow,
+              onPressed: _previousContent,
             ),
 
           // Main content
@@ -408,46 +375,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
           // Next button
           if (!isLast && !isTapSendType && !isTapTargetType)
-            Container(
-              height:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              width:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              decoration: BoxDecoration(
-                color: AppColors.kWhite,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.kBlack.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              child: IconButton(
-                icon: SvgHelper.fromSource(
-                  path: Assets.rightArrow,
-                  height:
-                      PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context)
-                          ? 80
-                          : AppConstants.kIconSize,
-                  width:
-                      PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context)
-                          ? 80
-                          : AppConstants.kIconSize,
-                  color: AppColors.kSecondaryColor,
-                ),
-                onPressed: _nextContent,
-              ),
+            CircularButtonWidget(
+              type: CircularButtonType.rightArrow,
+              onPressed: _nextContent,
             ),
         ],
       ),
@@ -552,8 +482,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     child: IconButton(
                       icon: SvgHelper.fromSource(
                         path: Assets.sound,
-                        height: AppConstants.kIconSize,
-                        width: AppConstants.kIconSize,
+                        height: Dimensions.kIconSize(context),
+                        width: Dimensions.kIconSize(context),
                       ),
                       onPressed: () {
                         _playWordAudio();
@@ -563,20 +493,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 ),
               Positioned(
                 top: 16,
-                right: 16,
+                right: Dimensions.kIconMargin(context),
                 child: IconButton(
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                   ),
                   onPressed: () {
                     _saveCurrentProgress();
@@ -663,23 +585,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
                     Positioned(
                       top: 16,
-                      right: 16,
-                      child: IconButton(
-                        icon: SvgHelper.fromSource(
-                          path: Assets.wrong,
-                          height:
-                              PlatformUtility.isTablet(context) &&
-                                      PlatformUtility.isLandscape(context)
-                                  ? AppConstants.kIconSize +
-                                      AppConstants.kIconSize
-                                  : AppConstants.kIconSize,
-                          width:
-                              PlatformUtility.isTablet(context) &&
-                                      PlatformUtility.isLandscape(context)
-                                  ? AppConstants.kIconSize +
-                                      AppConstants.kIconSize
-                                  : AppConstants.kIconSize,
-                        ),
+                      right: Dimensions.kIconMargin(context),
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.close,
                         onPressed: () {
                           _saveCurrentProgress();
                           Navigator.of(context).pop();
@@ -688,52 +596,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     ),
                     // Start button
                     Positioned(
-                      right: 16,
+                      right: Dimensions.kIconMargin(context),
                       top: 0,
                       bottom: 0,
-                      child: Container(
-                        height:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? AppConstants.kIconSize +
-                                    AppConstants.kIconSize
-                                : AppConstants.kIconSize,
-                        width:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? AppConstants.kIconSize +
-                                    AppConstants.kIconSize
-                                : AppConstants.kIconSize,
-                        decoration: BoxDecoration(
-                          color: AppColors.kWhite,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.kBlack.withValues(alpha: 0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: IconButton(
-                          icon: SvgHelper.fromSource(
-                            path: Assets.rightArrow,
-                            height:
-                                PlatformUtility.isTablet(context) &&
-                                        PlatformUtility.isLandscape(context)
-                                    ? 80
-                                    : AppConstants.kIconSize,
-                            width:
-                                PlatformUtility.isTablet(context) &&
-                                        PlatformUtility.isLandscape(context)
-                                    ? 80
-                                    : AppConstants.kIconSize,
-                            color: AppColors.kSecondaryColor,
-                          ),
-                          onPressed: _nextContent,
-                        ),
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.rightArrow,
+                        onPressed: _nextContent,
                       ),
                     ),
                   ],

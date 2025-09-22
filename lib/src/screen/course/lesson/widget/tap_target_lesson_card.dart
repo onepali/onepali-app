@@ -758,12 +758,12 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
           // Close button in top right
           Positioned(
             top: 16,
-            right: 16,
+            right: Dimensions.kIconMargin(context),
             child: IconButton(
               icon: SvgHelper.fromSource(
                 path: Assets.wrong,
-                height: AppConstants.kIconSize,
-                width: AppConstants.kIconSize,
+                height: Dimensions.kIconSize(context),
+                width: Dimensions.kIconSize(context),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

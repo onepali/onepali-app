@@ -103,3 +103,9 @@ export 'learning_session_wrapper.dart';
 
 //// Parent Zone [AppBar]
 export 'pwidget/pappbar_widget.dart';
+
+//* --------------------------------- Common Widgets --------------------------------- *//
+// Rounded [Button], Text Widget, Responsive Components etc.
+
+/// Common [Circular] Button Widget
+export 'common/circular_button_widget.dart';

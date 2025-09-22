@@ -77,10 +77,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
     final double paddingH = isMobileLandscape ? 16 : 32;
     final double paddingV = isMobileLandscape ? 10 : 18;
     final double imageSize = isMobileLandscape ? 230 : 500;
-    final double audioButtonSize =
-        isMobileLandscape
-            ? AppConstants.kIconSize
-            : AppConstants.kIconSize + AppConstants.kIconSize;
+    final double audioButtonSize = Dimensions.kIconSize(context);
     final double descriptionSizeBoxHeight =
         isMobileLandscape
             ? MediaQuery.of(context).size.height * 0.8
@@ -103,14 +100,8 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                 child: IconButton(
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
-                    height:
-                        isMobileLandscape
-                            ? AppConstants.kIconSize
-                            : AppConstants.kIconSize + AppConstants.kIconSize,
-                    width:
-                        isMobileLandscape
-                            ? AppConstants.kIconSize
-                            : AppConstants.kIconSize + AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                     color: AppColors.kWhite,
                   ),
                   padding: const EdgeInsets.only(top: 16, right: 16),

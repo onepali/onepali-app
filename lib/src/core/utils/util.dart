@@ -32,5 +32,8 @@ export 'platform_utility.dart';
 /// App [Responsive] Utility
 export 'app_card_responsive.dart';
 
-/// [Metrics Tracking] Helper
+/// Metrics [Tracking] Helper
 export 'metrics_tracking_helper.dart';
+
+/// [Dimension] Utility
+export 'dimension_utility.dart';

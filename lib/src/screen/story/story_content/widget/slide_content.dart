@@ -108,16 +108,8 @@ class SlideContentState extends State<SlideContent> {
                   },
                   child: SvgHelper.fromSource(
                     path: Assets.sound,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                   ),
                 );
                 return storyProvider.isPlaying
@@ -136,16 +128,8 @@ class SlideContentState extends State<SlideContent> {
             },
             child: SvgHelper.fromSource(
               path: Assets.wrong,
-              height:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              width:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
+              height: Dimensions.kIconSize(context),
+              width: Dimensions.kIconSize(context),
             ),
           ),
         ),
@@ -154,41 +138,9 @@ class SlideContentState extends State<SlideContent> {
           top: 0,
           bottom: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.previousContent(),
-              child: Container(
-                height:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                width:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                decoration: BoxDecoration(
-                  color: AppColors.kWhite,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.kBlack.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTabletLandScape ? 24 : 16,
-                  // vertical: 2,
-                ),
-                child: SvgHelper.fromSource(
-                  path: Assets.leftArrow,
-                  // height: 30,
-                  // width: 30,
-                  color: AppColors.kSecondaryColor,
-                ),
-              ),
+            child: CircularButtonWidget(
+              type: CircularButtonType.leftArrow,
+              onPressed: () => storyProvider.previousContent(),
             ),
           ),
         ),
@@ -198,41 +150,9 @@ class SlideContentState extends State<SlideContent> {
           top: 0,
           bottom: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.nextContent(context),
-              child: Container(
-                height:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                width:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                decoration: BoxDecoration(
-                  color: AppColors.kWhite,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.kBlack.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTabletLandScape ? 24 : 16,
-                  // vertical: 2,
-                ),
-                child: SvgHelper.fromSource(
-                  path: Assets.rightArrow,
-                  // height: 30,
-                  // width: 30,
-                  color: AppColors.kSecondaryColor,
-                ),
-              ),
+            child: CircularButtonWidget(
+              type: CircularButtonType.rightArrow,
+              onPressed: () => storyProvider.nextContent(context),
             ),
           ),
         ),

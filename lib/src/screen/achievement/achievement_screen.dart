@@ -211,8 +211,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   child: SvgHelper.fromSource(
                     path: Assets.wrong,
                     color: AppColors.kButtonGrey,
-                    height: AppConstants.kIconSize + AppConstants.kIconSize,
-                    width: AppConstants.kIconSize + AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                   ),
                 ),
               ],
@@ -369,8 +369,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   icon: SvgHelper.fromSource(
                     path: Assets.wrong,
                     color: AppColors.kButtonGrey,
-                    height: AppConstants.kIconSize,
-                    width: AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                   ),
                 ),
               ),

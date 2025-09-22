@@ -177,16 +177,8 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   },
                   child: SvgHelper.fromSource(
                     path: Assets.sound,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
+                    height: Dimensions.kIconSize(context),
+                    width: Dimensions.kIconSize(context),
                   ),
                 );
                 return storyProvider.isPlaying
