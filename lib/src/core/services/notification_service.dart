@@ -14,14 +14,18 @@ class NotificationService {
     // Local notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        );
+
     const InitializationSettings initializationSettings =
         InitializationSettings(
           android: initializationSettingsAndroid,
-          iOS: DarwinInitializationSettings(
-            requestSoundPermission: false,
-            requestBadgePermission: false,
-            requestAlertPermission: false,
-          ),
+          iOS: initializationSettingsIOS,
         );
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -77,6 +81,21 @@ class NotificationService {
       '[NotificationService] Exact alarm permission: $exactAlarmPermission',
     );
 
+    // Request iOS notification permissions
+    final iosImplementation =
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
+    final iosPermission = await iosImplementation?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    debugPrint(
+      '[NotificationService] iOS notification permission: $iosPermission',
+    );
+
     // FCM permissions
     final fcmSettings = await _firebaseMessaging.requestPermission();
     debugPrint(
@@ -99,18 +118,21 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           playSound: true,
-          sound: RawResourceAndroidNotificationSound(
-            'notification',
-          ), // Place notification.mp3 in android/app/src/main/res/raw/
+          sound: RawResourceAndroidNotificationSound('notification'),
           showWhen: true,
         );
+
+    const DarwinNotificationDetails iosPlatformChannelSpecifics =
+        DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+          sound: 'notification.wav',
+        );
+
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
-      iOS: DarwinNotificationDetails(
-        presentSound: true,
-        presentAlert: true,
-        presentBadge: true,
-      ),
+      iOS: iosPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.show(
       0,
@@ -156,13 +178,17 @@ class NotificationService {
       playSound: true,
       sound: RawResourceAndroidNotificationSound('notification'),
     );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'notification.wav',
+    );
+
     final details = NotificationDetails(
       android: androidDetails,
-      iOS: DarwinNotificationDetails(
-        presentSound: true,
-        presentAlert: true,
-        presentBadge: true,
-      ),
+      iOS: iosDetails,
     );
     await flutterLocalNotificationsPlugin.zonedSchedule(
       1,

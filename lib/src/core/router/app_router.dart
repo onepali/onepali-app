@@ -168,9 +168,11 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       final fromScreenTimeLimit = args?['fromScreenTimeLimit'] ?? false;
+      final fromAddChild = args?['fromAddChild'] ?? false;
       final childId = args?['childId'] as String?;
       return ParentZoneScreen(
         fromScreenTimeLimit: fromScreenTimeLimit,
+        fromAddChild: fromAddChild,
         childId: childId,
       );
     },

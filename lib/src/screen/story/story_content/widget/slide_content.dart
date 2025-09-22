@@ -93,32 +93,20 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Top center sound icon
         Positioned(
-          top: 24,
+          top: 16,
           left: 0,
           right: 0,
           child: Center(
             child: Consumer<StoryProvider>(
               builder: (context, storyProvider, _) {
-                final soundIcon = GestureDetector(
-                  onTap: () {
+                final soundIcon = CircularButtonWidget(
+                  onPressed: () {
                     logger.d(
                       '[SlideContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
                     );
                     storyProvider.playAudio(widget.content.audio);
                   },
-                  child: SvgHelper.fromSource(
-                    path: Assets.sound,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? AppConstants.kIconSize + AppConstants.kIconSize
-                            : AppConstants.kIconSize,
-                  ),
+                  type: CircularButtonType.sound,
                 );
                 return storyProvider.isPlaying
                     ? CustomAvatarGlow(child: soundIcon)
@@ -128,111 +116,35 @@ class SlideContentState extends State<SlideContent> {
           ),
         ),
         Positioned(
-          top: 24,
-          right: 28,
-          child: customInkwell(
-            onTap: () {
+          top: 16,
+          right: Dimensions.kIconMargin(context),
+          child: CircularButtonWidget(
+            type: CircularButtonType.close,
+            onPressed: () {
               storyProvider.stopAudioAndResetIndex();
             },
-            child: SvgHelper.fromSource(
-              path: Assets.wrong,
-              height:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-              width:
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? AppConstants.kIconSize + AppConstants.kIconSize
-                      : AppConstants.kIconSize,
-            ),
           ),
         ),
         Positioned(
-          left: 28,
+          left: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.previousContent(),
-              child: Container(
-                height:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                width:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                decoration: BoxDecoration(
-                  color: AppColors.kWhite,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.kBlack.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTabletLandScape ? 24 : 16,
-                  // vertical: 2,
-                ),
-                child: SvgHelper.fromSource(
-                  path: Assets.leftArrow,
-                  // height: 30,
-                  // width: 30,
-                  color: AppColors.kSecondaryColor,
-                ),
-              ),
+            child: CircularButtonWidget(
+              type: CircularButtonType.leftArrow,
+              onPressed: () => storyProvider.previousContent(),
             ),
           ),
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 28,
+          right: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
-            child: GestureDetector(
-              onTap: () => storyProvider.nextContent(context),
-              child: Container(
-                height:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                width:
-                    PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? AppConstants.kIconSize + AppConstants.kIconSize
-                        : AppConstants.kIconSize,
-                decoration: BoxDecoration(
-                  color: AppColors.kWhite,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.kBlack.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTabletLandScape ? 24 : 16,
-                  // vertical: 2,
-                ),
-                child: SvgHelper.fromSource(
-                  path: Assets.rightArrow,
-                  // height: 30,
-                  // width: 30,
-                  color: AppColors.kSecondaryColor,
-                ),
-              ),
+            child: CircularButtonWidget(
+              type: CircularButtonType.rightArrow,
+              onPressed: () => storyProvider.nextContent(context),
             ),
           ),
         ),

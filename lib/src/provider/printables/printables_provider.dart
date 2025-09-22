@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 import 'package:onepali/src/src.dart';
 
 class PrintablesProvider extends ChangeNotifier {
@@ -115,20 +116,26 @@ class PrintablesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Create O Nepali folder in Documents if it doesn't exist
-  // Note: This method is kept for potential future use with external storage
+  // Create O Nepali folder in appropriate location based on platform
   Future<Directory> _getOrCreateONepaliFolder() async {
-    final Directory? documentsDir = await getExternalStorageDirectory();
-    if (documentsDir == null) {
-      throw Exception('Could not access external storage');
-    }
+    late Directory documentsDirectory;
 
-    // Navigate to Documents folder (usually /storage/emulated/0/Documents)
-    final String documentsPath = '/storage/emulated/0/Documents';
-    final Directory documentsDirectory = Directory(documentsPath);
+    if (Platform.isAndroid) {
+      // Android: Use public Documents folder for better accessibility
+      final Directory? externalDir = await getExternalStorageDirectory();
+      if (externalDir == null) {
+        throw Exception('Could not access external storage');
+      }
 
-    if (!await documentsDirectory.exists()) {
-      await documentsDirectory.create(recursive: true);
+      // Navigate to Documents folder (usually /storage/emulated/0/Documents)
+      final String documentsPath = '/storage/emulated/0/Documents';
+      documentsDirectory = Directory(documentsPath);
+
+      if (!await documentsDirectory.exists()) {
+        await documentsDirectory.create(recursive: true);
+      }
+    } else {
+      documentsDirectory = await getApplicationDocumentsDirectory();
     }
 
     final Directory oNepaliFolder = Directory(
@@ -143,7 +150,25 @@ class PrintablesProvider extends ChangeNotifier {
     return oNepaliFolder;
   }
 
-  // Check and request storage permissions
+  // Share file on iOS using the share sheet
+  Future<void> _shareFileOnIOS(String filePath, String filename) async {
+    if (Platform.isIOS) {
+      try {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(filePath)],
+            text: 'Downloaded from O Nepali: $filename',
+            subject: 'O Nepali Worksheet',
+          ),
+        );
+      } catch (e) {
+        logger.e('Error sharing file on iOS: $e');
+        showCustomToaster('File saved to app documents', isError: false);
+      }
+    }
+  }
+
+  // Check and request storage permissions based on platform
   Future<bool> _checkStoragePermission() async {
     if (Platform.isAndroid) {
       // For Android 13+ (API 33+), we need different permissions
@@ -161,8 +186,12 @@ class PrintablesProvider extends ChangeNotifier {
       // Fallback to regular storage permission for older Android versions
       status = await Permission.storage.request();
       return status.isGranted;
+    } else if (Platform.isIOS) {
+      return true;
     }
-    return true; // iOS doesn't need explicit storage permission for app documents
+
+    // For other platforms (web, desktop), assume permission is granted
+    return true;
   }
 
   // Download single worksheet using http
@@ -170,10 +199,11 @@ class PrintablesProvider extends ChangeNotifier {
     try {
       // Check storage permission
       if (!await _checkStoragePermission()) {
-        showCustomToaster(
-          'Storage permission required to download files',
-          isError: true,
-        );
+        final errorMessage =
+            Platform.isAndroid
+                ? 'Storage permission required to download files'
+                : 'Unable to access file storage';
+        showCustomToaster(errorMessage, isError: true);
         return false;
       }
 
@@ -201,7 +231,13 @@ class PrintablesProvider extends ChangeNotifier {
         _isDownloading = false;
         _downloadingWorksheetId = '';
         notifyListeners();
-        showCustomToaster('File already exists: $filename');
+
+        if (Platform.isIOS) {
+          showCustomToaster('File already exists: $filename');
+          await _shareFileOnIOS(filePath, filename);
+        } else {
+          showCustomToaster('File already exists: $filename');
+        }
         return true;
       }
 
@@ -216,7 +252,13 @@ class PrintablesProvider extends ChangeNotifier {
         _downloadProgress = 0.0;
         notifyListeners();
 
-        showCustomToaster('Downloaded: $filename');
+        if (Platform.isIOS) {
+          showCustomToaster('Downloaded: $filename');
+          await _shareFileOnIOS(filePath, filename);
+        } else {
+          showCustomToaster('Downloaded: $filename');
+        }
+
         logger.d('Downloaded worksheet: $filePath');
         return true;
       } else {
@@ -238,10 +280,11 @@ class PrintablesProvider extends ChangeNotifier {
   Future<void> downloadAllWorksheets(PrintableModel printable) async {
     try {
       if (!await _checkStoragePermission()) {
-        showCustomToaster(
-          'Storage permission required to download files',
-          isError: true,
-        );
+        final errorMessage =
+            Platform.isAndroid
+                ? 'Storage permission required to download files'
+                : 'Unable to access file storage';
+        showCustomToaster(errorMessage, isError: true);
         return;
       }
 
@@ -269,9 +312,23 @@ class PrintablesProvider extends ChangeNotifier {
       notifyListeners();
 
       if (successCount == totalCount) {
-        showCustomToaster('All worksheets downloaded successfully!');
+        if (Platform.isIOS) {
+          showCustomToaster(
+            'All worksheets downloaded! Files are available in the app and can be shared.',
+          );
+        } else {
+          showCustomToaster('All worksheets downloaded successfully!');
+        }
       } else if (successCount > 0) {
-        showCustomToaster('Downloaded $successCount of $totalCount worksheets');
+        if (Platform.isIOS) {
+          showCustomToaster(
+            'Downloaded $successCount of $totalCount worksheets. Files available in app.',
+          );
+        } else {
+          showCustomToaster(
+            'Downloaded $successCount of $totalCount worksheets',
+          );
+        }
       } else {
         showCustomToaster('Failed to download worksheets', isError: true);
       }
@@ -296,5 +353,4 @@ class PrintablesProvider extends ChangeNotifier {
     _status = status;
     notifyListeners();
   }
-
 }
