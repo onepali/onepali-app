@@ -95,21 +95,23 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
           ),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    height: Dimensions.kIconSize(context),
-                    width: Dimensions.kIconSize(context),
-                    color: AppColors.kWhite,
+              Padding(
+                padding: EdgeInsets.only(
+                  right: Dimensions.kIconMargin(context),
+                  top: isMobileLandscape ? 16 : 24,
+                ),
+                child: Align(
+                  alignment: Alignment.topRight,
+
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.close,
+
+                    onPressed:
+                        () => Utility.navigate(
+                          context,
+                          AppRoutes.rewardCollectionScreen,
+                        ),
                   ),
-                  padding: const EdgeInsets.only(top: 16, right: 16),
-                  onPressed:
-                      () => Utility.navigate(
-                        context,
-                        AppRoutes.rewardCollectionScreen,
-                      ),
                 ),
               ),
               Row(

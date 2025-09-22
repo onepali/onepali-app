@@ -63,23 +63,10 @@ class RewardStickerPopup extends StatelessWidget {
             // Close button
             Positioned(
               top: 16,
-              right: 16,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width: Dimensions.kIconSize(context),
-                  height: Dimensions.kIconSize(context),
-                  decoration: BoxDecoration(
-                    color: AppColors.kLightGrey.withValues(alpha: 0.3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    color: AppColors.kLightGrey,
-                    height: Dimensions.kIconSize(context),
-                    width: Dimensions.kIconSize(context),
-                  ),
-                ),
+              right: Dimensions.kIconMargin(context) - 8,
+              child: CircularButtonWidget(
+                onPressed: () => Navigator.of(context).pop(),
+                type: CircularButtonType.close,
               ),
             ),
             // Content
