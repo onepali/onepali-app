@@ -34,7 +34,7 @@ class _NormalContentState extends State<NormalContent> {
                 ? CircularButtonType.leftArrow
                 : CircularButtonType.rightArrow,
         onPressed: onTap,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
+        // margin: const EdgeInsets.symmetric(horizontal: 16),
       );
     }
 
@@ -79,24 +79,20 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Top right wrong icon
         Positioned(
-          top: 24,
-          right: 28,
-          child: customInkwell(
-            onTap: () {
+          top: 16,
+          right: Dimensions.kIconMargin(context),
+          child: CircularButtonWidget(
+            onPressed: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               storyProvider.stopAudioAndResetIndex();
               logger.d('[NormalContent] Wrong icon tapped, stopping audio');
             },
-            child: SvgHelper.fromSource(
-              path: Assets.wrong,
-              height: Dimensions.kIconSize(context),
-              width: Dimensions.kIconSize(context),
-            ),
+            type: CircularButtonType.close,
           ),
         ),
         // Left arrow (center vertically)
         Positioned(
-          left: 16,
+          left: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
@@ -108,7 +104,7 @@ class _NormalContentState extends State<NormalContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 16,
+          right: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(

@@ -171,28 +171,26 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
                   Positioned(
                     top: 16,
-                    right: 20,
-                    child: IconButton(
-                      icon: SvgHelper.fromSource(
-                        path: Assets.wrong,
-                        height: Dimensions.kIconSize(context),
-                        width: Dimensions.kIconSize(context),
-                      ),
+                    right: Dimensions.kIconMargin(context),
+                    child: CircularButtonWidget(
+                      type: CircularButtonType.close,
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
                   // Start button
                   Positioned(
-                    right: 16,
+                    right: Dimensions.kIconMargin(context),
                     top: 0,
                     bottom: 0,
-                    child: CircularButtonWidget(
-                      type: CircularButtonType.rightArrow,
-                      onPressed: () {
-                        _disposeStoryAudio();
-                        provider.nextContent(context);
-                      },
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Center(
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.rightArrow,
+                        onPressed: () {
+                          _disposeStoryAudio();
+                          provider.nextContent(context);
+                        },
+                        // margin: const EdgeInsets.symmetric(horizontal: 16),
+                      ),
                     ),
                   ),
                 ],

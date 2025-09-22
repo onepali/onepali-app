@@ -162,24 +162,20 @@ class ButtonTapContentState extends State<ButtonTapContent> {
         ),
         // Top center sound icon
         Positioned(
-          top: 24,
+          top: 16,
           left: 0,
           right: 0,
           child: Center(
             child: Consumer<StoryProvider>(
               builder: (context, storyProvider, _) {
-                final soundIcon = GestureDetector(
-                  onTap: () {
+                final soundIcon = CircularButtonWidget(
+                  onPressed: () {
                     logger.d(
                       '[ButtonTapContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
                     );
                     storyProvider.playAudio(widget.content.audio);
                   },
-                  child: SvgHelper.fromSource(
-                    path: Assets.sound,
-                    height: Dimensions.kIconSize(context),
-                    width: Dimensions.kIconSize(context),
-                  ),
+                  type: CircularButtonType.sound,
                 );
                 return storyProvider.isPlaying
                     ? CustomAvatarGlow(child: soundIcon)

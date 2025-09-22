@@ -93,24 +93,20 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Top center sound icon
         Positioned(
-          top: 24,
+          top: 16,
           left: 0,
           right: 0,
           child: Center(
             child: Consumer<StoryProvider>(
               builder: (context, storyProvider, _) {
-                final soundIcon = GestureDetector(
-                  onTap: () {
+                final soundIcon = CircularButtonWidget(
+                  onPressed: () {
                     logger.d(
                       '[SlideContent] Sound icon tapped, isPlaying: \\${storyProvider.isPlaying}',
                     );
                     storyProvider.playAudio(widget.content.audio);
                   },
-                  child: SvgHelper.fromSource(
-                    path: Assets.sound,
-                    height: Dimensions.kIconSize(context),
-                    width: Dimensions.kIconSize(context),
-                  ),
+                  type: CircularButtonType.sound,
                 );
                 return storyProvider.isPlaying
                     ? CustomAvatarGlow(child: soundIcon)
@@ -120,21 +116,17 @@ class SlideContentState extends State<SlideContent> {
           ),
         ),
         Positioned(
-          top: 24,
-          right: 28,
-          child: customInkwell(
-            onTap: () {
+          top: 16,
+          right: Dimensions.kIconMargin(context),
+          child: CircularButtonWidget(
+            type: CircularButtonType.close,
+            onPressed: () {
               storyProvider.stopAudioAndResetIndex();
             },
-            child: SvgHelper.fromSource(
-              path: Assets.wrong,
-              height: Dimensions.kIconSize(context),
-              width: Dimensions.kIconSize(context),
-            ),
           ),
         ),
         Positioned(
-          left: 28,
+          left: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
@@ -146,7 +138,7 @@ class SlideContentState extends State<SlideContent> {
         ),
         // Right arrow (center vertically)
         Positioned(
-          right: 28,
+          right: Dimensions.kIconMargin(context),
           top: 0,
           bottom: 0,
           child: Center(
