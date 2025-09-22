@@ -6,11 +6,13 @@ import '../../src.dart';
 class ParentZoneScreen extends StatefulWidget {
   final bool fromScreenTimeLimit;
   final String? childId;
+  final bool fromAddChild;
 
   const ParentZoneScreen({
     super.key,
     this.fromScreenTimeLimit = false,
     this.childId,
+    this.fromAddChild = false,
   });
 
   @override
@@ -63,6 +65,9 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
             AppRoutes.extendTimeScreen,
             arguments: {'childId': widget.childId},
           );
+        } else if (widget.fromAddChild) {
+          // Navigate to child register screen after successful PIN validation
+          Utility.navigate(context, AppRoutes.childRegisterScreen);
         } else {
           ParentLocalStorage.setParentLogged(true);
           Utility.navigate(context, AppRoutes.parentDashboardScreen);
@@ -90,9 +95,9 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
   Widget build(BuildContext context) {
     final isTablet = PlatformUtility.isTablet(context);
     return PopScope(
-      canPop: !widget.fromScreenTimeLimit,
+      canPop: !widget.fromScreenTimeLimit && !widget.fromAddChild,
       onPopInvokedWithResult: (didPop, result) {
-        if (widget.fromScreenTimeLimit && !didPop) {
+        if ((widget.fromScreenTimeLimit || widget.fromAddChild) && !didPop) {
           UserAppBar.setTabIndex(0);
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -164,13 +169,13 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                 ),
               ),
               Positioned(
-                top: 24,
-                right: 24,
-                child: GestureDetector(
-                  onTap: () {
-                    if (widget.fromScreenTimeLimit) {
+                top: 16,
+                right: Dimensions.kIconMargin(context),
+                child: CircularButtonWidget(
+                  onPressed: () {
+                    if (widget.fromScreenTimeLimit || widget.fromAddChild) {
                       logger.i(
-                        '🚪 Exiting app from parent screen (from screen time limit)',
+                        '🚪 Exiting app from parent screen (from screen time limit or add child)',
                       );
                       UserAppBar.setTabIndex(0);
                       Navigator.of(context).pushReplacement(
@@ -186,11 +191,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    color: AppColors.kButtonGrey,
-                    height: 64,
-                  ),
+                  type: CircularButtonType.close,
                 ),
               ),
             ],

@@ -74,9 +74,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Widget _buildChildProfilesGrid() {
+    // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
+    final shouldShowAddChild =
+        widget.isParent || (widget.data.isEmpty && !widget.isParent);
     final items = List<
       Widget
-    >.generate(widget.data.length + (widget.isParent ? 1 : 0), (index) {
+    >.generate(widget.data.length + (shouldShowAddChild ? 1 : 0), (index) {
       if (index < widget.data.length) {
         final child = widget.data[index];
         return Row(
@@ -189,7 +192,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           ],
         );
       } else {
-        // Only show 'Add Child' if in parent zone
+        // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
         return GestureDetector(
           onTap: () {
             if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
@@ -203,7 +206,17 @@ class _DrawerScreenState extends State<DrawerScreen> {
               );
               return;
             } else {
-              Utility.navigate(context, AppRoutes.childRegisterScreen);
+              // If from child dashboard with no children, navigate to parent PIN screen
+              if (!widget.isParent && widget.data.isEmpty) {
+                Utility.navigate(
+                  context,
+                  AppRoutes.parentPinScreen,
+                  arguments: {'fromAddChild': true},
+                );
+              } else {
+                // Normal flow for parent zone
+                Utility.navigate(context, AppRoutes.childRegisterScreen);
+              }
             }
           },
           child: Row(
