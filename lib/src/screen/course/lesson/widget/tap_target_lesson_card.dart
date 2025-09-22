@@ -759,12 +759,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
           Positioned(
             top: 16,
             right: Dimensions.kIconMargin(context),
-            child: IconButton(
-              icon: SvgHelper.fromSource(
-                path: Assets.wrong,
-                height: Dimensions.kIconSize(context),
-                width: Dimensions.kIconSize(context),
-              ),
+            child: CircularButtonWidget(
+              type: CircularButtonType.close,
               onPressed: () {
                 Navigator.of(context).pop();
               },

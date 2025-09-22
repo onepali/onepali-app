@@ -229,9 +229,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               !isTapSendType &&
               !isTapTargetType &&
               !isDragToMatchType)
-            CircularButtonWidget(
-              type: CircularButtonType.leftArrow,
-              onPressed: _previousContent,
+            Container(
+              margin: EdgeInsets.only(left: Dimensions.kIconMargin(context)),
+              child: CircularButtonWidget(
+                type: CircularButtonType.leftArrow,
+                onPressed: _previousContent,
+              ),
             ),
 
           // Main content
@@ -375,9 +378,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
           // Next button
           if (!isLast && !isTapSendType && !isTapTargetType)
-            CircularButtonWidget(
-              type: CircularButtonType.rightArrow,
-              onPressed: _nextContent,
+            Container(
+              margin: EdgeInsets.only(right: Dimensions.kIconMargin(context)),
+              child: CircularButtonWidget(
+                type: CircularButtonType.rightArrow,
+                onPressed: _nextContent,
+              ),
             ),
         ],
       ),
@@ -479,12 +485,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: IconButton(
-                      icon: SvgHelper.fromSource(
-                        path: Assets.sound,
-                        height: Dimensions.kIconSize(context),
-                        width: Dimensions.kIconSize(context),
-                      ),
+                    child: CircularButtonWidget(
+                      type: CircularButtonType.sound,
                       onPressed: () {
                         _playWordAudio();
                       },
@@ -494,12 +496,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               Positioned(
                 top: 16,
                 right: Dimensions.kIconMargin(context),
-                child: IconButton(
-                  icon: SvgHelper.fromSource(
-                    path: Assets.wrong,
-                    height: Dimensions.kIconSize(context),
-                    width: Dimensions.kIconSize(context),
-                  ),
+                child: CircularButtonWidget(
+                  type: CircularButtonType.close,
                   onPressed: () {
                     _saveCurrentProgress();
                     Navigator.of(context).pop();
@@ -599,9 +597,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       right: Dimensions.kIconMargin(context),
                       top: 0,
                       bottom: 0,
-                      child: CircularButtonWidget(
-                        type: CircularButtonType.rightArrow,
-                        onPressed: _nextContent,
+                      child: Center(
+                        child: CircularButtonWidget(
+                          type: CircularButtonType.rightArrow,
+                          onPressed: _nextContent,
+                        ),
                       ),
                     ),
                   ],
