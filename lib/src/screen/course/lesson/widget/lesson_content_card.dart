@@ -161,7 +161,7 @@ class _LessonContentCardState extends State<LessonContentCard>
           width: width,
           height: height,
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: AppColors.kTransparentColor,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Center(
@@ -173,7 +173,7 @@ class _LessonContentCardState extends State<LessonContentCard>
                 Text(
                   'Loading video...',
                   style: AppStyles.text12PxRegular.copyWith(
-                    color: AppColors.kGrey,
+                    color: AppColors.kWhite,
                   ),
                 ),
               ],
@@ -215,7 +215,7 @@ class _LessonContentCardState extends State<LessonContentCard>
               width: width,
               height: height,
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: AppColors.kTransparentColor,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Center(
