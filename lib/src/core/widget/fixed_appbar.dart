@@ -54,7 +54,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final avatarSize = isTabletPortrait ? 64.0 : 45.0;
     final rewardIconSize = isTabletPortrait ? 50.0 : 40.0;
     final starRewardLottieSize = isTabletPortrait ? 85.0 : 40.0;
-    final tabIconSize = isTabletPortrait ? 56.0 : 44.0;
+    final tabIconSize = isTabletPortrait ? 56.0 : 45.0;
     final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
     final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
     final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
@@ -183,6 +183,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: tabSpacing,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           for (int i = 0; i < homeServices.length; i++)
                             _buildTab(
@@ -273,6 +274,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: tabSpacing,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             for (int i = 0; i < homeServices.length; i++) ...[
                               _buildTab(
@@ -487,43 +489,73 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
     final labelTextStyle =
-        isTabletPortrait ? AppStyles.text24PxMedium : AppStyles.text12PxMedium;
+        isTabletPortrait
+            ? AppStyles.text24PxMedium.copyWith(
+              overflow: TextOverflow.ellipsis,
+              fontFamily: AppConstants.kDMSansFont,
+            )
+            : AppStyles.text16PxSemiBold.copyWith(
+              overflow: TextOverflow.ellipsis,
+              fontFamily: AppConstants.kDMSansFont,
+            );
 
-    return IconButton(
-      onPressed: onTap,
-      hoverColor: AppColors.kTransparentColor,
-      splashColor: AppColors.kTransparentColor,
-      focusColor: AppColors.kTransparentColor,
-      highlightColor: AppColors.kTransparentColor,
-      icon: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // if (isGuest) Gaps.verticalGapOf(30),
-          SvgHelper.fromSource(
-            path: icon,
-            height: effectiveIconSize,
-            width: effectiveIconSize,
-            // color: menuColor,
-          ),
-          if (isSelected) ...[
-            Gaps.verticalGapOf(isTabletPortrait ? 15 : 4),
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: isTabletPortrait ? 14 : 8,
-                vertical: 2,
+    // Calculate fixed width based on the longest possible label
+    final tabWidth = isTabletPortrait ? 120.0 : 85.0;
+
+    return SizedBox(
+      width: tabWidth,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        hoverColor: AppColors.kTransparentColor,
+        splashColor: AppColors.kTransparentColor.withValues(alpha: 0.1),
+        focusColor: AppColors.kTransparentColor,
+        highlightColor: AppColors.kTransparentColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: effectiveIconSize + 10,
+              child: Center(
+                child: SvgHelper.fromSource(
+                  path: icon,
+                  height: effectiveIconSize,
+                  width: effectiveIconSize,
+                  // color: menuColor,
+                ),
               ),
-              decoration: BoxDecoration(
-                color: menuColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                label,
-                style: labelTextStyle.copyWith(color: AppColors.kWhite),
+            ),
+
+            SizedBox(
+              width: tabWidth,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: isSelected ? 1.0 : 0.0,
+                child: Container(
+                  margin: EdgeInsets.only(top: isTabletPortrait ? 15 : 8),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isTabletPortrait ? 14 : 8,
+                    vertical: 2,
+                  ),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isSelected ? menuColor : Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    // maxLines: 1,
+                    style: labelTextStyle.copyWith(
+                      color: isSelected ? AppColors.kWhite : Colors.transparent,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
