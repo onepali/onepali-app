@@ -491,6 +491,10 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return IconButton(
       onPressed: onTap,
+      hoverColor: AppColors.kTransparentColor,
+      splashColor: AppColors.kTransparentColor,
+      focusColor: AppColors.kTransparentColor,
+      highlightColor: AppColors.kTransparentColor,
       icon: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
