@@ -31,7 +31,7 @@ val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toI
 val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
 android {
-    namespace = "com.onepali.app"
+    namespace = "fun.onepali.app"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
@@ -50,7 +50,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.onepali.app"
+        applicationId = "fun.onepali.app"
         minSdk = 24
         targetSdk = 35
         versionCode = flutterVersionCode

@@ -8,33 +8,33 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:259206374027:android:3170dedbd021f4fdc76a8e",
+        "mobilesdk_app_id": "1:259206374027:android:73cc427eda235623c76a8e",
         "android_client_info": {
-          "package_name": "com.onepali.app"
+          "package_name": "fun.onepali.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "259206374027-8s7mtkn4crb15au6177juljdmdt5frma.apps.googleusercontent.com",
+          "client_id": "259206374027-4lv7j5d2o8ur6o25bl3jv0cmtd2ls25q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.onepali.app",
-            "certificate_hash": "bc152fc19f979b6598319df4099f80df30947bdf"
-          }
-        },
-        {
-          "client_id": "259206374027-nfu9ofksbpvqqm5kegofuubl6t86g8i0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.onepali.app",
+            "package_name": "fun.onepali.app",
             "certificate_hash": "3c22b49be28f929278789a4004764ccd09cf3fdc"
           }
         },
         {
-          "client_id": "259206374027-tebmlnlickuengqfcbq02pbeg8hhopve.apps.googleusercontent.com",
+          "client_id": "259206374027-8fosapq4id2g2k905nihi5tt575c81fi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.onepali.app",
+            "package_name": "fun.onepali.app",
+            "certificate_hash": "bc152fc19f979b6598319df4099f80df30947bdf"
+          }
+        },
+        {
+          "client_id": "259206374027-etv7u1v5kgcgtrpbutn6fr7h91notki3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fun.onepali.app",
             "certificate_hash": "57fb1395a3f03f172ba4ba2969bb354b11359043"
           }
         },
