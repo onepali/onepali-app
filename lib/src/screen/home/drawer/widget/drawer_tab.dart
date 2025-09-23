@@ -74,14 +74,10 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     await childProvider.updateScreenTimeEnabledStatusByChildId(child.uid);
 
     // Navigator.of(context).pop(); // Close the drawer
-    Navigator.of(context).popUntil((route) => route.isFirst);
     UserAppBar.setTabIndex(0);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => DashboardScreen(),
-        settings: RouteSettings(name: AppRoutes.dashboardScreen),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRoutes.dashboardScreen, (route) => false);
   }
 
   @override
@@ -107,15 +103,10 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                         await ParentLocalStorage.isParentLogged();
                     logger.d('isParentLogged: $isParentLogged');
                     if (isParentLogged) {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
                       UserAppBar.setTabIndex(0);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => DashboardScreen(),
-                          settings: RouteSettings(
-                            name: AppRoutes.dashboardScreen,
-                          ),
-                        ),
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        AppRoutes.dashboardScreen,
+                        (route) => false,
                       );
                     } else {
                       Navigator.pop(context);

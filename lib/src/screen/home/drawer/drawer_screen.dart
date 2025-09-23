@@ -130,13 +130,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   );
                 }
                 logger.i('🔄 Navigating to dashboard with new child');
-                Navigator.of(context).popUntil((route) => route.isFirst);
                 UserAppBar.setTabIndex(0);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (_) => DashboardScreen(),
-                    settings: RouteSettings(name: AppRoutes.dashboardScreen),
-                  ),
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.dashboardScreen,
+                  (route) => false,
                 );
               },
               child: Container(
@@ -283,13 +280,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
                 if (isParentLogged) {
                   ParentLocalStorage.setParentLogged(false);
-                  Navigator.of(context).popUntil((route) => route.isFirst);
                   UserAppBar.setTabIndex(0);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => DashboardScreen(),
-                      settings: RouteSettings(name: AppRoutes.dashboardScreen),
-                    ),
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    AppRoutes.dashboardScreen,
+                    (route) => false,
                   );
                 } else {
                   Navigator.pop(context);
