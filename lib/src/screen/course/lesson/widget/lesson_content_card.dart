@@ -199,7 +199,7 @@ class _LessonContentCardState extends State<LessonContentCard>
       // Show MP4 video (lottie field contains video paths)
       return ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: Container(
+        child: SizedBox(
           width: width,
           height: height,
           child: CustomVideoPlayer(
