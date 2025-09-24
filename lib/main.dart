@@ -21,6 +21,14 @@ void main() async {
     ),
   );
 
+  // Allow all orientations initially - let OrientationRouteObserver handle specific routes
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+
   await dotenv.load(fileName: AppConstants.dotEnvFileName);
   await AppInitializer().initializeApp();
 

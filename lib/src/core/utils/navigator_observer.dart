@@ -74,17 +74,44 @@ class OrientationRouteObserver extends NavigatorObserver {
 
     if (portraitRoutes.contains(name)) {
       logger.i('Setting orientation: PORTRAIT');
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      // orientation change happens after route transition
+      Future.delayed(const Duration(milliseconds: 100), () {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+
+        // Ensure edge-to-edge mode is maintained after orientation change
+        _maintainEdgeToEdgeMode();
+      });
     } else if (name.isNotEmpty) {
       logger.i('Setting orientation: LANDSCAPE');
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
+      // orientation change happens after route transition
+      Future.delayed(const Duration(milliseconds: 100), () {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+
+        // Ensure edge-to-edge mode is maintained after orientation change
+        _maintainEdgeToEdgeMode();
+      });
     }
+  }
+
+  void _maintainEdgeToEdgeMode() {
+    // Reapply edge-to-edge system UI configuration after orientation change
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
   }
 
   @override
