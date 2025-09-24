@@ -23,6 +23,8 @@ class PHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = PlatformUtility.isMobile(context);
+    bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
     // final selectedChild = children.firstWhere(
     //   (child) => child.uid == selectedChildUid,
     //   orElse: () => children.first,
@@ -40,41 +42,51 @@ class PHomeCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.kLightGrey),
             ),
+            alignment: Alignment.center,
+            height: Dimensions.kSettingAvatarSize(context) + 16,
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
+                iconSize: Dimensions.kSettingAvatarSize(context) - 26,
                 value: selectedChildUid,
                 isExpanded: true,
                 hint: Text(
                   'Select child',
                   style: AppStyles.text16PxRegular.copyWith(
                     fontFamily: AppConstants.kDMSansFont,
+                    fontSize: isMobilePortrait ? 16 : 24,
                   ),
                 ),
-                items:
-                    children.map((child) {
-                      return DropdownMenuItem<String>(
-                        value: child.uid,
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 16,
-                              backgroundColor: AppColors.kGrey,
-                              backgroundImage:
-                                  child.avatarUrl.isNotEmpty
-                                      ? NetworkImage(child.avatarUrl)
-                                      : null,
-                            ),
-                            Gaps.horizontalGapOf(12),
-                            Text(
-                              child.fullName,
-                              style: AppStyles.text16PxRegular.copyWith(
-                                fontFamily: AppConstants.kDMSansFont,
-                              ),
-                            ),
-                          ],
+                items: children.map((child) {
+                  return DropdownMenuItem<String>(
+                    value: child.uid,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        CustomImage(
+                          child.avatarUrl.isNotEmpty ? child.avatarUrl : "",
+                          imageType: child.avatarUrl.isNotEmpty
+                              ? CustomImageType.network
+                              : CustomImageType.local,
+                          circular: true,
+                          height: Dimensions.kSettingAvatarSize(context),
+                          width: Dimensions.kSettingAvatarSize(context),
+                          cover: false,
                         ),
-                      );
-                    }).toList(),
+                        Gaps.horizontalGapOf(12),
+                        Text(
+                          child.fullName,
+                          style: AppStyles.text16PxRegular.copyWith(
+                            fontFamily: AppConstants.kDMSansFont,
+                            fontSize: isMobilePortrait ? 16 : 24,
+                            fontWeight: isMobilePortrait
+                                ? FontWeight.w500
+                                : FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   if (value != null) {
                     onChildSelected(value);
@@ -95,13 +107,13 @@ class PHomeCard extends StatelessWidget {
               answerSuccessRate: metrics!.answerSuccessRate,
               isMobilePortrait: isMobilePortrait,
             ),
-            Gaps.verticalGapOf(16),
+            Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
             PDailyLearningWidget(
               dayStreak: metrics!.dayStreak,
               weeklyStreak: metrics!.weeklyStreak,
               isMobilePortrait: isMobilePortrait,
             ),
-            Gaps.verticalGapOf(16),
+            Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
             PDashboardMetricsWidget(
               averageDailyLearningTime: metrics!.averageDailyLearningTime,
               mostPracticedTopics: metrics!.mostPracticedTopics,
