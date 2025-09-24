@@ -62,58 +62,55 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
     final double verticalGap1 = isMobile ? 18.0 : 24.0;
     final double verticalGap2 = isMobile ? 8.0 : 12.0;
     final double verticalGap3 = isMobile ? 10.0 : 16.0;
-    final double bannerHeight = isMobile ? 100.0 : 120.0;
+    final double bannerHeight = isMobile ? 100.0 : 130.0;
     final double bannerMarginVertical = isMobile ? 12.0 : 16.0;
     final double bannerPadding = isMobile ? 12.0 : 16.0;
     final double bannerBorderRadius = isMobile ? 8.0 : 12.0;
-    final double iconSize = isMobile ? (isMobilePortrait ? 40.0 : 48.0) : 56.0;
+    // final double iconSize = isMobile ? (isMobilePortrait ? 40.0 : 48.0) : 56.0;
     final double bottomNavHeight = isMobile ? 60.0 : 100.0;
     final double bottomNavPadding = isMobile ? 12.0 : 16.0;
 
-    final TextStyle childrenHeaderStyle =
-        isMobile
-            ? AppStyles.text16PxMedium.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            )
-            : AppStyles.text20PxMedium.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            );
+    final TextStyle childrenHeaderStyle = isMobile
+        ? AppStyles.text16PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text24PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle bannerTextStyle =
-        isMobile
-            ? AppStyles.text14PxRegular.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            )
-            : AppStyles.text18PxRegular.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            );
+    final TextStyle bannerTextStyle = isMobile
+        ? AppStyles.text14PxRegular.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text24PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle notificationTitleStyle =
-        isMobile
-            ? AppStyles.text16PxMedium.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            )
-            : AppStyles.text20PxMedium.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            );
+    final TextStyle notificationTitleStyle = isMobile
+        ? AppStyles.text16PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text24PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle bottomNavTextStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxMedium.copyWith(
+    final TextStyle bottomNavTextStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxMedium.copyWith(
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text20PxMedium.copyWith(
+              : AppStyles.text20PxMedium.copyWith(
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text24PxMedium.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text24PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: ListView(
         children: [
+          Gaps.verticalGapOf(isMobilePortrait ? 16.0 : 24.0),
           // Parent card
           if (parent != null)
             Padding(
@@ -214,7 +211,11 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                             ),
                           ),
                           Gaps.horizontalGapOf(8),
-                          Icon(banner.icon, color: banner.color),
+                          Icon(
+                            banner.icon,
+                            color: banner.color,
+                            size: isMobilePortrait ? 32 : 40,
+                          ),
                         ],
                       ),
                     ),
@@ -228,14 +229,17 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: ListTile(
               leading: Container(
-                height: iconSize,
-                width: iconSize,
+                height: Dimensions.kSettingAvatarSize(context),
+                width: Dimensions.kSettingAvatarSize(context),
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.kLightGrey.withValues(alpha: 0.3),
                 ),
-                child: const Icon(Icons.notifications),
+                child: Icon(
+                  Icons.notifications,
+                  size: Dimensions.kSettingAvatarSize(context) - 26,
+                ),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               title: Text('Notifications', style: notificationTitleStyle),
@@ -293,119 +297,119 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
           vertical: bottomNavPadding,
         ),
         child:
-        // isMobilePortrait
-        //     ? Row(
-        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         Column(
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           mainAxisAlignment: MainAxisAlignment.start,
-        //           spacing: 10,
-        //           children: [
-        //             GestureDetector(
-        //               onTap: () {
-        //                 Utility.navigateMaterialRoute(
-        //                   context,
-        //                   SystemScreen(initialIndex: 0),
-        //                   routeName: AppRoutes.aboutUsScreen,
-        //                 );
-        //               },
-        //               child: Text(
-        //                 'About us',
-        //                 style:
-        //                     isMobilePortrait
-        //                         ? AppStyles.text16PxMedium
-        //                         : AppStyles.text20PxMedium,
-        //               ),
-        //             ),
-        //             GestureDetector(
-        //               onTap: () {
-        //                 Utility.navigateMaterialRoute(
-        //                   context,
-        //                   SystemScreen(initialIndex: 1),
-        //                   routeName: AppRoutes.contactScreen,
-        //                 );
-        //               },
-        //               child: Text(
-        //                 'Contact us',
-        //                 style:
-        //                     isMobilePortrait
-        //                         ? AppStyles.text16PxMedium
-        //                         : AppStyles.text20PxMedium,
-        //               ),
-        //             ),
-        //             GestureDetector(
-        //               onTap: () {
-        //                 Utility.navigateMaterialRoute(
-        //                   context,
-        //                   SystemScreen(initialIndex: 2),
-        //                   routeName: AppRoutes.faqsScreen,
-        //                 );
-        //               },
-        //               child: Text(
-        //                 'FAQ',
-        //                 style:
-        //                     isMobilePortrait
-        //                         ? AppStyles.text16PxMedium
-        //                         : AppStyles.text20PxMedium,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //         // CustomImage(
-        //         //   Assets.kidSafeSeal,
-        //         //   height: 40,
-        //         //   width: 110,
-        //         //   imageType: CustomImageType.local,
-        //         //   cover: false,
-        //         // ),
-        //       ],
-        //     )
-        //     :
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Utility.navigateMaterialRoute(
-                  context,
-                  SystemScreen(initialIndex: 0),
-                  routeName: AppRoutes.aboutUsScreen,
-                );
-              },
-              child: Text('About us', style: bottomNavTextStyle),
+            // isMobilePortrait
+            //     ? Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           spacing: 10,
+            //           children: [
+            //             GestureDetector(
+            //               onTap: () {
+            //                 Utility.navigateMaterialRoute(
+            //                   context,
+            //                   SystemScreen(initialIndex: 0),
+            //                   routeName: AppRoutes.aboutUsScreen,
+            //                 );
+            //               },
+            //               child: Text(
+            //                 'About us',
+            //                 style:
+            //                     isMobilePortrait
+            //                         ? AppStyles.text16PxMedium
+            //                         : AppStyles.text20PxMedium,
+            //               ),
+            //             ),
+            //             GestureDetector(
+            //               onTap: () {
+            //                 Utility.navigateMaterialRoute(
+            //                   context,
+            //                   SystemScreen(initialIndex: 1),
+            //                   routeName: AppRoutes.contactScreen,
+            //                 );
+            //               },
+            //               child: Text(
+            //                 'Contact us',
+            //                 style:
+            //                     isMobilePortrait
+            //                         ? AppStyles.text16PxMedium
+            //                         : AppStyles.text20PxMedium,
+            //               ),
+            //             ),
+            //             GestureDetector(
+            //               onTap: () {
+            //                 Utility.navigateMaterialRoute(
+            //                   context,
+            //                   SystemScreen(initialIndex: 2),
+            //                   routeName: AppRoutes.faqsScreen,
+            //                 );
+            //               },
+            //               child: Text(
+            //                 'FAQ',
+            //                 style:
+            //                     isMobilePortrait
+            //                         ? AppStyles.text16PxMedium
+            //                         : AppStyles.text20PxMedium,
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //         // CustomImage(
+            //         //   Assets.kidSafeSeal,
+            //         //   height: 40,
+            //         //   width: 110,
+            //         //   imageType: CustomImageType.local,
+            //         //   cover: false,
+            //         // ),
+            //       ],
+            //     )
+            //     :
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Utility.navigateMaterialRoute(
+                      context,
+                      SystemScreen(initialIndex: 0),
+                      routeName: AppRoutes.aboutUsScreen,
+                    );
+                  },
+                  child: Text('About us', style: bottomNavTextStyle),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Utility.navigateMaterialRoute(
+                      context,
+                      SystemScreen(initialIndex: 1),
+                      routeName: AppRoutes.contactScreen,
+                    );
+                  },
+                  child: Text('Contact us', style: bottomNavTextStyle),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Utility.navigateMaterialRoute(
+                      context,
+                      SystemScreen(initialIndex: 2),
+                      routeName: AppRoutes.faqsScreen,
+                    );
+                  },
+                  child: Text('FAQ', style: bottomNavTextStyle),
+                ),
+                // CustomImage(
+                //   Assets.kidSafeSeal,
+                //   height: 60,
+                //   width: 100,
+                //   imageType: CustomImageType.local,
+                //   cover: false,
+                // ),
+              ],
             ),
-            GestureDetector(
-              onTap: () {
-                Utility.navigateMaterialRoute(
-                  context,
-                  SystemScreen(initialIndex: 1),
-                  routeName: AppRoutes.contactScreen,
-                );
-              },
-              child: Text('Contact us', style: bottomNavTextStyle),
-            ),
-            GestureDetector(
-              onTap: () {
-                Utility.navigateMaterialRoute(
-                  context,
-                  SystemScreen(initialIndex: 2),
-                  routeName: AppRoutes.faqsScreen,
-                );
-              },
-              child: Text('FAQ', style: bottomNavTextStyle),
-            ),
-            // CustomImage(
-            //   Assets.kidSafeSeal,
-            //   height: 60,
-            //   width: 100,
-            //   imageType: CustomImageType.local,
-            //   cover: false,
-            // ),
-          ],
-        ),
       ),
     );
   }

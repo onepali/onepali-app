@@ -43,10 +43,9 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           Gaps.horizontalGapOf(isMobilePortrait ? 10 : 14),
           Text(
             text,
-            style:
-                isMobilePortrait
-                    ? AppStyles.text16PxMedium
-                    : AppStyles.text18PxMedium,
+            style: isMobilePortrait
+                ? AppStyles.text16PxMedium
+                : AppStyles.text24PxMedium,
           ),
         ],
       ),
@@ -60,14 +59,13 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style:
-            isMobilePortrait
-                ? AppStyles.text18PxSemiBold.copyWith(
-                  fontFamily: AppConstants.kPoppinsFont,
-                )
-                : AppStyles.text22PxSemiBold.copyWith(
-                  fontFamily: AppConstants.kPoppinsFont,
-                ),
+        style: isMobilePortrait
+            ? AppStyles.text18PxSemiBold.copyWith(
+                fontFamily: AppConstants.kPoppinsFont,
+              )
+            : AppStyles.text22PxSemiBold.copyWith(
+                fontFamily: AppConstants.kPoppinsFont,
+              ),
       ),
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
@@ -92,62 +90,61 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 break;
             }
           },
-          itemBuilder:
-              (BuildContext context) => [
-                _buildMenuItem(
-                  value: 'home',
-                  icon: Assets.home,
-                  text: 'Home',
-                  isMobilePortrait: isMobilePortrait,
-                  onTap: () {
-                    Utility.navigate(context, AppRoutes.dashboardScreen);
-                    ParentLocalStorage.setParentLogged(false);
-                    ChildLocalStorage.clear();
-                  },
-                ),
-                _buildMenuItem(
-                  value: 'family',
-                  icon: Assets.family,
-                  text: 'Family',
-                  isMobilePortrait: isMobilePortrait,
-                  onTap: () {
-                    // ParentLocalStorage.setParentLogged(false);
-                    ChildLocalStorage.clear();
-                    Future.delayed(const Duration(milliseconds: 150), () {
-                      if (isMobile) {
-                        Utility.navigateMaterialRoute(
-                          context,
-                          DrawerScreen(
-                            data: childData,
-                            totalChildCount: totalChildCount,
-                            isParent: true,
-                          ),
-                          routeName: AppRoutes.drawerRoutes,
-                        );
-                      } else {
-                        Utility.navigateMaterialRoute(
-                          context,
-                          TabDrawerScreen(
-                            data: childData,
-                            totalChildCount: totalChildCount,
-                            isParent: true,
-                          ),
-                          routeName: AppRoutes.tabDrawerRoutes,
-                        );
-                      }
-                    });
-                  },
-                ),
-                _buildMenuItem(
-                  value: 'logout',
-                  icon: Assets.logout,
-                  text: 'Log out',
-                  isMobilePortrait: isMobilePortrait,
-                  onTap: () {
-                    logoutBottomSheet(context);
-                  },
-                ),
-              ],
+          itemBuilder: (BuildContext context) => [
+            _buildMenuItem(
+              value: 'home',
+              icon: Assets.home,
+              text: 'Home',
+              isMobilePortrait: isMobilePortrait,
+              onTap: () {
+                Utility.navigate(context, AppRoutes.dashboardScreen);
+                ParentLocalStorage.setParentLogged(false);
+                ChildLocalStorage.clear();
+              },
+            ),
+            _buildMenuItem(
+              value: 'family',
+              icon: Assets.family,
+              text: 'Family',
+              isMobilePortrait: isMobilePortrait,
+              onTap: () {
+                // ParentLocalStorage.setParentLogged(false);
+                ChildLocalStorage.clear();
+                Future.delayed(const Duration(milliseconds: 150), () {
+                  if (isMobile) {
+                    Utility.navigateMaterialRoute(
+                      context,
+                      DrawerScreen(
+                        data: childData,
+                        totalChildCount: totalChildCount,
+                        isParent: true,
+                      ),
+                      routeName: AppRoutes.drawerRoutes,
+                    );
+                  } else {
+                    Utility.navigateMaterialRoute(
+                      context,
+                      TabDrawerScreen(
+                        data: childData,
+                        totalChildCount: totalChildCount,
+                        isParent: true,
+                      ),
+                      routeName: AppRoutes.tabDrawerRoutes,
+                    );
+                  }
+                });
+              },
+            ),
+            _buildMenuItem(
+              value: 'logout',
+              icon: Assets.logout,
+              text: 'Log out',
+              isMobilePortrait: isMobilePortrait,
+              onTap: () {
+                logoutBottomSheet(context);
+              },
+            ),
+          ],
         ),
       ],
     );

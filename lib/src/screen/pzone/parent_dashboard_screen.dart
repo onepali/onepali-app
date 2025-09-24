@@ -38,8 +38,8 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isMobile = PlatformUtility.isMobile(context);
-    bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
+    // bool isMobile = PlatformUtility.isMobile(context);
+    // bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
     final userProvider = context.watch<UserProvider>();
     final UserModel? userInfo = userProvider.user;
     final childProvider = context.read<ChildUserProvider>();
@@ -56,29 +56,33 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
         totalChildCount: childCount > 0 ? childCount : 0,
       ),
       body: _screen[_currentIndex],
+
       bottomNavigationBar: BottomNavigationBar(
-        items:
-            pzoneBottomModel
-                .map(
-                  (e) => BottomNavigationBarItem(
-                    icon: SvgHelper.fromSource(
-                      path: e.icon,
-                      height: isMobilePortrait ? 30 : 36,
-                      color: AppColors.kLightGrey,
-                    ),
-                    activeIcon: SvgHelper.fromSource(
-                      path: e.icon,
-                      height: isMobilePortrait ? 30 : 36,
-                      color: AppColors.kSecondaryColor,
-                    ),
-                    label: e.label,
-                  ),
-                )
-                .toList(),
+        items: pzoneBottomModel
+            .map(
+              (e) => BottomNavigationBarItem(
+                icon: SvgHelper.fromSource(
+                  path: e.icon,
+                  height: Dimensions.kBottomNavIconSize(context),
+                  width: Dimensions.kBottomNavIconSize(context),
+                  color: AppColors.kLightGrey,
+                ),
+                activeIcon: SvgHelper.fromSource(
+                  path: e.icon,
+                  height: Dimensions.kBottomNavIconSize(context),
+                  width: Dimensions.kBottomNavIconSize(context),
+                  color: AppColors.kSecondaryColor,
+                ),
+                label: e.label,
+              ),
+            )
+            .toList(),
         type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.kWhite,
         selectedItemColor: AppColors.kSecondaryColor,
         showSelectedLabels: false,
+        // selectedFontSize: 0,
+        // unselectedFontSize: 0,
         showUnselectedLabels: false,
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
