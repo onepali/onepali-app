@@ -6,7 +6,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.2
+  sdk: ^3.8.1
 
 # versions available, run `flutter pub outdated`.
 dependencies:
@@ -45,24 +45,24 @@ dependencies:
 
   # Networking & HTTP
   http: ^1.4.0
-  connectivity_plus: ^6.1.4
+  connectivity_plus: ^7.0.0
 
   # Storage & File System
   shared_preferences: ^2.5.3
-  permission_handler: ^11.0.1
+  permission_handler: ^12.0.1
   path_provider: ^2.1.4
 
   # Notifications & Device Features
   flutter_local_notifications: ^19.3.0
-  fluttertoast: ^8.2.12
+  fluttertoast: ^9.0.0
   timezone: ^0.10.1
-  flutter_timezone: ^4.1.1
+  flutter_timezone: ^5.0.0
 
   # Utils & Platform Integration
   intl: ^0.20.2
   flutter_dotenv: ^6.0.0
   url_launcher: ^6.3.1
-  share_plus: ^11.0.0
+  share_plus: ^12.0.0
   in_app_review: ^2.0.9
   app_settings: ^6.1.1
 

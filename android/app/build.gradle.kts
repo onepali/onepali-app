@@ -30,19 +30,16 @@ if (localPropertiesFile.exists()) {
 val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 1
 val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
+// Android configuration using centralized versions from root build.gradle.kts
 android {
     namespace = "fun.onepali.app"
-    compileSdk = 35
-    ndkVersion = "27.0.12077973"
+    compileSdk = rootProject.extra["compileSdk"] as Int
+    ndkVersion = rootProject.extra["ndkVersion"] as String
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = rootProject.extra["javaVersion"] as JavaVersion
+        targetCompatibility = rootProject.extra["javaVersion"] as JavaVersion
         isCoreLibraryDesugaringEnabled = true
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     sourceSets {
@@ -51,8 +48,8 @@ android {
 
     defaultConfig {
         applicationId = "fun.onepali.app"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = rootProject.extra["minSdk"] as Int
+        targetSdk = rootProject.extra["targetSdk"] as Int
         versionCode = flutterVersionCode
         versionName = flutterVersionName
     }
@@ -76,6 +73,13 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
+    }
+}
+
+// Configure Kotlin compiler options (migrated from deprecated kotlinOptions)
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 

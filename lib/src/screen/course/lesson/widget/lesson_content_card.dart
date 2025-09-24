@@ -199,7 +199,7 @@ class _LessonContentCardState extends State<LessonContentCard>
       // Show MP4 video (lottie field contains video paths)
       return ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: SizedBox(
+        child: Container(
           width: width,
           height: height,
           child: CustomVideoPlayer(
@@ -237,7 +237,7 @@ class _LessonContentCardState extends State<LessonContentCard>
                 audioProvider.playWordAudio(widget.content.wordAudio!);
               }
             },
-            aspectRatio: 1.0, // Square aspect ratio for consistent layout
+            aspectRatio: width / height,
           ),
         ),
       );
@@ -271,11 +271,10 @@ class _LessonContentCardState extends State<LessonContentCard>
             width: 70.h(context),
             height: 50.h(context),
             decoration: BoxDecoration(
-              color:
-                  Utility.isAccessible(widget.content.color)
-                      ? Utility.parseHexColors(widget.content.color ?? '').first
-                      : AppColors.learningColors[widget.index %
-                          AppColors.learningColors.length],
+              color: Utility.isAccessible(widget.content.color)
+                  ? Utility.parseHexColors(widget.content.color ?? '').first
+                  : AppColors.learningColors[widget.index %
+                        AppColors.learningColors.length],
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
@@ -335,12 +334,10 @@ class _LessonContentCardState extends State<LessonContentCard>
                   decoration: BoxDecoration(
                     color:
                         widget.content.color != null &&
-                                widget.content.color!.isNotEmpty
-                            ? Utility.parseHexColors(
-                              widget.content.color!,
-                            ).first
-                            : AppColors.learningColors[widget.index %
-                                AppColors.learningColors.length],
+                            widget.content.color!.isNotEmpty
+                        ? Utility.parseHexColors(widget.content.color!).first
+                        : AppColors.learningColors[widget.index %
+                              AppColors.learningColors.length],
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Center(

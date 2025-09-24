@@ -28,9 +28,16 @@ class AppInitializer {
       await NotificationService.initialize();
     }
     tz.initializeTimeZones();
-    final String deviceTimeZone = await FlutterTimezone.getLocalTimezone();
+    final TimezoneInfo deviceTimeZone =
+        await FlutterTimezone.getLocalTimezone();
+    final String timezoneIdentifier = deviceTimeZone.identifier;
     final String fixedTimeZone =
-        deviceTimeZone == 'Asia/Katmandu' ? 'Asia/Kathmandu' : deviceTimeZone;
+        timezoneIdentifier == 'Asia/Katmandu'
+            ? 'Asia/Kathmandu'
+            : timezoneIdentifier;
+    logger.d(
+      'Device Timezone: $timezoneIdentifier, Fixed Timezone: $fixedTimeZone',
+    );
     tz.setLocalLocation(tz.getLocation(fixedTimeZone));
     // await ProviderConfig.pzNotificationProvider.getNotificationSetting();
 

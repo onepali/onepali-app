@@ -1,0 +1,22 @@
+[versions]
+compileSdk = "36"
+minSdk = "24"
+targetSdk = "35"
+ndkVersion = "27.0.12077973"
+javaVersion = "17"
+
+# Plugin versions
+android-gradle = "8.12.1"
+kotlin = "2.2.0"
+google-services = "4.4.2"
+
+# Dependency versions
+desugar-jdk-libs = "2.1.5"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-gradle" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+
+[libraries]
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
