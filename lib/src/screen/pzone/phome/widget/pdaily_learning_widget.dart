@@ -16,7 +16,7 @@ class PDailyLearningWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-    double height = isMobilePortrait ? 180 : 320;
+    double? height = isMobilePortrait ? null : 320;
     return Container(
       width: double.infinity,
       height: height,

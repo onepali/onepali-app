@@ -13,7 +13,7 @@ class PBlogCard extends StatelessWidget {
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
     final double imageHeight = isMobile ? (isMobilePortrait ? 200 : 350) : 550;
-    final double horizontalPadding = isMobile ? 12.0 : 60.0;
+    final double horizontalPadding = isMobile ? 18.0 : 60.0;
     final double verticalGap1 = isMobile ? 10 : 16;
     final double verticalGap2 = isMobile ? 5 : 8;
 
