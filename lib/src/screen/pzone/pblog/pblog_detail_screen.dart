@@ -28,47 +28,46 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
-    final double imageHeight =
-        isMobile ? (isMobilePortrait ? 200 : 150) : 250; // Enhanced for tablet
-    final double horizontalPadding =
-        isMobile
-            ? (isMobilePortrait ? 24 : 72.0)
-            : 100.0; // Enhanced for tablet
-    final double verticalPadding =
-        isMobile ? (isMobilePortrait ? 16 : 32) : 40; // Enhanced for tablet
+    final double imageHeight = isMobile
+        ? (isMobilePortrait ? 200 : 150)
+        : 450; // Enhanced for tablet
+    final double horizontalPadding = isMobile
+        ? (isMobilePortrait ? 24 : 72.0)
+        : 100.0; // Enhanced for tablet
+    final double verticalPadding = isMobile
+        ? (isMobilePortrait ? 16 : 32)
+        : 40; // Enhanced for tablet
     final double bottomPadding = isMobile ? 16.0 : 24.0;
     final double avatarSize = isMobile ? 40 : 50;
     final double iconSize = isMobile ? 18 : 22;
 
-    final TextStyle titleStyleAppBar =
-        isMobile
-            ? AppStyles.text16PxSemiBold.copyWith(
-              fontFamily: AppConstants.kPoppinsFont,
-            )
-            : AppStyles.text20PxSemiBold.copyWith(
-              fontFamily: AppConstants.kPoppinsFont,
-            );
+    final TextStyle titleStyleAppBar = isMobile
+        ? AppStyles.text16PxSemiBold.copyWith(
+            fontFamily: AppConstants.kPoppinsFont,
+          )
+        : AppStyles.text20PxSemiBold.copyWith(
+            fontFamily: AppConstants.kPoppinsFont,
+          );
 
-    final TextStyle titleStyleMain =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text20PxSemiBold
-                : AppStyles.text24PxSemiBold)
-            : AppStyles.text28PxSemiBold; // Enhanced for tablet
+    final TextStyle titleStyleMain = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text20PxSemiBold
+              : AppStyles.text24PxSemiBold)
+        : AppStyles.text28PxSemiBold; // Enhanced for tablet
 
-    final TextStyle authorStyle =
-        isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium;
+    final TextStyle authorStyle = isMobile
+        ? AppStyles.text16PxMedium
+        : AppStyles.text18PxMedium;
 
-    final TextStyle contentStyle =
-        isMobile
-            ? AppStyles.text16PxRegular.copyWith(
-              height: 1.5,
-              fontFamily: AppConstants.kDMSansFont,
-            )
-            : AppStyles.text18PxRegular.copyWith(
-              height: 1.6,
-              fontFamily: AppConstants.kDMSansFont,
-            ); // Enhanced for tablet
+    final TextStyle contentStyle = isMobile
+        ? AppStyles.text16PxRegular.copyWith(
+            height: 1.5,
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text18PxRegular.copyWith(
+            height: 1.6,
+            fontFamily: AppConstants.kDMSansFont,
+          ); // Enhanced for tablet
 
     var blog = widget.data;
     if (blog == null) {
@@ -117,14 +116,11 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: CustomImage(
-                  blog.coverImage,
-                  width: double.infinity,
-                  height: imageHeight,
-                  imageType: CustomImageType.network,
-                ),
+              CustomImage(
+                blog.coverImage,
+                width: double.infinity,
+                height: imageHeight,
+                imageType: CustomImageType.network,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(

@@ -17,7 +17,7 @@ class PDashboardMetricsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = [AppColors.kPink, AppColors.kYellow, AppColors.kPurple];
-    final minHeight = isMobilePortrait ? 140.0 : 180.0;
+    final minHeight = isMobilePortrait ? 140.0 : 290.0;
 
     return Column(
       children: [
@@ -43,16 +43,16 @@ class PDashboardMetricsWidget extends StatelessWidget {
                         children: [
                           Text(
                             '$averageDailyLearningTime',
-                            style:
-                                isMobilePortrait
-                                    ? AppStyles.text32PxSemiBold
-                                    : AppStyles.text40PxSemiBold,
+                            style: AppStyles.text40PxSemiBold.copyWith(
+                              fontSize: isMobilePortrait ? 40 : 72,
+                            ),
                           ),
                           Gaps.horizontalGapOf(8),
                           Text(
                             'mins',
-                            style: AppStyles.text14PxRegular.copyWith(
+                            style: AppStyles.text16PxMedium.copyWith(
                               fontFamily: AppConstants.kDMSansFont,
+                              fontSize: isMobilePortrait ? 16 : 24,
                             ),
                           ),
                         ],
@@ -61,15 +61,16 @@ class PDashboardMetricsWidget extends StatelessWidget {
                       Text(
                         'Average daily learning time',
                         textAlign: TextAlign.center,
-                        style: AppStyles.text14PxMedium.copyWith(
+                        style: AppStyles.text16PxMedium.copyWith(
                           fontFamily: AppConstants.kDMSansFont,
+                          fontSize: isMobilePortrait ? 16 : 24,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              if (!isMobilePortrait) Gaps.horizontalGapOf(12),
+              if (!isMobilePortrait) Gaps.horizontalGapOf(32),
               if (!isMobilePortrait)
                 Expanded(
                   child: Container(
@@ -84,8 +85,9 @@ class PDashboardMetricsWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Most practiced topics',
-                          style: AppStyles.text14PxMedium.copyWith(
+                          style: AppStyles.text16PxMedium.copyWith(
                             fontFamily: AppConstants.kDMSansFont,
+                            fontSize: isMobilePortrait ? 16 : 24,
                           ),
                         ),
                         Gaps.verticalGapOf(8),
@@ -99,6 +101,7 @@ class PDashboardMetricsWidget extends StatelessWidget {
                               vertical: 6,
                               horizontal: 12,
                             ),
+                            width: double.infinity,
                             decoration: BoxDecoration(
                               color: colors[i % colors.length], // .withValues(
                               //   alpha: 0.3,
@@ -107,9 +110,10 @@ class PDashboardMetricsWidget extends StatelessWidget {
                             ),
                             child: Text(
                               '${i + 1}. ${mostPracticedTopics[i]}',
-                              style: AppStyles.text14PxMedium.copyWith(
-                                color: colors[i % colors.length],
+                              style: AppStyles.text16PxMedium.copyWith(
+                                // color: colors[i % colors.length],
                                 fontFamily: AppConstants.kDMSansFont,
+                                fontSize: isMobilePortrait ? 16 : 24,
                               ),
                             ),
                           ),

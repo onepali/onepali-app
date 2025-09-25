@@ -16,7 +16,7 @@ class PAverageLearningWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final minHeight = isMobilePortrait ? 140.0 : 180.0;
+    final minHeight = isMobilePortrait ? 140.0 : 290.0;
     return IntrinsicHeight(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,24 +35,24 @@ class PAverageLearningWidget extends StatelessWidget {
                 children: [
                   Text(
                     completedActivities.toString(),
-                    style:
-                        isMobilePortrait
-                            ? AppStyles.text32PxSemiBold
-                            : AppStyles.text40PxSemiBold,
+                    style: AppStyles.text40PxSemiBold.copyWith(
+                      fontSize: isMobilePortrait ? 40 : 72,
+                    ),
                   ),
                   Gaps.verticalGapOf(8),
                   Text(
                     'Completed activities',
                     textAlign: TextAlign.center,
-                    style: AppStyles.text14PxMedium.copyWith(
+                    style: AppStyles.text16PxMedium.copyWith(
                       fontFamily: AppConstants.kDMSansFont,
+                      fontSize: isMobilePortrait ? 16 : 24,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          Gaps.horizontalGapOf(12),
+          Gaps.horizontalGapOf(isMobilePortrait ? 16 : 32),
           Expanded(
             child: Container(
               constraints: BoxConstraints(minHeight: minHeight),
@@ -70,21 +70,26 @@ class PAverageLearningWidget extends StatelessWidget {
                     children: [
                       Text(
                         '${(answerSuccessRate * 100).toInt()}',
-                        style:
-                            isMobilePortrait
-                                ? AppStyles.text32PxSemiBold
-                                : AppStyles.text40PxSemiBold,
+                        style: AppStyles.text40PxSemiBold.copyWith(
+                          fontSize: isMobilePortrait ? 40 : 72,
+                        ),
                       ),
                       Gaps.horizontalGapOf(4),
-                      Text('%', style: AppStyles.text14PxRegular),
+                      Text(
+                        '%',
+                        style: AppStyles.text16PxSemiBold.copyWith(
+                          fontSize: isMobilePortrait ? 16 : 24,
+                        ),
+                      ),
                     ],
                   ),
                   Gaps.verticalGapOf(8),
                   Text(
                     'Answer success rate',
                     textAlign: TextAlign.center,
-                    style: AppStyles.text14PxMedium.copyWith(
+                    style: AppStyles.text16PxMedium.copyWith(
                       fontFamily: AppConstants.kDMSansFont,
+                      fontSize: isMobilePortrait ? 16 : 24,
                     ),
                   ),
                 ],

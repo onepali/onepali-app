@@ -12,30 +12,28 @@ class PBlogCard extends StatelessWidget {
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
-    final double imageHeight = isMobile ? (isMobilePortrait ? 200 : 350) : 400;
-    final double horizontalPadding = isMobile ? 12.0 : 20.0;
+    final double imageHeight = isMobile ? (isMobilePortrait ? 200 : 350) : 550;
+    final double horizontalPadding = isMobile ? 12.0 : 60.0;
     final double verticalGap1 = isMobile ? 10 : 16;
     final double verticalGap2 = isMobile ? 5 : 8;
 
-    final TextStyle titleStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxSemiBold
-                : AppStyles.text20PxSemiBold)
-            : AppStyles.text24PxSemiBold;
+    final TextStyle titleStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxSemiBold
+              : AppStyles.text20PxSemiBold)
+        : AppStyles.text24PxBold;
 
-    final TextStyle contentStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text14PxRegular.copyWith(
+    final TextStyle contentStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text14PxRegular.copyWith(
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text16PxRegular.copyWith(
+              : AppStyles.text16PxRegular.copyWith(
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text18PxRegular.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text24PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
     return InkWell(
       onTap: onTap,
@@ -63,9 +61,10 @@ class PBlogCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Text(
               blog.content,
-              maxLines: 3,
+              maxLines: 4,
               overflow: TextOverflow.ellipsis,
               style: contentStyle,
+              textAlign: TextAlign.justify,
             ),
           ),
         ],

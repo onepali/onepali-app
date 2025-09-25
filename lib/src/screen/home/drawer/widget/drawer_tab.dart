@@ -74,14 +74,10 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     await childProvider.updateScreenTimeEnabledStatusByChildId(child.uid);
 
     // Navigator.of(context).pop(); // Close the drawer
-    Navigator.of(context).popUntil((route) => route.isFirst);
     UserAppBar.setTabIndex(0);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => DashboardScreen(),
-        settings: RouteSettings(name: AppRoutes.dashboardScreen),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRoutes.dashboardScreen, (route) => false);
   }
 
   @override
@@ -101,41 +97,24 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 Expanded(child: _buildChildProfilesGrid()),
 
                 Gaps.horizontalGapOf(10),
-                InkWell(
-                  onTap: () async {
-                    final isParentLogged =
-                        await ParentLocalStorage.isParentLogged();
-                    logger.d('isParentLogged: $isParentLogged');
-                    if (isParentLogged) {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      UserAppBar.setTabIndex(0);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => DashboardScreen(),
-                          settings: RouteSettings(
-                            name: AppRoutes.dashboardScreen,
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.kButtonGrey,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Icon(
-                        Icons.close,
-                        color: AppColors.kPitchBlack,
-                        size: 32,
-                      ),
-                    ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.closeGrey,
+                    onPressed: () async {
+                      final isParentLogged =
+                          await ParentLocalStorage.isParentLogged();
+                      logger.d('isParentLogged: $isParentLogged');
+                      if (isParentLogged) {
+                        UserAppBar.setTabIndex(0);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          AppRoutes.dashboardScreen,
+                          (route) => false,
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
                   ),
                 ),
               ],
@@ -152,112 +131,118 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
     final shouldShowAddChild =
         widget.isParent || (widget.data.isEmpty && !widget.isParent);
-    final items = List<
-      Widget
-    >.generate(widget.data.length + (shouldShowAddChild ? 1 : 0), (index) {
-      if (index < widget.data.length) {
-        final child = widget.data[index];
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                _onChildSelected(index);
-              },
-              child: Container(
-                height: 160,
-                width: 160,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        index == _selectedChildIndex
-                            ? AppColors.kPrimaryColor
-                            : AppColors.kTransparentColor,
-                    width: 2,
-                  ),
-                ),
-                child: CustomImage(child.avatarUrl, height: 160, width: 160),
-              ),
-            ),
-            Gaps.verticalGapOf(16),
-            Text(
-              child.fullName.split(' ')[0],
-              style: AppStyles.text24PxMedium.copyWith(color: AppColors.kWhite),
-            ),
-            Gaps.verticalGapOf(16),
-            customInkwell(
-              onTap: () {
-                final targetChild = widget.data[index];
-                Utility.navigateMaterialRoute(
-                  context,
-                  AchievementScreen(
-                    name: targetChild.fullName,
-                    profileImage: targetChild.avatarUrl,
-                    childId: targetChild.uid,
-                  ),
-                );
-              },
-              child: const Icon(
-                Icons.local_police,
-                size: 64,
-                color: AppColors.kYellow,
-              ),
-            ),
-          ],
-        );
-      } else {
-        // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
-        return GestureDetector(
-          onTap: () {
-            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
-              DialogManager.showCustomDialog(
-                context: context,
-                title: 'You\'ve added 3 kids!',
-                content:
-                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
-                confirmButtonText: 'Add for \$5',
-                onConfirm: () {},
-              );
-              return;
-            } else {
-              // If from child dashboard with no children, navigate to parent PIN screen
-              if (!widget.isParent && widget.data.isEmpty) {
-                Utility.navigate(
-                  context,
-                  AppRoutes.parentPinScreen,
-                  arguments: {'fromAddChild': true},
-                );
-              } else {
-                // Normal flow for parent zone
-                Utility.navigate(context, AppRoutes.childRegisterScreen);
-              }
-            }
-          },
-          child: Column(
+    final items = List<Widget>.generate(
+      widget.data.length + (shouldShowAddChild ? 1 : 0),
+      (index) {
+        if (index < widget.data.length) {
+          final child = widget.data[index];
+          return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                height: 120,
-                width: 120,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade600,
-                  shape: BoxShape.circle,
+              GestureDetector(
+                onTap: () {
+                  _onChildSelected(index);
+                },
+                child: Container(
+                  height: 160,
+                  width: 160,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: index == _selectedChildIndex
+                          ? AppColors.kPrimaryColor
+                          : AppColors.kTransparentColor,
+                      width: 2,
+                    ),
+                  ),
+                  child: CustomImage(child.avatarUrl, height: 160, width: 160),
                 ),
-                child: const Icon(Icons.add, color: AppColors.kWhite, size: 80),
               ),
-              Gaps.verticalGapOf(8),
+              Gaps.verticalGapOf(16),
               Text(
-                'Add child',
-                style: AppStyles.text18PxMedium.copyWith(
+                child.fullName.split(' ')[0],
+                style: AppStyles.text24PxMedium.copyWith(
                   color: AppColors.kWhite,
                 ),
               ),
+              Gaps.verticalGapOf(16),
+              customInkwell(
+                onTap: () {
+                  final targetChild = widget.data[index];
+                  Utility.navigateMaterialRoute(
+                    context,
+                    AchievementScreen(
+                      name: targetChild.fullName,
+                      profileImage: targetChild.avatarUrl,
+                      childId: targetChild.uid,
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.local_police,
+                  size: 64,
+                  color: AppColors.kYellow,
+                ),
+              ),
             ],
-          ),
-        );
-      }
-    });
+          );
+        } else {
+          // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
+          return GestureDetector(
+            onTap: () {
+              if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
+                DialogManager.showCustomDialog(
+                  context: context,
+                  title: 'You\'ve added 3 kids!',
+                  content:
+                      'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                  confirmButtonText: 'Add for \$5',
+                  onConfirm: () {},
+                );
+                return;
+              } else {
+                // If from child dashboard with no children, navigate to parent PIN screen
+                if (!widget.isParent && widget.data.isEmpty) {
+                  Utility.navigate(
+                    context,
+                    AppRoutes.parentPinScreen,
+                    arguments: {'fromAddChild': true},
+                  );
+                } else {
+                  // Normal flow for parent zone
+                  Utility.navigate(context, AppRoutes.childRegisterScreen);
+                }
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 120,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade600,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: AppColors.kWhite,
+                    size: 80,
+                  ),
+                ),
+                Gaps.verticalGapOf(8),
+                Text(
+                  'Add child',
+                  style: AppStyles.text18PxMedium.copyWith(
+                    color: AppColors.kWhite,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),

@@ -64,6 +64,7 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
           name: 'Guest',
           profileImage: '',
           totalStars: 0,
+          menuColor: homeServices[_selectedTabIndex].color,
           onTabSelected: (tab) {
             final idx = homeServices.indexWhere((e) => e.name == tab);
             if (idx != -1) {

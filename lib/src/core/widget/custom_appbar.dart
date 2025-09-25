@@ -51,49 +51,47 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         titleStyle ??
         (isTabletPortrait
             ? AppStyles.text22PxMedium.copyWith(
-              color: AppColors.kBlack,
-              fontFamily: AppConstants.kPoppinsFont,
-            )
+                color: AppColors.kBlack,
+                fontFamily: AppConstants.kPoppinsFont,
+              )
             : isTabletLandscape
             ? AppStyles.text20PxMedium.copyWith(
-              color: AppColors.kBlack,
-              fontFamily: AppConstants.kPoppinsFont,
-            )
+                color: AppColors.kBlack,
+                fontFamily: AppConstants.kPoppinsFont,
+              )
             : AppStyles.text18PxMedium.copyWith(
-              color: AppColors.kBlack,
-              fontFamily: AppConstants.kPoppinsFont,
-            ));
+                color: AppColors.kBlack,
+                fontFamily: AppConstants.kPoppinsFont,
+              ));
 
     return AppBar(
-      title:
-          (showStepper && currentStep != null)
-              ? Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: stepperHorizontalPadding,
-                ),
-                child: HorizontalStepper(
-                  currentStep: currentStep!,
-                  totalSteps: totalSteps,
-                ),
-              )
-              : titleWidget ??
-                  (title != null
-                      ? Text(title!, style: responsiveTitleStyle)
-                      : null),
+      title: (showStepper && currentStep != null)
+          ? Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: stepperHorizontalPadding,
+              ),
+              child: HorizontalStepper(
+                currentStep: currentStep!,
+                totalSteps: totalSteps,
+              ),
+            )
+          : titleWidget ??
+                (title != null
+                    ? Text(title!, style: responsiveTitleStyle)
+                    : null),
       centerTitle: centerTitle,
       automaticallyImplyLeading: automaticallyImplyLeading ?? true,
-      leading:
-          showBackButton
-              ? (leading ??
-                  IconButton(
-                    iconSize: iconSize,
-                    icon: Icon(
-                      Icons.arrow_back_outlined,
-                      color: AppColors.kBlack,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ))
-              : null,
+      leading: showBackButton
+          ? (leading ??
+                IconButton(
+                  iconSize: iconSize,
+                  icon: Icon(
+                    Icons.arrow_back_outlined,
+                    color: AppColors.kBlack,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ))
+          : null,
       actions: actions,
       backgroundColor: backgroundColor,
       elevation: elevation,

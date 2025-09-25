@@ -15,7 +15,7 @@ class AppCheckUtil {
             kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
 
         // For Web (you'll need to configure reCAPTCHA v3 in Firebase Console)
-        webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+        providerWeb: ReCaptchaV3Provider('recaptcha-v3-site-key'),
       );
 
       logger.i('✅ Firebase App Check activated successfully');

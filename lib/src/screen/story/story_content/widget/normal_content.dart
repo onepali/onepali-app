@@ -83,9 +83,24 @@ class _NormalContentState extends State<NormalContent> {
           right: Dimensions.kIconMargin(context),
           child: CircularButtonWidget(
             onPressed: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
               storyProvider.stopAudioAndResetIndex();
               logger.d('[NormalContent] Wrong icon tapped, stopping audio');
+
+              // Navigate to appropriate dashboard based on user type
+              bool isGuest = GuestUtil.isGuestUser();
+              if (isGuest) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.guestDashboardScreen,
+                  (route) => false,
+                );
+                UserAppBar.setTabIndex(0);
+              } else {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.dashboardScreen,
+                  (route) => false,
+                );
+                UserAppBar.setTabIndex(0);
+              }
             },
             type: CircularButtonType.close,
           ),
