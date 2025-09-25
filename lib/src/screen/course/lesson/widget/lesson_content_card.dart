@@ -154,29 +154,47 @@ class _LessonContentCardState extends State<LessonContentCard>
     required double height,
     required bool isMobile,
   }) {
+    // Detect tablet landscape mode
+    final mediaQuery = MediaQuery.of(context);
+    final isTablet = mediaQuery.size.shortestSide >= 600;
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+
     if (_showLottie && widget.content.lottie?.isNotEmpty == true) {
+      // Only increase video size and add padding for tablet landscape
+      double videoWidth = width;
+      double videoHeight = height;
+      EdgeInsetsGeometry videoPadding = EdgeInsets.zero;
+      if (isTablet && isLandscape) {
+        videoWidth = mediaQuery.size.width * 0.5;
+        videoHeight = mediaQuery.size.height * 0.7;
+        videoPadding = const EdgeInsets.all(24.0);
+      }
+
       // Show loading indicator while video is being cached
       if (_isVideoLoading) {
-        return Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: AppColors.kTransparentColor,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(strokeWidth: 2),
-                Gaps.verticalGapOf(8),
-                Text(
-                  'Loading video...',
-                  style: AppStyles.text12PxRegular.copyWith(
-                    color: AppColors.kWhite,
+        return Padding(
+          padding: videoPadding,
+          child: Container(
+            width: videoWidth,
+            height: videoHeight,
+            decoration: BoxDecoration(
+              color: AppColors.kTransparentColor,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(strokeWidth: 2),
+                  Gaps.verticalGapOf(8),
+                  Text(
+                    'Loading video...',
+                    style: AppStyles.text12PxRegular.copyWith(
+                      color: AppColors.kWhite,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -197,52 +215,54 @@ class _LessonContentCardState extends State<LessonContentCard>
       }
 
       // Show MP4 video (lottie field contains video paths)
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: CustomVideoPlayer(
-            videoPath: videoPath,
-            sourceType: sourceType,
-            autoPlay: true,
-            loop: false,
-            showControls: false,
-            fit: BoxFit.cover,
-            enableCaching: true,
-            optimizeForPerformance: true,
-            placeholder: Container(
-              width: width,
-              height: height,
-              decoration: BoxDecoration(
-                color: AppColors.kTransparentColor,
-                borderRadius: BorderRadius.circular(16),
+      return Padding(
+        padding: videoPadding,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: SizedBox(
+            width: videoWidth,
+            height: videoHeight,
+            child: CustomVideoPlayer(
+              videoPath: videoPath,
+              sourceType: sourceType,
+              autoPlay: true,
+              loop: false,
+              showControls: false,
+              fit: BoxFit.cover,
+              enableCaching: true,
+              optimizeForPerformance: true,
+              placeholder: Container(
+                width: videoWidth,
+                height: videoHeight,
+                decoration: BoxDecoration(
+                  color: AppColors.kTransparentColor,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
               ),
-              child: const Center(
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-            onVideoStart: () {
-              logger.d('Video started playing');
-            },
-            onVideoEnd: () {
-              // When video ends, switch to image
-              setState(() {
-                _showLottie = false;
-              });
+              onVideoStart: () {
+                logger.d('Video started playing');
+              },
+              onVideoEnd: () {
+                // When video ends, switch to image
+                setState(() {
+                  _showLottie = false;
+                });
 
-              // Always play wordAudio after video ends
-              if (widget.content.wordAudio?.isNotEmpty == true) {
-                final audioProvider = context.read<LessonAudioProvider>();
-                audioProvider.playWordAudio(widget.content.wordAudio!);
-              }
-            },
-            aspectRatio: 1.0, // Square aspect ratio for consistent layout
+                // Always play wordAudio after video ends
+                if (widget.content.wordAudio?.isNotEmpty == true) {
+                  final audioProvider = context.read<LessonAudioProvider>();
+                  audioProvider.playWordAudio(widget.content.wordAudio!);
+                }
+              },
+              aspectRatio: videoWidth / videoHeight,
+            ),
           ),
         ),
       );
     } else {
-      // Show image with tap functionality
       return GestureDetector(
         onTap: _onImageTap,
         child: CustomImage(
@@ -271,11 +291,10 @@ class _LessonContentCardState extends State<LessonContentCard>
             width: 70.h(context),
             height: 50.h(context),
             decoration: BoxDecoration(
-              color:
-                  Utility.isAccessible(widget.content.color)
-                      ? Utility.parseHexColors(widget.content.color ?? '').first
-                      : AppColors.learningColors[widget.index %
-                          AppColors.learningColors.length],
+              color: Utility.isAccessible(widget.content.color)
+                  ? Utility.parseHexColors(widget.content.color ?? '').first
+                  : AppColors.learningColors[widget.index %
+                        AppColors.learningColors.length],
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
@@ -335,12 +354,10 @@ class _LessonContentCardState extends State<LessonContentCard>
                   decoration: BoxDecoration(
                     color:
                         widget.content.color != null &&
-                                widget.content.color!.isNotEmpty
-                            ? Utility.parseHexColors(
-                              widget.content.color!,
-                            ).first
-                            : AppColors.learningColors[widget.index %
-                                AppColors.learningColors.length],
+                            widget.content.color!.isNotEmpty
+                        ? Utility.parseHexColors(widget.content.color!).first
+                        : AppColors.learningColors[widget.index %
+                              AppColors.learningColors.length],
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Center(

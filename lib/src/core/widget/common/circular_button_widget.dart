@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 
-enum CircularButtonType { leftArrow, rightArrow, sound, close }
+enum CircularButtonType { leftArrow, rightArrow, sound, close, closeGrey }
 
 class CircularButtonWidget extends StatelessWidget {
   final CircularButtonType type;
@@ -27,6 +27,7 @@ class CircularButtonWidget extends StatelessWidget {
       CircularButtonType.rightArrow => Assets.rightArrow,
       CircularButtonType.sound => Assets.sound,
       CircularButtonType.close => Assets.wrong,
+      CircularButtonType.closeGrey => Assets.closeGreyIcon,
     };
 
     return Container(

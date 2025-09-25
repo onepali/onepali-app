@@ -28,9 +28,15 @@ class AppInitializer {
       await NotificationService.initialize();
     }
     tz.initializeTimeZones();
-    final String deviceTimeZone = await FlutterTimezone.getLocalTimezone();
-    final String fixedTimeZone =
-        deviceTimeZone == 'Asia/Katmandu' ? 'Asia/Kathmandu' : deviceTimeZone;
+    final TimezoneInfo deviceTimeZone =
+        await FlutterTimezone.getLocalTimezone();
+    final String timezoneIdentifier = deviceTimeZone.identifier;
+    final String fixedTimeZone = timezoneIdentifier == 'Asia/Katmandu'
+        ? 'Asia/Kathmandu'
+        : timezoneIdentifier;
+    logger.d(
+      'Device Timezone: $timezoneIdentifier, Fixed Timezone: $fixedTimeZone',
+    );
     tz.setLocalLocation(tz.getLocation(fixedTimeZone));
     // await ProviderConfig.pzNotificationProvider.getNotificationSetting();
 
@@ -74,43 +80,51 @@ class AppInitializer {
   static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     final initialRoute = getInitialRoute(logged, isParentLogged);
 
-    return MaterialApp(
-      title: AppConstants.appName,
-      navigatorKey: navigatorKey,
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: CustomScrollBehavior(),
-      navigatorObservers: [OrientationRouteObserver()],
-      initialRoute: initialRoute,
-      routes: AppRoutes.routes,
-      theme: ThemeConfig.lightTheme,
-      locale: context.watch<LanguageProvider>().locale,
-      localizationsDelegates: const [
-        AppLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('en'), Locale('ne')],
-      onGenerateRoute: (settings) {
-        WidgetBuilder? builder = AppRoutes.routes[settings.name];
-        if (builder != null) {
-          return PageRouteBuilder(
-            pageBuilder:
-                (context, animation, secondaryAnimation) => builder(context),
-            settings: settings,
-            transitionsBuilder: RouteAnimationBuilder.slideFromBottom,
-            transitionDuration: const Duration(milliseconds: 400),
-          );
-        }
-        return null;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return OrientationBuilder(
+          builder: (context, orientation) {
+            ResponsiveConfig().init(constraints, orientation);
+            return MaterialApp(
+              title: AppConstants.appName,
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              scrollBehavior: CustomScrollBehavior(),
+              navigatorObservers: [OrientationRouteObserver()],
+              initialRoute: initialRoute,
+              routes: AppRoutes.routes,
+              theme: ThemeConfig.lightTheme,
+              locale: context.watch<LanguageProvider>().locale,
+              localizationsDelegates: const [
+                AppLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('en'), Locale('ne')],
+              onGenerateRoute: (settings) {
+                WidgetBuilder? builder = AppRoutes.routes[settings.name];
+                if (builder != null) {
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        builder(context),
+                    settings: settings,
+                    transitionsBuilder: RouteAnimationBuilder.slideFromBottom,
+                    transitionDuration: const Duration(milliseconds: 400),
+                  );
+                }
+                return null;
+              },
+              builder: (context, widget) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: const TextScaler.linear(1)),
+                child: Material(child: widget),
+              ),
+            );
+          },
+        );
       },
-      builder:
-          (context, widget) => MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: const TextScaler.linear(1)),
-            child: Material(child: widget),
-          ),
     );
   }
 }

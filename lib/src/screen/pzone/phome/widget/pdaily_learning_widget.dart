@@ -16,28 +16,33 @@ class PDailyLearningWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    double height = isMobilePortrait ? 180 : 320;
     return Container(
       width: double.infinity,
+      height: height,
+      alignment: Alignment.center,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.kWhite,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             'Days learning',
-            style: AppStyles.text14PxMedium.copyWith(
+            style: AppStyles.text16PxMedium.copyWith(
               fontFamily: AppConstants.kDMSansFont,
+              fontSize: isMobilePortrait ? 16 : 24,
             ),
           ),
           Gaps.verticalGapOf(8),
           Text(
             '$dayStreak/7',
-            style:
-                isMobilePortrait
-                    ? AppStyles.text32PxSemiBold
-                    : AppStyles.text40PxSemiBold,
+            style: AppStyles.text40PxSemiBold.copyWith(
+              fontSize: isMobilePortrait ? 40 : 72,
+            ),
           ),
           Gaps.verticalGapOf(8),
           Row(
@@ -48,16 +53,18 @@ class PDailyLearningWidget extends StatelessWidget {
                 children: [
                   Text(
                     days[i],
-                    style: AppStyles.text12PxRegular.copyWith(
+                    style: AppStyles.text16PxRegular.copyWith(
                       fontFamily: AppConstants.kDMSansFont,
+                      fontSize: isMobilePortrait ? 16 : 24,
                     ),
                   ),
                   Gaps.verticalGapOf(4),
                   Icon(
                     checked ? Icons.check_circle : Icons.radio_button_unchecked,
-                    color:
-                        checked ? AppColors.kButtonGreen : AppColors.kLightGrey,
-                    size: 24,
+                    color: checked
+                        ? AppColors.kButtonGreen
+                        : AppColors.kLightGrey,
+                    size: isMobilePortrait ? 24 : 48,
                   ),
                 ],
               );

@@ -18,55 +18,72 @@ class PSettingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isMobile = PlatformUtility.isMobile(context);
+    bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
+    TextStyle textStyle = isMobilePortrait
+        ? AppStyles.text16PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text24PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          );
+    logger.d('PSettingCard build--> ${Dimensions.kSettingAvatarSize(context)}');
     return InkWell(
       onTap: isAdd ? onTap : null,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        // padding: const EdgeInsets.symmetric(horizontal: 8),
         margin: const EdgeInsets.symmetric(vertical: 10.0),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColors.kLightGrey.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(30.0),
+          color: isAdd ? null : AppColors.kLightGrey.withValues(alpha: 0.2),
+          borderRadius: isAdd ? null : BorderRadius.circular(30.0),
         ),
+        height: Dimensions.kSettingAvatarSize(context),
         child: ListTile(
-          leading:
-              isAdd
-                  ? Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.add, size: 28),
-                  )
-                  : CircleAvatar(
-                    radius: 20,
-                    backgroundImage:
-                        avatarUrl != null && avatarUrl!.isNotEmpty
-                            ? NetworkImage(avatarUrl!)
-                            : AssetImage(Assets.parentAvatar) as ImageProvider,
+          leading: isAdd
+              ? Container(
+                  width: Dimensions.kSettingAvatarSize(context),
+                  height: Dimensions.kSettingAvatarSize(context),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    shape: BoxShape.circle,
                   ),
-          title: Text(
-            title,
-            style: AppStyles.text16PxMedium.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-            ),
-          ),
+                  child: Icon(
+                    Icons.add,
+                    size: Dimensions.kSettingAvatarSize(context) - 26,
+                  ),
+                )
+              : CustomImage(
+                  avatarUrl != null && avatarUrl!.isNotEmpty
+                      ? avatarUrl!
+                      : Assets.parentAvatar,
+                  height: Dimensions.kSettingAvatarSize(context),
+                  width: Dimensions.kSettingAvatarSize(context),
+                  circular: true,
+                  imageType: avatarUrl != null && avatarUrl!.isNotEmpty
+                      ? CustomImageType.network
+                      : CustomImageType.local,
+                ),
+          title: Text(title, style: textStyle),
           contentPadding: EdgeInsets.zero,
           minVerticalPadding: 0,
-          trailing:
-              !isAdd
-                  ? IconButton(
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppColors.kLightGrey.withValues(
-                        alpha: 0.3,
-                      ),
-                      shape: const CircleBorder(),
+          trailing: !isAdd
+              ? IconButton(
+                  iconSize: Dimensions.kSettingAvatarSize(context),
+
+                  style: IconButton.styleFrom(
+                    backgroundColor: AppColors.kLightGrey.withValues(
+                      alpha: 0.3,
                     ),
-                    icon: const Icon(Icons.edit, size: 22),
-                    onPressed: onEdit,
-                  )
-                  : null,
+                    shape: const CircleBorder(),
+                  ),
+                  icon: Icon(
+                    Icons.edit,
+                    size: Dimensions.kSettingAvatarSize(context) - 26,
+                  ),
+                  onPressed: onEdit,
+                )
+              : null,
         ),
       ),
     );

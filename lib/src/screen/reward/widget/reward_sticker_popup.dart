@@ -47,6 +47,7 @@ class RewardStickerPopup extends StatelessWidget {
       child: Container(
         width: dialogWidth,
         height: dialogHeight,
+        padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
           color: AppColors.kWhite,
           borderRadius: BorderRadius.circular(20),
@@ -63,10 +64,10 @@ class RewardStickerPopup extends StatelessWidget {
             // Close button
             Positioned(
               top: 16,
-              right: Dimensions.kIconMargin(context) - 8,
+              right: 0,
               child: CircularButtonWidget(
                 onPressed: () => Navigator.of(context).pop(),
-                type: CircularButtonType.close,
+                type: CircularButtonType.closeGrey,
               ),
             ),
             // Content
@@ -138,16 +139,23 @@ class RewardStickerPopup extends StatelessWidget {
                 ),
               ),
               Gaps.verticalGapOf(12),
-              // Description
-              Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: Text(
-                  reward.descriptionEn,
-                  style: AppStyles.text22PxRegular.copyWith(
-                    fontSize: descriptionFontSize,
-                    color: AppColors.kDarkGrey,
+              // Description (scrollable with bottom padding)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0, bottom: 16.0),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        reward.descriptionEn,
+                        style: AppStyles.text22PxRegular.copyWith(
+                          fontSize: descriptionFontSize,
+                          color: AppColors.kDarkGrey,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
                   ),
-                  textAlign: TextAlign.start,
                 ),
               ),
             ],
@@ -194,13 +202,13 @@ class RewardStickerPopup extends StatelessWidget {
   // Responsive sizing methods
   double _getDialogWidth(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 500;
-    if (isTabletLandscape) return 700;
+    if (isTabletLandscape) return 800;
     return 350; // Portrait
   }
 
   double _getDialogHeight(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 300;
-    if (isTabletLandscape) return 400;
+    if (isTabletLandscape) return 500; // Increased height for tablet landscape
     return 450; // Portrait
   }
 

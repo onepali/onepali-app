@@ -77,9 +77,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
     // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
     final shouldShowAddChild =
         widget.isParent || (widget.data.isEmpty && !widget.isParent);
-    final items = List<
-      Widget
-    >.generate(widget.data.length + (shouldShowAddChild ? 1 : 0), (index) {
+    final items = List<Widget>.generate(widget.data.length + (shouldShowAddChild ? 1 : 0), (
+      index,
+    ) {
       if (index < widget.data.length) {
         final child = widget.data[index];
         return Row(
@@ -130,13 +130,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   );
                 }
                 logger.i('🔄 Navigating to dashboard with new child');
-                Navigator.of(context).popUntil((route) => route.isFirst);
                 UserAppBar.setTabIndex(0);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (_) => DashboardScreen(),
-                    settings: RouteSettings(name: AppRoutes.dashboardScreen),
-                  ),
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.dashboardScreen,
+                  (route) => false,
                 );
               },
               child: Container(
@@ -145,10 +142,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color:
-                        index == _selectedChildIndex
-                            ? AppColors.kPrimaryColor
-                            : AppColors.kTransparentColor,
+                    color: index == _selectedChildIndex
+                        ? AppColors.kPrimaryColor
+                        : AppColors.kTransparentColor,
                     width: 3,
                   ),
                 ),
@@ -253,15 +249,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            items
-                .map(
-                  (item) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: item,
-                  ),
-                )
-                .toList(),
+        children: items
+            .map(
+              (item) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: item,
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -275,41 +270,26 @@ class _DrawerScreenState extends State<DrawerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            InkWell(
-              onTap: () async {
-                final isParentLogged =
-                    await ParentLocalStorage.isParentLogged();
-                logger.d('isParentLogged: $isParentLogged');
+            Align(
+              alignment: Alignment.topRight,
+              child: CircularButtonWidget(
+                type: CircularButtonType.closeGrey,
+                onPressed: () async {
+                  final isParentLogged =
+                      await ParentLocalStorage.isParentLogged();
+                  logger.d('isParentLogged: $isParentLogged');
 
-                if (isParentLogged) {
-                  ParentLocalStorage.setParentLogged(false);
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                  UserAppBar.setTabIndex(0);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => DashboardScreen(),
-                      settings: RouteSettings(name: AppRoutes.dashboardScreen),
-                    ),
-                  );
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  margin: const EdgeInsets.only(right: 4, top: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.kButtonGrey,
-                    shape: BoxShape.circle,
-                  ),
-                  padding: const EdgeInsets.all(4),
-                  child: const Icon(
-                    Icons.close,
-                    color: AppColors.kPitchBlack,
-                    size: 24,
-                  ),
-                ),
+                  if (isParentLogged) {
+                    ParentLocalStorage.setParentLogged(false);
+                    UserAppBar.setTabIndex(0);
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.dashboardScreen,
+                      (route) => false,
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
               ),
             ),
             for (int i = 0; i < drawerSettings.length; i++)

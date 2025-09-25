@@ -30,8 +30,9 @@ class LearningSessionManager {
     }
 
     try {
-      final sessionDuration =
-          DateTime.now().difference(_sessionStartTime!).inMinutes;
+      final sessionDuration = DateTime.now()
+          .difference(_sessionStartTime!)
+          .inMinutes;
 
       logger.w('🚨 LearningSessionManager.endSession() called');
       logger.w(
@@ -87,7 +88,7 @@ class LearningSessionManager {
       */
 
       logger.i(
-        '✅ Session tracking completed (metrics update handled by PzMetricsProvider)',
+        'Session tracking completed (metrics update handled by PzMetricsProvider)',
       );
     } catch (e) {
       logger.e('Error ending learning session: $e');

@@ -49,4 +49,9 @@ import UserNotifications
   // override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
   //   return super.application(app, open: url, options: options)
   // }
+  
+  // Enable dynamic orientation changes based on Flutter's SystemChrome.setPreferredOrientations
+  override func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+    return .all
+  }
 }
