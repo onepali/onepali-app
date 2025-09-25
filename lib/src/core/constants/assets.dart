@@ -57,6 +57,7 @@ class Assets {
   static String upArrow = 'up_arrow'.icon;
   static String speak = 'speak'.icon;
   static String wrong = 'wrong'.icon;
+  static String closeGreyIcon = 'close_grey_btn'.icon;
   static String check = 'check'.icon;
   static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;

@@ -58,27 +58,25 @@ class _SystemScreenState extends State<SystemScreen>
           indicatorSize: TabBarIndicatorSize.tab,
           unselectedLabelColor: AppColors.kWhite.withValues(alpha: 0.7),
 
-          labelStyle:
-              isMobilePortrait
-                  ? AppStyles.text14PxSemiBold.copyWith(
-                    color: AppColors.kWhite,
-                    fontFamily: AppConstants.kPoppinsFont,
-                  )
-                  : AppStyles.text18PxSemiBold.copyWith(
-                    fontFamily: AppConstants.kPoppinsFont,
-                    color: AppColors.kWhite,
-                  ),
+          labelStyle: isMobilePortrait
+              ? AppStyles.text16PxSemiBold.copyWith(
+                  color: AppColors.kWhite,
+                  fontFamily: AppConstants.kPoppinsFont,
+                )
+              : AppStyles.text24PxSemiBold.copyWith(
+                  fontFamily: AppConstants.kPoppinsFont,
+                  color: AppColors.kWhite,
+                ),
           dividerColor: AppColors.kTransparentColor,
-          unselectedLabelStyle:
-              isMobilePortrait
-                  ? AppStyles.text14PxMedium.copyWith(
-                    color: AppColors.kWhite.withValues(alpha: 0.7),
-                    fontFamily: AppConstants.kPoppinsFont,
-                  )
-                  : AppStyles.text18PxMedium.copyWith(
-                    color: AppColors.kWhite.withValues(alpha: 0.7),
-                    fontFamily: AppConstants.kPoppinsFont,
-                  ),
+          unselectedLabelStyle: isMobilePortrait
+              ? AppStyles.text16PxMedium.copyWith(
+                  color: AppColors.kWhite.withValues(alpha: 0.7),
+                  fontFamily: AppConstants.kPoppinsFont,
+                )
+              : AppStyles.text24PxMedium.copyWith(
+                  color: AppColors.kWhite.withValues(alpha: 0.7),
+                  fontFamily: AppConstants.kPoppinsFont,
+                ),
           tabs: AppConstants.sysTab.map((tab) => Tab(text: tab)).toList(),
         ),
       ),

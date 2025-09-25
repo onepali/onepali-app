@@ -114,13 +114,16 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
             children: [
               if (isTablet)
                 Positioned(
-                  bottom: 0,
                   left: 0,
-                  child: CustomImage(
-                    Assets.parentZoneImage,
-                    imageType: CustomImageType.local,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    boxFit: BoxFit.contain,
+                  right: 0,
+                  bottom: 0,
+                  child: IgnorePointer(
+                    child: CustomImage(
+                      Assets.parentZoneImage,
+                      imageType: CustomImageType.local,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      boxFit: BoxFit.contain,
+                    ),
                   ),
                 ),
               Align(
@@ -191,7 +194,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       Navigator.of(context).pop();
                     }
                   },
-                  type: CircularButtonType.close,
+                  type: CircularButtonType.closeGrey,
                 ),
               ),
             ],
