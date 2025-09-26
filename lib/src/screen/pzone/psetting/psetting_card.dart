@@ -39,51 +39,65 @@ class PSettingCard extends StatelessWidget {
           borderRadius: isAdd ? null : BorderRadius.circular(30.0),
         ),
         height: Dimensions.kSettingAvatarSize(context),
-        child: ListTile(
-          leading: isAdd
-              ? Container(
-                  width: Dimensions.kSettingAvatarSize(context),
-                  height: Dimensions.kSettingAvatarSize(context),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.add,
-                    size: Dimensions.kSettingAvatarSize(context) - 26,
-                  ),
-                )
-              : CustomImage(
-                  avatarUrl != null && avatarUrl!.isNotEmpty
-                      ? avatarUrl!
-                      : Assets.parentAvatar,
-                  height: Dimensions.kSettingAvatarSize(context),
-                  width: Dimensions.kSettingAvatarSize(context),
-                  circular: true,
-                  imageType: avatarUrl != null && avatarUrl!.isNotEmpty
-                      ? CustomImageType.network
-                      : CustomImageType.local,
-                ),
-          title: Text(title, style: textStyle),
-          contentPadding: EdgeInsets.zero,
-          minVerticalPadding: 0,
-          trailing: !isAdd
-              ? IconButton(
-                  iconSize: Dimensions.kSettingAvatarSize(context),
-
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.kLightGrey.withValues(
-                      alpha: 0.3,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Leading (icon or image)
+            isAdd
+                ? Container(
+                    width: Dimensions.kSettingAvatarSize(context),
+                    height: Dimensions.kSettingAvatarSize(context),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      shape: BoxShape.circle,
                     ),
-                    shape: const CircleBorder(),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.add,
+                      size: Dimensions.kSettingAvatarSize(context) - 26,
+                    ),
+                  )
+                : CustomImage(
+                    avatarUrl != null && avatarUrl!.isNotEmpty
+                        ? avatarUrl!
+                        : Assets.parentAvatar,
+                    height: Dimensions.kSettingAvatarSize(context),
+                    width: Dimensions.kSettingAvatarSize(context),
+                    circular: true,
+                    imageType: avatarUrl != null && avatarUrl!.isNotEmpty
+                        ? CustomImageType.network
+                        : CustomImageType.local,
                   ),
-                  icon: Icon(
-                    Icons.edit,
-                    size: Dimensions.kSettingAvatarSize(context) - 26,
-                  ),
-                  onPressed: onEdit,
-                )
-              : null,
+            const SizedBox(width: 16),
+            // Title
+            Flexible(
+              fit: FlexFit.tight,
+              child: Text(
+                title,
+                style: textStyle,
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Trailing (edit icon)
+            if (!isAdd)
+              IconButton(
+                iconSize: Dimensions.kSettingAvatarSize(context),
+                alignment: Alignment.center,
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.kLightGrey.withValues(alpha: 0.3),
+                  shape: const CircleBorder(),
+                ),
+                icon: Icon(
+                  Icons.edit,
+                  size: Dimensions.kSettingAvatarSize(context) - 26,
+                ),
+                onPressed: onEdit,
+              ),
+          ],
         ),
       ),
     );
