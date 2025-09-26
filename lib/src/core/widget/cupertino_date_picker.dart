@@ -181,7 +181,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing for dialog
-    final double dialogMargin = isTabletPortrait ? 24.0 : 16.0;
+    final double dialogMargin = isTabletPortrait ? 24.0 : 8.0;
     final double dialogPadding = isTabletPortrait ? 24.0 : 16.0;
     final double borderRadius = isTabletPortrait ? 24.0 : 20.0;
     final double handleWidth = isTabletPortrait ? 50.0 : 40.0;
@@ -235,12 +235,11 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                             color: AppColors.kButtonGreen,
                             fontSize: isTabletPortrait ? 20.0 : 14.0,
                           ),
-                          text:
-                              _showYearInput
-                                  ? 'Use Picker'
-                                  : (widget.showMonth
-                                      ? 'Enter Year & Month'
-                                      : 'Enter Year'),
+                          text: _showYearInput
+                              ? 'Use Picker'
+                              : (widget.showMonth
+                                    ? 'Enter Year & Month'
+                                    : 'Enter Year'),
                           onPressed: () {
                             setModalState(() {
                               _showYearInput = !_showYearInput;
@@ -255,66 +254,67 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                     Gaps.verticalGapOf(8), // Year/Month input field or picker
                     _showYearInput
                         ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            children: [
-                              CustomTextField(
-                                controller: _combinedController,
-                                hintText:
-                                    widget.showMonth
-                                        ? 'Enter date (YYYY-MM)'
-                                        : 'Enter year (${widget.minYear}-${widget.maxYear})',
-                                keyboardType: TextInputType.number,
-                                validation: _validateCombined,
-                                paddingHorizontal: 16,
-                                paddingVertical: 16,
-                                onChanged: (value) {
-                                  final parsedDate = _parseCombinedInput(value);
-                                  if (parsedDate != null) {
-                                    setModalState(() {
-                                      tempDate = parsedDate;
-                                    });
-                                  }
-                                },
-                              ),
-                              if (widget.showMonth) ...[
-                                Gaps.verticalGapOf(8),
-                                Text(
-                                  'Format: YYYY-MM (e.g., 2024-03)',
-                                  style: AppStyles.text12PxRegular.copyWith(
-                                    color: AppColors.kGrey,
-                                  ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                CustomTextField(
+                                  controller: _combinedController,
+                                  hintText: widget.showMonth
+                                      ? 'Enter date (YYYY-MM)'
+                                      : 'Enter year (${widget.minYear}-${widget.maxYear})',
+                                  keyboardType: TextInputType.number,
+                                  validation: _validateCombined,
+                                  paddingHorizontal: 16,
+                                  paddingVertical: 16,
+                                  onChanged: (value) {
+                                    final parsedDate = _parseCombinedInput(
+                                      value,
+                                    );
+                                    if (parsedDate != null) {
+                                      setModalState(() {
+                                        tempDate = parsedDate;
+                                      });
+                                    }
+                                  },
                                 ),
+                                if (widget.showMonth) ...[
+                                  Gaps.verticalGapOf(8),
+                                  Text(
+                                    'Format: YYYY-MM (e.g., 2024-03)',
+                                    style: AppStyles.text12PxRegular.copyWith(
+                                      color: AppColors.kGrey,
+                                    ),
+                                  ),
+                                ],
+                                Gaps.verticalGapOf(16),
                               ],
-                              Gaps.verticalGapOf(16),
-                            ],
-                          ),
-                        )
+                            ),
+                          )
                         : SizedBox(
-                          height: pickerHeight,
-                          child: _CupertinoDatePickerWidget(
-                            initialDate:
-                                selectedDate.isAfter(maxDate)
-                                    ? maxDate
-                                    : selectedDate,
-                            onDateChanged: (date) {
-                              tempDate = date;
-                              _yearController.text = date.year.toString();
-                              _monthController.text = date.month.toString();
-                              if (widget.showMonth) {
-                                _combinedController.text =
-                                    "${date.year}-${date.month.toString().padLeft(2, '0')}";
-                              } else {
-                                _combinedController.text = date.year.toString();
-                              }
-                            },
-                            showMonth: widget.showMonth,
-                            showDay: widget.showDay,
-                            minYear: widget.minYear,
-                            maxYear: widget.maxYear,
-                            lastDate: maxDate,
+                            height: pickerHeight,
+                            child: _CupertinoDatePickerWidget(
+                              initialDate: selectedDate.isAfter(maxDate)
+                                  ? maxDate
+                                  : selectedDate,
+                              onDateChanged: (date) {
+                                tempDate = date;
+                                _yearController.text = date.year.toString();
+                                _monthController.text = date.month.toString();
+                                if (widget.showMonth) {
+                                  _combinedController.text =
+                                      "${date.year}-${date.month.toString().padLeft(2, '0')}";
+                                } else {
+                                  _combinedController.text = date.year
+                                      .toString();
+                                }
+                              },
+                              showMonth: widget.showMonth,
+                              showDay: widget.showDay,
+                              minYear: widget.minYear,
+                              maxYear: widget.maxYear,
+                              lastDate: maxDate,
+                            ),
                           ),
-                        ),
                     Gaps.verticalGapOf(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -532,103 +532,98 @@ class _CupertinoDatePickerWidgetState
             Center(
               child: Text(
                 i.toString(),
-                style:
-                    isTabletPortrait
-                        ? AppStyles.text28PxMedium
-                        : AppStyles.text16PxMedium,
+                style: isTabletPortrait
+                    ? AppStyles.text28PxMedium
+                    : AppStyles.text16PxMedium,
               ),
             ),
         ],
       ),
     );
 
-    final monthPicker =
-        widget.showMonth
-            ? Expanded(
-              child: CupertinoPicker(
-                scrollController: FixedExtentScrollController(
-                  initialItem: selectedMonth - 1,
-                ),
-                itemExtent: itemExtent,
-                onSelectedItemChanged: (index) {
-                  setState(() {
-                    selectedMonth = index + 1;
-                    if (widget.lastDate != null &&
-                        selectedYear == maxYear &&
-                        selectedMonth > maxMonth) {
-                      selectedMonth = maxMonth;
-                    }
-                    if (selectedDay > daysInMonth) selectedDay = daysInMonth;
-                    _onChanged();
-                  });
-                },
-                children: [
-                  for (
-                    int i = 1;
-                    i <=
-                        (selectedYear == maxYear && widget.lastDate != null
-                            ? maxMonth
-                            : 12);
-                    i++
-                  )
-                    Center(
-                      child: Text(
-                        i.toString().padLeft(2, '0'),
-                        style:
-                            isTabletPortrait
-                                ? AppStyles.text28PxMedium
-                                : AppStyles.text16PxMedium,
-                      ),
-                    ),
-                ],
+    final monthPicker = widget.showMonth
+        ? Expanded(
+            child: CupertinoPicker(
+              scrollController: FixedExtentScrollController(
+                initialItem: selectedMonth - 1,
               ),
-            )
-            : null;
+              itemExtent: itemExtent,
+              onSelectedItemChanged: (index) {
+                setState(() {
+                  selectedMonth = index + 1;
+                  if (widget.lastDate != null &&
+                      selectedYear == maxYear &&
+                      selectedMonth > maxMonth) {
+                    selectedMonth = maxMonth;
+                  }
+                  if (selectedDay > daysInMonth) selectedDay = daysInMonth;
+                  _onChanged();
+                });
+              },
+              children: [
+                for (
+                  int i = 1;
+                  i <=
+                      (selectedYear == maxYear && widget.lastDate != null
+                          ? maxMonth
+                          : 12);
+                  i++
+                )
+                  Center(
+                    child: Text(
+                      i.toString().padLeft(2, '0'),
+                      style: isTabletPortrait
+                          ? AppStyles.text28PxMedium
+                          : AppStyles.text16PxMedium,
+                    ),
+                  ),
+              ],
+            ),
+          )
+        : null;
 
-    final dayPicker =
-        widget.showDay
-            ? Expanded(
-              child: CupertinoPicker(
-                scrollController: FixedExtentScrollController(
-                  initialItem: selectedDay - 1,
-                ),
-                itemExtent: itemExtent,
-                onSelectedItemChanged: (index) {
-                  setState(() {
-                    selectedDay = index + 1;
-                    if (widget.lastDate != null &&
-                        selectedYear == maxYear &&
-                        selectedMonth == maxMonth &&
-                        selectedDay > maxDay) {
-                      selectedDay = maxDay;
-                    }
-                    _onChanged();
-                  });
-                },
-                children: [
-                  for (
-                    int i = 1;
-                    i <=
-                        (selectedYear == maxYear &&
-                                selectedMonth == maxMonth &&
-                                widget.lastDate != null
-                            ? maxDay
-                            : daysInMonth);
-                    i++
-                  )
-                    Center(
-                      child: Text(
-                        i.toString().padLeft(2, '0'),
-                        style:
-                            isTabletPortrait
-                                ? AppStyles.text18PxMedium
-                                : AppStyles.text16PxMedium,
-                      ),
-                    ),
-                ],
+    final dayPicker = widget.showDay
+        ? Expanded(
+            child: CupertinoPicker(
+              scrollController: FixedExtentScrollController(
+                initialItem: selectedDay - 1,
               ),
-            )
-            : null;
+              itemExtent: itemExtent,
+              onSelectedItemChanged: (index) {
+                setState(() {
+                  selectedDay = index + 1;
+                  if (widget.lastDate != null &&
+                      selectedYear == maxYear &&
+                      selectedMonth == maxMonth &&
+                      selectedDay > maxDay) {
+                    selectedDay = maxDay;
+                  }
+                  _onChanged();
+                });
+              },
+              children: [
+                for (
+                  int i = 1;
+                  i <=
+                      (selectedYear == maxYear &&
+                              selectedMonth == maxMonth &&
+                              widget.lastDate != null
+                          ? maxDay
+                          : daysInMonth);
+                  i++
+                )
+                  Center(
+                    child: Text(
+                      i.toString().padLeft(2, '0'),
+                      style: isTabletPortrait
+                          ? AppStyles.text18PxMedium
+                          : AppStyles.text16PxMedium,
+                    ),
+                  ),
+              ],
+            ),
+          )
+        : null;
 
     final pickers = <Widget>[yearPicker];
     if (widget.showMonth) pickers.add(monthPicker!);
