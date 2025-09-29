@@ -159,10 +159,15 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 ),
               ),
               Gaps.verticalGapOf(16),
-              Text(
-                child.fullName.split(' ')[0],
-                style: AppStyles.text24PxMedium.copyWith(
-                  color: AppColors.kWhite,
+              GestureDetector(
+                onTap: () {
+                  _onChildSelected(index);
+                },
+                child: Text(
+                  child.fullName.split(' ')[0],
+                  style: AppStyles.text24PxMedium.copyWith(
+                    color: AppColors.kWhite,
+                  ),
                 ),
               ),
               Gaps.verticalGapOf(16),

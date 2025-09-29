@@ -70,10 +70,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final childIndex = childProvider.childUser.indexWhere(
           (c) => c.uid == currentChildId,
         );
-        final child =
-            childIndex != -1
-                ? childProvider.childUser[childIndex]
-                : childProvider.childUser.first;
+        final child = childIndex != -1
+            ? childProvider.childUser[childIndex]
+            : childProvider.childUser.first;
 
         logger.i('👦 Child selected: ${child.fullName} (${child.uid})');
 
@@ -126,22 +125,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final childProvider = context.read<ChildUserProvider>();
       final child = childProvider.childUser.firstWhere(
         (c) => c.uid == currentChildId,
-        orElse:
-            () =>
-                childProvider.childUser.isNotEmpty
-                    ? childProvider.childUser.first
-                    : ChildUserModel(
-                      avatarUrl: '',
-                      createdAt: '',
-                      dob: '',
-                      fullName: '',
-                      parentEmail: '',
-                      parentUid: '',
-                      role: 'child',
-                      screenTime: 0,
-                      hasScreenTime: false,
-                      uid: '',
-                    ),
+        orElse: () => childProvider.childUser.isNotEmpty
+            ? childProvider.childUser.first
+            : ChildUserModel(
+                avatarUrl: '',
+                createdAt: '',
+                dob: '',
+                fullName: '',
+                parentEmail: '',
+                parentUid: '',
+                role: 'child',
+                screenTime: 0,
+                hasScreenTime: false,
+                uid: '',
+              ),
       );
 
       if (child.hasScreenTime && child.screenTime > 0) {
@@ -169,6 +166,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final int childCount = childProvider.totalChildren;
     logger.d('DashboardScreen: hasData: $hasData, isLoading: $isLoading');
 
+    // Get the selected/current child (if any)
+    String selectedChildName = 'User';
+    if (childProvider.childUser.isNotEmpty) {
+      final currentChild = childProvider.childUser.firstWhere(
+        (c) => c.avatarUrl == childProfileImage,
+        orElse: () => childProvider.childUser.first,
+      );
+      selectedChildName = currentChild.fullName.isNotEmpty
+          ? currentChild.fullName
+          : 'User';
+    }
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (index, value) {
@@ -180,7 +189,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           backgroundColor: AppColors.kWhite,
           appBar: UserAppBar(
             context: context,
-            name: userInfo?.fullName ?? 'User',
+            name: selectedChildName,
             profileImage: childProfileImage,
             totalStars: 0,
             totalLessonsCompleted: totalLessonsCompleted,
