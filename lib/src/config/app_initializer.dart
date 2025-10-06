@@ -95,7 +95,6 @@ class AppInitializer {
               routes: AppRoutes.routes,
               theme: ThemeConfig.lightTheme,
               locale: context.watch<LanguageProvider>().locale,
-              useInheritedMediaQuery: true,
               localizationsDelegates: const [
                 AppLocalizationsDelegate(),
                 GlobalMaterialLocalizations.delegate,
