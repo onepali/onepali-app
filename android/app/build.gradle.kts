@@ -27,7 +27,7 @@ if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 2
+val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull() ?: 3
 val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
 // Android configuration using centralized versions from root build.gradle.kts
