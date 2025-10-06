@@ -16,6 +16,8 @@ class ScreenTimeService extends ChangeNotifier {
   String? _currentChildId;
   ScreenTimeModel? _currentScreenTime;
   bool _isTracking = false;
+  bool _dialogShown = false; // Flag to prevent repeated dialogs
+  DateTime? _lastSaveTime; // Track last save time for periodic saves
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -47,6 +49,8 @@ class ScreenTimeService extends ChangeNotifier {
     // Start tracking
     _sessionStartTime = DateTime.now();
     _isTracking = true;
+    _dialogShown = false; // Reset dialog flag when starting new session
+    _lastSaveTime = null; // Reset last save time
 
     logger.d('ScreenTimeService: Session start time: $_sessionStartTime');
 
@@ -127,10 +131,9 @@ class ScreenTimeService extends ChangeNotifier {
       final previousUsed = _currentScreenTime!.totalUsed;
 
       // Calculate the total time used: base time + current session
-      final totalUsed =
-          (previousUsed + sessionMinutes)
-              .clamp(0.0, double.infinity)
-              .toDouble();
+      final totalUsed = (previousUsed + sessionMinutes)
+          .clamp(0.0, double.infinity)
+          .toDouble();
 
       final updatedScreenTime = _currentScreenTime!.copyWith(
         totalUsed: totalUsed,
@@ -149,21 +152,25 @@ class ScreenTimeService extends ChangeNotifier {
         '   - Remaining: ${updatedScreenTime.remainingTime.toStringAsFixed(1)} minutes',
       );
 
-      // Check if limit exceeded
-      if (!_currentScreenTime!.isLimitExceeded &&
-          updatedScreenTime.isLimitExceeded) {
+      // Check if limit exceeded - only show dialog once
+      if (!_dialogShown && updatedScreenTime.isLimitExceeded) {
         logger.w(' Screen time limit exceeded!');
+        _dialogShown = true; // Set flag before showing dialog
         await _showScreenTimeLimitDialog();
         return; // Stop processing after showing dialog
       }
 
       _currentScreenTime = updatedScreenTime;
 
-      // Save to Firestore periodically (every few ticks to avoid too many writes)
-      if (sessionMinutes > 0 && sessionMinutes.toInt() % 1 == 0) {
-        // Save every minute
+      // Save to Firestore periodically (every minute based on wall clock time)
+      final now = DateTime.now();
+      if (_lastSaveTime == null ||
+          now.difference(_lastSaveTime!).inSeconds >= 60) {
+        // Save every 60 seconds
         logger.d(' Periodic save: Saving accumulated screen time');
         await _saveScreenTimeData();
+
+        _lastSaveTime = now;
 
         // Reset session start time after saving to avoid double counting
         _sessionStartTime = DateTime.now();
@@ -191,13 +198,12 @@ class ScreenTimeService extends ChangeNotifier {
         return;
       }
 
-      final doc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(user.uid)
-              .collection(AppConstants.childrenCollection)
-              .doc(_currentChildId!)
-              .get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(user.uid)
+          .collection(AppConstants.childrenCollection)
+          .doc(_currentChildId!)
+          .get();
 
       if (doc.exists) {
         final data = doc.data();
@@ -274,10 +280,9 @@ class ScreenTimeService extends ChangeNotifier {
 
     final previousUsed = _currentScreenTime!.totalUsed;
     _currentScreenTime = _currentScreenTime!.copyWith(
-      totalUsed:
-          (previousUsed + sessionMinutes)
-              .clamp(0.0, double.infinity)
-              .toDouble(),
+      totalUsed: (previousUsed + sessionMinutes)
+          .clamp(0.0, double.infinity)
+          .toDouble(),
       lastUpdated: DateTime.now(),
     );
 
@@ -306,6 +311,8 @@ class ScreenTimeService extends ChangeNotifier {
     _currentScreenTime = _currentScreenTime!.resetForNewDay();
     await _saveScreenTimeData();
 
+    _dialogShown = false;
+
     logger.i(' Screen time reset completed');
     logger.i(
       '   - New total used: ${_currentScreenTime!.totalUsed.toStringAsFixed(1)} minutes',
@@ -325,11 +332,14 @@ class ScreenTimeService extends ChangeNotifier {
       return;
     }
 
+    logger.i('Pausing tracking while dialog is shown');
+    await stopTracking();
+
     logger.i('Displaying screen time limit dialog');
 
     await DialogManager.showCustomDialog(
       context: context,
-      title: 'Time\'s Up!',
+      title: 'Time\'s up!',
       content: 'Come back tomorrow',
       image: Assets.timeUpSvg,
       isSvg: true,
@@ -403,6 +413,8 @@ class ScreenTimeService extends ChangeNotifier {
         ' Allowed: ${_currentScreenTime!.totalAllowed.toStringAsFixed(1)} minutes',
       );
 
+      _dialogShown = true;
+
       await _showScreenTimeLimitDialog();
       _currentChildId = previousChildId; // Restore previous child ID
       return true; // Limit exceeded
@@ -452,13 +464,12 @@ class ScreenTimeService extends ChangeNotifier {
         return false;
       }
 
-      final doc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(user.uid)
-              .collection(AppConstants.childrenCollection)
-              .doc(childId)
-              .get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(user.uid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .get();
 
       if (!doc.exists) {
         logger.w('Child document not found for ID: $childId');
@@ -539,7 +550,7 @@ class ScreenTimeService extends ChangeNotifier {
 
   /// Extend current screen time limit
   Future<void> extendTime(double additionalMinutes) async {
-    if (_currentScreenTime == null) {
+    if (_currentScreenTime == null || _currentChildId == null) {
       logger.w(
         'ScreenTimeService: Cannot extend time - no current screen time data',
       );
@@ -548,6 +559,9 @@ class ScreenTimeService extends ChangeNotifier {
 
     logger.i('ScreenTimeService: Extending time by $additionalMinutes minutes');
 
+    // Store the child ID before operations
+    final childId = _currentChildId!;
+
     // Update the current screen time limit
     final newLimit = _currentScreenTime!.totalAllowed + additionalMinutes;
     _currentScreenTime = _currentScreenTime!.copyWith(totalAllowed: newLimit);
@@ -555,12 +569,22 @@ class ScreenTimeService extends ChangeNotifier {
     // Save the updated data
     await _saveScreenTimeData();
 
+    // Reset the dialog shown flag so user can continue using the app
+    _dialogShown = false;
+
+    // Reload data from Firestore to ensure consistency
+    await _loadScreenTimeData();
+
     logger.i(
       'ScreenTimeService: Time extended successfully. New limit: ${_currentScreenTime!.totalAllowed.toStringAsFixed(1)} minutes',
     );
     logger.i(
       'ScreenTimeService: Remaining time: ${_currentScreenTime!.remainingTime.toStringAsFixed(1)} minutes',
     );
+
+    // Restart tracking with the extended time
+    logger.i('ScreenTimeService: Restarting tracking after time extension');
+    await startTracking(childId);
 
     notifyListeners();
   }
