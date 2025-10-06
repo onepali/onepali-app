@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,13 +33,13 @@ void main() async {
   await dotenv.load(fileName: AppConstants.dotEnvFileName);
   await AppInitializer().initializeApp();
 
+  final bool logged = await AppInitializer.checkUserAuthentication();
+  final bool isParentLogged = await AppInitializer.isParentLogged();
+
   runApp(
     MultiProvider(
       providers: ProviderConfig.providers,
-      child: MyApp(
-        logged: await AppInitializer.checkUserAuthentication(),
-        isParentLogged: await AppInitializer.isParentLogged(),
-      ),
+      child: MyApp(logged: logged, isParentLogged: isParentLogged),
     ),
   );
 }

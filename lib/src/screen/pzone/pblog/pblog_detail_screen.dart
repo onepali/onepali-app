@@ -28,9 +28,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
-    final double imageHeight = isMobile
-        ? (isMobilePortrait ? 200 : 150)
-        : 450; // Enhanced for tablet
+    final double imageHeight = isMobile ? (isMobilePortrait ? 300 : 150) : 450;
     final double horizontalPadding = isMobile
         ? (isMobilePortrait ? 24 : 72.0)
         : 100.0; // Enhanced for tablet
@@ -67,8 +65,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
         : AppStyles.text18PxRegular.copyWith(
             height: 1.6,
             fontFamily: AppConstants.kDMSansFont,
-          ); // Enhanced for tablet
-
+          ); 
     var blog = widget.data;
     if (blog == null) {
       return const Scaffold(body: Center(child: Text('Blog data is loading')));
@@ -176,7 +173,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
                     Text(
                       blog.content,
                       style: contentStyle,
-                      textAlign: TextAlign.justify,
+                      textAlign: TextAlign.left,
                     ),
                     Gaps.verticalGapOf(24),
                   ],

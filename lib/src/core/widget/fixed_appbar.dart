@@ -51,17 +51,35 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final isTabletPortrait =
         (PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context));
-    final avatarSize = isTabletPortrait ? 64.0 : 45.0;
-    final rewardIconSize = isTabletPortrait ? 50.0 : 40.0;
-    final starRewardLottieSize = isTabletPortrait ? 85.0 : 40.0;
-    final tabIconSize = isTabletPortrait ? 64.0 : 45.0;
-    final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
-    final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
-    final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
-    final tabSpacing = isTabletPortrait ? 25.0 : 10.0;
+
+    // Smaller sizes for mobile landscape to prevent overflow
+    final avatarSize = isTabletPortrait
+        ? 64.0
+        : (isMobileLandScape ? 35.0 : 45.0);
+    final rewardIconSize = isTabletPortrait
+        ? 50.0
+        : (isMobileLandScape ? 30.0 : 40.0);
+    final starRewardLottieSize = isTabletPortrait
+        ? 85.0
+        : (isMobileLandScape ? 30.0 : 40.0);
+    final tabIconSize = isTabletPortrait
+        ? 64.0
+        : (isMobileLandScape ? 35.0 : 45.0);
+    final horizontalPadding = isTabletPortrait
+        ? 24.0
+        : (isMobileLandScape ? 8.0 : 16.0);
+    final verticalPadding = isTabletPortrait
+        ? 12.0
+        : (isMobileLandScape ? 4.0 : 8.0);
+    final guestTopGap = isTabletPortrait
+        ? 50.0
+        : (isMobileLandScape ? 5.0 : 20.0);
+    final tabSpacing = isTabletPortrait
+        ? 25.0
+        : (isMobileLandScape ? 6.0 : 10.0);
     final nameTextStyle = isTabletPortrait
         ? AppStyles.text32PxBold
-        : AppStyles.text16PxBold;
+        : (isMobileLandScape ? AppStyles.text12PxBold : AppStyles.text16PxBold);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -557,11 +575,16 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    final isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
 
     if (isTabletLandscape) {
       return Size.fromHeight(isGuest ? 160 : 160);
     } else if (isTabletPortrait) {
       return const Size.fromHeight(130);
+    } else if (isMobileLandscape) {
+      return Size.fromHeight(isGuest ? 110 : 120);
     } else {
       return const Size.fromHeight(110);
     }

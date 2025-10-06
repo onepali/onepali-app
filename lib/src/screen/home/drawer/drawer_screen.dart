@@ -67,7 +67,36 @@ class _DrawerScreenState extends State<DrawerScreen> {
           ),
 
           // Settings section
-          Expanded(child: _buildSettingsSection()),
+          Expanded(
+            child: Stack(
+              children: [
+                _buildSettingsSection(),
+                Positioned(
+                  top: 8,
+                  right: Dimensions.kIconMargin(context),
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.closeGrey,
+                    onPressed: () async {
+                      final isParentLogged =
+                          await ParentLocalStorage.isParentLogged();
+                      logger.d('isParentLogged: $isParentLogged');
+
+                      if (isParentLogged) {
+                        ParentLocalStorage.setParentLogged(false);
+                        UserAppBar.setTabIndex(0);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          AppRoutes.dashboardScreen,
+                          (route) => false,
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -264,34 +293,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
   Widget _buildSettingsSection() {
     return Container(
       height: MediaQuery.of(context).size.height,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: BoxDecoration(color: AppColors.kPurple),
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: CircularButtonWidget(
-                type: CircularButtonType.closeGrey,
-                onPressed: () async {
-                  final isParentLogged =
-                      await ParentLocalStorage.isParentLogged();
-                  logger.d('isParentLogged: $isParentLogged');
-
-                  if (isParentLogged) {
-                    ParentLocalStorage.setParentLogged(false);
-                    UserAppBar.setTabIndex(0);
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      AppRoutes.dashboardScreen,
-                      (route) => false,
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ),
+            // const SizedBox(height: 60),
             for (int i = 0; i < drawerSettings.length; i++)
               ListTile(
                 contentPadding: const EdgeInsets.only(bottom: 8.0),
