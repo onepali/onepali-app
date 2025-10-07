@@ -110,34 +110,41 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     Row(
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            if (!isGuest) {
-                              Utility.navigateMaterialRoute(
-                                context,
-                                DrawerScreen(
-                                  data: childData,
-                                  totalChildCount: totalChildCount,
-                                ),
-                                routeName: AppRoutes.drawerRoutes,
-                              );
-                            }
-                            // } else {
-                            //   Utility.navigate(
-                            //     context,
-                            //     AppRoutes.systemScreen,
-                            //   );
-                            // }
-                          },
-                          icon: CustomImage(
-                            isGuest ? Assets.blueUserAvatar : profileImage,
-                            height: avatarSize,
-                            width: avatarSize,
-                            circular: true,
-                            // isProfileImage: true,
-                            imageType: isGuest
-                                ? CustomImageType.local
-                                : CustomImageType.network,
+                        SizedBox(
+                          height: tabIconSize + 10,
+                          child: Center(
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                if (!isGuest) {
+                                  Utility.navigateMaterialRoute(
+                                    context,
+                                    DrawerScreen(
+                                      data: childData,
+                                      totalChildCount: totalChildCount,
+                                    ),
+                                    routeName: AppRoutes.drawerRoutes,
+                                  );
+                                }
+                                // } else {
+                                //   Utility.navigate(
+                                //     context,
+                                //     AppRoutes.systemScreen,
+                                //   );
+                                // }
+                              },
+                              icon: CustomImage(
+                                isGuest ? Assets.blueUserAvatar : profileImage,
+                                height: avatarSize,
+                                width: avatarSize,
+                                circular: true,
+                                // isProfileImage: true,
+                                imageType: isGuest
+                                    ? CustomImageType.local
+                                    : CustomImageType.network,
+                              ),
+                            ),
                           ),
                         ),
                         Gaps.horizontalGapOf(tabSpacing),
@@ -236,33 +243,40 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         children: [
                           Row(
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  if (!isGuest) {
-                                    Utility.navigateMaterialRoute(
-                                      context,
-                                      TabDrawerScreen(
-                                        data: childData,
-                                        totalChildCount: totalChildCount,
-                                      ),
-                                      routeName: AppRoutes.tabDrawerRoutes,
-                                    );
-                                  }
-                                  //  else {
-                                  //   Utility.navigate(context, AppRoutes.systemScreen);
-                                  // }
-                                },
-                                icon: CustomImage(
-                                  isGuest
-                                      ? Assets.blueUserAvatar
-                                      : profileImage,
-                                  height: avatarSize,
-                                  width: avatarSize,
-                                  circular: true,
-                                  isProfileImage: true,
-                                  imageType: isGuest
-                                      ? CustomImageType.local
-                                      : CustomImageType.network,
+                              SizedBox(
+                                height: tabIconSize + 10,
+                                child: Center(
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      if (!isGuest) {
+                                        Utility.navigateMaterialRoute(
+                                          context,
+                                          TabDrawerScreen(
+                                            data: childData,
+                                            totalChildCount: totalChildCount,
+                                          ),
+                                          routeName: AppRoutes.tabDrawerRoutes,
+                                        );
+                                      }
+                                      //  else {
+                                      //   Utility.navigate(context, AppRoutes.systemScreen);
+                                      // }
+                                    },
+                                    icon: CustomImage(
+                                      isGuest
+                                          ? Assets.blueUserAvatar
+                                          : profileImage,
+                                      height: avatarSize,
+                                      width: avatarSize,
+                                      circular: true,
+                                      isProfileImage: true,
+                                      imageType: isGuest
+                                          ? CustomImageType.local
+                                          : CustomImageType.network,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Gaps.horizontalGapOf(tabSpacing),
