@@ -115,9 +115,8 @@ class AppConstants {
   };
 
   // Notification Titles & Bodies [Daily Reminder]
-  static const String dailyReminderTitle = "⏰ It's Time to Practice!";
-  static const String dailyReminderBody =
-      "Let's make today awesome! Are you ready for your daily adventure? 🚀";
+  static const String dailyReminderTitle = "Time to practice Nepali";
+  static const String dailyReminderBody = "Let's play! 🎮";
 
   static const String kAppLink =
       'https://play.google.com/store/apps/details?id=$applicationId';

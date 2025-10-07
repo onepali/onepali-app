@@ -43,17 +43,16 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
-    final TextStyle titleActionTextStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxSemiBold
-            : AppStyles.text14PxSemiBold;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
+    final TextStyle titleActionTextStyle = isTabletPortrait
+        ? AppStyles.text18PxSemiBold
+        : AppStyles.text14PxSemiBold;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(

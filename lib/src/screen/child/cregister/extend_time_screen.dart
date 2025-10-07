@@ -184,7 +184,7 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
                             Expanded(
                               child: CustomMaterialButton(
                                 key: const ValueKey('cancel_button_row'),
-                                fillButton: false,
+                                // fillButton: false,
                                 label: 'Cancel',
                                 elevation: 0,
                                 backgroundColor: AppColors.kButtonGrey,
