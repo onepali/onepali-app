@@ -90,7 +90,7 @@ flutter:
     - assets/svg/icons/
     - assets/svg/
     - assets/svg/parent/
-    - .env
+    # - .env
     - shorebird.yaml
 
   fonts:

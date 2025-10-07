@@ -42,10 +42,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final double verticalGap2 = isMobile ? 24.0 : 30.0;
     final double borderRadius = isMobile ? 8.0 : 12.0;
 
-    final TextStyle titleStyle =
-        isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium;
-    final TextStyle subtitleStyle =
-        isMobile ? AppStyles.text14PxRegular : AppStyles.text16PxRegular;
+    final TextStyle titleStyle = isMobile
+        ? AppStyles.text16PxMedium
+        : AppStyles.text18PxMedium;
+    final TextStyle subtitleStyle = isMobile
+        ? AppStyles.text14PxRegular
+        : AppStyles.text16PxRegular;
 
     return Consumer<PzNotificationProvider>(
       builder: (context, provider, _) {
@@ -80,10 +82,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         onChanged: (value) {
                           provider.toggleAll(value);
                         },
-                        activeTrackColor:
-                            settings.isEnabledAll
-                                ? AppColors.kButtonGreen
-                                : AppColors.kGrey,
+                        activeTrackColor: settings.isEnabledAll
+                            ? AppColors.kButtonGreen
+                            : AppColors.kGrey,
                       ),
                     ),
                     Gaps.verticalGapOf(verticalGap1),
@@ -112,29 +113,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               onChanged: (value) {
                                 provider.togglePracticeReminder(value);
                               },
-                              activeTrackColor:
-                                  settings.isPracticeEnabled
-                                      ? AppColors.kButtonGreen
-                                      : AppColors.kGrey,
+                              activeTrackColor: settings.isPracticeEnabled
+                                  ? AppColors.kButtonGreen
+                                  : AppColors.kGrey,
                             ),
                           ),
                           Gaps.verticalGapOf(8),
                           CupertinoTimePickerField(
-                            initialTime:
-                                settings.dailyReminderTime != null
-                                    ? TimeOfDay(
-                                      hour: int.parse(
-                                        settings.dailyReminderTime!.split(
-                                          ':',
-                                        )[0],
-                                      ),
-                                      minute: int.parse(
-                                        settings.dailyReminderTime!.split(
-                                          ':',
-                                        )[1],
-                                      ),
-                                    )
-                                    : TimeOfDay(hour: 8, minute: 0),
+                            initialTime: settings.dailyReminderTime != null
+                                ? TimeOfDay(
+                                    hour: int.parse(
+                                      settings.dailyReminderTime!.split(':')[0],
+                                    ),
+                                    minute: int.parse(
+                                      settings.dailyReminderTime!.split(':')[1],
+                                    ),
+                                  )
+                                : TimeOfDay(hour: 8, minute: 0),
                             onTimeChanged: (time) {
                               final formatted =
                                   '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
@@ -168,10 +163,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           onChanged: (value) {
                             provider.toggleProgressReport(value);
                           },
-                          activeTrackColor:
-                              settings.isProgressReportEnabled
-                                  ? AppColors.kButtonGreen
-                                  : AppColors.kGrey,
+                          activeTrackColor: settings.isProgressReportEnabled
+                              ? AppColors.kButtonGreen
+                              : AppColors.kGrey,
                         ),
                       ),
                     ),
@@ -195,10 +189,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           onChanged: (value) {
                             provider.toggleNews(value);
                           },
-                          activeTrackColor:
-                              settings.isNewsEnabled
-                                  ? AppColors.kButtonGreen
-                                  : AppColors.kGrey,
+                          activeTrackColor: settings.isNewsEnabled
+                              ? AppColors.kButtonGreen
+                              : AppColors.kGrey,
                         ),
                       ),
                     ),

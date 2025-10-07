@@ -1214,7 +1214,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Fish
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.18 : 0.22),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 1.08),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.15 : 1.08),
       },
 
       // Position 3 (center-left, near trees)
@@ -1273,9 +1273,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     }
 
     final double usableWidth = screenWidth * usableWidthPercent;
-    final double startX =
-        marginX +
-        safetyMarginX; // Apply both margins (total 3% mobile, 5% tablet)
+    final double startX = marginX + safetyMarginX;
     final double bottomY = screenHeight * 0.8; // Bottom area
     final isTabletLandscape =
         !isMobile &&
@@ -1289,12 +1287,12 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       }, // Bottom left
       // Fish - right side
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.85),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.85),
         'top': bottomY * (isTabletLandscape ? 0.15 : 0.23),
       }, // Bottom center-left
       // Rabbit - right side
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.83),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.83),
         'top': bottomY * (isTabletLandscape ? 0.45 : 0.45),
       }, // Bottom center
       // Bird - left edge with minimal margin
@@ -1309,7 +1307,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       }, // Bottom right
       // Tortoise - right side
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.52 : 0.87),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.88 : 0.87),
         'top': bottomY * (isTabletLandscape ? 0.85 : 0.85),
       }, // Bottom right
       // Additional positions if needed
