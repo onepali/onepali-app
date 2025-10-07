@@ -51,6 +51,7 @@ class DragDropContentState extends State<DragDropContent> {
               AppRoutes.dashboardScreen,
               (route) => false,
             );
+            UserAppBar.setTabIndex(0);
           }
         }
       });
@@ -73,9 +74,9 @@ class DragDropContentState extends State<DragDropContent> {
                       path: char1,
                       height:
                           PlatformUtility.isTablet(context) &&
-                                  PlatformUtility.isLandscape(context)
-                              ? 25.h(context)
-                              : 25.h(context),
+                              PlatformUtility.isLandscape(context)
+                          ? 25.h(context)
+                          : 25.h(context),
                       width: 80.w(context),
                       type: SvgSourceType.network,
                     ),
@@ -123,20 +124,19 @@ class DragDropContentState extends State<DragDropContent> {
                       return Container(
                         width:
                             PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 300
-                                : 160,
+                                PlatformUtility.isLandscape(context)
+                            ? 300
+                            : 160,
                         height:
                             PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 80
-                                : 48,
+                                PlatformUtility.isLandscape(context)
+                            ? 80
+                            : 48,
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
-                          color:
-                              isMatched
-                                  ? AppColors.kButtonGreen
-                                  : Colors.grey[300],
+                          color: isMatched
+                              ? AppColors.kButtonGreen
+                              : Colors.grey[300],
                           borderRadius: BorderRadius.circular(48),
                           border: Border.all(
                             color: AppColors.kWhite,
@@ -145,28 +145,25 @@ class DragDropContentState extends State<DragDropContent> {
                           ),
                         ),
                         child: Center(
-                          child:
-                              isMatched
-                                  ? const Icon(
-                                    Icons.check,
-                                    color: AppColors.kWhite,
-                                    size: 40,
-                                  )
-                                  : Text(
-                                    conv[i].messageEn,
-                                    style: AppStyles.text16PxSemiBold.copyWith(
-                                      // Larger text
-                                      color: AppColors.kGrey,
-                                      fontSize:
-                                          PlatformUtility.isTablet(context) &&
-                                                  PlatformUtility.isLandscape(
-                                                    context,
-                                                  )
-                                              ? 32
-                                              : 22,
-                                    ),
-                                    textAlign: TextAlign.center,
+                          child: isMatched
+                              ? const Icon(
+                                  Icons.check,
+                                  color: AppColors.kWhite,
+                                  size: 40,
+                                )
+                              : Text(
+                                  conv[i].messageEn,
+                                  style: AppStyles.text16PxSemiBold.copyWith(
+                                    // Larger text
+                                    color: AppColors.kGrey,
+                                    fontSize:
+                                        PlatformUtility.isTablet(context) &&
+                                            PlatformUtility.isLandscape(context)
+                                        ? 32
+                                        : 22,
                                   ),
+                                  textAlign: TextAlign.center,
+                                ),
                         ),
                       );
                     },
@@ -254,14 +251,14 @@ class DragDropContentState extends State<DragDropContent> {
     return Container(
       width:
           PlatformUtility.isTablet(context) &&
-                  PlatformUtility.isLandscape(context)
-              ? 300
-              : 160,
+              PlatformUtility.isLandscape(context)
+          ? 300
+          : 160,
       height:
           PlatformUtility.isTablet(context) &&
-                  PlatformUtility.isLandscape(context)
-              ? 80
-              : 48,
+              PlatformUtility.isLandscape(context)
+          ? 80
+          : 48,
       margin: const EdgeInsets.symmetric(horizontal: 8),
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -275,8 +272,9 @@ class DragDropContentState extends State<DragDropContent> {
               offset: const Offset(0, 2),
             ),
         ],
-        border:
-            showTryAgain ? Border.all(color: AppColors.kRed, width: 2) : null,
+        border: showTryAgain
+            ? Border.all(color: AppColors.kRed, width: 2)
+            : null,
       ),
       child: Text(
         showTryAgain ? 'Try Again!' : label,
@@ -284,9 +282,9 @@ class DragDropContentState extends State<DragDropContent> {
           color: AppColors.kBlack,
           fontSize:
               PlatformUtility.isTablet(context) &&
-                      PlatformUtility.isLandscape(context)
-                  ? 48
-                  : 30,
+                  PlatformUtility.isLandscape(context)
+              ? 48
+              : 30,
           fontWeight: FontWeight.bold,
           fontFamily: AppConstants.kMuktaFont,
         ),

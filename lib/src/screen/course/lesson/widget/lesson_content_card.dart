@@ -337,14 +337,14 @@ class _LessonContentCardState extends State<LessonContentCard>
         ],
       );
     } else {
-      // Mobile: Use fixed-width sections for consistent layout
+      bool isDog = widget.content.nameEn?.toLowerCase() == 'dog';
+      bool isFish = widget.content.nameEn?.toLowerCase() == 'fish';
       return SizedBox(
         width: double.infinity,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Fixed-size image section (40% of screen width for better balance)
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.4,
               child: Center(
@@ -362,8 +362,16 @@ class _LessonContentCardState extends State<LessonContentCard>
                   ),
                   child: Center(
                     child: _buildImageOrLottie(
-                      width: 30.w(context),
-                      height: 40.h(context),
+                      width: isDog
+                          ? 30.w(context)
+                          : isFish
+                          ? 25.w(context)
+                          : 30.w(context),
+                      height: isDog
+                          ? 30.h(context)
+                          : isFish
+                          ? 25.h(context)
+                          : 35.h(context),
                       isMobile: true,
                     ),
                   ),
