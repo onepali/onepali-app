@@ -73,6 +73,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   CustomAudioWidget? _confettiFeedbackAudio;
   CustomAudioWidget? _goodRemarkAudio;
 
+  // Preloaded audio widgets for faster playback
+  final Map<String, CustomAudioWidget> _preloadedVocabularyAudios = {};
+  final Map<String, CustomAudioWidget> _preloadedAnimalSounds = {};
+
   // Animation values
   late Animation<double> _vocabularyAnimation;
   late Animation<double> _feedbackAnimation;
@@ -159,12 +163,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       CurvedAnimation(parent: _bounceController, curve: Curves.elasticInOut),
     );
 
-    _shakeAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0.1, 0.0),
-    ).animate(
-      CurvedAnimation(parent: _shakeController, curve: Curves.elasticInOut),
-    );
+    _shakeAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0.1, 0.0)).animate(
+          CurvedAnimation(parent: _shakeController, curve: Curves.elasticInOut),
+        );
   }
 
   void _initializeDragTargets() {
@@ -225,6 +227,49 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     } catch (e) {
       logger.e('Error initializing good remark audio: $e');
     }
+
+    // Preload all vocabulary audios and animal sounds for faster playback
+    _preloadAllAudios();
+  }
+
+  void _preloadAllAudios() {
+    if (widget.content.dragTargets?.isEmpty != false) return;
+
+    for (final target in widget.content.dragTargets!) {
+      if (target.id?.isEmpty == true) continue;
+
+      // Preload vocabulary audio (wordAudio)
+      if (target.wordAudio?.isNotEmpty == true) {
+        try {
+          _preloadedVocabularyAudios[target.id!] = CustomAudioWidget(
+            audioPath: target.wordAudio!,
+            audioSourceType: AudioSourceType.network,
+          );
+          logger.d('Preloaded vocabulary audio for ${target.nameEn}');
+        } catch (e) {
+          logger.e(
+            'Error preloading vocabulary audio for ${target.nameEn}: $e',
+          );
+        }
+      }
+
+      // Preload animal sound audio
+      if (target.audio?.isNotEmpty == true) {
+        try {
+          _preloadedAnimalSounds[target.id!] = CustomAudioWidget(
+            audioPath: target.audio!,
+            audioSourceType: AudioSourceType.network,
+          );
+          logger.d('Preloaded animal sound for ${target.nameEn}');
+        } catch (e) {
+          logger.e('Error preloading animal sound for ${target.nameEn}: $e');
+        }
+      }
+    }
+
+    logger.d(
+      'Preloaded ${_preloadedVocabularyAudios.length} vocabulary audios and ${_preloadedAnimalSounds.length} animal sounds',
+    );
   }
 
   void _startLessonFlow() async {
@@ -286,20 +331,31 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     final target = widget.content.dragTargets![_currentAnimalIndex];
 
-    try {
-      setState(() {
-        _isWaitingForMatch = true;
-      });
+    // Set state and play audio without waiting for setState to complete
+    setState(() {
+      _isWaitingForMatch = true;
+    });
 
-      _animalSoundAudio?.dispose();
-      _animalSoundAudio = CustomAudioWidget(
-        audioPath: target.audio!,
-        audioSourceType: AudioSourceType.network,
-      );
-      await _animalSoundAudio!.play();
-      logger.d(
-        'Playing animal sound for ${target.nameEn} (index: $_currentAnimalIndex)',
-      );
+    try {
+      // Use preloaded audio if available, otherwise create new one
+      final preloadedAudio = _preloadedAnimalSounds[target.id];
+      if (preloadedAudio != null) {
+        await preloadedAudio.play();
+        logger.d(
+          'Playing preloaded animal sound for ${target.nameEn} (index: $_currentAnimalIndex)',
+        );
+      } else {
+        // Fallback to creating new audio widget
+        _animalSoundAudio?.dispose();
+        _animalSoundAudio = CustomAudioWidget(
+          audioPath: target.audio!,
+          audioSourceType: AudioSourceType.network,
+        );
+        await _animalSoundAudio!.play();
+        logger.d(
+          'Playing animal sound for ${target.nameEn} (index: $_currentAnimalIndex)',
+        );
+      }
     } catch (e) {
       logger.e('Error playing animal sound: $e');
     }
@@ -391,15 +447,24 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       _bounceController.reverse();
     });
 
-    // Play vocabulary audio and wait for it to complete
+    // Play vocabulary audio and wait for it to complete (use preloaded audio)
     if (target.wordAudio?.isNotEmpty == true) {
       try {
-        _vocabularyAudio?.dispose();
-        _vocabularyAudio = CustomAudioWidget(
-          audioPath: target.wordAudio!,
-          audioSourceType: AudioSourceType.network,
-        );
-        await _vocabularyAudio!.play();
+        // Use preloaded audio if available, otherwise create new one
+        final preloadedAudio = _preloadedVocabularyAudios[target.id];
+        if (preloadedAudio != null) {
+          await preloadedAudio.play();
+          logger.d('Playing preloaded vocabulary audio for ${target.nameEn}');
+        } else {
+          // Fallback to creating new audio widget
+          _vocabularyAudio?.dispose();
+          _vocabularyAudio = CustomAudioWidget(
+            audioPath: target.wordAudio!,
+            audioSourceType: AudioSourceType.network,
+          );
+          await _vocabularyAudio!.play();
+          logger.d('Playing vocabulary audio for ${target.nameEn}');
+        }
       } catch (e) {
         logger.e('Error playing vocabulary audio: $e');
       }
@@ -552,14 +617,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Hide leopard animation after delay (only if it was shown for last item)
       if (widget.isLastItem) {
         // Adjust timing based on whether confetti was shown
-        final hideDelay =
-            widget.content.feedback?.confettiOnComplete == true
-                ? const Duration(
-                  seconds: 8,
-                ) // Hide after confetti animation (4s) + good remark audio (3-4s)
-                : const Duration(
-                  seconds: 4,
-                ); // Hide after good remark audio only
+        final hideDelay = widget.content.feedback?.confettiOnComplete == true
+            ? const Duration(
+                seconds: 8,
+              ) // Hide after confetti animation (4s) + good remark audio (3-4s)
+            : const Duration(seconds: 4); // Hide after good remark audio only
 
         Future.delayed(hideDelay, () {
           if (mounted) {
@@ -584,18 +646,37 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         'All matches completed! Course will auto-complete in 3 seconds.',
       );
     } else {
-      // Hide vocabulary box after showing it and play next animal sound
+      // Start preparing the next animal sound BEFORE hiding the vocabulary box
+      // This ensures it's ready to play immediately when the box disappears
+      final nextAnimalIndex = _currentAnimalIndex + 1;
+      if (nextAnimalIndex < widget.content.dragTargets!.length) {
+        final nextTarget = widget.content.dragTargets![nextAnimalIndex];
+        // Ensure the next audio is preloaded and ready
+        if (_preloadedAnimalSounds[nextTarget.id] == null &&
+            nextTarget.audio?.isNotEmpty == true) {
+          try {
+            _preloadedAnimalSounds[nextTarget.id!] = CustomAudioWidget(
+              audioPath: nextTarget.audio!,
+              audioSourceType: AudioSourceType.network,
+            );
+            logger.d('Pre-prepared next animal sound: ${nextTarget.nameEn}');
+          } catch (e) {
+            logger.e('Error pre-preparing next animal sound: $e');
+          }
+        }
+      }
+
+      // Hide vocabulary box after showing it and play next animal sound immediately
       Future.delayed(const Duration(seconds: 2), () {
+        // Start both animation and sound simultaneously for faster transition
         setState(() {
           _showVocabularyBox = false;
           _showCorrectFeedback = false;
         });
-        _vocabularyController.reverse();
 
-        // Play next animal sound after a short delay
-        Future.delayed(const Duration(milliseconds: 500), () {
-          _playNextAnimalSound();
-        });
+        // Start animation reverse and play sound at the same time
+        _vocabularyController.reverse();
+        _playNextAnimalSound(); // This now plays immediately without waiting for animation
       });
     }
 
@@ -680,6 +761,17 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _vocabularyAudio = null;
     _confettiFeedbackAudio = null;
     _goodRemarkAudio = null;
+
+    // Dispose preloaded audios
+    for (final audio in _preloadedVocabularyAudios.values) {
+      audio.dispose();
+    }
+    _preloadedVocabularyAudios.clear();
+
+    for (final audio in _preloadedAnimalSounds.values) {
+      audio.dispose();
+    }
+    _preloadedAnimalSounds.clear();
   }
 
   @override
@@ -808,8 +900,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
             builder: (context, child) {
               final scale =
                   (_currentMatchedItem == target.id && _showCorrectFeedback)
-                      ? _bounceAnimation.value
-                      : 1.0;
+                  ? _bounceAnimation.value
+                  : 1.0;
 
               return Transform.scale(
                 scale: scale,
@@ -831,10 +923,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                       //           )
                       //           : null,
                       // ),
-                      child:
-                          isCompleted
-                              ? _buildCompletedTarget(target)
-                              : _buildTargetSilhouette(target, size),
+                      child: isCompleted
+                          ? _buildCompletedTarget(target)
+                          : _buildTargetSilhouette(target, size),
                     );
                   },
                 ),
@@ -926,10 +1017,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
             animation: _shakeAnimation,
             builder: (context, child) {
               return Transform.translate(
-                offset:
-                    _showIncorrectFeedback
-                        ? _shakeAnimation.value * 10
-                        : Offset.zero,
+                offset: _showIncorrectFeedback
+                    ? _shakeAnimation.value * 10
+                    : Offset.zero,
                 child: Draggable<String>(
                   data: target.id!,
                   feedback: SizedBox(
@@ -1262,12 +1352,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     final targetSize = _getTargetSizeForItem(itemId, isMobile);
     final isDog = itemId.toLowerCase() == 'dog';
     final isFish = itemId.toLowerCase() == 'fish';
-    final size =
-        isDog
-            ? targetSize * (isMobile ? 0.55 : 0.5)
-            : isFish
-            ? targetSize * (isMobile ? 0.85 : 1.05)
-            : targetSize * 0.85;
+    final size = isDog
+        ? targetSize * (isMobile ? 0.55 : 0.5)
+        : isFish
+        ? targetSize * (isMobile ? 0.85 : 1.05)
+        : targetSize * 0.85;
 
     return size; // 15% smaller than target
   }
