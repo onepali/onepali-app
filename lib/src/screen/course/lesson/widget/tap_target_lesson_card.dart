@@ -752,7 +752,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Dog position (left side, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.12 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.32),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.25),
       },
 
       // Cat position (center-left, near trees)
@@ -764,7 +764,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Fish position (in water area - bottom center)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.18 : 0.22),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.8 : 1.01),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.8 : 1.05),
       },
 
       // Bird position (on tree branch - top area)

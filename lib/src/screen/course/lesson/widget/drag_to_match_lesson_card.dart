@@ -1207,20 +1207,20 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Dog
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.12 : 0.15),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.33 : 0.25),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.33 : 0.2),
       },
 
       // Position 2 (left side, on grass)
       // Fish
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.18 : 0.22),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 1),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 1.08),
       },
 
       // Position 3 (center-left, near trees)
       // Rabbit
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.75 : 0.75),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.75 : 0.72),
         'top': startY + usableHeight * (isTabletLandscape ? 1.02 : 0.75),
       },
 
@@ -1236,14 +1236,14 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Position 5 (on tree branch - top area)
       // Cat
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.61 : 0.6),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.45),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.61 : 0.57),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.47),
       },
 
       // Tortoise
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.45 : 0.48),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.1 : 0.99),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.1 : 1.05),
       },
 
       //Additional positions for more targets
@@ -1258,57 +1258,64 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     bool isMobile,
   ) {
     // Position draggable items at the bottom area of the screen
-    // Using similar screen-based calculation as targets
-    final double usableWidth =
-        screenWidth * (isMobile ? 0.9 : 1.6); // Leave some margin
-    final double startX = screenWidth * 0.05; // Start with 5% margin
+    // Very small margins to prevent items from going off-screen
+    final double marginX, usableWidthPercent, safetyMarginX;
+
+    if (isMobile) {
+      marginX = screenWidth * 0.02; // Very small margin - 2%
+      usableWidthPercent = 0.96; // Use 96% of screen width
+      safetyMarginX = screenWidth * 0.01; // Tiny safety margin - 1%
+    } else {
+      // Tablet handling
+      marginX = screenWidth * 0.03; // Small margin for tablets - 3%
+      usableWidthPercent = 0.94; // Use 94% of screen width
+      safetyMarginX = screenWidth * 0.02; // Small safety margin - 2%
+    }
+
+    final double usableWidth = screenWidth * usableWidthPercent;
+    final double startX =
+        marginX +
+        safetyMarginX; // Apply both margins (total 3% mobile, 5% tablet)
     final double bottomY = screenHeight * 0.8; // Bottom area
     final isTabletLandscape =
         !isMobile &&
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
     return [
-      // Dog
+      // Dog - left edge with minimal margin
       {
-        'left':
-            startX +
-            usableWidth * (isTabletLandscape ? 0.0015 - 0.025 : 0.0015 - 0.025),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
         'top': bottomY * (isTabletLandscape ? 0.85 : 0.7),
       }, // Bottom left
-      // Fish
+      // Fish - right side
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.9),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.85),
         'top': bottomY * (isTabletLandscape ? 0.15 : 0.23),
       }, // Bottom center-left
-      // Rabbit
+      // Rabbit - right side
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.88),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.5 : 0.83),
         'top': bottomY * (isTabletLandscape ? 0.45 : 0.45),
       }, // Bottom center
-      // Bird
+      // Bird - left edge with minimal margin
       {
-        'left':
-            startX +
-            usableWidth * (isTabletLandscape ? 0.0015 - 0.025 : 0.0015 - 0.025),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
         'top': bottomY * (isTabletLandscape ? 0.55 : 0.5),
       }, // Bottom center-right
-      // Cat
+      // Cat - left edge with minimal margin
       {
-        'left':
-            startX +
-            usableWidth * (isTabletLandscape ? 0.0015 - 0.025 : 0.0015 - 0.025),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
         'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
       }, // Bottom right
-      // Tortoise
+      // Tortoise - right side
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.52 : 0.92),
-
+        'left': startX + usableWidth * (isTabletLandscape ? 0.52 : 0.87),
         'top': bottomY * (isTabletLandscape ? 0.85 : 0.85),
       }, // Bottom right
       // Additional positions if needed
       {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},
       {'left': startX + usableWidth * 0.6, 'top': bottomY + 40},
-      {'left': startX + usableWidth * 0.8, 'top': bottomY + 40},
+      {'left': startX + usableWidth * 0.82, 'top': bottomY + 40},
     ];
   }
 
