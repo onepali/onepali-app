@@ -24,3 +24,9 @@ enum VideoSourceType { asset, network }
 
 // Network Type
 enum NetworkType { none, wifi, mobile, ethernet, bluetooth, vpn, other }
+
+enum DeviceType { mobile, tablet, desktop, watch }
+
+enum RefinedSize { small, normal, large, extraLarge }
+
+enum RefinedOrientation { portrait, landscape }

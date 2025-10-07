@@ -56,37 +56,43 @@ class PHomeCard extends StatelessWidget {
                     fontSize: isMobilePortrait ? 16 : 24,
                   ),
                 ),
-                items: children.map((child) {
-                  return DropdownMenuItem<String>(
-                    value: child.uid,
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: [
-                        CustomImage(
-                          child.avatarUrl.isNotEmpty ? child.avatarUrl : "",
-                          imageType: child.avatarUrl.isNotEmpty
-                              ? CustomImageType.network
-                              : CustomImageType.local,
-                          circular: true,
-                          height: Dimensions.kSettingAvatarSize(context),
-                          width: Dimensions.kSettingAvatarSize(context),
-                          cover: false,
+                items: children
+                    .where(
+                      (child) =>
+                          child.fullName.isNotEmpty && child.uid.isNotEmpty,
+                    )
+                    .map((child) {
+                      return DropdownMenuItem<String>(
+                        value: child.uid,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            CustomImage(
+                              child.avatarUrl.isNotEmpty ? child.avatarUrl : "",
+                              imageType: child.avatarUrl.isNotEmpty
+                                  ? CustomImageType.network
+                                  : CustomImageType.local,
+                              circular: true,
+                              height: Dimensions.kSettingAvatarSize(context),
+                              width: Dimensions.kSettingAvatarSize(context),
+                              cover: false,
+                            ),
+                            Gaps.horizontalGapOf(12),
+                            Text(
+                              child.fullName,
+                              style: AppStyles.text16PxRegular.copyWith(
+                                fontFamily: AppConstants.kDMSansFont,
+                                fontSize: isMobilePortrait ? 16 : 24,
+                                fontWeight: isMobilePortrait
+                                    ? FontWeight.w500
+                                    : FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        Gaps.horizontalGapOf(12),
-                        Text(
-                          child.fullName,
-                          style: AppStyles.text16PxRegular.copyWith(
-                            fontFamily: AppConstants.kDMSansFont,
-                            fontSize: isMobilePortrait ? 16 : 24,
-                            fontWeight: isMobilePortrait
-                                ? FontWeight.w500
-                                : FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                      );
+                    })
+                    .toList(),
                 onChanged: (value) {
                   if (value != null) {
                     onChildSelected(value);

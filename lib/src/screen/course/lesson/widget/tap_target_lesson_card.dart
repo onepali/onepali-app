@@ -55,6 +55,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   CustomAudioWidget? _incorrectFeedbackAudio;
   CustomAudioWidget? _targetAudio;
 
+  // Preloaded audio widgets for faster playback
+  final Map<String, CustomAudioWidget> _preloadedTargetAudios = {};
+
   @override
   void initState() {
     super.initState();
@@ -71,10 +74,33 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       vsync: this,
     );
 
+    // Preload all target audios
+    _preloadAllAudios();
+
     // Start the lesson by playing the question audio
     Misc.onLayoutRendered(() {
       _playQuestionAudio();
     });
+  }
+
+  void _preloadAllAudios() {
+    if (widget.content.tapTargets?.isEmpty != false) return;
+
+    for (final target in widget.content.tapTargets!) {
+      if (target.id?.isEmpty == true || target.audio?.isEmpty == true) continue;
+
+      try {
+        _preloadedTargetAudios[target.id!] = CustomAudioWidget(
+          audioPath: target.audio!,
+          audioSourceType: AudioSourceType.network,
+        );
+        logger.d('Preloaded audio for ${target.id}');
+      } catch (e) {
+        logger.e('Error preloading audio for ${target.id}: $e');
+      }
+    }
+
+    logger.d('Preloaded ${_preloadedTargetAudios.length} target audios');
   }
 
   @override
@@ -86,6 +112,10 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       _disposeAudioWidgets();
 
       _resetState();
+
+      // Preload audios for new content
+      _preloadAllAudios();
+
       Misc.onLayoutRendered(() {
         _playQuestionAudio();
       });
@@ -149,13 +179,22 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Haptic feedback not available on all platforms
     }
 
-    // Step 3: Play the target audio when tapped
+    // Step 3: Play the target audio when tapped (use preloaded audio)
     try {
-      _targetAudio = CustomAudioWidget(
-        audioPath: target.audio ?? '',
-        audioSourceType: AudioSourceType.network,
-      );
-      await _targetAudio!.play();
+      // Use preloaded audio if available, otherwise create new one
+      final preloadedAudio = _preloadedTargetAudios[target.id];
+      if (preloadedAudio != null) {
+        await preloadedAudio.play();
+        logger.d('Playing preloaded audio for ${target.id}');
+      } else {
+        // Fallback to creating new audio widget
+        _targetAudio = CustomAudioWidget(
+          audioPath: target.audio ?? '',
+          audioSourceType: AudioSourceType.network,
+        );
+        await _targetAudio!.play();
+        logger.d('Playing audio for ${target.id}');
+      }
     } catch (e) {
       logger.e('Error playing target audio: $e');
     }
@@ -300,6 +339,12 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       _correctFeedbackAudio = null;
       _incorrectFeedbackAudio = null;
       _targetAudio = null;
+
+      // Dispose preloaded audios
+      for (final audio in _preloadedTargetAudios.values) {
+        await audio.dispose();
+      }
+      _preloadedTargetAudios.clear();
     } catch (e) {
       logger.e('Error disposing audio widgets: $e');
     }
@@ -453,9 +498,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                     color: AppColors.kWhite,
                     fontSize:
                         PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 64
-                            : 40,
+                            PlatformUtility.isLandscape(context)
+                        ? 64
+                        : 40,
                     fontFamily: AppConstants.kMuktaFont,
                   ),
                 ),
@@ -484,8 +529,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
               animation: _feedbackController,
               child: LottieHelper.fromSource(
                 path: widget.content.feedback?.correct?.animation ?? '',
-                height: 120,
-                width: 120,
+                height: 160,
+                width: 160,
                 repeat: false,
                 type: LottieSourceType.network,
               ),
@@ -594,37 +639,36 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       top: position['top'],
       child: GestureDetector(
         onTap: () => _onTargetTap(target),
-        child:
-            shouldShowHint
-                ? AnimatedBuilder(
-                  animation: _hintController,
-                  child: _buildTargetImage(target, targetSize, isSelected),
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: 1.0 + (0.2 * _hintController.value),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.kYellow.withValues(
-                                alpha: 0.6 * _hintController.value,
-                              ),
-                              blurRadius: 15,
-                              spreadRadius: 5,
+        child: shouldShowHint
+            ? AnimatedBuilder(
+                animation: _hintController,
+                child: _buildTargetImage(target, targetSize, isSelected),
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: 1.0 + (0.2 * _hintController.value),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.kYellow.withValues(
+                              alpha: 0.6 * _hintController.value,
                             ),
-                          ],
-                        ),
-                        child: child,
+                            blurRadius: 15,
+                            spreadRadius: 5,
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                )
-                : AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  transform: Matrix4.identity()..scale(isSelected ? 1.1 : 1.0),
-                  child: _buildTargetImage(target, targetSize, isSelected),
-                ),
+                      child: child,
+                    ),
+                  );
+                },
+              )
+            : AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                transform: Matrix4.identity()..scale(isSelected ? 1.1 : 1.0),
+                child: _buildTargetImage(target, targetSize, isSelected),
+              ),
       ),
     );
   }
@@ -708,7 +752,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Dog position (left side, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.12 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.32),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.25),
       },
 
       // Cat position (center-left, near trees)
@@ -720,7 +764,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Fish position (in water area - bottom center)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.18 : 0.22),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.8 : 1.01),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.8 : 1.05),
       },
 
       // Bird position (on tree branch - top area)

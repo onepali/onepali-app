@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
@@ -29,16 +29,16 @@ void main() async {
     DeviceOrientation.landscapeRight,
   ]);
 
-  await dotenv.load(fileName: AppConstants.dotEnvFileName);
+  // await dotenv.load(fileName: AppConstants.dotEnvFileName);
   await AppInitializer().initializeApp();
+
+  final bool logged = await AppInitializer.checkUserAuthentication();
+  final bool isParentLogged = await AppInitializer.isParentLogged();
 
   runApp(
     MultiProvider(
       providers: ProviderConfig.providers,
-      child: MyApp(
-        logged: await AppInitializer.checkUserAuthentication(),
-        isParentLogged: await AppInitializer.isParentLogged(),
-      ),
+      child: MyApp(logged: logged, isParentLogged: isParentLogged),
     ),
   );
 }

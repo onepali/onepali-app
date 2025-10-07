@@ -24,20 +24,20 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double verticalGap1 = isTabletPortrait ? 80.0 : 50.0;
     final double verticalGap2 = isTabletPortrait ? 80.0 : 50.0;
-    final double imageSize = isTabletPortrait ? 300.0 : 230.0;
+    final double imageSize = isTabletPortrait ? 450.0 : 230.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
     // final double buttonGap = isTabletPortrait ? 40.0 : 30.0;
     final double buttonSpacing = isTabletPortrait ? 20.0 : 15.0;
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular
-            : AppStyles.text16PxRegular;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxRegular
+        : AppStyles.text16PxRegular;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(

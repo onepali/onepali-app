@@ -57,35 +57,43 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
       ),
       body: _screen[_currentIndex],
 
-      bottomNavigationBar: BottomNavigationBar(
-        items: pzoneBottomModel
-            .map(
-              (e) => BottomNavigationBarItem(
-                icon: SvgHelper.fromSource(
-                  path: e.icon,
-                  height: Dimensions.kBottomNavIconSize(context),
-                  width: Dimensions.kBottomNavIconSize(context),
-                  color: AppColors.kLightGrey,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          items: pzoneBottomModel
+              .map(
+                (e) => BottomNavigationBarItem(
+                  icon: SvgHelper.fromSource(
+                    path: e.icon,
+                    height: Dimensions.kBottomNavIconSize(context),
+                    width: Dimensions.kBottomNavIconSize(context),
+                    color: AppColors.kLightGrey,
+                  ),
+                  activeIcon: SvgHelper.fromSource(
+                    path: e.icon,
+                    height: Dimensions.kBottomNavIconSize(context),
+                    width: Dimensions.kBottomNavIconSize(context),
+                    color: AppColors.kSecondaryColor,
+                  ),
+                  label: e.label,
                 ),
-                activeIcon: SvgHelper.fromSource(
-                  path: e.icon,
-                  height: Dimensions.kBottomNavIconSize(context),
-                  width: Dimensions.kBottomNavIconSize(context),
-                  color: AppColors.kSecondaryColor,
-                ),
-                label: e.label,
-              ),
-            )
-            .toList(),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.kWhite,
-        selectedItemColor: AppColors.kSecondaryColor,
-        showSelectedLabels: false,
-        // selectedFontSize: 0,
-        // unselectedFontSize: 0,
-        showUnselectedLabels: false,
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
+              )
+              .toList(),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: AppColors.kWhite,
+          selectedItemColor: AppColors.kSecondaryColor,
+          showSelectedLabels: false,
+          // selectedFontSize: 0,
+          // unselectedFontSize: 0,
+          showUnselectedLabels: false,
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
+          enableFeedback: false,
+        ),
       ),
     );
   }

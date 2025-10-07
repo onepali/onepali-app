@@ -73,18 +73,14 @@ class MetricsTrackingHelper {
   }
 
   // Context-free version for dispose() methods - completely safe
+  // This now properly updates metrics via LearningSessionManager
   static Future<void> endLearningSessionSafe() async {
     try {
       await LearningSessionManager().endSession();
-      logger.d('Learning session ended safely via session manager');
-      logger.w(
-        '⚠️  Note: PzMetricsProvider.endLearningSession() not called (no context available)',
-      );
-      logger.w(
-        '⚠️  Metrics may not be updated unless endLearningSession is called elsewhere',
-      );
+      logger.d('✅ Learning session ended safely via session manager');
+      logger.d('✅ Metrics updated directly to Firestore (context-free)');
     } catch (e) {
-      logger.e('Error ending learning session safely: $e');
+      logger.e('❌ Error ending learning session safely: $e');
     }
   }
 

@@ -51,17 +51,33 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final isTabletPortrait =
         (PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context));
-    final avatarSize = isTabletPortrait ? 64.0 : 45.0;
-    final rewardIconSize = isTabletPortrait ? 50.0 : 40.0;
-    final starRewardLottieSize = isTabletPortrait ? 85.0 : 40.0;
-    final tabIconSize = isTabletPortrait ? 64.0 : 45.0;
-    final horizontalPadding = isTabletPortrait ? 24.0 : 16.0;
-    final verticalPadding = isTabletPortrait ? 12.0 : 8.0;
-    final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
-    final tabSpacing = isTabletPortrait ? 25.0 : 10.0;
+
+    // Smaller sizes for mobile landscape to prevent overflow
+    final avatarSize = isTabletPortrait
+        ? 64.0
+        : (isMobileLandScape ? 35.0 : 45.0);
+    final rewardIconSize = isTabletPortrait
+        ? 50.0
+        : (isMobileLandScape ? 30.0 : 40.0);
+    final starRewardLottieSize = isTabletPortrait
+        ? 85.0
+        : (isMobileLandScape ? 30.0 : 40.0);
+    final tabIconSize = isTabletPortrait
+        ? 64.0
+        : (isMobileLandScape ? 35.0 : 45.0);
+    final horizontalPadding = isTabletPortrait
+        ? 24.0
+        : (isMobileLandScape ? 8.0 : 16.0);
+    final verticalPadding = isTabletPortrait
+        ? 12.0
+        : (isMobileLandScape ? 4.0 : 8.0);
+    final guestTopGap = isTabletPortrait ? 20.0 : 20.0;
+    final tabSpacing = isTabletPortrait
+        ? 25.0
+        : (isMobileLandScape ? 6.0 : 10.0);
     final nameTextStyle = isTabletPortrait
         ? AppStyles.text32PxBold
-        : AppStyles.text16PxBold;
+        : (isMobileLandScape ? AppStyles.text12PxBold : AppStyles.text16PxBold);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -92,34 +108,41 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     Row(
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            if (!isGuest) {
-                              Utility.navigateMaterialRoute(
-                                context,
-                                DrawerScreen(
-                                  data: childData,
-                                  totalChildCount: totalChildCount,
-                                ),
-                                routeName: AppRoutes.drawerRoutes,
-                              );
-                            }
-                            // } else {
-                            //   Utility.navigate(
-                            //     context,
-                            //     AppRoutes.systemScreen,
-                            //   );
-                            // }
-                          },
-                          icon: CustomImage(
-                            isGuest ? Assets.blueUserAvatar : profileImage,
-                            height: avatarSize,
-                            width: avatarSize,
-                            circular: true,
-                            // isProfileImage: true,
-                            imageType: isGuest
-                                ? CustomImageType.local
-                                : CustomImageType.network,
+                        SizedBox(
+                          height: tabIconSize + 10,
+                          child: Center(
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                if (!isGuest) {
+                                  Utility.navigateMaterialRoute(
+                                    context,
+                                    DrawerScreen(
+                                      data: childData,
+                                      totalChildCount: totalChildCount,
+                                    ),
+                                    routeName: AppRoutes.drawerRoutes,
+                                  );
+                                }
+                                // } else {
+                                //   Utility.navigate(
+                                //     context,
+                                //     AppRoutes.systemScreen,
+                                //   );
+                                // }
+                              },
+                              icon: CustomImage(
+                                isGuest ? Assets.blueUserAvatar : profileImage,
+                                height: avatarSize,
+                                width: avatarSize,
+                                circular: true,
+                                // isProfileImage: true,
+                                imageType: isGuest
+                                    ? CustomImageType.local
+                                    : CustomImageType.network,
+                              ),
+                            ),
                           ),
                         ),
                         Gaps.horizontalGapOf(tabSpacing),
@@ -177,26 +200,31 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ],
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: tabSpacing,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (int i = 0; i < homeServices.length; i++)
-                          _buildTab(
-                            homeServices[i].icon ?? '',
-                            homeServices[i].name ?? '',
-                            selectedIndex == i
-                                ? AppColors.kSecondaryColor
-                                : AppColors.kGrey,
-                            () => onTabSelected(homeServices[i].name ?? ''),
-                            i,
-                            selectedIndex,
-                            tabIconSize,
-                          ),
-                        Gaps.horizontalGapOf(tabSpacing),
-                      ],
+                    Flexible(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: tabSpacing,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (int i = 0; i < homeServices.length; i++)
+                              _buildTab(
+                                homeServices[i].icon ?? '',
+                                homeServices[i].name ?? '',
+                                selectedIndex == i
+                                    ? AppColors.kSecondaryColor
+                                    : AppColors.kGrey,
+                                () => onTabSelected(homeServices[i].name ?? ''),
+                                i,
+                                selectedIndex,
+                                tabIconSize,
+                              ),
+                            Gaps.horizontalGapOf(tabSpacing),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -218,33 +246,40 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         children: [
                           Row(
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  if (!isGuest) {
-                                    Utility.navigateMaterialRoute(
-                                      context,
-                                      TabDrawerScreen(
-                                        data: childData,
-                                        totalChildCount: totalChildCount,
-                                      ),
-                                      routeName: AppRoutes.tabDrawerRoutes,
-                                    );
-                                  }
-                                  //  else {
-                                  //   Utility.navigate(context, AppRoutes.systemScreen);
-                                  // }
-                                },
-                                icon: CustomImage(
-                                  isGuest
-                                      ? Assets.blueUserAvatar
-                                      : profileImage,
-                                  height: avatarSize,
-                                  width: avatarSize,
-                                  circular: true,
-                                  isProfileImage: true,
-                                  imageType: isGuest
-                                      ? CustomImageType.local
-                                      : CustomImageType.network,
+                              SizedBox(
+                                height: tabIconSize + 10,
+                                child: Center(
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      if (!isGuest) {
+                                        Utility.navigateMaterialRoute(
+                                          context,
+                                          TabDrawerScreen(
+                                            data: childData,
+                                            totalChildCount: totalChildCount,
+                                          ),
+                                          routeName: AppRoutes.tabDrawerRoutes,
+                                        );
+                                      }
+                                      //  else {
+                                      //   Utility.navigate(context, AppRoutes.systemScreen);
+                                      // }
+                                    },
+                                    icon: CustomImage(
+                                      isGuest
+                                          ? Assets.blueUserAvatar
+                                          : profileImage,
+                                      height: avatarSize,
+                                      width: avatarSize,
+                                      circular: true,
+                                      isProfileImage: true,
+                                      imageType: isGuest
+                                          ? CustomImageType.local
+                                          : CustomImageType.network,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Gaps.horizontalGapOf(tabSpacing),
@@ -267,28 +302,34 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ],
                       ),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: tabSpacing,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (int i = 0; i < homeServices.length; i++) ...[
-                            _buildTab(
-                              homeServices[i].icon ?? '',
-                              homeServices[i].name ?? '',
-                              selectedIndex == i
-                                  ? AppColors.kSecondaryColor
-                                  : AppColors.kGrey,
-                              () => onTabSelected(homeServices[i].name ?? ''),
-                              i,
-                              selectedIndex,
-                              tabIconSize,
-                            ),
-                            if (i != homeServices.length - 1)
-                              Gaps.horizontalGapOf(tabSpacing),
-                          ],
-                        ],
+                      Flexible(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: tabSpacing,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (int i = 0; i < homeServices.length; i++) ...[
+                                _buildTab(
+                                  homeServices[i].icon ?? '',
+                                  homeServices[i].name ?? '',
+                                  selectedIndex == i
+                                      ? AppColors.kSecondaryColor
+                                      : AppColors.kGrey,
+                                  () =>
+                                      onTabSelected(homeServices[i].name ?? ''),
+                                  i,
+                                  selectedIndex,
+                                  tabIconSize,
+                                ),
+                                if (i != homeServices.length - 1)
+                                  Gaps.horizontalGapOf(tabSpacing),
+                              ],
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -537,7 +578,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Text(
                     label,
                     textAlign: TextAlign.center,
-                    // maxLines: 1,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: labelTextStyle.copyWith(
                       color: isSelected ? AppColors.kWhite : Colors.transparent,
                     ),
@@ -557,11 +599,16 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    final isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
 
     if (isTabletLandscape) {
       return Size.fromHeight(isGuest ? 160 : 160);
     } else if (isTabletPortrait) {
       return const Size.fromHeight(130);
+    } else if (isMobileLandscape) {
+      return Size.fromHeight(isGuest ? 110 : 120);
     } else {
       return const Size.fromHeight(110);
     }

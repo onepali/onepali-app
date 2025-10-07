@@ -36,8 +36,9 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
     final double titleBottomGap = isTabletPortrait ? 40.0 : 30.0;
     final double gridHeight =
         MediaQuery.of(context).size.height * (isTabletPortrait ? 0.65 : 0.6);
-    final int crossAxisCount =
-        isTabletPortrait ? 4 : (isMobilePortrait ? 3 : 5);
+    final int crossAxisCount = isTabletPortrait
+        ? 4
+        : (isMobilePortrait ? 3 : 5);
     final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double avatarSize = isTabletPortrait ? 150.0 : 80.0;
@@ -45,12 +46,12 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
     final double avatarBorderSize = isTabletPortrait ? 3.5 : 2.5;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -130,10 +131,16 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
   }) {
     return InkWell(
       onTap: onTap,
+      splashColor: AppColors.kTransparentColor,
+      highlightColor: AppColors.kTransparentColor,
+      focusColor: AppColors.kTransparentColor,
+      hoverColor: AppColors.kTransparentColor,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? AppColors.kButtonGreen : AppColors.kLightGrey,
+            color: isSelected
+                ? AppColors.kButtonGreen
+                : AppColors.kTransparentColor,
             width: isSelected ? avatarBorderSize : 1,
           ),
           shape: BoxShape.circle,
