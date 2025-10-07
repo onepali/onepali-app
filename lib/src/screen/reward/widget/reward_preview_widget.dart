@@ -13,6 +13,7 @@ class RewardPreviewWidget extends StatefulWidget {
 
 class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
   bool _isPlayingAudio = false;
+  CustomAudioWidget? _audioWidget;
 
   @override
   void initState() {
@@ -21,9 +22,31 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
     _initializeAudio();
   }
 
-  void _initializeAudio() {
+  void _initializeAudio() async {
     if (widget.data.sAudio.isNotEmpty) {
       logger.i('🎵 Reward audio path: ${widget.data.sAudio}');
+
+      _audioWidget = CustomAudioWidget(
+        audioPath: widget.data.sAudio,
+        audioSourceType: AudioSourceType.network,
+      );
+
+      _audioWidget!
+          .preload()
+          .then((_) {
+            logger.i('✅ Reward audio preloaded successfully');
+          })
+          .catchError((e) {
+            logger.w('⚠️ Failed to preload reward audio: $e');
+          });
+
+      _audioWidget!.audioPlayer.onPlayerComplete.listen((_) {
+        if (mounted) {
+          setState(() {
+            _isPlayingAudio = false;
+          });
+        }
+      });
     }
   }
 
@@ -33,36 +56,31 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
   }
 
   Future<void> _playAudio() async {
+    if (_audioWidget == null || widget.data.sAudio.isEmpty) return;
+
     try {
-      if (widget.data.sAudio.isNotEmpty) {
-        setState(() {
-          _isPlayingAudio = true;
-        });
+      if (_isPlayingAudio) {
+        await _audioWidget!.audioPlayer.stop();
+      }
 
-        final audioWidget = CustomAudioWidget(
-          audioPath: widget.data.sAudio,
-          audioSourceType: AudioSourceType.network,
-        );
+      setState(() {
+        _isPlayingAudio = true;
+      });
 
-        await audioWidget.play();
-        await audioWidget.audioPlayer.onPlayerComplete.first;
-        await audioWidget.dispose();
-
+      await _audioWidget!.play();
+    } catch (e) {
+      logger.e('Error playing reward audio: $e');
+      if (mounted) {
         setState(() {
           _isPlayingAudio = false;
         });
       }
-    } catch (e) {
-      logger.e('Error playing reward audio: $e');
-      setState(() {
-        _isPlayingAudio = false;
-      });
     }
   }
 
   @override
   void dispose() {
-    // No need to dispose _audioWidget since we create it on-demand
+    _audioWidget?.dispose();
     super.dispose();
   }
 
@@ -78,10 +96,9 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
     final double paddingV = isMobileLandscape ? 10 : 18;
     final double imageSize = isMobileLandscape ? 230 : 500;
     final double audioButtonSize = Dimensions.kIconSize(context);
-    final double descriptionSizeBoxHeight =
-        isMobileLandscape
-            ? MediaQuery.of(context).size.height * 0.8
-            : MediaQuery.of(context).size.height * 0.5;
+    final double descriptionSizeBoxHeight = isMobileLandscape
+        ? MediaQuery.of(context).size.height * 0.8
+        : MediaQuery.of(context).size.height * 0.5;
 
     return SafeArea(
       child: Scaffold(
@@ -106,11 +123,10 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                   child: CircularButtonWidget(
                     type: CircularButtonType.close,
 
-                    onPressed:
-                        () => Utility.navigate(
-                          context,
-                          AppRoutes.rewardCollectionScreen,
-                        ),
+                    onPressed: () => Utility.navigate(
+                      context,
+                      AppRoutes.rewardCollectionScreen,
+                    ),
                   ),
                 ),
               ),

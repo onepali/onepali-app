@@ -100,6 +100,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 Utility.navigate(context, AppRoutes.dashboardScreen);
                 ParentLocalStorage.setParentLogged(false);
                 ChildLocalStorage.clear();
+                UserAppBar.setTabIndex(0);
               },
             ),
             _buildMenuItem(

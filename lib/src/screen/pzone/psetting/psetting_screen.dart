@@ -54,6 +54,10 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
     final childProvider = context.watch<ChildUserProvider>();
     final parent = userProvider.user;
     final children = childProvider.childUser;
+    logger.d('ParentSettingScreen: Children count = ${children.length}');
+    for (var i = 0; i < children.length; i++) {
+      logger.d('Child $i: ${children[i].fullName} (${children[i].uid})');
+    }
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
@@ -136,22 +140,26 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             child: Text('Your children', style: childrenHeaderStyle),
           ),
           Gaps.verticalGapOf(verticalGap2),
-          ...children.map(
-            (child) => Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: PSettingCard(
-                title: child.fullName,
-                avatarUrl: child.avatarUrl,
-                onEdit: () {
-                  Utility.navigateMaterialRoute(
-                    context,
-                    CUserScreen(child: child),
-                    routeName: AppRoutes.childProfileScreen,
-                  );
-                },
+          ...children
+              .where(
+                (child) => child.fullName.isNotEmpty && child.uid.isNotEmpty,
+              )
+              .map(
+                (child) => Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: PSettingCard(
+                    title: child.fullName,
+                    avatarUrl: child.avatarUrl,
+                    onEdit: () {
+                      Utility.navigateMaterialRoute(
+                        context,
+                        CUserScreen(child: child),
+                        routeName: AppRoutes.childProfileScreen,
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
           // Add child button with restrictions
           Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -159,7 +167,13 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               title: 'Add child',
               isAdd: true,
               onTap: () {
-                if (children.length >= 3 && !GlobalConfig.isUserTesting) {
+                final validChildrenCount = children
+                    .where(
+                      (child) =>
+                          child.fullName.isNotEmpty && child.uid.isNotEmpty,
+                    )
+                    .length;
+                if (validChildrenCount >= 3 && !GlobalConfig.isUserTesting) {
                   DialogManager.showCustomDialog(
                     context: context,
                     title: 'You\'ve added 3 kids!',

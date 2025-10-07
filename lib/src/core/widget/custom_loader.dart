@@ -6,11 +6,14 @@ class CustomLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = PlatformUtility.isTablet(context);
+    final double size = isTablet ? 360.0 : 120.0;
+
     return Center(
       child: LottieHelper.fromSource(
         path: Assets.preLoader,
-        height: 120,
-        width: 120,
+        height: size,
+        width: size,
       ),
     );
   }

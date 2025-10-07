@@ -32,22 +32,28 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     // Responsive values
-    final double horizontalPadding =
-        isTablet ? (isLandscape ? 60.0 : 40.0) : (isMobile ? 24.0 : 32.0);
-    final double verticalPadding =
-        isTablet ? (isLandscape ? 40.0 : 24.0) : (isMobile ? 24.0 : 32.0);
+    final double horizontalPadding = isTablet
+        ? (isLandscape ? 60.0 : 40.0)
+        : (isMobile ? 24.0 : 32.0);
+    final double verticalPadding = isTablet
+        ? (isLandscape ? 40.0 : 24.0)
+        : (isMobile ? 24.0 : 32.0);
 
-    final double lottieSize =
-        isTablet ? (isLandscape ? 120.0 : 100.0) : (isLandscape ? 80.0 : 85.0);
+    final double lottieSize = isTablet
+        ? (isLandscape ? 120.0 : 100.0)
+        : (isLandscape ? 80.0 : 85.0);
 
-    final double titleFontSize =
-        isTablet ? (isLandscape ? 24.0 : 22.0) : (isLandscape ? 18.0 : 20.0);
+    final double titleFontSize = isTablet
+        ? (isLandscape ? 24.0 : 22.0)
+        : (isLandscape ? 18.0 : 20.0);
 
-    final int crossAxisCount =
-        isTablet ? (isLandscape ? 4 : 2) : (isLandscape ? 4 : 2);
+    final int crossAxisCount = isTablet
+        ? (isLandscape ? 4 : 2)
+        : (isLandscape ? 4 : 2);
 
-    final double childAspectRatio =
-        isTablet ? (isLandscape ? 2.5 : 2.8) : (isLandscape ? 2.8 : 3.2);
+    final double childAspectRatio = isTablet
+        ? (isLandscape ? 2.5 : 2.8)
+        : (isLandscape ? 2.8 : 3.2);
 
     final double gridSpacing = isTablet ? 32.0 : 24.0;
 
@@ -65,10 +71,9 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     minHeight: availableHeight,
-                    maxWidth:
-                        isTablet && isLandscape
-                            ? constraints.maxWidth * 0.8
-                            : constraints.maxWidth,
+                    maxWidth: isTablet && isLandscape
+                        ? constraints.maxWidth * 0.8
+                        : constraints.maxWidth,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -103,12 +108,11 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
 
                       Container(
                         constraints: BoxConstraints(
-                          maxWidth:
-                              isTablet
-                                  ? (isLandscape
-                                      ? screenWidth * 0.6
-                                      : screenWidth * 0.8)
-                                  : screenWidth,
+                          maxWidth: isTablet
+                              ? (isLandscape
+                                    ? screenWidth * 0.6
+                                    : screenWidth * 0.8)
+                              : screenWidth,
                         ),
                         padding: EdgeInsets.symmetric(
                           horizontal: horizontalPadding,
@@ -120,49 +124,44 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
                           childAspectRatio: childAspectRatio,
                           crossAxisSpacing: gridSpacing,
                           mainAxisSpacing: gridSpacing,
-                          children:
-                              AppConstants.extendTimeMap.keys.map((timeOption) {
-                                final isSelected = selectedTime == timeOption;
-                                return GestureDetector(
-                                  key: ValueKey('time_option_$timeOption'),
-                                  onTap: () => _selectTime(timeOption),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color:
-                                            isSelected
-                                                ? AppColors.kButtonGreen
-                                                : AppColors.kLightGrey,
-                                        width: 2,
-                                      ),
-                                      color:
-                                          isSelected
-                                              ? AppColors.kButtonGreen
-                                                  .withValues(alpha: 0.1)
-                                              : AppColors.kWhite,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        timeOption,
-                                        style: AppStyles.text16PxMedium
-                                            .copyWith(
-                                              color:
-                                                  isSelected
-                                                      ? AppColors.kButtonGreen
-                                                      : AppColors.kBlack,
-                                              fontSize:
-                                                  isTablet
-                                                      ? 16.0
-                                                      : (isLandscape
-                                                          ? 14.0
-                                                          : 16.0),
-                                            ),
-                                      ),
+                          children: AppConstants.extendTimeMap.keys.map((
+                            timeOption,
+                          ) {
+                            final isSelected = selectedTime == timeOption;
+                            return GestureDetector(
+                              key: ValueKey('time_option_$timeOption'),
+                              onTap: () => _selectTime(timeOption),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? AppColors.kButtonGreen
+                                        : AppColors.kLightGrey,
+                                    width: 2,
+                                  ),
+                                  color: isSelected
+                                      ? AppColors.kButtonGreen.withValues(
+                                          alpha: 0.1,
+                                        )
+                                      : AppColors.kWhite,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    timeOption,
+                                    style: AppStyles.text16PxMedium.copyWith(
+                                      color: isSelected
+                                          ? AppColors.kButtonGreen
+                                          : AppColors.kBlack,
+                                      fontSize: isTablet
+                                          ? 16.0
+                                          : (isLandscape ? 14.0 : 16.0),
                                     ),
                                   ),
-                                );
-                              }).toList(),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
 
@@ -171,12 +170,11 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
                       // Buttons section
                       Container(
                         constraints: BoxConstraints(
-                          maxWidth:
-                              isTablet
-                                  ? (isLandscape
-                                      ? screenWidth * 0.5
-                                      : screenWidth * 0.8)
-                                  : screenWidth,
+                          maxWidth: isTablet
+                              ? (isLandscape
+                                    ? screenWidth * 0.5
+                                    : screenWidth * 0.8)
+                              : screenWidth,
                         ),
                         padding: EdgeInsets.symmetric(
                           horizontal: horizontalPadding,
@@ -186,7 +184,7 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
                             Expanded(
                               child: CustomMaterialButton(
                                 key: const ValueKey('cancel_button_row'),
-                                fillButton: false,
+                                // fillButton: false,
                                 label: 'Cancel',
                                 elevation: 0,
                                 backgroundColor: AppColors.kButtonGrey,
@@ -272,7 +270,7 @@ class _ExtendTimeScreenState extends State<ExtendTimeScreen> {
       }
 
       if (mounted) {
-        showCustomToaster('Time extended by $selectedTime!');
+        showCustomToaster('Screen time extended by $extendMinutes minutes');
 
         Navigator.of(
           context,

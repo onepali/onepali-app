@@ -24,14 +24,12 @@ class PBlogCard extends StatelessWidget {
         : AppStyles.text24PxBold;
 
     final TextStyle contentStyle = isMobile
-        ? (isMobilePortrait
-              ? AppStyles.text14PxRegular.copyWith(
-                  fontFamily: AppConstants.kDMSansFont,
-                )
-              : AppStyles.text16PxRegular.copyWith(
-                  fontFamily: AppConstants.kDMSansFont,
-                ))
-        : AppStyles.text24PxMedium.copyWith(
+        ? AppStyles.text16PxRegular.copyWith(
+            height: 1.5,
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text18PxRegular.copyWith(
+            height: 1.6,
             fontFamily: AppConstants.kDMSansFont,
           );
 
@@ -64,7 +62,7 @@ class PBlogCard extends StatelessWidget {
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
               style: contentStyle,
-              textAlign: TextAlign.justify,
+              textAlign: TextAlign.left,
             ),
           ),
         ],

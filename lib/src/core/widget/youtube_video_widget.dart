@@ -32,6 +32,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
   late YoutubePlayerController _controller;
   bool _showInfo = false;
   bool _isLocked = false;
+  bool _hasSeekCompleted = false;
 
   @override
   void initState() {
@@ -51,23 +52,33 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
       ),
     );
     if (widget.initialPosition != null && widget.initialPosition! > 0) {
-      _controller.addListener(() {
-        final duration = _controller.metadata.duration.inSeconds;
-        if (duration > 0) {
-          final seekTo = Duration(
-            seconds: (duration * widget.initialPosition!).toInt(),
-          );
-          if ((_controller.value.position.inSeconds - seekTo.inSeconds).abs() >
-              2) {
-            _controller.seekTo(seekTo);
-          }
-        }
-      });
+      _controller.addListener(_seekListener);
     }
     _controller.addListener(_listener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setLandscape();
     });
+  }
+
+  void _seekListener() {
+    if (_hasSeekCompleted) return;
+
+    if (!_controller.value.isReady) return;
+
+    final duration = _controller.metadata.duration.inSeconds;
+    if (duration > 0) {
+      final seekTo = Duration(
+        seconds: (duration * widget.initialPosition!).toInt(),
+      );
+
+      _hasSeekCompleted = true;
+      _controller.removeListener(_seekListener);
+
+      _controller.seekTo(seekTo);
+      logger.d(
+        'Seeked to initial position: ${seekTo.inSeconds}s (${widget.initialPosition! * 100}%)',
+      );
+    }
   }
 
   void _listener() {
@@ -106,6 +117,9 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
   @override
   void dispose() {
     _controller.removeListener(_listener);
+    if (widget.initialPosition != null && widget.initialPosition! > 0) {
+      _controller.removeListener(_seekListener);
+    }
     _controller.dispose();
     _setLandscape();
     super.dispose();
@@ -134,11 +148,10 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
                 _isLocked ? Icons.lock : Icons.lock_open,
                 color: AppColors.kWhite,
               ),
-              onPressed:
-                  () => setState(() {
-                    _isLocked = !_isLocked;
-                    _showInfo = false;
-                  }),
+              onPressed: () => setState(() {
+                _isLocked = !_isLocked;
+                _showInfo = false;
+              }),
             ),
             if (!_isLocked && widget.info != null) ...[
               const Spacer(),
@@ -170,14 +183,13 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
               ),
             ],
           ],
-          bottomActions:
-              _isLocked
-                  ? []
-                  : [
-                    CurrentPosition(),
-                    ProgressBar(isExpanded: true),
-                    RemainingDuration(),
-                  ],
+          bottomActions: _isLocked
+              ? []
+              : [
+                  CurrentPosition(),
+                  ProgressBar(isExpanded: true),
+                  RemainingDuration(),
+                ],
           onEnded: (metaData) {
             _setLandscape();
             Navigator.of(context).maybePop();

@@ -26,13 +26,12 @@ class PzMetricsProvider extends ChangeNotifier {
     _status = DataFetchStatus.loading;
     notifyListeners();
     try {
-      final doc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .doc(childUid)
-              .get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .get();
 
       if (doc.exists && doc.data()?['metrics'] != null) {
         // Metrics exist, load them
@@ -82,8 +81,9 @@ class PzMetricsProvider extends ChangeNotifier {
 
     // 🛡️ SAFETY CHECK: Prevent overwriting valid data with empty data
     if (_metrics != null) {
-      final currentActiveDays =
-          _metrics!.weeklyStreak.where((day) => day).length;
+      final currentActiveDays = _metrics!.weeklyStreak
+          .where((day) => day)
+          .length;
       final newActiveDays = newMetrics.weeklyStreak.where((day) => day).length;
 
       // If current data has progress but new data is empty, this is suspicious
@@ -175,12 +175,14 @@ class PzMetricsProvider extends ChangeNotifier {
   }) async {
     if (_sessionStartTime == null || _metrics == null) return;
 
-    final sessionDuration =
-        DateTime.now().difference(_sessionStartTime!).inMinutes;
+    final sessionDuration = DateTime.now()
+        .difference(_sessionStartTime!)
+        .inMinutes;
 
     // Calculate new average daily learning time
+    // Simply add the new session duration to the existing total
     final currentTime = _metrics!.averageDailyLearningTime;
-    final newAverageTime = ((currentTime * 6 + sessionDuration) / 7).round();
+    final newAverageTime = currentTime + sessionDuration;
 
     // Update daily streak for today
     final today = DateTime.now();
@@ -260,9 +262,8 @@ class PzMetricsProvider extends ChangeNotifier {
     }
 
     // Sort topics by count (descending) and take top 5
-    final sortedTopics =
-        topicCounts.entries.toList()
-          ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedTopics = topicCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
     final mostPracticedTopics = sortedTopics.take(5).map((e) => e.key).toList();
 
     final updatedMetrics = _metrics!.copyWith(
@@ -292,13 +293,12 @@ class PzMetricsProvider extends ChangeNotifier {
       '🔄 Refreshing metrics from Firestore before updating weekly streak',
     );
     try {
-      final doc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .doc(childUid)
-              .get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .get();
 
       if (doc.exists && doc.data()?['metrics'] != null) {
         final freshMetrics = PzHomeMetricsModel.fromJson(
@@ -442,15 +442,13 @@ class PzMetricsProvider extends ChangeNotifier {
     );
 
     // Use exponential moving average for smoother rate calculation
-    final sessionSuccessRate =
-        sessionTotalAnswers > 0
-            ? sessionCorrectAnswers / sessionTotalAnswers
-            : 0.0;
+    final sessionSuccessRate = sessionTotalAnswers > 0
+        ? sessionCorrectAnswers / sessionTotalAnswers
+        : 0.0;
     final alpha = 0.1; // Smoothing factor
-    final newSuccessRate =
-        currentRate == 0.0
-            ? sessionSuccessRate
-            : (alpha * sessionSuccessRate + (1 - alpha) * currentRate);
+    final newSuccessRate = currentRate == 0.0
+        ? sessionSuccessRate
+        : (alpha * sessionSuccessRate + (1 - alpha) * currentRate);
 
     final updatedMetrics = _metrics!.copyWith(
       answerSuccessRate: newSuccessRate,
@@ -619,13 +617,12 @@ class PzMetricsProvider extends ChangeNotifier {
   // Debug method to check what's actually in Firestore
   Future<void> debugFirestoreData(String parentUid, String childUid) async {
     try {
-      final doc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .doc(childUid)
-              .get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .get();
 
       logger.i('🔍 FIRESTORE DEBUG:');
       logger.i('🔍 Document exists: ${doc.exists}');
