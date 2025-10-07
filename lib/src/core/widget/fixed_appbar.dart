@@ -71,9 +71,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final verticalPadding = isTabletPortrait
         ? 12.0
         : (isMobileLandScape ? 4.0 : 8.0);
-    final guestTopGap = isTabletPortrait
-        ? 50.0
-        : (isMobileLandScape ? 5.0 : 20.0);
+    final guestTopGap = isTabletPortrait ? 50.0 : 20.0;
     final tabSpacing = isTabletPortrait
         ? 25.0
         : (isMobileLandScape ? 6.0 : 10.0);
@@ -232,7 +230,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // if (isGuest) Gaps.verticalGapOf(guestTopGap),
+                  if (isGuest) Gaps.verticalGapOf(guestTopGap),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
