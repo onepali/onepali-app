@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core.dart';
 
 class LearningSessionManager {
@@ -34,17 +35,11 @@ class LearningSessionManager {
           .difference(_sessionStartTime!)
           .inMinutes;
 
-      logger.w('🚨 LearningSessionManager.endSession() called');
-      logger.w(
-        '🚨 This method used to update metrics directly, but now deferred to PzMetricsProvider',
-      );
-      logger.w('🚨 Session duration: ${sessionDuration}min');
+      logger.i('� LearningSessionManager.endSession() called');
+      logger.i('� Session duration: ${sessionDuration}min');
 
-      // DISABLED: Direct Firestore updates to prevent conflicts with PzMetricsProvider
-      // The PzMetricsProvider.endLearningSession() should handle all metric updates
-
-      /*
       // Update metrics directly with Firestore
+      // This is needed when context is not available (e.g., in dispose methods)
       final firestore = FirebaseFirestore.instance;
       final docRef = firestore
           .collection(AppConstants.usersCollection)
@@ -62,8 +57,7 @@ class LearningSessionManager {
 
         // Calculate new average daily learning time
         final currentTime = currentMetrics.averageDailyLearningTime;
-        final newAverageTime =
-            ((currentTime * 6 + sessionDuration) / 7).round();
+        final newAverageTime = currentTime + sessionDuration;
 
         // Update daily streak for today
         final today = DateTime.now();
@@ -74,22 +68,25 @@ class LearningSessionManager {
         // Calculate day streak (consecutive days this week)
         final dayStreak = newWeeklyStreak.where((day) => day).length;
 
-        // Update metrics
+        logger.i('📚 Previous Average Learning Time: $currentTime min');
+        logger.i('📚 New Average Learning Time: $newAverageTime min');
+        logger.i('📚 Day Streak: $dayStreak/7');
+
+        // Update metrics in Firestore
         await docRef.update({
           'metrics.averageDailyLearningTime': newAverageTime,
           'metrics.dayStreak': dayStreak,
           'metrics.weeklyStreak': newWeeklyStreak,
         });
 
-        logger.d(
-          'Learning session ended. Duration: ${sessionDuration}min, New average: ${newAverageTime}min',
+        logger.i(
+          '✅ Learning session metrics updated successfully. Duration: ${sessionDuration}min, New average: ${newAverageTime}min',
         );
+      } else {
+        logger.w('⚠️ No metrics found for child: $_currentChildUid');
       }
-      */
 
-      logger.i(
-        'Session tracking completed (metrics update handled by PzMetricsProvider)',
-      );
+      logger.i('✅ Session tracking completed and metrics updated in Firestore');
     } catch (e) {
       logger.e('Error ending learning session: $e');
     } finally {
