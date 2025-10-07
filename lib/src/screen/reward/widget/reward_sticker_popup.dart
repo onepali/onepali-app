@@ -2,10 +2,79 @@ import 'package:flutter/material.dart';
 
 import '../../../src.dart';
 
-class RewardStickerPopup extends StatelessWidget {
+class RewardStickerPopup extends StatefulWidget {
   final RewardModel reward;
 
   const RewardStickerPopup({super.key, required this.reward});
+
+  @override
+  State<RewardStickerPopup> createState() => _RewardStickerPopupState();
+}
+
+class _RewardStickerPopupState extends State<RewardStickerPopup> {
+  CustomAudioWidget? _audioWidget;
+  bool _isPlayingAudio = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAudio();
+  }
+
+  void _initializeAudio() async {
+    if (widget.reward.sAudio.isNotEmpty) {
+      _audioWidget = CustomAudioWidget(
+        audioPath: widget.reward.sAudio,
+        audioSourceType: AudioSourceType.network,
+      );
+
+      _audioWidget!
+          .preload()
+          .then((_) {
+            logger.i('✅ Reward popup audio preloaded successfully');
+          })
+          .catchError((e) {
+            logger.w('⚠️ Failed to preload reward popup audio: $e');
+          });
+
+      _audioWidget!.audioPlayer.onPlayerComplete.listen((_) {
+        if (mounted) {
+          setState(() {
+            _isPlayingAudio = false;
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> _playAudio() async {
+    if (_audioWidget == null || widget.reward.sAudio.isEmpty) return;
+
+    try {
+      if (_isPlayingAudio) {
+        await _audioWidget!.audioPlayer.stop();
+      }
+
+      setState(() {
+        _isPlayingAudio = true;
+      });
+
+      await _audioWidget!.play();
+    } catch (e) {
+      logger.e('Error playing reward audio: $e');
+      if (mounted) {
+        setState(() {
+          _isPlayingAudio = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioWidget?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,25 +170,23 @@ class RewardStickerPopup extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Left side - Text content
         Expanded(
           flex: 3,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title with audio button
               Row(
                 children: [
                   Text(
-                    reward.titleNp,
+                    widget.reward.titleNp,
                     style: AppStyles.text35PxBold.copyWith(
                       fontSize: titleFontSize,
                       fontFamily: AppConstants.kMuktaFont,
                     ),
                   ),
                   Gaps.horizontalGapOf(isMobileLandscape ? 8 : 12),
-                  if (reward.sAudio.isNotEmpty)
+                  if (widget.reward.sAudio.isNotEmpty)
                     IconButton(
                       onPressed: () => _playAudio(),
                       icon: SvgHelper.fromSource(
@@ -131,15 +198,13 @@ class RewardStickerPopup extends StatelessWidget {
                 ],
               ),
               Gaps.verticalGapOf(isMobileLandscape ? 30 : 50),
-              // English subtitle
               Text(
-                reward.titleEn,
+                widget.reward.titleEn,
                 style: AppStyles.text30PxSemiBold.copyWith(
                   fontSize: subtitleFontSize,
                 ),
               ),
               Gaps.verticalGapOf(12),
-              // Description (scrollable with bottom padding)
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(right: 20.0, bottom: 16.0),
@@ -147,7 +212,7 @@ class RewardStickerPopup extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
-                        reward.descriptionEn,
+                        widget.reward.descriptionEn,
                         style: AppStyles.text22PxRegular.copyWith(
                           fontSize: descriptionFontSize,
                           color: AppColors.kDarkGrey,
@@ -162,7 +227,6 @@ class RewardStickerPopup extends StatelessWidget {
           ),
         ),
         Gaps.horizontalGapOf(padding),
-        // Right side - Image
         Expanded(
           flex: 2,
           child: Align(
@@ -171,7 +235,7 @@ class RewardStickerPopup extends StatelessWidget {
               width: imageSize,
               height: imageSize,
               child: SvgHelper.fromSource(
-                path: reward.image,
+                path: widget.reward.image,
                 fit: BoxFit.contain,
                 type: SvgSourceType.network,
               ),
@@ -182,24 +246,6 @@ class RewardStickerPopup extends StatelessWidget {
     );
   }
 
-  Future<void> _playAudio() async {
-    try {
-      if (reward.sAudio.isNotEmpty) {
-        final audioWidget = CustomAudioWidget(
-          audioPath: reward.sAudio,
-          audioSourceType: AudioSourceType.network,
-        );
-
-        await audioWidget.play();
-        await audioWidget.audioPlayer.onPlayerComplete.first;
-        await audioWidget.dispose();
-      }
-    } catch (e) {
-      logger.e('Error playing reward audio: $e');
-    }
-  }
-
-  // Responsive sizing methods
   double _getDialogWidth(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 500;
     if (isTabletLandscape) return 800;
@@ -208,7 +254,7 @@ class RewardStickerPopup extends StatelessWidget {
 
   double _getDialogHeight(bool isMobileLandscape, bool isTabletLandscape) {
     if (isMobileLandscape) return 300;
-    if (isTabletLandscape) return 500; // Increased height for tablet landscape
+    if (isTabletLandscape) return 500;
     return 450; // Portrait
   }
 
