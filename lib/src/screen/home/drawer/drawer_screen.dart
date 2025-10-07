@@ -220,7 +220,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
         // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
         return GestureDetector(
           onTap: () {
-            if (widget.totalChildCount >= 3 && !GlobalConfig.isUserTesting) {
+            if (widget.data.length >= 3 && !GlobalConfig.isUserTesting) {
               DialogManager.showCustomDialog(
                 context: context,
                 title: 'You\'ve added 3 kids!',
