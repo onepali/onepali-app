@@ -200,26 +200,31 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ],
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: tabSpacing,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (int i = 0; i < homeServices.length; i++)
-                          _buildTab(
-                            homeServices[i].icon ?? '',
-                            homeServices[i].name ?? '',
-                            selectedIndex == i
-                                ? AppColors.kSecondaryColor
-                                : AppColors.kGrey,
-                            () => onTabSelected(homeServices[i].name ?? ''),
-                            i,
-                            selectedIndex,
-                            tabIconSize,
-                          ),
-                        Gaps.horizontalGapOf(tabSpacing),
-                      ],
+                    Flexible(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: tabSpacing,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (int i = 0; i < homeServices.length; i++)
+                              _buildTab(
+                                homeServices[i].icon ?? '',
+                                homeServices[i].name ?? '',
+                                selectedIndex == i
+                                    ? AppColors.kSecondaryColor
+                                    : AppColors.kGrey,
+                                () => onTabSelected(homeServices[i].name ?? ''),
+                                i,
+                                selectedIndex,
+                                tabIconSize,
+                              ),
+                            Gaps.horizontalGapOf(tabSpacing),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -297,28 +302,34 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ],
                       ),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: tabSpacing,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (int i = 0; i < homeServices.length; i++) ...[
-                            _buildTab(
-                              homeServices[i].icon ?? '',
-                              homeServices[i].name ?? '',
-                              selectedIndex == i
-                                  ? AppColors.kSecondaryColor
-                                  : AppColors.kGrey,
-                              () => onTabSelected(homeServices[i].name ?? ''),
-                              i,
-                              selectedIndex,
-                              tabIconSize,
-                            ),
-                            if (i != homeServices.length - 1)
-                              Gaps.horizontalGapOf(tabSpacing),
-                          ],
-                        ],
+                      Flexible(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: tabSpacing,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (int i = 0; i < homeServices.length; i++) ...[
+                                _buildTab(
+                                  homeServices[i].icon ?? '',
+                                  homeServices[i].name ?? '',
+                                  selectedIndex == i
+                                      ? AppColors.kSecondaryColor
+                                      : AppColors.kGrey,
+                                  () =>
+                                      onTabSelected(homeServices[i].name ?? ''),
+                                  i,
+                                  selectedIndex,
+                                  tabIconSize,
+                                ),
+                                if (i != homeServices.length - 1)
+                                  Gaps.horizontalGapOf(tabSpacing),
+                              ],
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -567,7 +578,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Text(
                     label,
                     textAlign: TextAlign.center,
-                    // maxLines: 1,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: labelTextStyle.copyWith(
                       color: isSelected ? AppColors.kWhite : Colors.transparent,
                     ),
