@@ -24,18 +24,20 @@ class RegisterScreen extends StatelessWidget {
     final double stepTextSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
-    final TextStyle titleStyle =
-        isTabletPortrait ? AppStyles.text32PxBold : AppStyles.text24PxSemiBold;
-    final TextStyle subtitleStyle = (isTabletPortrait
-            ? AppStyles.text18PxMedium
-            : AppStyles.text14PxMedium)
-        .copyWith(color: AppColors.kPitchBlack);
-    final TextStyle stepTextStyle = (isTabletPortrait
-            ? AppStyles.text18PxRegular
-            : AppStyles.text14PxRegular)
-        .copyWith(color: AppColors.kPitchBlack);
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text32PxBold
+        : AppStyles.text24PxSemiBold;
+    final TextStyle subtitleStyle =
+        (isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text14PxMedium)
+            .copyWith(color: AppColors.kPitchBlack);
+    final TextStyle stepTextStyle =
+        (isTabletPortrait
+                ? AppStyles.text18PxRegular
+                : AppStyles.text14PxRegular)
+            .copyWith(color: AppColors.kPitchBlack);
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
@@ -119,20 +121,19 @@ class RegisterScreen extends StatelessWidget {
             ],
           ),
           child: Builder(
-            builder:
-                (context) => CustomMaterialButton(
-                  label: 'Continue',
-                  onTap: () {
-                    Utility.navigate(context, AppRoutes.rs1Screen);
-                  },
-                  elevation: 0,
-                  radius: buttonRadius,
-                  height: buttonHeight,
-                  showBorder: false,
-                  backgroundColor: AppColors.kButtonGreen,
-                  width: double.infinity,
-                  textStyle: buttonTextStyle,
-                ),
+            builder: (context) => CustomMaterialButton(
+              label: 'Continue',
+              onTap: () {
+                Utility.navigate(context, AppRoutes.rs1Screen);
+              },
+              elevation: 0,
+              radius: buttonRadius,
+              height: buttonHeight,
+              showBorder: false,
+              backgroundColor: AppColors.kButtonGreen,
+              width: double.infinity,
+              textStyle: buttonTextStyle,
+            ),
           ),
         ),
       ),
