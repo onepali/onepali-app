@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isTablet = PlatformUtility.isTablet(context);
     return isTablet
         ? AppCardResponsive.getCardHeight(context) *
-            0.8 // 20% smaller for tablets
+              0.8 // 20% smaller for tablets
         : AppCardResponsive.getCardHeight(context);
   }
 
@@ -192,11 +192,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildLessons(BuildContext context) {
     bool isTablet = PlatformUtility.isTablet(context);
-    double lessonCardHeight =
-        isTablet
-            ? AppCardResponsive.getLessonCardHeight(context) *
-                0.8 // 20% smaller for tablets
-            : AppCardResponsive.getLessonCardHeight(context);
+    double lessonCardHeight = isTablet
+        ? AppCardResponsive.getLessonCardHeight(context) *
+              0.8 // 20% smaller for tablets
+        : AppCardResponsive.getLessonCardHeight(context);
 
     return SizedBox(
       height: lessonCardHeight + 50,
@@ -218,9 +217,9 @@ class _HomeScreenState extends State<HomeScreen> {
         color: AppColors.kBlack,
         fontSize:
             PlatformUtility.isTablet(context) &&
-                    PlatformUtility.isLandscape(context)
-                ? 24
-                : 20,
+                PlatformUtility.isLandscape(context)
+            ? 24
+            : 20,
         fontWeight: FontWeight.bold,
       ),
       subTitle: 'View all',
@@ -229,9 +228,9 @@ class _HomeScreenState extends State<HomeScreen> {
         fontWeight: FontWeight.w500,
         fontSize:
             PlatformUtility.isTablet(context) &&
-                    PlatformUtility.isLandscape(context)
-                ? 18
-                : 14,
+                PlatformUtility.isLandscape(context)
+            ? 18
+            : 14,
       ),
       onTap: () {
         Navigator.of(context).push(

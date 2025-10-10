@@ -65,30 +65,35 @@ class PHomeCard extends StatelessWidget {
                       return DropdownMenuItem<String>(
                         value: child.uid,
                         alignment: Alignment.centerLeft,
-                        child: Row(
-                          children: [
-                            CustomImage(
-                              child.avatarUrl.isNotEmpty ? child.avatarUrl : "",
-                              imageType: child.avatarUrl.isNotEmpty
-                                  ? CustomImageType.network
-                                  : CustomImageType.local,
-                              circular: true,
-                              height: Dimensions.kSettingAvatarSize(context),
-                              width: Dimensions.kSettingAvatarSize(context),
-                              cover: false,
-                            ),
-                            Gaps.horizontalGapOf(12),
-                            Text(
-                              child.fullName,
-                              style: AppStyles.text16PxRegular.copyWith(
-                                fontFamily: AppConstants.kDMSansFont,
-                                fontSize: isMobilePortrait ? 16 : 24,
-                                fontWeight: isMobilePortrait
-                                    ? FontWeight.w500
-                                    : FontWeight.w600,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            children: [
+                              CustomImage(
+                                child.avatarUrl.isNotEmpty
+                                    ? child.avatarUrl
+                                    : "",
+                                imageType: child.avatarUrl.isNotEmpty
+                                    ? CustomImageType.network
+                                    : CustomImageType.local,
+                                circular: true,
+                                height: Dimensions.kSettingAvatarSize(context),
+                                width: Dimensions.kSettingAvatarSize(context),
+                                cover: false,
                               ),
-                            ),
-                          ],
+                              Gaps.horizontalGapOf(12),
+                              Text(
+                                child.fullName,
+                                style: AppStyles.text16PxRegular.copyWith(
+                                  fontFamily: AppConstants.kDMSansFont,
+                                  fontSize: isMobilePortrait ? 16 : 24,
+                                  fontWeight: isMobilePortrait
+                                      ? FontWeight.w500
+                                      : FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     })

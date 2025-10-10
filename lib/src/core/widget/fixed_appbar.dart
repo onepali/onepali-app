@@ -71,237 +71,142 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final verticalPadding = isTabletPortrait
         ? 12.0
         : (isMobileLandScape ? 4.0 : 8.0);
-    final guestTopGap = isTabletPortrait ? 20.0 : 20.0;
+    final guestTopGap = isTabletPortrait ? 20.0 : 0.0;
     final tabSpacing = isTabletPortrait
         ? 25.0
         : (isMobileLandScape ? 6.0 : 10.0);
     final nameTextStyle = isTabletPortrait
         ? AppStyles.text32PxBold
-        : (isMobileLandScape ? AppStyles.text12PxBold : AppStyles.text16PxBold);
+        : AppStyles.text16PxBold;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: verticalPadding,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.kWhite,
-        boxShadow: elevation > 0
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: elevation,
-                  offset: Offset(0, elevation / 2),
-                ),
-              ]
-            : null,
-      ),
-      child: isMobileLandScape
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isGuest) Gaps.verticalGapOf(guestTopGap),
-                Row(
-                  spacing: tabSpacing,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: tabIconSize + 10,
-                          child: Center(
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                if (!isGuest) {
-                                  Utility.navigateMaterialRoute(
-                                    context,
-                                    DrawerScreen(
-                                      data: childData,
-                                      totalChildCount: totalChildCount,
-                                    ),
-                                    routeName: AppRoutes.drawerRoutes,
-                                  );
-                                }
-                                // } else {
-                                //   Utility.navigate(
-                                //     context,
-                                //     AppRoutes.systemScreen,
-                                //   );
-                                // }
-                              },
-                              icon: CustomImage(
-                                isGuest ? Assets.blueUserAvatar : profileImage,
-                                height: avatarSize,
-                                width: avatarSize,
-                                circular: true,
-                                // isProfileImage: true,
-                                imageType: isGuest
-                                    ? CustomImageType.local
-                                    : CustomImageType.network,
+    return SafeArea(
+      left: false,
+      top: true,
+      right: true,
+      bottom: false,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: verticalPadding,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.kWhite,
+          boxShadow: elevation > 0
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: elevation,
+                    offset: Offset(0, elevation / 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: isMobileLandScape
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isGuest) Gaps.verticalGapOf(guestTopGap),
+                  Row(
+                    spacing: 0,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: tabIconSize + 10,
+                            child: Center(
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  if (!isGuest) {
+                                    Utility.navigateMaterialRoute(
+                                      context,
+                                      DrawerScreen(
+                                        data: childData,
+                                        totalChildCount: totalChildCount,
+                                      ),
+                                      routeName: AppRoutes.drawerRoutes,
+                                    );
+                                  }
+                                  // } else {
+                                  //   Utility.navigate(
+                                  //     context,
+                                  //     AppRoutes.systemScreen,
+                                  //   );
+                                  // }
+                                },
+                                icon: CustomImage(
+                                  isGuest
+                                      ? Assets.blueUserAvatar
+                                      : profileImage,
+                                  height: avatarSize,
+                                  width: avatarSize,
+                                  circular: true,
+                                  // isProfileImage: true,
+                                  imageType: isGuest
+                                      ? CustomImageType.local
+                                      : CustomImageType.network,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Gaps.horizontalGapOf(tabSpacing),
-                        if (isGuest)
-                          Text(
-                            name,
-                            style: nameTextStyle.copyWith(
-                              color: AppColors.kPitchBlack,
+                          Gaps.horizontalGapOf(tabSpacing),
+                          if (isGuest)
+                            Text(
+                              name,
+                              style: nameTextStyle.copyWith(
+                                color: AppColors.kPitchBlack,
+                              ),
                             ),
-                          ),
-                        if (!isGuest && totalChildCount > 0)
-                          if (
-                          // totalLessonsCompleted == 5 &&
-                          GlobalConfig.isUserTesting &&
-                              childData.isNotEmpty) ...[
-                            Builder(
-                              builder: (context) {
-                                // Only play audio if playStarBlastAudio is true
-                                // if (playStarBlastAudio &&
-                                //     _selectedTabIndex == 0 &&
-                                //     childData.isNotEmpty) {
-                                //   _playStarBlastAudio();
-                                // }
-                                return customInkwell(
+                          if (!isGuest && totalChildCount > 0)
+                            if (
+                            // totalLessonsCompleted == 5 &&
+                            GlobalConfig.isUserTesting &&
+                                childData.isNotEmpty) ...[
+                              Builder(
+                                builder: (context) {
+                                  // Only play audio if playStarBlastAudio is true
+                                  // if (playStarBlastAudio &&
+                                  //     _selectedTabIndex == 0 &&
+                                  //     childData.isNotEmpty) {
+                                  //   _playStarBlastAudio();
+                                  // }
+                                  return customInkwell(
+                                    onTap: () {
+                                      Utility.navigate(
+                                        context,
+                                        AppRoutes.chooseRewardScreen,
+                                      );
+                                    },
+                                    child: LottieHelper.fromSource(
+                                      path: Assets.starRewardLottie,
+                                      height: starRewardLottieSize,
+                                      width: starRewardLottieSize,
+                                      repeat: false,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ] else ...[
+                              if (!isGuest && totalChildCount > 0)
+                                customInkwell(
                                   onTap: () {
                                     Utility.navigate(
                                       context,
-                                      AppRoutes.chooseRewardScreen,
+                                      AppRoutes.rewardCollectionScreen,
                                     );
                                   },
-                                  child: LottieHelper.fromSource(
-                                    path: Assets.starRewardLottie,
-                                    height: starRewardLottieSize,
-                                    width: starRewardLottieSize,
-                                    repeat: false,
-                                  ),
-                                );
-                              },
-                            ),
-                          ] else ...[
-                            if (!isGuest && totalChildCount > 0)
-                              customInkwell(
-                                onTap: () {
-                                  Utility.navigate(
-                                    context,
-                                    AppRoutes.rewardCollectionScreen,
-                                  );
-                                },
-                                child: SvgHelper.fromSource(
-                                  path: Assets.reward,
-                                  height: rewardIconSize,
-                                  width: rewardIconSize,
-                                ),
-                              ),
-                          ],
-                      ],
-                    ),
-                    Flexible(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: tabSpacing,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (int i = 0; i < homeServices.length; i++)
-                              _buildTab(
-                                homeServices[i].icon ?? '',
-                                homeServices[i].name ?? '',
-                                selectedIndex == i
-                                    ? AppColors.kSecondaryColor
-                                    : AppColors.kGrey,
-                                () => onTabSelected(homeServices[i].name ?? ''),
-                                i,
-                                selectedIndex,
-                                tabIconSize,
-                              ),
-                            Gaps.horizontalGapOf(tabSpacing),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            )
-          : SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // if (isGuest) Gaps.verticalGapOf(guestTopGap),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                height: tabIconSize + 10,
-                                child: Center(
-                                  child: IconButton(
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      if (!isGuest) {
-                                        Utility.navigateMaterialRoute(
-                                          context,
-                                          TabDrawerScreen(
-                                            data: childData,
-                                            totalChildCount: totalChildCount,
-                                          ),
-                                          routeName: AppRoutes.tabDrawerRoutes,
-                                        );
-                                      }
-                                      //  else {
-                                      //   Utility.navigate(context, AppRoutes.systemScreen);
-                                      // }
-                                    },
-                                    icon: CustomImage(
-                                      isGuest
-                                          ? Assets.blueUserAvatar
-                                          : profileImage,
-                                      height: avatarSize,
-                                      width: avatarSize,
-                                      circular: true,
-                                      isProfileImage: true,
-                                      imageType: isGuest
-                                          ? CustomImageType.local
-                                          : CustomImageType.network,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Gaps.horizontalGapOf(tabSpacing),
-                              if (!isGuest && totalChildCount > 0)
-                                Text(
-                                  name,
-                                  style: nameTextStyle.copyWith(
-                                    color: AppColors.kPitchBlack,
+                                  child: SvgHelper.fromSource(
+                                    path: Assets.reward,
+                                    height: rewardIconSize,
+                                    width: rewardIconSize,
                                   ),
                                 ),
                             ],
-                          ),
-                          if (!isGuest && totalChildCount > 0)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                              child: buildProgressBar(),
-                            ),
                         ],
                       ),
-
                       Flexible(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -311,7 +216,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                             spacing: tabSpacing,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              for (int i = 0; i < homeServices.length; i++) ...[
+                              for (int i = 0; i < homeServices.length; i++)
                                 _buildTab(
                                   homeServices[i].icon ?? '',
                                   homeServices[i].name ?? '',
@@ -324,19 +229,129 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   selectedIndex,
                                   tabIconSize,
                                 ),
-                                if (i != homeServices.length - 1)
-                                  Gaps.horizontalGapOf(tabSpacing),
-                              ],
+                              Gaps.horizontalGapOf(tabSpacing),
                             ],
                           ),
                         ),
                       ),
                     ],
                   ),
-                  // Gaps.verticalGapOf(8),
                 ],
+              )
+            : SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // if (isGuest) Gaps.verticalGapOf(guestTopGap),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  height: tabIconSize + 10,
+                                  child: Center(
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
+                                        if (!isGuest) {
+                                          Utility.navigateMaterialRoute(
+                                            context,
+                                            TabDrawerScreen(
+                                              data: childData,
+                                              totalChildCount: totalChildCount,
+                                            ),
+                                            routeName:
+                                                AppRoutes.tabDrawerRoutes,
+                                          );
+                                        }
+                                        //  else {
+                                        //   Utility.navigate(context, AppRoutes.systemScreen);
+                                        // }
+                                      },
+                                      icon: CustomImage(
+                                        isGuest
+                                            ? Assets.blueUserAvatar
+                                            : profileImage,
+                                        height: avatarSize,
+                                        width: avatarSize,
+                                        circular: true,
+                                        isProfileImage: true,
+                                        imageType: isGuest
+                                            ? CustomImageType.local
+                                            : CustomImageType.network,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Gaps.horizontalGapOf(tabSpacing),
+                                if (!isGuest && totalChildCount > 0)
+                                  Text(
+                                    name,
+                                    style: nameTextStyle.copyWith(
+                                      color: AppColors.kPitchBlack,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            if (!isGuest && totalChildCount > 0)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: buildProgressBar(),
+                              ),
+                          ],
+                        ),
+
+                        Flexible(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: tabSpacing,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                for (
+                                  int i = 0;
+                                  i < homeServices.length;
+                                  i++
+                                ) ...[
+                                  _buildTab(
+                                    homeServices[i].icon ?? '',
+                                    homeServices[i].name ?? '',
+                                    selectedIndex == i
+                                        ? AppColors.kSecondaryColor
+                                        : AppColors.kGrey,
+                                    () => onTabSelected(
+                                      homeServices[i].name ?? '',
+                                    ),
+                                    i,
+                                    selectedIndex,
+                                    tabIconSize,
+                                  ),
+                                  if (i != homeServices.length - 1)
+                                    Gaps.horizontalGapOf(tabSpacing),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Gaps.verticalGapOf(8),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 
