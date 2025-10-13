@@ -23,11 +23,10 @@ class UserProvider extends ChangeNotifier {
         notifyListeners();
         return;
       }
-      final doc =
-          await FirebaseFirestore.instance
-              .collection(AppConstants.usersCollection)
-              .doc(currentUser.uid)
-              .get();
+      final doc = await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(currentUser.uid)
+          .get();
       if (doc.exists) {
         _user = UserModel.fromJson(doc.data()!);
         _userId = _user?.uid;
@@ -63,6 +62,134 @@ class UserProvider extends ChangeNotifier {
     }
     logger.d('PIN match: true');
     return true;
+  }
+
+  // ===== PASSCODE METHODS =====
+
+  /// Check if user has a passcode set
+  Future<bool> hasPasscode() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return false;
+    return await PasscodeService.hasPasscode(currentUser.uid);
+  }
+
+  Future<PasscodeModel?> getStoredPasscode() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return null;
+    return await PasscodeService.getStoredPasscode(currentUser.uid);
+  }
+
+  Future<bool> createPasscode(
+    String passcode, {
+    PasscodeMode mode = PasscodeMode.digits4,
+  }) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      showCustomToaster('User not authenticated.', isError: true);
+      return false;
+    }
+
+    try {
+      final passcodeModel = PasscodeUtility.createPasscodeModel(
+        passcode,
+        mode: mode,
+      );
+      final success = await PasscodeService.savePasscode(
+        currentUser.uid,
+        passcodeModel,
+      );
+
+      if (success) {
+        showCustomToaster(AppConstants.passcodeSuccessCreated);
+        logger.i('✅ Passcode created for user: ${currentUser.uid}');
+      } else {
+        showCustomToaster(AppConstants.passcodeErrorSave, isError: true);
+        logger.e('❌ Failed to create passcode for user: ${currentUser.uid}');
+      }
+
+      return success;
+    } catch (e) {
+      showCustomToaster(AppConstants.passcodeErrorSave, isError: true);
+      logger.e('❌ Error creating passcode: $e');
+      return false;
+    }
+  }
+
+  /// Verify entered passcode
+  Future<PasscodeVerificationResult> verifyPasscode(
+    String enteredPasscode,
+  ) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      return PasscodeVerificationResult.error;
+    }
+
+    return await PasscodeService.verifyEnteredPasscode(
+      currentUser.uid,
+      enteredPasscode,
+    );
+  }
+
+  /// Update existing passcode
+  Future<bool> updatePasscode(String newPasscode, {PasscodeMode? mode}) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      showCustomToaster('User not authenticated.', isError: true);
+      return false;
+    }
+
+    try {
+      final success = await PasscodeService.updatePasscode(
+        currentUser.uid,
+        newPasscode,
+        mode: mode,
+      );
+
+      if (success) {
+        showCustomToaster(AppConstants.passcodeSuccessUpdated);
+        logger.i('✅ Passcode updated for user: ${currentUser.uid}');
+      } else {
+        showCustomToaster(AppConstants.passcodeErrorUpdate, isError: true);
+        logger.e('❌ Failed to update passcode for user: ${currentUser.uid}');
+      }
+
+      return success;
+    } catch (e) {
+      showCustomToaster(AppConstants.passcodeErrorUpdate, isError: true);
+      logger.e('❌ Error updating passcode: $e');
+      return false;
+    }
+  }
+
+  /// Reset passcode using date of birth
+  Future<bool> resetPasscodeWithBirth(int yearOfBirth) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      showCustomToaster('User not authenticated.', isError: true);
+      return false;
+    }
+
+    try {
+      // Reset the passcode using the service
+      final success = await PasscodeService.resetPasscodeWithDateOfBirth(
+        currentUser.uid,
+        yearOfBirth,
+      );
+
+      if (success) {
+        showCustomToaster(AppConstants.passcodeSuccessReset);
+        logger.i('✅ Passcode reset for user: ${currentUser.uid}');
+      } else {
+        showCustomToaster(AppConstants.passcodeErrorInvalidYear, isError: true);
+        logger.e('❌ Failed to reset passcode for user: ${currentUser.uid}');
+      }
+
+      return success;
+    } catch (e) {
+      showCustomToaster(AppConstants.passcodeErrorReset, isError: true);
+      logger.e('❌ Error resetting passcode: $e');
+      return false;
+    }
   }
 
   Future<void> updateUserProfile({

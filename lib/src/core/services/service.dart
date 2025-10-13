@@ -23,3 +23,6 @@ export 'learning_session_manager.dart';
 
 /// [Screen] Time service
 export 'screen_time_service.dart';
+
+/// [Passcode] service
+export 'passcode_service.dart';

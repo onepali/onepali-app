@@ -17,6 +17,9 @@ export 'validator.dart';
 /// [Media] Utility
 export 'media_utility.dart';
 
+/// [Passcode] Utility
+export 'passcode_utility.dart';
+
 /// [Guest] Utility
 export 'guest_util.dart';
 
