@@ -19,25 +19,46 @@ class UserProvider extends ChangeNotifier {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
+        logger.e('❌ fetchOwnProfile: No current user authenticated');
         _status = DataFetchStatus.error;
         notifyListeners();
         return;
       }
+
+      logger.d(
+        '🔍 fetchOwnProfile: Fetching profile for user: ${currentUser.uid}',
+      );
       final doc = await FirebaseFirestore.instance
           .collection(AppConstants.usersCollection)
           .doc(currentUser.uid)
           .get();
+
       if (doc.exists) {
-        _user = UserModel.fromJson(doc.data()!);
+        logger.d('✅ fetchOwnProfile: Document exists, parsing user data');
+        final data = doc.data();
+        logger.d('📄 fetchOwnProfile: Raw document data: $data');
+
+        if (data!['uid'] == null) {
+          data['uid'] = currentUser.uid;
+        }
+
+        _user = UserModel.fromJson(data);
         _userId = _user?.uid;
-        logger.d('User fetched: ${_user?.toJson()}');
+        logger.d(
+          '✅ fetchOwnProfile: User fetched successfully: ${_user?.toJson()}',
+        );
         _status = DataFetchStatus.success;
       } else {
+        logger.w(
+          '⚠️ fetchOwnProfile: Document does not exist for user: ${currentUser.uid}',
+        );
         _user = null;
         _status = DataFetchStatus.error;
       }
       notifyListeners();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logger.e('❌ fetchOwnProfile: Error fetching user profile: $e');
+      logger.e('📍 fetchOwnProfile: Stack trace: $stackTrace');
       _user = null;
       _status = DataFetchStatus.error;
       notifyListeners();
@@ -192,9 +213,53 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  /// Check if parent has completed required profile details
+  bool hasCompleteProfile() {
+    if (_user == null) return false;
+
+    // Check required fields
+    final hasValidName = _user != null && _user!.fullName.trim().isNotEmpty;
+    final hasValidEmail = _user != null && _user!.email.trim().isNotEmpty;
+    final hasValidYearOfBirth =
+        _user != null && _user!.yearOfBirth > 0 && _user!.yearOfBirth >= 1900;
+
+    logger.d('Parent profile validation:');
+    logger.d(
+      '  - Name: ${hasValidName ? "✓" : "✗"} (${_user?.fullName ?? "N/A"})',
+    );
+    logger.d(
+      '  - Email: ${hasValidEmail ? "✓" : "✗"} (${_user?.email ?? "N/A"})',
+    );
+    logger.d(
+      '  - Year of birth: ${hasValidYearOfBirth ? "✓" : "✗"} (${_user?.yearOfBirth ?? "N/A"})',
+    );
+
+    return hasValidName && hasValidEmail && hasValidYearOfBirth;
+  }
+
+  /// Get list of missing required fields
+  List<String> getMissingFields() {
+    if (_user == null) return ['All profile information'];
+
+    final List<String> missing = [];
+
+    if (_user!.fullName.trim().isEmpty) {
+      missing.add('Full Name');
+    }
+    if (_user!.email.trim().isEmpty) {
+      missing.add('Email');
+    }
+    if (_user!.yearOfBirth <= 0 || _user!.yearOfBirth < 1900) {
+      missing.add('Year of Birth');
+    }
+
+    return missing;
+  }
+
   Future<void> updateUserProfile({
     required String fullName,
     required String email,
+    int? yearOfBirth,
   }) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
@@ -202,16 +267,27 @@ class UserProvider extends ChangeNotifier {
       return;
     }
     try {
+      final Map<String, dynamic> updateData = {
+        'fullName': fullName,
+        'email': email,
+      };
+
+      // Only update yearOfBirth if provided
+      if (yearOfBirth != null) {
+        updateData['yearOfBirth'] = yearOfBirth;
+      }
+
       await FirebaseFirestore.instance
           .collection(AppConstants.usersCollection)
           .doc(currentUser.uid)
-          .update({'fullName': fullName, 'email': email});
+          .update(updateData);
+
       if (_user != null) {
         _user = UserModel(
           uid: _user!.uid,
           fullName: fullName,
           email: email,
-          yearOfBirth: _user!.yearOfBirth,
+          yearOfBirth: yearOfBirth ?? _user!.yearOfBirth,
           heardAbout: _user!.heardAbout,
           learningReason: _user!.learningReason,
           authProvider: _user!.authProvider,
@@ -225,6 +301,3 @@ class UserProvider extends ChangeNotifier {
     }
   }
 }
-
-
-// pin > DateTime.now().year ||

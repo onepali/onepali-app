@@ -40,3 +40,6 @@ export 'metrics_tracking_helper.dart';
 
 /// [Dimension] Utility
 export 'dimension_utility.dart';
+
+/// [Parent Profile] Utility
+export 'parent_profile_util.dart';

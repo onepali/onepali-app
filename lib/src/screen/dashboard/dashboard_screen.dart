@@ -42,6 +42,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await childProvider.selectDefaultChildIfNeeded(context);
       await _initializeScreenTimeTracking();
 
+      // Check parent profile completion
+      if (mounted) {
+        ParentProfileUtil.checkAndShowProfileCompletion(context);
+      }
+
       // Use provider method to get current child
       final currentChild = await childProvider.getCurrentChild();
       setState(() {
