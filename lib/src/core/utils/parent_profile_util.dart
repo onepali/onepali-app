@@ -4,7 +4,10 @@ import '../../src.dart';
 
 class ParentProfileUtil {
   /// Show parent profile completion popup
-  static void showProfileCompletionDialog(BuildContext context) {
+  static void showProfileCompletionDialog(
+    BuildContext context, {
+    bool isFromParentZone = false,
+  }) {
     final userProvider = context.read<UserProvider>();
     final missingFields = userProvider.getMissingFields();
 
@@ -19,9 +22,9 @@ class ParentProfileUtil {
       title: 'Complete Your Profile',
       content: '',
       confirmButtonText: 'Update Profile',
-      isSvg: false,
-      image: Assets.parentAvatar,
+      image: Assets.profileUpdateSvg,
       hasSingleButton: true,
+      isSvg: true,
       barrierDismissible: false,
       onConfirm: () async {
         Navigator.of(context).pop();
@@ -31,7 +34,7 @@ class ParentProfileUtil {
           logger.d('Navigating to UserScreen after dialog close');
           Utility.navigateMaterialRoute(
             context,
-            UserScreen(),
+            UserScreen(isFromParentZone: isFromParentZone),
             routeName: AppRoutes.parentProfileScreen,
           );
         }

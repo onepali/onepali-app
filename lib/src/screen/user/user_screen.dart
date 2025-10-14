@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:onepali/src/src.dart';
 
 class UserScreen extends StatefulWidget {
-  const UserScreen({super.key});
+  final bool isFromParentZone;
+  const UserScreen({super.key, this.isFromParentZone = false});
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -20,7 +22,9 @@ class _UserScreenState extends State<UserScreen> {
     super.initState();
     final user = context.read<UserProvider>().user;
     _nameController = TextEditingController(text: user?.fullName ?? '');
-    _emailController = TextEditingController(text: user?.email ?? '');
+
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    _emailController = TextEditingController(text: firebaseUser?.email ?? '');
 
     // Set initial year - use user's yearOfBirth if available, otherwise a default
     if (user?.yearOfBirth != null && user!.yearOfBirth > 0) {
@@ -85,11 +89,11 @@ class _UserScreenState extends State<UserScreen> {
                 title: 'Email',
                 titleStyle: titleStyle,
                 child: CustomTextField(
-                  hintText: 'Enter your Email',
+                  hintText: 'Email',
                   keyboardType: TextInputType.emailAddress,
                   controller: _emailController,
                   prefixIcon: Icon(Icons.email_outlined),
-                  validation: (value) => Validator.email(value ?? ""),
+                  isReadOnly: true,
                 ),
               ),
               Gaps.verticalGapOf(verticalGap2),
@@ -113,10 +117,17 @@ class _UserScreenState extends State<UserScreen> {
                   if (_formKey.currentState?.validate() ?? false) {
                     await context.read<UserProvider>().updateUserProfile(
                       fullName: _nameController.text.trim(),
-                      email: _emailController.text.trim(),
+                      email: _emailController.text,
                       yearOfBirth: selectedYear.year,
                     );
-                    if (context.mounted) Navigator.pop(context);
+                    if (widget.isFromParentZone) {
+                      Utility.navigate(
+                        context,
+                        AppRoutes.parentDashboardScreen,
+                      );
+                    } else {
+                      Utility.navigate(context, AppRoutes.dashboardScreen);
+                    }
                   }
                 },
                 backgroundColor: AppColors.kButtonGreen,

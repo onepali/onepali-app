@@ -35,12 +35,9 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
   Widget build(BuildContext context) {
     return Consumer<PrintablesProvider>(
       builder: (context, provider, child) {
-        final selectedFromThisPrintable =
-            widget.printable.lessons
-                .where(
-                  (lesson) => provider.selectedWorksheets.contains(lesson.id),
-                )
-                .length;
+        final selectedFromThisPrintable = widget.printable.lessons
+            .where((lesson) => provider.selectedWorksheets.contains(lesson.id))
+            .length;
 
         return GestureDetector(
           onTap: () {
@@ -49,10 +46,9 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
           child: Scaffold(
             backgroundColor: AppColors.kWhite,
             appBar: CustomAppBar(
-              title:
-                  selectedFromThisPrintable > 0
-                      ? '$selectedFromThisPrintable ${selectedFromThisPrintable > 1 ? 'worksheets' : 'worksheet'} selected'
-                      : widget.printable.title,
+              title: selectedFromThisPrintable > 0
+                  ? '$selectedFromThisPrintable ${selectedFromThisPrintable > 1 ? 'worksheets' : 'worksheet'} selected'
+                  : widget.printable.title,
               centerTitle: false,
             ),
             body: Column(
@@ -96,18 +92,17 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
           hintText: 'Search worksheets...',
           hintStyle: AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey),
           prefixIcon: const Icon(Icons.search, color: AppColors.kGrey),
-          suffixIcon:
-              _searchController.text.isNotEmpty
-                  ? IconButton(
-                    icon: const Icon(Icons.clear, color: AppColors.kGrey),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        _searchQuery = '';
-                      });
-                    },
-                  )
-                  : null,
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, color: AppColors.kGrey),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {
+                      _searchQuery = '';
+                    });
+                  },
+                )
+              : null,
           filled: true,
           fillColor: AppColors.kBackgroundColor,
           border: OutlineInputBorder(
@@ -132,16 +127,16 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: buttonMargin),
       child: CustomMaterialButton(
-        onTap:
-            provider.isDownloading
-                ? null
-                : () async {
-                  await provider.downloadAllWorksheets(widget.printable);
-                },
+        onTap: provider.isDownloading
+            ? null
+            : () async {
+                await provider.downloadAllWorksheets(widget.printable);
+              },
         elevation: 0,
         height: isMobile ? 48 : 56,
-        textStyle:
-            isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium,
+        textStyle: isMobile
+            ? AppStyles.text16PxMedium
+            : AppStyles.text18PxMedium,
         isLoading: provider.isDownloading,
         label: 'Download all (${widget.printable.totalWorksheets})',
       ),
@@ -161,13 +156,10 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
     final double childAspectRatio = isMobile ? (2 / 2) : (2.2 / 2);
 
     // Filter lessons based on search query
-    final filteredLessons =
-        widget.printable.lessons.where((lesson) {
-          if (_searchQuery.isEmpty) return true;
-          return lesson.title.toLowerCase().contains(
-            _searchQuery.toLowerCase(),
-          );
-        }).toList();
+    final filteredLessons = widget.printable.lessons.where((lesson) {
+      if (_searchQuery.isEmpty) return true;
+      return lesson.title.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
 
     if (filteredLessons.isEmpty && _searchQuery.isNotEmpty) {
       return Center(
@@ -232,10 +224,9 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
     final double cardPadding = isMobile ? 16.0 : 20.0;
     final double cardBorderRadius = isMobile ? 12.0 : 16.0;
     final double borderWidth = isSelected ? 1.5 : 1.0;
-    final TextStyle textStyle =
-        isMobile
-            ? AppStyles.text16PxRegular.copyWith(color: AppColors.kBlack)
-            : AppStyles.text18PxMedium.copyWith(color: AppColors.kBlack);
+    final TextStyle textStyle = isMobile
+        ? AppStyles.text16PxRegular.copyWith(color: AppColors.kBlack)
+        : AppStyles.text18PxMedium.copyWith(color: AppColors.kBlack);
 
     return GestureDetector(
       onTap: () {
@@ -244,10 +235,9 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
       child: Container(
         padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? AppColors.kButtonGreen.withValues(alpha: 0.2)
-                  : AppColors.kWhite,
+          color: isSelected
+              ? AppColors.kButtonGreen.withValues(alpha: 0.2)
+              : AppColors.kWhite,
 
           borderRadius: BorderRadius.circular(cardBorderRadius),
           border: Border.all(color: AppColors.kLightGrey, width: borderWidth),
@@ -282,31 +272,26 @@ class _PrintableDetailScreenState extends State<PrintableDetailScreen> {
       ),
       child: SafeArea(
         child: CustomMaterialButton(
-          onTap:
-              provider.isDownloading
-                  ? null
-                  : () {
-                    final selectedLessons =
-                        widget.printable.lessons
-                            .where(
-                              (lesson) => provider.selectedWorksheets.contains(
-                                lesson.id,
-                              ),
-                            )
-                            .toList();
+          onTap: provider.isDownloading
+              ? null
+              : () {
+                  final selectedLessons = widget.printable.lessons
+                      .where(
+                        (lesson) =>
+                            provider.selectedWorksheets.contains(lesson.id),
+                      )
+                      .toList();
 
-                    for (final lesson in selectedLessons) {
-                      provider.downloadWorksheet(
-                        lesson,
-                        widget.printable.title,
-                      );
-                    }
-                  },
+                  for (final lesson in selectedLessons) {
+                    provider.downloadWorksheet(lesson, widget.printable.title);
+                  }
+                },
           isLoading: provider.isDownloading,
           radius: 60,
           height: isMobile ? 48 : 56,
-          textStyle:
-              isMobile ? AppStyles.text16PxMedium : AppStyles.text18PxMedium,
+          textStyle: isMobile
+              ? AppStyles.text16PxMedium
+              : AppStyles.text18PxMedium,
           elevation: 0,
           label:
               'Download $selectedCount worksheet${selectedCount > 1 ? 's' : ''}',

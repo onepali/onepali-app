@@ -29,7 +29,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
       await childProvider.fetchChildUser();
 
       if (context.mounted) {
-        ParentProfileUtil.checkAndShowProfileCompletion(context);
+        ParentProfileUtil.checkAndShowProfileCompletion(context,);
       }
     });
   }

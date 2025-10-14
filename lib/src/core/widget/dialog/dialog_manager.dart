@@ -109,29 +109,30 @@ class DialogManager {
                       child: SvgHelper.fromSource(
                         path: image,
                         height: isMobileLandScape
-                            ? 80
+                            ? 100
                             : isMobilePortrait
                             ? 120
                             : 150,
                         width: isMobileLandScape
-                            ? 80
+                            ? 100
                             : isMobilePortrait
                             ? 120
                             : 150,
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                    child: Text(
-                      content,
-                      style: isMobileLandScape
-                          ? AppStyles.text14PxRegular
-                          : isMobilePortrait
-                          ? AppStyles.text14PxRegular
-                          : AppStyles.text16PxRegular,
-                      textAlign: TextAlign.center,
+                  if (content.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                      child: Text(
+                        content,
+                        style: isMobileLandScape
+                            ? AppStyles.text14PxRegular
+                            : isMobilePortrait
+                            ? AppStyles.text14PxRegular
+                            : AppStyles.text16PxRegular,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
                   if (image.isEmpty)
                     Gaps.verticalGapOf(
                       isMobileLandScape
