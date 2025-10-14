@@ -107,11 +107,9 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(
-            left: horizontalPadding,
-            right: horizontalPadding,
-            // bottom: isTabletPortrait ? 24.0 : 16.0,
-            top: 0,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: horizontalPadding,
           ),
           child: _buildNextButton(
             context,

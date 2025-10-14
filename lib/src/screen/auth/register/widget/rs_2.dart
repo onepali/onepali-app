@@ -23,16 +23,31 @@ class _RS2ScreenState extends State<RS2Screen> {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 2),
       backgroundColor: AppColors.kWhite,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 16.0,
+          ),
+          child: _buildNextButton(
+            context,
+            isTabletPortrait,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
+          ),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.all(horizontalPadding),
         child: Column(
@@ -44,10 +59,9 @@ class _RS2ScreenState extends State<RS2Screen> {
               AppConstants.whyLearningNepali.length,
               (index) => Padding(
                 padding: EdgeInsets.only(
-                  bottom:
-                      index == AppConstants.whyLearningNepali.length - 1
-                          ? 0
-                          : cardBottomGap,
+                  bottom: index == AppConstants.whyLearningNepali.length - 1
+                      ? 0
+                      : cardBottomGap,
                 ),
                 child: _buildOptionCard(
                   AppConstants.whyLearningNepali[index],
@@ -60,14 +74,6 @@ class _RS2ScreenState extends State<RS2Screen> {
                   isTabletPortrait: isTabletPortrait,
                 ),
               ),
-            ),
-            Spacer(),
-            _buildNextButton(
-              context,
-              isTabletPortrait,
-              buttonTextStyle,
-              buttonHeight,
-              buttonRadius,
             ),
           ],
         ),
@@ -84,13 +90,13 @@ class _RS2ScreenState extends State<RS2Screen> {
     final double verticalPadding = isTabletPortrait ? 20.0 : 16.0;
     final double horizontalPadding = isTabletPortrait ? 24.0 : 20.0;
     final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
-    final double borderWidth =
-        isSelected ? (isTabletPortrait ? 3.0 : 2.0) : 1.0;
+    final double borderWidth = isSelected
+        ? (isTabletPortrait ? 3.0 : 2.0)
+        : 1.0;
 
-    final TextStyle textStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular
-            : AppStyles.text16PxRegular;
+    final TextStyle textStyle = isTabletPortrait
+        ? AppStyles.text18PxRegular
+        : AppStyles.text16PxRegular;
 
     return InkWell(
       onTap: onTap,

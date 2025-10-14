@@ -110,31 +110,32 @@ class _UserScreenState extends State<UserScreen> {
                   showDay: false,
                 ),
               ),
-              const Spacer(),
-              CustomMaterialButton(
-                label: 'Update',
-                onTap: () async {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    await context.read<UserProvider>().updateUserProfile(
-                      fullName: _nameController.text.trim(),
-                      email: _emailController.text,
-                      yearOfBirth: selectedYear.year,
-                    );
-                    if (widget.isFromParentZone) {
-                      Utility.navigate(
-                        context,
-                        AppRoutes.parentDashboardScreen,
-                      );
-                    } else {
-                      Utility.navigate(context, AppRoutes.dashboardScreen);
-                    }
-                  }
-                },
-                backgroundColor: AppColors.kButtonGreen,
-                width: double.infinity,
-                elevation: 0.0,
-              ),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: CustomMaterialButton(
+            label: 'Update',
+            onTap: () async {
+              if (_formKey.currentState?.validate() ?? false) {
+                await context.read<UserProvider>().updateUserProfile(
+                  fullName: _nameController.text.trim(),
+                  email: _emailController.text,
+                  yearOfBirth: selectedYear.year,
+                );
+                if (widget.isFromParentZone) {
+                  Utility.navigate(context, AppRoutes.parentDashboardScreen);
+                } else {
+                  Utility.navigate(context, AppRoutes.dashboardScreen);
+                }
+              }
+            },
+            backgroundColor: AppColors.kButtonGreen,
+            width: double.infinity,
+            elevation: 0.0,
           ),
         ),
       ),

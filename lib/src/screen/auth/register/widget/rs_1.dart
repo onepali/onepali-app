@@ -26,16 +26,31 @@ class _RS1ScreenState extends State<RS1Screen> {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 1),
       backgroundColor: AppColors.kWhite,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 16.0,
+          ),
+          child: _buildNextButton(
+            context,
+            isTabletPortrait,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
+          ),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.all(horizontalPadding),
         child: Column(
@@ -66,13 +81,6 @@ class _RS1ScreenState extends State<RS1Screen> {
                 }),
               ),
             ),
-            _buildNextButton(
-              context,
-              isTabletPortrait,
-              buttonTextStyle,
-              buttonHeight,
-              buttonRadius,
-            ),
           ],
         ),
       ),
@@ -90,14 +98,14 @@ class _RS1ScreenState extends State<RS1Screen> {
     final double iconSize = isTabletPortrait ? 40.0 : 30.0;
     final double verticalGap = isTabletPortrait ? 16.0 : 12.0;
     final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
-    final double borderWidth =
-        isSelected ? (isTabletPortrait ? 3.0 : 2.5) : 1.0;
+    final double borderWidth = isSelected
+        ? (isTabletPortrait ? 3.0 : 2.5)
+        : 1.0;
     final double cardPadding = isTabletPortrait ? 16.0 : 12.0;
 
-    final TextStyle textStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle textStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
     return InkWell(
       onTap: onTap,

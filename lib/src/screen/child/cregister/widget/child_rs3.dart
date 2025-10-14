@@ -39,23 +39,21 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
 
-    final TextStyle subtitleStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle subtitleStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
-    final TextStyle noteStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle noteStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -99,7 +97,10 @@ class _ChildRS3ScreenState extends State<ChildRS3Screen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: bottomPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: bottomPadding,
+            vertical: bottomPadding,
+          ),
           child: _buildNextButton(
             context,
             childCount,

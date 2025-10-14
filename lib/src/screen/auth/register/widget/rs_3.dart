@@ -44,16 +44,15 @@ class _RS3ScreenState extends State<RS3Screen> {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
-    final TextStyle titleActionTextStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxSemiBold
-            : AppStyles.text14PxSemiBold;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
+    final TextStyle titleActionTextStyle = isTabletPortrait
+        ? AppStyles.text18PxSemiBold
+        : AppStyles.text14PxSemiBold;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 3),
@@ -105,15 +104,22 @@ class _RS3ScreenState extends State<RS3Screen> {
                 'It will be the password for the parent zone.',
                 isTablet: isTabletPortrait,
               ),
-              Spacer(),
-              _buildNextButton(
-                context,
-                isTabletPortrait,
-                buttonTextStyle,
-                buttonHeight,
-                buttonRadius,
-              ),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 16.0,
+          ),
+          child: _buildNextButton(
+            context,
+            isTabletPortrait,
+            buttonTextStyle,
+            buttonHeight,
+            buttonRadius,
           ),
         ),
       ),

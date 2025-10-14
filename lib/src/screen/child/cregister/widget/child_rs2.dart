@@ -29,18 +29,17 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
 
-    final TextStyle noteStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle noteStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -100,7 +99,10 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: horizontalPadding,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
