@@ -28,7 +28,7 @@ class _CUserScreenState extends State<CUserScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.child.fullName);
-    selectedRange = widget.child.screenTime;
+    selectedRange = widget.child.screenTimeTracking?.totalAllowed ?? 0;
     selectedDate = DateTime.parse(widget.child.dob);
     selectedAvatar = widget.child.avatarUrl;
     hasScreenTimeEnabled = widget.child.hasScreenTime;
@@ -61,13 +61,13 @@ class _CUserScreenState extends State<CUserScreen> {
     final double verticalGap5 = isTabletPortrait ? 50.0 : 40.0;
     final double verticalGap6 = isTabletPortrait ? 32.0 : 20.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
-    final TextStyle noteStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle noteStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Profile', centerTitle: false),
@@ -90,9 +90,9 @@ class _CUserScreenState extends State<CUserScreen> {
                     isProfileImage: true,
                     imageType:
                         selectedAvatar != null &&
-                                selectedAvatar!.startsWith('http')
-                            ? CustomImageType.network
-                            : CustomImageType.local,
+                            selectedAvatar!.startsWith('http')
+                        ? CustomImageType.network
+                        : CustomImageType.local,
                   ),
                 ),
               ),
@@ -190,13 +190,13 @@ class _CUserScreenState extends State<CUserScreen> {
     bool isTabletPortrait,
     double verticalGap,
   ) {
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
-    final TextStyle deleteButtonTextStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular.copyWith(color: AppColors.kRed)
-            : AppStyles.text16PxRegular.copyWith(color: AppColors.kRed);
+    final TextStyle deleteButtonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxRegular.copyWith(color: AppColors.kRed)
+        : AppStyles.text16PxRegular.copyWith(color: AppColors.kRed);
 
     return Column(
       children: [
@@ -283,10 +283,9 @@ class _CUserScreenState extends State<CUserScreen> {
                   child: CircleAvatar(
                     backgroundImage: AssetImage(AppConstants.avatarList[idx]),
                     radius: avatarRadius,
-                    child:
-                        selectedAvatar == AppConstants.avatarList[idx]
-                            ? Icon(Icons.check, color: AppColors.kWhite)
-                            : null,
+                    child: selectedAvatar == AppConstants.avatarList[idx]
+                        ? Icon(Icons.check, color: AppColors.kWhite)
+                        : null,
                   ),
                 ),
               );

@@ -72,7 +72,6 @@ class ChildUserProvider extends ChangeNotifier {
               parentEmail: '',
               parentUid: '',
               role: 'child',
-              screenTime: 0,
               hasScreenTime: false,
               uid: '',
             )
@@ -200,9 +199,8 @@ class ChildUserProvider extends ChangeNotifier {
         'avatar_url': avatarUrl,
       };
 
-      // If screen time is enabled, update normally
+      // If screen time is enabled, update only screenTimeTracking
       if (hasScreenTime == true) {
-        updateData['screen_time'] = screenTime;
         updateData['screenTimeTracking'] = {
           'totalAllowed': screenTime,
           'totalUsed': existingTotalUsed,
@@ -211,7 +209,6 @@ class ChildUserProvider extends ChangeNotifier {
         updateData['has_screen_time'] = true;
       } else {
         // If screen time is disabled, reset all related fields
-        updateData['screen_time'] = 0.0;
         updateData['screenTimeTracking'] = {
           'totalAllowed': 0.0,
           'totalUsed': 0.0,
@@ -243,7 +240,6 @@ class ChildUserProvider extends ChangeNotifier {
           parentEmail: _childUser[idx].parentEmail,
           parentUid: _childUser[idx].parentUid,
           role: _childUser[idx].role,
-          screenTime: hasScreenTime == true ? screenTime : 0.0,
           hasScreenTime: hasScreenTime ?? _childUser[idx].hasScreenTime,
           uid: childUid,
           screenTimeTracking: newScreenTimeTracking,
@@ -404,30 +400,22 @@ class ChildUserProvider extends ChangeNotifier {
               (screenTimeTracking['totalUsed'] as num?)?.toDouble() ?? 0.0;
           newAllowed = currentAllowed + additionalMinutes;
 
-          // Get current screen_time value and extend it too
-          final currentScreenTime =
-              (data['screen_time'] as num?)?.toDouble() ?? 0.0;
-          final newScreenTime = currentScreenTime + additionalMinutes;
-
           await childDoc.update({
             'screenTimeTracking': {
               'totalAllowed': newAllowed,
               'totalUsed': currentUsed,
               'lastUpdated': DateTime.now().toIso8601String(),
             },
-            'screen_time': newScreenTime,
           });
 
           logger.i('Screen time extended by $additionalMinutes minutes.');
-          logger.i(
-            'New totalAllowed: $newAllowed, New screen_time: $newScreenTime',
-          );
+          logger.i('New totalAllowed: $newAllowed');
           logger.i('totalUsed remains: $currentUsed');
         } else {
           final child = _childUser.firstWhere((c) => c.uid == childUid);
-          final currentScreenTime = child.screenTime;
+          final currentScreenTime =
+              child.screenTimeTracking?.totalAllowed ?? 0.0;
           newAllowed = currentScreenTime + additionalMinutes;
-          final newScreenTime = currentScreenTime + additionalMinutes;
 
           await childDoc.update({
             'screenTimeTracking': {
@@ -435,13 +423,11 @@ class ChildUserProvider extends ChangeNotifier {
               'totalUsed': 0.0,
               'lastUpdated': DateTime.now().toIso8601String(),
             },
-            'screen_time': newScreenTime,
           });
 
           logger.i(
             'Created screen time tracking with extended limit: $newAllowed',
           );
-          logger.i('Updated screen_time to: $newScreenTime');
         }
 
         final childIndex = _childUser.indexWhere((c) => c.uid == childUid);
@@ -453,9 +439,6 @@ class ChildUserProvider extends ChangeNotifier {
             lastUpdated: DateTime.now(),
           );
 
-          final newScreenTimeValue =
-              updatedChild.screenTime + additionalMinutes;
-
           _childUser[childIndex] = ChildUserModel(
             avatarUrl: updatedChild.avatarUrl,
             createdAt: updatedChild.createdAt,
@@ -464,7 +447,6 @@ class ChildUserProvider extends ChangeNotifier {
             parentEmail: updatedChild.parentEmail,
             parentUid: updatedChild.parentUid,
             role: updatedChild.role,
-            screenTime: newScreenTimeValue,
             hasScreenTime: updatedChild.hasScreenTime,
             uid: childUid,
             screenTimeTracking: updatedScreenTimeTracking,
@@ -472,7 +454,6 @@ class ChildUserProvider extends ChangeNotifier {
           );
 
           logger.i('Updated local child data with extended screen time');
-          logger.i('Local screenTime updated to: $newScreenTimeValue');
           notifyListeners();
         }
       } else {
