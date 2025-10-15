@@ -41,8 +41,5 @@ export 'metrics_tracking_helper.dart';
 /// [Dimension] Utility
 export 'dimension_utility.dart';
 
-/// [File Download] Utility
-export 'file_download_utility.dart';
-
 /// [Parent Profile] Utility
 export 'parent_profile_util.dart';

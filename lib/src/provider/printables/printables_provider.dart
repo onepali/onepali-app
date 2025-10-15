@@ -4,6 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 import 'package:onepali/src/src.dart';
 
 class PrintablesProvider extends ChangeNotifier {
@@ -62,13 +65,11 @@ class PrintablesProvider extends ChangeNotifier {
     }
 
     try {
-      final querySnapshot = await _firestore
-          .collection(AppConstants.printableCollection)
-          .get();
+      final querySnapshot =
+          await _firestore.collection(AppConstants.printableCollection).get();
 
-      final List<Map<String, dynamic>> printablesList = querySnapshot.docs
-          .map((doc) => doc.data())
-          .toList();
+      final List<Map<String, dynamic>> printablesList =
+          querySnapshot.docs.map((doc) => doc.data()).toList();
 
       _printables.clear();
       _printables.addAll(printableModelFromJson(jsonEncode(printablesList)));
@@ -115,102 +116,153 @@ class PrintablesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Download single worksheet using secure download utility
+  // Create O Nepali folder in appropriate location based on platform
+  Future<Directory> _getOrCreateONepaliFolder() async {
+    late Directory documentsDirectory;
+
+    if (Platform.isAndroid) {
+      // Android: Use public Documents folder for better accessibility
+      final Directory? externalDir = await getExternalStorageDirectory();
+      if (externalDir == null) {
+        throw Exception('Could not access external storage');
+      }
+
+      // Navigate to Documents folder (usually /storage/emulated/0/Documents)
+      final String documentsPath = '/storage/emulated/0/Documents';
+      documentsDirectory = Directory(documentsPath);
+
+      if (!await documentsDirectory.exists()) {
+        await documentsDirectory.create(recursive: true);
+      }
+    } else {
+      documentsDirectory = await getApplicationDocumentsDirectory();
+    }
+
+    final Directory oNepaliFolder = Directory(
+      '${documentsDirectory.path}/O Nepali',
+    );
+
+    if (!await oNepaliFolder.exists()) {
+      await oNepaliFolder.create(recursive: true);
+      logger.d('Created O Nepali folder at: ${oNepaliFolder.path}');
+    }
+
+    return oNepaliFolder;
+  }
+
+  // Share file on iOS using the share sheet
+  Future<void> _shareFileOnIOS(String filePath, String filename) async {
+    if (Platform.isIOS) {
+      try {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(filePath)],
+            text: 'Downloaded from O Nepali: $filename',
+            subject: 'O Nepali Worksheet',
+          ),
+        );
+      } catch (e) {
+        logger.e('Error sharing file on iOS: $e');
+        showCustomToaster('File saved to app documents', isError: false);
+      }
+    }
+  }
+
+  // Check and request storage permissions based on platform
+  Future<bool> _checkStoragePermission() async {
+    if (Platform.isAndroid) {
+      // For Android 13+ (API 33+), we need different permissions
+      if (await Permission.manageExternalStorage.isGranted) {
+        return true;
+      }
+
+      // Try requesting manage external storage permission first
+      PermissionStatus status =
+          await Permission.manageExternalStorage.request();
+      if (status.isGranted) {
+        return true;
+      }
+
+      // Fallback to regular storage permission for older Android versions
+      status = await Permission.storage.request();
+      return status.isGranted;
+    } else if (Platform.isIOS) {
+      return true;
+    }
+
+    // For other platforms (web, desktop), assume permission is granted
+    return true;
+  }
+
+  // Download single worksheet using http
   Future<bool> downloadWorksheet(PLesson lesson, String printableTitle) async {
     try {
+      // Check storage permission
+      if (!await _checkStoragePermission()) {
+        final errorMessage =
+            Platform.isAndroid
+                ? 'Storage permission required to download files'
+                : 'Unable to access file storage';
+        showCustomToaster(errorMessage, isError: true);
+        return false;
+      }
+
       _isDownloading = true;
       _downloadingWorksheetId = lesson.id;
       _downloadProgress = 0.0;
       notifyListeners();
 
-      // Validate lesson data first
-      if (lesson.worksheet.pdfUrl.isEmpty) {
-        throw Exception('PDF URL is empty');
-      }
+      // Use public Documents folder instead of app documents
+      final Directory oNepaliFolder = await _getOrCreateONepaliFolder();
 
-      logger.d('Downloading worksheet: ${lesson.title}');
-      logger.d('PDF URL: ${lesson.worksheet.pdfUrl}');
-
-      // Create safe filename
+      // Create filename
       final String filename = '${printableTitle}_${lesson.title}.pdf'
-          .replaceAll(RegExp(r'[^\w\s-.]'), '') // Remove invalid characters
-          .replaceAll(RegExp(r'\s+'), '_') // Replace spaces with underscores
-          .trim();
+          .replaceAll(
+            RegExp(r'[^\w\s-.]'),
+            '',
+          ) // Remove invalid filename characters
+          .replaceAll(RegExp(r'\s+'), '_'); // Replace spaces with underscores
 
-      // Ensure filename is valid
-      if (filename.isEmpty || filename == '.pdf') {
-        throw Exception('Could not generate valid filename');
+      final String filePath = '${oNepaliFolder.path}/$filename';
+      final File file = File(filePath);
+
+      // Check if file already exists
+      if (await file.exists()) {
+        _isDownloading = false;
+        _downloadingWorksheetId = '';
+        notifyListeners();
+
+        if (Platform.isIOS) {
+          showCustomToaster('File already exists: $filename');
+          await _shareFileOnIOS(filePath, filename);
+        } else {
+          showCustomToaster('File already exists: $filename');
+        }
+        return true;
       }
 
-      logger.d('Generated filename: $filename');
+      // Download the file using http
+      final response = await http.get(Uri.parse(lesson.worksheet.pdfUrl));
 
-      // Use the new secure download utility
-      final String? downloadedPath = await FileDownloadUtility.downloadFile(
-        url: lesson.worksheet.pdfUrl,
-        filename: filename,
-        folderName: 'O Nepali',
-        onProgress: (progress) {
-          _downloadProgress = progress;
-          notifyListeners();
-        },
-      );
+      if (response.statusCode == 200) {
+        await file.writeAsBytes(response.bodyBytes);
 
-      _isDownloading = false;
-      _downloadingWorksheetId = '';
-      _downloadProgress = 0.0;
-      notifyListeners();
+        _isDownloading = false;
+        _downloadingWorksheetId = '';
+        _downloadProgress = 0.0;
+        notifyListeners();
 
-      if (downloadedPath != null && downloadedPath.isNotEmpty) {
-        // Verify the file actually exists and has content
-        final downloadedFile = File(downloadedPath);
-        if (await downloadedFile.exists()) {
-          final fileSize = await downloadedFile.length();
-          if (fileSize > 0) {
-            logger.d('Download successful: $downloadedPath ($fileSize bytes)');
-
-            // Get user-friendly location description
-            final locationDescription =
-                await FileDownloadUtility.getDownloadLocationDescription();
-
-            if (Platform.isIOS) {
-              showCustomToaster(
-                'Downloaded: $filename\nSaved to: $locationDescription',
-              );
-              // Share file on iOS for better user experience
-              await FileDownloadUtility.shareFile(downloadedPath, filename);
-            } else {
-              // For Android, provide more helpful feedback
-              if (downloadedPath.contains('/Download/')) {
-                showCustomToaster(
-                  '✅ Downloaded: $filename\n📁 Find in: $locationDescription\n💡 Open your Files app to view',
-                );
-              } else if (downloadedPath.contains('Android/data')) {
-                showCustomToaster(
-                  '✅ Downloaded: $filename\n📁 Location: $locationDescription\n💡 Use Files app ➜ Browse ➜ This device',
-                );
-              } else {
-                showCustomToaster(
-                  '✅ Downloaded: $filename\n📁 Saved to: $locationDescription\n💡 Use Share button for easier access',
-                );
-
-                // If file is in internal storage, offer to share it immediately
-                try {
-                  await FileDownloadUtility.shareFile(downloadedPath, filename);
-                } catch (e) {
-                  logger.w('Could not auto-share file: $e');
-                }
-              }
-            }
-
-            return true;
-          } else {
-            throw Exception('Downloaded file is empty');
-          }
+        if (Platform.isIOS) {
+          showCustomToaster('Downloaded: $filename');
+          await _shareFileOnIOS(filePath, filename);
         } else {
-          throw Exception('Downloaded file not found');
+          showCustomToaster('Downloaded: $filename');
         }
+
+        logger.d('Downloaded worksheet: $filePath');
+        return true;
       } else {
-        throw Exception('Download failed - no file path returned');
+        throw Exception('Failed to download file: ${response.statusCode}');
       }
     } catch (e) {
       _isDownloading = false;
@@ -219,33 +271,23 @@ class PrintablesProvider extends ChangeNotifier {
       notifyListeners();
 
       logger.e('Error downloading worksheet: $e');
-
-      // Provide more specific error messages
-      String errorMessage = 'Failed to download worksheet';
-      if (e.toString().contains('timeout')) {
-        errorMessage =
-            'Download timeout - please check your internet connection';
-      } else if (e.toString().contains('SocketException') ||
-          e.toString().contains('network') ||
-          e.toString().contains('connection')) {
-        errorMessage = 'Network error - please check your internet connection';
-      } else if (e.toString().contains('storage') ||
-          e.toString().contains('permission')) {
-        errorMessage = 'Storage access error - files saved to app folder';
-      } else if (e.toString().contains('PDF URL is empty')) {
-        errorMessage = 'Invalid worksheet data - please try again';
-      } else if (e.toString().contains('space')) {
-        errorMessage = 'Not enough storage space';
-      }
-
-      showCustomToaster(errorMessage, isError: true);
+      showCustomToaster('Failed to download worksheet', isError: true);
       return false;
     }
   }
 
-  // Download all worksheets in a printable using secure download utility
+  // Download all worksheets in a printable
   Future<void> downloadAllWorksheets(PrintableModel printable) async {
     try {
+      if (!await _checkStoragePermission()) {
+        final errorMessage =
+            Platform.isAndroid
+                ? 'Storage permission required to download files'
+                : 'Unable to access file storage';
+        showCustomToaster(errorMessage, isError: true);
+        return;
+      }
+
       _isDownloading = true;
       notifyListeners();
 
@@ -269,18 +311,24 @@ class PrintablesProvider extends ChangeNotifier {
       _downloadProgress = 0.0;
       notifyListeners();
 
-      // Get user-friendly location description
-      final locationDescription =
-          await FileDownloadUtility.getDownloadLocationDescription();
-
       if (successCount == totalCount) {
-        showCustomToaster(
-          'All worksheets downloaded successfully!\nSaved to: $locationDescription',
-        );
+        if (Platform.isIOS) {
+          showCustomToaster(
+            'All worksheets downloaded! Files are available in the app and can be shared.',
+          );
+        } else {
+          showCustomToaster('All worksheets downloaded successfully!');
+        }
       } else if (successCount > 0) {
-        showCustomToaster(
-          'Downloaded $successCount of $totalCount worksheets\nSaved to: $locationDescription',
-        );
+        if (Platform.isIOS) {
+          showCustomToaster(
+            'Downloaded $successCount of $totalCount worksheets. Files available in app.',
+          );
+        } else {
+          showCustomToaster(
+            'Downloaded $successCount of $totalCount worksheets',
+          );
+        }
       } else {
         showCustomToaster('Failed to download worksheets', isError: true);
       }
@@ -304,49 +352,5 @@ class PrintablesProvider extends ChangeNotifier {
   void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
-  }
-
-  /// Debug method to test download functionality
-  Future<void> testDownloadCapability() async {
-    try {
-      logger.d('Testing download capability...');
-
-      // Get storage info for debugging
-      final storageInfo = <String, dynamic>{};
-
-      if (Platform.isAndroid) {
-        try {
-          final externalDir = await getExternalStorageDirectory();
-          storageInfo['externalDir'] = externalDir?.path ?? 'null';
-
-          final documentsDir = await getApplicationDocumentsDirectory();
-          storageInfo['documentsDir'] = documentsDir.path;
-
-          // Test creating a file
-          final testDir = await FileDownloadUtility.getBestDownloadDirectory(
-            'test',
-          );
-          storageInfo['testDir'] = testDir?.path ?? 'null';
-
-          if (testDir != null) {
-            final testFile = File('${testDir.path}/test.txt');
-            await testFile.writeAsString('test content');
-            final exists = await testFile.exists();
-            storageInfo['canCreateFile'] = exists;
-            if (exists) {
-              await testFile.delete();
-            }
-          }
-        } catch (e) {
-          storageInfo['error'] = e.toString();
-        }
-      }
-
-      logger.d('Storage info: $storageInfo');
-      showCustomToaster('Check logs for storage info');
-    } catch (e) {
-      logger.e('Test download capability error: $e');
-      showCustomToaster('Test failed: ${e.toString()}', isError: true);
-    }
   }
 }
