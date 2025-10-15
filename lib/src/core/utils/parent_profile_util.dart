@@ -8,14 +8,14 @@ class ParentProfileUtil {
     BuildContext context, {
     bool isFromParentZone = false,
   }) {
-    final userProvider = context.read<UserProvider>();
-    final missingFields = userProvider.getMissingFields();
+    // final userProvider = context.read<UserProvider>();
+    // final missingFields = userProvider.getMissingFields();
 
-    final String missingFieldsText = missingFields.length == 1
-        ? missingFields.first
-        : missingFields.length == 2
-        ? '${missingFields[0]} and ${missingFields[1]}'
-        : '${missingFields.sublist(0, missingFields.length - 1).join(', ')}, and ${missingFields.last}';
+    // final String missingFieldsText = missingFields.length == 1
+    //     ? missingFields.first
+    //     : missingFields.length == 2
+    //     ? '${missingFields[0]} and ${missingFields[1]}'
+    //     : '${missingFields.sublist(0, missingFields.length - 1).join(', ')}, and ${missingFields.last}';
 
     DialogManager.showCustomDialog(
       context: context,
