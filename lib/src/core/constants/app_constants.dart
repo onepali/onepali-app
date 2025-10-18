@@ -114,6 +114,41 @@ class AppConstants {
     '20 mins': 20,
   };
 
+  /// Passcode Security Constants
+  static const int passcodeMaxAttempts = 5;
+  static const int passcodeSaltLength = 32;
+  static const int passcodeDefaultLength = 4;
+  static const int passcodeAlternateLength = 6;
+  static const List<int> passcodeLockoutDurations = [
+    30,
+    60,
+    300,
+    900,
+    3600,
+  ]; // seconds: 30s, 1m, 5m, 15m, 1h
+
+  /// Passcode Error Messages
+  static const String passcodeErrorGeneral =
+      'An error occurred while verifying passcode';
+  static const String passcodeErrorSave =
+      'Failed to save passcode. Please try again.';
+  static const String passcodeErrorUpdate =
+      'Failed to update passcode. Please try again.';
+  static const String passcodeErrorReset =
+      'Failed to reset passcode. Please try again.';
+  static const String passcodeErrorInvalidYear =
+      'Invalid year of birth. Please try again.';
+  static const String passcodeErrorMismatch =
+      'Passcodes do not match. Please try again.';
+  static const String passcodeErrorInvalidInput = 'Please enter a valid year.';
+  static const String passcodeErrorLocked = 'Account is temporarily locked.';
+
+  /// Passcode Success Messages
+  static const String passcodeSuccessCreated = 'Passcode created successfully.';
+  static const String passcodeSuccessUpdated = 'Passcode updated successfully.';
+  static const String passcodeSuccessReset =
+      'Passcode reset successfully. Please set a new passcode.';
+
   // Notification Titles & Bodies [Daily Reminder]
   static const String dailyReminderTitle = "Time to practice Nepali";
   static const String dailyReminderBody = "Let's play! 🎮";

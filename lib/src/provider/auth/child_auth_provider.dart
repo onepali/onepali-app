@@ -31,12 +31,11 @@ class ChildAuthProvider extends ChangeNotifier {
       //   showCustomToaster(validation.message, isError: true);
       //   return;
       // }
-      final childDoc =
-          _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .doc();
+      final childDoc = _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc();
       logger.d('Avatar file path: $avatarFilePath');
       String avatarUrl = await MediaUtility.uploadAvatarImage(
         avatarFilePath,
@@ -53,7 +52,6 @@ class ChildAuthProvider extends ChangeNotifier {
         'uid': childDoc.id,
         'full_name': childName,
         'dob': childDob,
-        'screen_time': screenTime,
         'has_screen_time': hasScreenTime,
         'avatar_url': avatarUrl,
         'role': 'child',

@@ -30,3 +30,20 @@ enum DeviceType { mobile, tablet, desktop, watch }
 enum RefinedSize { small, normal, large, extraLarge }
 
 enum RefinedOrientation { portrait, landscape }
+
+// Passcode Screen States
+enum PasscodeScreenState {
+  loading, // Initial check for existing passcode
+  setNewPasscode, // First time setup - enter new passcode
+  confirmPasscode, // Confirm new passcode
+  enterPasscode, // Normal verification
+  resetPasscode, // Reset flow using date of birth
+  resetSetNew, // After successful reset, set new passcode
+  resetConfirm, // Confirm new passcode after reset
+}
+
+// Passcode Modes
+enum PasscodeMode {
+  digits4, // 4-digit PIN
+  digits6, // 6-digit PIN
+}

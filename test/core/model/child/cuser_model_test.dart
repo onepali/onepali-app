@@ -13,9 +13,13 @@ void main() {
         'parent_email': 'parent@example.com',
         'parent_uid': 'parent123',
         'role': 'child',
-        'screen_time': 120.0,
         'has_screen_time': true,
         'uid': 'child1',
+        'screenTimeTracking': {
+          'totalAllowed': 120.0,
+          'totalUsed': 0.0,
+          'lastUpdated': '2024-01-01T00:00:00.000',
+        },
       };
       final model = ChildUserModel.fromJson(json);
       expect(model.uid, 'child1');
@@ -24,7 +28,7 @@ void main() {
       expect(model.parentEmail, 'parent@example.com');
       expect(model.parentUid, 'parent123');
       expect(model.role, 'child');
-      expect(model.screenTime, 120.0);
+      expect(model.screenTimeTracking?.totalAllowed, 120.0);
       expect(model.hasScreenTime, true);
       expect(model.dob, '2018-05-10');
       expect(model.createdAt, '2024-01-01T00:00:00.000');
@@ -35,7 +39,7 @@ void main() {
       expect(toJson['parent_email'], 'parent@example.com');
       expect(toJson['parent_uid'], 'parent123');
       expect(toJson['role'], 'child');
-      expect(toJson['screen_time'], 120.0);
+      expect(toJson['screenTimeTracking']['totalAllowed'], 120.0);
       expect(toJson['has_screen_time'], true);
       expect(toJson['dob'], '2018-05-10');
       expect(toJson['created_at'], '2024-01-01T00:00:00.000');

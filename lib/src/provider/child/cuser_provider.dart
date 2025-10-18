@@ -63,22 +63,19 @@ class ChildUserProvider extends ChangeNotifier {
   Future<void> updateScreenTimeEnabledStatusByChildId(String childId) async {
     final child = _childUser.firstWhere(
       (c) => c.uid == childId,
-      orElse:
-          () =>
-              _childUser.isEmpty
-                  ? ChildUserModel(
-                    avatarUrl: '',
-                    createdAt: '',
-                    dob: '',
-                    fullName: '',
-                    parentEmail: '',
-                    parentUid: '',
-                    role: 'child',
-                    screenTime: 0,
-                    hasScreenTime: false,
-                    uid: '',
-                  )
-                  : _childUser.first,
+      orElse: () => _childUser.isEmpty
+          ? ChildUserModel(
+              avatarUrl: '',
+              createdAt: '',
+              dob: '',
+              fullName: '',
+              parentEmail: '',
+              parentUid: '',
+              role: 'child',
+              hasScreenTime: false,
+              uid: '',
+            )
+          : _childUser.first,
     );
 
     if (child.uid == childId) {
@@ -113,16 +110,14 @@ class ChildUserProvider extends ChangeNotifier {
     logger.d('Target path: /users/$parentUid/children');
 
     try {
-      final querySnapshot =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .get();
-      _childUser =
-          querySnapshot.docs
-              .map((doc) => ChildUserModel.fromJson(doc.data()))
-              .toList();
+      final querySnapshot = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .get();
+      _childUser = querySnapshot.docs
+          .map((doc) => ChildUserModel.fromJson(doc.data()))
+          .toList();
       logger.d('Fetched ${_childUser.length} child users');
       if (_childUser.isNotEmpty) {
         _totalChildren = _childUser.length;
@@ -180,21 +175,20 @@ class ChildUserProvider extends ChangeNotifier {
     // }
 
     try {
-      final childDoc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .doc(childUid)
-              .get();
+      final childDoc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .get();
 
       double existingTotalUsed = 0.0;
       if (childDoc.exists && childDoc.data() != null) {
         final data = childDoc.data()!;
         if (data['screenTimeTracking'] != null &&
             data['screenTimeTracking']['totalUsed'] != null) {
-          existingTotalUsed =
-              (data['screenTimeTracking']['totalUsed'] as num).toDouble();
+          existingTotalUsed = (data['screenTimeTracking']['totalUsed'] as num)
+              .toDouble();
         }
       }
 
@@ -202,18 +196,25 @@ class ChildUserProvider extends ChangeNotifier {
       Map<String, dynamic> updateData = {
         'full_name': fullName,
         'dob': dob,
-        'screen_time': screenTime,
         'avatar_url': avatarUrl,
-        'screenTimeTracking': {
+      };
+
+      // If screen time is enabled, update only screenTimeTracking
+      if (hasScreenTime == true) {
+        updateData['screenTimeTracking'] = {
           'totalAllowed': screenTime,
           'totalUsed': existingTotalUsed,
           'lastUpdated': DateTime.now().toIso8601String(),
-        },
-      };
-
-      // Add hasScreenTime to update data if provided
-      if (hasScreenTime != null) {
-        updateData['has_screen_time'] = hasScreenTime;
+        };
+        updateData['has_screen_time'] = true;
+      } else {
+        // If screen time is disabled, reset all related fields
+        updateData['screenTimeTracking'] = {
+          'totalAllowed': 0.0,
+          'totalUsed': 0.0,
+          'lastUpdated': DateTime.now().toIso8601String(),
+        };
+        updateData['has_screen_time'] = false;
       }
 
       await _firestore
@@ -226,8 +227,8 @@ class ChildUserProvider extends ChangeNotifier {
       int idx = _childUser.indexWhere((c) => c.uid == childUid);
       if (idx != -1) {
         final newScreenTimeTracking = ScreenTimeModel(
-          totalAllowed: screenTime,
-          totalUsed: existingTotalUsed,
+          totalAllowed: hasScreenTime == true ? screenTime : 0.0,
+          totalUsed: hasScreenTime == true ? existingTotalUsed : 0.0,
           lastUpdated: DateTime.now(),
         );
 
@@ -239,7 +240,6 @@ class ChildUserProvider extends ChangeNotifier {
           parentEmail: _childUser[idx].parentEmail,
           parentUid: _childUser[idx].parentUid,
           role: _childUser[idx].role,
-          screenTime: screenTime,
           hasScreenTime: hasScreenTime ?? _childUser[idx].hasScreenTime,
           uid: childUid,
           screenTimeTracking: newScreenTimeTracking,
@@ -298,11 +298,10 @@ class ChildUserProvider extends ChangeNotifier {
 
       // Delete documents from child-related collections
       for (String collectionName in collections) {
-        QuerySnapshot querySnapshot =
-            await _firestore
-                .collection(collectionName)
-                .where('childId', isEqualTo: childUid)
-                .get();
+        QuerySnapshot querySnapshot = await _firestore
+            .collection(collectionName)
+            .where('childId', isEqualTo: childUid)
+            .get();
 
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
           batch.delete(doc.reference);
@@ -401,30 +400,22 @@ class ChildUserProvider extends ChangeNotifier {
               (screenTimeTracking['totalUsed'] as num?)?.toDouble() ?? 0.0;
           newAllowed = currentAllowed + additionalMinutes;
 
-          // Get current screen_time value and extend it too
-          final currentScreenTime =
-              (data['screen_time'] as num?)?.toDouble() ?? 0.0;
-          final newScreenTime = currentScreenTime + additionalMinutes;
-
           await childDoc.update({
             'screenTimeTracking': {
               'totalAllowed': newAllowed,
               'totalUsed': currentUsed,
               'lastUpdated': DateTime.now().toIso8601String(),
             },
-            'screen_time': newScreenTime,
           });
 
           logger.i('Screen time extended by $additionalMinutes minutes.');
-          logger.i(
-            'New totalAllowed: $newAllowed, New screen_time: $newScreenTime',
-          );
+          logger.i('New totalAllowed: $newAllowed');
           logger.i('totalUsed remains: $currentUsed');
         } else {
           final child = _childUser.firstWhere((c) => c.uid == childUid);
-          final currentScreenTime = child.screenTime;
+          final currentScreenTime =
+              child.screenTimeTracking?.totalAllowed ?? 0.0;
           newAllowed = currentScreenTime + additionalMinutes;
-          final newScreenTime = currentScreenTime + additionalMinutes;
 
           await childDoc.update({
             'screenTimeTracking': {
@@ -432,13 +423,11 @@ class ChildUserProvider extends ChangeNotifier {
               'totalUsed': 0.0,
               'lastUpdated': DateTime.now().toIso8601String(),
             },
-            'screen_time': newScreenTime,
           });
 
           logger.i(
             'Created screen time tracking with extended limit: $newAllowed',
           );
-          logger.i('Updated screen_time to: $newScreenTime');
         }
 
         final childIndex = _childUser.indexWhere((c) => c.uid == childUid);
@@ -450,9 +439,6 @@ class ChildUserProvider extends ChangeNotifier {
             lastUpdated: DateTime.now(),
           );
 
-          final newScreenTimeValue =
-              updatedChild.screenTime + additionalMinutes;
-
           _childUser[childIndex] = ChildUserModel(
             avatarUrl: updatedChild.avatarUrl,
             createdAt: updatedChild.createdAt,
@@ -461,7 +447,6 @@ class ChildUserProvider extends ChangeNotifier {
             parentEmail: updatedChild.parentEmail,
             parentUid: updatedChild.parentUid,
             role: updatedChild.role,
-            screenTime: newScreenTimeValue,
             hasScreenTime: updatedChild.hasScreenTime,
             uid: childUid,
             screenTimeTracking: updatedScreenTimeTracking,
@@ -469,7 +454,6 @@ class ChildUserProvider extends ChangeNotifier {
           );
 
           logger.i('Updated local child data with extended screen time');
-          logger.i('Local screenTime updated to: $newScreenTimeValue');
           notifyListeners();
         }
       } else {

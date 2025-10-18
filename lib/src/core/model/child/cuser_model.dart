@@ -17,7 +17,7 @@ class ChildUserModel {
   final String parentEmail;
   final String parentUid;
   final String role;
-  final double screenTime;
+  // Removed top-level screenTime, use only totalAllowed from screenTimeTracking
   final bool hasScreenTime;
   final ScreenTimeModel? screenTimeTracking;
   final String uid;
@@ -31,7 +31,7 @@ class ChildUserModel {
     required this.parentEmail,
     required this.parentUid,
     required this.role,
-    required this.screenTime,
+    // removed screenTime
     required this.hasScreenTime,
     required this.uid,
     this.screenTimeTracking,
@@ -46,13 +46,12 @@ class ChildUserModel {
     parentEmail: json["parent_email"] ?? "",
     parentUid: json["parent_uid"] ?? "",
     role: json["role"] ?? "",
-    screenTime: (json["screen_time"] ?? 0).toDouble(),
+    // removed screenTime
     hasScreenTime: json["has_screen_time"] ?? false,
     uid: json["uid"] ?? "",
-    screenTimeTracking:
-        json["screenTimeTracking"] != null
-            ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
-            : null,
+    screenTimeTracking: json["screenTimeTracking"] != null
+        ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
+        : null,
     completedLessons: _parseCompletedLessons(json),
   );
 
@@ -65,13 +64,12 @@ class ChildUserModel {
       List<CompletedLesson> lessons = [];
 
       if (lessonsData is List) {
-        lessons =
-            lessonsData.map((lessonData) {
-              if (lessonData is Map<String, dynamic>) {
-                return CompletedLesson.fromJson(lessonData);
-              }
-              return CompletedLesson(id: "", name: "");
-            }).toList();
+        lessons = lessonsData.map((lessonData) {
+          if (lessonData is Map<String, dynamic>) {
+            return CompletedLesson.fromJson(lessonData);
+          }
+          return CompletedLesson(id: "", name: "");
+        }).toList();
       } else if (lessonsData is Map<String, dynamic> &&
           lessonsData["lessons"] != null) {
         // Handle object format with lessons array
@@ -99,7 +97,7 @@ class ChildUserModel {
     "parent_email": parentEmail,
     "parent_uid": parentUid,
     "role": role,
-    "screen_time": screenTime,
+    // removed screenTime
     "has_screen_time": hasScreenTime,
     "uid": uid,
     if (screenTimeTracking != null)
@@ -112,7 +110,7 @@ class ChildUserModel {
   ScreenTimeModel getScreenTimeTracking() {
     return screenTimeTracking ??
         ScreenTimeModel(
-          totalAllowed: screenTime,
+          totalAllowed: 0.0,
           totalUsed: 0.0,
           lastUpdated: DateTime.now(),
         );
@@ -128,7 +126,6 @@ class ChildUserModel {
       parentEmail: parentEmail,
       parentUid: parentUid,
       role: role,
-      screenTime: screenTime,
       hasScreenTime: hasScreenTime,
       uid: uid,
       screenTimeTracking: newScreenTimeTracking,
@@ -149,14 +146,13 @@ class CompletedLessons {
   factory CompletedLessons.fromJson(Map<String, dynamic> json) =>
       CompletedLessons(
         totalLessonsCompleted: (json["totalLessonsCompleted"] ?? 0) as int,
-        lessons:
-            json["lessons"] != null
-                ? List<CompletedLesson>.from(
-                  (json["lessons"] as List).map(
-                    (x) => CompletedLesson.fromJson(x),
-                  ),
-                )
-                : [],
+        lessons: json["lessons"] != null
+            ? List<CompletedLesson>.from(
+                (json["lessons"] as List).map(
+                  (x) => CompletedLesson.fromJson(x),
+                ),
+              )
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

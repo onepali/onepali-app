@@ -22,11 +22,15 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   void initState() {
     super.initState();
     Misc.onLayoutRendered(() async {
-      context.read<UserProvider>().fetchOwnProfile();
+      final userProvider = context.read<UserProvider>();
       final childProvider = context.read<ChildUserProvider>();
 
-      await context.read<UserProvider>().fetchOwnProfile();
+      await userProvider.fetchOwnProfile();
       await childProvider.fetchChildUser();
+
+      if (context.mounted) {
+        ParentProfileUtil.checkAndShowProfileCompletion(context,);
+      }
     });
   }
 

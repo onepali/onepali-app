@@ -125,7 +125,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                 onEdit: () {
                   Utility.navigateMaterialRoute(
                     context,
-                    UserScreen(),
+                    UserScreen(isFromParentZone: true),
                     routeName: AppRoutes.parentProfileScreen,
                   );
                 },

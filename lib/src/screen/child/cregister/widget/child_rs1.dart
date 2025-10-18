@@ -108,7 +108,10 @@ class _ChildRS1ScreenState extends State<ChildRS1Screen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: horizontalPadding,
+          ),
           child: _buildNextButton(
             context,
             isUpdate,

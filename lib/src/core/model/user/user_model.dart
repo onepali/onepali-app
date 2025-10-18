@@ -31,13 +31,13 @@ class UserModel {
   };
 
   factory UserModel.fromJson(Map<String, dynamic> map) => UserModel(
-    uid: map['uid'],
-    fullName: map['fullName'],
-    email: map['email'],
-    yearOfBirth: map['yearOfBirth'],
-    heardAbout: map['heardAbout'],
-    learningReason: map['learningReason'],
-    authProvider: map['authProvider'],
-    createdAt: map['createdAt'],
+    uid: map['uid'] ?? '',
+    fullName: map['fullName'] ?? '',
+    email: map['email'] ?? '',
+    yearOfBirth: map['yearOfBirth'] ?? 0,
+    heardAbout: map['heardAbout'] ?? '',
+    learningReason: map['learningReason'] ?? '',
+    authProvider: map['authProvider'] ?? 'email',
+    createdAt: map['createdAt'] ?? '',
   );
 }

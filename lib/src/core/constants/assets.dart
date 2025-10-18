@@ -83,6 +83,7 @@ class Assets {
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
   static String logoutSvg = 'logout'.svg;
+  static String profileUpdateSvg = 'profile_update'.svg;
   static String dataSvg = 'data'.svg;
   static String connectionSvg = 'connection'.svg;
   static String timeUpSvg = 'time_up'.svg;

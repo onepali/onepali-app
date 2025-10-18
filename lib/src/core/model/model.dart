@@ -19,6 +19,9 @@ export 'lesson/lesson_model.dart';
 export 'system/response_model.dart';
 export 'system/setting_model.dart';
 
+/// [Passcode] Model
+export 'passcode_model.dart';
+
 /// [Home] Model
 export 'home/home_model.dart';
 

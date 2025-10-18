@@ -108,17 +108,20 @@ class RegisterScreen extends StatelessWidget {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: bottomPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: bottomPadding,
+            vertical: bottomPadding,
+          ),
           decoration: BoxDecoration(
             color: AppColors.kWhite,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.kGrey.withValues(alpha: 0.2),
-                spreadRadius: 0,
-                blurRadius: 2,
-                offset: Offset(0, -1),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: AppColors.kGrey.withValues(alpha: 0.2),
+            //     spreadRadius: 0,
+            //     blurRadius: 2,
+            //     offset: Offset(0, -1),
+            //   ),
+            // ],
           ),
           child: Builder(
             builder: (context) => CustomMaterialButton(

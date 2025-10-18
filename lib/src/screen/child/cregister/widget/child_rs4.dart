@@ -73,7 +73,10 @@ class _ChildRS4ScreenState extends State<ChildRS4Screen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: bottomPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: bottomPadding,
+            vertical: bottomPadding,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

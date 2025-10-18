@@ -42,6 +42,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await childProvider.selectDefaultChildIfNeeded(context);
       await _initializeScreenTimeTracking();
 
+      // Check parent profile completion
+      if (mounted) {
+        ParentProfileUtil.checkAndShowProfileCompletion(context);
+      }
+
       // Use provider method to get current child
       final currentChild = await childProvider.getCurrentChild();
       setState(() {
@@ -77,9 +82,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         logger.i('👦 Child selected: ${child.fullName} (${child.uid})');
 
         // Only initialize screen time tracking if child has screen time enabled
-        if (child.hasScreenTime && child.screenTime > 0) {
+        if (child.hasScreenTime &&
+            (child.screenTimeTracking?.totalAllowed ?? 0) > 0) {
           logger.i(
-            '✅ Child has screen time enabled (${child.screenTime} minutes)',
+            '✅ Child has screen time enabled (${child.screenTimeTracking?.totalAllowed ?? 0} minutes)',
           );
 
           // Check if the screen time limit is already exceeded
@@ -135,13 +141,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 parentEmail: '',
                 parentUid: '',
                 role: 'child',
-                screenTime: 0,
                 hasScreenTime: false,
                 uid: '',
               ),
       );
 
-      if (child.hasScreenTime && child.screenTime > 0) {
+      if (child.hasScreenTime &&
+          (child.screenTimeTracking?.totalAllowed ?? 0) > 0) {
         await ScreenTimeService.instance.checkScreenTimeLimitExceeded(
           currentChildId,
         );

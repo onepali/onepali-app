@@ -92,12 +92,11 @@ class _CustomPinputState extends State<CustomPinput>
                   color: AppColors.kWhite,
                   borderRadius: BorderRadius.circular(widget.boxSize / 3),
                   border: Border.all(
-                    color:
-                        hasError
-                            ? widget.errorColor
-                            : isActive
-                            ? widget.activeColor
-                            : widget.inactiveColor,
+                    color: hasError
+                        ? widget.errorColor
+                        : isActive
+                        ? widget.activeColor
+                        : widget.inactiveColor,
                     width: isActive ? 2.5 : 1.2,
                   ),
                   boxShadow: [

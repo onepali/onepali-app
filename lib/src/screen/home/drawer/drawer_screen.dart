@@ -141,7 +141,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 await childProvider.updateScreenTimeEnabledStatusByChildId(
                   child.uid,
                 );
-                if (child.hasScreenTime && child.screenTime > 0) {
+                if (child.hasScreenTime &&
+                    (child.screenTimeTracking?.totalAllowed ?? 0) > 0) {
                   logger.i(
                     '🔍 Checking screen time limit for child ${child.uid} before navigation',
                   );
