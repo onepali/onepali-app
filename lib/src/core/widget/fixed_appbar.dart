@@ -48,41 +48,60 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     logger.d('UserAppBar: isMobileLandScape: $isMobileLandScape');
 
     // Responsive variables
-    final isTabletPortrait =
-        (PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context));
+    final isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
+    final isMobile = PlatformUtility.isMobile(context);
 
-    // Smaller sizes for mobile landscape to prevent overflow
-    final avatarSize = isTabletPortrait
-        ? 64.0
-        : (isMobileLandScape ? 35.0 : 45.0);
-    final rewardIconSize = isTabletPortrait
-        ? 50.0
-        : (isMobileLandScape ? 30.0 : 40.0);
-    final starRewardLottieSize = isTabletPortrait
-        ? 85.0
-        : (isMobileLandScape ? 30.0 : 40.0);
-    final tabIconSize = isTabletPortrait
-        ? 64.0
-        : (isMobileLandScape ? 35.0 : 45.0);
-    final horizontalPadding = isTabletPortrait
-        ? 24.0
-        : (isMobileLandScape ? 8.0 : 16.0);
-    final verticalPadding = isTabletPortrait
-        ? 12.0
-        : (isMobileLandScape ? 4.0 : 8.0);
-    final guestTopGap = isTabletPortrait ? 20.0 : 0.0;
-    final tabSpacing = isTabletPortrait
-        ? 25.0
-        : (isMobileLandScape ? 6.0 : 10.0);
-    final nameTextStyle = isTabletPortrait
-        ? AppStyles.text32PxBold
-        : AppStyles.text16PxBold;
+    // ============================================================
+    // Simplified Layout Calculation - Top Down Approach
+    // ============================================================
+    
+    // Step 1: Calculate base dimensions
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    
+    // Step 2: App bar dimensions
+    final horizontalPadding = screenWidth * 0.02; // 2% padding
+    final verticalPadding = screenHeight * 0.02; // 2% padding
+    final contentWidth = screenWidth * 0.96; // Content width after padding
+    
+    // Step 3: Side allocations
+    final sectionGap = contentWidth * 0.04; // Gap between sides
+    final leftSideWidth = contentWidth * 0.48;
+    final rightSideWidth = contentWidth * 0.48;
+    
+    // Step 4: Calculate tab dimensions (centralized in helper method)
+    final tabDims = _calculateTabDimensions(rightSideWidth);
+    final tabWidth = tabDims.tabWidth;
+    final tabSpacing = tabDims.tabSpacing;
+    final tabIconSize = tabDims.tabIconSize;
+    final captionTotalHeight = tabDims.captionTotalHeight;
+    final tabCaptionFontSize = tabDims.tabCaptionFontSize;
+    final tabHeight = tabDims.tabContentHeight;
+    
+    // Step 5: Left side elements (based on leftSideWidth)
+    // Make avatar size consistent across devices, matching icon size
+    // tabIconSize = 12% of leftSideWidth (calculated from tabWidth * 0.40)
+    // tabWidth = 30% of rightSideWidth, rightSideWidth = leftSideWidth
+    // tabIconSize = leftSideWidth * 0.30 * 0.40 = leftSideWidth * 0.12
+    final avatarSize = leftSideWidth * 0.12; // Same as icon size for consistency
+    final rewardIconSize = leftSideWidth * (isMobile ? 0.15 : 0.12);
+    final starRewardLottieSize = leftSideWidth * (isMobile ? 0.10 : 0.15);
+    final achievementsBarWidth = leftSideWidth * 0.80;
+    
+    // Text styles - make name font size similar to caption
+    final nameFontSize = isTabletLandscape ? (tabCaptionFontSize * 1.3) : (tabCaptionFontSize * 1.2);
+    final nameTextStyle = isTabletLandscape
+        ? AppStyles.text32PxBold.copyWith(fontSize: nameFontSize)
+        : AppStyles.text16PxBold.copyWith(fontSize: nameFontSize);
+    
+    final guestTopGap = isTabletLandscape ? screenHeight * 0.02 : 0.0;
 
     return SafeArea(
       left: false,
       top: true,
-      right: true,
+      right: false,
       bottom: false,
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -114,7 +133,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Row(
                         children: [
                           SizedBox(
-                            height: tabIconSize + 10,
+                            height: avatarSize + 8,
                             child: Center(
                               child: IconButton(
                                 padding: EdgeInsets.zero,
@@ -153,13 +172,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                             ),
                           ),
                           Gaps.horizontalGapOf(tabSpacing),
-                          if (isGuest)
-                            Text(
-                              name,
-                              style: nameTextStyle.copyWith(
-                                color: AppColors.kPitchBlack,
-                              ),
-                            ),
+                          // Name not shown on mobile - only on tablet
                           if (!isGuest && totalChildCount > 0)
                             if (
                             // totalLessonsCompleted == 5 &&
@@ -207,31 +220,32 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                             ],
                         ],
                       ),
-                      Flexible(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: tabSpacing,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              for (int i = 0; i < homeServices.length; i++)
-                                _buildTab(
-                                  homeServices[i].icon ?? '',
-                                  homeServices[i].name ?? '',
-                                  selectedIndex == i
-                                      ? AppColors.kSecondaryColor
-                                      : AppColors.kGrey,
-                                  () =>
-                                      onTabSelected(homeServices[i].name ?? ''),
-                                  i,
-                                  selectedIndex,
-                                  tabIconSize,
-                                ),
-                              Gaps.horizontalGapOf(tabSpacing),
-                            ],
-                          ),
+                      // Explicit gap between sections
+                      SizedBox(width: sectionGap),
+                      // Right side: Tabs
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: tabSpacing,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (int i = 0; i < homeServices.length; i++)
+                              _buildTab(
+                                homeServices[i].icon ?? '',
+                                homeServices[i].name ?? '',
+                                homeServices[i].color,
+                                () =>
+                                    onTabSelected(homeServices[i].name ?? ''),
+                                i,
+                                selectedIndex,
+                                iconSize: tabIconSize,
+                                tabWidth: tabWidth,
+                                tabHeight: tabHeight,
+                                captionFontSize: tabCaptionFontSize,
+                                isMobile: isMobile,
+                              ),
+                          ],
                         ),
                       ),
                     ],
@@ -248,14 +262,16 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                        SizedBox(
+                          width: leftSideWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                             Row(
                               children: [
                                 SizedBox(
-                                  height: tabIconSize + 10,
+                                  height: avatarSize + 8,
                                   child: Center(
                                     child: IconButton(
                                       padding: EdgeInsets.zero,
@@ -292,7 +308,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   ),
                                 ),
                                 Gaps.horizontalGapOf(tabSpacing),
-                                if (!isGuest && totalChildCount > 0)
+                                if (!isGuest && totalChildCount > 0 && isTabletLandscape)
                                   Text(
                                     name,
                                     style: nameTextStyle.copyWith(
@@ -301,53 +317,47 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   ),
                               ],
                             ),
+                            // Achievements bar below avatar/name, aligned with captions
                             if (!isGuest && totalChildCount > 0)
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0,
+                                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * (isMobile ? 0.01 : 0.015)), // Same margin as captions
+                                child: SizedBox(
+                                  width: achievementsBarWidth, // 80% of left side allocation
+                                  child: buildProgressBar(achievementsBarWidth),
                                 ),
-                                child: buildProgressBar(),
                               ),
                           ],
                         ),
-
-                        Flexible(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: tabSpacing,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                for (
-                                  int i = 0;
-                                  i < homeServices.length;
-                                  i++
-                                ) ...[
-                                  _buildTab(
-                                    homeServices[i].icon ?? '',
-                                    homeServices[i].name ?? '',
-                                    selectedIndex == i
-                                        ? AppColors.kSecondaryColor
-                                        : AppColors.kGrey,
-                                    () => onTabSelected(
-                                      homeServices[i].name ?? '',
-                                    ),
-                                    i,
-                                    selectedIndex,
-                                    tabIconSize,
-                                  ),
-                                  if (i != homeServices.length - 1)
-                                    Gaps.horizontalGapOf(tabSpacing),
-                                ],
-                              ],
-                            ),
+                        ),
+                        // Explicit gap between sections
+                        SizedBox(width: sectionGap),
+                        // Right side: Tabs
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: tabSpacing,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (int i = 0; i < homeServices.length; i++)
+                                _buildTab(
+                                  homeServices[i].icon ?? '',
+                                  homeServices[i].name ?? '',
+                                  homeServices[i].color,
+                                  () => onTabSelected(homeServices[i].name ?? ''),
+                                  i,
+                                  selectedIndex,
+                                  iconSize: tabIconSize,
+                                  tabWidth: tabWidth,
+                                  tabHeight: tabHeight,
+                                  captionFontSize: tabCaptionFontSize,
+                                  isMobile: isMobile,
+                                ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    // Gaps.verticalGapOf(8),
                   ],
                 ),
               ),
@@ -358,6 +368,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   static int _selectedTabIndex = 0;
   static CustomAudioWidget? _starBlastAudioWidget;
   static bool _isStarBlastPlaying = false;
+
 
   static void setTabIndex(int index) {
     _selectedTabIndex = index;
@@ -417,18 +428,21 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     await _stopStarBlastAudio();
   }
 
-  Widget buildProgressBar() {
+  Widget buildProgressBar(double progressBarWidth) {
     const totalSteps = 4;
-    final isTabletPortrait =
-        (PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context));
-    final progressBarHeight = isTabletPortrait ? 12.0 : 8.0;
-    final connectorLength = isTabletPortrait ? 100.0 : 40.0;
-    final circleSize = isTabletPortrait ? 16.0 : 12.0;
-    final rewardSize = isTabletPortrait ? 56.0 : 30.0;
-    final starLottieSize = isTabletPortrait ? 56.0 : 40.0;
+    final isTabletLandscape =
+        PlatformUtility.isTablet(context) &&
+        PlatformUtility.isLandscape(context);
+    
+    // Calculate responsive sizes based on progressBarWidth (already 80% of left side)
+    final progressBarHeight = progressBarWidth * (isTabletLandscape ? 0.02 : 0.03); // 4% thickness
+    final connectorLength = progressBarWidth * (isTabletLandscape ? 0.08 : 0.10); // 10% / 8% connector width
+    final circleSize = progressBarWidth * (isTabletLandscape ? 0.04 : 0.05); // 5% dot size
+    final rewardSize = progressBarWidth * (isTabletLandscape ? 0.10 : 0.12); // 10% / 12% reward size
+    final starLottieSize = progressBarWidth * (isTabletLandscape ? 0.10 : 0.12); // 10% / 12% star size
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute across available width
       children: [
         for (int i = 0; i < totalSteps; i++) ...[
           _buildDottedConnector(
@@ -528,15 +542,18 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     Color color,
     VoidCallback onTap,
     int index,
-    int selectedIndex, [
-    double? iconSize,
-  ]) {
+    int selectedIndex, {
+    required double iconSize,
+    required double tabWidth,
+    required double? tabHeight,
+    required double? captionFontSize,
+    required bool isMobile,
+  }) {
     final bool isSelected = index == selectedIndex;
-    final effectiveIconSize = iconSize ?? 44.0;
-    final isTabletPortrait =
+    final isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
-    final labelTextStyle = isTabletPortrait
+    final labelTextStyle = isTabletLandscape
         ? AppStyles.text24PxMedium.copyWith(
             overflow: TextOverflow.ellipsis,
             fontFamily: AppConstants.kDMSansFont,
@@ -545,9 +562,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
             overflow: TextOverflow.ellipsis,
             fontFamily: AppConstants.kDMSansFont,
           );
-
-    // Calculate fixed width based on the longest possible label
-    final tabWidth = isTabletPortrait ? 125.0 : 85.0;
 
     return SizedBox(
       width: tabWidth,
@@ -562,43 +576,39 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Icon container - compact height
             SizedBox(
-              height: effectiveIconSize + 10,
+              height: iconSize * 1.0,
               child: Center(
                 child: SvgHelper.fromSource(
                   path: icon,
-                  height: effectiveIconSize,
-                  width: effectiveIconSize,
-                  // color: menuColor,
+                  height: iconSize,
+                  width: iconSize,
                 ),
               ),
             ),
 
-            SizedBox(
-              width: tabWidth,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: isSelected ? 1.0 : 0.0,
-                child: Container(
-                  margin: EdgeInsets.only(top: isTabletPortrait ? 15 : 8),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isTabletPortrait ? 8 : 8,
-                    vertical: 2,
-                  ),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: isSelected ? menuColor : Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: labelTextStyle.copyWith(
-                      color: isSelected ? AppColors.kWhite : Colors.transparent,
-                    ),
-                  ),
+            // Caption - sized relative to available space (tabWidth minus padding)
+            // Available text width: tabWidth - 2*(tabWidth*0.05) = tabWidth * 0.90
+            // Font size: 22% of tabWidth ≈ fits 80-90% of available space
+            Container(
+              margin: EdgeInsets.only(top: tabWidth * 0.05),
+              padding: EdgeInsets.symmetric(
+                horizontal: tabWidth * 0.05,
+                vertical: tabWidth * 0.02,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected ? color : Colors.transparent,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: labelTextStyle.copyWith(
+                  color: isSelected ? AppColors.kWhite : Colors.transparent,
+                  fontSize: captionFontSize ?? tabWidth * 0.18, // Use passed font size (≈80-85% of available space)
                 ),
               ),
             ),
@@ -610,23 +620,81 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize {
-    final isTabletPortrait = PlatformUtility.isTabletPortrait(context);
-    final isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    final isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    final isTablet = PlatformUtility.isTablet(context);
+    final isLandscape = PlatformUtility.isLandscape(context);
+    final isPortrait = PlatformUtility.isPortrait(context);
+    
+    final isTabletLandscape = isTablet && isLandscape;
+    final isTabletPortrait = isTablet && isPortrait;
+    final isMobileLandscape = !isTablet && isLandscape;
+    final isMobilePortrait = !isTablet && isPortrait;
 
+    // Calculate actual content height needed to prevent overflow
+    // Use the same helper method as build() to avoid duplication
+    final contentWidth = screenWidth * 0.96;
+    final rightSideWidth = contentWidth * 0.48;
+    final tabDims = _calculateTabDimensions(rightSideWidth);
+    final tabContentHeight = tabDims.tabContentHeight;
+    
+    // App bar needs to accommodate tab content + vertical padding
+    final verticalPadding = screenHeight * 0.02 * 2; // Top + bottom padding
+    final totalHeight = tabContentHeight + verticalPadding + (isGuest && isTabletLandscape ? screenHeight * 0.02 : 0);
+    
+    // Add buffer at the bottom
+    final calculatedHeight = totalHeight + (isTablet ? 50 : 20);
+
+    // Tablet configurations
     if (isTabletLandscape) {
-      return Size.fromHeight(isGuest ? 160 : 160);
+      return Size.fromHeight(isGuest ? screenHeight * 0.15 : calculatedHeight);
     } else if (isTabletPortrait) {
-      return const Size.fromHeight(130);
-    } else if (isMobileLandscape) {
-      return Size.fromHeight(isGuest ? 110 : 120);
-    } else {
-      return const Size.fromHeight(110);
+      return Size.fromHeight(isGuest ? screenHeight * 0.12 : calculatedHeight);
     }
+    
+    // Mobile configurations
+    else if (isMobileLandscape) {
+      return Size.fromHeight(isGuest ? screenHeight * 0.10 : calculatedHeight);
+    } else if (isMobilePortrait) {
+      return Size.fromHeight(isGuest ? screenHeight * 0.12 : calculatedHeight);
+    }
+    
+    // Fallback
+    return Size.fromHeight(calculatedHeight);
+  }
+
+  /// Calculate tab dimensions - returns all values needed for tabs
+  /// This method centralizes the calculation to avoid duplication
+  ({
+    double tabWidth,
+    double tabSpacing,
+    double tabIconSize,
+    double captionTotalHeight,
+    double tabCaptionFontSize,
+    double tabContentHeight,
+  }) _calculateTabDimensions(double rightSideWidth) {
+    // Tab width and spacing
+    final tabWidth = rightSideWidth * 0.30;
+    final tabSpacing = rightSideWidth * 0.05;
+    
+    // Icon and caption sizing - using the original logic
+    final tabIconSize = tabWidth * 0.40; // Icon = 40% of tab width
+    final captionVerticalPadding = tabWidth * 0.02 * 2; // 4% total padding  
+    final tabCaptionFontSize = tabWidth * 0.18; // Caption font = 18% of tab width (original)
+    final captionTotalHeight = tabCaptionFontSize + captionVerticalPadding; // Caption container height
+    
+    // Total tab height
+    final tabContentHeight = tabIconSize + (tabWidth * 0.05) + captionTotalHeight;
+    
+    return (
+      tabWidth: tabWidth,
+      tabSpacing: tabSpacing,
+      tabIconSize: tabIconSize,
+      captionTotalHeight: captionTotalHeight,
+      tabCaptionFontSize: tabCaptionFontSize,
+      tabContentHeight: tabContentHeight,
+    );
   }
 }
 

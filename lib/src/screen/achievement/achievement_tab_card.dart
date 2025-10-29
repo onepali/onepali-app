@@ -29,7 +29,12 @@ class AchievementTabCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(left: 40, right: 40, top: 0, bottom: 40),
+        margin: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.1, // 10% of screen width
+          right: MediaQuery.of(context).size.width * 0.1, // 10% of screen width
+          top: 0,
+          bottom: MediaQuery.of(context).size.height * 0.05, // 5% of screen height
+        ),
         width: 20.h(context),
         decoration: BoxDecoration(
           color: achievement.color ?? AppColors.kPrimaryColor,

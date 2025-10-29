@@ -116,7 +116,7 @@ class _UserScreenState extends State<UserScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04), // 4% of screen width
           child: CustomMaterialButton(
             label: 'Update',
             onTap: () async {

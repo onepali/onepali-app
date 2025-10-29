@@ -17,6 +17,16 @@ class PlatformUtility {
     return !isWeb(context) && (shortest < 600 && width < 900);
   }
 
+  /// Returns true if the device is iOS
+  static bool isIOS(BuildContext context) {
+    return Theme.of(context).platform == TargetPlatform.iOS;
+  }
+
+  /// Returns true if the device is Android
+  static bool isAndroid(BuildContext context) {
+    return Theme.of(context).platform == TargetPlatform.android;
+  }
+
   /// Returns true if the app is running on web
   static bool isWeb(BuildContext context) {
     return identical(0, 0.0);

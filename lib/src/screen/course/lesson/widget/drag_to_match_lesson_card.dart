@@ -1207,7 +1207,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Dog
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.12 : 0.15),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.33 : 0.2),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.28 : 0.18),
       },
 
       // Position 2 (left side, on grass)

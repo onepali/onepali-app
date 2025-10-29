@@ -752,7 +752,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Dog position (left side, on grass)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.12 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.25),
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.30 : 0.22), // Raised by 0.05 (5% of usable height) for iOS
       },
 
       // Cat position (center-left, near trees)
