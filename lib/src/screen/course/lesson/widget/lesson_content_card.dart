@@ -9,6 +9,8 @@ class LessonContentCard extends StatefulWidget {
   final bool hasSound;
   final VoidCallback? onPlay;
   final int index;
+  final bool showOnlyAnimation; // When true, only shows animation (no text/audio)
+  final double? parentWidth; // Parent container width for relative sizing
   const LessonContentCard({
     super.key,
     required this.content,
@@ -16,6 +18,8 @@ class LessonContentCard extends StatefulWidget {
     required this.hasSound,
     this.onPlay,
     this.index = 0,
+    this.showOnlyAnimation = false,
+    this.parentWidth,
   });
 
   @override
@@ -282,6 +286,78 @@ class _LessonContentCardState extends State<LessonContentCard>
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
+    
+    // If showOnlyAnimation is true, only render animation for both mobile and tablet
+    if (widget.showOnlyAnimation) {
+      // Use parent width for relative sizing, or fallback to screen-based
+      final containerWidth = widget.parentWidth ?? MediaQuery.of(context).size.width * 0.4;
+      // Container takes ~87% of parent width (35.w / 0.4 ≈ 87.5% of 40%)
+      final containerSize = containerWidth * 0.875;
+      // Fixed dimensions consistent for ALL animals (same as bird - wider box)
+      // Use wider aspect ratio (width > height) to match bird's box dimensions
+      final containerHeight = containerSize * 0.75; // Wider box, height is 75% of width
+      
+      // Animation image/video sizes inside can vary per animal
+      // but the container itself maintains consistent dimensions for all animals
+      // Use containerSize as base - all animals will fit within the same container dimensions
+      final animWidth = containerSize * 0.857; // Consistent width for all
+      final animHeight = containerSize * 0.75; // Consistent height for all - match container aspect ratio
+      
+      // Ensure container fits within parent width
+      final maxContainerWidth = containerWidth;
+      final actualContainerSize = containerSize.clamp(0.0, maxContainerWidth);
+      // Fixed height: always 75% of container size (wider box, not square)
+      final actualContainerHeight = actualContainerSize * 0.75;
+      
+      return Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxContainerWidth,
+            maxHeight: actualContainerHeight, // Use fixed height to prevent growing
+          ),
+          child: Container(
+            width: actualContainerSize,
+            height: actualContainerHeight,
+            decoration: BoxDecoration(
+              color:
+                  widget.content.color != null &&
+                      widget.content.color!.isNotEmpty
+                  ? Utility.parseHexColors(widget.content.color!).first
+                  : AppColors.learningColors[widget.index %
+                        AppColors.learningColors.length],
+              borderRadius: BorderRadius.circular(containerWidth * 0.06), // ~24px for 400px width
+            ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: animWidth,
+                  maxHeight: actualContainerHeight,
+                ),
+                child: Builder(
+                  builder: (context) {
+                    // For rabbit, scale down the image after animation to 90%
+                    final isRabbit = widget.content.nameEn?.toLowerCase() == 'rabbit';
+                    final rabbitScale = isRabbit && !_showLottie ? 0.9 : 1.0;
+                    final effectiveWidth = animWidth * rabbitScale;
+                    final effectiveHeight = animHeight * rabbitScale;
+                    
+                    return Transform.scale(
+                      scale: rabbitScale,
+                      child: _buildImageOrLottie(
+                        width: effectiveWidth,
+                        height: effectiveHeight,
+                        isMobile: isMobile,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    
     if (!isMobile) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -337,8 +413,81 @@ class _LessonContentCardState extends State<LessonContentCard>
         ],
       );
     } else {
+      // Regular layout (not showOnlyAnimation) - uses animal-specific sizing
+      if (false) {
+        // Use parent width for relative sizing, or fallback to screen-based
+        final containerWidth = widget.parentWidth ?? MediaQuery.of(context).size.width * 0.4;
+        // Container takes ~87% of parent width (35.w / 0.4 ≈ 87.5% of 40%)
+        final containerSize = containerWidth * 0.875;
+        // Fixed dimensions consistent for ALL animals (same as bird - wider box)
+        // Use wider aspect ratio (width > height) to match bird's box dimensions
+        final containerHeight = containerSize * 0.75; // Wider box, height is 75% of width
+        
+        // Animation image/video sizes inside can vary per animal
+        // but the container itself maintains consistent dimensions for all animals
+        // Use containerSize as base - all animals will fit within the same container dimensions
+        final animWidth = containerSize * 0.857; // Consistent width for all
+        final animHeight = containerSize * 0.75; // Consistent height for all - match container aspect ratio
+        
+        // Ensure container fits within parent width
+        final maxContainerWidth = containerWidth;
+        final actualContainerSize = containerSize.clamp(0.0, maxContainerWidth);
+        // Fixed height: always 75% of container size (wider box, not square)
+        final actualContainerHeight = actualContainerSize * 0.75;
+        
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: maxContainerWidth,
+              maxHeight: actualContainerHeight, // Use fixed height to prevent growing
+            ),
+            child: Container(
+              width: actualContainerSize,
+              height: actualContainerHeight,
+              decoration: BoxDecoration(
+                color:
+                    widget.content.color != null &&
+                        widget.content.color!.isNotEmpty
+                    ? Utility.parseHexColors(widget.content.color!).first
+                    : AppColors.learningColors[widget.index %
+                          AppColors.learningColors.length],
+                borderRadius: BorderRadius.circular(containerWidth * 0.06), // ~24px for 400px width
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: animWidth,
+                    maxHeight: actualContainerHeight,
+                  ),
+                  child: Builder(
+                    builder: (context) {
+                      // For rabbit, scale down the image after animation to 90%
+                      final isRabbit = widget.content.nameEn?.toLowerCase() == 'rabbit';
+                      final rabbitScale = isRabbit && !_showLottie ? 0.9 : 1.0;
+                      final effectiveWidth = animWidth * rabbitScale;
+                      final effectiveHeight = animHeight * rabbitScale;
+                      
+                      return Transform.scale(
+                        scale: rabbitScale,
+                        child: _buildImageOrLottie(
+                          width: effectiveWidth,
+                          height: effectiveHeight,
+                          isMobile: true,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      
+      // Regular layout (not showOnlyAnimation) - uses animal-specific sizing
       bool isDog = widget.content.nameEn?.toLowerCase() == 'dog';
       bool isFish = widget.content.nameEn?.toLowerCase() == 'fish';
+      
       return SizedBox(
         width: double.infinity,
         child: Row(

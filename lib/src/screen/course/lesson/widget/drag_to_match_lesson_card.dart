@@ -781,13 +781,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     final isLandscape = PlatformUtility.isLandscape(context);
     final screenSize = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
+    return SizedBox.expand(
       child: Stack(
         children: [
-          // Background park scene
-          _buildParkBackground(),
+          // Background image is handled at parent level in lesson_content_screen.dart
+          // to fill the entire screen (appears once)
 
           // Drag targets (silhouettes/outlines) positioned in the scene
           ..._buildDragTargets(screenSize, isMobile, isTablet, isLandscape),
@@ -850,23 +848,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     );
   }
 
-  Widget _buildParkBackground() {
-    // Use the background image from the lesson content or a default park scene
-    final backgroundImage = widget.content.mbImage;
-
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-
-      child: SvgHelper.fromSource(
-        path: backgroundImage ?? "",
-        type: SvgSourceType.network,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
+  // Background image is handled at parent level in lesson_content_screen.dart
+  // to fill the entire screen (appears once)
 
   List<Widget> _buildDragTargets(
     Size screenSize,
@@ -1204,10 +1187,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         PlatformUtility.isLandscape(context);
     return [
       // Position 1 (bottom right, on grass)
-      // Dog
+      // Dog - same position as tap_target
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.12 : 0.15),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.28 : 0.18),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.12 : 0.12),
+        'top': startY + usableHeight * (isTabletLandscape ? 0.30 : 0.28) + (isMobile ? screenHeight * 0.025 : 0), // Lowered by 2.5% on mobile only, higher on tablet
       },
 
       // Position 2 (left side, on grass)
@@ -1218,9 +1201,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       },
 
       // Position 3 (center-left, near trees)
-      // Rabbit
+      // Rabbit - right side, moved inwards only on mobile
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.75 : 0.72),
+        'left': startX + usableWidth * (isMobile ? 0.72 : (isTabletLandscape ? 0.78 : 0.78)),
         'top': startY + usableHeight * (isTabletLandscape ? 1.02 : 0.75),
       },
 
@@ -1234,16 +1217,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       },
 
       // Position 5 (on tree branch - top area)
-      // Cat
+      // Cat - right side, moved inwards only on mobile
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.61 : 0.57),
+        'left': startX + usableWidth * (isMobile ? 0.57 : (isTabletLandscape ? 0.61 : 0.61)),
         'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.47),
       },
 
-      // Tortoise
+      // Tortoise - moved further right on tablet, now moved left and higher
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.45 : 0.48),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.1 : 1.05),
+        'left': startX + usableWidth * (isTabletLandscape ? 0.46 : 0.48),
+        'top': startY + usableHeight * (isTabletLandscape ? 1.05 : 1.05),
       },
 
       //Additional positions for more targets
@@ -1280,19 +1263,19 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
     return [
-      // Dog - left edge with minimal margin
+      // Dog - left edge, positioned lower (just above water)
       {
         'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
-        'top': bottomY * (isTabletLandscape ? 0.85 : 0.7),
-      }, // Bottom left
-      // Fish - right side
+        'top': bottomY * (isTabletLandscape ? 0.90 : 0.80) + (isMobile ? screenHeight * 0.025 : 0), // Lowered by 2.5% on mobile only
+      }, // Bottom left, just above water
+      // Fish - right side, moved inwards only on mobile
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.85),
+        'left': startX + usableWidth * (isMobile ? 0.74 : (isTabletLandscape ? 0.72 : 0.72)),
         'top': bottomY * (isTabletLandscape ? 0.15 : 0.23),
       }, // Bottom center-left
-      // Rabbit - right side
+      // Rabbit - right side, moved inwards only on mobile
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.83),
+        'left': startX + usableWidth * (isMobile ? 0.70 : (isTabletLandscape ? 0.76 : 0.76)),
         'top': bottomY * (isTabletLandscape ? 0.45 : 0.45),
       }, // Bottom center
       // Bird - left edge with minimal margin
@@ -1305,15 +1288,15 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
         'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
       }, // Bottom right
-      // Tortoise - right side
+      // Tortoise - right side, moved left and higher
       {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.88 : 0.87),
-        'top': bottomY * (isTabletLandscape ? 0.85 : 0.85),
+        'left': startX + usableWidth * (isMobile ? 0.68 : (isTabletLandscape ? 0.90 : 0.90)),
+        'top': bottomY * (isTabletLandscape ? 0.88 : 0.88),
       }, // Bottom right
       // Additional positions if needed
-      {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},
-      {'left': startX + usableWidth * 0.6, 'top': bottomY + 40},
-      {'left': startX + usableWidth * 0.82, 'top': bottomY + 40},
+      {'left': startX + usableWidth * 0.2, 'top': bottomY + screenHeight * 0.05}, // 5% of screen height
+      {'left': startX + usableWidth * 0.6, 'top': bottomY + screenHeight * 0.05},
+      {'left': startX + usableWidth * 0.82, 'top': bottomY + screenHeight * 0.05},
     ];
   }
 

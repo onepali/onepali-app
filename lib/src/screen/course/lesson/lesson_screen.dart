@@ -43,11 +43,14 @@ class LessonScreen extends StatelessWidget {
       'LessonScreen Responsive Values: cardHeight: $cardHeight, lessonCardHeight: $lessonCardHeight, thumbnailWidth: $thumbnailWidth, thumbnailHeight: $thumbnailHeight, screenWidth: $screenWidth, screenHeight: $screenHeight',
     );
     return Scaffold(
+      backgroundColor: AppColors.kWhite,
       appBar: CustomAppBar(
         title: chapter.nameEn.isNotEmpty ? chapter.nameEn : chapter.nameNp,
         centerTitle: false,
       ),
-      body: SizedBox(
+      body: Container(
+        color: AppColors.kWhite,
+        child: SizedBox(
         height: listHeight,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -80,6 +83,7 @@ class LessonScreen extends StatelessWidget {
               ),
             );
           },
+          ),
         ),
       ),
     );

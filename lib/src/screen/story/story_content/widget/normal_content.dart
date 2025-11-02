@@ -40,15 +40,8 @@ class _NormalContentState extends State<NormalContent> {
 
     return Stack(
       children: [
-        if (widget.content.image.isNotEmpty)
-          Positioned.fill(
-            // bottom: 50,
-            child: CustomImage(
-              widget.content.image,
-              imageType: CustomImageType.network,
-              boxFit: BoxFit.cover,
-            ),
-          ),
+        // Background image is handled at parent level in story_content_screen.dart
+        // to fill the entire screen (appears once)
         // Top center sound icon
         Positioned(
           top: 24,
@@ -204,11 +197,13 @@ class _NormalContentState extends State<NormalContent> {
               }
 
               return Container(
-                width: double.infinity,
-                color: AppColors.kWhite,
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 24,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.kWhite,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

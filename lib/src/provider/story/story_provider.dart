@@ -49,9 +49,16 @@ class StoryProvider extends ChangeNotifier {
     }
   }
 
-  void setCurrentStory(StoryModel story) {
+  void setCurrentStory(StoryModel story, {int? progress}) {
     _currentStory = story;
-    _currentContentIndex = 0;
+    // Resume from progress if provided and valid
+    // If progress equals content.length, story is completed - restart from beginning
+    if (progress != null && progress > 0 && progress < story.content.length) {
+      _currentContentIndex = progress;
+    } else {
+      // Start from beginning (intro) if no progress, invalid progress, or story completed
+      _currentContentIndex = 0;
+    }
     _currentAudioIndex = 0;
     notifyListeners();
   }

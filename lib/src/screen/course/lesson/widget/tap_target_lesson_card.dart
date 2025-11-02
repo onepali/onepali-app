@@ -399,37 +399,18 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   }
 
   Widget _buildParkScene() {
-    // final isMobile = PlatformUtility.isMobile(context);
-    // final isTablet = PlatformUtility.isTablet(context);
-    // final isLandscape = PlatformUtility.isLandscape(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Use responsive background image
-    final backgroundImage = widget.content.mbImage;
-    logger.d('Using background image: $backgroundImage');
+    // Background image is handled at parent level in lesson_content_screen.dart
+    // to fill the entire screen (appears once)
 
-    return SizedBox(
-      width: screenWidth,
-      height: screenHeight,
-      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+    return SizedBox.expand(
       child: Stack(
         children: [
-          // Background park scene
-          if (backgroundImage?.isNotEmpty == true)
-            Positioned.fill(
-              child: ClipRRect(
-                // borderRadius: BorderRadius.circular(16),
-                child: SvgHelper.fromSource(
-                  path: backgroundImage!,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  type: SvgSourceType.network,
-                ),
-              ),
-            ),
-
+          // Background image is handled at parent level in lesson_content_screen.dart
+          // to fill the entire screen (appears once)
+          
           // Positioned animals/targets
           if (widget.content.tapTargets != null)
             ...widget.content.tapTargets!.asMap().entries.map((entry) {
@@ -743,21 +724,21 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     final double startY = marginY;
 
     return [
-      // Rabbit position (bottom right, on grass)
+      // Rabbit position (bottom right, on grass, moved inwards and left - only on mobile)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.82 : 0.8),
+        'left': startX + usableWidth * (isMobile ? 0.68 : (isTablet && isLandscape ? 0.80 : 0.80)),
         'top': startY + usableHeight * (isTablet && isLandscape ? 0.65 : 0.6),
       },
 
-      // Dog position (left side, on grass)
+      // Dog position (left side, on grass, lowered further - only on mobile)
       {
         'left': startX + usableWidth * (isTablet && isLandscape ? 0.12 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.30 : 0.22), // Raised by 0.05 (5% of usable height) for iOS
+        'top': startY + usableHeight * (isTablet && isLandscape ? 0.30 : 0.28) + (isMobile ? screenHeight * 0.025 : 0), // Lowered by 2.5% on mobile only, higher on tablet
       },
 
       // Cat position (center-left, near trees)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.64 : 0.6),
+        'left': startX + usableWidth * (isTablet && isLandscape ? 0.58 : 0.54),
         'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.46),
       },
 
@@ -776,9 +757,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 (isTablet && isLandscape ? 0.015 - 0.05 : 0.01 - 0.18),
       },
 
-      // Tortoise position (center-right, on grass)
+      // Tortoise position (right side on grass, not in water - only adjusted on mobile)
       {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.49),
+        'left': startX + usableWidth * (isMobile ? 0.48 : (isTablet && isLandscape ? 0.50 : 0.50)),
         'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 0.94),
       },
 

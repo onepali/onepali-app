@@ -48,8 +48,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     logger.d('UserAppBar: isMobileLandScape: $isMobileLandScape');
 
     // Responsive variables
+    final isTablet = PlatformUtility.isTablet(context);
     final isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
+        isTablet &&
         PlatformUtility.isLandscape(context);
     final isMobile = PlatformUtility.isMobile(context);
 
@@ -76,7 +77,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final tabWidth = tabDims.tabWidth;
     final tabSpacing = tabDims.tabSpacing;
     final tabIconSize = tabDims.tabIconSize;
-    final captionTotalHeight = tabDims.captionTotalHeight;
     final tabCaptionFontSize = tabDims.tabCaptionFontSize;
     final tabHeight = tabDims.tabContentHeight;
     
@@ -103,22 +103,13 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       top: true,
       right: false,
       bottom: false,
-      child: Container(
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
           vertical: verticalPadding,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.kWhite,
-          boxShadow: elevation > 0
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: elevation,
-                    offset: Offset(0, elevation / 2),
-                  ),
-                ]
-              : null,
         ),
         child: isMobileLandScape
             ? Column(
@@ -308,7 +299,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   ),
                                 ),
                                 Gaps.horizontalGapOf(tabSpacing),
-                                if (!isGuest && totalChildCount > 0 && isTabletLandscape)
+                                if (!isGuest && totalChildCount > 0 && isTablet)
                                   Text(
                                     name,
                                     style: nameTextStyle.copyWith(
@@ -361,6 +352,28 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
               ),
+          ),
+          // Horizontal line with shadow at bottom when elevation > 0
+          if (elevation > 0)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 1,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 2,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -641,23 +654,26 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     
     // App bar needs to accommodate tab content + vertical padding
     final verticalPadding = screenHeight * 0.02 * 2; // Top + bottom padding
-    final totalHeight = tabContentHeight + verticalPadding + (isGuest && isTabletLandscape ? screenHeight * 0.02 : 0);
+    final totalHeight = tabContentHeight + verticalPadding;
     
     // Add buffer at the bottom
-    final calculatedHeight = totalHeight + (isTablet ? 50 : 20);
+    // For guest, use mobile buffer (20) to match mobile height
+    // For non-guest, use device-appropriate buffer
+    final buffer = isGuest ? 20 : (isTablet ? 50 : 20);
+    final calculatedHeight = totalHeight + buffer;
 
     // Tablet configurations
     if (isTabletLandscape) {
-      return Size.fromHeight(isGuest ? screenHeight * 0.15 : calculatedHeight);
+      return Size.fromHeight(calculatedHeight);
     } else if (isTabletPortrait) {
-      return Size.fromHeight(isGuest ? screenHeight * 0.12 : calculatedHeight);
+      return Size.fromHeight(calculatedHeight);
     }
     
     // Mobile configurations
     else if (isMobileLandscape) {
-      return Size.fromHeight(isGuest ? screenHeight * 0.10 : calculatedHeight);
+      return Size.fromHeight(calculatedHeight);
     } else if (isMobilePortrait) {
-      return Size.fromHeight(isGuest ? screenHeight * 0.12 : calculatedHeight);
+      return Size.fromHeight(calculatedHeight);
     }
     
     // Fallback

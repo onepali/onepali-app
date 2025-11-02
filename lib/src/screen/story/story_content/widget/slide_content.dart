@@ -30,8 +30,9 @@ class SlideContentState extends State<SlideContent> {
     final sliderPadding = 32.0;
     final sliderWidth = screenWidth - sliderPadding * 2;
     final maxPosition = sliderWidth - char1Width;
-    // Images: content.image = background, content.characters = [char1, char2]
-    final bgImage = widget.content.image;
+    // Images: content.characters = [char1, char2]
+    // Background image is handled at parent level in story_content_screen.dart
+    // to fill the entire screen (appears once)
     final charList = widget.content.characters ?? [];
     final char1 = charList.isNotEmpty ? charList[0] : widget.content.image;
     final char2 = charList.length > 1 ? charList[1] : widget.content.image;
@@ -56,14 +57,8 @@ class SlideContentState extends State<SlideContent> {
 
     return Stack(
       children: [
-        // Scrollable background
-        Positioned.fill(
-          child: CustomImage(
-            bgImage,
-            imageType: CustomImageType.network,
-            boxFit: BoxFit.cover,
-          ),
-        ),
+        // Background image is handled at parent level in story_content_screen.dart
+        // to fill the entire screen (appears once)
         // Character 2 (static, right side)
         Positioned(
           right: sliderPadding + char2Width, // Position char2 at the right side
@@ -268,11 +263,13 @@ class SlideContentState extends State<SlideContent> {
               }
 
               return Container(
-                width: double.infinity,
-                color: AppColors.kWhite,
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 24,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.kWhite,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

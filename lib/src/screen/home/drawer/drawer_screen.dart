@@ -47,54 +47,67 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Row(
+    return Scaffold(
+      backgroundColor:
+          AppColors.kPurple, // Scaffold background matches right side
+      body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Left side - children profiles with black background (exactly half)
           Expanded(
+            flex: 1,
             child: Container(
-              height: MediaQuery.of(context).size.height,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [_buildChildProfilesGrid()],
+              color: AppColors.kDrawerBgColor, // Black only on left side
+              child: SafeArea(
+                left: true,
+                top: true,
+                right: false,
+                bottom: true,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [_buildChildProfilesGrid()],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
 
-          // Settings section
+          // Right side - settings with purple background (exactly half)
           Expanded(
-            child: Stack(
-              children: [
-                _buildSettingsSection(),
-                Positioned(
-                  top: 8,
-                  right: Dimensions.kIconMargin(context),
-                  child: CircularButtonWidget(
-                    type: CircularButtonType.closeGrey,
-                    onPressed: () async {
-                      final isParentLogged =
-                          await ParentLocalStorage.isParentLogged();
-                      logger.d('isParentLogged: $isParentLogged');
-
-                      if (isParentLogged) {
-                        ParentLocalStorage.setParentLogged(false);
-                        UserAppBar.setTabIndex(0);
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          AppRoutes.dashboardScreen,
-                          (route) => false,
-                        );
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
+            flex: 1,
+            child: Container(
+              color: AppColors.kPurple,
+              child: SafeArea(
+                left: false,
+                top: true,
+                right: true,
+                bottom: true,
+                child: Stack(
+                  children: [
+                    _buildSettingsSection(),
+                    // Close button on right side - top right
+                    Positioned(
+                      top: 16,
+                      right: Dimensions.kIconMargin(context),
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.closeGrey,
+                        onPressed: () {
+                          // Go back to where user came from (works for both dashboard and parent zone)
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],
@@ -292,10 +305,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Widget _buildSettingsSection() {
-    return Container(
-      height: MediaQuery.of(context).size.height,
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      decoration: BoxDecoration(color: AppColors.kPurple),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

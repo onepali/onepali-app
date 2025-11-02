@@ -34,7 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
-      body: SafeArea(
+      body: Container(
+        color: AppColors.kWhite,
+        child: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(horizontalPadding),
           child: SingleChildScrollView(
@@ -151,7 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
+      ),
+      bottomNavigationBar: Container(
+        color: AppColors.kWhite,
+        child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: horizontalPadding,
@@ -186,6 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                 ),
               ],
+            ),
             ),
           ),
         ),

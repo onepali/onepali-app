@@ -92,14 +92,13 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     final double titlePaddingV = isMobileLandscape ? 10 : 18;
     final double gap = isMobileLandscape ? 32 : 40;
 
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.kBlack,
         body: Stack(
           children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
+          // Background image covering full screen
+          Positioned.fill(
+            child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(Assets.rewardBackground),
@@ -107,6 +106,11 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
                 ),
               ),
             ),
+          ),
+          // Content with SafeArea
+          SafeArea(
+            child: Stack(
+              children: [
             if (!isMobileLandscape) Gaps.verticalGapOf(100),
             Center(
               child: Column(
@@ -133,8 +137,21 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
                 ],
               ),
             ),
+                // Close button - last item in Stack to ensure it's on top
+                Positioned(
+                  top: isMobile ? 16 : 24,
+                  right: Dimensions.kIconMargin(context),
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.closeGrey,
+                    onPressed: () {
+                      Utility.navigate(context, AppRoutes.dashboardScreen);
+                    },
+                  ),
+                ),
           ],
         ),
+          ),
+        ],
       ),
     );
   }

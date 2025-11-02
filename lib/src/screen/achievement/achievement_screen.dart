@@ -317,20 +317,16 @@ class _AchievementScreenState extends State<AchievementScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isTablet = PlatformUtility.isTablet(context);
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.kBlack,
-        body: Stack(
+      body: SafeArea(
+        child: Stack(
           children: [
             // Background
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(Assets.rewardBackground),
+            Positioned.fill(
+              child: Image.asset(
+                Assets.rewardBackground,
                   fit: BoxFit.cover,
-                ),
               ),
             ),
 

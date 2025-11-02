@@ -26,15 +26,22 @@ class _SplashScreenState extends State<SplashScreen> {
     final isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(color: AppColors.kWhite),
-          alignment: Alignment.center,
-          child:
-              isMobilePortrait
-                  ? _buildMobilePortraitSplash()
-                  : _buildTabletSplash(),
-        ),
+      backgroundColor: AppColors.kWhite,
+      body: Stack(
+        children: [
+          // Background color extends to full screen
+          Positioned.fill(
+            child: Container(
+              color: AppColors.kWhite,
+            ),
+          ),
+          // Video player covering full screen
+          Positioned.fill(
+            child: isMobilePortrait
+                ? _buildMobilePortraitSplash()
+                : _buildTabletSplash(),
+          ),
+        ],
       ),
     );
   }
