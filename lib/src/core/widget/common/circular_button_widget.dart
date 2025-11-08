@@ -56,26 +56,26 @@ class _CircularButtonWidgetState extends State<CircularButtonWidget> {
           ? () => setState(() => _isPressed = false)
           : null,
       child: Container(
-        padding: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
         decoration: isArrowButton
             ? BoxDecoration(
                 color: AppColors.kWhite,
-                shape: BoxShape.circle,
+        shape: BoxShape.circle,
                 border: Border.all(
                   color: _isPressed
                       ? AppColors.kBlack.withValues(alpha: 0.3) // Darker border when pressed
                       : AppColors.kBlack.withValues(alpha: 0.05), // Very light border when not pressed
                   width: 1.5,
                   style: BorderStyle.solid,
-                ),
+          ),
               )
             : null,
-        child: IconButton(
-          constraints: const BoxConstraints(),
-          icon: SvgHelper.fromSource(
-            path: iconPath,
-            height: Dimensions.kIconSize(context),
-            width: Dimensions.kIconSize(context),
+      child: IconButton(
+        constraints: const BoxConstraints(),
+        icon: SvgHelper.fromSource(
+          path: iconPath,
+          height: Dimensions.kIconSize(context),
+          width: Dimensions.kIconSize(context),
             color: widget.enabled ? widget.iconColor : AppColors.kGrey,
           ),
           onPressed: widget.enabled ? widget.onPressed : null,

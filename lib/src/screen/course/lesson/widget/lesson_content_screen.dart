@@ -227,11 +227,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
   /// Builds the full-screen background image widget
   Widget _buildFullScreenBackground(String imagePath) {
+    // Use cover to fill screen completely (may crop edges but no empty space)
+    // Cover prevents horizontal stripes that appear with contain
     return Positioned.fill(
       child: SvgHelper.fromSource(
         path: imagePath,
         type: SvgSourceType.network,
-        fit: BoxFit.cover,
+        fit: BoxFit.cover, // Cover fills screen completely, may crop but no empty space
         width: double.infinity,
         height: double.infinity,
       ),
@@ -340,95 +342,105 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
   /// Builds the lesson intro screen
   Widget _buildLessonIntro(BuildContext context) {
-    return Stack(
-      children: [
-        // Content (no background here - it's handled at the parent level)
-        Positioned.fill(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Lesson thumbnail
-                if (widget.lesson.thumbnail.isNotEmpty)
-                  CustomImage(
-                    widget.lesson.thumbnail,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 475
-                            : 180,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 300
-                            : 180,
-                    circular: false,
-                    cover: false,
-                    boxFit: BoxFit.contain,
-                    imageType: CustomImageType.network,
-                  ),
-                Gaps.verticalGapOf(
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? 15
-                      : 10,
-                ),
-                // Lesson title
-                Text(
-                  widget.nameNp,
-                  style: AppStyles.text24PxBold.copyWith(
-                    fontSize:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 64
-                            : 40,
-                    fontFamily: AppConstants.kMuktaFont,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                if (PlatformUtility.isTablet(context) &&
-                    PlatformUtility.isLandscape(context))
-                  Gaps.verticalGapOf(10),
-                // Lesson description
-                if (widget.nameEn.isNotEmpty)
-                  Text(
-                    widget.nameEn,
-                    style: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kBlack,
-                      fontSize:
-                          PlatformUtility.isTablet(context) &&
-                                  PlatformUtility.isLandscape(context)
-                              ? 32
-                              : 16,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableWidth = constraints.maxWidth;
+        final rightArrowWidth = availableWidth * 0.10;
+        
+        return Stack(
+          children: [
+            // Content (no background here - it's handled at the parent level)
+            Positioned.fill(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Lesson thumbnail
+                    if (widget.lesson.thumbnail.isNotEmpty)
+                      CustomImage(
+                        widget.lesson.thumbnail,
+                        width:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 475
+                                : 180,
+                        height:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 300
+                                : 180,
+                        circular: false,
+                        cover: false,
+                        boxFit: BoxFit.contain,
+                        imageType: CustomImageType.network,
+                      ),
+                    Gaps.verticalGapOf(
+                      PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context)
+                          ? 15
+                          : 10,
                     ),
-                    textAlign: TextAlign.center,
+                    // Lesson title
+                    Text(
+                      widget.nameNp,
+                      style: AppStyles.text24PxBold.copyWith(
+                        fontSize:
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 64
+                                : 40,
+                        fontFamily: AppConstants.kMuktaFont,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    if (PlatformUtility.isTablet(context) &&
+                        PlatformUtility.isLandscape(context))
+                      Gaps.verticalGapOf(10),
+                    // Lesson description
+                    if (widget.nameEn.isNotEmpty)
+                      Text(
+                        widget.nameEn,
+                        style: AppStyles.text16PxMedium.copyWith(
+                          color: AppColors.kBlack,
+                          fontSize:
+                              PlatformUtility.isTablet(context) &&
+                                      PlatformUtility.isLandscape(context)
+                                  ? 32
+                                  : 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                  ],
+                ),
+            ),
+            Positioned(
+              top: 16,
+              right: Dimensions.kIconMargin(context),
+              child: CircularButtonWidget(
+                type: CircularButtonType.close,
+                onPressed: () {
+                  _saveCurrentProgress();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            // Right arrow positioned to match following screens (10% from right edge)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: SizedBox(
+                width: rightArrowWidth,
+                child: Center(
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.rightArrow,
+                    onPressed: _nextContent,
                   ),
-              ],
+                ),
+              ),
             ),
-          ),
-        Positioned(
-          top: 16,
-          right: Dimensions.kIconMargin(context),
-          child: CircularButtonWidget(
-            type: CircularButtonType.close,
-            onPressed: () {
-              _saveCurrentProgress();
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        // Start button
-        Positioned(
-          right: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.rightArrow,
-              onPressed: _nextContent,
-            ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
@@ -638,139 +650,139 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           // Main content
           Expanded(
             child: isTapSendType
-                ? TapSendLessonCard(
-                    content: content,
-                    isPlaying: false,
-                    isLastItem: isLast,
-                    onCorrectAnswer: () {
-                      _nextContent();
-                    },
-                    onLessonComplete: () async {
-                      await _saveProgress(content, contentIndex);
-                      // For tap_send lessons, don't trigger the main lesson completion
-                      // as TapSendLessonCard handles its own animation
-                      // Just save progress and close after a delay
-                      try {
-                        final lessonProvider = context.read<LessonProvider>();
-                        await lessonProvider.incrementTotalLessonsCompleted(
-                          context,
-                          widget.lesson.id,
-                          widget.lesson.lessonName,
-                        );
+                    ? TapSendLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
+                      },
+                      onLessonComplete: () async {
+                        await _saveProgress(content, contentIndex);
+                        // For tap_send lessons, don't trigger the main lesson completion
+                        // as TapSendLessonCard handles its own animation
+                        // Just save progress and close after a delay
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
 
-                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
-                        await MetricsTrackingHelper.trackLessonCompletion(
-                          context: context,
-                          lessonId: widget.lesson.id.toString(),
-                          topicName: widget.lesson.lessonName,
-                        );
-                      } catch (e) {
-                        logger.e('Error completing lesson: $e');
-                      }
-
-                      // Close lesson after TapSendLessonCard animation
-                      Future.delayed(const Duration(seconds: 3), () {
-                        if (mounted) {
-                          Navigator.of(context).pop();
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
                         }
-                      });
-                    },
-                    index: contentIndex,
-                  )
-                : isTapTargetType
-                ? TapTargetLessonCard(
-                    content: content,
-                    isPlaying: false,
-                    isLastItem: isLast,
-                    onCorrectAnswer: () {
-                      _nextContent();
-                    },
-                    onLessonComplete: () async {
-                      await _saveProgress(content, contentIndex);
-                      // For tap_target lessons, handle completion
-                      try {
-                        final lessonProvider = context.read<LessonProvider>();
-                        await lessonProvider.incrementTotalLessonsCompleted(
-                          context,
-                          widget.lesson.id,
-                          widget.lesson.lessonName,
-                        );
 
-                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
-                        await MetricsTrackingHelper.trackLessonCompletion(
-                          context: context,
-                          lessonId: widget.lesson.id.toString(),
-                          topicName: widget.lesson.lessonName,
-                        );
-                      } catch (e) {
-                        logger.e('Error completing lesson: $e');
-                      }
+                        // Close lesson after TapSendLessonCard animation
+                        Future.delayed(const Duration(seconds: 3), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                      index: contentIndex,
+                    )
+                    : isTapTargetType
+                    ? TapTargetLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
+                      },
+                      onLessonComplete: () async {
+                        await _saveProgress(content, contentIndex);
+                        // For tap_target lessons, handle completion
+                        try {
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
 
-                      // Close lesson after TapTargetLessonCard animation
-                      Future.delayed(const Duration(seconds: 3), () {
-                        if (mounted) {
-                          Navigator.of(context).pop();
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
                         }
-                      });
-                    },
-                    index: contentIndex,
-                  )
-                : isDragToMatchType
-                ? DragToMatchLessonCard(
-                    content: content,
-                    isPlaying: false,
-                    isLastItem: isLast,
-                    onCorrectAnswer: () {
-                      _nextContent();
-                    },
-                    onLessonComplete: () async {
-                      logger.d(
-                        'DragToMatchLessonCard onLessonComplete callback started',
-                      );
-                      await _saveProgress(content, contentIndex);
-                      // For drag_to_match lessons, handle completion
-                      try {
-                        logger.d(
-                          'Calling incrementTotalLessonsCompleted for lesson: ${widget.lesson.id}',
-                        );
-                        final lessonProvider = context.read<LessonProvider>();
-                        await lessonProvider.incrementTotalLessonsCompleted(
-                          context,
-                          widget.lesson.id,
-                          widget.lesson.lessonName,
-                        );
 
+                        // Close lesson after TapTargetLessonCard animation
+                        Future.delayed(const Duration(seconds: 3), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                      index: contentIndex,
+                    )
+                    : isDragToMatchType
+                    ? DragToMatchLessonCard(
+                      content: content,
+                      isPlaying: false,
+                      isLastItem: isLast,
+                      onCorrectAnswer: () {
+                        _nextContent();
+                      },
+                      onLessonComplete: () async {
                         logger.d(
-                          'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
+                          'DragToMatchLessonCard onLessonComplete callback started',
                         );
-                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
-                        await MetricsTrackingHelper.trackLessonCompletion(
-                          context: context,
-                          lessonId: widget.lesson.id.toString(),
-                          topicName: widget.lesson.lessonName,
-                        );
-                        logger.d(
-                          'MetricsTrackingHelper.trackLessonCompletion completed for lesson: ${widget.lesson.id}',
-                        );
-                      } catch (e) {
-                        logger.e('Error completing lesson: $e');
-                      }
+                        await _saveProgress(content, contentIndex);
+                        // For drag_to_match lessons, handle completion
+                        try {
+                          logger.d(
+                            'Calling incrementTotalLessonsCompleted for lesson: ${widget.lesson.id}',
+                          );
+                          final lessonProvider = context.read<LessonProvider>();
+                          await lessonProvider.incrementTotalLessonsCompleted(
+                            context,
+                            widget.lesson.id,
+                            widget.lesson.lessonName,
+                          );
 
-                      // Close lesson after DragToMatchLessonCard animation
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                        if (mounted) {
-                          Navigator.of(context).pop();
+                          logger.d(
+                            'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
+                          );
+                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                          await MetricsTrackingHelper.trackLessonCompletion(
+                            context: context,
+                            lessonId: widget.lesson.id.toString(),
+                            topicName: widget.lesson.lessonName,
+                          );
+                          logger.d(
+                            'MetricsTrackingHelper.trackLessonCompletion completed for lesson: ${widget.lesson.id}',
+                          );
+                        } catch (e) {
+                          logger.e('Error completing lesson: $e');
                         }
-                      });
-                    },
-                    index: contentIndex,
-                  )
-                : LessonContentCard(
-                    content: content,
-                    isPlaying: false,
-                    hasSound: widget.hasSound,
-                    index: contentIndex,
-                  ),
+
+                        // Close lesson after DragToMatchLessonCard animation
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                      index: contentIndex,
+                    )
+                    : LessonContentCard(
+                      content: content,
+                      isPlaying: false,
+                      hasSound: widget.hasSound,
+                      index: contentIndex,
+                    ),
           ),
 
           // Next button
@@ -901,18 +913,18 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
             return Scaffold(
               backgroundColor: Colors.transparent,
               body: SizedBox.expand(
-                child: Stack(
+          child: Stack(
                   children: [
                     // Background image extends to full screen (behind SafeArea)
                     _buildFullScreenBackground(backgroundImage),
                     // Content with SafeArea for interactive elements
                     SafeArea(
                       child: Stack(
-                        children: [
+                          children: [
                           ...actionButtons,
                           mainContent,
                           ...overlayWidgets,
-                        ],
+                          ],
                       ),
                     ),
                   ],
@@ -943,12 +955,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         ...actionButtons,
                         mainContent,
                         ...overlayWidgets,
-                      ],
-                    ),
+                        ],
                   ),
-                ],
-              ),
-            ),
+                ),
+            ],
+          ),
+        ),
           );
         },
       ),

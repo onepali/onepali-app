@@ -162,85 +162,85 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   /// Builds the story intro screen
   Widget _buildStoryIntro(BuildContext context, StoryProvider provider) {
-    return Stack(
-      children: [
+              return Stack(
+                children: [
         // Background color is handled at parent level to cover whole screen
-        Positioned.fill(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-                // Story thumbnail
-                if (widget.story.thumbnail.isNotEmpty)
-                  SvgHelper.fromSource(
-                    path: widget.story.thumbnail,
+                  Positioned.fill(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Story thumbnail
+                          if (widget.story.thumbnail.isNotEmpty)
+                            SvgHelper.fromSource(
+                              path: widget.story.thumbnail,
                     width: PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? 475
-                        : 180,
+                                          PlatformUtility.isLandscape(context)
+                                      ? 475
+                                      : 180,
                     height: PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? 300
-                        : 180,
-                    fit: BoxFit.contain,
-                    type: SvgSourceType.network,
-                  ),
-                Gaps.verticalGapOf(
-                  PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? 30
-                      : 10,
+                                          PlatformUtility.isLandscape(context)
+                                      ? 300
+                                      : 180,
+                              fit: BoxFit.contain,
+                              type: SvgSourceType.network,
+                            ),
+                          Gaps.verticalGapOf(
+                            PlatformUtility.isTablet(context) &&
+                                    PlatformUtility.isLandscape(context)
+                                ? 30
+                                : 10,
                 ),
-                Text(
-                  widget.story.nameNp,
-                  style: AppStyles.text24PxBold.copyWith(
+                          Text(
+                            widget.story.nameNp,
+                            style: AppStyles.text24PxBold.copyWith(
                     fontSize: PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context)
-                        ? 64
-                        : 40,
-                    fontFamily: AppConstants.kMuktaFont,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                if (PlatformUtility.isTablet(context) &&
-                    PlatformUtility.isLandscape(context))
+                                          PlatformUtility.isLandscape(context)
+                                      ? 64
+                                      : 40,
+                              fontFamily: AppConstants.kMuktaFont,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          if (PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context))
                   Gaps.verticalGapOf(10),
-                if (widget.story.nameEn.isNotEmpty)
-                  Text(
-                    widget.story.nameEn,
-                    style: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kBlack,
+                          if (widget.story.nameEn.isNotEmpty)
+                            Text(
+                              widget.story.nameEn,
+                              style: AppStyles.text16PxMedium.copyWith(
+                                color: AppColors.kBlack,
                       fontSize: PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context)
-                          ? 32
-                          : 16,
+                                            PlatformUtility.isLandscape(context)
+                                        ? 32
+                                        : 16,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                        ],
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-              ],
-            ),
-          ),
         ..._buildActionButtons(context, provider),
-      ],
-    );
-  }
+                ],
+              );
+            }
 
   /// Builds the story content card
   Widget _buildStoryContent(int idx, List<Content> contentList) {
-    if (idx > 0 && idx <= contentList.length) {
-      final content = contentList[idx - 1];
-      return Column(
-        children: [
-          Expanded(
-            child: StoryContentCard(
-              content: content,
-              isLast: idx == contentList.length,
-              onConfetti: () {},
-            ),
-          ),
-        ],
-      );
-    }
-    return const SizedBox();
+            if (idx > 0 && idx <= contentList.length) {
+              final content = contentList[idx - 1];
+              return Column(
+                children: [
+                  Expanded(
+                    child: StoryContentCard(
+                      content: content,
+                      isLast: idx == contentList.length,
+                      onConfetti: () {},
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox();
   }
 
   @override

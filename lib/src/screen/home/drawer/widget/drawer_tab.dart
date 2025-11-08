@@ -83,53 +83,60 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
   @override
   Widget build(BuildContext context) {
     logger.d('total child count: ${widget.totalChildCount}');
-    return SafeArea(
+    return SizedBox.expand(
       child: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 20,
-                ),
-                decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(child: _buildChildProfilesGrid()),
-                    Gaps.horizontalGapOf(10),
-                  ],
+              Expanded(
+                flex: 1,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 20,
+                  ),
+            decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+                  child: SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: _buildChildProfilesGrid()),
+                Gaps.horizontalGapOf(10),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               // Settings section
-              Expanded(child: _buildSettingsSection()),
+              Expanded(
+                flex: 1,
+                child: _buildSettingsSection(),
+              ),
             ],
           ),
           // Close button positioned consistently
           Positioned(
             top: 16,
             right: Dimensions.kIconMargin(context),
-            child: CircularButtonWidget(
-              type: CircularButtonType.closeGrey,
-              onPressed: () async {
-                final isParentLogged =
-                    await ParentLocalStorage.isParentLogged();
-                logger.d('isParentLogged: $isParentLogged');
-                if (isParentLogged) {
-                  UserAppBar.setTabIndex(0);
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.dashboardScreen,
-                    (route) => false,
-                  );
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ),
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.closeGrey,
+                    onPressed: () async {
+                      final isParentLogged =
+                          await ParentLocalStorage.isParentLogged();
+                      logger.d('isParentLogged: $isParentLogged');
+                      if (isParentLogged) {
+                        UserAppBar.setTabIndex(0);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          AppRoutes.dashboardScreen,
+                          (route) => false,
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
         ],
       ),
     );
@@ -273,9 +280,10 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
   Widget _buildSettingsSection() {
     return Container(
-      height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kPurple),
+      child: SafeArea(
+        child: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -284,12 +292,12 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
           for (int i = 0; i < drawerSettings.length; i++)
             ListTile(
               contentPadding: EdgeInsets.only(
-                bottom:
-                    MediaQuery.of(context).size.height *
-                    0.04, // 4% of screen height
-                left:
-                    MediaQuery.of(context).size.width *
-                    0.12, // 12% of screen width
+                    bottom:
+                        MediaQuery.of(context).size.height *
+                        0.04, // 4% of screen height
+                    left:
+                        MediaQuery.of(context).size.width *
+                        0.12, // 12% of screen width
               ),
               onTap: () {
                 Utility.navigate(context, drawerSettings[i].route);
@@ -311,13 +319,14 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 ),
               ),
             ),
-          const Spacer(),
           // Text(
           //   "${GlobalConfig.appVersion} • All rights reserved.",
           //   style: AppStyles.text12PxRegular.copyWith(color: AppColors.kWhite),
           //   textAlign: TextAlign.center,
           // ),
         ],
+          ),
+        ),
       ),
     );
   }

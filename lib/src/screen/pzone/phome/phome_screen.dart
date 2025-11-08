@@ -93,24 +93,24 @@ class _PHomeScreenState extends State<PHomeScreen> {
             child: Stack(
               children: [
                 StatusHandler(
-                  status: childStatus,
-                  hasData: children.isNotEmpty,
-                  errorTitle: 'No child found',
-                  errorMessage: 'Please add a child to view metrics.',
-                  onRetry: () {
-                    context.read<ChildUserProvider>().fetchChildUser();
-                  },
-                  successBuilder: () {
-                    return PHomeCard(
-                      children: children,
-                      selectedChildUid: selectedChildUid,
-                      onChildSelected: _onChildSelected,
-                      metrics: metrics,
-                      metricsStatus: metricsStatus,
-                      isMobilePortrait: isMobilePortrait,
-                      parentUid: parentUid,
-                    );
-                  },
+            status: childStatus,
+            hasData: children.isNotEmpty,
+            errorTitle: 'No child found',
+            errorMessage: 'Please add a child to view metrics.',
+            onRetry: () {
+              context.read<ChildUserProvider>().fetchChildUser();
+            },
+            successBuilder: () {
+              return PHomeCard(
+                children: children,
+                selectedChildUid: selectedChildUid,
+                onChildSelected: _onChildSelected,
+                metrics: metrics,
+                metricsStatus: metricsStatus,
+                isMobilePortrait: isMobilePortrait,
+                parentUid: parentUid,
+              );
+            },
                 ),
               ],
             ),

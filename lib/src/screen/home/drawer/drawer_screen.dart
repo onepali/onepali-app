@@ -58,21 +58,23 @@ class _DrawerScreenState extends State<DrawerScreen> {
             flex: 1,
             child: Container(
               color: AppColors.kDrawerBgColor, // Black only on left side
-              child: SafeArea(
-                left: true,
-                top: true,
-                right: false,
-                bottom: true,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [_buildChildProfilesGrid()],
+              child: SizedBox.expand(
+                child: SafeArea(
+                  left: true,
+                  top: true,
+                  right: false,
+                  bottom: true,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [_buildChildProfilesGrid()],
+                      ),
                     ),
                   ),
                 ),
@@ -90,22 +92,22 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 top: true,
                 right: true,
                 bottom: true,
-                child: Stack(
-                  children: [
-                    _buildSettingsSection(),
+            child: Stack(
+              children: [
+                _buildSettingsSection(),
                     // Close button on right side - top right
-                    Positioned(
+                Positioned(
                       top: 16,
-                      right: Dimensions.kIconMargin(context),
-                      child: CircularButtonWidget(
-                        type: CircularButtonType.closeGrey,
+                  right: Dimensions.kIconMargin(context),
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.closeGrey,
                         onPressed: () {
                           // Go back to where user came from (works for both dashboard and parent zone)
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ],
+                        Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
                 ),
               ),
             ),

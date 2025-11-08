@@ -57,7 +57,7 @@ class StoryProvider extends ChangeNotifier {
       _currentContentIndex = progress;
     } else {
       // Start from beginning (intro) if no progress, invalid progress, or story completed
-      _currentContentIndex = 0;
+    _currentContentIndex = 0;
     }
     _currentAudioIndex = 0;
     notifyListeners();
