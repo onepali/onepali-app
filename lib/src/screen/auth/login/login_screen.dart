@@ -139,12 +139,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Gaps.verticalGapOf(socialButtonSpacing),
                   ReusableWidget.horizontalIconTitle(
-                    title: 'Continue with Facebook',
-                    icon: Assets.facebook,
+                    title: 'Continue with Apple',
+                    icon: Assets.apple,
                     onTap: () async {
-                      final facebookAuthProvider = context
-                          .read<FAuthProvider>();
-                      await facebookAuthProvider.signInWithFacebook(context);
+                      final appleAuthProvider = context
+                          .read<AAuthProvider>();
+                      await appleAuthProvider.signInWithApple(context);
                     },
                   ),
                 ],

@@ -128,7 +128,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                       if (isParentLogged) {
                         UserAppBar.setTabIndex(0);
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                          AppRoutes.dashboardScreen,
+                          AppRoutes.parentDashboardScreen,
                           (route) => false,
                         );
                       } else {

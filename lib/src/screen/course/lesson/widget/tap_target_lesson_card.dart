@@ -77,10 +77,39 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     // Preload all target audios
     _preloadAllAudios();
 
+    // Log lesson content details for rabbit and cat
+    _logLessonContentDetails();
+
     // Start the lesson by playing the question audio
     Misc.onLayoutRendered(() {
       _playQuestionAudio();
     });
+  }
+
+  void _logLessonContentDetails() {
+    logger.d('=== LESSON CONTENT DETAILS ===');
+    logger.d('Content Index: ${widget.index}');
+    logger.d('Question Audio (wordAudio): ${widget.content.wordAudio}');
+    logger.d('Correct Answer ID: ${widget.content.correctAnswerId}');
+    logger.d('Content Type: ${widget.content.type}');
+    
+    if (widget.content.tapTargets != null) {
+      logger.d('Available Animals (${widget.content.tapTargets!.length}):');
+      for (final target in widget.content.tapTargets!) {
+        final isCorrect = target.id == widget.content.correctAnswerId;
+        logger.d('  - ${target.id} (${target.nameEn} / ${target.nameNp})${isCorrect ? " ⭐ CORRECT" : ""}');
+        logger.d('    Image: ${target.image}');
+        logger.d('    Audio: ${target.audio}');
+      }
+    }
+    
+    // Check if this is rabbit or cat question
+    if (widget.content.correctAnswerId?.toLowerCase() == 'rabbit') {
+      logger.d('>>> THIS IS THE RABBIT QUESTION <<<');
+    } else if (widget.content.correctAnswerId?.toLowerCase() == 'cat') {
+      logger.d('>>> THIS IS THE CAT QUESTION <<<');
+    }
+    logger.d('================================');
   }
 
   void _preloadAllAudios() {
@@ -386,8 +415,12 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     double usableWidth,
     double usableHeight,
   ) {
-    final cellSize = GridPositionHelper.getCellSize(usableWidth, usableHeight);
-    return GridPositionHelper.getImageSizeForAnimal(animalId, isMobile, cellSize);
+    final isLandscape = PlatformUtility.isLandscape(context);
+    return GridPositionHelper.getImageSizeForAnimal(
+      animalId,
+      isMobile,
+      isLandscape: isLandscape,
+    );
   }
 
   @override
@@ -430,6 +463,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
             }),
 
           // Show Nepali text on top when correct target is selected
+          // Positioned above audio icon (which is at top: 16) to appear on top
           if (showCorrectFeedback && selectedTargetNameNp != null)
             AnimatedBuilder(
               animation: _textController,
@@ -456,8 +490,10 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 ),
               ),
               builder: (context, child) {
+                // Position at 1/3rd from the top of the screen
+                final screenHeight = MediaQuery.of(context).size.height;
                 return Positioned(
-                  top: 40 + (20 * _textController.value),
+                  top: (screenHeight / 3) - 30 + (10 * _textController.value), // 1/3rd from top with animation
                   left: 0,
                   right: 0,
                   child: Center(
@@ -610,6 +646,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
         transform: isRabbit ? Matrix4.rotationY(3.14159) : Matrix4.identity(),
         child: SvgHelper.fromSource(
           path: target.image ?? '',
+          width: targetSize,
+          height: targetSize,
           fit: BoxFit.contain,
           type: SvgSourceType.network,
         ),
@@ -630,14 +668,14 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     final double usableHeight = dimensions['usableHeight']!;
     
     // Build image size map for accurate bottom-left alignment
-    final cellSize = GridPositionHelper.getCellSize(usableWidth, usableHeight);
+    final isLandscape = PlatformUtility.isLandscape(context);
     final imageSizeMap = <String, double>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
     for (final animalId in animalOrder) {
       imageSizeMap[animalId] = GridPositionHelper.getImageSizeForAnimal(
         animalId,
         isMobile,
-        cellSize,
+        isLandscape: isLandscape,
       );
     }
     
@@ -648,6 +686,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       mediaQuery.padding.bottom,
       isMobile,
       imageSizeMap,
+      safeAreaLeft: mediaQuery.padding.left,
+      safeAreaRight: mediaQuery.padding.right,
     );
   }
 
@@ -661,18 +701,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
         children: [
           // Main park scene content
           _buildParkScene(),
-
-          // Close button in top right
-          Positioned(
-            top: 16,
-            right: Dimensions.kIconMargin(context),
-            child: CircularButtonWidget(
-              type: CircularButtonType.close,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+          // Close button is handled by parent _buildActionButtons
         ],
       ),
     );

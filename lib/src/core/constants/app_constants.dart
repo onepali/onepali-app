@@ -17,6 +17,7 @@ class AppConstants {
   // Login Types
   static const String email = 'email';
   static const String google = 'google';
+  static const String apple = 'apple';
   static const String facebook = 'facebook';
 
   // Shared Preferences Keys

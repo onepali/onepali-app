@@ -40,6 +40,61 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   LessonAudioProvider? _audioProvider;
   RecommendedLessonProvider? _recommendedLessonProvider;
 
+  // Reorder tap-target questions so cat comes before rabbit
+  // Other content types remain in their original positions
+  List<LessonContent> get _reorderedContent {
+    final original = widget.lesson.lessonContent;
+    final reordered = <LessonContent>[];
+    final catTapTargets = <LessonContent>[];
+    final rabbitTapTargets = <LessonContent>[];
+    final otherTapTargets = <LessonContent>[];
+
+    // Process each content item
+    for (final content in original) {
+      if (content.type == 'tap_target') {
+        // Only reorder tap_target type content
+        if (content.correctAnswerId?.toLowerCase() == 'cat') {
+          catTapTargets.add(content);
+        } else if (content.correctAnswerId?.toLowerCase() == 'rabbit') {
+          rabbitTapTargets.add(content);
+        } else {
+          otherTapTargets.add(content);
+        }
+      } else {
+        // For non-tap_target content, maintain original order
+        // We'll insert them back at their original positions
+        reordered.add(content);
+      }
+    }
+
+    // For tap-target questions: cat first, then rabbit, then other tap-targets
+    // Insert them in the order they appear in the original list
+    final tapTargetOrdered = <LessonContent>[];
+    tapTargetOrdered.addAll(catTapTargets);
+    tapTargetOrdered.addAll(rabbitTapTargets);
+    tapTargetOrdered.addAll(otherTapTargets);
+
+    // Now rebuild the list maintaining original positions for non-tap_target items
+    final result = <LessonContent>[];
+    int tapTargetIndex = 0;
+    
+    for (final content in original) {
+      if (content.type == 'tap_target') {
+        // Use reordered tap-target
+        if (tapTargetIndex < tapTargetOrdered.length) {
+          result.add(tapTargetOrdered[tapTargetIndex]);
+          tapTargetIndex++;
+        }
+      } else {
+        // Keep original position for non-tap_target
+        result.add(content);
+      }
+    }
+
+    logger.d('Tap-target questions reordered: ${catTapTargets.length} cat, ${rabbitTapTargets.length} rabbit, ${otherTapTargets.length} other tap-targets');
+    return result;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -246,8 +301,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     int idx,
     int contentListLength,
   ) {
+    // Check if current content is tap-target or drag-to-match
+    final currentContent = idx > 0 && idx <= widget.lesson.lessonContent.length
+        ? widget.lesson.lessonContent[idx - 1]
+        : null;
+    final isAnimalLesson = currentContent?.type == 'tap_target' ||
+        currentContent?.type == 'drag_to_match';
+    
     return [
-      if (widget.hasSound && contentListLength == idx)
+      // Show audio icon for all items in tap-target and drag-to-match, or for last item in other types
+      if (widget.hasSound && (isAnimalLesson || contentListLength == idx))
         Positioned(
           top: 16,
           left: 0,
@@ -263,7 +326,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         ),
       Positioned(
         top: 16,
-        right: Dimensions.kIconMargin(context),
+        right: 0,
         child: CircularButtonWidget(
           type: CircularButtonType.close,
           onPressed: () {
@@ -412,18 +475,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   ],
                 ),
             ),
-            Positioned(
-              top: 16,
-              right: Dimensions.kIconMargin(context),
-              child: CircularButtonWidget(
-                type: CircularButtonType.close,
-                onPressed: () {
-                  _saveCurrentProgress();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
             // Right arrow positioned to match following screens (10% from right edge)
+            // Close button is handled by _buildActionButtons
             Positioned(
               right: 0,
               top: 0,
@@ -868,7 +921,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       );
     }
 
-    final contentList = widget.lesson.lessonContent;
+    final contentList = _reorderedContent; // Use reordered content (cat before rabbit)
     final idx = _currentContentIndex;
 
     logger.d(
@@ -885,7 +938,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       },
       child: Builder(
         builder: (context) {
-          final contentList = widget.lesson.lessonContent;
+          final contentList = _reorderedContent; // Use reordered content (cat before rabbit)
           final idx = _currentContentIndex;
           final hasBackgroundImage =
               _hasBackgroundImage(idx, contentList);
@@ -910,21 +963,30 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
           // If there's a background image, it should cover the whole screen
           if (hasBackgroundImage && backgroundImage != null) {
+            // Check if this is tap-target or drag-to-match (animals need full screen)
+            final currentContent = idx > 0 && idx <= contentList.length 
+                ? contentList[idx - 1] 
+                : null;
+            final isAnimalLesson = currentContent?.type == 'tap_target' || 
+                                   currentContent?.type == 'drag_to_match';
+            
             return Scaffold(
               backgroundColor: Colors.transparent,
               body: SizedBox.expand(
-          child: Stack(
+                child: Stack(
                   children: [
                     // Background image extends to full screen (behind SafeArea)
                     _buildFullScreenBackground(backgroundImage),
+                    // Animal content (tap-target, drag-to-match) outside SafeArea for full screen
+                    if (isAnimalLesson) mainContent,
                     // Content with SafeArea for interactive elements
                     SafeArea(
                       child: Stack(
-                          children: [
+                        children: [
                           ...actionButtons,
-                          mainContent,
+                          if (!isAnimalLesson) mainContent,
                           ...overlayWidgets,
-                          ],
+                        ],
                       ),
                     ),
                   ],
@@ -937,6 +999,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           // If intro screen, use lessonBgColor; otherwise use white
           final backgroundColor = idx == 0 ? AppColors.lessonBgColor : AppColors.kWhite;
           
+          // Check if this is tap-target or drag-to-match (animals need full screen)
+          final currentContent = idx > 0 && idx <= contentList.length 
+              ? contentList[idx - 1] 
+              : null;
+          final isAnimalLesson = currentContent?.type == 'tap_target' || 
+                                 currentContent?.type == 'drag_to_match';
+          
           return Scaffold(
             backgroundColor: backgroundColor,
             body: SizedBox.expand(
@@ -948,19 +1017,21 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                       color: backgroundColor,
                     ),
                   ),
+                  // Animal content (tap-target, drag-to-match) outside SafeArea for full screen
+                  if (isAnimalLesson) mainContent,
                   // Content with SafeArea for interactive elements
                   SafeArea(
                     child: Stack(
                       children: [
                         ...actionButtons,
-                        mainContent,
+                        if (!isAnimalLesson) mainContent,
                         ...overlayWidgets,
-                        ],
+                      ],
+                    ),
                   ),
-                ),
-            ],
-          ),
-        ),
+                ],
+              ),
+            ),
           );
         },
       ),

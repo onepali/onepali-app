@@ -81,8 +81,8 @@ class Utility {
     final loginType = userInfo;
     if (loginType == AuthProviderType.google.name) {
       type = AuthProviderType.google;
-    } else if (loginType == AuthProviderType.facebook.name) {
-      type = AuthProviderType.facebook;
+    } else if (loginType == AuthProviderType.apple.name) {
+      type = AuthProviderType.apple;
     }
     return type;
   }
@@ -98,8 +98,8 @@ class Utility {
       case AuthProviderType.google:
         await context.read<GoogleAuthProvider>().signOut(context);
         break;
-      case AuthProviderType.facebook:
-        await context.read<FAuthProvider>().signOut(context);
+      case AuthProviderType.apple:
+        await context.read<AAuthProvider>().signOut(context);
         break;
       default:
         break;

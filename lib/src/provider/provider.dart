@@ -10,7 +10,7 @@ export 'audio_provider.dart';
 
 /// [Auth] Provider
 export 'auth/auth_provider.dart'; // Email & Password
-export 'auth/fauth_provider.dart'; // Facebook
+export 'auth/aauth_provider.dart'; // Apple
 export 'auth/gauth_provider.dart'; // Google
 export 'auth/auth_state.dart'; // Auth State
 export 'auth/child_auth_provider.dart'; // Child Auth

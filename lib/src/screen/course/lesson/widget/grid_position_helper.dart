@@ -5,142 +5,117 @@ class GridPositionHelper {
   static const int gridColumns = 16;
   static const int gridRows = 10;
 
-  /// Calculate grid cell dimensions based on screen size
-  /// Returns a map with 'width' and 'height' keys
-  static Map<String, double> getCellDimensions(
-    double usableWidth,
-    double usableHeight,
+  /// Calculate pixel position from grid coordinates
+  /// Returns absolute pixel positions for bottom-left alignment
+  /// 
+  /// [screenWidth] - Full screen width in pixels
+  /// [screenHeight] - Full screen height in pixels
+  /// [gridX] - Column number (0-15)
+  /// [gridY] - Row number (0-9)
+  /// 
+  /// Returns a map with 'left' and 'bottom' keys (absolute pixels):
+  /// - 'left': pixels from screen left edge (absolute from left)
+  /// - 'bottom': pixels from screen bottom edge (absolute from bottom)
+  /// 
+  /// The image's bottom-left will align with the grid cell's bottom-left.
+  /// Using 'bottom' in Positioned widget is simpler - no need to know image height.
+  /// 
+  /// Note: Uses exact calculations to avoid rounding errors:
+  /// - Column 0 always gives left = 0
+  /// - Column 15 always gives left = (15/16) * screenWidth
+  /// - Row 9 always gives bottom = 0 (at screen bottom)
+  /// - Row 0 always gives bottom = (9/10) * screenHeight
+  static Map<String, double> gridToPixelPosition(
+    double screenWidth,
+    double screenHeight,
+    int gridX,
+    int gridY,
   ) {
+    // Clamp grid coordinates to valid range
+    gridX = gridX.clamp(0, gridColumns - 1);
+    gridY = gridY.clamp(0, gridRows - 1);
+    
+    // Calculate absolute pixel positions
+    // Left: (gridX / gridColumns) * screenWidth (pixels from left edge)
+    // Bottom: screenHeight - ((gridY + 1) / gridRows) * screenHeight (pixels from bottom edge)
+    // 
+    // Verification examples:
+    // - Column 0: left = (0/16) * screenWidth = 0 ✓
+    // - Column 15: left = (15/16) * screenWidth = 0.9375 * screenWidth ✓
+    // - Row 9: bottom = screenHeight - (10/10) * screenHeight = 0 ✓
+    // - Row 0: bottom = screenHeight - (1/10) * screenHeight = 0.9 * screenHeight ✓
+    final double left = (gridX / gridColumns) * screenWidth;
+    final double bottom = screenHeight - (((gridY + 1) / gridRows) * screenHeight);
+    
     return {
-      'width': usableWidth / gridColumns,
-      'height': usableHeight / gridRows,
+      'left': left,
+      'bottom': bottom,
     };
   }
 
-  /// Get the top-left X position of a grid cell
-  static double getCellTopLeftX(
-    int gridX,
-    double startX,
-    double usableWidth,
-  ) {
-    gridX = gridX.clamp(0, gridColumns - 1);
-    final cellWidth = usableWidth / gridColumns;
-    return startX + (gridX * cellWidth);
-  }
 
-  /// Get the top-left Y position of a grid cell
-  static double getCellTopLeftY(
-    int gridY,
-    double startY,
-    double usableHeight,
-  ) {
-    gridY = gridY.clamp(0, gridRows - 1);
-    final cellHeight = usableHeight / gridRows;
-    return startY + (gridY * cellHeight);
-  }
-
-  /// Convert grid coordinates to pixel X position
-  static double gridToX(
-    int gridX,
-    double startX,
-    double usableWidth,
-  ) {
-    return getCellTopLeftX(gridX, startX, usableWidth);
-  }
-
-  /// Convert grid coordinates to pixel Y position
-  static double gridToY(
-    int gridY,
-    double startY,
-    double usableHeight,
-  ) {
-    return getCellTopLeftY(gridY, startY, usableHeight);
-  }
-
-  /// Convert pixel position to grid X coordinate
-  static int positionToGridX(
-    double left,
-    double startX,
-    double usableWidth,
-  ) {
-    final cellWidth = usableWidth / gridColumns;
-    double relativeX = left - startX;
-    int gridX = (relativeX / cellWidth).round();
-    return gridX.clamp(0, gridColumns - 1);
-  }
-
-  /// Convert pixel position to grid Y coordinate
-  static int positionToGridY(
-    double top,
-    double startY,
-    double usableHeight,
-  ) {
-    final cellHeight = usableHeight / gridRows;
-    double relativeY = top - startY;
-    int gridY = (relativeY / cellHeight).round();
-    return gridY.clamp(0, gridRows - 1);
-  }
-
-  /// Calculate grid cell size (average of width and height for square images)
-  static double getCellSize(double usableWidth, double usableHeight) {
-    final dimensions = getCellDimensions(usableWidth, usableHeight);
-    return (dimensions['width']! + dimensions['height']!) / 2;
-  }
-
-  /// Get image size based on grid cell size
+  /// Get image size based on fixed base sizes from main branch
+  /// Mobile base: 60.0, Tablet base: 110.0
+  /// Then animal-specific multipliers applied
   static double getImageSizeForAnimal(
     String animalId,
-    bool isMobile,
-    double cellSize,
-  ) {
-    final double baseSize = cellSize * 2.5;
+    bool isMobile, {
+    bool isLandscape = false,
+  }) {
+    // Fixed base sizes from main branch (after multiplication)
+    // Mobile: 60.0, Tablet: 110.0
+    final double baseSize = isMobile ? 60.0 : 110.0;
 
+    // Animal-specific multipliers (from main branch tap-target)
+    double finalSize;
     switch (animalId.toLowerCase()) {
       case 'rabbit':
-        return baseSize * 1.0;
       case 'cat':
-        return baseSize * 1.0;
+        finalSize = baseSize * 2.0;
+        break;
       case 'dog':
-        return baseSize * 1.7;
+        finalSize = baseSize * 3.5;
+        break;
       case 'fish':
-        return baseSize * 0.9;
+        finalSize = baseSize * 1.5;
+        break;
       case 'bird':
-        return baseSize * 0.9;
+        finalSize = baseSize * 1.75;
+        break;
       case 'tortoise':
-        return baseSize * 1.0;
+        finalSize = baseSize * 1.75;
+        break;
       default:
-        return baseSize;
+        finalSize = baseSize;
     }
+    
+    return finalSize;
   }
 
   /// Get draggable item size (same as target size per animal)
   static double getDraggableSizeForAnimal(
     String animalId,
-    bool isMobile,
-    double cellSize,
-  ) {
-    return getImageSizeForAnimal(animalId, isMobile, cellSize);
+    bool isMobile, {
+    bool isLandscape = false,
+  }) {
+    // Use same calculation as targets
+    return getImageSizeForAnimal(animalId, isMobile, isLandscape: isLandscape);
   }
 
   /// Get target positions map for all animals
   /// Grid spans full screen: row 0 = screen top (0px), row 9 = screen bottom
-  /// Images are positioned so their bottom-left aligns with the bottom-left of the grid cell
-  /// Note: imageSizeMap should contain the actual rendered image sizes for each animal
+  /// Positions calculated for full screen, then adjusted for Stack coordinate system
+  /// (Stack is inside SafeArea, so subtract SafeArea offsets)
   static Map<String, Map<String, double>> getTargetPositionsMap(
     double screenWidth,
     double screenHeight,
     double safeAreaTop,
     double safeAreaBottom,
     bool isMobile,
-    Map<String, double>? imageSizeMap,
-  ) {
-    final double usableWidth = screenWidth;
-    final double usableHeight = screenHeight;
-    final double startX = 0.0;
-    final double startY = -safeAreaTop;
-    
-    final cellHeight = usableHeight / gridRows;
-
+    Map<String, double>? imageSizeMap, {
+    double safeAreaLeft = 0.0,
+    double safeAreaRight = 0.0,
+  }) {
     final deviceType = isMobile ? 'mobile' : 'tablet';
     final positionsMap = <String, Map<String, double>>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
@@ -151,12 +126,13 @@ class GridPositionHelper {
         final gridX = gridPos[0];
         final gridY = gridPos[1];
         
-        final bottomOfCell = gridToY(gridY, startY, usableHeight) + cellHeight;
-        final bottomOffset = screenHeight - safeAreaBottom - bottomOfCell;
+        // Calculate position relative to full screen (grid spans full screen)
+        // Animals are now outside SafeArea, so positions are already in screen coordinates
+        final basePosition = gridToPixelPosition(screenWidth, screenHeight, gridX, gridY);
         
         positionsMap[animalId] = {
-          'left': gridToX(gridX, startX, usableWidth),
-          'bottom': bottomOffset,
+          'left': basePosition['left']! - 10.0,
+          'bottom': basePosition['bottom']! + 15.0,
         };
       }
     }
@@ -166,21 +142,18 @@ class GridPositionHelper {
 
   /// Get draggable positions map for all animals (same grid system as targets)
   /// Grid spans full screen: row 0 = screen top (0px), row 9 = screen bottom
-  /// Images are positioned so their bottom-left aligns with the bottom-left of the grid cell
+  /// Positions calculated for full screen, then adjusted for Stack coordinate system
+  /// (Stack is inside SafeArea, so subtract SafeArea offsets)
+  /// Negative positions allowed because Stack has clipBehavior: Clip.none
   static Map<String, Map<String, double>> getDraggablePositionsMap(
     double screenWidth,
     double screenHeight,
     double safeAreaTop,
     double safeAreaBottom,
-    bool isMobile,
-  ) {
-    final double usableWidth = screenWidth;
-    final double usableHeight = screenHeight;
-    final double startX = 0.0;
-    final double startY = -safeAreaTop;
-    
-    final cellHeight = usableHeight / gridRows;
-
+    bool isMobile, {
+    double safeAreaLeft = 0.0,
+    double safeAreaRight = 0.0,
+  }) {
     final deviceType = isMobile ? 'mobile' : 'tablet';
     final positionsMap = <String, Map<String, double>>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
@@ -191,13 +164,9 @@ class GridPositionHelper {
         final gridX = gridPos[0];
         final gridY = gridPos[1];
         
-        final bottomOfCell = gridToY(gridY, startY, usableHeight) + cellHeight;
-        final bottomOffset = screenHeight - safeAreaBottom - bottomOfCell;
-        
-        positionsMap[animalId] = {
-          'left': gridToX(gridX, startX, usableWidth),
-          'bottom': bottomOffset,
-        };
+        // Calculate position relative to full screen (grid spans full screen)
+        // Animals are now outside SafeArea, so positions are already in screen coordinates
+        positionsMap[animalId] = gridToPixelPosition(screenWidth, screenHeight, gridX, gridY);
       }
     }
 
@@ -214,20 +183,20 @@ class AnimalGridPositions {
       'tablet': [2, 2],
     },
     'dog': {
-      'mobile': [2, 7],
-      'tablet': [2, 7],
+      'mobile': [2, 8],
+      'tablet': [2, 8],
     },
     'cat': {
       'mobile': [9, 7],
       'tablet': [10, 7],
     },
     'fish': {
-      'mobile': [2, 9],
-      'tablet': [2, 9],
+      'mobile': [3, 9],
+      'tablet': [3, 9],
     },
     'tortoise': {
-      'mobile': [9, 9],
-      'tablet': [10, 9],
+      'mobile': [7, 9],
+      'tablet': [8, 9],
     },
     'rabbit': {
       'mobile': [13, 9],
@@ -237,28 +206,28 @@ class AnimalGridPositions {
 
   static Map<String, Map<String, List<int>>> dragDraggablePositions = {
     'dog': {
-      'mobile': [0, 3],
-      'tablet': [0, 6],
+      'mobile': [10, 4],
+      'tablet': [10, 4],
     },
     'fish': {
-      'mobile': [12, 3],
-      'tablet': [11, 3],
+      'mobile': [8, 2],
+      'tablet': [8, 2],
     },
     'rabbit': {
-      'mobile': [11, 5],
-      'tablet': [14, 5],
-    },
-    'bird': {
       'mobile': [0, 4],
       'tablet': [0, 4],
+    },
+    'bird': {
+      'mobile': [0, 9],
+      'tablet': [0, 9],
     },
     'cat': {
       'mobile': [5, 3],
       'tablet': [5, 3],
     },
     'tortoise': {
-      'mobile': [13, 3],
-      'tablet': [13, 3],
+      'mobile': [13, 5],
+      'tablet': [13, 5],
     },
   };
 }

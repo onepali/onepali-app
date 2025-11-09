@@ -68,7 +68,7 @@ class Assets {
   static String other = 'other'.icon;
   static String google = 'google'.icon;
   static String blog = 'blog'.icon;
-  static String facebook = 'facebook'.icon;
+  static String apple = 'apple'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
   static String family = 'family'.icon;

@@ -832,17 +832,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
               ),
             ),
 
-          // Close button in top right
-          Positioned(
-            top: 16,
-            right: Dimensions.kIconMargin(context),
-            child: CircularButtonWidget(
-              type: CircularButtonType.close,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+          // Close button is handled by parent _buildActionButtons
         ],
       ),
     );
@@ -1090,8 +1080,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         ),
       ),
       builder: (context, child) {
+        // Position at 1/3rd from the top of the screen
+        final screenHeight = MediaQuery.of(context).size.height;
         return Positioned(
-          top: 40 + (20 * _vocabularyController.value),
+          top: (screenHeight / 3) - 30 + (10 * _vocabularyController.value), // 1/3rd from top with animation
           left: 0,
           right: 0,
           child: Center(
@@ -1179,14 +1171,13 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     final double usableWidth = screenWidth * usableWidthPercent;
     final double usableHeight = screenHeight * usableHeightPercent;
     
-    final cellSize = GridPositionHelper.getCellSize(usableWidth, usableHeight);
     final imageSizeMap = <String, double>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
     for (final animalId in animalOrder) {
       imageSizeMap[animalId] = GridPositionHelper.getImageSizeForAnimal(
         animalId,
         isMobile,
-        cellSize,
+        isLandscape: isLandscape,
       );
     }
     
@@ -1197,6 +1188,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       mediaQuery.padding.bottom,
       isMobile,
       imageSizeMap,
+      safeAreaLeft: mediaQuery.padding.left,
+      safeAreaRight: mediaQuery.padding.right,
     );
   }
 
@@ -1206,6 +1199,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     bool isMobile,
   ) {
     // Use grid-based positioning system (same as targets)
+    // Use full screen width to allow draggables to reach screen edges
     final mediaQuery = MediaQuery.of(context);
     return GridPositionHelper.getDraggablePositionsMap(
       screenWidth,
@@ -1213,6 +1207,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       mediaQuery.padding.top,
       mediaQuery.padding.bottom,
       isMobile,
+      safeAreaLeft: mediaQuery.padding.left,
+      safeAreaRight: mediaQuery.padding.right,
     );
   }
 
@@ -1223,8 +1219,12 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     double usableWidth,
     double usableHeight,
   ) {
-    final cellSize = GridPositionHelper.getCellSize(usableWidth, usableHeight);
-    return GridPositionHelper.getImageSizeForAnimal(itemId, isMobile, cellSize);
+    final isLandscape = PlatformUtility.isLandscape(context);
+    return GridPositionHelper.getImageSizeForAnimal(
+      itemId,
+      isMobile,
+      isLandscape: isLandscape,
+    );
   }
 
   /// Get draggable item size (grid-based, same as targets)
@@ -1234,7 +1234,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     double usableWidth,
     double usableHeight,
   ) {
-    final cellSize = GridPositionHelper.getCellSize(usableWidth, usableHeight);
-    return GridPositionHelper.getDraggableSizeForAnimal(itemId, isMobile, cellSize);
+    final isLandscape = PlatformUtility.isLandscape(context);
+    return GridPositionHelper.getDraggableSizeForAnimal(
+      itemId,
+      isMobile,
+      isLandscape: isLandscape,
+    );
   }
 }

@@ -42,7 +42,7 @@ class _RS4ScreenState extends State<RS4Screen> {
             : AppStyles.text14PxRegular;
     final authProvider = context.watch<AuthProvider>();
     final gAuthStatus = context.watch<GoogleAuthProvider>().status;
-    final fAuthStatus = context.watch<FAuthProvider>().status;
+    final aAuthStatus = context.watch<AAuthProvider>().status;
     final isLoading = authProvider.status == DataFetchStatus.loading;
 
     return Scaffold(
@@ -129,7 +129,7 @@ class _RS4ScreenState extends State<RS4Screen> {
                       },
                     ),
                 Gaps.verticalGapOf(socialButtonGap),
-                fAuthStatus == DataFetchStatus.loading
+                aAuthStatus == DataFetchStatus.loading
                     ? Center(
                       child: SizedBox(
                         height: loadingIndicatorSize,
@@ -143,15 +143,15 @@ class _RS4ScreenState extends State<RS4Screen> {
                       ),
                     )
                     : ReusableWidget.horizontalIconTitle(
-                      title: 'Continue with Facebook',
+                      title: 'Continue with Apple',
                       height: buttonHeight,
                       textStyle: signInButtonTextStyle,
 
-                      icon: Assets.facebook,
+                      icon: Assets.apple,
                       onTap: () async {
-                        final facebookAuthProvider =
-                            context.read<FAuthProvider>();
-                        await facebookAuthProvider.signInWithFacebook(context);
+                        final appleAuthProvider =
+                            context.read<AAuthProvider>();
+                        await appleAuthProvider.signInWithApple(context);
                       },
                     ),
               ],

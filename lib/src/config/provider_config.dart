@@ -16,7 +16,7 @@ class ProviderConfig {
   static final GoogleAuthProvider googleAuthProvider = GoogleAuthProvider(
     authState: authState,
   );
-  static final FAuthProvider facebookAuthProvider = FAuthProvider(
+  static final AAuthProvider appleAuthProvider = AAuthProvider(
     authState: authState,
   );
   static final ChildAuthProvider childAuthProvider = ChildAuthProvider();
@@ -85,7 +85,7 @@ class ProviderConfig {
     ChangeNotifierProvider<GoogleAuthProvider>(
       create: (_) => googleAuthProvider,
     ),
-    ChangeNotifierProvider<FAuthProvider>(create: (_) => facebookAuthProvider),
+    ChangeNotifierProvider<AAuthProvider>(create: (_) => appleAuthProvider),
     ChangeNotifierProvider<ChildAuthProvider>(create: (_) => childAuthProvider),
     ChangeNotifierProvider<UserProvider>(create: (_) => userProvider),
     ChangeNotifierProvider<LessonProvider>(create: (_) => lessonProvider),
@@ -140,7 +140,7 @@ class ProviderConfig {
     authProvider.dispose();
     audioProvider.dispose();
     googleAuthProvider.dispose();
-    facebookAuthProvider.dispose();
+    appleAuthProvider.dispose();
     childAuthProvider.dispose();
     languageProvider.dispose();
     userProvider.dispose();

@@ -31,7 +31,7 @@ class AuthRepository {
     throw UnimplementedError();
   }
 
-  Future<UserCredential> signInWithFacebook() async {
+  Future<UserCredential> signInWithApple() async {
     throw UnimplementedError();
   }
 
