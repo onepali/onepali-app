@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import FirebaseCore
+import FirebaseMessaging
 import UserNotifications
 
 @main
@@ -12,20 +13,12 @@ import UserNotifications
     // Configure Firebase
     FirebaseApp.configure()
     
-    // Request notification permissions
+    // Set notification delegate (permissions will be requested later by Flutter code)
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self
-      let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-      UNUserNotificationCenter.current().requestAuthorization(
-        options: authOptions,
-        completionHandler: {_, _ in })
-    } else {
-      let settings: UIUserNotificationSettings =
-      UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-      application.registerUserNotificationSettings(settings)
+      // Don't request permissions here - let user decide when to enable notifications
+      // Permissions will be requested when user accesses notification settings in the app
     }
-    
-    application.registerForRemoteNotifications()
     
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -43,6 +36,22 @@ import UserNotifications
                                       willPresent notification: UNNotification,
                                       withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
     super.userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler)
+  }
+  
+  // Handle APNS token registration - required for Firebase Cloud Messaging
+  override func application(_ application: UIApplication,
+                            didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    // Pass the APNS token to Firebase Messaging
+    // This is required for Firebase to send push notifications
+    Messaging.messaging().apnsToken = deviceToken
+    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+  }
+  
+  // Handle APNS token registration failure
+  override func application(_ application: UIApplication,
+                            didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    print("Failed to register for remote notifications: \(error.localizedDescription)")
+    super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
   }
   
   // // Handle URL schemes for Facebook authentication and other providers
