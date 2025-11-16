@@ -36,12 +36,7 @@ class _StoryScreenState extends State<StoryScreen> {
           },
           successBuilder: () {
             final stories = provider.stories;
-            bool isTablet = PlatformUtility.isTablet(context);
-            double cardHeight =
-                isTablet
-                    ? AppCardResponsive.getCardHeight(context) *
-                        0.8 // 20% smaller for tablets
-                    : AppCardResponsive.getCardHeight(context);
+            double cardHeight = AppCardResponsive.getDashboardCardHeight(context);
 
             return SizedBox(
               height: cardHeight,
@@ -57,6 +52,7 @@ class _StoryScreenState extends State<StoryScreen> {
                   final story = stories[i];
                   return SizedBox(
                     width: AppCardResponsive.getCardWidth(context),
+                    height: cardHeight,
                     child: StoryCard(
                       story: story,
                       isGuestUser: GuestUtil.isGuestUser(),

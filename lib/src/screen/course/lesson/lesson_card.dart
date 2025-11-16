@@ -31,83 +31,115 @@ class LessonCard extends StatelessWidget {
         PlatformUtility.isLandscape(context);
     return GestureDetector(
       onTap: isLocked ? null : onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CustomImage(
-                    data.thumbnail,
-                    width:
-                        thumbnailWidth ??
-                        AppCardResponsive.getThumbnailWidth(context),
-                    cover: false,
-                    height:
-                        thumbnailHeight ??
-                        AppCardResponsive.getThumbnailHeight(context),
-                    circular: false,
-                  ),
-                  Gaps.verticalGapOf(30),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.kWhite,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Text(
-                      data.lessonName,
-                      style: AppStyles.text16PxMedium.copyWith(
-                        fontSize: isTabletLandscape ? 24 : 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
+      child: LayoutBuilder(
+        builder: (context, outerConstraints) {
+          final cardHeight = outerConstraints.maxHeight.isFinite
+              ? outerConstraints.maxHeight
+              : AppCardResponsive.getLessonCardHeight(context);
+          
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            height: cardHeight,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(16),
             ),
-            if (trailing != null)
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: -8,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final availableHeight = constraints.maxHeight.isFinite
+                    ? constraints.maxHeight
+                    : cardHeight;
+            
+            // Calculate sizes based on available height, not full card height
+            // Use custom thumbnail sizes if provided, otherwise calculate from available height
+            // Increased thumbnail to 48% and reduced gap to 0.5% to allow larger image without pushing text down
+            final calculatedThumbnailHeight = availableHeight * 0.48;
+            final calculatedThumbnailWidth = calculatedThumbnailHeight;
+            final finalThumbnailHeight = thumbnailHeight ?? calculatedThumbnailHeight;
+            final finalThumbnailWidth = thumbnailWidth ?? calculatedThumbnailWidth;
+            final gapHeight = availableHeight * 0.005;
+            final textHeight = availableHeight * 0.27;
+            
+            return Stack(
+              children: [
+                ClipRect(
+                  child: SizedBox(
+                    height: availableHeight,
+                    width: double.infinity,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipRect(
+                            child: SizedBox(
+                              height: finalThumbnailHeight,
+                              width: finalThumbnailWidth,
+                              child: CustomImage(
+                                data.thumbnail,
+                                width: finalThumbnailWidth,
+                                cover: false,
+                                height: finalThumbnailHeight,
+                                circular: false,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: gapHeight),
+                          SizedBox(
+                            height: textHeight,
+                            child: Center(
+                              child: Text(
+                                data.lessonName,
+                                style: AppStyles.text16PxMedium.copyWith(
+                                  fontSize: isTabletLandscape ? 24 : 16,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: trailing!,
                 ),
-              ),
-            if (isCompleted)
-              Positioned(
-                top: 12,
-                right: 12,
-                child: CircleAvatar(
-                  backgroundColor: AppColors.kWhite,
-                  radius: 14,
-                  child: Icon(Icons.check, color: Colors.teal, size: 18),
-                ),
-              ),
-            if (isLocked)
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
-              ),
-          ],
-        ),
+                if (trailing != null)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: -8,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: trailing!,
+                    ),
+                  ),
+                if (isCompleted)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.kWhite,
+                      radius: 14,
+                      child: Icon(Icons.check, color: Colors.teal, size: 18),
+                    ),
+                  ),
+                if (isLocked)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
+                  ),
+              ],
+            );
+              },
+            ),
+          );
+        },
       ),
     );
   }

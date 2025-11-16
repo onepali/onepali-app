@@ -34,73 +34,106 @@ class CourseCard extends StatelessWidget {
     );
     return GestureDetector(
       onTap: isLocked ? null : onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (thumbnail != null)
-                    CustomImage(
-                      thumbnail!,
-                      width: AppCardResponsive.getThumbnailWidth(context),
-                      cover: false,
-                      height: AppCardResponsive.getThumbnailHeight(context),
-                      imageType: CustomImageType.network,
-                      circular: false,
-                    ),
-                  Gaps.verticalGapOf(30),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.kWhite,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Text(
-                      title,
-                      style: AppStyles.text16PxMedium.copyWith(
-                        fontSize: isTabletLandscape ? 24 : 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
+      child: LayoutBuilder(
+        builder: (context, outerConstraints) {
+          final cardHeight = outerConstraints.maxHeight.isFinite
+              ? outerConstraints.maxHeight
+              : AppCardResponsive.getLessonCardHeight(context);
+          
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            height: cardHeight,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(16),
             ),
-            if (isCompleted)
-              Positioned(
-                top: 12,
-                right: 12,
-                child: CircleAvatar(
-                  backgroundColor: AppColors.kWhite,
-                  radius: 14,
-                  child: Icon(
-                    Icons.check,
-                    color: AppColors.kButtonGreen,
-                    size: 18,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final availableHeight = constraints.maxHeight.isFinite
+                    ? constraints.maxHeight
+                    : cardHeight;
+            
+            // Calculate sizes based on available height, not full card height
+            // Increased thumbnail to 48% and reduced gap to 0.5% to allow larger image without pushing text down
+            final thumbnailHeight = availableHeight * 0.48;
+            final thumbnailWidth = thumbnailHeight;
+            final gapHeight = availableHeight * 0.005;
+            final textHeight = availableHeight * 0.27;
+            
+            return Stack(
+              children: [
+                ClipRect(
+                  child: SizedBox(
+                    height: availableHeight,
+                    width: double.infinity,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (thumbnail != null)
+                            ClipRect(
+                              child: SizedBox(
+                                height: thumbnailHeight,
+                                width: thumbnailWidth,
+                                child: CustomImage(
+                                  thumbnail!,
+                                  width: thumbnailWidth,
+                                  cover: false,
+                                  height: thumbnailHeight,
+                                  imageType: CustomImageType.network,
+                                  circular: false,
+                                ),
+                              ),
+                            ),
+                          SizedBox(height: gapHeight),
+                          SizedBox(
+                            height: textHeight,
+                            child: Center(
+                              child: Text(
+                                title,
+                                style: AppStyles.text16PxMedium.copyWith(
+                                  fontSize: isTabletLandscape ? 24 : 16,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            if (isLocked)
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
-              ),
-            if (trailing != null) trailing!,
-          ],
-        ),
+                if (isCompleted)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.kWhite,
+                      radius: 14,
+                      child: Icon(
+                        Icons.check,
+                        color: AppColors.kButtonGreen,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                if (isLocked)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
+                  ),
+                if (trailing != null) trailing!,
+              ],
+            );
+              },
+            ),
+          );
+        },
       ),
     );
   }

@@ -57,11 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   double _getCardHeight(BuildContext context) {
-    bool isTablet = PlatformUtility.isTablet(context);
-    return isTablet
-        ? AppCardResponsive.getCardHeight(context) *
-              0.8 // 20% smaller for tablets
-        : AppCardResponsive.getCardHeight(context);
+    return AppCardResponsive.getDashboardCardHeight(context);
   }
 
   @override

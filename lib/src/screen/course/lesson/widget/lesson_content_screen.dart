@@ -414,66 +414,106 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           children: [
             // Content (no background here - it's handled at the parent level)
             Positioned.fill(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Lesson thumbnail
-                    if (widget.lesson.thumbnail.isNotEmpty)
-                      CustomImage(
-                        widget.lesson.thumbnail,
-                        width:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 475
-                                : 180,
-                        height:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 300
-                                : 180,
-                        circular: false,
-                        cover: false,
-                        boxFit: BoxFit.contain,
-                        imageType: CustomImageType.network,
+              child: LayoutBuilder(
+                builder: (context, innerConstraints) {
+                  // Use percentages of full screen height for all content
+                  final screenHeight = MediaQuery.of(context).size.height;
+                  final availableHeight = innerConstraints.maxHeight;
+                  final availableWidth = innerConstraints.maxWidth;
+                  
+                  // Calculate fixed sizes as percentages of screen height - total must not exceed 100%
+                  // Top padding: 5% of screen height
+                  final topPadding = screenHeight * 0.05;
+                  
+                  // Thumbnail: 50% of screen height
+                  final thumbnailSize = screenHeight * 0.5;
+                  
+                  // Gap 1: 2% of screen height
+                  final gap1 = screenHeight * 0.02;
+                  
+                  // Title font size: 8% of screen height (text will take ~10% with line height)
+                  final titleFontSize = screenHeight * 0.08;
+                  final titleHeight = screenHeight * 0.10; // Reserve space for title
+                  
+                  // Gap 2: 1.5% of screen height (tablet only)
+                  final gap2 = PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? screenHeight * 0.015
+                      : 0.0;
+                  
+                  // Description font size: 4% of screen height (text will take ~5% with line height)
+                  final descFontSize = screenHeight * 0.04;
+                  final descHeight = widget.nameEn.isNotEmpty ? screenHeight * 0.05 : 0.0;
+                  
+                  // Calculate total used space
+                  final totalUsed = topPadding + thumbnailSize + gap1 + titleHeight + gap2 + descHeight;
+                  
+                  // Ensure we don't exceed available height - adjust thumbnail if needed
+                  final adjustedThumbnailSize = totalUsed > availableHeight
+                      ? thumbnailSize - (totalUsed - availableHeight)
+                      : thumbnailSize;
+                  
+                  return SizedBox(
+                    height: availableHeight,
+                    width: availableWidth,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: topPadding),
+                          // Lesson thumbnail - fixed size
+                          if (widget.lesson.thumbnail.isNotEmpty)
+                            SizedBox(
+                              width: adjustedThumbnailSize,
+                              height: adjustedThumbnailSize,
+                              child: CustomImage(
+                                widget.lesson.thumbnail,
+                                width: adjustedThumbnailSize,
+                                height: adjustedThumbnailSize,
+                                circular: false,
+                                cover: false,
+                                boxFit: BoxFit.contain,
+                                imageType: CustomImageType.network,
+                              ),
+                            ),
+                          SizedBox(height: gap1),
+                          // Lesson title - fixed height
+                          SizedBox(
+                            height: titleHeight,
+                            child: Center(
+                              child: Text(
+                                widget.nameNp,
+                                style: AppStyles.text24PxBold.copyWith(
+                                  fontSize: titleFontSize,
+                                  fontFamily: AppConstants.kMuktaFont,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          if (PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context))
+                            SizedBox(height: gap2),
+                          // Lesson description - fixed height
+                          if (widget.nameEn.isNotEmpty)
+                            SizedBox(
+                              height: descHeight,
+                              child: Center(
+                                child: Text(
+                                  widget.nameEn,
+                                  style: AppStyles.text16PxMedium.copyWith(
+                                    color: AppColors.kBlack,
+                                    fontSize: descFontSize,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                    Gaps.verticalGapOf(
-                      PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context)
-                          ? 15
-                          : 10,
-                    ),
-                    // Lesson title
-                    Text(
-                      widget.nameNp,
-                      style: AppStyles.text24PxBold.copyWith(
-                        fontSize:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 64
-                                : 40,
-                        fontFamily: AppConstants.kMuktaFont,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (PlatformUtility.isTablet(context) &&
-                        PlatformUtility.isLandscape(context))
-                      Gaps.verticalGapOf(10),
-                    // Lesson description
-                    if (widget.nameEn.isNotEmpty)
-                      Text(
-                        widget.nameEn,
-                        style: AppStyles.text16PxMedium.copyWith(
-                          color: AppColors.kBlack,
-                          fontSize:
-                              PlatformUtility.isTablet(context) &&
-                                      PlatformUtility.isLandscape(context)
-                                  ? 32
-                                  : 16,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                  ],
-                ),
+                  );
+                },
+              ),
             ),
             // Right arrow positioned to match following screens (10% from right edge)
             // Close button is handled by _buildActionButtons

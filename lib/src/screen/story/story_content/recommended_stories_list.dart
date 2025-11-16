@@ -30,21 +30,14 @@ class RecommendedStoriesList extends StatelessWidget {
             recommendedProvider.fetchRecommendedStories();
           },
           successBuilder: () {
-            bool isTablet = PlatformUtility.isTablet(context);
-            double cardHeight =
-                isTablet
-                    ? AppCardResponsive.getCardHeight(context) *
-                        0.8 // 20% smaller for tablets
-                    : AppCardResponsive.getCardHeight(context);
-
+            // Use the same height calculation as regular cards
+            final cardHeight = AppCardResponsive.getDashboardCardHeight(context);
+            
             return SizedBox(
               height: cardHeight,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: recommendedStoryModels.length,
                 separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
                 itemBuilder: (context, i) {
@@ -63,6 +56,7 @@ class RecommendedStoriesList extends StatelessWidget {
                   }
                   return SizedBox(
                     width: AppCardResponsive.getCardWidth(context),
+                    height: cardHeight,
                     child: StoryCard(
                       story: story,
                       progressPercent: progressPercent,

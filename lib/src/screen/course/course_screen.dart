@@ -85,14 +85,7 @@ class CourseScreenState extends State<CourseScreen> {
                                 context,
                               );
                               final cardHeight =
-                                  isTablet
-                                      ? AppCardResponsive.getLessonCardHeight(
-                                            context,
-                                          ) *
-                                          0.8 // 20% smaller for tablets
-                                      : AppCardResponsive.getLessonCardHeight(
-                                        context,
-                                      );
+                                  AppCardResponsive.getDashboardCardHeight(context);
                               final isMobile = PlatformUtility.isMobile(
                                 context,
                               );
@@ -119,6 +112,7 @@ class CourseScreenState extends State<CourseScreen> {
                                       category.chapters.map((chapter) {
                                         return SizedBox(
                                           width: cardWidth,
+                                          height: cardHeight,
                                           child: CourseCard(
                                             title:
                                                 chapter.nameEn.isNotEmpty
@@ -199,14 +193,7 @@ class CourseScreenState extends State<CourseScreen> {
                           );
                           final isTablet = PlatformUtility.isTablet(context);
                           final cardHeight =
-                              isTablet
-                                  ? AppCardResponsive.getLessonCardHeight(
-                                        context,
-                                      ) *
-                                      0.8 // 20% smaller for tablets
-                                  : AppCardResponsive.getLessonCardHeight(
-                                    context,
-                                  );
+                              AppCardResponsive.getDashboardCardHeight(context);
                           final isMobile = PlatformUtility.isMobile(context);
                           final isLandscape = PlatformUtility.isLandscape(
                             context,
@@ -226,6 +213,7 @@ class CourseScreenState extends State<CourseScreen> {
                                 category.chapters.map((chapter) {
                                   return SizedBox(
                                     width: cardWidth,
+                                    height: cardHeight,
                                     child: CourseCard(
                                       title:
                                           chapter.nameEn.isNotEmpty

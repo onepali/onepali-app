@@ -3,18 +3,26 @@ import 'package:flutter/material.dart';
 class PlatformUtility {
   PlatformUtility._();
 
-  /// Returns true if the device is a tablet (width >= 900 and not web)
+  /// Returns true if the device is a tablet (shortest side >= 720dp)
+  /// Uses shortest side to correctly identify devices regardless of orientation
+  /// Threshold set to 720dp to avoid misclassifying large phones/phablets as tablets
   static bool isTablet(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    if (isWeb(context)) return false;
     final shortest = MediaQuery.of(context).size.shortestSide;
-    return !isWeb(context) && (shortest >= 600 || width >= 900);
+    // Use 720dp threshold to ensure phones (even large ones) are not misclassified
+    // Common phone sizes: 320px - 540px (all < 720dp)
+    // Tablets typically start at 600dp+ but we use 720dp to be more conservative
+    return shortest >= 720;
   }
 
-  /// Returns true if the device is a mobile (width < 900 and not web)
+  /// Returns true if the device is a mobile (shortest side < 720dp)
+  /// Uses shortest side to correctly identify all known mobile devices regardless of orientation
   static bool isMobile(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    if (isWeb(context)) return false;
     final shortest = MediaQuery.of(context).size.shortestSide;
-    return !isWeb(context) && (shortest < 600 && width < 900);
+    // Use 720dp threshold to capture all known mobile devices (phones, phablets)
+    // Common phone sizes: 320px - 540px (all < 720dp)
+    return shortest < 720;
   }
 
   /// Returns true if the device is iOS

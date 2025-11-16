@@ -332,9 +332,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 leading: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SvgHelper.fromSource(
-                    path: drawerSettings[i].icon,
+                    path: drawerSettings[i].name == 'Parent Zone'
+                        ? Assets.parentZoneIcon(context)
+                        : drawerSettings[i].name == 'Printables'
+                        ? Assets.downloadIcon(context)
+                        : drawerSettings[i].icon,
                     height: 40,
                     width: 40,
+                    // Parent and Download icons have their own colors (white bg + purple icon)
+                    // Home, Family, Logout use currentColor and need white color
+                    color: (drawerSettings[i].name == 'Parent Zone' || 
+                            drawerSettings[i].name == 'Printables')
+                        ? null  // No color override for icons with their own colors
+                        : AppColors.kWhite,  // White for icons using currentColor
                   ),
                 ),
                 dense: true,

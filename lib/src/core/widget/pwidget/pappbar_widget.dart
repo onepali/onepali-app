@@ -93,7 +93,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           itemBuilder: (BuildContext context) => [
             _buildMenuItem(
               value: 'home',
-              icon: Assets.home,
+              icon: Assets.homeIcon(context),
               text: 'Home',
               isMobilePortrait: isMobilePortrait,
               onTap: () {
@@ -105,7 +105,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             ),
             _buildMenuItem(
               value: 'family',
-              icon: Assets.family,
+              icon: Assets.familyIcon(context),
               text: 'Family',
               isMobilePortrait: isMobilePortrait,
               onTap: () {
@@ -138,7 +138,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             ),
             _buildMenuItem(
               value: 'logout',
-              icon: Assets.logout,
+              icon: Assets.logoutIcon(context),
               text: 'Log out',
               isMobilePortrait: isMobilePortrait,
               onTap: () {

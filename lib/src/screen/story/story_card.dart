@@ -23,9 +23,6 @@ class StoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     logger.d('StoryCard: \\${story.thumbnail}');
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
 
     return customInkwell(
       onTap: () {
@@ -35,63 +32,95 @@ class StoryCard extends StatelessWidget {
         } else {
           Utility.navigateMaterialRoute(
             context,
-            StoryContentScreen(story: story),
+            StoryContentScreen(
+              story: story,
+              isFromRecommended: isRecommended,
+            ),
           );
         }
       },
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-
-            decoration: BoxDecoration(
-              color: AppColors.sunshineYellow,
-              borderRadius:
-                  isRadius == true
-                      ? BorderRadius.circular(20)
-                      : BorderRadius.zero,
-            ),
-            margin: !isIntro ? const EdgeInsets.symmetric(horizontal: 8) : null,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (story.thumbnail.isNotEmpty)
-                  SvgHelper.fromSource(
-                    path: story.thumbnail,
-                    height:
-                        isRecommended
-                            ? 40.h(context)
-                            : AppCardResponsive.getThumbnailHeight(context),
-                    width:
-                        isRecommended
-                            ? 40.w(context)
-                            : AppCardResponsive.getThumbnailWidth(context),
-                    type: SvgSourceType.network,
-                  ),
-                Gaps.verticalGapOf(isRecommended ? 8.h(context) : 30),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kWhite,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    story.nameEn,
-                    style: AppStyles.text16PxMedium.copyWith(
-                      fontSize: isTabletLandscape ? 24 : 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+      child: LayoutBuilder(
+        builder: (context, outerConstraints) {
+          final cardHeight = outerConstraints.maxHeight.isFinite
+              ? outerConstraints.maxHeight
+              : AppCardResponsive.getCardHeight(context);
+          
+          return Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: cardHeight,
+                decoration: BoxDecoration(
+                  color: AppColors.sunshineYellow,
+                  borderRadius:
+                      isRadius == true
+                          ? BorderRadius.circular(20)
+                          : BorderRadius.zero,
                 ),
-              ],
-            ),
-          ),
-          if (progressPercent != null && progressPercent! > 0)
+                margin: !isIntro ? const EdgeInsets.symmetric(horizontal: 8) : null,
+                child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final availableHeight = constraints.maxHeight.isFinite
+                              ? constraints.maxHeight
+                              : cardHeight;
+                      
+                      // Calculate sizes based on available height, not full card height
+                      // Increased thumbnail to 48% and reduced gap to 0.5% to allow larger image without pushing text down
+                      final thumbnailHeight = availableHeight * 0.48;
+                      final thumbnailWidth = thumbnailHeight;
+                      final gapHeight = availableHeight * 0.005;
+                      final textHeight = availableHeight * 0.27;
+                      
+                      return ClipRect(
+                        child: SizedBox(
+                          height: availableHeight,
+                          width: double.infinity,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (story.thumbnail.isNotEmpty)
+                                  ClipRect(
+                                    child: SizedBox(
+                                      height: thumbnailHeight,
+                                      width: thumbnailWidth,
+                                      child: SvgHelper.fromSource(
+                                        path: story.thumbnail,
+                                        height: thumbnailHeight,
+                                        width: thumbnailWidth,
+                                        type: SvgSourceType.network,
+                                      ),
+                                    ),
+                                  ),
+                                SizedBox(height: gapHeight),
+                                SizedBox(
+                                  height: textHeight,
+                                  child: Center(
+                                    child: Text(
+                                      story.nameEn,
+                                      style: AppStyles.text16PxMedium.copyWith(
+                                        fontSize: PlatformUtility.isTablet(context) &&
+                                                PlatformUtility.isLandscape(context)
+                                            ? 18
+                                            : 14,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                        },
+                      ),
+              ),
+              if (progressPercent != null && progressPercent! > 0)
             Positioned(
               left: 0,
               right: 0,
@@ -120,7 +149,9 @@ class StoryCard extends StatelessWidget {
                 child: Icon(Icons.lock, color: AppColors.kBlack, size: 18),
               ),
             ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
