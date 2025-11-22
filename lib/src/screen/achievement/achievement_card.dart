@@ -5,12 +5,14 @@ class AchievementCard extends StatelessWidget {
   final AchievementModel achievement;
   final String dynamicValue;
   final VoidCallback? onTap;
+  final double? fixedHeight;
 
   const AchievementCard({
     super.key,
     required this.achievement,
     required this.dynamicValue,
     this.onTap,
+    this.fixedHeight,
   });
 
   @override
@@ -21,128 +23,126 @@ class AchievementCard extends StatelessWidget {
         PlatformUtility.isLandscape(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final availableHeight = constraints.maxHeight.isFinite
-            ? constraints.maxHeight
-            : MediaQuery.of(context).size.height;
-        final availableWidth = constraints.maxWidth.isFinite
-            ? constraints.maxWidth
-            : MediaQuery.of(context).size.width;
-        
-        // Responsive values based on available space
-        double cardWidth;
-        if (isMobileLandscape) {
-          cardWidth = (availableWidth * 0.25).clamp(150.0, 200.0);
-        } else if (isTabletLandscape) {
-          cardWidth = (availableWidth * 0.20).clamp(180.0, 220.0);
-        } else {
-          cardWidth = (availableWidth * 0.45).clamp(180.0, 220.0);
-        }
-        
-        // Calculate font sizes as percentages of available height
-        final valueFontSize = (availableHeight * 0.12).clamp(20.0, 32.0);
-        final subtitleFontSize = (availableHeight * 0.04).clamp(12.0, 18.0);
-        final titleFontSize = (availableHeight * 0.05).clamp(14.0, 20.0);
-        final imageSize = (availableHeight * 0.25).clamp(40.0, 80.0);
-        final padding = (availableHeight * 0.03).clamp(12.0, 20.0);
-        final gapSize = (availableHeight * 0.02).clamp(4.0, 16.0);
-        final marginHorizontal = 8.0;
-        final marginVertical = 5.0;
-        final double borderRadius = 12.0;
+    // Get screen dimensions for calculations
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Container height is 80% of screen height (from achievement_screen.dart)
+    final containerHeight = screenHeight * 0.8;
+    
+    // Responsive values based on screen dimensions (relative sizing)
+    double cardWidth;
+    double cardHeight;
+    if (isMobileLandscape) {
+      cardWidth = screenWidth * 0.20; // ~20% of screen width (equivalent to 20.w)
+      cardHeight = double.infinity; // Fill container height
+    } else if (isTabletLandscape) {
+      cardWidth = screenWidth * 0.15; // Relative to screen
+      cardHeight = double.infinity; // Fill container height
+    } else {
+      cardWidth = screenWidth * 0.45; // ~45% of screen width for portrait
+      cardHeight = double.infinity; // Fill container height
+    }
+    
+    // Calculate all sizes as percentages of container height (80% of screen)
+    final valueFontSize = containerHeight * 0.12;
+    final subtitleFontSize = containerHeight * 0.05;
+    final titleFontSize = containerHeight * 0.045; // Reduced to prevent overflow
+    final imageSize = containerHeight * 0.25;
+    final padding = containerHeight * 0.04;
+    final gapSize = containerHeight * 0.02;
+    final marginHorizontal = cardWidth * 0.05;
+    final marginVertical = containerHeight * 0.01;
+    final double borderRadius = cardWidth * 0.06;
 
-        return GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: cardWidth,
-            constraints: BoxConstraints(
-              maxHeight: availableHeight - (marginVertical * 2),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: cardWidth,
+        height: cardHeight,
+        margin: EdgeInsets.symmetric(
+          horizontal: marginHorizontal,
+          vertical: marginVertical,
+        ),
+        decoration: BoxDecoration(
+          color: achievement.color ?? AppColors.kPrimaryColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+          boxShadow: [
+            BoxShadow(
+              color:
+                  achievement.color?.withValues(alpha: 0.3) ??
+                  AppColors.kPrimaryColor.withValues(alpha: 0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
             ),
-            margin: EdgeInsets.symmetric(
-              horizontal: marginHorizontal,
-              vertical: marginVertical,
-            ),
-            decoration: BoxDecoration(
-              color: achievement.color ?? AppColors.kPrimaryColor,
-              borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      achievement.color?.withValues(alpha: 0.3) ??
-                      AppColors.kPrimaryColor.withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(padding),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Top section with value
+              Flexible(
+                child: Text(
+                  dynamicValue,
+                  textAlign: TextAlign.center,
+                  style: AppStyles.text30PxSemiBold.copyWith(
+                    fontSize: valueFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(padding),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Top section with value
-                  Flexible(
-                    child: Text(
-                      dynamicValue,
-                      textAlign: TextAlign.center,
-                      style: AppStyles.text30PxSemiBold.copyWith(
-                        fontSize: valueFontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  SizedBox(height: gapSize),
-                  Flexible(
-                    child: Text(
-                      achievement.subtitle,
-                      textAlign: TextAlign.center,
-                      style: AppStyles.text16PxRegular.copyWith(
-                        fontSize: subtitleFontSize,
-                        fontFamily: AppConstants.kDMSansFont,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-
-                  // Middle - Icon (takes remaining space)
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: CustomImage(
-                        achievement.imageUrl,
-                        boxFit: BoxFit.contain,
-                        width: imageSize,
-                        height: imageSize,
-                        imageType: CustomImageType.local,
-                      ),
-                    ),
-                  ),
-
-                  // Bottom section with title
-                  SizedBox(height: gapSize),
-                  Flexible(
-                    child: Text(
-                      achievement.title,
-                      style: AppStyles.text18PxMedium.copyWith(
-                        fontSize: titleFontSize,
-                        height: 1.3,
-                      ),
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
               ),
-            ),
+              SizedBox(height: gapSize),
+              // Subtitle
+              Flexible(
+                child: Text(
+                  achievement.subtitle,
+                  textAlign: TextAlign.center,
+                  style: AppStyles.text16PxRegular.copyWith(
+                    fontSize: subtitleFontSize,
+                    fontFamily: AppConstants.kDMSansFont,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+
+              // Middle - Icon (takes remaining space)
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: CustomImage(
+                    achievement.imageUrl,
+                    boxFit: BoxFit.contain,
+                    width: imageSize,
+                    height: imageSize,
+                    imageType: CustomImageType.local,
+                  ),
+                ),
+              ),
+
+              // Bottom section with title
+              SizedBox(height: gapSize),
+              Flexible(
+                child: Text(
+                  achievement.title,
+                  style: AppStyles.text18PxMedium.copyWith(
+                    fontSize: titleFontSize,
+                    height: 1.3,
+                  ),
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

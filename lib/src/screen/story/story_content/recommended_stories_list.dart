@@ -32,7 +32,7 @@ class RecommendedStoriesList extends StatelessWidget {
           successBuilder: () {
             // Use the same height calculation as regular cards
             final cardHeight = AppCardResponsive.getDashboardCardHeight(context);
-            
+
             return SizedBox(
               height: cardHeight,
               child: ListView.separated(

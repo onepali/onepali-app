@@ -57,10 +57,17 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
         await setGuestLogged(false);
         Utility.navigate(context, AppRoutes.onboardingScreen);
       },
-      child: Scaffold(
-        backgroundColor: AppColors.kWhite,
-        key: _scaffoldKey,
-        appBar: UserAppBar(
+      child: Container(
+        color: AppColors.kWhite,
+        child: SafeArea(
+          left: true,
+          top: true,
+          right: false,
+          bottom: false,
+          child: Scaffold(
+            backgroundColor: AppColors.kWhite,
+            key: _scaffoldKey,
+            appBar: UserAppBar(
           name: 'Guest',
           profileImage: '',
           totalStars: 0,
@@ -83,6 +90,8 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
             _isLoading
                 ? CustomLoader()
                 : HomeScreen(selectedTabIndex: _selectedTabIndex),
+          ),
+        ),
       ),
     );
   }

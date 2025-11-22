@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 
 class AppCardResponsive {
+  /// Get card width based on screen width (consistent for mobile and tablet)
+  /// Uses 40% of screen width for both mobile and tablet
   static double getCardWidth(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final result = width * 0.4;
-    
+    final screenWidth = MediaQuery.of(context).size.width;
+    final result = screenWidth * 0.4;
+
     logger.d(
-      'AppCardResponsive.getCardWidth: $result (width: $width)',
+      'AppCardResponsive.getCardWidth: $result (screenWidth: $screenWidth)',
     );
     return result;
   }
 
+  /// Get card height based on card width (consistent for mobile and tablet)
+  /// Height is 60% of card width for both mobile and tablet
   static double getCardHeight(BuildContext context) {
     final cardWidth = getCardWidth(context);
     final result = cardWidth * 0.60;
@@ -22,35 +26,46 @@ class AppCardResponsive {
     return result;
   }
 
+  /// Get lesson card height (same as card height)
   static double getLessonCardHeight(BuildContext context) {
     return getCardHeight(context);
   }
 
+  /// Get thumbnail height based on card height (consistent calculation)
+  /// Thumbnail is 65% of card height to make images prominent
   static double getThumbnailHeight(BuildContext context) {
-    final cardHeight = getLessonCardHeight(context);
-    return cardHeight * 0.42;
+    final cardHeight = getCardHeight(context);
+    final result = cardHeight * 0.65;
+
+    logger.d(
+      'AppCardResponsive.getThumbnailHeight: $result (cardHeight: $cardHeight)',
+    );
+    return result;
   }
 
+  /// Get thumbnail width (same as thumbnail height - square thumbnails)
   static double getThumbnailWidth(BuildContext context) {
     return getThumbnailHeight(context);
   }
 
+  /// Get gap height between thumbnail and text (0.5% of card height)
   static double getCardGapHeight(BuildContext context) {
-    final cardHeight = getLessonCardHeight(context);
-    return cardHeight * 0.01;
+    final cardHeight = getCardHeight(context);
+    return cardHeight * 0.005;
   }
 
+  /// Get text height allocation (27% of card height)
   static double getCardTextHeight(BuildContext context) {
-    final cardHeight = getLessonCardHeight(context);
+    final cardHeight = getCardHeight(context);
     return cardHeight * 0.27;
   }
 
-  /// Get the card height for dashboard display (80% for tablets, 100% for mobile)
-  /// This ensures consistent height for both recommended and regular cards
+  /// Get the card height for dashboard display (consistent for mobile and tablet)
+  /// Uses the same calculation as getCardHeight: 60% of card width
+  /// This ensures consistent sizing across mobile and tablet
   static double getDashboardCardHeight(BuildContext context) {
-    bool isTablet = PlatformUtility.isTablet(context);
-    return isTablet
-        ? getLessonCardHeight(context) * 0.8 // 20% smaller for tablets
-        : getLessonCardHeight(context);
+    // Return same height for both mobile and tablet
+    // Height is always 60% of card width (which is 40% of screen width)
+    return getLessonCardHeight(context);
   }
 }

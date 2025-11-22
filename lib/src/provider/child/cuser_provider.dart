@@ -83,7 +83,51 @@ class ChildUserProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchChildUser() async {
+  /// Fetches a specific child by ID to verify it exists (useful after creation)
+  Future<bool> verifyChildExists(String childId, String parentUid, {int maxRetries = 3, int retryDelayMs = 500}) async {
+    logger.d('🔍 Verifying child exists: $childId for parent: $parentUid');
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        final childDoc = await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(parentUid)
+            .collection(AppConstants.childrenCollection)
+            .doc(childId)
+            .get();
+        
+        if (childDoc.exists) {
+          final data = childDoc.data();
+          if (data?['parent_uid'] == parentUid) {
+            logger.d('✅ Child verified successfully on attempt $attempt');
+            return true;
+          } else {
+            logger.w('⚠️ Child exists but parent_uid mismatch on attempt $attempt');
+          }
+        } else {
+          logger.d('⏳ Child not found yet (attempt $attempt/$maxRetries)');
+        }
+        
+        if (attempt < maxRetries) {
+          await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+        }
+      } catch (e) {
+        logger.e('❌ Error verifying child (attempt $attempt): $e');
+        if (attempt < maxRetries) {
+          await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+        }
+      }
+    }
+    logger.w('⚠️ Child verification failed after $maxRetries attempts');
+    return false;
+  }
+
+  /// Fetches child users with retry logic to handle Firestore eventual consistency
+  /// If expectedChildId is provided, will retry until that specific child is found
+  Future<void> fetchChildUser({
+    int maxRetries = 3,
+    int retryDelayMs = 500,
+    String? expectedChildId,
+  }) async {
     setStatus(DataFetchStatus.loading);
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
@@ -92,7 +136,7 @@ class ChildUserProvider extends ChangeNotifier {
     bool isGuest = GuestUtil.isGuestUser();
 
     if (user == null && !isGuest) {
-      logger.e('User is not authenticated and not a guest user.');
+      logger.e('❌ User is not authenticated and not a guest user.');
       handleError("User not signed in.");
       return;
     }
@@ -105,29 +149,87 @@ class ChildUserProvider extends ChangeNotifier {
     }
 
     final String parentUid = user!.uid;
-    logger.i('Parent UID: $user');
+    logger.i('🔍 Fetching children for parent UID: $parentUid');
     logger.d('Current UID: ${FirebaseAuth.instance.currentUser?.uid}');
     logger.d('Target path: /users/$parentUid/children');
 
-    try {
-      final querySnapshot = await _firestore
-          .collection(AppConstants.usersCollection)
-          .doc(parentUid)
-          .collection(AppConstants.childrenCollection)
-          .get();
-      _childUser = querySnapshot.docs
-          .map((doc) => ChildUserModel.fromJson(doc.data()))
-          .toList();
-      logger.d('Fetched ${_childUser.length} child users');
-      if (_childUser.isNotEmpty) {
-        _totalChildren = _childUser.length;
-        await getCurrentChild();
+    // Retry logic for Firestore eventual consistency
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        final querySnapshot = await _firestore
+            .collection(AppConstants.usersCollection)
+            .doc(parentUid)
+            .collection(AppConstants.childrenCollection)
+            .get();
+        
+        final fetchedChildren = querySnapshot.docs
+            .map((doc) {
+              final data = doc.data();
+              // Validate that each child belongs to the current parent
+              if (data['parent_uid'] != parentUid) {
+                logger.w(
+                  '⚠️ Child document ${doc.id} has mismatched parent_uid. Expected: $parentUid, Found: ${data['parent_uid']}',
+                );
+                return null;
+              }
+              return ChildUserModel.fromJson(data);
+            })
+            .where((child) => child != null)
+            .cast<ChildUserModel>()
+            .toList();
+        
+        _childUser = fetchedChildren;
+        logger.d('✅ Fetched ${_childUser.length} child users (attempt $attempt/$maxRetries)');
+        
+        // If we're expecting a specific child (just created), verify it's in the list
+        if (expectedChildId != null) {
+          final foundChild = _childUser.any((child) => child.uid == expectedChildId);
+          if (!foundChild) {
+            logger.w(
+              '⏳ Expected child $expectedChildId not found yet (attempt $attempt/$maxRetries)',
+            );
+            if (attempt < maxRetries) {
+              await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+              continue;
+            } else {
+              logger.w(
+                '⚠️ Expected child $expectedChildId not found after $maxRetries attempts, but continuing with available children',
+              );
+            }
+          } else {
+            logger.d('✅ Expected child $expectedChildId found in fetched list');
+          }
+        }
+        
+        // Validate we got children (if this is a retry and we have no expected child)
+        if (attempt > 1 && _childUser.isEmpty && expectedChildId == null) {
+          logger.w('⚠️ No children found on attempt $attempt, will retry...');
+          if (attempt < maxRetries) {
+            await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+            continue;
+          }
+        }
+        
+        if (_childUser.isNotEmpty) {
+          _totalChildren = _childUser.length;
+          await getCurrentChild();
+        } else {
+          _totalChildren = 0;
+        }
+        setStatus(DataFetchStatus.success);
+        return;
+      } catch (e, s) {
+        logger.e('❌ Error fetching child users (attempt $attempt/$maxRetries): $e');
+        logger.e('Stack trace: $s');
+        
+        if (attempt < maxRetries) {
+          logger.i('🔄 Retrying in ${retryDelayMs * attempt}ms...');
+          await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+        } else {
+          logger.e('❌ Failed to fetch children after $maxRetries attempts');
+          handleError(e.toString());
+        }
       }
-      setStatus(DataFetchStatus.success);
-    } catch (e, s) {
-      logger.e('Error fetching child users: $e');
-      logger.e('Stack trace: $s');
-      handleError(e.toString());
     }
   }
 

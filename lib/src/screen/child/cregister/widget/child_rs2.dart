@@ -145,34 +145,76 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
       onTap: () async {
         final authState = context.read<AuthState>();
         final parentUser = FirebaseAuth.instance.currentUser;
-        logger.d('Parent user: ${parentUser?.uid}, ${parentUser?.email}');
+        logger.d('👤 Parent user: ${parentUser?.uid}, ${parentUser?.email}');
         if (parentUser == null) {
-          showCustomToaster('No parent user found', isError: true);
-          logger.e('No parent user found');
+          showCustomToaster('No parent user found. Please log in again.', isError: true);
+          logger.e('❌ No parent user found');
           return;
         }
+        
+        // Verify user is still authenticated before proceeding
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser == null || currentUser.uid != parentUser.uid) {
+          showCustomToaster('Authentication error. Please log in again.', isError: true);
+          logger.e('❌ Authentication state changed during child creation');
+          return;
+        }
+        
         logger.d('Selected screen time: $selectedRange');
         // Save screen time to state
         authState.setChildScreenTime(selectedRange);
-        // Save child to Firestore
-        await childProvider.createChildUser(
-          childName: authState.childName ?? "",
-          childDob: authState.childDob ?? "",
-          screenTime: selectedRange,
-          hasScreenTime: true, // User has set up screen time
-          avatarFilePath: authState.childAvatar ?? '',
-          parentUid: parentUser.uid,
-          parentEmail: parentUser.email ?? '',
-        );
-        await childUserProvider.fetchChildUser();
-        if (context.mounted) {
-          showCustomToaster('Child account created successfully');
-
-          Utility.navigateMaterialRoute(
-            context,
-            ChildRS3Screen(),
-            routeName: AppRoutes.childRS3Screen,
+        
+        try {
+          // Save child to Firestore and get the child ID
+          final childId = await childProvider.createChildUser(
+            childName: authState.childName ?? "",
+            childDob: authState.childDob ?? "",
+            screenTime: selectedRange,
+            hasScreenTime: true, // User has set up screen time
+            avatarFilePath: authState.childAvatar ?? '',
+            parentUid: parentUser.uid,
+            parentEmail: parentUser.email ?? '',
           );
+          
+          if (childId == null) {
+            throw Exception('Child creation returned null ID');
+          }
+          
+          logger.d('👶 Created child with ID: $childId, now fetching children...');
+          
+          // Fetch children with retry logic, specifically waiting for the newly created child
+          await childUserProvider.fetchChildUser(
+            maxRetries: 5, // More retries for newly created children
+            retryDelayMs: 600, // Slightly longer delay
+            expectedChildId: childId, // Wait for this specific child
+          );
+          
+          // Verify the child is in the list
+          final children = childUserProvider.childUser;
+          final foundChild = children.any((child) => child.uid == childId);
+          if (!foundChild) {
+            logger.w('⚠️ Created child $childId not found in fetched list, but continuing...');
+            // Don't throw error - child might appear later, and we don't want to block the user
+          } else {
+            logger.d('✅ Created child $childId successfully found in fetched list');
+          }
+          
+          if (context.mounted) {
+            showCustomToaster('Child account created successfully');
+            Utility.navigateMaterialRoute(
+              context,
+              ChildRS3Screen(),
+              routeName: AppRoutes.childRS3Screen,
+            );
+          }
+        } catch (e) {
+          logger.e('❌ Error creating child: $e');
+          if (context.mounted) {
+            showCustomToaster(
+              'Failed to create child account. Please try again.',
+              isError: true,
+            );
+          }
         }
       },
       backgroundColor: AppColors.kButtonGreen,
@@ -199,33 +241,73 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         final parentUser = FirebaseAuth.instance.currentUser;
 
         if (parentUser == null) {
-          showCustomToaster('No parent user found', isError: true);
-          logger.e('No parent user found');
+          showCustomToaster('No parent user found. Please log in again.', isError: true);
+          logger.e('❌ No parent user found');
+          return;
+        }
+
+        // Verify user is still authenticated before proceeding
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser == null || currentUser.uid != parentUser.uid) {
+          showCustomToaster('Authentication error. Please log in again.', isError: true);
+          logger.e('❌ Authentication state changed during child creation');
           return;
         }
 
         authState.setChildScreenTime(0);
         logger.d('Not now selected - setting screen time to 0 (no limit)');
 
-        await childProvider.createChildUser(
-          childName: authState.childName ?? "",
-          childDob: authState.childDob ?? "",
-          screenTime: 0,
-          hasScreenTime: false,
-          avatarFilePath: authState.childAvatar ?? '',
-          parentUid: parentUser.uid,
-          parentEmail: parentUser.email ?? '',
-        );
-
-        await childUserProvider.fetchChildUser();
-
-        if (context.mounted) {
-          showCustomToaster('Child account created successfully');
-          Utility.navigateMaterialRoute(
-            context,
-            ChildRS3Screen(),
-            routeName: AppRoutes.childRS3Screen,
+        try {
+          // Save child to Firestore and get the child ID
+          final childId = await childProvider.createChildUser(
+            childName: authState.childName ?? "",
+            childDob: authState.childDob ?? "",
+            screenTime: 0,
+            hasScreenTime: false,
+            avatarFilePath: authState.childAvatar ?? '',
+            parentUid: parentUser.uid,
+            parentEmail: parentUser.email ?? '',
           );
+          
+          if (childId == null) {
+            throw Exception('Child creation returned null ID');
+          }
+          
+          logger.d('👶 Created child with ID: $childId, now fetching children...');
+          
+          // Fetch children with retry logic, specifically waiting for the newly created child
+          await childUserProvider.fetchChildUser(
+            maxRetries: 5, // More retries for newly created children
+            retryDelayMs: 600, // Slightly longer delay
+            expectedChildId: childId, // Wait for this specific child
+          );
+          
+          // Verify the child is in the list
+          final children = childUserProvider.childUser;
+          final foundChild = children.any((child) => child.uid == childId);
+          if (!foundChild) {
+            logger.w('⚠️ Created child $childId not found in fetched list, but continuing...');
+            // Don't throw error - child might appear later, and we don't want to block the user
+          } else {
+            logger.d('✅ Created child $childId successfully found in fetched list');
+          }
+
+          if (context.mounted) {
+            showCustomToaster('Child account created successfully');
+            Utility.navigateMaterialRoute(
+              context,
+              ChildRS3Screen(),
+              routeName: AppRoutes.childRS3Screen,
+            );
+          }
+        } catch (e) {
+          logger.e('❌ Error creating child: $e');
+          if (context.mounted) {
+            showCustomToaster(
+              'Failed to create child account. Please try again.',
+              isError: true,
+            );
+          }
         }
       },
       label: 'Not now',

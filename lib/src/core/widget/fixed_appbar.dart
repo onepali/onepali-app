@@ -61,11 +61,16 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     // Step 1: Calculate base dimensions
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final safeAreaInsets = MediaQuery.of(context).padding;
     
     // Step 2: App bar dimensions
-    final horizontalPadding = screenWidth * 0.02; // 2% padding
+    // Base padding - SafeArea will handle safe area insets automatically when enabled
+    final horizontalPadding = screenWidth * 0.02; // 2% base padding
     final verticalPadding = screenHeight * 0.02; // 2% padding
-    final contentWidth = screenWidth * 0.96; // Content width after padding
+    // Content width accounts for base padding and left safe area (for mobile landscape)
+    // SafeArea adds padding, so we need to subtract it from available width
+    final leftSafeAreaPadding = isMobileLandScape ? safeAreaInsets.left : 0.0;
+    final contentWidth = screenWidth - (horizontalPadding * 2) - leftSafeAreaPadding;
     
     // Step 3: Side allocations
     final sectionGap = contentWidth * 0.04; // Gap between sides
@@ -98,8 +103,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     
     final guestTopGap = isTabletLandscape ? screenHeight * 0.02 : 0.0;
 
+    // Always respect left safe area - SafeArea will only add padding if needed
     return SafeArea(
-      left: false,
+      left: true,
       top: true,
       right: false,
       bottom: false,

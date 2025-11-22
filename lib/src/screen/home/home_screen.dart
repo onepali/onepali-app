@@ -162,6 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    bool isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
     return Consumer<RecommendedLessonProvider>(
       builder: (context, provider, child) {
         if (!(provider.hasData)) return const SizedBox();
@@ -169,7 +172,9 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Recommended lessons',
           titlePadding: EdgeInsets.only(
             bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : 16,
+            left: isTabletLandscape 
+                ? 24 
+                : (isMobileLandscape ? 20 : 16),
           ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -203,11 +208,16 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    bool isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
     return TitleActionChild(
       title: 'Songs',
       titlePadding: EdgeInsets.only(
         bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape ? 24 : 16,
+        left: isTabletLandscape 
+            ? 24 
+            : (isMobileLandscape ? 20 : 16),
       ),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(
         color: AppColors.kBlack,
@@ -241,6 +251,9 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    bool isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
     return Consumer<RcmSongProvider>(
       builder: (context, provider, child) {
         if (!provider.hasData) return const SizedBox();
@@ -248,7 +261,9 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Recommended songs',
           titlePadding: EdgeInsets.only(
             bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : 16,
+            left: isTabletLandscape 
+                ? 24 
+                : (isMobileLandscape ? 20 : 16),
           ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -268,6 +283,9 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    bool isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
 
     return Consumer<RecommendedStoryProvider>(
       builder: (context, provider, child) {
@@ -276,7 +294,9 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Recommended stories',
           titlePadding: EdgeInsets.only(
             bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : 16,
+            left: isTabletLandscape 
+                ? 24 
+                : (isMobileLandscape ? 20 : 16),
           ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -296,11 +316,16 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
+    bool isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
     return TitleActionChild(
       title: 'Level 1',
       titlePadding: EdgeInsets.only(
         bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape ? 24 : 16,
+        left: isTabletLandscape 
+            ? 24 
+            : (isMobileLandscape ? 20 : 16),
       ),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(
         color: AppColors.kBlack,

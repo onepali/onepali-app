@@ -42,47 +42,55 @@ class LessonScreen extends StatelessWidget {
     logger.d(
       'LessonScreen Responsive Values: cardHeight: $cardHeight, lessonCardHeight: $lessonCardHeight, thumbnailWidth: $thumbnailWidth, thumbnailHeight: $thumbnailHeight, screenWidth: $screenWidth, screenHeight: $screenHeight',
     );
+    final isMobileLandscape = isMobile && isLandscape;
+    
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       appBar: CustomAppBar(
         title: chapter.nameEn.isNotEmpty ? chapter.nameEn : chapter.nameNp,
         centerTitle: false,
       ),
-      body: Container(
-        color: AppColors.kWhite,
-        child: SizedBox(
-        height: listHeight,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: chapter.lessons.length,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          itemBuilder: (context, idx) {
-            final lesson = chapter.lessons[idx];
-            return SizedBox(
-              width: cardWidth,
-              child: LessonCard(
-                data: lesson,
-                color: AppColors.lessonBgColor,
-                isLocked: lesson.progress == 'locked',
-                isCompleted: lesson.progress == 'completed',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => LessonContentScreen(
-                            lesson: lesson,
-                            lessons: chapter.lessons,
-                            initialIndex: 0,
-                            hasSound: true,
-                            nameNp: chapter.nameNp,
-                            nameEn: chapter.nameEn,
-                          ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
+      body: SafeArea(
+        left: true,
+        top: false,
+        right: false,
+        bottom: false,
+        child: Container(
+          color: AppColors.kWhite,
+          child: SizedBox(
+            height: listHeight,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: chapter.lessons.length,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              itemBuilder: (context, idx) {
+                final lesson = chapter.lessons[idx];
+                return SizedBox(
+                  width: cardWidth,
+                  child: LessonCard(
+                    data: lesson,
+                    color: AppColors.lessonBgColor,
+                    isLocked: lesson.progress == 'locked',
+                    isCompleted: lesson.progress == 'completed',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (_) => LessonContentScreen(
+                                lesson: lesson,
+                                lessons: chapter.lessons,
+                                initialIndex: 0,
+                                hasSound: true,
+                                nameNp: chapter.nameNp,
+                                nameEn: chapter.nameEn,
+                              ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

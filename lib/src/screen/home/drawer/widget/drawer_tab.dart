@@ -74,6 +74,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     await childProvider.updateScreenTimeEnabledStatusByChildId(child.uid);
 
     // Navigator.of(context).pop(); // Close the drawer
+    // Clear parent logged status when going back to dashboard
+    await ParentLocalStorage.setParentLogged(false);
     UserAppBar.setTabIndex(0);
     Navigator.of(
       context,
@@ -143,9 +145,9 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
   }
 
   Widget _buildChildProfilesGrid() {
-    // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
-    final shouldShowAddChild =
-        widget.isParent || (widget.data.isEmpty && !widget.isParent);
+    // Show "Add Child" only when accessed from Family menu AND passcode is verified (isParent = true)
+    // When accessed from Dashboard, isParent will be false, so "Add Child" won't show
+    final shouldShowAddChild = widget.isParent;
     final items = List<Widget>.generate(
       widget.data.length + (shouldShowAddChild ? 1 : 0),
       (index) {
@@ -207,31 +209,22 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             ],
           );
         } else {
-          // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
+          // Show 'Add Child' button when accessed from Family menu with verified passcode
           return GestureDetector(
             onTap: () {
               if (widget.data.length >= 3 && !GlobalConfig.isUserTesting) {
-                DialogManager.showCustomDialog(
-                  context: context,
-                  title: 'You\'ve added 3 kids!',
-                  content:
-                      'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
-                  confirmButtonText: 'Add for \$5',
-                  onConfirm: () {},
-                );
+              DialogManager.showCustomDialog(
+                context: context,
+                title: 'You\'ve added 3 kids!',
+                content:
+                    'Want to add another to keep learning personalized? It\'s just \$5 per extra child.',
+                confirmButtonText: 'Add for \$5',
+                onConfirm: () {},
+              );
                 return;
               } else {
-                // If from child dashboard with no children, navigate to parent PIN screen
-                if (!widget.isParent && widget.data.isEmpty) {
-                  Utility.navigate(
-                    context,
-                    AppRoutes.parentPinScreen,
-                    arguments: {'fromAddChild': true},
-                  );
-                } else {
-                  // Normal flow for parent zone
-                  Utility.navigate(context, AppRoutes.childRegisterScreen);
-                }
+                // User has verified passcode (isParent = true), so navigate directly to child registration
+                Utility.navigate(context, AppRoutes.childRegisterScreen);
               }
             },
             child: Column(

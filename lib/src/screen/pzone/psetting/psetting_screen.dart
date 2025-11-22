@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:onepali/src/src.dart';
@@ -19,7 +20,9 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
     super.initState();
     _bannerPageController = PageController();
     _banners = spreadBannerList;
-    Misc.onLayoutRendered(() {
+    Misc.onLayoutRendered(() async {
+      // Note: Orientation is handled by OrientationRouteObserver
+      // We don't set orientation here to avoid conflicts
       context.read<UserProvider>().fetchOwnProfile();
       context.read<ChildUserProvider>().fetchChildUser();
       _startBannerRotation();
@@ -166,7 +169,20 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
             child: PSettingCard(
               title: 'Add child',
               isAdd: true,
-              onTap: () {
+              onTap: () async {
+                // Check if parent has verified passcode
+                final isParentLogged = await ParentLocalStorage.isParentLogged();
+                
+                if (!isParentLogged) {
+                  // Navigate to parent PIN screen for passcode verification
+                  Utility.navigate(
+                    context,
+                    AppRoutes.parentPinScreen,
+                    arguments: {'fromAddChild': true},
+                  );
+                  return;
+                }
+                
                 final validChildrenCount = children
                     .where(
                       (child) =>

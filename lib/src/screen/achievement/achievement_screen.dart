@@ -107,28 +107,28 @@ class _AchievementScreenState extends State<AchievementScreen> {
         },
       );
     } else {
-      // Mobile layout - horizontal scroll
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          return SizedBox(
-            height: constraints.maxHeight.isFinite 
-                ? constraints.maxHeight 
-                : MediaQuery.of(context).size.height * 0.8,
-            child: ListView.builder(
-              itemCount: achievementList.length,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              itemBuilder: (context, index) {
-                final achievement = achievementList[index];
-                final value = _getAchievementValue(achievement.id);
-                return AchievementCard(
-                  achievement: achievement,
-                  dynamicValue: value,
-                );
-              },
-            ),
-          );
-        },
+      // Mobile layout - horizontal scroll (original structure)
+      final double horizontalPadding = 0.0;
+      return Center(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 0,
+          ),
+          child: ListView.builder(
+            itemCount: achievementList.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final achievement = achievementList[index];
+              final value = _getAchievementValue(achievement.id);
+              return AchievementCard(
+                achievement: achievement,
+                dynamicValue: value,
+              );
+            },
+          ),
+        ),
       );
     }
   }
@@ -230,7 +230,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
 
                 CircularButtonWidget(
                   onPressed: () => Navigator.pop(context),
-                  type: CircularButtonType.close,
+                  type: CircularButtonType.closeGrey,
                 ),
               ],
             ),
@@ -267,7 +267,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
               : MediaQuery.of(context).size.width;
           
           return Container(
-            height: availableHeight,
+            height: isTabletLandScape
+                ? MediaQuery.of(context).size.height
+                : MediaQuery.of(context).size.height * 0.8,
             width: availableWidth,
             margin: EdgeInsets.symmetric(
               vertical: paddingV,
@@ -276,7 +278,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 // Mobile layout - original row format (unchanged)
                 Row(
@@ -285,6 +286,9 @@ class _AchievementScreenState extends State<AchievementScreen> {
                       widget.profileImage,
                       width: imageSize,
                       height: imageSize,
+                      circular: true,
+                      border: true,
+                      borderColor: AppColors.kButtonGreen,
                     ),
                     Gaps.horizontalGapOf(10),
                     Expanded(
@@ -302,7 +306,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 ),
                 Gaps.verticalGapOf(isTabletLandScape ? 20 : 10),
 
-                // Message container
+                // Message container - fills remaining space like original
                 Expanded(
                   child: Container(
                     width: double.infinity,
@@ -317,7 +321,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'Your Nepali is improving!',
@@ -327,8 +330,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
                             fontWeight: FontWeight.normal,
                           ),
                           textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         Gaps.verticalGapOf(4),
                         Expanded(
@@ -371,28 +372,36 @@ class _AchievementScreenState extends State<AchievementScreen> {
             // Content
             if (isTablet)
               // Tablet layout - Column structure
-              Column(
-                children: [
-                  // Congratulations section at top
-                  buildCongratulationsSection(),
-                  // Achievement cards below
-                  Expanded(child: buildAchievementGrid()),
-                ],
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Congratulations section at top
+                    buildCongratulationsSection(),
+                    // Achievement cards below
+                    buildAchievementGrid(),
+                  ],
+                ),
               )
             else
               // Mobile layout - Row structure
               LayoutBuilder(
                 builder: (context, constraints) {
                   final screenWidth = MediaQuery.of(context).size.width;
+                  final availableHeight = constraints.maxHeight.isFinite
+                      ? constraints.maxHeight
+                      : MediaQuery.of(context).size.height;
                   // Use 40% of screen width for congratulations section, minimum 180px, maximum 250px
                   final congratsWidth = (screenWidth * 0.4).clamp(180.0, 250.0);
                   return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
                         width: congratsWidth,
                         child: buildCongratulationsSection(),
                       ),
-                      Expanded(child: buildAchievementGrid()),
+                      Expanded(
+                        child: buildAchievementGrid(),
+                      ),
                     ],
                   );
                 },
@@ -405,7 +414,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 right: Dimensions.kIconMargin(context) - 8,
                 child: CircularButtonWidget(
                   onPressed: () => Navigator.pop(context),
-                  type: CircularButtonType.close,
+                  type: CircularButtonType.closeGrey,
                 ),
               ),
           ],

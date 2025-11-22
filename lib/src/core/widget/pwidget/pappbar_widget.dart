@@ -97,10 +97,14 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               text: 'Home',
               isMobilePortrait: isMobilePortrait,
               onTap: () {
-                Utility.navigate(context, AppRoutes.dashboardScreen);
                 ParentLocalStorage.setParentLogged(false);
                 ChildLocalStorage.clear();
                 UserAppBar.setTabIndex(0);
+                // Use pushNamedAndRemoveUntil to clear the stack and prevent orientation conflicts
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.dashboardScreen,
+                  (route) => false,
+                );
               },
             ),
             _buildMenuItem(
@@ -108,8 +112,9 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               icon: Assets.familyIcon(context),
               text: 'Family',
               isMobilePortrait: isMobilePortrait,
-              onTap: () {
-                // ParentLocalStorage.setParentLogged(false);
+              onTap: () async {
+                // Check if parent has verified passcode
+                final isParentLogged = await ParentLocalStorage.isParentLogged();
                 ChildLocalStorage.clear();
                 Future.delayed(const Duration(milliseconds: 150), () {
                   if (isMobile) {
@@ -118,7 +123,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                       DrawerScreen(
                         data: childData,
                         totalChildCount: totalChildCount,
-                        isParent: true,
+                        isParent: isParentLogged,
                       ),
                       routeName: AppRoutes.drawerRoutes,
                     );
@@ -128,7 +133,7 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                       TabDrawerScreen(
                         data: childData,
                         totalChildCount: totalChildCount,
-                        isParent: true,
+                        isParent: isParentLogged,
                       ),
                       routeName: AppRoutes.tabDrawerRoutes,
                     );

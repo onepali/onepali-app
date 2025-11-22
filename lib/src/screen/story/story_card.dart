@@ -46,27 +46,32 @@ class StoryCard extends StatelessWidget {
               : AppCardResponsive.getCardHeight(context);
           
           return Stack(
-            children: [
-              Container(
-                width: double.infinity,
+        children: [
+          Container(
+            width: double.infinity,
                 height: cardHeight,
-                decoration: BoxDecoration(
-                  color: AppColors.sunshineYellow,
-                  borderRadius:
-                      isRadius == true
-                          ? BorderRadius.circular(20)
-                          : BorderRadius.zero,
-                ),
-                margin: !isIntro ? const EdgeInsets.symmetric(horizontal: 8) : null,
+            decoration: BoxDecoration(
+              color: AppColors.sunshineYellow,
+              borderRadius:
+                  isRadius == true
+                      ? BorderRadius.circular(20)
+                      : BorderRadius.zero,
+            ),
+            margin: !isIntro ? const EdgeInsets.symmetric(horizontal: 8) : null,
                 child: LayoutBuilder(
                         builder: (context, constraints) {
                           final availableHeight = constraints.maxHeight.isFinite
                               ? constraints.maxHeight
                               : cardHeight;
                       
-                      // Calculate sizes based on available height, not full card height
-                      // Increased thumbnail to 48% and reduced gap to 0.5% to allow larger image without pushing text down
-                      final thumbnailHeight = availableHeight * 0.48;
+                      // Calculate sizes based on card height (availableHeight = card height)
+                      // Percentages are relative to card height:
+                      // - Thumbnail: 65% of card height
+                      // - Gap: 0.5% of card height
+                      // - Text: 27% of card height
+                      // Total: 92.5% of card height - well within bounds, no overflow possible
+                      // These percentages match AppCardResponsive for consistency across mobile and tablet
+                      final thumbnailHeight = availableHeight * 0.65;
                       final thumbnailWidth = thumbnailHeight;
                       final gapHeight = availableHeight * 0.005;
                       final textHeight = availableHeight * 0.27;
@@ -76,51 +81,51 @@ class StoryCard extends StatelessWidget {
                           height: availableHeight,
                           width: double.infinity,
                           child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (story.thumbnail.isNotEmpty)
+              children: [
+                if (story.thumbnail.isNotEmpty)
                                   ClipRect(
                                     child: SizedBox(
                                       height: thumbnailHeight,
                                       width: thumbnailWidth,
                                       child: SvgHelper.fromSource(
-                                        path: story.thumbnail,
+                    path: story.thumbnail,
                                         height: thumbnailHeight,
                                         width: thumbnailWidth,
-                                        type: SvgSourceType.network,
-                                      ),
-                                    ),
-                                  ),
+                    type: SvgSourceType.network,
+                  ),
+                  ),
+                  ),
                                 SizedBox(height: gapHeight),
                                 SizedBox(
                                   height: textHeight,
                                   child: Center(
-                                    child: Text(
-                                      story.nameEn,
-                                      style: AppStyles.text16PxMedium.copyWith(
+                  child: Text(
+                    story.nameEn,
+                    style: AppStyles.text16PxMedium.copyWith(
                                         fontSize: PlatformUtility.isTablet(context) &&
                                                 PlatformUtility.isLandscape(context)
                                             ? 18
                                             : 14,
-                                      ),
-                                      textAlign: TextAlign.center,
+                    ),
+                    textAlign: TextAlign.center,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                ),
-                              ],
+                  ),
+                ),
+              ],
                             ),
                           ),
                         ),
                       );
                         },
-                      ),
-              ),
-              if (progressPercent != null && progressPercent! > 0)
+            ),
+          ),
+          if (progressPercent != null && progressPercent! > 0)
             Positioned(
               left: 0,
               right: 0,
@@ -149,7 +154,7 @@ class StoryCard extends StatelessWidget {
                 child: Icon(Icons.lock, color: AppColors.kBlack, size: 18),
               ),
             ),
-            ],
+        ],
           );
         },
       ),

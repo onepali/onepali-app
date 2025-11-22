@@ -25,16 +25,20 @@ class PHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
-    // final selectedChild = children.firstWhere(
-    //   (child) => child.uid == selectedChildUid,
-    //   orElse: () => children.first,
-    // );
+    
+    // Filter out invalid children (empty name or uid)
+    final filteredChildren = children.where(
+      (child) => child.fullName.isNotEmpty && child.uid.isNotEmpty,
+    ).toList();
+    
+    logger.d('📋 PHomeCard - Total children: ${children.length}, Filtered: ${filteredChildren.length}');
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Children Dropdown - Always visible
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
@@ -44,74 +48,120 @@ class PHomeCard extends StatelessWidget {
             ),
             alignment: Alignment.center,
             height: Dimensions.kSettingAvatarSize(context) + 16,
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                iconSize: Dimensions.kSettingAvatarSize(context) - 26,
-                value: selectedChildUid,
-                isExpanded: true,
-                hint: Text(
-                  'Select child',
+            child: filteredChildren.isEmpty
+                ? Center(
+                    child: Text(
+                      'No children available',
+                      style: AppStyles.text16PxRegular.copyWith(
+                        fontFamily: AppConstants.kDMSansFont,
+                        fontSize: isMobilePortrait ? 16 : 24,
+                      ),
+                    ),
+                  )
+                : DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      iconSize: Dimensions.kSettingAvatarSize(context) - 26,
+                      value: selectedChildUid,
+                      isExpanded: true,
+                      hint: Text(
+                        'Select child',
+                        style: AppStyles.text16PxRegular.copyWith(
+                          fontFamily: AppConstants.kDMSansFont,
+                          fontSize: isMobilePortrait ? 16 : 24,
+                        ),
+                      ),
+                      items: filteredChildren
+                          .map((child) {
+                            return DropdownMenuItem<String>(
+                              value: child.uid,
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Row(
+                                  children: [
+                                    CustomImage(
+                                      child.avatarUrl.isNotEmpty
+                                          ? child.avatarUrl
+                                          : "",
+                                      imageType: child.avatarUrl.isNotEmpty
+                                          ? CustomImageType.network
+                                          : CustomImageType.local,
+                                      circular: true,
+                                      height: Dimensions.kSettingAvatarSize(context),
+                                      width: Dimensions.kSettingAvatarSize(context),
+                                      cover: false,
+                                    ),
+                                    Gaps.horizontalGapOf(12),
+                                    Text(
+                                      child.fullName,
+                                      style: AppStyles.text16PxRegular.copyWith(
+                                        fontFamily: AppConstants.kDMSansFont,
+                                        fontSize: isMobilePortrait ? 16 : 24,
+                                        fontWeight: isMobilePortrait
+                                            ? FontWeight.w500
+                                            : FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          })
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          onChildSelected(value);
+                        }
+                      },
+                    ),
+                  ),
+          ),
+          Gaps.verticalGapOf(16),
+          // Metrics Content - Always show if child is selected
+          if (selectedChildUid == null)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Text(
+                  'Please select a child to view metrics',
                   style: AppStyles.text16PxRegular.copyWith(
                     fontFamily: AppConstants.kDMSansFont,
                     fontSize: isMobilePortrait ? 16 : 24,
                   ),
                 ),
-                items: children
-                    .where(
-                      (child) =>
-                          child.fullName.isNotEmpty && child.uid.isNotEmpty,
-                    )
-                    .map((child) {
-                      return DropdownMenuItem<String>(
-                        value: child.uid,
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Row(
-                            children: [
-                              CustomImage(
-                                child.avatarUrl.isNotEmpty
-                                    ? child.avatarUrl
-                                    : "",
-                                imageType: child.avatarUrl.isNotEmpty
-                                    ? CustomImageType.network
-                                    : CustomImageType.local,
-                                circular: true,
-                                height: Dimensions.kSettingAvatarSize(context),
-                                width: Dimensions.kSettingAvatarSize(context),
-                                cover: false,
-                              ),
-                              Gaps.horizontalGapOf(12),
-                              Text(
-                                child.fullName,
-                                style: AppStyles.text16PxRegular.copyWith(
-                                  fontFamily: AppConstants.kDMSansFont,
-                                  fontSize: isMobilePortrait ? 16 : 24,
-                                  fontWeight: isMobilePortrait
-                                      ? FontWeight.w500
-                                      : FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    })
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    onChildSelected(value);
-                  }
-                },
               ),
-            ),
-          ),
-          Gaps.verticalGapOf(16),
-          // Metrics Content
-          if (metricsStatus == DataFetchStatus.loading)
-            CustomLoader()
+            )
+          else if (metricsStatus == DataFetchStatus.loading)
+            const Padding(
+              padding: EdgeInsets.all(32.0),
+              child: CustomLoader(),
+            )
+          else if (metricsStatus == DataFetchStatus.error)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Text(
+                  'Error loading metrics. Please try again.',
+                  style: AppStyles.text16PxRegular.copyWith(
+                    fontFamily: AppConstants.kDMSansFont,
+                    fontSize: isMobilePortrait ? 16 : 24,
+                  ),
+                ),
+              ),
+            )
           else if (metrics == null)
-            const Center(child: Text('No metrics data found'))
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Text(
+                  'No metrics data found for this child',
+                  style: AppStyles.text16PxRegular.copyWith(
+                    fontFamily: AppConstants.kDMSansFont,
+                    fontSize: isMobilePortrait ? 16 : 24,
+                  ),
+                ),
+              ),
+            )
           else ...[
             PAverageLearningWidget(
               completedActivities: metrics!.completedActivities,

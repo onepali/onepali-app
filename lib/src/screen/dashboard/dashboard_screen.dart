@@ -164,7 +164,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final childProvider = context.read<ChildUserProvider>();
+    final childProvider = context.watch<ChildUserProvider>();
     final userProvider = context.watch<UserProvider>();
     final UserModel? userInfo = userProvider.user;
     final bool isLoading = userProvider.status == DataFetchStatus.loading;
@@ -192,6 +192,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         color: AppColors.kWhite,
         child: SafeArea(
+          left: true,
+          top: true,
+          right: false,
+          bottom: false,
           child: Scaffold(
             key: _scaffoldKey,
             backgroundColor: AppColors.kWhite,
