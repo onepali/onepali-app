@@ -60,7 +60,10 @@ import UserNotifications
   // }
   
   // Enable dynamic orientation changes based on Flutter's SystemChrome.setPreferredOrientations
+  // This method allows Flutter to control orientation programmatically
   override func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+    // Return .all to allow Flutter's SystemChrome.setPreferredOrientations to control orientation
+    // Flutter will filter this based on what's set via SystemChrome
     return .all
   }
 }

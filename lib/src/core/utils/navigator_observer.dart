@@ -210,18 +210,57 @@ class OrientationRouteObserver extends NavigatorObserver {
       return;
     }
     
-    // Directly set target orientations - system will choose 90° path automatically
-    // No intermediate steps to avoid multiple rotations
-    if (shouldBePortrait) {
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    } else {
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
+    // For tablets/iOS, use "allow all then lock" pattern for reliability
+    // This pattern is required for iPads to respect orientation locking
+    // For Android phones, set directly to avoid multiple rotations
+    try {
+      if (useAllowAllPattern) {
+        // Step 1: Allow all orientations briefly (required for tablets)
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+        
+        // Step 2: Wait for system to register the change (critical for tablets)
+        await Future.delayed(const Duration(milliseconds: 200));
+        
+        // Step 3: Lock to target orientation
+        if (shouldBePortrait) {
+          await SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+          ]);
+        } else {
+          await SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
+        
+        // Step 4: Additional delay for tablets/iOS to ensure lock is applied
+        await Future.delayed(const Duration(milliseconds: 150));
+      } else {
+        // Direct locking for Android phones (works reliably without pattern)
+        if (shouldBePortrait) {
+          await SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+          ]);
+        } else {
+          await SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
+      }
+    } catch (e) {
+      // Log error but don't throw - orientation changes may fail on simulators
+      // or in certain windowing modes, but the app should continue to function
+      logger.w(
+        '⚠️ Failed to set orientation (may be expected on simulator/windowed mode): $e',
+      );
     }
     
     logger.d(

@@ -159,6 +159,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UIRequiresFullScreen</key>
-	<false/>
+	<true/>
 </dict>
 </plist>
