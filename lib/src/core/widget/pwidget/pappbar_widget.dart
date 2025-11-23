@@ -115,30 +115,32 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               onTap: () async {
                 // Check if parent has verified passcode
                 final isParentLogged = await ParentLocalStorage.isParentLogged();
+                logger.d('👨‍👩‍👧‍👦 Family menu clicked - isParentLogged: $isParentLogged');
                 ChildLocalStorage.clear();
-                Future.delayed(const Duration(milliseconds: 150), () {
-                  if (isMobile) {
-                    Utility.navigateMaterialRoute(
-                      context,
-                      DrawerScreen(
-                        data: childData,
-                        totalChildCount: totalChildCount,
-                        isParent: isParentLogged,
-                      ),
-                      routeName: AppRoutes.drawerRoutes,
-                    );
-                  } else {
-                    Utility.navigateMaterialRoute(
-                      context,
-                      TabDrawerScreen(
-                        data: childData,
-                        totalChildCount: totalChildCount,
-                        isParent: isParentLogged,
-                      ),
-                      routeName: AppRoutes.tabDrawerRoutes,
-                    );
-                  }
-                });
+                // Navigate immediately after async operations complete (no delay needed)
+                if (isMobile) {
+                  logger.d('📱 Navigating to DrawerScreen with isParent: $isParentLogged');
+                  Utility.navigateMaterialRoute(
+                    context,
+                    DrawerScreen(
+                      data: childData,
+                      totalChildCount: totalChildCount,
+                      isParent: isParentLogged,
+                    ),
+                    routeName: AppRoutes.drawerRoutes,
+                  );
+                } else {
+                  logger.d('📱 Navigating to TabDrawerScreen with isParent: $isParentLogged');
+                  Utility.navigateMaterialRoute(
+                    context,
+                    TabDrawerScreen(
+                      data: childData,
+                      totalChildCount: totalChildCount,
+                      isParent: isParentLogged,
+                    ),
+                    routeName: AppRoutes.tabDrawerRoutes,
+                  );
+                }
               },
             ),
             _buildMenuItem(

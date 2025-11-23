@@ -214,7 +214,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
     }
   }
 
-  void _handleSuccessfulVerification() {
+  void _handleSuccessfulVerification() async {
     if (mounted) {
       if (widget.fromScreenTimeLimit) {
         Utility.navigate(
@@ -225,8 +225,11 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       } else if (widget.fromAddChild) {
         Utility.navigate(context, AppRoutes.childRegisterScreen);
       } else {
-        ParentLocalStorage.setParentLogged(true);
-        Utility.navigate(context, AppRoutes.parentDashboardScreen);
+        // Ensure isParentLogged is set and persisted before navigation
+        await ParentLocalStorage.setParentLogged(true);
+        if (mounted) {
+          Utility.navigate(context, AppRoutes.parentDashboardScreen);
+        }
       }
     }
   }

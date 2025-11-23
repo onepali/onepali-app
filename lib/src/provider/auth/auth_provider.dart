@@ -101,6 +101,8 @@ class AuthProvider with ChangeNotifier {
         json.encode(userInfo),
       );
       await sharedPrefs.setBoolPref(AppConstants.logged, true);
+      // Reset parent login status on new login - user must verify passcode again
+      await sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
 
       // Save UserModel to Firestore
       if (_user != null) {
@@ -229,6 +231,8 @@ class AuthProvider with ChangeNotifier {
         json.encode(userInfo),
       );
       await sharedPrefs.setBoolPref(AppConstants.logged, true);
+      // Reset parent login status on new login - user must verify passcode again
+      await sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
 
       setStatus(DataFetchStatus.success);
       notifyListeners();

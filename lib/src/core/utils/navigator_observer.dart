@@ -18,11 +18,12 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.rs5Screen,
     AppRoutes.rs6Screen,
     
-    // Child Registration (parent registers child)
+    // Child Registration (parent registers child - child profile creation)
     AppRoutes.childRegisterScreen,
     AppRoutes.childRS1Screen,
     AppRoutes.childRS2Screen,
     AppRoutes.childRS3Screen,
+    AppRoutes.childRS4Screen, // Receive updates prompt - part of child profile creation
     AppRoutes.extendTimeScreen,
     
     // Parent Zone (all parent-facing screens)
@@ -94,10 +95,10 @@ class OrientationRouteObserver extends NavigatorObserver {
     BuildContext? context, {
     Route<dynamic>? previousRoute,
   }) async {
-    // Skip orientation changes for popup menu routes - they're just overlays
+    // Skip orientation changes for popup menu and dialog routes - they're just overlays
     final name = route?.settings.name ?? '';
-    if (name == AppConstants.popupMenuModal) {
-      logger.d('🚫 Skipping orientation change for popup menu route');
+    if (name == AppConstants.popupMenuModal || name == AppConstants.customDialogModal) {
+      logger.d('🚫 Skipping orientation change for overlay route: $name');
       return;
     }
     
@@ -344,8 +345,10 @@ class OrientationRouteObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     final routeName = route.settings.name ?? '';
     
-    // Skip orientation changes for popup menu and unnamed overlays (like dropdowns)
-    if (routeName == AppConstants.popupMenuModal || routeName.isEmpty) {
+    // Skip orientation changes for popup menu, dialogs, and unnamed overlays (like dropdowns)
+    if (routeName == AppConstants.popupMenuModal || 
+        routeName == AppConstants.customDialogModal || 
+        routeName.isEmpty) {
       logger.d('🚫 Skipping orientation change when pushing overlay route: ${routeName.isEmpty ? "unnamed overlay" : routeName}');
       super.didPush(route, previousRoute);
       return;
@@ -383,8 +386,10 @@ class OrientationRouteObserver extends NavigatorObserver {
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     final poppedRouteName = route.settings.name ?? '';
     
-    // Skip orientation changes for popup menu and unnamed overlays (dropdowns, dialogs)
-    if (poppedRouteName == AppConstants.popupMenuModal || poppedRouteName.isEmpty) {
+    // Skip orientation changes for popup menu, dialogs, and unnamed overlays (dropdowns)
+    if (poppedRouteName == AppConstants.popupMenuModal || 
+        poppedRouteName == AppConstants.customDialogModal || 
+        poppedRouteName.isEmpty) {
       logger.d('🚫 Skipping orientation change when popping overlay route: ${poppedRouteName.isEmpty ? "unnamed overlay" : poppedRouteName}');
       super.didPop(route, previousRoute);
       return;
