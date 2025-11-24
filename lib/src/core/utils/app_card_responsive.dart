@@ -2,91 +2,70 @@ import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 
 class AppCardResponsive {
+  /// Get card width based on screen width (consistent for mobile and tablet)
+  /// Uses 40% of screen width for both mobile and tablet
   static double getCardWidth(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isMobile = PlatformUtility.isMobile(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    final width = MediaQuery.of(context).size.width;
-    double result;
-    if (isTablet) {
-      result = isLandscape ? width * 0.45 : width * 0.36;
-    } else if (isMobile) {
-      result = isLandscape ? width * 0.45 : width * 0.6;
-    } else {
-      result = width * 0.4;
-    }
+    final screenWidth = MediaQuery.of(context).size.width;
+    final result = screenWidth * 0.4;
 
     logger.d(
-      'AppCardResponsive.getCardWidth: $result (width: $width, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape)',
+      'AppCardResponsive.getCardWidth: $result (screenWidth: $screenWidth)',
     );
     return result;
   }
 
+  /// Get card height based on card width (consistent for mobile and tablet)
+  /// Height is 60% of card width for both mobile and tablet
   static double getCardHeight(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isMobile = PlatformUtility.isMobile(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    final height = MediaQuery.of(context).size.height;
-    double result;
-    if (isTablet) {
-      result = isLandscape ? height * 0.55 : height * 0.5;
-    } else if (isMobile) {
-      result = isLandscape ? height * 0.55 : height * 0.55;
-    } else {
-      result = height * 0.5;
-    }
+    final cardWidth = getCardWidth(context);
+    final result = cardWidth * 0.60;
 
     logger.d(
-      'AppCardResponsive.getCardHeight: $result (height: $height, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape)',
+      'AppCardResponsive.getCardHeight: $result (cardWidth: $cardWidth)',
     );
     return result;
   }
 
+  /// Get lesson card height (same as card height)
   static double getLessonCardHeight(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isMobile = PlatformUtility.isMobile(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    final height = MediaQuery.of(context).size.height;
-    double result;
-    if (isTablet) {
-      result = isLandscape ? height * 0.55 : height * 0.5;
-    } else if (isMobile) {
-      result = isLandscape ? height * 0.55 : height * 0.55;
-    } else {
-      result = height * 0.5;
-    }
+    return getCardHeight(context);
+  }
+
+  /// Get thumbnail height based on card height (consistent calculation)
+  /// Thumbnail is 65% of card height to make images prominent
+  static double getThumbnailHeight(BuildContext context) {
+    final cardHeight = getCardHeight(context);
+    final result = cardHeight * 0.65;
 
     logger.d(
-      'AppCardResponsive.getLessonCardHeight: $result (height: $height, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape)',
+      'AppCardResponsive.getThumbnailHeight: $result (cardHeight: $cardHeight)',
     );
     return result;
   }
 
-  static double getThumbnailHeight(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isMobile = PlatformUtility.isMobile(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    final height = MediaQuery.of(context).size.height;
-    if (isTablet) {
-      return isLandscape ? height * 0.25 : height * 0.25;
-    } else if (isMobile) {
-      return isLandscape ? height * 0.25 : height * 0.25;
-    } else {
-      return height * 0.25;
-    }
+  /// Get thumbnail width (same as thumbnail height - square thumbnails)
+  static double getThumbnailWidth(BuildContext context) {
+    return getThumbnailHeight(context);
   }
 
-  static double getThumbnailWidth(BuildContext context) {
-    final isTablet = PlatformUtility.isTablet(context);
-    final isMobile = PlatformUtility.isMobile(context);
-    final isLandscape = PlatformUtility.isLandscape(context);
-    final width = MediaQuery.of(context).size.width;
-    if (isTablet) {
-      return isLandscape ? width * 0.4 : width * 0.3;
-    } else if (isMobile) {
-      return isLandscape ? width * 0.3 : width * 0.3;
-    } else {
-      return width * 0.3;
-    }
+  /// Get gap height between thumbnail and text (0.5% of card height)
+  static double getCardGapHeight(BuildContext context) {
+    final cardHeight = getCardHeight(context);
+    return cardHeight * 0.005;
+  }
+
+  /// Get text height allocation (27% of card height)
+  static double getCardTextHeight(BuildContext context) {
+    final cardHeight = getCardHeight(context);
+    return cardHeight * 0.27;
+  }
+
+  /// Get the card height for dashboard display (consistent for mobile and tablet)
+  /// Uses the same calculation as getCardHeight: 60% of card width
+  /// This ensures consistent sizing across mobile and tablet
+  static double getDashboardCardHeight(BuildContext context) {
+    // Return same height for both mobile and tablet
+    // Height is always 60% of card width (which is 40% of screen width)
+    return getLessonCardHeight(context);
   }
 }

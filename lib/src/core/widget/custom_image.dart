@@ -105,7 +105,10 @@ class CustomImage extends StatelessWidget {
   }
 
   Widget _buildNetworkImage(String path) {
-    return CachedNetworkImage(
+    return SizedBox(
+      width: width,
+      height: height,
+      child: CachedNetworkImage(
       imageUrl: path,
       fit: cover ? BoxFit.cover : BoxFit.contain,
       width: width,
@@ -115,6 +118,7 @@ class CustomImage extends StatelessWidget {
             alignment: Alignment.center,
             width: width,
             height: height,
+              clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
               borderRadius:
                   borderRadius != 0.0
@@ -147,6 +151,7 @@ class CustomImage extends StatelessWidget {
               height: height,
               width: width,
               fit: cover ? BoxFit.cover : BoxFit.contain,
+              ),
             ),
           ),
     );

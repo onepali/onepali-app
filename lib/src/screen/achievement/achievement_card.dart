@@ -5,12 +5,14 @@ class AchievementCard extends StatelessWidget {
   final AchievementModel achievement;
   final String dynamicValue;
   final VoidCallback? onTap;
+  final double? fixedHeight;
 
   const AchievementCard({
     super.key,
     required this.achievement,
     required this.dynamicValue,
     this.onTap,
+    this.fixedHeight,
   });
 
   @override
@@ -21,46 +23,37 @@ class AchievementCard extends StatelessWidget {
         PlatformUtility.isLandscape(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
-    // Responsive values based on device and orientation
+    // Get screen dimensions for calculations
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Container height is 80% of screen height (from achievement_screen.dart)
+    final containerHeight = screenHeight * 0.8;
+    
+    // Responsive values based on screen dimensions (relative sizing)
     double cardWidth;
     double cardHeight;
-    double titleFontSize;
-    double valueFontSize;
-    double imageSize;
-    double padding;
-    double marginHorizontal;
-    double marginVertical;
-
     if (isMobileLandscape) {
-      cardWidth = 20.w(context);
-      cardHeight = double.infinity;
-      titleFontSize = 16;
-      valueFontSize = 28;
-      imageSize = 65;
-      padding = 16;
-      marginHorizontal = 8;
-      marginVertical = 5;
+      cardWidth = screenWidth * 0.20; // ~20% of screen width (equivalent to 20.w)
+      cardHeight = double.infinity; // Fill container height
     } else if (isTabletLandscape) {
-      cardWidth = 200;
-      cardHeight = double.infinity;
-      titleFontSize = 17;
-      valueFontSize = 30;
-      imageSize = 55;
-      padding = 18;
-      marginHorizontal = 10;
-      marginVertical = 10;
+      cardWidth = screenWidth * 0.15; // Relative to screen
+      cardHeight = double.infinity; // Fill container height
     } else {
-      cardWidth = 200;
-      cardHeight = double.infinity;
-      titleFontSize = 17;
-      valueFontSize = 30;
-      imageSize = 55;
-      padding = 18;
-      marginHorizontal = 10;
-      marginVertical = 10;
+      cardWidth = screenWidth * 0.45; // ~45% of screen width for portrait
+      cardHeight = double.infinity; // Fill container height
     }
-
-    final double borderRadius = 12.0;
+    
+    // Calculate all sizes as percentages of container height (80% of screen)
+    final valueFontSize = containerHeight * 0.12;
+    final subtitleFontSize = containerHeight * 0.05;
+    final titleFontSize = containerHeight * 0.045; // Reduced to prevent overflow
+    final imageSize = containerHeight * 0.25;
+    final padding = containerHeight * 0.04;
+    final gapSize = containerHeight * 0.02;
+    final marginHorizontal = cardWidth * 0.05;
+    final marginVertical = containerHeight * 0.01;
+    final double borderRadius = cardWidth * 0.06;
 
     return GestureDetector(
       onTap: onTap,
@@ -91,20 +84,30 @@ class AchievementCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Top section with value
-              Text(
-                dynamicValue,
-                textAlign: TextAlign.center,
-                style: AppStyles.text30PxSemiBold.copyWith(
-                  fontSize: valueFontSize,
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  dynamicValue,
+                  textAlign: TextAlign.center,
+                  style: AppStyles.text30PxSemiBold.copyWith(
+                    fontSize: valueFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Gaps.verticalGapOf(isMobileLandscape ? 8 : 12),
-              Text(
-                achievement.subtitle,
-                textAlign: TextAlign.center,
-                style: AppStyles.text16PxRegular.copyWith(
-                  fontFamily: AppConstants.kDMSansFont,
+              SizedBox(height: gapSize),
+              // Subtitle
+              Flexible(
+                child: Text(
+                  achievement.subtitle,
+                  textAlign: TextAlign.center,
+                  style: AppStyles.text16PxRegular.copyWith(
+                    fontSize: subtitleFontSize,
+                    fontFamily: AppConstants.kDMSansFont,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
 
@@ -123,16 +126,18 @@ class AchievementCard extends StatelessWidget {
               ),
 
               // Bottom section with title
-              Gaps.verticalGapOf(16),
-              Text(
-                achievement.title,
-                style: AppStyles.text18PxMedium.copyWith(
-                  fontSize: titleFontSize,
-                  height: 1.3,
+              SizedBox(height: gapSize),
+              Flexible(
+                child: Text(
+                  achievement.title,
+                  style: AppStyles.text18PxMedium.copyWith(
+                    fontSize: titleFontSize,
+                    height: 1.3,
+                  ),
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 3,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

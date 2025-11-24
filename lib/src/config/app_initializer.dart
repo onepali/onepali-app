@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onepali/firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -77,14 +78,52 @@ class AppInitializer {
     return AppRoutes.dashboardScreen;
   }
 
+  /// Set initial orientation based on the initial route
+  static Future<void> _setInitialRouteOrientation(String initialRoute) async {
+    // Check if initial route should be portrait
+    final portraitRoutes = OrientationRouteObserver.portraitRoutes;
+    final shouldBePortrait = portraitRoutes.contains(initialRoute);
+    
+    // Use "allow all then lock" pattern for better reliability
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    if (shouldBePortrait) {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } else {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
+    
+    logger.d(
+      '🔒 Initial orientation set: ${shouldBePortrait ? "PORTRAIT" : "LANDSCAPE"} '
+      'for route: $initialRoute',
+    );
+  }
+
   static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     final initialRoute = getInitialRoute(logged, isParentLogged);
+    
+    // Set initial orientation based on initial route
+    _setInitialRouteOrientation(initialRoute);
 
     return LayoutBuilder(
       builder: (context, constraints) {
         return OrientationBuilder(
           builder: (context, orientation) {
             ResponsiveConfig().init(constraints, orientation);
+            
             return MaterialApp(
               title: AppConstants.appName,
               navigatorKey: navigatorKey,

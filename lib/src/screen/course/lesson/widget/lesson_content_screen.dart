@@ -40,6 +40,61 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   LessonAudioProvider? _audioProvider;
   RecommendedLessonProvider? _recommendedLessonProvider;
 
+  // Reorder tap-target questions so cat comes before rabbit
+  // Other content types remain in their original positions
+  List<LessonContent> get _reorderedContent {
+    final original = widget.lesson.lessonContent;
+    final reordered = <LessonContent>[];
+    final catTapTargets = <LessonContent>[];
+    final rabbitTapTargets = <LessonContent>[];
+    final otherTapTargets = <LessonContent>[];
+
+    // Process each content item
+    for (final content in original) {
+      if (content.type == 'tap_target') {
+        // Only reorder tap_target type content
+        if (content.correctAnswerId?.toLowerCase() == 'cat') {
+          catTapTargets.add(content);
+        } else if (content.correctAnswerId?.toLowerCase() == 'rabbit') {
+          rabbitTapTargets.add(content);
+        } else {
+          otherTapTargets.add(content);
+        }
+      } else {
+        // For non-tap_target content, maintain original order
+        // We'll insert them back at their original positions
+        reordered.add(content);
+      }
+    }
+
+    // For tap-target questions: cat first, then rabbit, then other tap-targets
+    // Insert them in the order they appear in the original list
+    final tapTargetOrdered = <LessonContent>[];
+    tapTargetOrdered.addAll(catTapTargets);
+    tapTargetOrdered.addAll(rabbitTapTargets);
+    tapTargetOrdered.addAll(otherTapTargets);
+
+    // Now rebuild the list maintaining original positions for non-tap_target items
+    final result = <LessonContent>[];
+    int tapTargetIndex = 0;
+    
+    for (final content in original) {
+      if (content.type == 'tap_target') {
+        // Use reordered tap-target
+        if (tapTargetIndex < tapTargetOrdered.length) {
+          result.add(tapTargetOrdered[tapTargetIndex]);
+          tapTargetIndex++;
+        }
+      } else {
+        // Keep original position for non-tap_target
+        result.add(content);
+      }
+    }
+
+    logger.d('Tap-target questions reordered: ${catTapTargets.length} cat, ${rabbitTapTargets.length} rabbit, ${otherTapTargets.length} other tap-targets');
+    return result;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -207,6 +262,281 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     }
   }
 
+  /// Checks if current content has a background image
+  bool _hasBackgroundImage(int idx, List<LessonContent> contentList) {
+    if (idx > 0 && idx <= contentList.length) {
+      final currentContent = contentList[idx - 1];
+      final backgroundImage = currentContent.mbImage;
+      return backgroundImage?.isNotEmpty ?? false;
+    }
+    return false;
+  }
+
+  /// Gets the background image path if available
+  String? _getBackgroundImage(int idx, List<LessonContent> contentList) {
+    if (idx > 0 && idx <= contentList.length) {
+      return contentList[idx - 1].mbImage;
+    }
+    return null;
+  }
+
+  /// Builds the full-screen background image widget
+  Widget _buildFullScreenBackground(String imagePath) {
+    // Use cover to fill screen completely (may crop edges but no empty space)
+    // Cover prevents horizontal stripes that appear with contain
+    return Positioned.fill(
+      child: SvgHelper.fromSource(
+        path: imagePath,
+        type: SvgSourceType.network,
+        fit: BoxFit.cover, // Cover fills screen completely, may crop but no empty space
+        width: double.infinity,
+        height: double.infinity,
+      ),
+    );
+  }
+
+  /// Builds action buttons (sound, close) for the lesson screen
+  List<Widget> _buildActionButtons(
+    BuildContext context,
+    int idx,
+    int contentListLength,
+  ) {
+    // Check if current content is tap-target or drag-to-match
+    final currentContent = idx > 0 && idx <= widget.lesson.lessonContent.length
+        ? widget.lesson.lessonContent[idx - 1]
+        : null;
+    final isAnimalLesson = currentContent?.type == 'tap_target' ||
+        currentContent?.type == 'drag_to_match';
+    
+    return [
+      // Show audio icon for all items in tap-target and drag-to-match, or for last item in other types
+      if (widget.hasSound && (isAnimalLesson || contentListLength == idx))
+        Positioned(
+          top: 16,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: CircularButtonWidget(
+              type: CircularButtonType.sound,
+              onPressed: () {
+                _playWordAudio();
+              },
+            ),
+          ),
+        ),
+      Positioned(
+        top: 16,
+        right: 0,
+        child: CircularButtonWidget(
+          type: CircularButtonType.close,
+          onPressed: () {
+            _saveCurrentProgress();
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    ];
+  }
+
+  /// Builds overlay widgets (good remark, etc.)
+  List<Widget> _buildOverlayWidgets(
+    BuildContext context,
+    int idx,
+    List<LessonContent> contentList,
+  ) {
+    if (_showGoodRemark &&
+        idx > 0 &&
+        idx <= contentList.length &&
+        contentList[idx - 1].type != 'tap_send' &&
+        contentList[idx - 1].type != 'tap_target' &&
+        contentList[idx - 1].type != 'drag_to_match') {
+      return [
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 500),
+          top: MediaQuery.of(context).size.height * 0.1,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.kWhite.withValues(alpha: 0.95),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.kBlack.withValues(alpha: 0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomImage(
+                    Assets.goodRemark,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    imageType: CustomImageType.local,
+                  ),
+                  Gaps.verticalGapOf(16),
+                  Text(
+                    'Excellent Work!',
+                    style: AppStyles.text24PxBold.copyWith(
+                      color: AppColors.kButtonGreen,
+                    ),
+                  ),
+                  Gaps.verticalGapOf(8),
+                  Text(
+                    'Lesson Completed Successfully',
+                    style: AppStyles.text16PxMedium.copyWith(
+                      color: AppColors.kSecondaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ];
+    }
+    return [];
+  }
+
+  /// Builds the lesson intro screen
+  Widget _buildLessonIntro(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableWidth = constraints.maxWidth;
+        final rightArrowWidth = availableWidth * 0.10;
+        
+        return Stack(
+          children: [
+            // Content (no background here - it's handled at the parent level)
+            Positioned.fill(
+              child: LayoutBuilder(
+                builder: (context, innerConstraints) {
+                  // Use percentages of full screen height for all content
+                  final screenHeight = MediaQuery.of(context).size.height;
+                  final availableHeight = innerConstraints.maxHeight;
+                  final availableWidth = innerConstraints.maxWidth;
+                  
+                  // Calculate fixed sizes as percentages of screen height - total must not exceed 100%
+                  // Top padding: 5% of screen height
+                  final topPadding = screenHeight * 0.05;
+                  
+                  // Thumbnail: 50% of screen height
+                  final thumbnailSize = screenHeight * 0.5;
+                  
+                  // Gap 1: 2% of screen height
+                  final gap1 = screenHeight * 0.02;
+                  
+                  // Title font size: 8% of screen height (text will take ~10% with line height)
+                  final titleFontSize = screenHeight * 0.08;
+                  final titleHeight = screenHeight * 0.10; // Reserve space for title
+                  
+                  // Gap 2: 1.5% of screen height (tablet only)
+                  final gap2 = PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? screenHeight * 0.015
+                      : 0.0;
+                  
+                  // Description font size: 4% of screen height (text will take ~5% with line height)
+                  final descFontSize = screenHeight * 0.04;
+                  final descHeight = widget.nameEn.isNotEmpty ? screenHeight * 0.05 : 0.0;
+                  
+                  // Calculate total used space
+                  final totalUsed = topPadding + thumbnailSize + gap1 + titleHeight + gap2 + descHeight;
+                  
+                  // Ensure we don't exceed available height - adjust thumbnail if needed
+                  final adjustedThumbnailSize = totalUsed > availableHeight
+                      ? thumbnailSize - (totalUsed - availableHeight)
+                      : thumbnailSize;
+                  
+                  return SizedBox(
+                    height: availableHeight,
+                    width: availableWidth,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: topPadding),
+                          // Lesson thumbnail - fixed size
+                          if (widget.lesson.thumbnail.isNotEmpty)
+                            SizedBox(
+                              width: adjustedThumbnailSize,
+                              height: adjustedThumbnailSize,
+                              child: CustomImage(
+                                widget.lesson.thumbnail,
+                                width: adjustedThumbnailSize,
+                                height: adjustedThumbnailSize,
+                                circular: false,
+                                cover: false,
+                                boxFit: BoxFit.contain,
+                                imageType: CustomImageType.network,
+                              ),
+                            ),
+                          SizedBox(height: gap1),
+                          // Lesson title - fixed height
+                          SizedBox(
+                            height: titleHeight,
+                            child: Center(
+                              child: Text(
+                                widget.nameNp,
+                                style: AppStyles.text24PxBold.copyWith(
+                                  fontSize: titleFontSize,
+                                  fontFamily: AppConstants.kMuktaFont,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          if (PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context))
+                            SizedBox(height: gap2),
+                          // Lesson description - fixed height
+                          if (widget.nameEn.isNotEmpty)
+                            SizedBox(
+                              height: descHeight,
+                              child: Center(
+                                child: Text(
+                                  widget.nameEn,
+                                  style: AppStyles.text16PxMedium.copyWith(
+                                    color: AppColors.kBlack,
+                                    fontSize: descFontSize,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                  );
+                },
+              ),
+            ),
+            // Right arrow positioned to match following screens (10% from right edge)
+            // Close button is handled by _buildActionButtons
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: SizedBox(
+                width: rightArrowWidth,
+                child: Center(
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.rightArrow,
+                    onPressed: _nextContent,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildLessonContent(LessonContent content, int contentIndex) {
     final isFirst = contentIndex == 0;
     final isLast = contentIndex == widget.lesson.lessonContent.length - 1;
@@ -219,6 +549,179 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       _saveProgress(content, contentIndex);
     });
 
+    // For individual animal screens, apply fixed percentage-based layout
+    final isRegularContent = !isTapSendType && !isTapTargetType && !isDragToMatchType;
+    if (isRegularContent && contentIndex >= 0) {
+      // Use LayoutBuilder to get available width (accounts for SafeArea)
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final availableWidth = constraints.maxWidth;
+          // Percentage-based layout: 10% left arrow, 40% animation, 35% text/audio, 10% right arrow
+          // 3 padding sections of 1.67% each = 5% total padding
+          final leftArrowWidth = availableWidth * 0.10;
+          final animationBoxWidth = availableWidth * 0.40;
+          final textAudioWidth = availableWidth * 0.35;
+          final rightArrowWidth = availableWidth * 0.10;
+          final padding = availableWidth * (0.05 / 3); // ~1.67% padding between sections to total exactly 100%
+          
+          return SizedBox(
+            width: availableWidth,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+              // Left arrow: fixed 10% width, centered like right arrow
+              SizedBox(
+                width: leftArrowWidth,
+                child: Center(
+                  child: CircularButtonWidget(
+                    type: CircularButtonType.leftArrow,
+                    onPressed: _previousContent,
+                  ),
+                ),
+              ),
+              SizedBox(width: padding),
+              
+              // Animation box: fixed 40% width, with constraints to prevent overflow
+              SizedBox(
+                width: animationBoxWidth,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: animationBoxWidth,
+                  ),
+                  child: LessonContentCard(
+                    content: content,
+                    isPlaying: false,
+                    hasSound: widget.hasSound,
+                    index: contentIndex,
+                    showOnlyAnimation: true,
+                    parentWidth: animationBoxWidth,
+                  ),
+                ),
+              ),
+              SizedBox(width: padding),
+              
+              // Text and audio area: fixed 35% width
+              SizedBox(
+                width: textAudioWidth,
+                child: LayoutBuilder(
+                  builder: (context, textConstraints) {
+                    // Use textConstraints.maxWidth (35% of available width) for relative sizing
+                    final textAreaWidth = textConstraints.maxWidth;
+                    // Maximum font sizes relative to text area width (will scale down if needed)
+                    final maxNepaliFontSize = textAreaWidth * 0.25; // ~25% of text area width (max)
+                    final maxEnglishFontSize = textAreaWidth * 0.10; // ~10% of text area width (max)
+                    final horizontalPadding = textAreaWidth * 0.02; // 2% horizontal padding
+                    final verticalSpacing = textAreaWidth * 0.03; // 3% vertical spacing
+                    
+                    // Check if audio is currently playing
+                    final audioProvider = context.watch<LessonAudioProvider>();
+                    final isPlaying = audioProvider.isPlaying;
+                    
+                    // Ensure text fits within available width with proper constraints
+                    final availableTextWidth = textAreaWidth - (horizontalPadding * 2);
+                    
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Nepali text (nameNp) - auto-scales to fit largest text
+                            SizedBox(
+                              width: availableTextWidth,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  (content.nameNp?.isNotEmpty == true)
+                                      ? content.nameNp!
+                                      : 'चरा',
+                                  style: AppStyles.text32PxBold.copyWith(
+                                    color: AppColors.kDrawerBgColor,
+                                    fontSize: maxNepaliFontSize,
+                                    fontFamily: AppConstants.kMuktaFont,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                            // English text (nameEn) - auto-scales to fit largest text
+                            SizedBox(height: verticalSpacing),
+                            SizedBox(
+                              width: availableTextWidth,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  (content.nameEn?.isNotEmpty == true)
+                                      ? content.nameEn!
+                                      : 'Bird',
+                                  style: AppStyles.text20PxMedium.copyWith(
+                                    fontSize: maxEnglishFontSize,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                            // Audio button
+                            if (widget.hasSound && content.wordAudio?.isNotEmpty == true) ...[
+                              SizedBox(height: verticalSpacing),
+                              CustomAvatarGlow(
+                                glowColor: AppColors.kSecondaryColor,
+                                glowShape: BoxShape.circle,
+                                visible: isPlaying,
+                                glowRadiusFactor: 0.2,
+                                child: CircularButtonWidget(
+                                  type: CircularButtonType.sound,
+                                  onPressed: () async {
+                                    try {
+                                      final audioProvider = context.read<LessonAudioProvider>();
+                                      await audioProvider.playWordAudio(content.wordAudio ?? '');
+                                    } catch (e) {
+                                      logger.e('Error playing word audio: $e');
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: padding),
+              
+              // Right arrow: fixed 10% width (or empty space if last item)
+              if (!isLast)
+                SizedBox(
+                  width: rightArrowWidth,
+                  child: Center(
+                    child: CircularButtonWidget(
+                      type: CircularButtonType.rightArrow,
+                      onPressed: _nextContent,
+                    ),
+                  ),
+                )
+              else
+                SizedBox(width: rightArrowWidth),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
+    // For quiz (tap_send), drag_to_match, tap_target, and regular lessons (intro),
+    // use the original full-width layout
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -229,8 +732,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               !isTapSendType &&
               !isTapTargetType &&
               !isDragToMatchType)
-            Container(
-              margin: EdgeInsets.only(left: Dimensions.kIconMargin(context)),
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.kIconMargin(context)),
               child: CircularButtonWidget(
                 type: CircularButtonType.leftArrow,
                 onPressed: _previousContent,
@@ -239,8 +742,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
           // Main content
           Expanded(
-            child:
-                isTapSendType
+            child: isTapSendType
                     ? TapSendLessonCard(
                       content: content,
                       isPlaying: false,
@@ -378,8 +880,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
           // Next button
           if (!isLast && !isTapSendType && !isTapTargetType)
-            Container(
-              margin: EdgeInsets.only(right: Dimensions.kIconMargin(context)),
+            Padding(
+              padding: EdgeInsets.only(right: Dimensions.kIconMargin(context)),
               child: CircularButtonWidget(
                 type: CircularButtonType.rightArrow,
                 onPressed: _nextContent,
@@ -459,7 +961,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       );
     }
 
-    final contentList = widget.lesson.lessonContent;
+    final contentList = _reorderedContent; // Use reordered content (cat before rabbit)
     final idx = _currentContentIndex;
 
     logger.d(
@@ -474,199 +976,104 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           _saveCurrentProgress();
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.kWhite,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              if (widget.hasSound && contentList.length == idx)
-                Positioned(
-                  top: 16,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: CircularButtonWidget(
-                      type: CircularButtonType.sound,
-                      onPressed: () {
-                        _playWordAudio();
-                      },
-                    ),
-                  ),
-                ),
-              Positioned(
-                top: 16,
-                right: Dimensions.kIconMargin(context),
-                child: CircularButtonWidget(
-                  type: CircularButtonType.close,
-                  onPressed: () {
-                    _saveCurrentProgress();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
+      child: Builder(
+        builder: (context) {
+          final contentList = _reorderedContent; // Use reordered content (cat before rabbit)
+          final idx = _currentContentIndex;
+          final hasBackgroundImage =
+              _hasBackgroundImage(idx, contentList);
+          final backgroundImage = _getBackgroundImage(idx, contentList);
 
-              // Main content
-              if (idx == 0)
-                // Show lesson intro (similar to story intro)
-                Stack(
+          // Build main content widget
+          final mainContent = idx == 0
+              ? _buildLessonIntro(context)
+              : idx > 0 && idx <= contentList.length
+                  ? _buildLessonContent(contentList[idx - 1], idx - 1)
+                  : const SizedBox();
+
+          // Build action buttons
+          final actionButtons = _buildActionButtons(
+            context,
+            idx,
+            contentList.length,
+          );
+
+          // Build content with overlay widgets (good remark, etc.)
+          final overlayWidgets = _buildOverlayWidgets(context, idx, contentList);
+
+          // If there's a background image, it should cover the whole screen
+          if (hasBackgroundImage && backgroundImage != null) {
+            // Check if this is tap-target or drag-to-match (animals need full screen)
+            final currentContent = idx > 0 && idx <= contentList.length 
+                ? contentList[idx - 1] 
+                : null;
+            final isAnimalLesson = currentContent?.type == 'tap_target' || 
+                                   currentContent?.type == 'drag_to_match';
+            
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SizedBox.expand(
+                child: Stack(
                   children: [
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.lessonBgColor,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Lesson thumbnail
-                            if (widget.lesson.thumbnail.isNotEmpty)
-                              CustomImage(
-                                widget.lesson.thumbnail,
-                                width:
-                                    PlatformUtility.isTablet(context) &&
-                                            PlatformUtility.isLandscape(context)
-                                        ? 475
-                                        : 180,
-                                height:
-                                    PlatformUtility.isTablet(context) &&
-                                            PlatformUtility.isLandscape(context)
-                                        ? 300
-                                        : 180,
-                                circular: false,
-                                cover: false,
-                                boxFit: BoxFit.contain,
-                                imageType: CustomImageType.network,
-                              ),
-                            Gaps.verticalGapOf(
-                              PlatformUtility.isTablet(context) &&
-                                      PlatformUtility.isLandscape(context)
-                                  ? 15
-                                  : 10,
-                            ),
-                            // Lesson title
-                            Text(
-                              widget.nameNp,
-                              style: AppStyles.text24PxBold.copyWith(
-                                // color: AppColors.kSecondaryColor,
-                                fontSize:
-                                    PlatformUtility.isTablet(context) &&
-                                            PlatformUtility.isLandscape(context)
-                                        ? 64
-                                        : 40,
-                                fontFamily: AppConstants.kMuktaFont,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            if (PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context))
-                              Gaps.verticalGapOf(10),
-                            // Lesson description
-                            if (widget.nameEn.isNotEmpty)
-                              Text(
-                                widget.nameEn,
-                                style: AppStyles.text16PxMedium.copyWith(
-                                  color: AppColors.kBlack,
-                                  fontSize:
-                                      PlatformUtility.isTablet(context) &&
-                                              PlatformUtility.isLandscape(
-                                                context,
-                                              )
-                                          ? 32
-                                          : 16,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    Positioned(
-                      top: 16,
-                      right: Dimensions.kIconMargin(context),
-                      child: CircularButtonWidget(
-                        type: CircularButtonType.close,
-                        onPressed: () {
-                          _saveCurrentProgress();
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ),
-                    // Start button
-                    Positioned(
-                      right: Dimensions.kIconMargin(context),
-                      top: 0,
-                      bottom: 0,
-                      child: Center(
-                        child: CircularButtonWidget(
-                          type: CircularButtonType.rightArrow,
-                          onPressed: _nextContent,
-                        ),
+                    // Background image extends to full screen (behind SafeArea)
+                    _buildFullScreenBackground(backgroundImage),
+                    // Animal content (tap-target, drag-to-match) outside SafeArea for full screen
+                    if (isAnimalLesson) mainContent,
+                    // Content with SafeArea for interactive elements
+                    SafeArea(
+                      child: Stack(
+                        children: [
+                          ...actionButtons,
+                          if (!isAnimalLesson) mainContent,
+                          ...overlayWidgets,
+                        ],
                       ),
                     ),
                   ],
-                )
-              else if (idx > 0 && idx <= contentList.length)
-                // Show lesson content
-                _buildLessonContent(contentList[idx - 1], idx - 1),
+                ),
+              ),
+            );
+          }
 
-              // Show good remark at the end (only for non-tap_send lessons)
-              if (_showGoodRemark &&
-                  idx > 0 &&
-                  idx <= contentList.length &&
-                  contentList[idx - 1].type != 'tap_send' &&
-                  contentList[idx - 1].type != 'tap_target' &&
-                  contentList[idx - 1].type != 'drag_to_match')
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 500),
-                  top: MediaQuery.of(context).size.height * 0.1,
-                  left: 0,
-                  right: 0,
-                  child: Center(
+          // For lessons without background image, use Positioned.fill pattern to cover full screen
+          // If intro screen, use lessonBgColor; otherwise use white
+          final backgroundColor = idx == 0 ? AppColors.lessonBgColor : AppColors.kWhite;
+          
+          // Check if this is tap-target or drag-to-match (animals need full screen)
+          final currentContent = idx > 0 && idx <= contentList.length 
+              ? contentList[idx - 1] 
+              : null;
+          final isAnimalLesson = currentContent?.type == 'tap_target' || 
+                                 currentContent?.type == 'drag_to_match';
+          
+          return Scaffold(
+            backgroundColor: backgroundColor,
+            body: SizedBox.expand(
+              child: Stack(
+                children: [
+                  // Background color extends to full screen (behind SafeArea)
+                  Positioned.fill(
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.kWhite.withValues(alpha: 0.95),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.kBlack.withValues(alpha: 0.2),
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CustomImage(
-                            Assets.goodRemark,
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            height: MediaQuery.of(context).size.height * 0.4,
-                            imageType: CustomImageType.local,
-                          ),
-                          Gaps.verticalGapOf(16),
-                          Text(
-                            'Excellent Work!',
-                            style: AppStyles.text24PxBold.copyWith(
-                              color: AppColors.kButtonGreen,
-                            ),
-                          ),
-                          Gaps.verticalGapOf(8),
-                          Text(
-                            'Lesson Completed Successfully',
-                            style: AppStyles.text16PxMedium.copyWith(
-                              color: AppColors.kSecondaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
+                      color: backgroundColor,
                     ),
                   ),
-                ),
-            ],
-          ),
-        ),
+                  // Animal content (tap-target, drag-to-match) outside SafeArea for full screen
+                  if (isAnimalLesson) mainContent,
+                  // Content with SafeArea for interactive elements
+                  SafeArea(
+                    child: Stack(
+                      children: [
+                        ...actionButtons,
+                        if (!isAnimalLesson) mainContent,
+                        ...overlayWidgets,
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

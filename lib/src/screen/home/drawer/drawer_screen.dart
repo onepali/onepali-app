@@ -47,54 +47,69 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Row(
+    return Scaffold(
+      backgroundColor:
+          AppColors.kPurple, // Scaffold background matches right side
+      body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Left side - children profiles with black background (exactly half)
           Expanded(
+            flex: 1,
             child: Container(
-              height: MediaQuery.of(context).size.height,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+              color: AppColors.kDrawerBgColor, // Black only on left side
+              child: SizedBox.expand(
+                child: SafeArea(
+                  left: true,
+                  top: true,
+                  right: false,
+                  bottom: true,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [_buildChildProfilesGrid()],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
 
-          // Settings section
+          // Right side - settings with purple background (exactly half)
           Expanded(
+            flex: 1,
+            child: Container(
+              color: AppColors.kPurple,
+              child: SafeArea(
+                left: false,
+                top: true,
+                right: true,
+                bottom: true,
             child: Stack(
               children: [
                 _buildSettingsSection(),
+                    // Close button on right side - top right
                 Positioned(
-                  top: 8,
+                      top: 16,
                   right: Dimensions.kIconMargin(context),
                   child: CircularButtonWidget(
                     type: CircularButtonType.closeGrey,
-                    onPressed: () async {
-                      final isParentLogged =
-                          await ParentLocalStorage.isParentLogged();
-                      logger.d('isParentLogged: $isParentLogged');
-
-                      if (isParentLogged) {
-                        ParentLocalStorage.setParentLogged(false);
-                        UserAppBar.setTabIndex(0);
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          AppRoutes.dashboardScreen,
-                          (route) => false,
-                        );
-                      } else {
+                        onPressed: () {
+                          // Go back to where user came from (works for both dashboard and parent zone)
                         Navigator.pop(context);
-                      }
                     },
                   ),
                 ),
               ],
+                ),
+              ),
             ),
           ),
         ],
@@ -103,15 +118,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Widget _buildChildProfilesGrid() {
-    // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
-    final shouldShowAddChild =
-        widget.isParent || (widget.data.isEmpty && !widget.isParent);
-    final items = List<Widget>.generate(widget.data.length + (shouldShowAddChild ? 1 : 0), (
-      index,
-    ) {
-      if (index < widget.data.length) {
-        final child = widget.data[index];
-        return Row(
+    // Show "Add Child" only when accessed from Family menu AND passcode is verified (isParent = true)
+    // When accessed from Dashboard, isParent will be false, so "Add Child" won't show
+    final shouldShowAddChild = widget.isParent;
+    final items = List<Widget>.generate(
+      widget.data.length + (shouldShowAddChild ? 1 : 0),
+      (index) {
+        if (index < widget.data.length) {
+          final child = widget.data[index];
+          return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
@@ -160,6 +175,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   );
                 }
                 logger.i('🔄 Navigating to dashboard with new child');
+                // Clear parent logged status when going back to dashboard
+                await ParentLocalStorage.setParentLogged(false);
                 UserAppBar.setTabIndex(0);
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   AppRoutes.dashboardScreen,
@@ -218,7 +235,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           ],
         );
       } else {
-        // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
+        // Show 'Add Child' button when accessed from Family menu with verified passcode
         return GestureDetector(
           onTap: () {
             if (widget.data.length >= 3 && !GlobalConfig.isUserTesting) {
@@ -226,23 +243,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 context: context,
                 title: 'You\'ve added 3 kids!',
                 content:
-                    'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
+                    'Want to add another to keep learning personalized? It\'s just \$5 per extra child.',
                 confirmButtonText: 'Add for \$5',
                 onConfirm: () {},
               );
               return;
             } else {
-              // If from child dashboard with no children, navigate to parent PIN screen
-              if (!widget.isParent && widget.data.isEmpty) {
-                Utility.navigate(
-                  context,
-                  AppRoutes.parentPinScreen,
-                  arguments: {'fromAddChild': true},
-                );
-              } else {
-                // Normal flow for parent zone
-                Utility.navigate(context, AppRoutes.childRegisterScreen);
-              }
+              // User has verified passcode (isParent = true), so navigate directly to child registration
+              Utility.navigate(context, AppRoutes.childRegisterScreen);
             }
           },
           child: Row(
@@ -292,10 +300,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Widget _buildSettingsSection() {
-    return Container(
-      height: MediaQuery.of(context).size.height,
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      decoration: BoxDecoration(color: AppColors.kPurple),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,9 +325,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 leading: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SvgHelper.fromSource(
-                    path: drawerSettings[i].icon,
+                    path: drawerSettings[i].name == 'Parent Zone'
+                        ? Assets.parentZoneIcon(context)
+                        : drawerSettings[i].name == 'Printables'
+                        ? Assets.downloadIcon(context)
+                        : drawerSettings[i].icon,
                     height: 40,
                     width: 40,
+                    // Parent and Download icons have their own colors (white bg + purple icon)
+                    // Home, Family, Logout use currentColor and need white color
+                    color: (drawerSettings[i].name == 'Parent Zone' || 
+                            drawerSettings[i].name == 'Printables')
+                        ? null  // No color override for icons with their own colors
+                        : AppColors.kWhite,  // White for icons using currentColor
                   ),
                 ),
                 dense: true,

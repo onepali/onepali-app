@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../src.dart';
 
@@ -15,6 +16,8 @@ class _PHomeScreenState extends State<PHomeScreen> {
   @override
   void initState() {
     super.initState();
+    // Note: Orientation is handled by OrientationRouteObserver
+    // We don't set orientation here to avoid conflicts
     Misc.onLayoutRendered(() async {
       context.read<UserProvider>().fetchOwnProfile();
       await context.read<ChildUserProvider>().fetchChildUser();
@@ -89,7 +92,10 @@ class _PHomeScreenState extends State<PHomeScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.kBackgroundColor,
-          body: StatusHandler(
+          body: SafeArea(
+            child: Stack(
+              children: [
+                StatusHandler(
             status: childStatus,
             hasData: children.isNotEmpty,
             errorTitle: 'No child found',
@@ -108,6 +114,9 @@ class _PHomeScreenState extends State<PHomeScreen> {
                 parentUid: parentUid,
               );
             },
+                ),
+              ],
+            ),
           ),
         );
       },

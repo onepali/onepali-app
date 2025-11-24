@@ -30,8 +30,9 @@ class SlideContentState extends State<SlideContent> {
     final sliderPadding = 32.0;
     final sliderWidth = screenWidth - sliderPadding * 2;
     final maxPosition = sliderWidth - char1Width;
-    // Images: content.image = background, content.characters = [char1, char2]
-    final bgImage = widget.content.image;
+    // Images: content.characters = [char1, char2]
+    // Background image is handled at parent level in story_content_screen.dart
+    // to fill the entire screen (appears once)
     final charList = widget.content.characters ?? [];
     final char1 = charList.isNotEmpty ? charList[0] : widget.content.image;
     final char2 = charList.length > 1 ? charList[1] : widget.content.image;
@@ -56,14 +57,8 @@ class SlideContentState extends State<SlideContent> {
 
     return Stack(
       children: [
-        // Scrollable background
-        Positioned.fill(
-          child: CustomImage(
-            bgImage,
-            imageType: CustomImageType.network,
-            boxFit: BoxFit.cover,
-          ),
-        ),
+        // Background image is handled at parent level in story_content_screen.dart
+        // to fill the entire screen (appears once)
         // Character 2 (static, right side)
         Positioned(
           right: sliderPadding + char2Width, // Position char2 at the right side
@@ -151,11 +146,7 @@ class SlideContentState extends State<SlideContent> {
         Positioned(
           left: 32,
           right: 32,
-          bottom:
-              PlatformUtility.isTablet(context) &&
-                      PlatformUtility.isLandscape(context)
-                  ? 120
-                  : 70,
+          bottom: 70, // Same bottom position as Character 1 (the draggable animal)
           child: IgnorePointer(
             child: AnimatedOpacity(
               opacity: _completed ? 0.0 : 1.0,
@@ -205,80 +196,99 @@ class SlideContentState extends State<SlideContent> {
         // Bottom white background with text
         Align(
           alignment: Alignment.bottomCenter,
-          child: Consumer<StoryProvider>(
-            builder: (context, storyProvider, _) {
-              // Prepare conversation rows based on current audio index
-              List<Widget> messageWidgets = [];
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Consumer<StoryProvider>(
+                builder: (context, storyProvider, _) {
+                  // Calculate max width as 90% of screen width
+                  final screenWidth = MediaQuery.of(context).size.width;
+                  final textBoxMaxWidth = screenWidth * 0.9;
+                  
+                  // Consistent font sizes based on screen width
+                  final baseFontSize = isTabletLandScape ? 24.0 : 16.0;
+                  final iconSizeForText = isTabletLandScape ? 36.0 : 24.0;
+                  
+                  // Prepare conversation rows based on current audio index
+                  List<Widget> messageWidgets = [];
 
-              // Only show the conversation message corresponding to the current audio index
-              final currentAudioIndex = storyProvider.currentAudioIndex;
+                  // Only show the conversation message corresponding to the current audio index
+                  final currentAudioIndex = storyProvider.currentAudioIndex;
 
-              // Ensure we have conversations and the index is valid
-              if (widget.content.conversation.isNotEmpty &&
-                  currentAudioIndex < widget.content.conversation.length) {
-                final conversation =
-                    widget.content.conversation[currentAudioIndex];
+                  // Ensure we have conversations and the index is valid
+                  if (widget.content.conversation.isNotEmpty &&
+                      currentAudioIndex < widget.content.conversation.length) {
+                    final conversation =
+                        widget.content.conversation[currentAudioIndex];
 
-                final String iconPath = conversation.icon;
-                String messageNp = conversation.messageNp;
+                    final String iconPath = conversation.icon;
+                    String messageNp = conversation.messageNp;
 
-                final colonIdx = messageNp.indexOf(':');
-                if (colonIdx != -1) {
-                  messageNp = messageNp.substring(colonIdx + 1).trimLeft();
-                }
+                    final colonIdx = messageNp.indexOf(':');
+                    if (colonIdx != -1) {
+                      messageNp = messageNp.substring(colonIdx + 1).trimLeft();
+                    }
 
-                final lines = messageNp.split('\n');
-                for (var i = 0; i < lines.length; i++) {
-                  messageWidgets.add(
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (iconPath.isNotEmpty && i == 0)
-                          SvgHelper.fromSource(
-                            path: iconPath,
-                            height: 28,
-                            width: 28,
-                            type: SvgSourceType.network,
-                          ),
-                        if (iconPath.isNotEmpty && i == 0)
-                          Gaps.horizontalGapOf(12.0),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: isTabletLandScape ? 8 : 0,
-                          ),
-                          child: Text(
-                            lines[i],
-                            textAlign: TextAlign.center,
-                            style: AppStyles.text20PxMedium.copyWith(
-                              fontFamily: AppConstants.kMuktaFont,
-                              fontSize:
-                                  PlatformUtility.isTablet(context) &&
-                                          PlatformUtility.isLandscape(context)
-                                      ? 40
-                                      : 20,
+                    final lines = messageNp.split('\n');
+                    for (var i = 0; i < lines.length; i++) {
+                      messageWidgets.add(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (iconPath.isNotEmpty && i == 0)
+                              SvgHelper.fromSource(
+                                path: iconPath,
+                                height: iconSizeForText,
+                                width: iconSizeForText,
+                                type: SvgSourceType.network,
+                              ),
+                            if (iconPath.isNotEmpty && i == 0)
+                              Gaps.horizontalGapOf(12.0),
+                            Flexible(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: isTabletLandScape ? 8 : 0,
+                                ),
+                                child: Text(
+                                  lines[i],
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppStyles.text20PxMedium.copyWith(
+                                    fontFamily: AppConstants.kMuktaFont,
+                                    fontSize: baseFontSize,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      );
+                    }
+                  }
+
+                  return ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: textBoxMaxWidth,
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: isTabletLandScape ? 12 : 10,
+                        horizontal: isTabletLandScape ? 24 : 20,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.kWhite,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: messageWidgets,
+                      ),
                     ),
                   );
-                }
-              }
-
-              return Container(
-                width: double.infinity,
-                color: AppColors.kWhite,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 24,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: messageWidgets,
-                ),
+                },
               );
             },
           ),

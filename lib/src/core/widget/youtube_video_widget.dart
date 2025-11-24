@@ -108,8 +108,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
 
   void _setLandscape() {
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft, // Notch/camera on left, content flows right
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }

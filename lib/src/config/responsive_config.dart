@@ -121,9 +121,13 @@ class ResponsiveConfig {
       widthMultiplier = blockWidth;
     } else {
       // In landscape, use reduced multipliers to fit content
-      textMultiplier = blockHeight * 0.8; // Reduce text size
-      imageSizeMultiplier = blockWidth * 0.8;
-      heightMultiplier = blockHeight * 0.9;
+      // More aggressive reduction for mobile landscape to prevent overflow
+      final isMobileLandscape = currentDeviceType == DeviceType.mobile && !isPortrait;
+      final reductionFactor = isMobileLandscape ? 0.6 : 0.8;
+      
+      textMultiplier = blockHeight * reductionFactor;
+      imageSizeMultiplier = blockWidth * reductionFactor;
+      heightMultiplier = blockHeight * (isMobileLandscape ? 0.7 : 0.9);
       widthMultiplier = blockWidth;
     }
   }

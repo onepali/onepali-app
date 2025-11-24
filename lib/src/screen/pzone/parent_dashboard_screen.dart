@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,8 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    // Note: Orientation is handled by OrientationRouteObserver
+    // We don't set orientation here to avoid conflicts when navigating away
     Misc.onLayoutRendered(() async {
       final userProvider = context.read<UserProvider>();
       final childProvider = context.read<ChildUserProvider>();

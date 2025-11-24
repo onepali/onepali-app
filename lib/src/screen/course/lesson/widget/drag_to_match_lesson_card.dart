@@ -1,9 +1,8 @@
-// import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
+import 'grid_position_helper.dart';
 
 /// A widget that displays an interactive park scene for drag_to_match type lessons.
 ///
@@ -781,13 +780,12 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     final isLandscape = PlatformUtility.isLandscape(context);
     final screenSize = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
+    return SizedBox.expand(
       child: Stack(
+        clipBehavior: Clip.none, // Allow overflow so rabbit can be visible at edges
         children: [
-          // Background park scene
-          _buildParkBackground(),
+          // Background image is handled at parent level in lesson_content_screen.dart
+          // to fill the entire screen (appears once)
 
           // Drag targets (silhouettes/outlines) positioned in the scene
           ..._buildDragTargets(screenSize, isMobile, isTablet, isLandscape),
@@ -834,39 +832,14 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
               ),
             ),
 
-          // Close button in top right
-          Positioned(
-            top: 16,
-            right: Dimensions.kIconMargin(context),
-            child: CircularButtonWidget(
-              type: CircularButtonType.close,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+          // Close button is handled by parent _buildActionButtons
         ],
       ),
     );
   }
 
-  Widget _buildParkBackground() {
-    // Use the background image from the lesson content or a default park scene
-    final backgroundImage = widget.content.mbImage;
-
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-
-      child: SvgHelper.fromSource(
-        path: backgroundImage ?? "",
-        type: SvgSourceType.network,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
+  // Background image is handled at parent level in lesson_content_screen.dart
+  // to fill the entire screen (appears once)
 
   List<Widget> _buildDragTargets(
     Size screenSize,
@@ -877,7 +850,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     if (widget.content.dragTargets?.isEmpty != false) return [];
 
     final targets = <Widget>[];
-    final positions = _getTargetPositions(
+    final positionsMap = _getTargetPositionsMap(
       screenSize.width,
       screenSize.height,
       isMobile,
@@ -887,14 +860,28 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       final target = widget.content.dragTargets![i];
       if (target.id?.isEmpty != false) continue;
 
-      final position = positions[i % positions.length];
+      // Get position by animal ID (same as tap target)
+      final animalId = target.id!.toLowerCase();
+      final position = positionsMap[animalId] ?? positionsMap.values.first;
       final isCompleted = _completedMatches[target.id] ?? false;
-      final size = _getTargetSizeForItem(target.id!, isMobile);
+      
+      // Use same usable dimensions and size calculation as tap target
+      final isLandscape = PlatformUtility.isLandscape(context);
+      final double usableWidthPercent = isMobile ? 0.9 : (isLandscape ? 0.85 : 0.82);
+      final double usableHeightPercent = isMobile ? 0.5 : (isLandscape ? 0.7 : 0.55);
+      final double usableWidth = screenSize.width * usableWidthPercent;
+      final double usableHeight = screenSize.height * usableHeightPercent;
+      final size = _getTargetSizeForItem(
+        target.id!,
+        isMobile,
+        usableWidth,
+        usableHeight,
+      );
 
       targets.add(
         Positioned(
           left: position['left']!,
-          top: position['top']!,
+          bottom: position['bottom']!,
           child: AnimatedBuilder(
             animation: _bounceAnimation,
             builder: (context, child) {
@@ -913,16 +900,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                     return SizedBox(
                       width: size,
                       height: size,
-                      // decoration: BoxDecoration(
-                      //   borderRadius: BorderRadius.circular(12),
-                      //   border:
-                      //       candidateData.isNotEmpty
-                      //           ? Border.all(
-                      //             color: AppColors.kPureSkyBlue,
-                      //             width: 3,
-                      //           )
-                      //           : null,
-                      // ),
                       child: isCompleted
                           ? _buildCompletedTarget(target)
                           : _buildTargetSilhouette(target, size),
@@ -993,12 +970,20 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     if (widget.content.dragTargets?.isEmpty != false) return [];
 
     final draggables = <Widget>[];
-    final positions = _getDraggableItemPositions(
+    final positionsMap = _getDraggableItemPositionsMap(
       screenSize.width,
       screenSize.height,
       isMobile,
     );
 
+    // Calculate draggable sizes (grid-based, use larger area for cell size calculation)
+    // Use same usable dimensions as targets for consistent sizing
+    final isLandscape = PlatformUtility.isLandscape(context);
+    final double usableWidthPercent = isMobile ? 0.9 : (isLandscape ? 0.85 : 0.82);
+    final double usableHeightPercent = isMobile ? 0.5 : (isLandscape ? 0.7 : 0.55);
+    final double usableWidth = screenSize.width * usableWidthPercent;
+    final double usableHeight = screenSize.height * usableHeightPercent;
+    
     for (int i = 0; i < widget.content.dragTargets!.length; i++) {
       final target = widget.content.dragTargets![i];
       if (target.id?.isEmpty != false) continue;
@@ -1006,13 +991,22 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       final isCompleted = _completedMatches[target.id] ?? false;
       if (isCompleted) continue; // Don't show completed items
 
-      final position = positions[i % positions.length];
-      final size = _getDraggableItemSizeForItem(target.id!, isMobile);
+      // Get position by animal ID (scattered in spaces between targets)
+      final animalId = target.id!.toLowerCase();
+      final position = positionsMap[animalId] ?? positionsMap.values.first;
+      
+      // Use grid-based size calculation (same usable area as targets for consistent cell size)
+      final size = _getDraggableItemSizeForItem(
+        target.id!,
+        isMobile,
+        usableWidth,
+        usableHeight,
+      );
 
       draggables.add(
         Positioned(
           left: position['left']!,
-          top: position['top']!,
+          bottom: position['bottom']!,
           child: AnimatedBuilder(
             animation: _shakeAnimation,
             builder: (context, child) {
@@ -1025,16 +1019,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                   feedback: SizedBox(
                     width: size,
                     height: size,
-                    // decoration: BoxDecoration(
-                    //   borderRadius: BorderRadius.circular(12),
-                    //   boxShadow: [
-                    //     BoxShadow(
-                    //       color: AppColors.kBlack.withValues(alpha: 0.3),
-                    //       blurRadius: 8,
-                    //       offset: const Offset(0, 4),
-                    //     ),
-                    //   ],
-                    // ),
                     child: SvgHelper.fromSource(
                       path: target.image ?? '',
                       type: SvgSourceType.network,
@@ -1047,15 +1031,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                   childWhenDragging: SizedBox(
                     width: size,
                     height: size,
-                    // decoration: BoxDecoration(
-                    //   color: AppColors.kLightGrey.withValues(alpha: 0.5),
-                    //   borderRadius: BorderRadius.circular(12),
-                    //   border: Border.all(
-                    //     color: AppColors.kGrey,
-                    //     width: 2,
-                    //     style: BorderStyle.solid,
-                    //   ),
-                    // ),
                   ),
                   child: Container(
                     key: _dragItemKeys[target.id!],
@@ -1063,13 +1038,6 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                     height: size,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color: AppColors.kBlack.withValues(alpha: 0.1),
-                      //     blurRadius: 4,
-                      //     offset: const Offset(0, 2),
-                      //   ),
-                      // ],
                     ),
                     child: SvgHelper.fromSource(
                       path: target.image ?? '',
@@ -1112,8 +1080,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         ),
       ),
       builder: (context, child) {
+        // Position at 1/3rd from the top of the screen
+        final screenHeight = MediaQuery.of(context).size.height;
         return Positioned(
-          top: 40 + (20 * _vocabularyController.value),
+          top: (screenHeight / 3) - 30 + (10 * _vocabularyController.value), // 1/3rd from top with animation
           left: 0,
           right: 0,
           child: Center(
@@ -1186,183 +1156,89 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     );
   }
 
-  List<Map<String, double>> _getTargetPositions(
+  Map<String, Map<String, double>> _getTargetPositionsMap(
     double screenWidth,
     double screenHeight,
     bool isMobile,
   ) {
-    // Define relative positions for drag targets in the park scene
-    // Using the same positioning logic as tap_target_lesson_card.dart
-    final double usableWidth = screenWidth * 0.9; // Leave some margin
-    final double usableHeight =
-        screenHeight * 0.5; // Use middle portion of screen
-    final double startX = screenWidth * 0.05; // Start with 5% margin
-    final double startY = screenHeight * 0.15; // Start from 15% down
-    final isTabletLandscape =
-        !isMobile &&
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    return [
-      // Position 1 (bottom right, on grass)
-      // Dog
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.12 : 0.15),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.33 : 0.2),
-      },
-
-      // Position 2 (left side, on grass)
-      // Fish
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.18 : 0.22),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.15 : 1.08),
-      },
-
-      // Position 3 (center-left, near trees)
-      // Rabbit
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.75 : 0.72),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.02 : 0.75),
-      },
-
-      // Position 4 (in water area - bottom center)
-      // Bird
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.15 : 0.15),
-        'top':
-            startY +
-            usableHeight * (isTabletLandscape ? 0.015 - 0.07 : 0.015 - 0.19),
-      },
-
-      // Position 5 (on tree branch - top area)
-      // Cat
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.61 : 0.57),
-        'top': startY + usableHeight * (isTabletLandscape ? 0.52 : 0.47),
-      },
-
-      // Tortoise
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.45 : 0.48),
-        'top': startY + usableHeight * (isTabletLandscape ? 1.1 : 1.05),
-      },
-
-      //Additional positions for more targets
-      {'left': startX + usableWidth * 0.45, 'top': startY + usableHeight * 0.3},
-      {'left': startX + usableWidth * 0.6, 'top': startY + usableHeight * 0.6},
-    ];
-  }
-
-  List<Map<String, double>> _getDraggableItemPositions(
-    double screenWidth,
-    double screenHeight,
-    bool isMobile,
-  ) {
-    // Position draggable items at the bottom area of the screen
-    // Very small margins to prevent items from going off-screen
-    final double marginX, usableWidthPercent, safetyMarginX;
-
-    if (isMobile) {
-      marginX = screenWidth * 0.02; // Very small margin - 2%
-      usableWidthPercent = 0.96; // Use 96% of screen width
-      safetyMarginX = screenWidth * 0.01; // Tiny safety margin - 1%
-    } else {
-      // Tablet handling
-      marginX = screenWidth * 0.03; // Small margin for tablets - 3%
-      usableWidthPercent = 0.94; // Use 94% of screen width
-      safetyMarginX = screenWidth * 0.02; // Small safety margin - 2%
-    }
-
+    final mediaQuery = MediaQuery.of(context);
+    
+    // Calculate image sizes for accurate bottom-left alignment
+    // Use same dimensions as target size calculation
+    final isLandscape = PlatformUtility.isLandscape(context);
+    final double usableWidthPercent = isMobile ? 0.9 : (isLandscape ? 0.85 : 0.82);
+    final double usableHeightPercent = isMobile ? 0.5 : (isLandscape ? 0.7 : 0.55);
     final double usableWidth = screenWidth * usableWidthPercent;
-    final double startX = marginX + safetyMarginX;
-    final double bottomY = screenHeight * 0.8; // Bottom area
-    final isTabletLandscape =
-        !isMobile &&
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    return [
-      // Dog - left edge with minimal margin
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
-        'top': bottomY * (isTabletLandscape ? 0.85 : 0.7),
-      }, // Bottom left
-      // Fish - right side
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.85),
-        'top': bottomY * (isTabletLandscape ? 0.15 : 0.23),
-      }, // Bottom center-left
-      // Rabbit - right side
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.83 : 0.83),
-        'top': bottomY * (isTabletLandscape ? 0.45 : 0.45),
-      }, // Bottom center
-      // Bird - left edge with minimal margin
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
-        'top': bottomY * (isTabletLandscape ? 0.55 : 0.5),
-      }, // Bottom center-right
-      // Cat - left edge with minimal margin
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.0 : 0.0),
-        'top': bottomY * (isTabletLandscape ? 0.15 : 0.1),
-      }, // Bottom right
-      // Tortoise - right side
-      {
-        'left': startX + usableWidth * (isTabletLandscape ? 0.88 : 0.87),
-        'top': bottomY * (isTabletLandscape ? 0.85 : 0.85),
-      }, // Bottom right
-      // Additional positions if needed
-      {'left': startX + usableWidth * 0.2, 'top': bottomY + 40},
-      {'left': startX + usableWidth * 0.6, 'top': bottomY + 40},
-      {'left': startX + usableWidth * 0.82, 'top': bottomY + 40},
-    ];
-  }
-
-  /// Get the appropriate size for different animals/items
-  /// Using the same sizing logic as tap_target_lesson_card.dart
-  double _getTargetSizeForItem(String itemId, bool isMobile) {
-    final baseSizeMobile = isMobile ? 70.0 : 140.0;
-    // final isTabletLandscape =
-    //     !isMobile &&
-    //     PlatformUtility.isTablet(context) &&
-    //     PlatformUtility.isLandscape(context);
-
-    // For drag-to-match, we use slightly larger sizes than tap_target
-    switch (itemId.toLowerCase()) {
-      case 'rabbit':
-        return baseSizeMobile * (isMobile ? 1.75 : 1.55); // Small animal
-      case 'cat':
-        return baseSizeMobile * 1.75; // Smaller animals
-      case 'dog':
-        return baseSizeMobile * 2.85; // Medium-large animal
-      case 'fish':
-        return baseSizeMobile * 1.15; // Small animal
-      case 'bird':
-        return baseSizeMobile * 1.15; // Small-medium animal
-      case 'tortoise':
-        return baseSizeMobile * 1.15; // Medium animal
-      case 'elephant':
-        return baseSizeMobile * 1.3; // Large animal
-      case 'tiger':
-      case 'lion':
-        return baseSizeMobile * 1.2; // Large animals
-      case 'mouse':
-        return baseSizeMobile * 0.7; // Very small animal
-      default:
-        return baseSizeMobile; // Default size
+    final double usableHeight = screenHeight * usableHeightPercent;
+    
+    final imageSizeMap = <String, double>{};
+    final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
+    for (final animalId in animalOrder) {
+      imageSizeMap[animalId] = GridPositionHelper.getImageSizeForAnimal(
+        animalId,
+        isMobile,
+        isLandscape: isLandscape,
+      );
     }
+    
+    return GridPositionHelper.getTargetPositionsMap(
+      screenWidth,
+      screenHeight,
+      mediaQuery.padding.top,
+      mediaQuery.padding.bottom,
+      isMobile,
+      imageSizeMap,
+      safeAreaLeft: mediaQuery.padding.left,
+      safeAreaRight: mediaQuery.padding.right,
+    );
   }
 
-  double _getDraggableItemSizeForItem(String itemId, bool isMobile) {
-    // Slightly smaller than targets for better UX
-    final targetSize = _getTargetSizeForItem(itemId, isMobile);
-    final isDog = itemId.toLowerCase() == 'dog';
-    final isFish = itemId.toLowerCase() == 'fish';
-    final size = isDog
-        ? targetSize * (isMobile ? 0.55 : 0.5)
-        : isFish
-        ? targetSize * (isMobile ? 0.85 : 1.05)
-        : targetSize * 0.85;
+  Map<String, Map<String, double>> _getDraggableItemPositionsMap(
+    double screenWidth,
+    double screenHeight,
+    bool isMobile,
+  ) {
+    // Use grid-based positioning system (same as targets)
+    // Use full screen width to allow draggables to reach screen edges
+    final mediaQuery = MediaQuery.of(context);
+    return GridPositionHelper.getDraggablePositionsMap(
+      screenWidth,
+      screenHeight,
+      mediaQuery.padding.top,
+      mediaQuery.padding.bottom,
+      isMobile,
+      safeAreaLeft: mediaQuery.padding.left,
+      safeAreaRight: mediaQuery.padding.right,
+    );
+  }
 
-    return size; // 15% smaller than target
+  /// Get the appropriate size for different animals/items (grid-based, same as tap target)
+  double _getTargetSizeForItem(
+    String itemId,
+    bool isMobile,
+    double usableWidth,
+    double usableHeight,
+  ) {
+    final isLandscape = PlatformUtility.isLandscape(context);
+    return GridPositionHelper.getImageSizeForAnimal(
+      itemId,
+      isMobile,
+      isLandscape: isLandscape,
+    );
+  }
+
+  /// Get draggable item size (grid-based, same as targets)
+  double _getDraggableItemSizeForItem(
+    String itemId,
+    bool isMobile,
+    double usableWidth,
+    double usableHeight,
+  ) {
+    final isLandscape = PlatformUtility.isLandscape(context);
+    return GridPositionHelper.getDraggableSizeForAnimal(
+      itemId,
+      isMobile,
+      isLandscape: isLandscape,
+    );
   }
 }

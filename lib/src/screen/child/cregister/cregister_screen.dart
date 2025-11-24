@@ -62,45 +62,51 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
         totalSteps: 5,
       ),
       backgroundColor: AppColors.kWhite,
-      body: Padding(
-        padding: EdgeInsets.all(horizontalPadding),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Personalize your Child Account', style: titleStyle),
-                Gaps.verticalGapOf(titleBottomGap),
-                TitleActionChild(
-                  titlePadding: EdgeInsets.only(bottom: 8),
-                  title: 'Name',
-                  titleStyle: titleActionTextStyle,
-                  child: CustomTextField(
-                    hintText: 'Enter your Full Name',
-                    keyboardType: TextInputType.name,
-                    controller: nameController,
-                    prefixIcon: Icon(Icons.person_outline_rounded),
-                    validation: (value) => Validator.name(value ?? ""),
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside text fields
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: EdgeInsets.all(horizontalPadding),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Personalize your Child Account', style: titleStyle),
+                  Gaps.verticalGapOf(titleBottomGap),
+                  TitleActionChild(
+                    titlePadding: EdgeInsets.only(bottom: 8),
+                    title: 'Name',
+                    titleStyle: titleActionTextStyle,
+                    child: CustomTextField(
+                      hintText: 'Enter your Full Name',
+                      keyboardType: TextInputType.name,
+                      controller: nameController,
+                      prefixIcon: Icon(Icons.person_outline_rounded),
+                      validation: (value) => Validator.name(value ?? ""),
+                    ),
                   ),
-                ),
-                Gaps.verticalGapOf(fieldGap),
-                TitleActionChild(
-                  title: 'Birthday',
-                  titleStyle: titleActionTextStyle,
-                  titlePadding: EdgeInsets.only(bottom: 8),
-                  child: CupertinoDatePickerField(
-                    initialDate: selectedDate,
-                    onDateChanged: onYearSelected,
-                    maxYear: DateTime.now().year,
-                    showMonth: true,
-                    showDay: false,
+                  Gaps.verticalGapOf(fieldGap),
+                  TitleActionChild(
+                    title: 'Birthday',
+                    titleStyle: titleActionTextStyle,
+                    titlePadding: EdgeInsets.only(bottom: 8),
+                    child: CupertinoDatePickerField(
+                      initialDate: selectedDate,
+                      onDateChanged: onYearSelected,
+                      maxYear: DateTime.now().year,
+                      showMonth: true,
+                      showDay: false,
+                    ),
                   ),
-                ),
-                // Gaps.verticalGapOf(5),
-                // InfoWidget.info('It will be the password for the parent zone.'),
-                Gaps.verticalGapOf(buttonTopGap),
-              ],
+                  // Gaps.verticalGapOf(5),
+                  // InfoWidget.info('It will be the password for the parent zone.'),
+                  Gaps.verticalGapOf(buttonTopGap),
+                ],
+              ),
             ),
           ),
         ),
@@ -133,6 +139,8 @@ class _ChildRegisterScreenState extends State<ChildRegisterScreen> {
     return CustomMaterialButton(
       label: 'Next',
       onTap: () {
+        // Dismiss keyboard when tapping Next button
+        FocusScope.of(context).unfocus();
         if (_formKey.currentState!.validate()) {
           final authState = context.read<AuthState>();
           authState.setChildName(nameController.text.trim());

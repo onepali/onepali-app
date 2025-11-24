@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,11 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() => context.read<PzBlogProvider>().fetchBlogs());
+    // Note: Orientation is handled by OrientationRouteObserver
+    // We don't set orientation here to avoid conflicts
+    Misc.onLayoutRendered(() async {
+      context.read<PzBlogProvider>().fetchBlogs();
+    });
   }
 
   @override

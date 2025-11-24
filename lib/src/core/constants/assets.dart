@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import '../core.dart';
+
 class Assets {
   /// [Brand] assets
   static String logo = 'logo'.png;
@@ -68,7 +71,7 @@ class Assets {
   static String other = 'other'.icon;
   static String google = 'google'.icon;
   static String blog = 'blog'.icon;
-  static String facebook = 'facebook'.icon;
+  static String apple = 'apple'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
   static String family = 'family'.icon;
@@ -108,6 +111,21 @@ class Assets {
   static String setting = 'setting'.icon;
   static String parentZone = 'parent'.icon;
   static String download = 'download'.icon;
+  
+  /// Get drawer icon path based on device type (w24 for mobile, w32 for tablet)
+  static String getDrawerIcon(BuildContext context, String baseName) {
+    final isTablet = PlatformUtility.isTablet(context);
+    return isTablet 
+        ? 'assets/svg/icons/${baseName}_tablet.svg'
+        : 'assets/svg/icons/$baseName.svg';
+  }
+  
+  /// Drawer icons with device-aware selection
+  static String homeIcon(BuildContext context) => getDrawerIcon(context, 'home');
+  static String familyIcon(BuildContext context) => getDrawerIcon(context, 'family');
+  static String logoutIcon(BuildContext context) => getDrawerIcon(context, 'logout');
+  static String downloadIcon(BuildContext context) => getDrawerIcon(context, 'download');
+  static String parentZoneIcon(BuildContext context) => getDrawerIcon(context, 'parent');
 
   /// [Json] assets
   // static String user = 'user'.json;

@@ -74,6 +74,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
     await childProvider.updateScreenTimeEnabledStatusByChildId(child.uid);
 
     // Navigator.of(context).pop(); // Close the drawer
+    // Clear parent logged status when going back to dashboard
+    await ParentLocalStorage.setParentLogged(false);
     UserAppBar.setTabIndex(0);
     Navigator.of(
       context,
@@ -83,22 +85,42 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
   @override
   Widget build(BuildContext context) {
     logger.d('total child count: ${widget.totalChildCount}');
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return SizedBox.expand(
+      child: Stack(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 20,
+                  ),
             decoration: BoxDecoration(color: AppColors.kDrawerBgColor),
+                  child: SafeArea(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: _buildChildProfilesGrid()),
-
                 Gaps.horizontalGapOf(10),
-                Align(
-                  alignment: Alignment.topRight,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Settings section
+              Expanded(
+                flex: 1,
+                child: _buildSettingsSection(),
+              ),
+            ],
+          ),
+          // Close button positioned consistently
+          Positioned(
+            top: 16,
+            right: Dimensions.kIconMargin(context),
                   child: CircularButtonWidget(
                     type: CircularButtonType.closeGrey,
                     onPressed: () async {
@@ -108,7 +130,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                       if (isParentLogged) {
                         UserAppBar.setTabIndex(0);
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                          AppRoutes.dashboardScreen,
+                          AppRoutes.parentDashboardScreen,
                           (route) => false,
                         );
                       } else {
@@ -117,20 +139,15 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                     },
                   ),
                 ),
-              ],
-            ),
-          ),
-          // Settings section
-          Expanded(child: _buildSettingsSection()),
         ],
       ),
     );
   }
 
   Widget _buildChildProfilesGrid() {
-    // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
-    final shouldShowAddChild =
-        widget.isParent || (widget.data.isEmpty && !widget.isParent);
+    // Show "Add Child" only when accessed from Family menu AND passcode is verified (isParent = true)
+    // When accessed from Dashboard, isParent will be false, so "Add Child" won't show
+    final shouldShowAddChild = widget.isParent;
     final items = List<Widget>.generate(
       widget.data.length + (shouldShowAddChild ? 1 : 0),
       (index) {
@@ -192,31 +209,22 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             ],
           );
         } else {
-          // Show 'Add Child' if in parent zone OR if no children exist in child dashboard
+          // Show 'Add Child' button when accessed from Family menu with verified passcode
           return GestureDetector(
             onTap: () {
               if (widget.data.length >= 3 && !GlobalConfig.isUserTesting) {
-                DialogManager.showCustomDialog(
-                  context: context,
-                  title: 'You\'ve added 3 kids!',
-                  content:
-                      'Want to add another to keep learning personalized? It’s just \$5 per extra child.',
-                  confirmButtonText: 'Add for \$5',
-                  onConfirm: () {},
-                );
+              DialogManager.showCustomDialog(
+                context: context,
+                title: 'You\'ve added 3 kids!',
+                content:
+                    'Want to add another to keep learning personalized? It\'s just \$5 per extra child.',
+                confirmButtonText: 'Add for \$5',
+                onConfirm: () {},
+              );
                 return;
               } else {
-                // If from child dashboard with no children, navigate to parent PIN screen
-                if (!widget.isParent && widget.data.isEmpty) {
-                  Utility.navigate(
-                    context,
-                    AppRoutes.parentPinScreen,
-                    arguments: {'fromAddChild': true},
-                  );
-                } else {
-                  // Normal flow for parent zone
-                  Utility.navigate(context, AppRoutes.childRegisterScreen);
-                }
+                // User has verified passcode (isParent = true), so navigate directly to child registration
+                Utility.navigate(context, AppRoutes.childRegisterScreen);
               }
             },
             child: Column(
@@ -265,9 +273,10 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
   Widget _buildSettingsSection() {
     return Container(
-      height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       decoration: BoxDecoration(color: AppColors.kPurple),
+      child: SafeArea(
+        child: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -275,7 +284,14 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
 
           for (int i = 0; i < drawerSettings.length; i++)
             ListTile(
-              contentPadding: const EdgeInsets.only(bottom: 30.0, left: 45.0),
+              contentPadding: EdgeInsets.only(
+                    bottom:
+                        MediaQuery.of(context).size.height *
+                        0.04, // 4% of screen height
+                    left:
+                        MediaQuery.of(context).size.width *
+                        0.12, // 12% of screen width
+              ),
               onTap: () {
                 Utility.navigate(context, drawerSettings[i].route);
               },
@@ -283,9 +299,19 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SvgHelper.fromSource(
-                  path: drawerSettings[i].icon,
+                  path: drawerSettings[i].name == 'Parent Zone'
+                      ? Assets.parentZoneIcon(context)
+                      : drawerSettings[i].name == 'Printables'
+                      ? Assets.downloadIcon(context)
+                      : drawerSettings[i].icon,
                   height: 45,
                   width: 45,
+                  // Parent and Download icons have their own colors (white bg + purple icon)
+                  // Home, Family, Logout use currentColor and need white color
+                  color: (drawerSettings[i].name == 'Parent Zone' || 
+                          drawerSettings[i].name == 'Printables')
+                      ? null  // No color override for icons with their own colors
+                      : AppColors.kWhite,  // White for icons using currentColor
                 ),
               ),
               dense: true,
@@ -296,13 +322,14 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 ),
               ),
             ),
-          const Spacer(),
           // Text(
           //   "${GlobalConfig.appVersion} • All rights reserved.",
           //   style: AppStyles.text12PxRegular.copyWith(color: AppColors.kWhite),
           //   textAlign: TextAlign.center,
           // ),
         ],
+          ),
+        ),
       ),
     );
   }

@@ -93,52 +93,59 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           itemBuilder: (BuildContext context) => [
             _buildMenuItem(
               value: 'home',
-              icon: Assets.home,
+              icon: Assets.homeIcon(context),
               text: 'Home',
               isMobilePortrait: isMobilePortrait,
               onTap: () {
-                Utility.navigate(context, AppRoutes.dashboardScreen);
                 ParentLocalStorage.setParentLogged(false);
                 ChildLocalStorage.clear();
                 UserAppBar.setTabIndex(0);
+                // Use pushNamedAndRemoveUntil to clear the stack and prevent orientation conflicts
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.dashboardScreen,
+                  (route) => false,
+                );
               },
             ),
             _buildMenuItem(
               value: 'family',
-              icon: Assets.family,
+              icon: Assets.familyIcon(context),
               text: 'Family',
               isMobilePortrait: isMobilePortrait,
-              onTap: () {
-                // ParentLocalStorage.setParentLogged(false);
+              onTap: () async {
+                // Check if parent has verified passcode
+                final isParentLogged = await ParentLocalStorage.isParentLogged();
+                logger.d('👨‍👩‍👧‍👦 Family menu clicked - isParentLogged: $isParentLogged');
                 ChildLocalStorage.clear();
-                Future.delayed(const Duration(milliseconds: 150), () {
-                  if (isMobile) {
-                    Utility.navigateMaterialRoute(
-                      context,
-                      DrawerScreen(
-                        data: childData,
-                        totalChildCount: totalChildCount,
-                        isParent: true,
-                      ),
-                      routeName: AppRoutes.drawerRoutes,
-                    );
-                  } else {
-                    Utility.navigateMaterialRoute(
-                      context,
-                      TabDrawerScreen(
-                        data: childData,
-                        totalChildCount: totalChildCount,
-                        isParent: true,
-                      ),
-                      routeName: AppRoutes.tabDrawerRoutes,
-                    );
-                  }
-                });
+                // Navigate immediately after async operations complete (no delay needed)
+                if (isMobile) {
+                  logger.d('📱 Navigating to DrawerScreen with isParent: $isParentLogged');
+                  Utility.navigateMaterialRoute(
+                    context,
+                    DrawerScreen(
+                      data: childData,
+                      totalChildCount: totalChildCount,
+                      isParent: isParentLogged,
+                    ),
+                    routeName: AppRoutes.drawerRoutes,
+                  );
+                } else {
+                  logger.d('📱 Navigating to TabDrawerScreen with isParent: $isParentLogged');
+                  Utility.navigateMaterialRoute(
+                    context,
+                    TabDrawerScreen(
+                      data: childData,
+                      totalChildCount: totalChildCount,
+                      isParent: isParentLogged,
+                    ),
+                    routeName: AppRoutes.tabDrawerRoutes,
+                  );
+                }
               },
             ),
             _buildMenuItem(
               value: 'logout',
-              icon: Assets.logout,
+              icon: Assets.logoutIcon(context),
               text: 'Log out',
               isMobilePortrait: isMobilePortrait,
               onTap: () {

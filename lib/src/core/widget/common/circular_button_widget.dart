@@ -3,7 +3,7 @@ import 'package:onepali/src/src.dart';
 
 enum CircularButtonType { leftArrow, rightArrow, sound, close, closeGrey }
 
-class CircularButtonWidget extends StatelessWidget {
+class CircularButtonWidget extends StatefulWidget {
   final CircularButtonType type;
   final VoidCallback? onPressed;
   final EdgeInsetsGeometry? margin;
@@ -20,9 +20,16 @@ class CircularButtonWidget extends StatelessWidget {
   });
 
   @override
+  State<CircularButtonWidget> createState() => _CircularButtonWidgetState();
+}
+
+class _CircularButtonWidgetState extends State<CircularButtonWidget> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
     // Icon path
-    final String iconPath = switch (type) {
+    final String iconPath = switch (widget.type) {
       CircularButtonType.leftArrow => Assets.leftArrow,
       CircularButtonType.rightArrow => Assets.rightArrow,
       CircularButtonType.sound => Assets.sound,
@@ -30,29 +37,49 @@ class CircularButtonWidget extends StatelessWidget {
       CircularButtonType.closeGrey => Assets.closeGreyIcon,
     };
 
-    return Container(
+    // Only arrow buttons get darker shadow when pressed
+    final isArrowButton =
+        widget.type == CircularButtonType.leftArrow ||
+        widget.type == CircularButtonType.rightArrow;
+
+    return GestureDetector(
+      onTapDown: isArrowButton && widget.enabled && widget.onPressed != null
+          ? (_) => setState(() => _isPressed = true)
+          : null,
+      onTapUp: isArrowButton && widget.enabled && widget.onPressed != null
+          ? (_) {
+              setState(() => _isPressed = false);
+              widget.onPressed?.call();
+            }
+          : null,
+      onTapCancel: isArrowButton
+          ? () => setState(() => _isPressed = false)
+          : null,
+      child: Container(
       padding: EdgeInsets.zero,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
+        decoration: isArrowButton
+            ? BoxDecoration(
+                color: AppColors.kWhite,
         shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.kBlack.withValues(alpha: 0.025),
-            blurRadius: 3.24,
-            spreadRadius: 0,
-            offset: const Offset(0, 1),
+                border: Border.all(
+                  color: _isPressed
+                      ? AppColors.kBlack.withValues(alpha: 0.3) // Darker border when pressed
+                      : AppColors.kBlack.withValues(alpha: 0.05), // Very light border when not pressed
+                  width: 1.5,
+                  style: BorderStyle.solid,
           ),
-        ],
-      ),
+              )
+            : null,
       child: IconButton(
         constraints: const BoxConstraints(),
         icon: SvgHelper.fromSource(
           path: iconPath,
           height: Dimensions.kIconSize(context),
           width: Dimensions.kIconSize(context),
-          color: enabled ? iconColor : AppColors.kGrey,
+            color: widget.enabled ? widget.iconColor : AppColors.kGrey,
+          ),
+          onPressed: widget.enabled ? widget.onPressed : null,
         ),
-        onPressed: enabled ? onPressed : null,
       ),
     );
   }

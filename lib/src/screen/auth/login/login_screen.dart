@@ -34,7 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
-      body: SafeArea(
+      body: Container(
+        color: AppColors.kWhite,
+        child: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(horizontalPadding),
           child: SingleChildScrollView(
@@ -137,12 +139,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Gaps.verticalGapOf(socialButtonSpacing),
                   ReusableWidget.horizontalIconTitle(
-                    title: 'Continue with Facebook',
-                    icon: Assets.facebook,
+                    title: 'Continue with Apple',
+                    icon: Assets.apple,
                     onTap: () async {
-                      final facebookAuthProvider = context
-                          .read<FAuthProvider>();
-                      await facebookAuthProvider.signInWithFacebook(context);
+                      final appleAuthProvider = context
+                          .read<AAuthProvider>();
+                      await appleAuthProvider.signInWithApple(context);
                     },
                   ),
                 ],
@@ -151,7 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
+      ),
+      bottomNavigationBar: Container(
+        color: AppColors.kWhite,
+        child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: horizontalPadding,
@@ -186,6 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                 ),
               ],
+            ),
             ),
           ),
         ),

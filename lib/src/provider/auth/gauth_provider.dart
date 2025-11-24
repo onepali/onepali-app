@@ -127,6 +127,8 @@ class GoogleAuthProvider with ChangeNotifier {
           json.encode(userInfo),
         );
         await _sharedPrefs.setBoolPref(AppConstants.logged, true);
+        // Reset parent login status on new login - user must verify passcode again
+        await _sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
         // Save FCM token after login
         await Utility.saveFcmTokenToFirestore(firebaseUser.uid);
       }

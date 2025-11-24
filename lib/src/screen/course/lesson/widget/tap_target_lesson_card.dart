@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
+import 'grid_position_helper.dart';
 
 /// A widget that displays an interactive park scene for tap_target type lessons.
 ///
@@ -47,7 +48,6 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   int wrongAttempts = 0;
   bool showHintAnimation = false;
   bool showQuestionText = false; // Controls when to show the question text
-  // bool showLeopardAnimation = false; // Controls leopard animation display
   late AnimationController _feedbackController;
   late AnimationController _textController;
   late AnimationController _hintController;
@@ -77,10 +77,39 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     // Preload all target audios
     _preloadAllAudios();
 
+    // Log lesson content details for rabbit and cat
+    _logLessonContentDetails();
+
     // Start the lesson by playing the question audio
     Misc.onLayoutRendered(() {
       _playQuestionAudio();
     });
+  }
+
+  void _logLessonContentDetails() {
+    logger.d('=== LESSON CONTENT DETAILS ===');
+    logger.d('Content Index: ${widget.index}');
+    logger.d('Question Audio (wordAudio): ${widget.content.wordAudio}');
+    logger.d('Correct Answer ID: ${widget.content.correctAnswerId}');
+    logger.d('Content Type: ${widget.content.type}');
+    
+    if (widget.content.tapTargets != null) {
+      logger.d('Available Animals (${widget.content.tapTargets!.length}):');
+      for (final target in widget.content.tapTargets!) {
+        final isCorrect = target.id == widget.content.correctAnswerId;
+        logger.d('  - ${target.id} (${target.nameEn} / ${target.nameNp})${isCorrect ? " ⭐ CORRECT" : ""}');
+        logger.d('    Image: ${target.image}');
+        logger.d('    Audio: ${target.audio}');
+      }
+    }
+    
+    // Check if this is rabbit or cat question
+    if (widget.content.correctAnswerId?.toLowerCase() == 'rabbit') {
+      logger.d('>>> THIS IS THE RABBIT QUESTION <<<');
+    } else if (widget.content.correctAnswerId?.toLowerCase() == 'cat') {
+      logger.d('>>> THIS IS THE CAT QUESTION <<<');
+    }
+    logger.d('================================');
   }
 
   void _preloadAllAudios() {
@@ -131,7 +160,6 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     wrongAttempts = 0;
     showHintAnimation = false;
     showQuestionText = false;
-    // showLeopardAnimation = false;
     _feedbackController.reset();
     _textController.reset();
     _hintController.reset();
@@ -350,43 +378,49 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     }
   }
 
-  /// Get the appropriate size for different animals
-  double _getTargetSizeForAnimal(String animalId, bool isMobile) {
-    // final isTablet = PlatformUtility.isTablet(context);
+  /// Get usable dimensions for positioning (centralized calculation)
+  Map<String, double> _getUsableDimensions(
+    double screenWidth,
+    double screenHeight,
+    bool isMobile,
+  ) {
     final isLandscape = PlatformUtility.isLandscape(context);
+    final double marginX, marginY, usableWidthPercent, usableHeightPercent;
 
-    // Base size depends on device type and orientation
-    final double baseSize;
     if (isMobile) {
-      baseSize = 80.0;
+      marginX = screenWidth * 0.05; // 5% margin
+      marginY = screenHeight * 0.15; // 15% from top
+      usableWidthPercent = 0.9; // 90% of width
+      usableHeightPercent = 0.80; // 80% of height to fill most of the screen
     } else {
       // Tablet handling
-      baseSize = isLandscape ? 150.0 : 80.0; // Larger for landscape tablets
+      marginX = screenWidth * 0.08; // 8% margin
+      marginY = isLandscape ? screenHeight * 0.12 : screenHeight * 0.18;
+      usableWidthPercent = isLandscape ? 0.85 : 0.82;
+      usableHeightPercent = isLandscape ? 0.7 : 0.55;
     }
 
-    switch (animalId.toLowerCase()) {
-      case 'rabbit':
-        return baseSize * 1.75; // Small animal
-      case 'cat':
-        return baseSize * 1.55; // Smaller animals
-      case 'dog':
-        return baseSize * 2.35; // Medium-large animal
-      case 'fish':
-        return baseSize * 1.15; // Small animal
-      case 'bird':
-        return baseSize * 1.15; // Small-medium animal
-      case 'tortoise':
-        return baseSize * 1.15; // Medium animal
-      case 'elephant':
-        return baseSize * 1.3; // Large animal
-      case 'tiger':
-      case 'lion':
-        return baseSize * 1.2; // Large animals
-      case 'mouse':
-        return baseSize * 0.7; // Very small animal
-      default:
-        return baseSize; // Default size
-    }
+    return {
+      'marginX': marginX,
+      'marginY': marginY,
+      'usableWidth': screenWidth * usableWidthPercent,
+      'usableHeight': screenHeight * usableHeightPercent,
+    };
+  }
+
+  /// Get the appropriate size for different animals (grid-based)
+  double _getTargetSizeForAnimal(
+    String animalId,
+    bool isMobile,
+    double usableWidth,
+    double usableHeight,
+  ) {
+    final isLandscape = PlatformUtility.isLandscape(context);
+    return GridPositionHelper.getImageSizeForAnimal(
+      animalId,
+      isMobile,
+      isLandscape: isLandscape,
+    );
   }
 
   @override
@@ -399,36 +433,20 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   }
 
   Widget _buildParkScene() {
-    // final isMobile = PlatformUtility.isMobile(context);
-    // final isTablet = PlatformUtility.isTablet(context);
-    // final isLandscape = PlatformUtility.isLandscape(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    // Get screen size - use full screen for grid, but account for SafeArea in startY
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
 
-    // Use responsive background image
-    final backgroundImage = widget.content.mbImage;
-    logger.d('Using background image: $backgroundImage');
+    // Background image is handled at parent level in lesson_content_screen.dart
+    // to fill the entire screen (appears once)
 
-    return SizedBox(
-      width: screenWidth,
-      height: screenHeight,
-      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+    return SizedBox.expand(
       child: Stack(
+        clipBehavior: Clip.none, // Allow overflow so rabbit can be visible at edges
         children: [
-          // Background park scene
-          if (backgroundImage?.isNotEmpty == true)
-            Positioned.fill(
-              child: ClipRRect(
-                // borderRadius: BorderRadius.circular(16),
-                child: SvgHelper.fromSource(
-                  path: backgroundImage!,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  type: SvgSourceType.network,
-                ),
-              ),
-            ),
+          // Background image is handled at parent level in lesson_content_screen.dart
+          // to fill the entire screen (appears once)
 
           // Positioned animals/targets
           if (widget.content.tapTargets != null)
@@ -444,42 +462,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
               );
             }),
 
-          // Show question text at the top only when audio is playing or during reminders
-          // if (widget.content.text?.isNotEmpty == true && showQuestionText)
-          //   Positioned(
-          //     top: 20,
-          //     left: 0,
-          //     right: 0,
-          //     child: Center(
-          //       child: Container(
-          //         padding: const EdgeInsets.symmetric(
-          //           horizontal: 20,
-          //           vertical: 12,
-          //         ),
-          //         decoration: BoxDecoration(
-          //           color: AppColors.kSecondaryColor.withValues(alpha: 0.9),
-          //           borderRadius: BorderRadius.circular(20),
-          //           boxShadow: [
-          //             BoxShadow(
-          //               color: AppColors.kBlack.withValues(alpha: 0.2),
-          //               blurRadius: 8,
-          //               offset: const Offset(0, 2),
-          //             ),
-          //           ],
-          //         ),
-          //         child: Text(
-          //           widget.content.text!,
-          //           style: AppStyles.text18PxBold.copyWith(
-          //             color: AppColors.kWhite,
-          //             fontFamily: AppConstants.kMuktaFont,
-          //           ),
-          //           textAlign: TextAlign.center,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-
           // Show Nepali text on top when correct target is selected
+          // Positioned above audio icon (which is at top: 16) to appear on top
           if (showCorrectFeedback && selectedTargetNameNp != null)
             AnimatedBuilder(
               animation: _textController,
@@ -506,8 +490,10 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 ),
               ),
               builder: (context, child) {
+                // Position at 1/3rd from the top of the screen
+                final screenHeight = MediaQuery.of(context).size.height;
                 return Positioned(
-                  top: 40 + (20 * _textController.value),
+                  top: (screenHeight / 3) - 30 + (10 * _textController.value), // 1/3rd from top with animation
                   left: 0,
                   right: 0,
                   child: Center(
@@ -543,17 +529,21 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                     0;
 
                 final isMobile = PlatformUtility.isMobile(context);
-                final positions = _getTargetPositions(
+                final positionsMap = _getTargetPositionsMap(
                   screenWidth,
                   screenHeight,
                   isMobile,
                 );
-                final position = positions[targetIndex % positions.length];
+                final selectedTarget = widget.content.tapTargets?[targetIndex];
+                final animalId = selectedTarget?.id?.toLowerCase() ?? '';
+                final position = positionsMap[animalId] ?? positionsMap.values.first;
 
                 return Positioned(
                   left:
                       position['left']! - 10, // Center the lottie on the target
-                  top: position['top']! - 10,
+                  bottom: position['bottom'] != null 
+                      ? position['bottom']! - 10 
+                      : null,
                   child: Transform.scale(
                     scale: _feedbackController.value,
                     child: Opacity(
@@ -565,52 +555,6 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
               },
             ),
 
-          // Incorrect feedback text is hidden for now
-          // if (showIncorrectFeedback)
-          //   Positioned(
-          //     top: screenHeight * 0.3,
-          //     left: 0,
-          //     right: 0,
-          //     child: Center(
-          //       child: Container(
-          //         padding: const EdgeInsets.symmetric(
-          //           horizontal: 20,
-          //           vertical: 10,
-          //         ),
-          //         decoration: BoxDecoration(
-          //           color: AppColors.errorColor.withValues(alpha: 0.9),
-          //           borderRadius: BorderRadius.circular(15),
-          //         ),
-          //         child: Text(
-          //           widget.content.feedback?.incorrect?.text ??
-          //               'फेरि प्रयास गर्नुहोस्',
-          //           style: AppStyles.text16PxMedium.copyWith(
-          //             color: AppColors.kWhite,
-          //             fontFamily: AppConstants.kMuktaFont,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-
-          // Leopard animation from corner (only for last item)
-          // if (showLeopardAnimation && widget.isLastItem)
-          //   AnimatedPositioned(
-          //     duration: const Duration(milliseconds: 800),
-          //     curve: Curves.easeInOut,
-          //     bottom: -50,
-          //     right: -50,
-          //     child: AnimatedOpacity(
-          //       duration: const Duration(milliseconds: 500),
-          //       opacity: 1.0,
-          //       child: CustomImage(
-          //         Assets.goodRemark,
-          //         height: 270,
-          //         width: 270,
-          //         imageType: CustomImageType.local,
-          //       ),
-          //     ),
-          //   ),
         ],
       ),
     );
@@ -627,16 +571,27 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     final shouldShowHint = showHintAnimation && isCorrectTarget;
     final isMobile = PlatformUtility.isMobile(context);
 
-    // Define positions for different animals in the park scene
-    final positions = _getTargetPositions(screenWidth, screenHeight, isMobile);
-    final position = positions[index % positions.length];
+    // Use centralized dimension calculation
+    final dimensions = _getUsableDimensions(screenWidth, screenHeight, isMobile);
+    final double usableWidth = dimensions['usableWidth']!;
+    final double usableHeight = dimensions['usableHeight']!;
 
-    final targetSize = _getTargetSizeForAnimal(target.id ?? '', isMobile);
+    // Get position by animal ID (same as drag-to-match)
+    final positionsMap = _getTargetPositionsMap(screenWidth, screenHeight, isMobile);
+    final animalId = target.id?.toLowerCase() ?? '';
+    final position = positionsMap[animalId] ?? positionsMap.values.first;
+
+    final targetSize = _getTargetSizeForAnimal(
+      target.id ?? '',
+      isMobile,
+      usableWidth,
+      usableHeight,
+    );
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 300),
-      left: position['left'],
-      top: position['top'],
+      left: position['left']!,
+      bottom: position['bottom']!,
       child: GestureDetector(
         onTap: () => _onTargetTap(target),
         child: shouldShowHint
@@ -664,10 +619,12 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                   );
                 },
               )
-            : AnimatedContainer(
+            : Transform.scale(
+                scale: isSelected ? 1.1 : 1.0,
+                child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                transform: Matrix4.identity()..scale(isSelected ? 1.1 : 1.0),
                 child: _buildTargetImage(target, targetSize, isSelected),
+                ),
               ),
       ),
     );
@@ -684,28 +641,13 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     return SizedBox(
       width: targetSize,
       height: targetSize,
-      // decoration: BoxDecoration(
-      //   shape: BoxShape.circle,
-      //   border:
-      //       isSelected
-      //           ? Border.all(color: AppColors.kSecondaryColor, width: 3)
-      //           : null,
-      //   boxShadow:
-      //       isSelected
-      //           ? [
-      //             BoxShadow(
-      //               color: AppColors.kSecondaryColor.withValues(alpha: 0.5),
-      //               blurRadius: 10,
-      //               spreadRadius: 2,
-      //             ),
-      //           ]
-      //           : null,
-      // ),
       child: Transform(
         alignment: Alignment.center,
         transform: isRabbit ? Matrix4.rotationY(3.14159) : Matrix4.identity(),
         child: SvgHelper.fromSource(
           path: target.image ?? '',
+          width: targetSize,
+          height: targetSize,
           fit: BoxFit.contain,
           type: SvgSourceType.network,
         ),
@@ -713,80 +655,40 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     );
   }
 
-  List<Map<String, double>> _getTargetPositions(
+  Map<String, Map<String, double>> _getTargetPositionsMap(
     double screenWidth,
     double screenHeight,
     bool isMobile,
   ) {
-    final isTablet = PlatformUtility.isTablet(context);
+    final mediaQuery = MediaQuery.of(context);
+    
+    // Calculate actual image sizes using the same dimensions as _getTargetSizeForAnimal
+    final dimensions = _getUsableDimensions(screenWidth, screenHeight, isMobile);
+    final double usableWidth = dimensions['usableWidth']!;
+    final double usableHeight = dimensions['usableHeight']!;
+    
+    // Build image size map for accurate bottom-left alignment
     final isLandscape = PlatformUtility.isLandscape(context);
-
-    // Adjust margins and usable space based on device type
-    final double marginX, marginY, usableWidthPercent, usableHeightPercent;
-
-    if (isMobile) {
-      marginX = screenWidth * 0.05; // 5% margin
-      marginY = screenHeight * 0.15; // 15% from top
-      usableWidthPercent = 0.9; // 90% of width
-      usableHeightPercent = 0.5; // 50% of height
-    } else {
-      // Tablet handling
-      marginX = screenWidth * 0.08; // 8% margin
-      marginY = isLandscape ? screenHeight * 0.12 : screenHeight * 0.18;
-      usableWidthPercent = isLandscape ? 0.85 : 0.82;
-      usableHeightPercent = isLandscape ? 0.7 : 0.55;
+    final imageSizeMap = <String, double>{};
+    final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
+    for (final animalId in animalOrder) {
+      imageSizeMap[animalId] = GridPositionHelper.getImageSizeForAnimal(
+        animalId,
+        isMobile,
+        isLandscape: isLandscape,
+      );
     }
-
-    final double usableWidth = screenWidth * usableWidthPercent;
-    final double usableHeight = screenHeight * usableHeightPercent;
-    final double startX = marginX;
-    final double startY = marginY;
-
-    return [
-      // Rabbit position (bottom right, on grass)
-      {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.82 : 0.8),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.65 : 0.6),
-      },
-
-      // Dog position (left side, on grass)
-      {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.12 : 0.12),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.35 : 0.25),
-      },
-
-      // Cat position (center-left, near trees)
-      {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.64 : 0.6),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.4 : 0.46),
-      },
-
-      // Fish position (in water area - bottom center)
-      {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.18 : 0.22),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.8 : 1.05),
-      },
-
-      // Bird position (on tree branch - top area)
-      {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.04 : 0.07),
-        'top':
-            startY +
-            usableHeight *
-                (isTablet && isLandscape ? 0.015 - 0.05 : 0.01 - 0.18),
-      },
-
-      // Tortoise position (center-right, on grass)
-      {
-        'left': startX + usableWidth * (isTablet && isLandscape ? 0.5 : 0.49),
-        'top': startY + usableHeight * (isTablet && isLandscape ? 0.85 : 0.94),
-      },
-
-      // Additional positions for more animals
-      {'left': startX + usableWidth * 0.45, 'top': startY + usableHeight * 0.3},
-
-      {'left': startX + usableWidth * 0.6, 'top': startY + usableHeight * 0.6},
-    ];
+    
+    return GridPositionHelper.getTargetPositionsMap(
+      screenWidth,
+      screenHeight,
+      mediaQuery.padding.top,
+      mediaQuery.padding.bottom,
+      isMobile,
+      imageSizeMap,
+      safeAreaLeft: mediaQuery.padding.left,
+      safeAreaRight: mediaQuery.padding.right,
+    );
   }
 
   @override
@@ -795,21 +697,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       width: double.infinity,
       height: double.infinity,
       child: Stack(
+        clipBehavior: Clip.none, // Allow overflow so rabbit can be visible at edges
         children: [
           // Main park scene content
           _buildParkScene(),
-
-          // Close button in top right
-          Positioned(
-            top: 16,
-            right: Dimensions.kIconMargin(context),
-            child: CircularButtonWidget(
-              type: CircularButtonType.close,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+          // Close button is handled by parent _buildActionButtons
         ],
       ),
     );

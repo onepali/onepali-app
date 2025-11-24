@@ -61,21 +61,18 @@ class ButtonTapContentState extends State<ButtonTapContent> {
 
     return Stack(
       children: [
-        // Main content
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (widget.content.image.isNotEmpty)
-              Expanded(
-                child: CustomImage(
-                  widget.content.image,
-                  imageType: CustomImageType.network,
-                ),
-              ),
-            Container(
+        // Bottom button container
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              decoration: const BoxDecoration(color: AppColors.kWhite),
-              width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppColors.kWhite,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -158,7 +155,6 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                 }),
               ),
             ),
-          ],
         ),
         // Top center sound icon
         Positioned(

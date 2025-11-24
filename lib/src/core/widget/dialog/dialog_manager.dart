@@ -34,115 +34,119 @@ class DialogManager {
       routeSettings: const RouteSettings(name: AppConstants.customDialogModal),
       barrierDismissible: barrierDismissible,
       builder: (context) {
-        return Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: dialogMaxWidth),
-            child: AlertDialog(
-              title: Row(
-                mainAxisAlignment: isCross
-                    ? MainAxisAlignment.spaceBetween
-                    : MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: isMobileLandScape
-                          ? AppStyles.text16PxSemiBold
-                          : isMobilePortrait
-                          ? AppStyles.text18PxSemiBold
-                          : AppStyles.text20PxSemiBold,
-                      textAlign: isCross ? TextAlign.start : TextAlign.center,
-                      maxLines: 2,
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // Get screen dimensions for responsive sizing
+            final screenHeight = MediaQuery.of(context).size.height;
+            
+            // Calculate max dialog height as percentage of screen height (leave space for padding)
+            final maxDialogHeight = screenHeight * 0.8;
+            
+            // Calculate image size as percentage of screen height
+            final imageSize = isMobileLandScape
+                ? screenHeight * 0.12  // 12% of screen height
+                : isMobilePortrait
+                ? screenHeight * 0.15  // 15% of screen height
+                : screenHeight * 0.18;  // 18% of screen height
+            
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: dialogMaxWidth,
+                  maxHeight: maxDialogHeight,
+                ),
+                child: AlertDialog(
+                  title: Row(
+                    mainAxisAlignment: isCross
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: isMobileLandScape
+                              ? AppStyles.text16PxSemiBold
+                              : isMobilePortrait
+                              ? AppStyles.text18PxSemiBold
+                              : AppStyles.text20PxSemiBold,
+                          textAlign: isCross ? TextAlign.start : TextAlign.center,
+                          maxLines: 2,
+                        ),
+                      ),
+                      if (isCross)
+                        IconButton(
+                          icon: const Icon(
+                            Icons.close,
+                            color: AppColors.kPitchBlack,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: isMobileLandScape
+                        ? 24
+                        : isMobilePortrait
+                        ? 16
+                        : 32,
+                    vertical: isMobileLandScape
+                        ? 10
+                        : isMobilePortrait
+                        ? 14
+                        : 20,
+                  ),
+                  actionsAlignment: MainAxisAlignment.center,
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (image.isNotEmpty && !isSvg)
+                          Image.asset(
+                            image,
+                            height: imageSize,
+                            width: imageSize,
+                            fit: BoxFit.contain,
+                          ),
+                        if (image.isNotEmpty && isSvg)
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isCross ? 0.0 : 16.0,
+                              vertical: isCross ? 0.0 : 16.0,
+                            ),
+                            child: SvgHelper.fromSource(
+                              path: image,
+                              height: imageSize,
+                              width: imageSize,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        if (content.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                            child: Text(
+                              content,
+                              style: isMobileLandScape
+                                  ? AppStyles.text14PxRegular
+                                  : isMobilePortrait
+                                  ? AppStyles.text14PxRegular
+                                  : AppStyles.text16PxRegular,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        if (image.isEmpty)
+                          Gaps.verticalGapOf(
+                            isMobileLandScape
+                                ? 30
+                                : isMobilePortrait
+                                ? 14
+                                : 20,
+                          ),
+                      ],
                     ),
                   ),
-                  if (isCross)
-                    IconButton(
-                      icon: const Icon(
-                        Icons.close,
-                        color: AppColors.kPitchBlack,
-                      ),
-
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                ],
-              ),
-              alignment: Alignment.center,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: isMobileLandScape
-                    ? 24
-                    : isMobilePortrait
-                    ? 16
-                    : 32,
-                vertical: isMobileLandScape
-                    ? 10
-                    : isMobilePortrait
-                    ? 14
-                    : 20,
-              ),
-              actionsAlignment: MainAxisAlignment.center,
-
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (image.isNotEmpty && !isSvg)
-                    Image.asset(
-                      image,
-                      height: isMobileLandScape
-                          ? 100
-                          : isMobilePortrait
-                          ? 120
-                          : 150,
-                      width: isMobileLandScape
-                          ? 100
-                          : isMobilePortrait
-                          ? 120
-                          : 150,
-                    ),
-                  if (image.isNotEmpty && isSvg)
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isCross ? 0.0 : 16.0,
-                        vertical: isCross ? 0.0 : 16.0,
-                      ),
-                      child: SvgHelper.fromSource(
-                        path: image,
-                        height: isMobileLandScape
-                            ? 100
-                            : isMobilePortrait
-                            ? 120
-                            : 150,
-                        width: isMobileLandScape
-                            ? 100
-                            : isMobilePortrait
-                            ? 120
-                            : 150,
-                      ),
-                    ),
-                  if (content.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                      child: Text(
-                        content,
-                        style: isMobileLandScape
-                            ? AppStyles.text14PxRegular
-                            : isMobilePortrait
-                            ? AppStyles.text14PxRegular
-                            : AppStyles.text16PxRegular,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  if (image.isEmpty)
-                    Gaps.verticalGapOf(
-                      isMobileLandScape
-                          ? 30
-                          : isMobilePortrait
-                          ? 14
-                          : 20,
-                    ),
-                ],
-              ),
               actions: [
                 !isMobilePortrait
                     ? Row(
@@ -206,9 +210,11 @@ class DialogManager {
                             ),
                         ],
                       ),
-              ],
+                ],
+              ),
             ),
-          ),
+          );
+          },
         );
       },
     );

@@ -86,7 +86,9 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       keyboardType:
           keyboardType ??
-          (isNumberField ? TextInputType.number : TextInputType.text),
+          (isPasswordField
+              ? TextInputType.visiblePassword
+              : (isNumberField ? TextInputType.number : TextInputType.text)),
       focusNode: focusNode,
       onChanged: onChanged,
       readOnly: isReadOnly!,
@@ -96,8 +98,9 @@ class CustomTextField extends StatelessWidget {
       validator: validation,
       onEditingComplete: onEditingComplete,
       inputFormatters: inputFormatter,
-      autofillHints:
-          keyboardType == TextInputType.name
+      autofillHints: isPasswordField
+          ? [AutofillHints.password]
+          : (keyboardType == TextInputType.name
               ? [AutofillHints.name]
               : keyboardType == TextInputType.emailAddress
               ? [AutofillHints.email]
@@ -109,7 +112,7 @@ class CustomTextField extends StatelessWidget {
               ? [AutofillHints.url]
               : keyboardType == TextInputType.visiblePassword
               ? [AutofillHints.password]
-              : null,
+              : null),
       autofocus: false,
       textInputAction: textInputAction,
       obscureText: isPasswordField,

@@ -36,10 +36,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         doubleTapTrigger();
       },
       child: Scaffold(
-        body: SafeArea(
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: AppColors.kWhite),
+        backgroundColor: AppColors.kWhite,
+        body: Container(
+          color: AppColors.kWhite,
+          child: SafeArea(
+            child: Padding(
             padding: EdgeInsets.all(containerPadding),
             child: Column(
               children: [
@@ -124,6 +125,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ],
                 ),
               ],
+            ),
             ),
           ),
         ),

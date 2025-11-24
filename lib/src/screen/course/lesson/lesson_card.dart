@@ -31,50 +31,82 @@ class LessonCard extends StatelessWidget {
         PlatformUtility.isLandscape(context);
     return GestureDetector(
       onTap: isLocked ? null : onTap,
-      child: Container(
+      child: LayoutBuilder(
+        builder: (context, outerConstraints) {
+          final cardHeight = outerConstraints.maxHeight.isFinite
+              ? outerConstraints.maxHeight
+              : AppCardResponsive.getLessonCardHeight(context);
+          
+          return Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
+            height: cardHeight,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Stack(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final availableHeight = constraints.maxHeight.isFinite
+                    ? constraints.maxHeight
+                    : cardHeight;
+            
+            // Calculate sizes based on card height (availableHeight = card height)
+            // Percentages are relative to card height:
+            // - Thumbnail: 65% of card height
+            // - Gap: 0.5% of card height
+            // - Text: 27% of card height
+            // Total: 92.5% of card height - well within bounds, no overflow possible
+            // These percentages match AppCardResponsive for consistency across mobile and tablet
+            final calculatedThumbnailHeight = availableHeight * 0.65;
+            final calculatedThumbnailWidth = calculatedThumbnailHeight;
+            final finalThumbnailHeight = thumbnailHeight ?? calculatedThumbnailHeight;
+            final finalThumbnailWidth = thumbnailWidth ?? calculatedThumbnailWidth;
+            final gapHeight = availableHeight * 0.005;
+            final textHeight = availableHeight * 0.27;
+            
+            return Stack(
           children: [
-            Align(
-              alignment: Alignment.center,
+                ClipRect(
+                  child: SizedBox(
+                    height: availableHeight,
+                    width: double.infinity,
+                    child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                 children: [
-                  CustomImage(
+                          ClipRect(
+                            child: SizedBox(
+                              height: finalThumbnailHeight,
+                              width: finalThumbnailWidth,
+                              child: CustomImage(
                     data.thumbnail,
-                    width:
-                        thumbnailWidth ??
-                        AppCardResponsive.getThumbnailWidth(context),
+                                width: finalThumbnailWidth,
                     cover: false,
-                    height:
-                        thumbnailHeight ??
-                        AppCardResponsive.getThumbnailHeight(context),
+                                height: finalThumbnailHeight,
                     circular: false,
                   ),
-                  Gaps.verticalGapOf(30),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColors.kWhite,
-                      borderRadius: BorderRadius.circular(24),
                     ),
+                          SizedBox(height: gapHeight),
+                          SizedBox(
+                            height: textHeight,
+                            child: Center(
                     child: Text(
                       data.lessonName,
                       style: AppStyles.text16PxMedium.copyWith(
                         fontSize: isTabletLandscape ? 24 : 16,
                       ),
                       textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                     ),
                   ),
                 ],
+                      ),
+                    ),
               ),
             ),
             if (trailing != null)
@@ -107,7 +139,11 @@ class LessonCard extends StatelessWidget {
                 child: Icon(Icons.lock, color: AppColors.kBlack, size: 22),
               ),
           ],
+            );
+              },
         ),
+          );
+        },
       ),
     );
   }

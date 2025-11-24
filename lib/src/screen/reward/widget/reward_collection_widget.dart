@@ -73,30 +73,11 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        alignment: Alignment.topRight,
-                        margin: EdgeInsets.only(
-                          top: stickerMargin,
-                          left: stickerMargin,
-                          right: stickerMargin,
-                        ),
-                        child: CircularButtonWidget(
-                          onPressed: () {
-                            UserAppBar.setTabIndex(0);
-
-                            Utility.navigate(
-                              context,
-                              AppRoutes.dashboardScreen,
-                            );
-                          },
-                          type: CircularButtonType.closeGrey,
-                        ),
-                      ),
                       Center(
                         child: Text(
                           widget.childId != null
                               ? 'Sticker Collection'
-                              : 'My Sticker Collection',
+                              : 'My Stickers',
                           style: AppStyles.text22PxSemiBold.copyWith(
                             fontSize: titleFontSize,
                             fontFamily: 'Luckiest Guy',
@@ -104,7 +85,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                           ),
                         ),
                       ),
-
                       Gaps.verticalGapOf(stickerMargin + 10),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -114,7 +94,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                           alignment: WrapAlignment.center,
                           spacing: stickerMargin,
                           runSpacing: stickerMargin,
-
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: List.generate(4, (index) {
                             final isUnlocked = index < unlockedStickers.length;
@@ -133,8 +112,8 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                               BoxShape.circle,
                             ];
                             final borderRadius = [
-                              BorderRadius.circular(0), // Cone-like
-                              BorderRadius.circular(25), // Oval
+                              BorderRadius.circular(0),
+                              BorderRadius.circular(25),
                               BorderRadius.circular(0),
                               BorderRadius.circular(10),
                               BorderRadius.circular(0),
@@ -179,7 +158,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                                           style: AppStyles.text24PxMedium
                                               .copyWith(
                                                 color: AppColors.kWhite,
-
                                                 fontSize: isMobileLandscape
                                                     ? 48
                                                     : 64,
@@ -214,8 +192,8 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                               BoxShape.circle,
                             ];
                             final borderRadius = [
-                              BorderRadius.circular(0), // Cone-like
-                              BorderRadius.circular(50), // Oval
+                              BorderRadius.circular(0),
+                              BorderRadius.circular(50),
                               BorderRadius.circular(0),
                               BorderRadius.circular(50),
                               BorderRadius.circular(0),
@@ -259,7 +237,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                                           style: AppStyles.text24PxMedium
                                               .copyWith(
                                                 color: AppColors.kWhite,
-
                                                 fontSize: isMobileLandscape
                                                     ? 48
                                                     : 64,
@@ -279,8 +256,25 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
 
             return Scaffold(
               backgroundColor: AppColors.kWhite,
-
-              body: SafeArea(child: stickerGrid()),
+              body: SafeArea(
+                child: Stack(
+                  children: [
+                    stickerGrid(),
+                    // Close button positioned consistently with other reward screens
+                    Positioned(
+                      top: isMobile ? 16 : 24,
+                      right: Dimensions.kIconMargin(context),
+                      child: CircularButtonWidget(
+                        onPressed: () {
+                          UserAppBar.setTabIndex(0);
+                          Utility.navigate(context, AppRoutes.dashboardScreen);
+                        },
+                        type: CircularButtonType.closeGrey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         );

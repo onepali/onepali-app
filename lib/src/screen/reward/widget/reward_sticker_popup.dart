@@ -130,10 +130,10 @@ class _RewardStickerPopupState extends State<RewardStickerPopup> {
         ),
         child: Stack(
           children: [
-            // Close button
+            // Close button positioned consistently with other reward screens
             Positioned(
-              top: 16,
-              right: 0,
+              top: isMobile ? 16 : 24,
+              right: Dimensions.kIconMargin(context),
               child: CircularButtonWidget(
                 onPressed: () => Navigator.of(context).pop(),
                 type: CircularButtonType.closeGrey,

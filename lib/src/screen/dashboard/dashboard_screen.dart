@@ -164,7 +164,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final childProvider = context.read<ChildUserProvider>();
+    final childProvider = context.watch<ChildUserProvider>();
     final userProvider = context.watch<UserProvider>();
     final UserModel? userInfo = userProvider.user;
     final bool isLoading = userProvider.status == DataFetchStatus.loading;
@@ -189,40 +189,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onPopInvokedWithResult: (index, value) {
         doubleTapTrigger();
       },
-      child: SafeArea(
-        child: Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: AppColors.kWhite,
-          appBar: UserAppBar(
-            context: context,
-            name: selectedChildName,
-            profileImage: childProfileImage,
-            totalStars: 0,
-            totalLessonsCompleted: totalLessonsCompleted,
-            totalChildCount: childCount > 0 ? childCount : 0,
-            playStarBlastAudio: true,
-            menuColor: homeServices[_selectedTabIndex].color,
-            elevation: _appBarElevation,
-            onTabSelected: (tab) {
-              final idx = homeServices.indexWhere((e) => e.name == tab);
-              if (idx != -1) {
-                setState(() {
-                  _selectedTabIndex = idx;
-                });
-                UserAppBar.setTabIndex(idx);
-              }
-            },
-            childData: childProvider.childUser,
-            authType: Utility.getAuthTypeFromUserInfo(
-              userInfo?.authProvider ?? AuthProviderType.email.name,
+      child: Container(
+        color: AppColors.kWhite,
+        child: SafeArea(
+          left: true,
+          top: true,
+          right: false,
+          bottom: false,
+          child: Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: AppColors.kWhite,
+            appBar: UserAppBar(
+              context: context,
+              name: selectedChildName,
+              profileImage: childProfileImage,
+              totalStars: 0,
+              totalLessonsCompleted: totalLessonsCompleted,
+              totalChildCount: childCount > 0 ? childCount : 0,
+              playStarBlastAudio: true,
+              menuColor: homeServices[_selectedTabIndex].color,
+              elevation: _appBarElevation,
+              onTabSelected: (tab) {
+                final idx = homeServices.indexWhere((e) => e.name == tab);
+                if (idx != -1) {
+                  setState(() {
+                    _selectedTabIndex = idx;
+                  });
+                  UserAppBar.setTabIndex(idx);
+                }
+              },
+              childData: childProvider.childUser,
+              authType: Utility.getAuthTypeFromUserInfo(
+                userInfo?.authProvider ?? AuthProviderType.email.name,
+              ),
             ),
-          ),
-          body: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              _onScrollNotification(notification);
-              return false;
-            },
-            child: HomeScreen(selectedTabIndex: _selectedTabIndex),
+            body: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                _onScrollNotification(notification);
+                return false;
+              },
+              child: HomeScreen(selectedTabIndex: _selectedTabIndex),
+            ),
           ),
         ),
       ),
