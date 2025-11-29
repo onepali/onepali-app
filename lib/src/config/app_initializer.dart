@@ -15,34 +15,80 @@ import 'package:provider/provider.dart';
 
 class AppInitializer {
   Future<void> initializeApp() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    ConnectivityService().startListening();
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      ConnectivityService().startListening();
 
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+      // Firebase initialization - critical, but handle errors gracefully
+      try {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+        logger.i('✅ Firebase initialized successfully');
+      } catch (e) {
+        logger.e('❌ Firebase initialization failed: $e');
+        // Don't rethrow - try to continue without Firebase
+        // Some features may not work, but app should still launch
+      }
 
-    await AppCheckUtil.initialize();
+      // App Check - non-critical, don't block app launch
+      try {
+        await AppCheckUtil.initialize();
+      } catch (e) {
+        logger.w('⚠️ App Check initialization failed, continuing: $e');
+      }
 
-    HttpOverrides.global = MyHttpOverrides();
-    if (!kIsWeb) {
-      await NotificationService.initialize();
+      HttpOverrides.global = MyHttpOverrides();
+      
+      // Notification service - handle errors gracefully
+      if (!kIsWeb) {
+        try {
+          await NotificationService.initialize();
+          logger.i('✅ Notification service initialized');
+        } catch (e) {
+          logger.w('⚠️ Notification service initialization failed, continuing: $e');
+        }
+      }
+      
+      // Timezone initialization - handle errors gracefully
+      try {
+        tz.initializeTimeZones();
+        final TimezoneInfo deviceTimeZone =
+            await FlutterTimezone.getLocalTimezone();
+        final String timezoneIdentifier = deviceTimeZone.identifier;
+        final String fixedTimeZone = timezoneIdentifier == 'Asia/Katmandu'
+            ? 'Asia/Kathmandu'
+            : timezoneIdentifier;
+        logger.d(
+          'Device Timezone: $timezoneIdentifier, Fixed Timezone: $fixedTimeZone',
+        );
+        tz.setLocalLocation(tz.getLocation(fixedTimeZone));
+        logger.i('✅ Timezone initialized successfully');
+      } catch (e) {
+        logger.w('⚠️ Timezone initialization failed, using default: $e');
+        // Set a default timezone if initialization fails
+        try {
+          tz.setLocalLocation(tz.getLocation('UTC'));
+        } catch (_) {
+          // If even UTC fails, just continue without timezone
+        }
+      }
+      
+      // Initialize guest user status
+      try {
+        await GuestUtil.init();
+        logger.i('✅ Guest utilities initialized');
+      } catch (e) {
+        logger.w('⚠️ Guest utilities initialization failed, continuing: $e');
+      }
+      
+      logger.i('✅ App initialization completed');
+    } catch (e, stackTrace) {
+      logger.e('❌ Critical error during app initialization: $e');
+      logger.e('Stack trace: $stackTrace');
+      // Don't rethrow - let the app try to launch anyway
+      // This prevents white screen of death
     }
-    tz.initializeTimeZones();
-    final TimezoneInfo deviceTimeZone =
-        await FlutterTimezone.getLocalTimezone();
-    final String timezoneIdentifier = deviceTimeZone.identifier;
-    final String fixedTimeZone = timezoneIdentifier == 'Asia/Katmandu'
-        ? 'Asia/Kathmandu'
-        : timezoneIdentifier;
-    logger.d(
-      'Device Timezone: $timezoneIdentifier, Fixed Timezone: $fixedTimeZone',
-    );
-    tz.setLocalLocation(tz.getLocation(fixedTimeZone));
-    // await ProviderConfig.pzNotificationProvider.getNotificationSetting();
-
-    // Initialize guest user status
-    await GuestUtil.init();
   }
 
   static Future<bool> checkUserAuthentication() async {
@@ -115,14 +161,32 @@ class AppInitializer {
   static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     final initialRoute = getInitialRoute(logged, isParentLogged);
     
-    // Set initial orientation based on initial route
-    _setInitialRouteOrientation(initialRoute);
+    // Set initial orientation based on initial route (non-blocking)
+    // Don't await - let it happen in background to prevent blocking app launch
+    _setInitialRouteOrientation(initialRoute).catchError((e) {
+      logger.w('⚠️ Failed to set initial orientation: $e');
+      // Continue anyway - orientation will be set by route observer
+    });
 
     return LayoutBuilder(
       builder: (context, constraints) {
         return OrientationBuilder(
           builder: (context, orientation) {
-            ResponsiveConfig().init(constraints, orientation);
+            try {
+              ResponsiveConfig().init(constraints, orientation);
+            } catch (e) {
+              logger.w('⚠️ ResponsiveConfig initialization failed: $e');
+              // Continue with default values
+            }
+            
+            // Safely get locale from Provider, with fallback
+            Locale appLocale;
+            try {
+              appLocale = context.watch<LanguageProvider>().locale;
+            } catch (e) {
+              logger.w('⚠️ Failed to get locale from LanguageProvider, using default: $e');
+              appLocale = const Locale('en'); // Default fallback
+            }
             
             return MaterialApp(
               title: AppConstants.appName,
@@ -133,7 +197,7 @@ class AppInitializer {
               initialRoute: initialRoute,
               routes: AppRoutes.routes,
               theme: ThemeConfig.lightTheme,
-              locale: context.watch<LanguageProvider>().locale,
+              locale: appLocale,
               localizationsDelegates: const [
                 AppLocalizationsDelegate(),
                 GlobalMaterialLocalizations.delegate,
@@ -142,24 +206,37 @@ class AppInitializer {
               ],
               supportedLocales: const [Locale('en'), Locale('ne')],
               onGenerateRoute: (settings) {
-                WidgetBuilder? builder = AppRoutes.routes[settings.name];
-                if (builder != null) {
-                  return PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        builder(context),
-                    settings: settings,
-                    transitionsBuilder: RouteAnimationBuilder.slideFromBottom,
-                    transitionDuration: const Duration(milliseconds: 400),
-                  );
+                try {
+                  WidgetBuilder? builder = AppRoutes.routes[settings.name];
+                  if (builder != null) {
+                    return PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          builder(context),
+                      settings: settings,
+                      transitionsBuilder: RouteAnimationBuilder.slideFromBottom,
+                      transitionDuration: const Duration(milliseconds: 400),
+                    );
+                  }
+                } catch (e) {
+                  logger.e('❌ Error generating route for ${settings.name}: $e');
                 }
                 return null;
               },
-              builder: (context, widget) => MediaQuery(
-                data: MediaQuery.of(
-                  context,
-                ).copyWith(textScaler: const TextScaler.linear(1)),
-                child: Material(child: widget),
-              ),
+              builder: (context, widget) {
+                // Wrap in error boundary to catch any widget build errors
+                return MediaQuery(
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaler: const TextScaler.linear(1)),
+                  child: Material(
+                    child: widget != null 
+                        ? widget 
+                        : const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                  ),
+                );
+              },
             );
           },
         );
