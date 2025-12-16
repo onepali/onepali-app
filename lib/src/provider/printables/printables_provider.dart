@@ -171,21 +171,41 @@ class PrintablesProvider extends ChangeNotifier {
   // Check and request storage permissions based on platform
   Future<bool> _checkStoragePermission() async {
     if (Platform.isAndroid) {
-      // For Android 13+ (API 33+), we need different permissions
-      if (await Permission.manageExternalStorage.isGranted) {
+      // Check if we have folder access via SAF
+      logger.d('Checking folder access...');
+      final hasAccess = await StorageService.hasFolderAccess();
+      logger.d('Has folder access: $hasAccess');
+      
+      if (hasAccess) {
         return true;
       }
 
-      // Try requesting manage external storage permission first
-      PermissionStatus status =
-          await Permission.manageExternalStorage.request();
-      if (status.isGranted) {
-        return true;
+      // Request folder access using SAF
+      logger.d('Requesting folder access...');
+      try {
+        final granted = await StorageService.requestFolderAccess();
+        logger.d('Folder access granted: $granted');
+        
+        if (granted) {
+          showCustomToaster('Folder selected! You can now download worksheets.', isError: false);
+          return true;
+        } else {
+          // Folder picker was cancelled or failed
+          logger.w('Folder selection failed or was cancelled');
+          showCustomToaster(
+            'Please select a folder to save worksheets. Tap Download again and select a folder.',
+            isError: true,
+          );
+          return false;
+        }
+      } catch (e) {
+        logger.e('Error in requestFolderAccess: $e');
+        showCustomToaster(
+          'Failed to open folder picker. Please try again.',
+          isError: true,
+        );
+        return false;
       }
-
-      // Fallback to regular storage permission for older Android versions
-      status = await Permission.storage.request();
-      return status.isGranted;
     } else if (Platform.isIOS) {
       return true;
     }
@@ -212,9 +232,6 @@ class PrintablesProvider extends ChangeNotifier {
       _downloadProgress = 0.0;
       notifyListeners();
 
-      // Use public Documents folder instead of app documents
-      final Directory oNepaliFolder = await _getOrCreateONepaliFolder();
-
       // Create filename
       final String filename = '${printableTitle}_${lesson.title}.pdf'
           .replaceAll(
@@ -223,29 +240,48 @@ class PrintablesProvider extends ChangeNotifier {
           ) // Remove invalid filename characters
           .replaceAll(RegExp(r'\s+'), '_'); // Replace spaces with underscores
 
-      final String filePath = '${oNepaliFolder.path}/$filename';
-      final File file = File(filePath);
-
-      // Check if file already exists
-      if (await file.exists()) {
-        _isDownloading = false;
-        _downloadingWorksheetId = '';
-        notifyListeners();
-
-        if (Platform.isIOS) {
-          showCustomToaster('File already exists: $filename');
-          await _shareFileOnIOS(filePath, filename);
-        } else {
-          showCustomToaster('File already exists: $filename');
-        }
-        return true;
-      }
-
       // Download the file using http
       final response = await http.get(Uri.parse(lesson.worksheet.pdfUrl));
 
       if (response.statusCode == 200) {
-        await file.writeAsBytes(response.bodyBytes);
+        bool success = false;
+        
+        if (Platform.isAndroid) {
+          // Use SAF to save file
+          logger.d('Attempting to save file: $filename');
+          success = await StorageService.saveFileToFolder(
+            filename,
+            response.bodyBytes,
+          );
+          logger.d('File save result: $success');
+          if (!success) {
+            logger.e('Failed to save file to folder. Check if folder was selected.');
+            throw Exception('Failed to save file. Please ensure a folder is selected.');
+          }
+        } else if (Platform.isIOS) {
+          // iOS: Use app documents folder
+          final Directory appDocDir = await getApplicationDocumentsDirectory();
+          final Directory oNepaliFolder = Directory('${appDocDir.path}/O Nepali');
+          if (!await oNepaliFolder.exists()) {
+            await oNepaliFolder.create(recursive: true);
+          }
+          final File file = File('${oNepaliFolder.path}/$filename');
+          await file.writeAsBytes(response.bodyBytes);
+          success = true;
+          
+          // Share on iOS
+          await _shareFileOnIOS(file.path, filename);
+        } else {
+          // Fallback for other platforms
+          final Directory oNepaliFolder = await _getOrCreateONepaliFolder();
+          final File file = File('${oNepaliFolder.path}/$filename');
+          await file.writeAsBytes(response.bodyBytes);
+          success = true;
+        }
+
+        if (!success) {
+          throw Exception('Failed to save file');
+        }
 
         _isDownloading = false;
         _downloadingWorksheetId = '';
@@ -254,24 +290,33 @@ class PrintablesProvider extends ChangeNotifier {
 
         if (Platform.isIOS) {
           showCustomToaster('Downloaded: $filename');
-          await _shareFileOnIOS(filePath, filename);
         } else {
           showCustomToaster('Downloaded: $filename');
         }
 
-        logger.d('Downloaded worksheet: $filePath');
+        logger.d('Downloaded worksheet: $filename');
         return true;
       } else {
         throw Exception('Failed to download file: ${response.statusCode}');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       _isDownloading = false;
       _downloadingWorksheetId = '';
       _downloadProgress = 0.0;
       notifyListeners();
 
       logger.e('Error downloading worksheet: $e');
-      showCustomToaster('Failed to download worksheet', isError: true);
+      logger.e('Stack trace: $stackTrace');
+      
+      // Show more specific error message
+      String errorMessage = 'Failed to download worksheet';
+      if (e.toString().contains('folder')) {
+        errorMessage = 'Please select a folder first';
+      } else if (e.toString().contains('save')) {
+        errorMessage = 'Failed to save file. Please try again.';
+      }
+      
+      showCustomToaster(errorMessage, isError: true);
       return false;
     }
   }

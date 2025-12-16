@@ -38,7 +38,9 @@ class AppCheckUtil {
         logger.w('   3. Configure Play Integrity API for production');
       }
 
-      rethrow;
+      // Don't rethrow - App Check failure should not prevent app from launching
+      // The app can still function without App Check, it just won't have the extra protection
+      logger.w('⚠️ Continuing app launch without App Check protection');
     }
   }
 
