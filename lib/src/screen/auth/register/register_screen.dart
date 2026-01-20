@@ -1,12 +1,26 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../../../src.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _player = AudioPlayer();
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
+    
 
     // Responsive sizing and styling
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
@@ -127,6 +141,7 @@ class RegisterScreen extends StatelessWidget {
             builder: (context) => CustomMaterialButton(
               label: 'Continue',
               onTap: () {
+                
                 Utility.navigate(context, AppRoutes.rs1Screen);
               },
               elevation: 0,

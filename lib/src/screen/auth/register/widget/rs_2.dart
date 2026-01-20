@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,12 @@ class RS2Screen extends StatefulWidget {
 
 class _RS2ScreenState extends State<RS2Screen> {
   int? selectedIndex;
+  final _player = AudioPlayer();
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +146,7 @@ class _RS2ScreenState extends State<RS2Screen> {
           return;
         }
         // Save learningReason to AuthState
+        
         final authState = context.read<AuthState>();
         authState.setLearningReason(
           AppConstants.whyLearningNepali[selectedIndex!],

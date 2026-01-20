@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,13 @@ class RS1Screen extends StatefulWidget {
 
 class _RS1ScreenState extends State<RS1Screen> {
   int? _selectedIndex;
-
+  final _player = AudioPlayer();
+  
+@override
+void dispose() {
+    _player.dispose();
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
@@ -154,6 +161,7 @@ class _RS1ScreenState extends State<RS1Screen> {
           return;
         }
         // Save heardAbout to AuthState
+        
         final authState = context.read<AuthState>();
         authState.setHeardAbout(onboardList[_selectedIndex!].title);
         Utility.navigate(context, AppRoutes.rs2Screen);

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
@@ -15,6 +16,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isObscure = true;
+  final _player = AudioPlayer();
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,161 +45,160 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         color: AppColors.kWhite,
         child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(horizontalPadding),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Text('Welcome', style: AppStyles.text20PxMedium),
-                  // Row(
-                  //   children: [
-                  //     Text(
-                  //       'to',
-                  //       style: AppStyles.text20PxMedium.copyWith(
-                  //         color: AppColors.kPitchBlack,
-                  //         fontFamily: AppConstants.defaultFontFamily,
-                  //       ),
-                  //     ),
-                  //     Gaps.horizontalGapOf(10),
-                  Center(
-                    child: SvgHelper.fromSource(
-                      path: Assets.logoSvg,
-                      width: logoWidth,
-                      height: logoHeight,
-                      color: AppColors.kDrawerBgColor,
-                    ),
-                  ),
-                  //   ],
-                  // ),
-                  Gaps.verticalGapOf(verticalSpacing),
-                  Text(
-                    'Sign in',
-                    style: isTabletPortrait
-                        ? AppStyles.text16PxRegular
-                        : AppStyles.text14PxRegular,
-                  ),
-                  Gaps.verticalGapOf(fieldSpacing),
-                  CustomTextField(
-                    hintText: 'Email',
-                    keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
-                    prefixIcon: Icon(Icons.email_outlined),
-                    validation: (value) => Validator.email(value ?? ""),
-                  ),
-                  Gaps.verticalGapOf(fieldSpacing),
-                  CustomTextField(
-                    hintText: 'Password',
-                    isPasswordField: isObscure,
-                    controller: passwordController,
-                    prefixIcon: Icon(Icons.lock_outline_rounded),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        !isObscure
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          isObscure = !isObscure;
-                        });
-                      },
-                    ),
-                    textInputAction: TextInputAction.done,
-                    validation: (value) => Validator.password(value ?? ""),
-                  ),
-                  Gaps.verticalGapOf(isTabletPortrait ? 8.0 : 5.0),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Utility.navigate(context, AppRoutes.loginScreen);
-                      },
-                      child: Text(
-                        'Forgot password?',
-                        textAlign: TextAlign.right,
-                        style:
-                            (isTabletPortrait
-                                    ? AppStyles.text16PxRegular
-                                    : AppStyles.text14PxRegular)
-                                .copyWith(color: AppColors.kButtonGreen),
+          child: Padding(
+            padding: EdgeInsets.all(horizontalPadding),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Text('Welcome', style: AppStyles.text20PxMedium),
+                    // Row(
+                    //   children: [
+                    //     Text(
+                    //       'to',
+                    //       style: AppStyles.text20PxMedium.copyWith(
+                    //         color: AppColors.kPitchBlack,
+                    //         fontFamily: AppConstants.defaultFontFamily,
+                    //       ),
+                    //     ),
+                    //     Gaps.horizontalGapOf(10),
+                    Center(
+                      child: SvgHelper.fromSource(
+                        path: Assets.logoSvg,
+                        width: logoWidth,
+                        height: logoHeight,
+                        color: AppColors.kDrawerBgColor,
                       ),
                     ),
-                  ),
-                  Gaps.verticalGapOf(isTabletPortrait ? 45.0 : 35.0),
-                  _buildNextButton(context, isLoading),
-                  Gaps.verticalGapOf(isTabletPortrait ? 45.0 : 35.0),
-                  Utility.horizontalDividerTitle(title: 'Or sign in with'),
-                  Gaps.verticalGapOf(fieldSpacing),
-                  ReusableWidget.horizontalIconTitle(
-                    title: 'Continue with Google',
-                    icon: Assets.google,
-                    onTap: () async {
-                      final googleAuthProvider = context
-                          .read<GoogleAuthProvider>();
-                      await googleAuthProvider.signInWithGoogle(
-                        context,
-                        isLogin: true,
-                      );
-                    },
-                  ),
-                  Gaps.verticalGapOf(socialButtonSpacing),
-                  ReusableWidget.horizontalIconTitle(
-                    title: 'Continue with Apple',
-                    icon: Assets.apple,
-                    onTap: () async {
-                      final appleAuthProvider = context
-                          .read<AAuthProvider>();
-                      await appleAuthProvider.signInWithApple(context);
-                    },
-                  ),
-                ],
+                    //   ],
+                    // ),
+                    Gaps.verticalGapOf(verticalSpacing),
+                    Text(
+                      'Sign in',
+                      style: isTabletPortrait
+                          ? AppStyles.text16PxRegular
+                          : AppStyles.text14PxRegular,
+                    ),
+                    Gaps.verticalGapOf(fieldSpacing),
+                    CustomTextField(
+                      hintText: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                      controller: emailController,
+                      prefixIcon: Icon(Icons.email_outlined),
+                      validation: (value) => Validator.email(value ?? ""),
+                    ),
+                    Gaps.verticalGapOf(fieldSpacing),
+                    CustomTextField(
+                      hintText: 'Password',
+                      isPasswordField: isObscure,
+                      controller: passwordController,
+                      prefixIcon: Icon(Icons.lock_outline_rounded),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          !isObscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = !isObscure;
+                          });
+                        },
+                      ),
+                      textInputAction: TextInputAction.done,
+                      validation: (value) => Validator.password(value ?? ""),
+                    ),
+                    Gaps.verticalGapOf(isTabletPortrait ? 8.0 : 5.0),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Utility.navigate(context, AppRoutes.loginScreen);
+                        },
+                        child: Text(
+                          'Forgot password?',
+                          textAlign: TextAlign.right,
+                          style:
+                              (isTabletPortrait
+                                      ? AppStyles.text16PxRegular
+                                      : AppStyles.text14PxRegular)
+                                  .copyWith(color: AppColors.kButtonGreen),
+                        ),
+                      ),
+                    ),
+                    Gaps.verticalGapOf(isTabletPortrait ? 45.0 : 35.0),
+                    _buildNextButton(context, isLoading),
+                    Gaps.verticalGapOf(isTabletPortrait ? 45.0 : 35.0),
+                    Utility.horizontalDividerTitle(title: 'Or sign in with'),
+                    Gaps.verticalGapOf(fieldSpacing),
+                    ReusableWidget.horizontalIconTitle(
+                      title: 'Continue with Google',
+                      icon: Assets.google,
+                      onTap: () async {
+                        final googleAuthProvider = context
+                            .read<GoogleAuthProvider>();
+                        await googleAuthProvider.signInWithGoogle(
+                          context,
+                          isLogin: true,
+                        );
+                      },
+                    ),
+                    Gaps.verticalGapOf(socialButtonSpacing),
+                    ReusableWidget.horizontalIconTitle(
+                      title: 'Continue with Apple',
+                      icon: Assets.apple,
+                      onTap: () async {
+                        final appleAuthProvider = context.read<AAuthProvider>();
+                        await appleAuthProvider.signInWithApple(context);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-      ),
       bottomNavigationBar: Container(
         color: AppColors.kWhite,
         child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: bottomPadding,
-          ),
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: 'Don\'t have an account? ',
-              style:
-                  (isTabletPortrait
-                          ? AppStyles.text16PxRegular
-                          : AppStyles.text14PxRegular)
-                      .copyWith(
-                        color: AppColors.kPitchBlack,
-                        fontFamily: AppConstants.kPoppinsFont,
-                      ),
-              children: [
-                TextSpan(
-                  text: 'Sign up',
-                  style:
-                      (isTabletPortrait
-                              ? AppStyles.text16PxSemiBold
-                              : AppStyles.text14PxSemiBold)
-                          .copyWith(
-                            color: AppColors.kButtonGreen,
-                            fontFamily: AppConstants.kPoppinsFont,
-                          ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Utility.navigate(context, AppRoutes.registerScreen);
-                    },
-                ),
-              ],
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: bottomPadding,
             ),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'Don\'t have an account? ',
+                style:
+                    (isTabletPortrait
+                            ? AppStyles.text16PxRegular
+                            : AppStyles.text14PxRegular)
+                        .copyWith(
+                          color: AppColors.kPitchBlack,
+                          fontFamily: AppConstants.kPoppinsFont,
+                        ),
+                children: [
+                  TextSpan(
+                    text: 'Sign up',
+                    style:
+                        (isTabletPortrait
+                                ? AppStyles.text16PxSemiBold
+                                : AppStyles.text14PxSemiBold)
+                            .copyWith(
+                              color: AppColors.kButtonGreen,
+                              fontFamily: AppConstants.kPoppinsFont,
+                            ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Utility.navigate(context, AppRoutes.registerScreen);
+                      },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -209,6 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ? null
           : () async {
               if (_formKey.currentState!.validate()) {
+                
                 GuestUtil.setGuestUser(false);
                 final authProvider = context.read<AuthProvider>();
                 await authProvider.signIn(

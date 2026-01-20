@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class _RS3ScreenState extends State<RS3Screen> {
   final TextEditingController nameController = TextEditingController();
   DateTime selectedYear = DateTime.now();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  final _player = AudioPlayer();
   @override
   void initState() {
     super.initState();
@@ -22,6 +23,7 @@ class _RS3ScreenState extends State<RS3Screen> {
   @override
   void dispose() {
     nameController.dispose();
+    _player.dispose();
     super.dispose();
   }
 
@@ -137,6 +139,7 @@ class _RS3ScreenState extends State<RS3Screen> {
       label: 'Next',
       onTap: () {
         if (_formKey.currentState!.validate()) {
+          
           // Save fullName and yearOfBirth to AuthState
           final authState = context.read<AuthState>();
           authState.setFullName(nameController.text.trim());

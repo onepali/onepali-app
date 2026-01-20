@@ -69,11 +69,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       horizontal: 12,
                       vertical: 8,
                     ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [_buildChildProfilesGrid()],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [_buildChildProfilesGrid()],
                       ),
                     ),
                   ),
@@ -92,22 +92,22 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 top: true,
                 right: true,
                 bottom: true,
-            child: Stack(
-              children: [
-                _buildSettingsSection(),
+                child: Stack(
+                  children: [
+                    _buildSettingsSection(),
                     // Close button on right side - top right
-                Positioned(
+                    Positioned(
                       top: 16,
-                  right: Dimensions.kIconMargin(context),
-                  child: CircularButtonWidget(
-                    type: CircularButtonType.closeGrey,
+                      right: Dimensions.kIconMargin(context),
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.closeGrey,
                         onPressed: () {
                           // Go back to where user came from (works for both dashboard and parent zone)
-                        Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ],
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -121,12 +121,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
     // Show "Add Child" only when accessed from Family menu AND passcode is verified (isParent = true)
     // When accessed from Dashboard, isParent will be false, so "Add Child" won't show
     final shouldShowAddChild = widget.isParent;
-    final items = List<Widget>.generate(
-      widget.data.length + (shouldShowAddChild ? 1 : 0),
-      (index) {
-        if (index < widget.data.length) {
-          final child = widget.data[index];
-          return Row(
+    final items = List<Widget>.generate(widget.data.length + (shouldShowAddChild ? 1 : 0), (
+      index,
+    ) {
+      if (index < widget.data.length) {
+        final child = widget.data[index];
+        return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
@@ -334,10 +334,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     width: 40,
                     // Parent and Download icons have their own colors (white bg + purple icon)
                     // Home, Family, Logout use currentColor and need white color
-                    color: (drawerSettings[i].name == 'Parent Zone' || 
+                    color:
+                        (drawerSettings[i].name == 'Parent Zone' ||
                             drawerSettings[i].name == 'Printables')
-                        ? null  // No color override for icons with their own colors
-                        : AppColors.kWhite,  // White for icons using currentColor
+                        ? null // No color override for icons with their own colors
+                        : AppColors
+                              .kWhite, // White for icons using currentColor
                   ),
                 ),
                 dense: true,

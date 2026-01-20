@@ -119,7 +119,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
           ),
           // Close button positioned consistently
           Positioned(
-            top: 16,
+            top: 32,
             right: Dimensions.kIconMargin(context),
                   child: CircularButtonWidget(
                     type: CircularButtonType.closeGrey,
