@@ -23,6 +23,7 @@ dependencies:
 
   # State Management
   provider: ^6.1.5
+  flutter_bloc: ^9.1.1
 
   # Firebase Services
   firebase_core: ^4.7.0
@@ -70,11 +71,19 @@ dependencies:
   responsive_builder: ^0.7.1
   crypto: ^3.0.7
 
+  # Code Generation & JSON Serialization
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  freezed: ^3.2.4
+  build_runner: ^2.10.5
+  json_serializable: ^6.11.4
 
 flutter:
   uses-material-design: true
