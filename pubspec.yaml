@@ -29,7 +29,6 @@ dependencies:
   # State Management
   provider: ^6.1.5
   flutter_bloc: ^9.1.1
-  rxdart: ^0.28.0
 
   # Firebase Services
   firebase_core: ^4.0.0
@@ -85,11 +84,6 @@ dependencies:
   # Code Generation & JSON Serialization
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
-
-
-
-
-
 
 
 dev_dependencies:
