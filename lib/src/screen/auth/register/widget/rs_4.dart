@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,14 @@ class _RS4ScreenState extends State<RS4Screen> {
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isObscure = true;
+  final _player = AudioPlayer();
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    _player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,6 +185,7 @@ class _RS4ScreenState extends State<RS4Screen> {
           ? null
           : () async {
               if (_formKey.currentState!.validate()) {
+                
                 final authProvider = context.read<AuthProvider>();
                 await authProvider.register(
                   context: context,

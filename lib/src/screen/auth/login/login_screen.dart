@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
@@ -15,6 +16,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isObscure = true;
+  final _player = AudioPlayer();
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,6 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ? null
           : () async {
               if (_formKey.currentState!.validate()) {
+                
                 GuestUtil.setGuestUser(false);
                 final authProvider = context.read<AuthProvider>();
                 await authProvider.signIn(

@@ -32,7 +32,6 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
     // Responsive values
     final double stickerSize = isMobileLandscape ? 130 : 300;
     final double stickerMargin = isMobileLandscape ? 10 : 24;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(rewards.length, (index) {
