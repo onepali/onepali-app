@@ -365,6 +365,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _currentAnimalIndex++;
     _playCurrentAnimalSound();
   }
+  void _repeadCurrentAnimalSound() {
+    _playCurrentAnimalSound();
+  }
 
   void _replayCurrentAnimalSound() {
     // Ensure we don't go beyond the available targets

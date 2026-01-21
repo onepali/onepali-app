@@ -194,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ? AppCardResponsive.getLessonCardHeight(context) *
               0.8 // 20% smaller for tablets
         : AppCardResponsive.getLessonCardHeight(context);
-
     return SizedBox(
       height: lessonCardHeight + 50,
       child: CourseScreen(isMobile: false),
@@ -325,5 +324,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonScreen extends StatelessWidget {
@@ -15,8 +16,9 @@ class LessonScreen extends StatelessWidget {
     double listHeight;
     if (isTablet) {
       cardWidth = isLandscape ? AppCardResponsive.getCardWidth(context) : 300;
-      listHeight =
-          isLandscape ? AppCardResponsive.getLessonCardHeight(context) : 350;
+      listHeight = isLandscape
+          ? AppCardResponsive.getLessonCardHeight(context)
+          : 350;
       // Make list height smaller for tablets
       listHeight = listHeight * 0.8; // 20% smaller for tablets
     } else if (isMobile) {
@@ -43,7 +45,7 @@ class LessonScreen extends StatelessWidget {
       'LessonScreen Responsive Values: cardHeight: $cardHeight, lessonCardHeight: $lessonCardHeight, thumbnailWidth: $thumbnailWidth, thumbnailHeight: $thumbnailHeight, screenWidth: $screenWidth, screenHeight: $screenHeight',
     );
     final isMobileLandscape = isMobile && isLandscape;
-    
+
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       appBar: CustomAppBar(
@@ -73,6 +75,14 @@ class LessonScreen extends StatelessWidget {
                     isLocked: lesson.progress == 'locked',
                     isCompleted: lesson.progress == 'completed',
                     onTap: () {
+                      // TODO: navigate to lesson content
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) {
+                      //       return LessonPage();
+                      //     },
+                      //   ),
+                      // );
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder:

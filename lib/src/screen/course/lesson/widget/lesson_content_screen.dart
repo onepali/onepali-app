@@ -149,6 +149,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     super.didChangeDependencies();
 
     // Store provider references for safe disposal
+    // Note: Not used in this screen
     _audioProvider = context.read<LessonAudioProvider>();
     _recommendedLessonProvider = context.read<RecommendedLessonProvider>();
   }
@@ -312,7 +313,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final isAnimalLesson =
         currentContent?.type == 'tap_target' ||
         currentContent?.type == 'drag_to_match';
-
+    final isDragToMatch = currentContent?.type == "drag_to_match";
     return [
       // Show audio icon for all items in tap-target and drag-to-match, or for last item in other types
       if (widget.hasSound && (isAnimalLesson || contentListLength == idx))
@@ -324,7 +325,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
             child: CircularButtonWidget(
               type: CircularButtonType.sound,
               onPressed: () {
-                _playWordAudio();
+                isDragToMatch ? () {} : _playWordAudio();
               },
             ),
           ),
@@ -999,6 +1000,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     logger.d(
       'LessonContentScreen: total: ${contentList.length}, current: $idx, remaining: ${contentList.length - idx}',
     );
+    // return Text("hello world");
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, value) {

@@ -82,6 +82,9 @@ class AppRoutes {
   /// [Parent] ---> [Plans] Routes
   static const String parentPlansScreen = '/parent/plans';
 
+  ///[NewRoutes]
+  static const String lessonPage="/lessonPage/{lessonId}";
+
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     systemScreen: (context) => const SystemScreen(),
