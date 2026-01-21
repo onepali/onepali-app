@@ -73,6 +73,14 @@ class LessonScreen extends StatelessWidget {
                     isLocked: lesson.progress == 'locked',
                     isCompleted: lesson.progress == 'completed',
                     onTap: () {
+                      // TODO: navigate to lesson content
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) {
+                      //       return LessonPage();
+                      //     },
+                      //   ),
+                      // );
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => LessonContentScreen(

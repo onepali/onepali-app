@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 import 'package:onepali/src/src.dart';
 
 class AppRoutes {
@@ -81,6 +82,9 @@ class AppRoutes {
 
   /// [Parent] ---> [Plans] Routes
   static const String parentPlansScreen = '/parent/plans';
+
+  ///[NewRoutes]
+  static const String lessonPage = "/lessonPage";
 
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
@@ -184,5 +188,18 @@ class AppRoutes {
     parentNotificationScreen: (context) => const NotificationScreen(),
 
     parentPlansScreen: (context) => const PlanScreen(),
+    lessonPage: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final lessonId = args?['lessonId'] as String?;
+
+      if (lessonId == null || lessonId.isEmpty) {
+        return const ErrorScreen(
+          title: 'Lesson not found',
+          message: 'Missing lesson id.',
+        );
+      }
+      return LessonPage(lessonId: lessonId);
+    },
   };
 }

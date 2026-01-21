@@ -184,6 +184,7 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
     final isMobile = PlatformUtility.isMobile(context);
     final isTablet = PlatformUtility.isTablet(context);
     final isLandscape = PlatformUtility.isLandscape(context);
+    final isCorrectSelected = selectedAnswer == widget.content.correctAnswer;
 
     return Stack(
       children: [
@@ -214,20 +215,45 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             // Options grid
             _buildOptionsGrid(isMobile, isTablet, isLandscape),
 
-            // Confirm button
-            Container(
-              margin: const EdgeInsets.only(top: 40),
-              child: CustomMaterialButton(
-                onTap: _onConfirm,
-                elevation: 0,
-                radius: 60,
-                height: isTablet && isLandscape ? 10.h(context) : 48,
-                width: isTablet && isLandscape ? 30.w(context) : 200,
-                label: 'CONFIRM',
+            // Button based on selected answer
+            Visibility(
+              maintainSize: true,
+              maintainState: true,
+              maintainAnimation: true,
+              visible: selectedAnswer != null,
+              child: Container(
+                margin: const EdgeInsets.only(top: 40),
+                child: CustomMaterialButton(
+                  onTap: () {
+                    // isCorrectSelected ? _onConfirm() : null;
+                    if (isCorrectSelected) {
+                      _onConfirm();
+                    } else {
+                      setState(() {
+                        selectedAnswer = null;
+                      });
+                    }
+                  },
+                  backgroundColor: isCorrectSelected
+                      ? AppColors.kButtonGreen
+                      : AppColors.kButtonRed,
+                  icon: isCorrectSelected ? Icons.check : null,
+                  iconSize: 40,
+                  iconColor: AppColors.kBlack,
+                  elevation: 0,
+                  radius: 60,
+                  height: isTablet && isLandscape ? 10.h(context) : 48,
+                  width: isTablet && isLandscape ? 30.w(context) : 200,
+                  label: isCorrectSelected ? '' : "Try Again",
 
-                textStyle: isTablet && isLandscape
-                    ? AppStyles.text32PxBold
-                    : AppStyles.text18PxBold,
+                  textStyle: isTablet && isLandscape
+                      ? AppStyles.text32PxBold.copyWith(
+                          color: isCorrectSelected ? null : AppColors.kBlack,
+                        )
+                      : AppStyles.text18PxBold.copyWith(
+                          color: isCorrectSelected ? null : AppColors.kBlack,
+                        ),
+                ),
               ),
             ),
             Gaps.verticalGapOf(5),

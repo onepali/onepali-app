@@ -74,6 +74,7 @@ dependencies:
   # Code Generation & JSON Serialization
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
+  rxdart: ^0.28.0
 
 
 dev_dependencies:
@@ -100,6 +101,7 @@ flutter:
     - assets/images/remark/
     - assets/images/avatar/
     - assets/svg/icons/
+    - assets/svg/buttons/
     - assets/svg/
     - assets/svg/parent/
     # - .env
