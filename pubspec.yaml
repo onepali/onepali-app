@@ -103,6 +103,8 @@ flutter:
     - assets/svg/buttons/
     - assets/svg/
     - assets/svg/parent/
+    - assets/tea_maker/music/
+    - assets/tea_maker/svg/
     # - .env
     - shorebird.yaml
 

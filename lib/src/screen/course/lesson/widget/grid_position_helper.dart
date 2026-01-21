@@ -223,11 +223,11 @@ class AnimalGridPositions {
       'tablet': [8, 2],
     },
     'rabbit': {
-      'mobile': [0, 4],
+      'mobile': [1, 4],
       'tablet': [0, 4],
     },
     'bird': {
-      'mobile': [0, 9],
+      'mobile': [1, 9],
       'tablet': [0, 9],
     },
     'cat': {
