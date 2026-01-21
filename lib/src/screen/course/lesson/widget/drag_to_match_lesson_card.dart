@@ -365,6 +365,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _currentAnimalIndex++;
     _playCurrentAnimalSound();
   }
+
   void _repeadCurrentAnimalSound() {
     _playCurrentAnimalSound();
   }
@@ -785,7 +786,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     return SizedBox.expand(
       child: Stack(
-        clipBehavior: Clip.none, // Allow overflow so rabbit can be visible at edges
+        clipBehavior:
+            Clip.none, // Allow overflow so rabbit can be visible at edges
         children: [
           // Background image is handled at parent level in lesson_content_screen.dart
           // to fill the entire screen (appears once)
@@ -867,11 +869,15 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       final animalId = target.id!.toLowerCase();
       final position = positionsMap[animalId] ?? positionsMap.values.first;
       final isCompleted = _completedMatches[target.id] ?? false;
-      
+
       // Use same usable dimensions and size calculation as tap target
       final isLandscape = PlatformUtility.isLandscape(context);
-      final double usableWidthPercent = isMobile ? 0.9 : (isLandscape ? 0.85 : 0.82);
-      final double usableHeightPercent = isMobile ? 0.5 : (isLandscape ? 0.7 : 0.55);
+      final double usableWidthPercent = isMobile
+          ? 0.9
+          : (isLandscape ? 0.85 : 0.82);
+      final double usableHeightPercent = isMobile
+          ? 0.5
+          : (isLandscape ? 0.7 : 0.55);
       final double usableWidth = screenSize.width * usableWidthPercent;
       final double usableHeight = screenSize.height * usableHeightPercent;
       final size = _getTargetSizeForItem(
@@ -982,11 +988,15 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     // Calculate draggable sizes (grid-based, use larger area for cell size calculation)
     // Use same usable dimensions as targets for consistent sizing
     final isLandscape = PlatformUtility.isLandscape(context);
-    final double usableWidthPercent = isMobile ? 0.9 : (isLandscape ? 0.85 : 0.82);
-    final double usableHeightPercent = isMobile ? 0.5 : (isLandscape ? 0.7 : 0.55);
+    final double usableWidthPercent = isMobile
+        ? 0.9
+        : (isLandscape ? 0.85 : 0.82);
+    final double usableHeightPercent = isMobile
+        ? 0.5
+        : (isLandscape ? 0.7 : 0.55);
     final double usableWidth = screenSize.width * usableWidthPercent;
     final double usableHeight = screenSize.height * usableHeightPercent;
-    
+
     for (int i = 0; i < widget.content.dragTargets!.length; i++) {
       final target = widget.content.dragTargets![i];
       if (target.id?.isEmpty != false) continue;
@@ -997,7 +1007,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       // Get position by animal ID (scattered in spaces between targets)
       final animalId = target.id!.toLowerCase();
       final position = positionsMap[animalId] ?? positionsMap.values.first;
-      
+
       // Use grid-based size calculation (same usable area as targets for consistent cell size)
       final size = _getDraggableItemSizeForItem(
         target.id!,
@@ -1031,10 +1041,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                       fit: BoxFit.contain,
                     ),
                   ),
-                  childWhenDragging: SizedBox(
-                    width: size,
-                    height: size,
-                  ),
+                  childWhenDragging: SizedBox(width: size, height: size),
                   child: Container(
                     key: _dragItemKeys[target.id!],
                     width: size,
@@ -1086,7 +1093,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         // Position at 1/3rd from the top of the screen
         final screenHeight = MediaQuery.of(context).size.height;
         return Positioned(
-          top: (screenHeight / 3) - 30 + (10 * _vocabularyController.value), // 1/3rd from top with animation
+          top:
+              (screenHeight / 3) -
+              30 +
+              (10 *
+                  _vocabularyController.value), // 1/3rd from top with animation
           left: 0,
           right: 0,
           child: Center(
@@ -1165,15 +1176,19 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     bool isMobile,
   ) {
     final mediaQuery = MediaQuery.of(context);
-    
+
     // Calculate image sizes for accurate bottom-left alignment
     // Use same dimensions as target size calculation
     final isLandscape = PlatformUtility.isLandscape(context);
-    final double usableWidthPercent = isMobile ? 0.9 : (isLandscape ? 0.85 : 0.82);
-    final double usableHeightPercent = isMobile ? 0.5 : (isLandscape ? 0.7 : 0.55);
+    final double usableWidthPercent = isMobile
+        ? 0.9
+        : (isLandscape ? 0.85 : 0.82);
+    final double usableHeightPercent = isMobile
+        ? 0.5
+        : (isLandscape ? 0.7 : 0.55);
     final double usableWidth = screenWidth * usableWidthPercent;
     final double usableHeight = screenHeight * usableHeightPercent;
-    
+
     final imageSizeMap = <String, double>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
     for (final animalId in animalOrder) {
@@ -1183,7 +1198,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         isLandscape: isLandscape,
       );
     }
-    
+
     return GridPositionHelper.getTargetPositionsMap(
       screenWidth,
       screenHeight,

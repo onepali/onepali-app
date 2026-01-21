@@ -325,7 +325,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
             child: CircularButtonWidget(
               type: CircularButtonType.sound,
               onPressed: () {
-                isDragToMatch ? () {} : _playWordAudio();
+                _playWordAudio();
               },
             ),
           ),
