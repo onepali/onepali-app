@@ -68,6 +68,28 @@ Map<String, dynamic> _$ChooseCorrectLessonContentToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
+TapToRevealLessonContent _$TapToRevealLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TapToRevealLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'tap_to_reveal',
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TapToRevealLessonContentToJson(
+  TapToRevealLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'items': instance.items,
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(

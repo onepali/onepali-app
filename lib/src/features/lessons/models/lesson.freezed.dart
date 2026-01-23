@@ -292,6 +292,10 @@ LessonContent _$LessonContentFromJson(
           return ChooseCorrectLessonContent.fromJson(
             json
           );
+                case 'tap_to_reveal':
+          return TapToRevealLessonContent.fromJson(
+            json
+          );
                 case 'unknown':
           return UnknownLessonContent.fromJson(
             json
@@ -387,12 +391,13 @@ extension LessonContentPatterns on LessonContent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case InfoLessonContent() when info != null:
 return info(_that);case ChooseCorrectLessonContent() when chooseCorrect != null:
-return chooseCorrect(_that);case UnknownLessonContent() when unknown != null:
+return chooseCorrect(_that);case TapToRevealLessonContent() when tapToReveal != null:
+return tapToReveal(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return orElse();
 
@@ -411,12 +416,13 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( UnknownLessonContent value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( UnknownLessonContent value)  unknown,}){
 final _that = this;
 switch (_that) {
 case InfoLessonContent():
 return info(_that);case ChooseCorrectLessonContent():
-return chooseCorrect(_that);case UnknownLessonContent():
+return chooseCorrect(_that);case TapToRevealLessonContent():
+return tapToReveal(_that);case UnknownLessonContent():
 return unknown(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -434,12 +440,13 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( UnknownLessonContent value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( UnknownLessonContent value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case InfoLessonContent() when info != null:
 return info(_that);case ChooseCorrectLessonContent() when chooseCorrect != null:
-return chooseCorrect(_that);case UnknownLessonContent() when unknown != null:
+return chooseCorrect(_that);case TapToRevealLessonContent() when tapToReveal != null:
+return tapToReveal(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return null;
 
@@ -457,11 +464,12 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String audioBg,  String image,  String video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String audioBg,  String image,  String video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InfoLessonContent() when info != null:
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent() when chooseCorrect != null:
-return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent() when unknown != null:
+return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent() when tapToReveal != null:
+return tapToReveal(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return orElse();
 
@@ -480,11 +488,12 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String audioBg,  String image,  String video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String audioBg,  String image,  String video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
 switch (_that) {
 case InfoLessonContent():
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent():
-return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent():
+return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent():
+return tapToReveal(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent():
 return unknown(_that.id,_that.index,_that.type);case _:
   throw StateError('Unexpected subclass');
 
@@ -502,11 +511,12 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String audioBg,  String image,  String video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String audioBg,  String image,  String video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
 switch (_that) {
 case InfoLessonContent() when info != null:
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent() when chooseCorrect != null:
-return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent() when unknown != null:
+return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent() when tapToReveal != null:
+return tapToReveal(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return null;
 
@@ -672,6 +682,87 @@ class _$ChooseCorrectLessonContentCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? type = null,Object? items = null,}) {
   return _then(ChooseCorrectLessonContent(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<Item>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class TapToRevealLessonContent implements LessonContent {
+  const TapToRevealLessonContent({required this.id, required this.index, this.type = 'tap_to_reveal', final  List<Item> items = const []}): _items = items;
+  factory TapToRevealLessonContent.fromJson(Map<String, dynamic> json) => _$TapToRevealLessonContentFromJson(json);
+
+@override final  String id;
+@override final  int index;
+@override@JsonKey() final  String type;
+ final  List<Item> _items;
+@JsonKey() List<Item> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TapToRevealLessonContentCopyWith<TapToRevealLessonContent> get copyWith => _$TapToRevealLessonContentCopyWithImpl<TapToRevealLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TapToRevealLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapToRevealLessonContent&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._items, _items));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,index,type,const DeepCollectionEquality().hash(_items));
+
+@override
+String toString() {
+  return 'LessonContent.tapToReveal(id: $id, index: $index, type: $type, items: $items)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TapToRevealLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $TapToRevealLessonContentCopyWith(TapToRevealLessonContent value, $Res Function(TapToRevealLessonContent) _then) = _$TapToRevealLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int index, String type, List<Item> items
+});
+
+
+
+
+}
+/// @nodoc
+class _$TapToRevealLessonContentCopyWithImpl<$Res>
+    implements $TapToRevealLessonContentCopyWith<$Res> {
+  _$TapToRevealLessonContentCopyWithImpl(this._self, this._then);
+
+  final TapToRevealLessonContent _self;
+  final $Res Function(TapToRevealLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? type = null,Object? items = null,}) {
+  return _then(TapToRevealLessonContent(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable

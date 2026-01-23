@@ -29,15 +29,14 @@ class _NormalContentState extends State<NormalContent> {
         PlatformUtility.isLandscape(context);
     Widget arrowButton({required bool isLeft, required VoidCallback onTap}) {
       return CircularButtonWidget(
-        type:
-            isLeft
-                ? CircularButtonType.leftArrow
-                : CircularButtonType.rightArrow,
+        type: isLeft
+            ? CircularButtonType.leftArrow
+            : CircularButtonType.rightArrow,
         onPressed: onTap,
         // margin: const EdgeInsets.symmetric(horizontal: 16),
       );
     }
-
+  
     return Stack(
       children: [
         // Background image is handled at parent level in story_content_screen.dart
@@ -127,16 +126,17 @@ class _NormalContentState extends State<NormalContent> {
           alignment: Alignment.bottomCenter,
           child: LayoutBuilder(
             builder: (context, constraints) {
+             
               return Consumer<StoryProvider>(
                 builder: (context, storyProvider, _) {
                   // Calculate max width as 90% of screen width
                   final screenWidth = MediaQuery.of(context).size.width;
                   final textBoxMaxWidth = screenWidth * 0.9;
-                  
+
                   // Consistent font sizes based on screen width
                   final baseFontSize = isTabletLandScape ? 24.0 : 16.0;
                   final iconSizeForText = isTabletLandScape ? 36.0 : 24.0;
-                  
+
                   // Prepare conversation rows based on current audio index
                   List<Widget> messageWidgets = [];
 
@@ -197,9 +197,7 @@ class _NormalContentState extends State<NormalContent> {
                   }
 
                   return ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: textBoxMaxWidth,
-                    ),
+                    constraints: BoxConstraints(maxWidth: textBoxMaxWidth),
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         vertical: isTabletLandScape ? 12 : 10,

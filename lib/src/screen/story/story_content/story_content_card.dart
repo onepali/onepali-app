@@ -49,12 +49,12 @@ class NormalConfettiContent extends StatelessWidget {
         if (showConfetti)
           IgnorePointer(
             child: LottieHelper.fromSource(
-            path: content.confetti,
-            fit: BoxFit.cover,
-            repeat: true,
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height,
-            type: LottieSourceType.network,
+              path: content.confetti,
+              fit: BoxFit.cover,
+              repeat: true,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height,
+              type: LottieSourceType.network,
             ),
           ),
       ],

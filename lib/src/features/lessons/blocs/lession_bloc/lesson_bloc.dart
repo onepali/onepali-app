@@ -6,7 +6,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/repository/lesson_repository.dart';
-import 'package:video_player/video_player.dart';
 
 part 'lesson_event.dart';
 part 'lesson_state.dart';
@@ -68,11 +67,13 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   ) {
     if (state.currentContent == null) return;
     if (state.currentContent is ChooseCorrectLessonContent) {
-      emit(state.copyWith(
-        itemQuestioned: null,
-        userSelectedItem: null,
-        isAnswerCorrect: null,
-      ));
+      emit(
+        state.copyWith(
+          itemQuestioned: null,
+          userSelectedItem: null,
+          isAnswerCorrect: null,
+        ),
+      );
       final items = List<Item>.from(
         (state.currentContent as ChooseCorrectLessonContent).items,
       );
@@ -87,7 +88,12 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
 
   void _onChooseItem(_ChooseItem event, Emitter<LessonState> emit) {
     if (state.currentContent == null) return;
-    emit(state.copyWith(userSelectedItem: event.item));
+    emit(
+      state.copyWith(
+        userSelectedItem: event.item,
+        isAnswerCorrect: state.itemQuestioned == event.item,
+      ),
+    );
     _playAudio(event.item.audioItem, _soundPlayer);
   }
 

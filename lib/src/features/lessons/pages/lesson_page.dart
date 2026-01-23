@@ -5,6 +5,7 @@ import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key});
@@ -39,6 +40,10 @@ class _LessonPageState extends State<LessonPage> {
               case ChooseCorrectLessonContent():
                 return ChooseCorrectLessonView(
                   lessonInformation: lessonContent,
+                );
+              case TapToRevealLessonContent():
+                return TapToRevealLessonView(
+                  lessonBloc: context.read<LessonBloc>(),
                 );
               default:
                 return Center(child: Text('Unknown content type'));

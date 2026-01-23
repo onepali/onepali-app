@@ -67,7 +67,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
           child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             decoration: const BoxDecoration(
-              color: AppColors.kWhite,
+              // color: AppColors.kWhite,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -99,7 +99,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                   if (isSelected) {
                     if (isCorrect == true && correct) {
                       bgColor = AppColors.kButtonGreen;
-                      icon = Assets.correct;
+                      icon = Assets.check;
                       iconType = 'svg';
                       label = '';
                       textColor = AppColors.kWhite;

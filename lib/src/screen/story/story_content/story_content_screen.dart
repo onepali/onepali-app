@@ -36,17 +36,19 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
       // Store provider reference for safe dispose usage
       _storyProvider = context.read<StoryProvider>();
-      
+
       // Only restore progress for recommended stories
       int? savedProgress;
       if (widget.isFromRecommended) {
         // Fetch recommended stories to get saved progress
         await _storyProvider!.fetchRecommendedStoriesForActiveChild(context);
-        
+
         // Get saved progress for this story
         if (childId != null && childId.isNotEmpty) {
-          final recommendedStoryProvider = context.read<RecommendedStoryProvider>();
-          final recommendedStories = recommendedStoryProvider.recommendedStories;
+          final recommendedStoryProvider = context
+              .read<RecommendedStoryProvider>();
+          final recommendedStories =
+              recommendedStoryProvider.recommendedStories;
           final storyProgress = recommendedStories
               .where((r) => r.storyId == widget.story.nameEn)
               .firstOrNull;
@@ -55,7 +57,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
           }
         }
       }
-      
+
       // Set story with saved progress (only for recommended stories)
       _storyProvider!.setCurrentStory(widget.story, progress: savedProgress);
     });
@@ -126,6 +128,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   /// Builds the full-screen background image widget
   Widget _buildFullScreenBackground(String imagePath) {
+  
     return Positioned.fill(
       child: CustomImage(
         imagePath,
@@ -182,104 +185,117 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                   final screenHeight = MediaQuery.of(context).size.height;
                   final availableHeight = innerConstraints.maxHeight;
                   final availableWidth = innerConstraints.maxWidth;
-                  
+
                   // Get SafeArea padding to reserve space at top and bottom
                   final safeAreaTop = MediaQuery.of(context).padding.top;
                   final safeAreaBottom = MediaQuery.of(context).padding.bottom;
                   final safeAreaReserve = safeAreaTop + safeAreaBottom;
-                  
+
                   // Calculate fixed sizes as percentages of screen height
                   // Top padding: 5% of screen height (but ensure we have space for SafeArea)
-                  final topPadding = (screenHeight * 0.05).clamp(safeAreaTop, screenHeight);
-                  
+                  final topPadding = (screenHeight * 0.05).clamp(
+                    safeAreaTop,
+                    screenHeight,
+                  );
+
                   // Thumbnail: 50% of screen height
                   final thumbnailSize = screenHeight * 0.5;
-                  
+
                   // Gap 1: 2% of screen height
                   final gap1 = screenHeight * 0.02;
-                  
+
                   // Title font size: 8% of screen height (text will take ~10% with line height)
                   final titleFontSize = screenHeight * 0.08;
-                  final titleHeight = screenHeight * 0.10; // Reserve space for title
-                  
+                  final titleHeight =
+                      screenHeight * 0.10; // Reserve space for title
+
                   // Gap 2: 1.5% of screen height (tablet only)
-                  final gap2 = PlatformUtility.isTablet(context) &&
+                  final gap2 =
+                      PlatformUtility.isTablet(context) &&
                           PlatformUtility.isLandscape(context)
                       ? screenHeight * 0.015
                       : 0.0;
-                  
+
                   // Description font size: 4% of screen height (text will take ~5% with line height)
                   final descFontSize = screenHeight * 0.04;
-                  final descHeight = widget.story.nameEn.isNotEmpty ? screenHeight * 0.05 : 0.0;
-                  
+                  final descHeight = widget.story.nameEn.isNotEmpty
+                      ? screenHeight * 0.05
+                      : 0.0;
+
                   // Calculate total used space
-                  final totalUsed = topPadding + thumbnailSize + gap1 + titleHeight + gap2 + descHeight;
-                  
+                  final totalUsed =
+                      topPadding +
+                      thumbnailSize +
+                      gap1 +
+                      titleHeight +
+                      gap2 +
+                      descHeight;
+
                   // Reserve bottom space for SafeArea
                   final bottomReserve = safeAreaBottom;
                   final maxContentHeight = availableHeight - bottomReserve;
-                  
+
                   // Ensure we don't exceed available height - adjust thumbnail if needed
                   final adjustedThumbnailSize = totalUsed > maxContentHeight
                       ? thumbnailSize - (totalUsed - maxContentHeight)
                       : thumbnailSize;
-                  
+
                   return SizedBox(
                     height: availableHeight,
                     width: availableWidth,
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: topPadding),
-                          // Story thumbnail - fixed size
-                          if (widget.story.thumbnail.isNotEmpty)
-                            SizedBox(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: topPadding),
+                        // Story thumbnail - fixed size
+                        if (widget.story.thumbnail.isNotEmpty)
+                          SizedBox(
+                            width: adjustedThumbnailSize,
+                            height: adjustedThumbnailSize,
+                            child: SvgHelper.fromSource(
+                              path: widget.story.thumbnail,
                               width: adjustedThumbnailSize,
                               height: adjustedThumbnailSize,
-                              child: SvgHelper.fromSource(
-                                path: widget.story.thumbnail,
-                                width: adjustedThumbnailSize,
-                                height: adjustedThumbnailSize,
-                                fit: BoxFit.contain,
-                                type: SvgSourceType.network,
-                              ),
+                              fit: BoxFit.contain,
+                              type: SvgSourceType.network,
                             ),
-                          SizedBox(height: gap1),
-                          // Story title - fixed height
+                          ),
+                        SizedBox(height: gap1),
+                        // Story title - fixed height
+                        SizedBox(
+                          height: titleHeight,
+                          child: Center(
+                            child: Text(
+                              widget.story.nameNp,
+                              style: AppStyles.text24PxBold.copyWith(
+                                fontSize: titleFontSize,
+                                fontFamily: AppConstants.kMuktaFont,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        if (PlatformUtility.isTablet(context) &&
+                            PlatformUtility.isLandscape(context))
+                          SizedBox(height: gap2),
+                        // Story description - fixed height
+                        if (widget.story.nameEn.isNotEmpty)
                           SizedBox(
-                            height: titleHeight,
+                            height: descHeight,
                             child: Center(
                               child: Text(
-                                widget.story.nameNp,
-                                style: AppStyles.text24PxBold.copyWith(
-                                  fontSize: titleFontSize,
-                                  fontFamily: AppConstants.kMuktaFont,
+                                widget.story.nameEn,
+                                style: AppStyles.text16PxMedium.copyWith(
+                                  color: AppColors.kBlack,
+                                  fontSize: descFontSize,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                          if (PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context))
-                            SizedBox(height: gap2),
-                          // Story description - fixed height
-                          if (widget.story.nameEn.isNotEmpty)
-                            SizedBox(
-                              height: descHeight,
-                              child: Center(
-                                child: Text(
-                                  widget.story.nameEn,
-                                  style: AppStyles.text16PxMedium.copyWith(
-                                    color: AppColors.kBlack,
-                                    fontSize: descFontSize,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -293,21 +309,21 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   /// Builds the story content card
   Widget _buildStoryContent(int idx, List<Content> contentList) {
-            if (idx > 0 && idx <= contentList.length) {
-              final content = contentList[idx - 1];
-              return Column(
-                children: [
-                  Expanded(
-                    child: StoryContentCard(
-                      content: content,
-                      isLast: idx == contentList.length,
-                      onConfetti: () {},
-                    ),
-                  ),
-                ],
-              );
-            }
-            return const SizedBox();
+    if (idx > 0 && idx <= contentList.length) {
+      final content = contentList[idx - 1];
+      return Column(
+        children: [
+          Expanded(
+            child: StoryContentCard(
+              content: content,
+              isLast: idx == contentList.length,
+              onConfetti: () {},
+            ),
+          ),
+        ],
+      );
+    }
+    return const SizedBox();
   }
 
   @override
@@ -328,8 +344,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               );
 
               // Check if current content has background image
-              final hasBackgroundImage =
-                  _hasBackgroundImage(idx, contentList);
+              final hasBackgroundImage = _hasBackgroundImage(idx, contentList);
               final backgroundImage = _getBackgroundImage(idx, contentList);
 
               // Build main content widget
@@ -355,12 +370,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     _buildFullScreenBackground(backgroundImage),
                     // Content with SafeArea for interactive elements
                     SafeArea(
-                      child: Stack(
-                        children: [
-                          mainContent,
-                          ...actionButtons,
-                        ],
-                      ),
+                      child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
                 );
@@ -380,12 +390,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     ),
                     // Content with SafeArea for interactive elements
                     SafeArea(
-                      child: Stack(
-                        children: [
-                          mainContent,
-                          ...actionButtons,
-                        ],
-                      ),
+                      child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
                 );
@@ -395,12 +400,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               return Container(
                 color: AppColors.kSkyBlue,
                 child: SafeArea(
-                  child: Stack(
-                    children: [
-                      mainContent,
-                      ...actionButtons,
-                    ],
-                  ),
+                  child: Stack(children: [mainContent, ...actionButtons]),
                 ),
               );
             },
