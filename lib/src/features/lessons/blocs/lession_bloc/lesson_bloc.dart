@@ -88,7 +88,12 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
 
   void _onChooseItem(_ChooseItem event, Emitter<LessonState> emit) {
     if (state.currentContent == null) return;
-    emit(state.copyWith(userSelectedItem: event.item));
+    emit(
+      state.copyWith(
+        userSelectedItem: event.item,
+        isAnswerCorrect: state.itemQuestioned == event.item,
+      ),
+    );
     _playAudio(event.item.audioItem, _soundPlayer);
   }
 

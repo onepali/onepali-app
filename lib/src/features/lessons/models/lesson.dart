@@ -85,6 +85,14 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = ChooseCorrectLessonContent;
 
+  @FreezedUnionValue("tap_to_reveal")
+  const factory LessonContent.tapToReveal({
+    required String id,
+    required int index,
+    @Default('tap_to_reveal') String type,
+    @Default([]) List<Item> items,
+  }) = TapToRevealLessonContent;
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
