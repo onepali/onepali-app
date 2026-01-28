@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 class ChooseCorrectLessonView extends StatefulWidget {
   const ChooseCorrectLessonView({super.key, required this.lessonInformation});
@@ -81,10 +77,10 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                         width: size.width * 0.2, // or any fixed width you want
                         child: ElevatedButton(
                           onPressed: () {
-                            if(isCorrect){
-                              context
-                                  .read<LessonBloc>()
-                                  .add(LessonEvent.nextContent());
+                            if (isCorrect) {
+                              context.read<LessonBloc>().add(
+                                LessonEvent.nextContent(),
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(

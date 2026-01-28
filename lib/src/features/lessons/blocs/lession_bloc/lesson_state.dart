@@ -11,6 +11,11 @@ class LessonState with _$LessonState {
     Item? itemQuestioned,
     Item? userSelectedItem,
     bool? isAnswerCorrect,
+    // Tap to reveal related content state
+    List<Item>? tapToRevealItems,
+    Item? selectedTapToRevealItem,
+    @Default([]) List<Item> completedTapToRevealItems,
+    @Default(false)bool? isTapToRevealCompleted,
 
   }) = _LessonState;
 

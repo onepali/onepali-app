@@ -8,10 +8,11 @@ class LessonEvent with _$LessonEvent {
   const factory LessonEvent.playItemAudio() = _PlayItemAudio;
 
   // Choose correct related content events
-  const factory LessonEvent.playChooseCorrectItem() =
-      _PlayChooseCorrectItem;
+  const factory LessonEvent.playChooseCorrectItem() = _PlayChooseCorrectItem;
   const factory LessonEvent.chooseItem(Item item) = _ChooseItem;
-
+  // Tap to reveal releated content events
+  const factory LessonEvent.playTapToReveal() = _PlayTapToReveal;
+  const factory LessonEvent.tapToRevealItem(Item item) = _TapToRevealItem;
   //Common events
   const factory LessonEvent.nextContent() = _NextContent;
   const factory LessonEvent.previousContent() = _PreviousContent;

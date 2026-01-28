@@ -55,7 +55,7 @@ extension LessonEventPatterns on LessonEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _PlayInfo value)?  playInfo,TResult Function( _PlayItemAudio value)?  playItemAudio,TResult Function( _PlayChooseCorrectItem value)?  playChooseCorrectItem,TResult Function( _ChooseItem value)?  chooseItem,TResult Function( _NextContent value)?  nextContent,TResult Function( _PreviousContent value)?  previousContent,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _PlayInfo value)?  playInfo,TResult Function( _PlayItemAudio value)?  playItemAudio,TResult Function( _PlayChooseCorrectItem value)?  playChooseCorrectItem,TResult Function( _ChooseItem value)?  chooseItem,TResult Function( _PlayTapToReveal value)?  playTapToReveal,TResult Function( _TapToRevealItem value)?  tapToRevealItem,TResult Function( _NextContent value)?  nextContent,TResult Function( _PreviousContent value)?  previousContent,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -63,7 +63,9 @@ return started(_that);case _PlayInfo() when playInfo != null:
 return playInfo(_that);case _PlayItemAudio() when playItemAudio != null:
 return playItemAudio(_that);case _PlayChooseCorrectItem() when playChooseCorrectItem != null:
 return playChooseCorrectItem(_that);case _ChooseItem() when chooseItem != null:
-return chooseItem(_that);case _NextContent() when nextContent != null:
+return chooseItem(_that);case _PlayTapToReveal() when playTapToReveal != null:
+return playTapToReveal(_that);case _TapToRevealItem() when tapToRevealItem != null:
+return tapToRevealItem(_that);case _NextContent() when nextContent != null:
 return nextContent(_that);case _PreviousContent() when previousContent != null:
 return previousContent(_that);case _:
   return orElse();
@@ -83,7 +85,7 @@ return previousContent(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _PlayInfo value)  playInfo,required TResult Function( _PlayItemAudio value)  playItemAudio,required TResult Function( _PlayChooseCorrectItem value)  playChooseCorrectItem,required TResult Function( _ChooseItem value)  chooseItem,required TResult Function( _NextContent value)  nextContent,required TResult Function( _PreviousContent value)  previousContent,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _PlayInfo value)  playInfo,required TResult Function( _PlayItemAudio value)  playItemAudio,required TResult Function( _PlayChooseCorrectItem value)  playChooseCorrectItem,required TResult Function( _ChooseItem value)  chooseItem,required TResult Function( _PlayTapToReveal value)  playTapToReveal,required TResult Function( _TapToRevealItem value)  tapToRevealItem,required TResult Function( _NextContent value)  nextContent,required TResult Function( _PreviousContent value)  previousContent,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -91,7 +93,9 @@ return started(_that);case _PlayInfo():
 return playInfo(_that);case _PlayItemAudio():
 return playItemAudio(_that);case _PlayChooseCorrectItem():
 return playChooseCorrectItem(_that);case _ChooseItem():
-return chooseItem(_that);case _NextContent():
+return chooseItem(_that);case _PlayTapToReveal():
+return playTapToReveal(_that);case _TapToRevealItem():
+return tapToRevealItem(_that);case _NextContent():
 return nextContent(_that);case _PreviousContent():
 return previousContent(_that);case _:
   throw StateError('Unexpected subclass');
@@ -110,7 +114,7 @@ return previousContent(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _PlayInfo value)?  playInfo,TResult? Function( _PlayItemAudio value)?  playItemAudio,TResult? Function( _PlayChooseCorrectItem value)?  playChooseCorrectItem,TResult? Function( _ChooseItem value)?  chooseItem,TResult? Function( _NextContent value)?  nextContent,TResult? Function( _PreviousContent value)?  previousContent,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _PlayInfo value)?  playInfo,TResult? Function( _PlayItemAudio value)?  playItemAudio,TResult? Function( _PlayChooseCorrectItem value)?  playChooseCorrectItem,TResult? Function( _ChooseItem value)?  chooseItem,TResult? Function( _PlayTapToReveal value)?  playTapToReveal,TResult? Function( _TapToRevealItem value)?  tapToRevealItem,TResult? Function( _NextContent value)?  nextContent,TResult? Function( _PreviousContent value)?  previousContent,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -118,7 +122,9 @@ return started(_that);case _PlayInfo() when playInfo != null:
 return playInfo(_that);case _PlayItemAudio() when playItemAudio != null:
 return playItemAudio(_that);case _PlayChooseCorrectItem() when playChooseCorrectItem != null:
 return playChooseCorrectItem(_that);case _ChooseItem() when chooseItem != null:
-return chooseItem(_that);case _NextContent() when nextContent != null:
+return chooseItem(_that);case _PlayTapToReveal() when playTapToReveal != null:
+return playTapToReveal(_that);case _TapToRevealItem() when tapToRevealItem != null:
+return tapToRevealItem(_that);case _NextContent() when nextContent != null:
 return nextContent(_that);case _PreviousContent() when previousContent != null:
 return previousContent(_that);case _:
   return null;
@@ -137,14 +143,16 @@ return previousContent(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String lessonId)?  started,TResult Function( int index)?  playInfo,TResult Function()?  playItemAudio,TResult Function()?  playChooseCorrectItem,TResult Function( Item item)?  chooseItem,TResult Function()?  nextContent,TResult Function()?  previousContent,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String lessonId)?  started,TResult Function( int index)?  playInfo,TResult Function()?  playItemAudio,TResult Function()?  playChooseCorrectItem,TResult Function( Item item)?  chooseItem,TResult Function()?  playTapToReveal,TResult Function( Item item)?  tapToRevealItem,TResult Function()?  nextContent,TResult Function()?  previousContent,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.lessonId);case _PlayInfo() when playInfo != null:
 return playInfo(_that.index);case _PlayItemAudio() when playItemAudio != null:
 return playItemAudio();case _PlayChooseCorrectItem() when playChooseCorrectItem != null:
 return playChooseCorrectItem();case _ChooseItem() when chooseItem != null:
-return chooseItem(_that.item);case _NextContent() when nextContent != null:
+return chooseItem(_that.item);case _PlayTapToReveal() when playTapToReveal != null:
+return playTapToReveal();case _TapToRevealItem() when tapToRevealItem != null:
+return tapToRevealItem(_that.item);case _NextContent() when nextContent != null:
 return nextContent();case _PreviousContent() when previousContent != null:
 return previousContent();case _:
   return orElse();
@@ -164,14 +172,16 @@ return previousContent();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String lessonId)  started,required TResult Function( int index)  playInfo,required TResult Function()  playItemAudio,required TResult Function()  playChooseCorrectItem,required TResult Function( Item item)  chooseItem,required TResult Function()  nextContent,required TResult Function()  previousContent,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String lessonId)  started,required TResult Function( int index)  playInfo,required TResult Function()  playItemAudio,required TResult Function()  playChooseCorrectItem,required TResult Function( Item item)  chooseItem,required TResult Function()  playTapToReveal,required TResult Function( Item item)  tapToRevealItem,required TResult Function()  nextContent,required TResult Function()  previousContent,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started(_that.lessonId);case _PlayInfo():
 return playInfo(_that.index);case _PlayItemAudio():
 return playItemAudio();case _PlayChooseCorrectItem():
 return playChooseCorrectItem();case _ChooseItem():
-return chooseItem(_that.item);case _NextContent():
+return chooseItem(_that.item);case _PlayTapToReveal():
+return playTapToReveal();case _TapToRevealItem():
+return tapToRevealItem(_that.item);case _NextContent():
 return nextContent();case _PreviousContent():
 return previousContent();case _:
   throw StateError('Unexpected subclass');
@@ -190,14 +200,16 @@ return previousContent();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String lessonId)?  started,TResult? Function( int index)?  playInfo,TResult? Function()?  playItemAudio,TResult? Function()?  playChooseCorrectItem,TResult? Function( Item item)?  chooseItem,TResult? Function()?  nextContent,TResult? Function()?  previousContent,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String lessonId)?  started,TResult? Function( int index)?  playInfo,TResult? Function()?  playItemAudio,TResult? Function()?  playChooseCorrectItem,TResult? Function( Item item)?  chooseItem,TResult? Function()?  playTapToReveal,TResult? Function( Item item)?  tapToRevealItem,TResult? Function()?  nextContent,TResult? Function()?  previousContent,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.lessonId);case _PlayInfo() when playInfo != null:
 return playInfo(_that.index);case _PlayItemAudio() when playItemAudio != null:
 return playItemAudio();case _PlayChooseCorrectItem() when playChooseCorrectItem != null:
 return playChooseCorrectItem();case _ChooseItem() when chooseItem != null:
-return chooseItem(_that.item);case _NextContent() when nextContent != null:
+return chooseItem(_that.item);case _PlayTapToReveal() when playTapToReveal != null:
+return playTapToReveal();case _TapToRevealItem() when tapToRevealItem != null:
+return tapToRevealItem(_that.item);case _NextContent() when nextContent != null:
 return nextContent();case _PreviousContent() when previousContent != null:
 return previousContent();case _:
   return null;
@@ -481,6 +493,113 @@ $ItemCopyWith<$Res> get item {
 /// @nodoc
 
 
+class _PlayTapToReveal implements LessonEvent {
+  const _PlayTapToReveal();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayTapToReveal);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LessonEvent.playTapToReveal()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _TapToRevealItem implements LessonEvent {
+  const _TapToRevealItem(this.item);
+  
+
+ final  Item item;
+
+/// Create a copy of LessonEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TapToRevealItemCopyWith<_TapToRevealItem> get copyWith => __$TapToRevealItemCopyWithImpl<_TapToRevealItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TapToRevealItem&&(identical(other.item, item) || other.item == item));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,item);
+
+@override
+String toString() {
+  return 'LessonEvent.tapToRevealItem(item: $item)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TapToRevealItemCopyWith<$Res> implements $LessonEventCopyWith<$Res> {
+  factory _$TapToRevealItemCopyWith(_TapToRevealItem value, $Res Function(_TapToRevealItem) _then) = __$TapToRevealItemCopyWithImpl;
+@useResult
+$Res call({
+ Item item
+});
+
+
+$ItemCopyWith<$Res> get item;
+
+}
+/// @nodoc
+class __$TapToRevealItemCopyWithImpl<$Res>
+    implements _$TapToRevealItemCopyWith<$Res> {
+  __$TapToRevealItemCopyWithImpl(this._self, this._then);
+
+  final _TapToRevealItem _self;
+  final $Res Function(_TapToRevealItem) _then;
+
+/// Create a copy of LessonEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? item = null,}) {
+  return _then(_TapToRevealItem(
+null == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
+as Item,
+  ));
+}
+
+/// Create a copy of LessonEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ItemCopyWith<$Res> get item {
+  
+  return $ItemCopyWith<$Res>(_self.item, (value) {
+    return _then(_self.copyWith(item: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class _NextContent implements LessonEvent {
   const _NextContent();
   
@@ -546,7 +665,8 @@ String toString() {
 mixin _$LessonState {
 
  String? get lessonId; LessonDetail? get lessonDetails; int get currentIndex; LessonContent? get currentContent;// Choose correct related content state
- Item? get itemQuestioned; Item? get userSelectedItem; bool? get isAnswerCorrect;
+ Item? get itemQuestioned; Item? get userSelectedItem; bool? get isAnswerCorrect;// Tap to reveal related content state
+ List<Item>? get tapToRevealItems; Item? get selectedTapToRevealItem; List<Item> get completedTapToRevealItems; bool? get isTapToRevealCompleted;
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -557,16 +677,16 @@ $LessonStateCopyWith<LessonState> get copyWith => _$LessonStateCopyWithImpl<Less
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect)&&const DeepCollectionEquality().equals(other.tapToRevealItems, tapToRevealItems)&&(identical(other.selectedTapToRevealItem, selectedTapToRevealItem) || other.selectedTapToRevealItem == selectedTapToRevealItem)&&const DeepCollectionEquality().equals(other.completedTapToRevealItems, completedTapToRevealItems)&&(identical(other.isTapToRevealCompleted, isTapToRevealCompleted) || other.isTapToRevealCompleted == isTapToRevealCompleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect);
+int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect,const DeepCollectionEquality().hash(tapToRevealItems),selectedTapToRevealItem,const DeepCollectionEquality().hash(completedTapToRevealItems),isTapToRevealCompleted);
 
 @override
 String toString() {
-  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect)';
+  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect, tapToRevealItems: $tapToRevealItems, selectedTapToRevealItem: $selectedTapToRevealItem, completedTapToRevealItems: $completedTapToRevealItems, isTapToRevealCompleted: $isTapToRevealCompleted)';
 }
 
 
@@ -577,11 +697,11 @@ abstract mixin class $LessonStateCopyWith<$Res>  {
   factory $LessonStateCopyWith(LessonState value, $Res Function(LessonState) _then) = _$LessonStateCopyWithImpl;
 @useResult
 $Res call({
- String? lessonId, LessonDetail? lessonDetails, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect
+ String? lessonId, LessonDetail? lessonDetails, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect, List<Item>? tapToRevealItems, Item? selectedTapToRevealItem, List<Item> completedTapToRevealItems, bool? isTapToRevealCompleted
 });
 
 
-$LessonContentCopyWith<$Res>? get currentContent;$ItemCopyWith<$Res>? get itemQuestioned;$ItemCopyWith<$Res>? get userSelectedItem;
+$LessonContentCopyWith<$Res>? get currentContent;$ItemCopyWith<$Res>? get itemQuestioned;$ItemCopyWith<$Res>? get userSelectedItem;$ItemCopyWith<$Res>? get selectedTapToRevealItem;
 
 }
 /// @nodoc
@@ -594,7 +714,7 @@ class _$LessonStateCopyWithImpl<$Res>
 
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,Object? tapToRevealItems = freezed,Object? selectedTapToRevealItem = freezed,Object? completedTapToRevealItems = null,Object? isTapToRevealCompleted = freezed,}) {
   return _then(_self.copyWith(
 lessonId: freezed == lessonId ? _self.lessonId : lessonId // ignore: cast_nullable_to_non_nullable
 as String?,lessonDetails: freezed == lessonDetails ? _self.lessonDetails : lessonDetails // ignore: cast_nullable_to_non_nullable
@@ -603,6 +723,10 @@ as int,currentContent: freezed == currentContent ? _self.currentContent : curren
 as LessonContent?,itemQuestioned: freezed == itemQuestioned ? _self.itemQuestioned : itemQuestioned // ignore: cast_nullable_to_non_nullable
 as Item?,userSelectedItem: freezed == userSelectedItem ? _self.userSelectedItem : userSelectedItem // ignore: cast_nullable_to_non_nullable
 as Item?,isAnswerCorrect: freezed == isAnswerCorrect ? _self.isAnswerCorrect : isAnswerCorrect // ignore: cast_nullable_to_non_nullable
+as bool?,tapToRevealItems: freezed == tapToRevealItems ? _self.tapToRevealItems : tapToRevealItems // ignore: cast_nullable_to_non_nullable
+as List<Item>?,selectedTapToRevealItem: freezed == selectedTapToRevealItem ? _self.selectedTapToRevealItem : selectedTapToRevealItem // ignore: cast_nullable_to_non_nullable
+as Item?,completedTapToRevealItems: null == completedTapToRevealItems ? _self.completedTapToRevealItems : completedTapToRevealItems // ignore: cast_nullable_to_non_nullable
+as List<Item>,isTapToRevealCompleted: freezed == isTapToRevealCompleted ? _self.isTapToRevealCompleted : isTapToRevealCompleted // ignore: cast_nullable_to_non_nullable
 as bool?,
   ));
 }
@@ -641,6 +765,18 @@ $ItemCopyWith<$Res>? get userSelectedItem {
 
   return $ItemCopyWith<$Res>(_self.userSelectedItem!, (value) {
     return _then(_self.copyWith(userSelectedItem: value));
+  });
+}/// Create a copy of LessonState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ItemCopyWith<$Res>? get selectedTapToRevealItem {
+    if (_self.selectedTapToRevealItem == null) {
+    return null;
+  }
+
+  return $ItemCopyWith<$Res>(_self.selectedTapToRevealItem!, (value) {
+    return _then(_self.copyWith(selectedTapToRevealItem: value));
   });
 }
 }
@@ -724,10 +860,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect,  List<Item>? tapToRevealItems,  Item? selectedTapToRevealItem,  List<Item> completedTapToRevealItems,  bool? isTapToRevealCompleted)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LessonState() when $default != null:
-return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
+return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect,_that.tapToRevealItems,_that.selectedTapToRevealItem,_that.completedTapToRevealItems,_that.isTapToRevealCompleted);case _:
   return orElse();
 
 }
@@ -745,10 +881,10 @@ return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.curr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect,  List<Item>? tapToRevealItems,  Item? selectedTapToRevealItem,  List<Item> completedTapToRevealItems,  bool? isTapToRevealCompleted)  $default,) {final _that = this;
 switch (_that) {
 case _LessonState():
-return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
+return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect,_that.tapToRevealItems,_that.selectedTapToRevealItem,_that.completedTapToRevealItems,_that.isTapToRevealCompleted);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -765,10 +901,10 @@ return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.curr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect,  List<Item>? tapToRevealItems,  Item? selectedTapToRevealItem,  List<Item> completedTapToRevealItems,  bool? isTapToRevealCompleted)?  $default,) {final _that = this;
 switch (_that) {
 case _LessonState() when $default != null:
-return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
+return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect,_that.tapToRevealItems,_that.selectedTapToRevealItem,_that.completedTapToRevealItems,_that.isTapToRevealCompleted);case _:
   return null;
 
 }
@@ -780,7 +916,7 @@ return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.curr
 
 
 class _LessonState implements LessonState {
-  const _LessonState({this.lessonId, this.lessonDetails, this.currentIndex = 0, this.currentContent, this.itemQuestioned, this.userSelectedItem, this.isAnswerCorrect});
+  const _LessonState({this.lessonId, this.lessonDetails, this.currentIndex = 0, this.currentContent, this.itemQuestioned, this.userSelectedItem, this.isAnswerCorrect, final  List<Item>? tapToRevealItems, this.selectedTapToRevealItem, final  List<Item> completedTapToRevealItems = const [], this.isTapToRevealCompleted = false}): _tapToRevealItems = tapToRevealItems,_completedTapToRevealItems = completedTapToRevealItems;
   
 
 @override final  String? lessonId;
@@ -791,6 +927,26 @@ class _LessonState implements LessonState {
 @override final  Item? itemQuestioned;
 @override final  Item? userSelectedItem;
 @override final  bool? isAnswerCorrect;
+// Tap to reveal related content state
+ final  List<Item>? _tapToRevealItems;
+// Tap to reveal related content state
+@override List<Item>? get tapToRevealItems {
+  final value = _tapToRevealItems;
+  if (value == null) return null;
+  if (_tapToRevealItems is EqualUnmodifiableListView) return _tapToRevealItems;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+@override final  Item? selectedTapToRevealItem;
+ final  List<Item> _completedTapToRevealItems;
+@override@JsonKey() List<Item> get completedTapToRevealItems {
+  if (_completedTapToRevealItems is EqualUnmodifiableListView) return _completedTapToRevealItems;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_completedTapToRevealItems);
+}
+
+@override@JsonKey() final  bool? isTapToRevealCompleted;
 
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
@@ -802,16 +958,16 @@ _$LessonStateCopyWith<_LessonState> get copyWith => __$LessonStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect)&&const DeepCollectionEquality().equals(other._tapToRevealItems, _tapToRevealItems)&&(identical(other.selectedTapToRevealItem, selectedTapToRevealItem) || other.selectedTapToRevealItem == selectedTapToRevealItem)&&const DeepCollectionEquality().equals(other._completedTapToRevealItems, _completedTapToRevealItems)&&(identical(other.isTapToRevealCompleted, isTapToRevealCompleted) || other.isTapToRevealCompleted == isTapToRevealCompleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect);
+int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect,const DeepCollectionEquality().hash(_tapToRevealItems),selectedTapToRevealItem,const DeepCollectionEquality().hash(_completedTapToRevealItems),isTapToRevealCompleted);
 
 @override
 String toString() {
-  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect)';
+  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect, tapToRevealItems: $tapToRevealItems, selectedTapToRevealItem: $selectedTapToRevealItem, completedTapToRevealItems: $completedTapToRevealItems, isTapToRevealCompleted: $isTapToRevealCompleted)';
 }
 
 
@@ -822,11 +978,11 @@ abstract mixin class _$LessonStateCopyWith<$Res> implements $LessonStateCopyWith
   factory _$LessonStateCopyWith(_LessonState value, $Res Function(_LessonState) _then) = __$LessonStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? lessonId, LessonDetail? lessonDetails, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect
+ String? lessonId, LessonDetail? lessonDetails, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect, List<Item>? tapToRevealItems, Item? selectedTapToRevealItem, List<Item> completedTapToRevealItems, bool? isTapToRevealCompleted
 });
 
 
-@override $LessonContentCopyWith<$Res>? get currentContent;@override $ItemCopyWith<$Res>? get itemQuestioned;@override $ItemCopyWith<$Res>? get userSelectedItem;
+@override $LessonContentCopyWith<$Res>? get currentContent;@override $ItemCopyWith<$Res>? get itemQuestioned;@override $ItemCopyWith<$Res>? get userSelectedItem;@override $ItemCopyWith<$Res>? get selectedTapToRevealItem;
 
 }
 /// @nodoc
@@ -839,7 +995,7 @@ class __$LessonStateCopyWithImpl<$Res>
 
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,Object? tapToRevealItems = freezed,Object? selectedTapToRevealItem = freezed,Object? completedTapToRevealItems = null,Object? isTapToRevealCompleted = freezed,}) {
   return _then(_LessonState(
 lessonId: freezed == lessonId ? _self.lessonId : lessonId // ignore: cast_nullable_to_non_nullable
 as String?,lessonDetails: freezed == lessonDetails ? _self.lessonDetails : lessonDetails // ignore: cast_nullable_to_non_nullable
@@ -848,6 +1004,10 @@ as int,currentContent: freezed == currentContent ? _self.currentContent : curren
 as LessonContent?,itemQuestioned: freezed == itemQuestioned ? _self.itemQuestioned : itemQuestioned // ignore: cast_nullable_to_non_nullable
 as Item?,userSelectedItem: freezed == userSelectedItem ? _self.userSelectedItem : userSelectedItem // ignore: cast_nullable_to_non_nullable
 as Item?,isAnswerCorrect: freezed == isAnswerCorrect ? _self.isAnswerCorrect : isAnswerCorrect // ignore: cast_nullable_to_non_nullable
+as bool?,tapToRevealItems: freezed == tapToRevealItems ? _self._tapToRevealItems : tapToRevealItems // ignore: cast_nullable_to_non_nullable
+as List<Item>?,selectedTapToRevealItem: freezed == selectedTapToRevealItem ? _self.selectedTapToRevealItem : selectedTapToRevealItem // ignore: cast_nullable_to_non_nullable
+as Item?,completedTapToRevealItems: null == completedTapToRevealItems ? _self._completedTapToRevealItems : completedTapToRevealItems // ignore: cast_nullable_to_non_nullable
+as List<Item>,isTapToRevealCompleted: freezed == isTapToRevealCompleted ? _self.isTapToRevealCompleted : isTapToRevealCompleted // ignore: cast_nullable_to_non_nullable
 as bool?,
   ));
 }
@@ -887,6 +1047,18 @@ $ItemCopyWith<$Res>? get userSelectedItem {
 
   return $ItemCopyWith<$Res>(_self.userSelectedItem!, (value) {
     return _then(_self.copyWith(userSelectedItem: value));
+  });
+}/// Create a copy of LessonState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ItemCopyWith<$Res>? get selectedTapToRevealItem {
+    if (_self.selectedTapToRevealItem == null) {
+    return null;
+  }
+
+  return $ItemCopyWith<$Res>(_self.selectedTapToRevealItem!, (value) {
+    return _then(_self.copyWith(selectedTapToRevealItem: value));
   });
 }
 }
