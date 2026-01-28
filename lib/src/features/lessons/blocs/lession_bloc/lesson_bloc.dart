@@ -23,6 +23,9 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     // Choose correct related content events
     on<_PlayChooseCorrectItem>(_onPlayChooseCorrectItem);
     on<_ChooseItem>(_onChooseItem);
+    // Tap to reveal related content events
+    on<_PlayTapToReveal>(_onPlayTapToReveal);
+    on<_TapToRevealItem>(_onTapToRevealItem);
     // Common events
     on<_NextContent>(_onNextContent);
     on<_PreviousContent>(_onPreviousContent);
@@ -45,6 +48,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
         );
       },
       onError: (error, _) {
+        log(error.toString());
         return state.copyWith(errorMessage: error.toString());
       },
     );
@@ -54,9 +58,10 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   Future<void> _onPlayInfo(_PlayInfo event, Emitter<LessonState> emit) async {
     if (state.currentContent == null) return;
     if (state.currentContent is InfoLessonContent) {
-      // final audioWord = (state.currentContent as InfoLessonContent).audioWord;
-      // final audioBg = (state.currentContent as InfoLessonContent).audioBg;
-      // _playAudio(audioBg, _soundPlayer);
+      final audioBg = (state.currentContent as InfoLessonContent).audioBg;
+      if (audioBg != null && audioBg.isNotEmpty) {
+        _playAudio(audioBg, _soundPlayer);
+      }
     }
   }
 
@@ -97,6 +102,76 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     _playAudio(event.item.audioItem, _soundPlayer);
   }
 
+  // ------------------------Tap to reveal related content events------------------------
+  void _onPlayTapToReveal(_PlayTapToReveal event, Emitter<LessonState> emit) {
+    if (state.currentContent == null) return;
+    if (state.currentContent is TapToRevealLessonContent) {
+      // find two different items to play audio which has audio
+      final items = List<Item>.from(
+        (state.currentContent as TapToRevealLessonContent).items,
+      );
+      final itemsToPlay = pickTwoRandomItems(items);
+      if (itemsToPlay.isEmpty) return;
+      // make first item selected
+      emit(
+        state.copyWith(
+          selectedTapToRevealItem: itemsToPlay.first,
+          tapToRevealItems: itemsToPlay,
+          completedTapToRevealItems: [],
+          isTapToRevealCompleted: false,
+        ),
+      );
+
+      _playAudio(itemsToPlay.first.audioItem, _soundPlayer);
+
+      log('itemsToPlay: $itemsToPlay');
+    }
+  }
+
+  void _onTapToRevealItem(_TapToRevealItem event, Emitter<LessonState> emit) {
+    if (state.currentContent == null) return;
+    if (state.currentContent is TapToRevealLessonContent) {
+      final userTappedItem = event.item;
+      if (userTappedItem == state.selectedTapToRevealItem) {
+        log('You tapped the correct item');
+        // then add this item to completedItems
+        final completedItems = List<Item>.from(
+          (state.completedTapToRevealItems),
+        );
+        completedItems.add(userTappedItem);
+        // And also remove the item from selectedTapToRevealItem
+        final selectedItems = List<Item>.from((state.tapToRevealItems ?? []));
+        selectedItems.remove(userTappedItem);
+        if (selectedItems.isEmpty) {
+          emit(
+            state.copyWith(
+              isTapToRevealCompleted: true,
+              selectedTapToRevealItem: null,
+              completedTapToRevealItems: completedItems,
+              tapToRevealItems: selectedItems,
+            ),
+          );
+        } else {
+          // find next item to play audio
+          emit(
+            state.copyWith(
+              selectedTapToRevealItem: selectedItems.first,
+              completedTapToRevealItems: completedItems,
+              tapToRevealItems: selectedItems,
+              isTapToRevealCompleted:
+                  state.completedTapToRevealItems.length == 2,
+            ),
+          );
+          // _playAudio(selectedItems.first.audioItem, _soundPlayer);
+        }
+      } else {
+        log('You tapped the wrong item');
+      }
+
+      // _playAudio(event.item.audioItem, _soundPlayer);
+    }
+  }
+
   void _onPlayItemAudio(_PlayItemAudio event, Emitter<LessonState> emit) async {
     if (state.currentContent == null) return;
     if (state.currentContent is InfoLessonContent) {
@@ -132,6 +207,10 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
           itemQuestioned: null,
           userSelectedItem: null,
           isAnswerCorrect: null,
+          selectedTapToRevealItem: null,
+          tapToRevealItems: null,
+          completedTapToRevealItems: [],
+          isTapToRevealCompleted: false,
         ),
       );
     }
@@ -151,9 +230,22 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
           itemQuestioned: null,
           userSelectedItem: null,
           isAnswerCorrect: null,
+          selectedTapToRevealItem: null,
+          tapToRevealItems: null,
+          completedTapToRevealItems: [],
+          isTapToRevealCompleted: false,
         ),
       );
     }
+  }
+
+  List<Item> pickTwoRandomItems(List<Item> items) {
+    if (items.length < 2) {
+      return [];
+    }
+
+    final shuffled = List<Item>.from(items)..shuffle();
+    return shuffled.take(2).toList();
   }
 
   // dispose
