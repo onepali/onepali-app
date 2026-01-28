@@ -43,7 +43,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final videoUrl = widget.lessonInformation.video;
-      if (videoUrl.isEmpty) return;
+      if (videoUrl == null || videoUrl.isEmpty) return;
 
       try {
         final file = await _videoCacheManager.getSingleFile(
@@ -153,7 +153,8 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                           ),
 
                           // 2️⃣ Video player on top if playing
-                          if (_controller != null &&
+                          if (widget.lessonInformation.video != null &&
+                              _controller != null &&
                               _controller!.value.isInitialized &&
                               !_isVideoFinished)
                             VideoPlayer(_controller!),

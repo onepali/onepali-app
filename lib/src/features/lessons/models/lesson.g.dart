@@ -26,9 +26,9 @@ InfoLessonContent _$InfoLessonContentFromJson(Map<String, dynamic> json) =>
       nameEn: json['name_en'] as String,
       nameNp: json['name_np'] as String,
       audioWord: json['audio_word'] as String,
-      audioBg: json['audio_bg'] as String,
+      audioBg: json['audio_bg'] as String?,
       image: json['image'] as String,
-      video: json['video'] as String,
+      video: json['video'] as String?,
       bgImageColor: json['bg_image_color'] as String?,
     );
 
@@ -90,6 +90,22 @@ Map<String, dynamic> _$TapToRevealLessonContentToJson(
   'items': instance.items,
 };
 
+DragToMatchLessonContent _$DragToMatchLessonContentFromJson(
+  Map<String, dynamic> json,
+) => DragToMatchLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'drag_to_match',
+);
+
+Map<String, dynamic> _$DragToMatchLessonContentToJson(
+  DragToMatchLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(
@@ -112,6 +128,8 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   image: json['image'] as String,
   question: json['question'] as String,
   audioItem: json['audio_item'] as String,
+  dxRatio: json['dx_ratio'] as num?,
+  dyRatio: json['dy_ratio'] as num?,
 );
 
 Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
@@ -120,4 +138,6 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'image': instance.image,
   'question': instance.question,
   'audio_item': instance.audioItem,
+  'dx_ratio': instance.dxRatio,
+  'dy_ratio': instance.dyRatio,
 };
