@@ -63,8 +63,8 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
       final audioBgAvailable =
           (state.currentContent as InfoLessonContent).audioBg != null;
       // if (!audioBgAvailable) {
-        // await Future.delayed(const Duration(milliseconds: 700));
-        // add(LessonEvent.playItemAudio());
+      // await Future.delayed(const Duration(milliseconds: 700));
+      // add(LessonEvent.playItemAudio());
       // }
     }
   }
@@ -90,7 +90,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
         // select a random item to play audio question
         final randomItem = (items..shuffle()).first;
         emit(state.copyWith(itemQuestioned: randomItem));
-        _playAudio(randomItem.question, _soundPlayer);
+        _playAudio(randomItem.question!, _soundPlayer);
       }
     }
   }
@@ -107,7 +107,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   }
 
   // ------------------------Tap to reveal related content events------------------------
-  void _onPlayTapToReveal(_PlayTapToReveal event, Emitter<LessonState> emit) {
+  Future<void> _onPlayTapToReveal(_PlayTapToReveal event, Emitter<LessonState> emit) async {
     if (state.currentContent == null) return;
     if (state.currentContent is TapToRevealLessonContent) {
       // find two different items to play audio which has audio
@@ -123,18 +123,24 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
         ),
       );
 
-      _playAudio(itemsToPlay.first.audioItem, _soundPlayer);
+      // _playAudio(itemsToPlay.first.question!, _soundPlayer);
+       await _soundPlayer.play(UrlSource(itemsToPlay.first.question!));
 
       print('itemsToPlay: $itemsToPlay');
     }
   }
 
-  void _onTapToRevealItem(_TapToRevealItem event, Emitter<LessonState> emit) {
+  Future<void> _onTapToRevealItem(
+    _TapToRevealItem event,
+    Emitter<LessonState> emit,
+  ) async {
     if (state.currentContent == null) return;
     if (state.currentContent is TapToRevealLessonContent) {
       final userTappedItem = event.item;
-      if (userTappedItem == state.selectedTapToRevealItem) {
+      final isCorrect = userTappedItem == state.selectedTapToRevealItem;
+      if (isCorrect) {
         print('You tapped the corrent item');
+        await _soundPlayer.play(AssetSource("tea_maker/music/correct.mp3"));
         // then add this item to completedItems
         final completedItems = List<Item>.from(
           (state.completedTapToRevealItems),
@@ -154,6 +160,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
           );
         } else {
           // find next item to play audio
+
           emit(
             state.copyWith(
               selectedTapToRevealItem: selectedItems.first,
@@ -163,10 +170,11 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
                   state.completedTapToRevealItems.length == 2,
             ),
           );
-          // _playAudio(selectedItems.first.audioItem, _soundPlayer);
+          // _playAudio(selectedItems.first.question!, _soundPlayer);
+          await _soundPlayer.play(UrlSource(selectedItems.first.question!, ));
         }
       } else {
-        print('You tapped the wrong item');
+       
       }
 
       // _playAudio(event.item.audioItem, _soundPlayer);
@@ -209,6 +217,8 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
 
   void _onPreviousContent(_PreviousContent event, Emitter<LessonState> emit) {
     final lessonDetails = state.lessonDetails;
+    if (_wordPlayer.state == PlayerState.playing) _wordPlayer.stop();
+    if (_soundPlayer.state == PlayerState.playing) _soundPlayer.stop();
     if (lessonDetails == null) return;
 
     final prevIndex = state.currentIndex - 1;
@@ -221,12 +231,15 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   }
 
   List<Item> pickTwoRandomItems(List<Item> items) {
-    if (items.length < 2) {
+    // only items that have a question
+    final validItems = items.where((e) => e.question != null).toList();
+
+    if (validItems.length < 2) {
       return [];
     }
 
-    final shuffled = List<Item>.from(items)..shuffle();
-    return shuffled.take(2).toList();
+    validItems.shuffle();
+    return validItems.take(2).toList();
   }
 
   // dispose
