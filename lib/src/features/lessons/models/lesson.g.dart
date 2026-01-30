@@ -73,6 +73,7 @@ TapToRevealLessonContent _$TapToRevealLessonContentFromJson(
 ) => TapToRevealLessonContent(
   id: json['id'] as String,
   index: (json['index'] as num).toInt(),
+  bgImage: json['bg_image'] as String?,
   type: json['type'] as String? ?? 'tap_to_reveal',
   items:
       (json['items'] as List<dynamic>?)
@@ -86,8 +87,9 @@ Map<String, dynamic> _$TapToRevealLessonContentToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'index': instance.index,
+  'bg_image': instance.bgImage,
   'type': instance.type,
-  'items': instance.items,
+  'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
 DragToMatchLessonContent _$DragToMatchLessonContentFromJson(
@@ -96,6 +98,11 @@ DragToMatchLessonContent _$DragToMatchLessonContentFromJson(
   id: json['id'] as String,
   index: (json['index'] as num).toInt(),
   type: json['type'] as String? ?? 'drag_to_match',
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$DragToMatchLessonContentToJson(
@@ -104,6 +111,7 @@ Map<String, dynamic> _$DragToMatchLessonContentToJson(
   'id': instance.id,
   'index': instance.index,
   'type': instance.type,
+  'items': instance.items,
 };
 
 UnknownLessonContent _$UnknownLessonContentFromJson(
@@ -126,8 +134,10 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   nameEn: json['name_en'] as String,
   nameNp: json['name_np'] as String,
   image: json['image'] as String,
-  question: json['question'] as String,
+  imageOutline: json['image_outline'] as String?,
+  question: json['question'] as String?,
   audioItem: json['audio_item'] as String,
+  audioBg: json['audio_bg'] as String?,
   dxRatio: json['dx_ratio'] as num?,
   dyRatio: json['dy_ratio'] as num?,
 );
@@ -136,8 +146,10 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'name_en': instance.nameEn,
   'name_np': instance.nameNp,
   'image': instance.image,
+  'image_outline': instance.imageOutline,
   'question': instance.question,
   'audio_item': instance.audioItem,
+  'audio_bg': instance.audioBg,
   'dx_ratio': instance.dxRatio,
   'dy_ratio': instance.dyRatio,
 };

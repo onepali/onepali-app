@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
@@ -51,19 +55,24 @@ class _LessonPageState extends State<LessonPage> {
             final lessonContent = contents[index];
             switch (lessonContent) {
               case InfoLessonContent():
-                return InfoLessonView(
-                  key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
-                  lessonInformation: lessonContent,
+                return BlocProvider(
+                  create: (context) =>
+                      InfoLessonContentBloc()
+                        ..add(InfoLessonContentEvent.started(lessonContent)),
+                  child: InfoLessonView(content: lessonContent),
                 );
               case ChooseCorrectLessonContent():
-                return ChooseCorrectLessonView(
-                  key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
-                  lessonInformation: lessonContent,
+                return BlocProvider(
+                  create: (context) => ChooseCorrectLessonContentBloc(),
+                  child: ChooseCorrectLessonView(content: lessonContent),
                 );
               case TapToRevealLessonContent():
-                return TapToRevealLessonView(
-                  lessonBloc: context.read<LessonBloc>(),
+                return BlocProvider(
+                  create: (context) => TapToRevealLessonContentBloc(),
+                  child: TapToRevealLessonView(content: lessonContent),
                 );
+              case DragToMatchLessonContent():
+                return DragToMatchScreen(lessonContent: lessonContent);
               default:
                 return const Center(child: Text('Unknown content type'));
             }
