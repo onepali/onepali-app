@@ -1,13 +1,19 @@
+import 'dart:developer';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:provider/provider.dart';
+import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 
 class ChooseCorrectLessonView extends StatefulWidget {
-  const ChooseCorrectLessonView({super.key, required this.lessonInformation});
-  final ChooseCorrectLessonContent lessonInformation;
+  const ChooseCorrectLessonView({super.key, required this.content});
+
+  final ChooseCorrectLessonContent content;
 
   @override
   State<ChooseCorrectLessonView> createState() =>
@@ -15,113 +21,224 @@ class ChooseCorrectLessonView extends StatefulWidget {
 }
 
 class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
+  AudioPlayer? _questionAudioPlayer;
+  AudioPlayer? _correctAudioPlayer;
+
   @override
   void initState() {
     super.initState();
-    context.read<LessonBloc>().add(LessonEvent.playChooseCorrectItem());
+    context.read<ChooseCorrectLessonContentBloc>().add(
+      ChooseCorrectLessonContentEvent.started(widget.content),
+    );
+  }
+
+  Future<void> _playQuestionAudio(String audioUrl) async {
+    try {
+      await _questionAudioPlayer?.dispose();
+
+      final audioFile = await MediaCacheManager.instance.getSingleFile(
+        audioUrl,
+      );
+      _questionAudioPlayer = AudioPlayer();
+
+      _questionAudioPlayer!.onPlayerComplete.listen((_) {
+        if (!mounted) return;
+        context.read<ChooseCorrectLessonContentBloc>().add(
+          const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
+        );
+      });
+
+      await _questionAudioPlayer!.play(DeviceFileSource(audioFile.path));
+    } catch (e) {
+      log('Error playing question audio: $e');
+      if (!mounted) return;
+      context.read<ChooseCorrectLessonContentBloc>().add(
+        const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
+      );
+    }
+  }
+
+  Future<void> _playCorrectAudio(String audioUrl) async {
+    try {
+      await _correctAudioPlayer?.dispose();
+
+      final audioFile = await MediaCacheManager.instance.getSingleFile(
+        audioUrl,
+      );
+      _correctAudioPlayer = AudioPlayer();
+
+      _correctAudioPlayer!.onPlayerComplete.listen((_) {
+        if (!mounted) return;
+        context.read<ChooseCorrectLessonContentBloc>().add(
+          const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
+        );
+      });
+
+      await _correctAudioPlayer!.play(DeviceFileSource(audioFile.path));
+    } catch (e) {
+      log('Error playing correct audio: $e');
+      if (!mounted) return;
+      context.read<ChooseCorrectLessonContentBloc>().add(
+        const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _questionAudioPlayer?.dispose();
+    _correctAudioPlayer?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final isCorrect =
-        context.watch<LessonBloc>().state.userSelectedItem ==
-            context.watch<LessonBloc>().state.itemQuestioned
-        ? true
-        : false;
 
-    return Center(
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              color: Colors.grey[100],
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Horizontal ListView for cards
-                    SizedBox(
-                      height: size.height * 0.5,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.lessonInformation.items.length,
-                        itemBuilder: (context, index) {
-                          final item = widget.lessonInformation.items[index];
-                          return ItemCard(
-                            item: item,
-                            size: size,
-                            itemCount: widget.lessonInformation.items.length,
-                            index: index,
-                            isSelected:
-                                item ==
-                                context
-                                    .watch<LessonBloc>()
-                                    .state
-                                    .userSelectedItem,
-                          );
-                        },
-                      ),
-                    ),
-                    // Confirm button directly below the list
-                    SizedBox(height: size.height * 0.04),
-                    Visibility(
-                      visible:
-                          context.watch<LessonBloc>().state.userSelectedItem !=
-                          null,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      child: SizedBox(
-                        width: size.width * 0.2, // or any fixed width you want
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (isCorrect) {
-                              context.read<LessonBloc>().add(
-                                LessonEvent.nextContent(),
+    return BlocConsumer<
+      ChooseCorrectLessonContentBloc,
+      ChooseCorrectLessonContentState
+    >(
+      listener: (context, state) {
+        final question = state.currentQuestion?.question;
+        if (state.isQuestionAudioPlaying &&
+            question != null &&
+            question.isNotEmpty) {
+          _playQuestionAudio(question);
+        }
+
+        if (state.isAudioPlaying && state.selectedItem != null) {
+          _playCorrectAudio(state.selectedItem!.audioItem);
+        }
+      },
+      builder: (context, state) {
+        if (state.errorMessage != null) {
+          return _LessonContentError(message: state.errorMessage!);
+        }
+
+        if (state.lessonContent == null || state.currentQuestion == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final content = state.lessonContent!;
+        return Center(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  color: Colors.grey[100],
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: size.height * 0.5,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: content.items.length,
+                            itemBuilder: (context, index) {
+                              final item = content.items[index];
+                              return ItemCard(
+                                item: item,
+                                size: size,
+                                itemCount: content.items.length,
+                                index: index,
+                                isSelected: item == state.selectedItem,
+                                onTap: () {
+                                  context
+                                      .read<ChooseCorrectLessonContentBloc>()
+                                      .add(
+                                        ChooseCorrectLessonContentEvent.itemTapped(
+                                          item,
+                                        ),
+                                      );
+                                },
                               );
-                            } else {
-                              context.read<LessonBloc>().add(
-                                LessonEvent.playChooseCorrectItem(),
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: isCorrect
-                                ? AppColors.kButtonGreen
-                                : AppColors.kButtonRed,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            },
                           ),
-                          child: !isCorrect
-                              ? Text(
-                                  "Try again",
-                                  style: AppStyles.text20PxBold.copyWith(
-                                    color: AppColors.kBlack,
-                                  ),
-                                )
-                              : Icon(
-                                  Icons.check,
-                                  size: 32,
-                                  color: AppColors.kBlack,
-                                ),
                         ),
-                      ),
+                        SizedBox(height: size.height * 0.04),
+                        Visibility(
+                          visible: state.isAnswered,
+                          maintainSize: true,
+                          maintainAnimation: true,
+                          maintainState: true,
+                          child: SizedBox(
+                            width: size.width * 0.2,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (state.isAnswered && state.isCorrect) {
+                                  context.read<LessonBloc>().add(
+                                    const LessonEvent.nextContent(),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: state.isCorrect
+                                    ? AppColors.kButtonGreen
+                                    : AppColors.kButtonRed,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                              ),
+                              child: state.isAnswered && !state.isCorrect
+                                  ? Text(
+                                      'Try again',
+                                      style: AppStyles.text20PxBold.copyWith(
+                                        color: AppColors.kBlack,
+                                      ),
+                                    )
+                                  : state.isAnswered && state.isCorrect
+                                  ? Icon(
+                                      Icons.check,
+                                      size: 32,
+                                      color: AppColors.kBlack,
+                                    )
+                                  : const SizedBox(),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              Positioned(
+                top: size.height * 0.05,
+                right: size.width * 0.05,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgHelper.fromSource(path: Assets.wrong),
+                ),
+              ),
+            ],
           ),
+        );
+      },
+    );
+  }
+}
 
-          Positioned(
-            top: size.height * 0.05,
-            right: size.width * 0.05,
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: SvgHelper.fromSource(path: Assets.wrong),
-            ),
+class _LessonContentError extends StatelessWidget {
+  const _LessonContentError({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, style: AppStyles.text20PxMedium),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              context.read<LessonBloc>().add(const LessonEvent.nextContent());
+            },
+            child: const Text('Continue'),
           ),
         ],
       ),
@@ -137,6 +254,7 @@ class ItemCard extends StatelessWidget {
     required this.itemCount,
     required this.index,
     this.isSelected = false,
+    this.onTap,
   });
 
   final Item item;
@@ -144,8 +262,8 @@ class ItemCard extends StatelessWidget {
   final int itemCount;
   final int index;
   final bool isSelected;
+  final VoidCallback? onTap;
 
-  // Get color based on index
   Color _getCardColor() {
     final colors = [
       Colors.orange.shade300,
@@ -164,13 +282,11 @@ class ItemCard extends StatelessWidget {
     final maxCardWidth = size.width * 0.25;
     final finalCardWidth = cardWidth > maxCardWidth ? maxCardWidth : cardWidth;
 
-    return Container(
-      width: finalCardWidth,
-      margin: EdgeInsets.symmetric(horizontal: size.width * 0.015),
-      child: GestureDetector(
-        onTap: () {
-          context.read<LessonBloc>().add(LessonEvent.chooseItem(item));
-        },
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: finalCardWidth,
+        margin: EdgeInsets.symmetric(horizontal: size.width * 0.015),
         child: Container(
           decoration: BoxDecoration(
             color: _getCardColor(),
@@ -189,7 +305,6 @@ class ItemCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // Nepali name at top
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -207,8 +322,6 @@ class ItemCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-
-              // Image in the middle
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -218,8 +331,6 @@ class ItemCard extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // English name at bottom
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,

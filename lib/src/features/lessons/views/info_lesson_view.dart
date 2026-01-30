@@ -1,58 +1,58 @@
+import 'dart:developer';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
+class MediaCacheManager {
+  static const key = 'mediaCache';
+
+  static CacheManager instance = CacheManager(
+    Config(
+      key,
+      stalePeriod: const Duration(days: 30),
+      maxNrOfCacheObjects: 100,
+      repo: JsonCacheInfoRepository(databaseName: key),
+      fileService: HttpFileService(),
+    ),
+  );
+}
+
 class InfoLessonView extends StatefulWidget {
-  const InfoLessonView({super.key, required this.lessonInformation});
-  final InfoLessonContent lessonInformation;
+  const InfoLessonView({super.key, required this.content});
+
+  final InfoLessonContent content;
 
   @override
   State<InfoLessonView> createState() => _InfoLessonViewState();
 }
 
 class _InfoLessonViewState extends State<InfoLessonView> {
-  VideoPlayerController? _controller;
-  bool _isVideoFinished = false;
-  late CacheManager _videoCacheManager;
-  String? cachedVideoPath;
+  VideoPlayerController? _videoController;
+  AudioPlayer? _audioPlayer;
 
   @override
   void initState() {
     super.initState();
+    _initializeMedia();
+  }
 
-    context.read<LessonBloc>().add(
-      LessonEvent.playInfo(widget.lessonInformation.index),
-    );
-
-    _videoCacheManager = CacheManager(
-      Config(
-        AppConstants.lessonVideoCacheDB,
-        stalePeriod: const Duration(days: AppConstants.lessonVideoCacheDays),
-        maxNrOfCacheObjects: AppConstants.lessonVideoCacheMaxObjects,
-        repo: JsonCacheInfoRepository(
-          databaseName: AppConstants.lessonVideoCacheDB,
-        ),
-        fileService: HttpFileService(),
-      ),
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final videoUrl = widget.lessonInformation.video;
-      if (videoUrl == null || videoUrl.isEmpty) return;
-
-      try {
-        final file = await _videoCacheManager.getSingleFile(
+  Future<void> _initializeMedia() async {
+    try {
+      final videoUrl = widget.content.video;
+      if (videoUrl != null && videoUrl.isNotEmpty) {
+        final videoFile = await MediaCacheManager.instance.getSingleFile(
           videoUrl,
-          headers: {'Cache-Control': 'max-age=604800'},
         );
-        if (!mounted) return;
 
-        final controller = VideoPlayerController.file(file);
+        final controller = VideoPlayerController.file(videoFile);
         await controller.initialize();
 
         if (!mounted) {
@@ -60,43 +60,77 @@ class _InfoLessonViewState extends State<InfoLessonView> {
           return;
         }
 
-        _controller = controller;
-        _controller!.addListener(_videoListener);
-
+        _videoController = controller;
+        _videoController!.addListener(_videoListener);
         setState(() {});
-        _controller!.play();
-      } catch (error) {
-        debugPrint('Failed to load lesson video: $error');
-        if (!mounted) return;
-        setState(() {
-          _controller = null;
-          _isVideoFinished = true;
-        });
-        return;
+        await _videoController!.play();
+      } else {
+        await _playAudio();
       }
-    });
+    } catch (e) {
+      log('Error initializing media: $e');
+    }
   }
 
   void _videoListener() {
-    if (_controller == null || !_controller!.value.isInitialized) return;
+    final controller = _videoController;
+    if (controller == null || !controller.value.isInitialized) return;
 
-    final isFinished =
-        _controller!.value.position >= _controller!.value.duration;
+    final position = controller.value.position;
+    final duration = controller.value.duration;
 
-    if (isFinished && !_isVideoFinished) {
-      if (!mounted) return;
-      setState(() {
-        _isVideoFinished = true;
-      });
-      _controller!.pause();
-      context.read<LessonBloc>().add(LessonEvent.playItemAudio());
+    if (duration.inMilliseconds > 0 &&
+        position >= duration - const Duration(milliseconds: 100)) {
+      controller.removeListener(_videoListener);
+
+      final bloc = context.read<InfoLessonContentBloc>();
+      bloc.add(const InfoLessonContentEvent.videoCompleted());
+      _playAudio();
     }
+  }
+
+  Future<void> _playAudio() async {
+    final bloc = context.read<InfoLessonContentBloc>();
+
+    try {
+      await _audioPlayer?.dispose();
+
+      final audioFile = await MediaCacheManager.instance.getSingleFile(
+        widget.content.audioWord,
+      );
+
+      _audioPlayer = AudioPlayer();
+      bloc.add(const InfoLessonContentEvent.audioStarted());
+
+      await _audioPlayer!.play(DeviceFileSource(audioFile.path));
+    } catch (e) {
+      log('Error playing audio: $e');
+    }
+  }
+
+  Future<void> _replayVideo() async {
+    final controller = _videoController;
+    if (controller == null || !controller.value.isInitialized) return;
+
+    final bloc = context.read<InfoLessonContentBloc>();
+    bloc.add(InfoLessonContentEvent.started(widget.content));
+
+    controller.removeListener(_videoListener);
+    controller.addListener(_videoListener);
+
+    await controller.seekTo(Duration.zero);
+    await controller.play();
+  }
+
+  Future<void> _replayAudio() async {
+    await _playAudio();
   }
 
   @override
   void dispose() {
-    _controller?.removeListener(_videoListener);
-    _controller?.dispose();
+    _videoController?.removeListener(_videoListener);
+    _videoController?.dispose();
+    _audioPlayer?.dispose();
     super.dispose();
   }
 
@@ -104,120 +138,102 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 
-    return Center(
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  onTap: () {
-                    context.read<LessonBloc>().add(
-                      LessonEvent.previousContent(),
-                    );
-                  },
-                  child: SvgHelper.fromSource(path: Assets.leftArrow),
-                ),
-              ),
+    return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
+      builder: (context, state) {
+        if (state.lessonContent == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-              // 👇 VIDEO OR IMAGE
-              Expanded(
-                flex: 4,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return AspectRatio(
-                      aspectRatio:
-                          _controller != null &&
-                              _controller!.value.isInitialized
-                          ? _controller!.value.aspectRatio
+        final content = state.lessonContent!;
+        final videoReady =
+            _videoController != null && _videoController!.value.isInitialized;
+        final showVideo =
+            widget.content.video != null &&
+            !state.isVideoCompleted &&
+            videoReady;
+
+        return Center(
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.previousContent(),
+                        );
+                      },
+                      child: SvgHelper.fromSource(path: Assets.leftArrow),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: AspectRatio(
+                      aspectRatio: showVideo
+                          ? _videoController!.value.aspectRatio
                           : 16 / 9,
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          // 1️⃣ Image as background
                           InkWell(
-                            onTap: () {
-                              if (_controller != null) {
-                                setState(() {
-                                  _isVideoFinished = false;
-                                });
-                                _controller!.seekTo(Duration.zero);
-                                _controller!.play();
-                              }
-                            },
+                            onTap: showVideo ? null : _replayVideo,
                             child: CustomCachedImage(
-                              imageUrl: widget.lessonInformation.image,
-                              fit: BoxFit.contain, // cover the container
+                              imageUrl: content.image,
+                              fit: BoxFit.contain,
                             ),
                           ),
-
-                          // 2️⃣ Video player on top if playing
-                          if (widget.lessonInformation.video != null &&
-                              _controller != null &&
-                              _controller!.value.isInitialized &&
-                              !_isVideoFinished)
-                            VideoPlayer(_controller!),
+                          if (showVideo) VideoPlayer(_videoController!),
                         ],
                       ),
-                    );
-                  },
-                ),
-              ),
-              // Information Section
-              Expanded(
-                flex: 2,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.lessonInformation.nameNp,
-                      style: AppStyles.text32PxBold,
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      widget.lessonInformation.nameEn,
-                      style: AppStyles.text20PxMedium,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(content.nameNp, style: AppStyles.text32PxBold),
+                        const SizedBox(height: 20),
+                        Text(content.nameEn, style: AppStyles.text20PxMedium),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: _replayAudio,
+                          child: SizedBox(
+                            width: size.width * 0.08,
+                            height: size.width * 0.08,
+                            child: SvgHelper.fromSource(path: Assets.sound),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    InkWell(
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: InkWell(
                       onTap: () {
                         context.read<LessonBloc>().add(
-                          LessonEvent.playItemAudio(),
+                          const LessonEvent.nextContent(),
                         );
                       },
-                      child: SizedBox(
-                        width: size.width * 0.08,
-                        height: size.width * 0.08,
-                        child: SvgHelper.fromSource(path: Assets.sound),
-                      ),
+                      child: SvgHelper.fromSource(path: Assets.rightArrow),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-
-              Expanded(
-                flex: 1,
+              Positioned(
+                top: size.height * 0.05,
+                right: size.width * 0.05,
                 child: InkWell(
-                  onTap: () {
-                    context.read<LessonBloc>().add(LessonEvent.nextContent());
-                  },
-                  child: SvgHelper.fromSource(path: Assets.rightArrow),
+                  onTap: () => Navigator.of(context).pop(),
+                  child: SvgHelper.fromSource(path: Assets.wrong),
                 ),
               ),
             ],
           ),
-
-          Positioned(
-            top: size.height * 0.05,
-            right: size.width * 0.05,
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: SvgHelper.fromSource(path: Assets.wrong),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
