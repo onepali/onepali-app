@@ -9,10 +9,12 @@ abstract class DragToMatchState with _$DragToMatchState {
     @Default(0) int currentHintIndex,
     @Default(false) bool isPlayingHint,
     @Default(false) bool isPlayingAudio,
+    @Default(false) bool showNepaliword,
     String? currentPlayingAudioId,
     @Default(DragStatus.idle) DragStatus dragStatus,
     String? draggedItemId,
     String? targetOutlineId,
+    String? currentTargetItemId,
   }) = _DragToMatchState;
 }
 
@@ -21,6 +23,7 @@ abstract class ItemPosition with _$ItemPosition {
   const factory ItemPosition({
     required String id,
     required String itemId,
+    required String nameNp,
     required double x,
     required double y,
     required bool isMatched,

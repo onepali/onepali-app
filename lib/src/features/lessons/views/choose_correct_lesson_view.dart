@@ -112,88 +112,120 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
           child: Stack(
             children: [
               Positioned.fill(
-                child: Container(
-                  color: Colors.grey[100],
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Horizontal ListView for cards
-                        SizedBox(
-                          height: size.height * 0.5,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: content.items.length,
-                            itemBuilder: (context, index) {
-                              final item = content.items[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  context
-                                      .read<ChooseCorrectLessonContentBloc>()
-                                      .add(
-                                        ChooseCorrectLessonContentEvent.itemTapped(
-                                          item,
-                                        ),
-                                      );
-                                },
-                                child: ItemCard(
-                                  item: item,
-                                  size: size,
-                                  itemCount: content.items.length,
-                                  index: index,
-                                  isSelected: item == state.selectedItem,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        // Confirm button directly below the list
-                        SizedBox(height: size.height * 0.04),
-                        Visibility(
-                          visible: state.isAnswered,
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          child: SizedBox(
-                            width: size.width * 0.2,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (state.isAnswered && state.isCorrect) {
-                                  context.read<LessonBloc>().add(
-                                    LessonEvent.nextContent(),
-                                  );
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: state.isCorrect
-                                    ? AppColors.kButtonGreen
-                                    : AppColors.kButtonRed,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                              ),
-                              child: state.isAnswered && !state.isCorrect
-                                  ? Text(
-                                      "Try again",
-                                      style: AppStyles.text20PxBold.copyWith(
-                                        color: AppColors.kBlack,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () async {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.previousContent(),
+                          );
+                        },
+                        child: SvgHelper.fromSource(path: Assets.leftArrow),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.6,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                for (final item in content.items)
+                                  Stack(
+                                    children: [
+                                      ItemCard(
+                                        item: item,
+                                        size: size,
+                                        itemCount: content.items.length,
+                                        index: content.items.indexOf(item),
+                                        isSelected: item == state.selectedItem,
+                                        onTap: () {
+                                          context
+                                              .read<
+                                                ChooseCorrectLessonContentBloc
+                                              >()
+                                              .add(
+                                                ChooseCorrectLessonContentEvent.itemTapped(
+                                                  item,
+                                                ),
+                                              );
+                                        },
                                       ),
-                                    )
-                                  : state.isAnswered && state.isCorrect
-                                  ? Icon(
-                                      Icons.check,
-                                      size: 32,
-                                      color: AppColors.kBlack,
-                                    )
-                                  : SizedBox(),
+                                      // Positioned(
+                                      //   bottom: -20,
+                                      //   left: 0,
+                                      //   right: 0,
+                                      //   child: SvgHelper.fromSource(
+                                      //     path: Assets.sound1,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: size.height * 0.04),
+                          Visibility(
+                            visible: state.isAnswered,
+                            maintainSize: true,
+                            maintainAnimation: true,
+                            maintainState: true,
+                            child: SizedBox(
+                              width: size.width * 0.2,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (state.isAnswered && state.isCorrect) {
+                                    context.read<LessonBloc>().add(
+                                      LessonEvent.nextContent(),
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: state.isCorrect
+                                      ? AppColors.kButtonGreen
+                                      : AppColors.kButtonRed,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                ),
+                                child: state.isAnswered && !state.isCorrect
+                                    ? Text(
+                                        "Try again",
+                                        style: AppStyles.text20PxBold.copyWith(
+                                          color: AppColors.kBlack,
+                                        ),
+                                      )
+                                    : state.isAnswered && state.isCorrect
+                                    ? Icon(
+                                        Icons.check,
+                                        size: 32,
+                                        color: AppColors.kBlack,
+                                      )
+                                    : SizedBox(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
+                        child: SvgHelper.fromSource(path: Assets.rightArrow),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -258,70 +290,66 @@ class ItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: finalCardWidth,
-        margin: EdgeInsets.symmetric(horizontal: size.width * 0.015),
-        child: Container(
-          decoration: BoxDecoration(
-            color: _getCardColor(),
-            borderRadius: BorderRadius.circular(20),
-            border: isSelected
-                ? Border.all(color: Colors.yellowAccent, width: 4)
-                : null,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
+        height: size.height * 0.50,
+        margin: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.only(bottom: 8, top: 8),
+        decoration: BoxDecoration(
+          color: _getCardColor(),
+          borderRadius: BorderRadius.circular(20),
+          border: isSelected
+              ? Border.all(color: Colors.yellowAccent, width: 2)
+              : null,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(30),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Nepali name at top
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                item.nameNp,
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineLarge?.copyWith(color: AppColors.kWhite),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Nepali name at top
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Text(
-                  item.nameNp,
-                  style: TextStyle(
-                    fontSize: finalCardWidth * 0.12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+            ),
+
+            // Image in the middle
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CustomCachedImage(
+                  imageUrl: item.image,
+                  width: finalCardWidth * 0.7,
+                  fit: BoxFit.contain,
                 ),
               ),
-      
-              // Image in the middle
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CustomCachedImage(
-                    imageUrl: item.image,
-                    width: finalCardWidth * 0.7,
-                  ),
-                ),
+            ),
+
+            // English name at bottom
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                item.nameEn,
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineSmall?.copyWith(color: AppColors.kWhite),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-      
-              // English name at bottom
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Text(
-                  item.nameEn,
-                  style: TextStyle(
-                    fontSize: finalCardWidth * 0.1,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

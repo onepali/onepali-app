@@ -64,6 +64,7 @@ class Assets {
   static String check = 'check'.icon;
   static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;
+  static String sound1 = 'sound1'.icon;
   static String play = 'play'.icon;
   static String redo = 'redo'.icon;
   static String meta = 'meta'.icon;

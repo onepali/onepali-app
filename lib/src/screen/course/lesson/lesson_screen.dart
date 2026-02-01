@@ -75,27 +75,19 @@ class LessonScreen extends StatelessWidget {
                     isLocked: lesson.progress == 'locked',
                     isCompleted: lesson.progress == 'completed',
                     onTap: () {
-                      // TODO: navigate to lesson content
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) {
-                            return LessonPage();
-                          },
+                          builder:
+                              (_) => LessonContentScreen(
+                                lesson: lesson,
+                                lessons: chapter.lessons,
+                                initialIndex: 0,
+                                hasSound: true,
+                                nameNp: chapter.nameNp,
+                                nameEn: chapter.nameEn,
+                              ),
                         ),
                       );
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder:
-                      //         (_) => LessonContentScreen(
-                      //           lesson: lesson,
-                      //           lessons: chapter.lessons,
-                      //           initialIndex: 0,
-                      //           hasSound: true,
-                      //           nameNp: chapter.nameNp,
-                      //           nameEn: chapter.nameEn,
-                      //         ),
-                      //   ),
-                      // );
                     },
                   ),
                 );

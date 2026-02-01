@@ -13,7 +13,8 @@ import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class LessonPage extends StatefulWidget {
-  const LessonPage({super.key});
+  const LessonPage({super.key,required this.lessonId});
+  final String lessonId;
 
   @override
   State<LessonPage> createState() => _LessonPageState();
@@ -30,21 +31,23 @@ class _LessonPageState extends State<LessonPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          LessonBloc()..add(LessonEvent.started('F0j1Xen6IIrF8gkYP3s1')),
+          LessonBloc()..add(LessonEvent.started(widget.lessonId)),
       child: Scaffold(
         body: BlocBuilder<LessonBloc, LessonState>(
           builder: (context, state) {
             if (state.lessonDetails == null) {
               return Center(child: CircularProgressIndicator());
             }
-            final index = state.currentIndex;
-            final lessonContent = state.lessonDetails!.contents[index];
+            if (state.currentContent == null) {
+              return Center(child: CircularProgressIndicator());
+            }
+            final lessonContent = state.currentContent!;
+
             switch (lessonContent) {
               case InfoLessonContent():
                 return BlocProvider(
-                  create: (context) =>
-                      InfoLessonContentBloc()
-                        ..add(InfoLessonContentEvent.started(lessonContent)),
+                  key: ValueKey('info_${state.currentIndex}'),
+                  create: (context) => InfoLessonContentBloc(),
                   child: InfoLessonView(content: lessonContent),
                 );
               case ChooseCorrectLessonContent():
@@ -57,7 +60,7 @@ class _LessonPageState extends State<LessonPage> {
                   create: (context) => TapToRevealLessonContentBloc(),
                   child: TapToRevealLessonView(content: lessonContent),
                 );
-                case DragToMatchLessonContent():
+              case DragToMatchLessonContent():
                 return DragToMatchScreen(lessonContent: lessonContent);
               default:
                 return Center(child: Text('Unknown content type'));

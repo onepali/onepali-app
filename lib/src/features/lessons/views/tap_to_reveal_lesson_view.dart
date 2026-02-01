@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
@@ -121,14 +122,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
         final content = state.content!;
 
         if (state.allQuestionsCompleted) {
-          return _CompletionScreen(
-            onClose: () => Navigator.of(context).pop(),
-            onReplay: () {
-              context.read<TapToRevealLessonContentBloc>().add(
-                TapToRevealLessonContentEvent.started(widget.content),
-              );
-            },
-          );
+          context.read<LessonBloc>().add(LessonEvent.nextContent());
         }
 
         return Stack(
@@ -173,16 +167,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 ),
               );
             }),
-            // Center(
-            //   child: Wrap(
-            //     children: [
 
-            //       for (var item in state.content!.items)
-            //         Text('${item.nameEn}'),
-
-            //     ],
-            //   ),
-            // ),
             if (state.currentQuestion != null)
               Positioned(
                 top: size.height * 0.05,
@@ -208,7 +193,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 top: size.height * 0.05 + 50,
                 right: 0,
                 left: 0,
-                child: _CorrectNameDisplay(
+                child: CorrectNameDisplay(
                   nameNp: state.tappedItem!.nameNp,
                   nameEn: state.tappedItem!.nameEn,
                 ),
@@ -231,17 +216,17 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   }
 }
 
-class _CorrectNameDisplay extends StatefulWidget {
+class CorrectNameDisplay extends StatefulWidget {
   final String nameNp;
   final String nameEn;
 
-  const _CorrectNameDisplay({required this.nameNp, required this.nameEn});
+  const CorrectNameDisplay({super.key, required this.nameNp, required this.nameEn});
 
   @override
-  State<_CorrectNameDisplay> createState() => _CorrectNameDisplayState();
+  State<CorrectNameDisplay> createState() => _CorrectNameDisplayState();
 }
 
-class _CorrectNameDisplayState extends State<_CorrectNameDisplay>
+class _CorrectNameDisplayState extends State<CorrectNameDisplay>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -432,77 +417,6 @@ class _PositionedItemCardState extends State<_PositionedItemCard>
             fit: BoxFit.contain,
             type: SvgSourceType.network,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CompletionScreen extends StatelessWidget {
-  final VoidCallback onClose;
-  final VoidCallback onReplay;
-
-  const _CompletionScreen({required this.onClose, required this.onReplay});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withOpacity(0.8),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.celebration, size: 120, color: Colors.amber),
-            const SizedBox(height: 24),
-            const Text(
-              'Great Job!',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'You completed all questions!',
-              style: TextStyle(fontSize: 24, color: Colors.white70),
-            ),
-            const SizedBox(height: 48),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: onReplay,
-                  icon: const Icon(Icons.replay),
-                  label: const Text('Play Again'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                ),
-                const SizedBox(width: 24),
-                ElevatedButton.icon(
-                  onPressed: onClose,
-                  icon: const Icon(Icons.close),
-                  label: const Text('Close'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

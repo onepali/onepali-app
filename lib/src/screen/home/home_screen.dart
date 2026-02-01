@@ -93,7 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildRecommendedLessonCard(context),
               Gaps.verticalGapOf(10),
             ],
-            _buildLessons(context),
+            // _buildLessons(context),
+            CourseScreen()
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
             if (!isGuest) ...[
