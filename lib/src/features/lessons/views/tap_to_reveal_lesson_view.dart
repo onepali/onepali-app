@@ -23,6 +23,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   AudioPlayer? _questionAudioPlayer;
   AudioPlayer? _itemAudioPlayer;
   AudioPlayer? _wrongSfxPlayer;
+  bool _advancedAfterCompletion = false;
 
   @override
   void initState() {
@@ -129,19 +130,16 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
           return const Center(child: CircularProgressIndicator());
         }
 
+        if (state.allQuestionsCompleted && !_advancedAfterCompletion) {
+          _advancedAfterCompletion = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            context.read<LessonBloc>().add(const LessonEvent.nextContent());
+          });
+        }
+
         final content = state.content!;
         final bgImage = content.bgImage;
-
-        if (state.allQuestionsCompleted) {
-          return _CompletionScreen(
-            onClose: () => Navigator.of(context).pop(),
-            onReplay: () {
-              context.read<TapToRevealLessonContentBloc>().add(
-                TapToRevealLessonContentEvent.started(widget.content),
-              );
-            },
-          );
-        }
 
         return Stack(
           children: [
@@ -201,7 +199,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 top: size.height * 0.05 + 50,
                 right: 0,
                 left: 0,
-                child: _CorrectNameDisplay(
+                child: CorrectNameDisplay(
                   nameNp: state.tappedItem!.nameNp,
                   nameEn: state.tappedItem!.nameEn,
                 ),
@@ -246,17 +244,21 @@ class _LessonContentError extends StatelessWidget {
   }
 }
 
-class _CorrectNameDisplay extends StatefulWidget {
-  const _CorrectNameDisplay({required this.nameNp, required this.nameEn});
+class CorrectNameDisplay extends StatefulWidget {
+  const CorrectNameDisplay({
+    super.key,
+    required this.nameNp,
+    required this.nameEn,
+  });
 
   final String nameNp;
   final String nameEn;
 
   @override
-  State<_CorrectNameDisplay> createState() => _CorrectNameDisplayState();
+  State<CorrectNameDisplay> createState() => _CorrectNameDisplayState();
 }
 
-class _CorrectNameDisplayState extends State<_CorrectNameDisplay>
+class _CorrectNameDisplayState extends State<CorrectNameDisplay>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -442,77 +444,6 @@ class _PositionedItemCardState extends State<_PositionedItemCard>
             fit: BoxFit.contain,
             type: SvgSourceType.network,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CompletionScreen extends StatelessWidget {
-  const _CompletionScreen({required this.onClose, required this.onReplay});
-
-  final VoidCallback onClose;
-  final VoidCallback onReplay;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withValues(alpha: 0.8),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.celebration, size: 120, color: Colors.amber),
-            const SizedBox(height: 24),
-            const Text(
-              'Great Job!',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'You completed all questions!',
-              style: TextStyle(fontSize: 24, color: Colors.white70),
-            ),
-            const SizedBox(height: 48),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: onReplay,
-                  icon: const Icon(Icons.replay),
-                  label: const Text('Play Again'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                ),
-                const SizedBox(width: 24),
-                ElevatedButton.icon(
-                  onPressed: onClose,
-                  icon: const Icon(Icons.close),
-                  label: const Text('Close'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

@@ -81,19 +81,6 @@ class LessonScreen extends StatelessWidget {
                         AppRoutes.lessonPage,
                         arguments: {'lessonId': lessonId},
                       );
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder:
-                      //         (_) => LessonContentScreen(
-                      //           lesson: lesson,
-                      //           lessons: chapter.lessons,
-                      //           initialIndex: 0,
-                      //           hasSound: true,
-                      //           nameNp: chapter.nameNp,
-                      //           nameEn: chapter.nameEn,
-                      //         ),
-                      //   ),
-                      // );
                     },
                   ),
                 );

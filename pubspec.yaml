@@ -93,6 +93,7 @@ flutter:
     - assets/brand/
     - assets/audio/
     - assets/audio/sfx/
+    - assets/audio/sounds/
     - assets/fonts/
     - assets/json/
     - assets/lottie/

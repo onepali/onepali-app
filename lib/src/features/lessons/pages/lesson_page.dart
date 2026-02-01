@@ -43,36 +43,35 @@ class _LessonPageState extends State<LessonPage> {
             if (state.errorMessage != null) {
               return Center(child: Text(state.errorMessage!));
             }
-            if (state.lessonDetails == null) {
+            if (state.lessonDetails == null || state.currentContent == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            final contents = state.lessonDetails!.contents;
-            if (contents.isEmpty) {
-              return const Center(child: Text('No lesson content available'));
-            }
 
-            final index = state.currentIndex.clamp(0, contents.length - 1);
-            final lessonContent = contents[index];
+            final lessonContent = state.currentContent!;
             switch (lessonContent) {
               case InfoLessonContent():
                 return BlocProvider(
-                  create: (context) =>
-                      InfoLessonContentBloc()
-                        ..add(InfoLessonContentEvent.started(lessonContent)),
+                  key: ValueKey('info_${state.currentIndex}'),
+                  create: (context) => InfoLessonContentBloc(),
                   child: InfoLessonView(content: lessonContent),
                 );
               case ChooseCorrectLessonContent():
                 return BlocProvider(
+                  key: ValueKey('choose_${state.currentIndex}'),
                   create: (context) => ChooseCorrectLessonContentBloc(),
                   child: ChooseCorrectLessonView(content: lessonContent),
                 );
               case TapToRevealLessonContent():
                 return BlocProvider(
+                  key: ValueKey('tap_${state.currentIndex}'),
                   create: (context) => TapToRevealLessonContentBloc(),
                   child: TapToRevealLessonView(content: lessonContent),
                 );
               case DragToMatchLessonContent():
-                return DragToMatchScreen(lessonContent: lessonContent);
+                return DragToMatchScreen(
+                  key: ValueKey('drag_${state.currentIndex}'),
+                  lessonContent: lessonContent,
+                );
               default:
                 return const Center(child: Text('Unknown content type'));
             }
