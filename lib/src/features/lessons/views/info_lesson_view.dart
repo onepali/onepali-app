@@ -41,6 +41,9 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   void initState() {
     super.initState();
+    context.read<InfoLessonContentBloc>().add(
+      InfoLessonContentEvent.started(widget.content),
+    );
     _initializeMedia();
   }
 
@@ -145,12 +148,10 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         }
 
         final content = state.lessonContent!;
+        final showVideo =
+            widget.content.video != null && !state.isVideoCompleted;
         final videoReady =
             _videoController != null && _videoController!.value.isInitialized;
-        final showVideo =
-            widget.content.video != null &&
-            !state.isVideoCompleted &&
-            videoReady;
 
         return Center(
           child: Stack(
@@ -159,7 +160,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         context.read<LessonBloc>().add(
                           const LessonEvent.previousContent(),
@@ -170,22 +171,31 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                   ),
                   Expanded(
                     flex: 4,
-                    child: AspectRatio(
-                      aspectRatio: showVideo
-                          ? _videoController!.value.aspectRatio
-                          : 16 / 9,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          InkWell(
-                            onTap: showVideo ? null : _replayVideo,
-                            child: CustomCachedImage(
-                              imageUrl: content.image,
-                              fit: BoxFit.contain,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: AspectRatio(
+                        aspectRatio: showVideo && videoReady
+                            ? _videoController!.value.aspectRatio
+                            : 16 / 9,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            InkWell(
+                              onTap: showVideo ? null : _replayVideo,
+                              child: CustomCachedImage(
+                                imageUrl: content.image,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          if (showVideo) VideoPlayer(_videoController!),
-                        ],
+                            if (showVideo && videoReady)
+                              VideoPlayer(_videoController!)
+                            else
+                              CustomCachedImage(
+                                imageUrl: content.image,
+                                fit: BoxFit.cover,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -194,9 +204,21 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(content.nameNp, style: AppStyles.text32PxBold),
+                        Text(
+                          content.nameNp,
+                          style: AppStyles.text32PxBold.copyWith(
+                            color: AppColors.kDrawerBgColor,
+                            fontFamily: AppConstants.kMuktaFont,
+                            fontSize: 64,
+                          ),
+                        ),
                         const SizedBox(height: 20),
-                        Text(content.nameEn, style: AppStyles.text20PxMedium),
+                        Text(
+                          content.nameEn,
+                          style: AppStyles.text20PxMedium.copyWith(
+                            fontSize: 32,
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         InkWell(
                           onTap: _replayAudio,
@@ -211,7 +233,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         context.read<LessonBloc>().add(
                           const LessonEvent.nextContent(),
@@ -225,7 +247,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
               Positioned(
                 top: size.height * 0.05,
                 right: size.width * 0.05,
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
                   child: SvgHelper.fromSource(path: Assets.wrong),
                 ),

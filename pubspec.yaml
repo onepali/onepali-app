@@ -28,7 +28,7 @@ dependencies:
   # Firebase Services
   firebase_core: ^4.7.0
   firebase_auth: ^6.5.1
-  cloud_firestore: ^6.3.0
+  cloud_firestore: ^6.5.0
   firebase_app_check: ^0.4.3
   firebase_storage: ^13.0.3
   firebase_messaging: ^16.2.0
@@ -93,6 +93,7 @@ flutter:
     - assets/brand/
     - assets/audio/
     - assets/audio/sfx/
+    - assets/audio/sounds/
     - assets/fonts/
     - assets/json/
     - assets/lottie/
