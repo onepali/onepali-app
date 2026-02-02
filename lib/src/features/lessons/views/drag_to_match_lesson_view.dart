@@ -50,34 +50,35 @@ class _DragToMatchView extends StatelessWidget {
     final Size padding = Size(size.width * 0.05, size.height * 0.05);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: SafeArea(
-        child: BlocBuilder<DragToMatchBloc, DragToMatchState>(
-          builder: (context, state) {
-            final allMatched =
-                state.matchedItemIds.length == state.itemPositions.length;
+      body: BlocBuilder<DragToMatchBloc, DragToMatchState>(
+        builder: (context, state) {
+          final allMatched =
+              state.matchedItemIds.length == state.itemPositions.length;
 
-            return Stack(
-              children: [
-                // 1. Draggable Items Row (Top)
-                // We use AnimatedOpacity to fade it out when finished
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: allMatched ? 0.0 : 1.0,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: padding.height),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: state.itemPositions.map((itemPos) {
-                          final item = items.firstWhere(
-                            (i) => i.nameEn == itemPos.itemId,
-                          );
+          return Stack(
+            children: [
+              // 1. Draggable Items Row (Top)
+              // We use AnimatedOpacity to fade it out when finished
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity: allMatched ? 0.0 : 1.0,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: padding.height),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: state.itemPositions.map((itemPos) {
+                        final item = items.firstWhere(
+                          (i) => i.nameEn == itemPos.itemId,
+                        );
 
-                          final isCurrentTarget =
-                              state.currentTargetItemId == itemPos.itemId;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 4),
+                        final isCurrentTarget =
+                            state.currentTargetItemId == itemPos.itemId;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Opacity(
+                            opacity: isCurrentTarget ? 1.0 : 0.6,
                             child: _DraggableItem(
                               position: itemPos,
                               item: item,
@@ -88,56 +89,77 @@ class _DragToMatchView extends StatelessWidget {
                                   state.currentPlayingAudioId == itemPos.itemId,
                               isCurrentTarget: isCurrentTarget,
                             ),
-                          );
-                        }).toList(),
-                      ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ),
+
+              // 2. Animated Outline Target Row
+              // This will move from the bottom area to the center
+              AnimatedAlign(
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeInOutBack, // Adds a nice "pop" effect
+                alignment: allMatched
+                    ? Alignment.center
+                    : const Alignment(0, 0.8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: state.outlinePositions.map((outlinePos) {
+                    final item = items.firstWhere(
+                      (i) => i.nameEn == outlinePos.itemId,
+                    );
+                    return _OutlineTarget(
+                      position: outlinePos,
+                      item: item,
+                      isMatched: outlinePos.isMatched,
+                      totalItems: state.outlinePositions.length,
+                    );
+                  }).toList(),
+                ),
+              ),
+
+              if (state.showNepaliword)
+                Positioned.fill(
+                  child: Center(
+                    child: CorrectNameDisplay(
+                      nameNp: state.itemPositions
+                          .firstWhere(
+                            (i) => i.itemId == state.currentTargetItemId,
+                          )
+                          .nameNp,
+                      nameEn: state.itemPositions
+                          .firstWhere((i) => i.itemId == state.draggedItemId)
+                          .nameNp,
                     ),
                   ),
                 ),
 
-                // 2. Animated Outline Target Row
-                // This will move from the bottom area to the center
-                AnimatedAlign(
-                  duration: const Duration(milliseconds: 800),
-                  curve: Curves.easeInOutBack, // Adds a nice "pop" effect
-                  alignment: allMatched
-                      ? Alignment.center
-                      : const Alignment(0, 0.8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: state.outlinePositions.map((outlinePos) {
-                      final item = items.firstWhere(
-                        (i) => i.nameEn == outlinePos.itemId,
-                      );
-                      return _OutlineTarget(
-                        position: outlinePos,
-                        item: item,
-                        isMatched: outlinePos.isMatched,
-                        totalItems: state.outlinePositions.length,
-                      );
-                    }).toList(),
-                  ),
+              // Close button
+              Positioned(
+                top: size.height * 0.03,
+                right: size.width * 0.03,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: SvgHelper.fromSource(path: Assets.wrong),
                 ),
-
-                if (state.showNepaliword)
-                  Positioned.fill(
-                    child: Center(
-                      child: CorrectNameDisplay(
-                        nameNp: state.itemPositions
-                            .firstWhere(
-                              (i) => i.itemId == state.currentTargetItemId,
-                            )
-                            .nameNp,
-                        nameEn: state.itemPositions
-                            .firstWhere((i) => i.itemId == state.draggedItemId)
-                            .nameNp,
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+              ),
+           if(state.showCat)   Align(
+                alignment: Alignment.bottomRight,
+                child: Image.asset(
+                  Assets.goodRemark1,
+                  height: size.height * 0.5,
+                  width: size.height * 0.5,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

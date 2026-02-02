@@ -11,36 +11,38 @@ part 'tutorial_bloc.freezed.dart';
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final player = AudioPlayer();
   List<String> ingridents = [
-    'assets/svg/teapot.svg',
-    'assets/svg/water_glass.svg',
-    'assets/svg/milk.svg',
-    'assets/svg/ginger.svg',
-    'assets/svg/tea.svg',
-    'assets/svg/spoon.svg',
+    'assets/tea_maker/svg/teapot.svg',
+    'assets/tea_maker/svg/water_glass.svg',
+    'assets/tea_maker/svg/milk.svg',
+    'assets/tea_maker/svg/ginger.svg',
+    'assets/tea_maker/svg/tea.svg',
+    'assets/tea_maker/svg/spoon.svg',
   ];
   List<String> onDraggedItems = [
-    'assets/svg/teapot1.svg',
-    'assets/svg/teapot_water.svg',
-    'assets/svg/teapot_milk.svg',
-    'assets/svg/teapot_ginger.svg',
-    'assets/svg/teapot_tea.svg',
-    'assets/svg/teapot_spoon.svg',
+    'assets/tea_maker/svg/teapot1.svg',
+    'assets/tea_maker/svg/teapot_water.svg',
+    'assets/tea_maker/svg/teapot_milk.svg',
+    'assets/tea_maker/svg/teapot_ginger.svg',
+    'assets/tea_maker/svg/teapot_tea.svg',
+    'assets/tea_maker/svg/teapot_spoon.svg',
   ];
   List<String> audioFiles = [
-    'music/making-tea-3.mp3', // paani hala
-    'music/making-tea-4.mp3', // dudh hala
+    'tea_maker/music/making-tea-3.mp3', // paani hala
+    'tea_maker/music/making-tea-4.mp3', // dudh hala
 
-    'music/making-tea-6.mp3', // aduwa hala
-    'music/making-tea-7.mp3', // chiya patti rakha
-    'music/making-tea-8.mp3', // chamcha le chalau
+    'tea_maker/music/making-tea-6.mp3', // aduwa hala
+    'tea_maker/music/making-tea-7.mp3', // chiya patti rakha
+    'tea_maker/music/making-tea-8.mp3', // chamcha le chalau
   ];
   // 'music/making-tea-5.mp3',// aba umala
   TutorialBloc() : super(TutorialState()) {
     //1: Started
     on<_Started>((event, emit) async {
-      emit(state.copyWith(ingredients: ingridents));
+      emit(state.copyWith(ingredients: ingridents,
+      index: 0,
+      ));
 
-      await player.play(AssetSource('music/making-tea-1.mp3'));
+      await player.play(AssetSource('tea_maker/music/making-tea-1.mp3'));
       emit(state.copyWith(showBearWithTea: true));
       // after player is completed hide the bear and show the huncha
       await player.onPlayerComplete.first;
@@ -48,10 +50,10 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     });
     on<_HunchaButtonPressed>((event, emit) async {
       emit(state.copyWith(showHunchButton: false));
-      await player.play(AssetSource('music/making-tea-ok.mp3'));
+      await player.play(AssetSource('tea_maker/music/making-tea-ok.mp3'));
       await player.onPlayerComplete.first;
       emit(state.copyWith(showDragIndicator: true));
-      await player.play(AssetSource('music/making-tea-2.mp3'));
+      await player.play(AssetSource('tea_maker/music/making-tea-2.mp3'));
       await player.onPlayerComplete.first;
       emit(state.copyWith(index: 0));
     });
@@ -60,7 +62,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       // also if player is playing don't do anything
       if (player.state == PlayerState.playing) return;
       droppedItemText(event.index, emit);
-      unawaited(player.play(AssetSource('music/correct.mp3')));
+      unawaited(player.play(AssetSource('tea_maker/music/correct.mp3')));
       emit(
         state.copyWith(
           index: state.index + 1,
@@ -71,11 +73,11 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       if (event.index == 2) {
         // aba paani umala
         await Future.delayed(const Duration(seconds: 2));
-        await player.play(AssetSource('music/making-tea-5.mp3'));
+        await player.play(AssetSource('tea_maker/music/making-tea-5.mp3'));
         await player.onPlayerComplete.first;
         emit(
           state.copyWith(
-            draggedItemPath: 'assets/svg/teapot_vapour.svg',
+            draggedItemPath: 'assets/tea_maker/svg/teapot_vapour.svg',
             droppedItem: 'उमाल',
           ),
         );
@@ -84,7 +86,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       } else if (event.index == 5) {
         await Future.delayed(const Duration(seconds: 2));
         emit(state.copyWith(teaReady: true));
-        await player.play(AssetSource('music/making-tea-9.mp3'));
+        await player.play(AssetSource('tea_maker/music/making-tea-9.mp3'));
         await player.onPlayerComplete.first;
       } else {
         await playNextAudio(event.index, audioFiles[event.index]);

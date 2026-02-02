@@ -230,8 +230,8 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
               ),
 
               Positioned(
-                top: size.height * 0.05,
-                right: size.width * 0.05,
+                top: size.height * 0.03,
+                right: size.width * 0.03,
                 child: GestureDetector(
                   onTap: () {
                     //pop

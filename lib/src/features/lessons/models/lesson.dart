@@ -24,6 +24,17 @@ abstract class LessonContentBase {
 
 @Freezed(unionKey: "type")
 class LessonContent with _$LessonContent implements LessonContentBase {
+  @FreezedUnionValue('intro')
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LessonContent.intro({
+    required String id,
+    required int index,
+    @Default('intro') String type,
+    String? bgColor,
+    String? image,
+    String? audio,
+  }) = IntroLessonContent;
+
   @FreezedUnionValue('info')
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory LessonContent.info({

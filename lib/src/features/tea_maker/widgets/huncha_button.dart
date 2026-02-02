@@ -57,7 +57,7 @@ class _HunchaButtonState extends State<HunchaButton>
           },
           child: ScaleTransition(
             scale: _animation,
-            child: SvgPicture.asset('assets/svg/huncha.svg'),
+            child: SvgPicture.asset('assets/tea_maker/svg/huncha.svg'),
           ),
         );
       },

@@ -200,8 +200,8 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
               ),
 
             Positioned(
-              top: size.height * 0.05,
-              right: size.width * 0.05,
+              top: size.height * 0.03,
+              right: size.width * 0.03,
               child: InkWell(
                 onTap: () {
                   Navigator.of(context).pop();

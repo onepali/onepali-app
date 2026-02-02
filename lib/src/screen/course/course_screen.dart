@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
+import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
@@ -306,14 +308,7 @@ class CourseScreenState extends State<CourseScreen> {
                             children: [
                               for (final lesson in data)
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            LessonPage(lessonId: lesson['id']),
-                                      ),
-                                    );
-                                  },
+                                  onTap: () => _onTapLesson(lesson),
                                   child: Container(
                                     padding: const EdgeInsets.all(16),
                                     width:
@@ -321,7 +316,9 @@ class CourseScreenState extends State<CourseScreen> {
                                         0.35,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: Colors.green,
+                                      color: lesson['bg_color'] != null
+                                          ? colorFromHex(lesson['bg_color'])
+                                          : Colors.green,
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.black.withAlpha(30),
@@ -337,7 +334,7 @@ class CourseScreenState extends State<CourseScreen> {
                                         ),
                                         SizedBox(height: 32),
                                         Text(
-                                          data[index]['name'],
+                                          lesson['name'],
                                           style: AppStyles.text16PxMedium
                                               .copyWith(
                                                 fontSize: isTabletLandscape
@@ -365,5 +362,13 @@ class CourseScreenState extends State<CourseScreen> {
         return SizedBox();
       },
     );
+  }
+
+  void _onTapLesson(QueryDocumentSnapshot<Map<String, dynamic>> lesson) {
+    if (lesson.data()['name'] == 'Tea making') {
+      Utility.navigateMaterialRoute(context, KitchenPage());
+      return;
+    }
+    Utility.navigateMaterialRoute(context, LessonPage(lessonId: lesson.id));
   }
 }

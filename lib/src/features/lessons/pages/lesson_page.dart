@@ -10,10 +10,11 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class LessonPage extends StatefulWidget {
-  const LessonPage({super.key,required this.lessonId});
+  const LessonPage({super.key, required this.lessonId});
   final String lessonId;
 
   @override
@@ -39,11 +40,13 @@ class _LessonPageState extends State<LessonPage> {
               return Center(child: CircularProgressIndicator());
             }
             if (state.currentContent == null) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Text('No content found'));
             }
             final lessonContent = state.currentContent!;
 
             switch (lessonContent) {
+              case IntroLessonContent():
+                return IntroLessonView(content: lessonContent);
               case InfoLessonContent():
                 return BlocProvider(
                   key: ValueKey('info_${state.currentIndex}'),

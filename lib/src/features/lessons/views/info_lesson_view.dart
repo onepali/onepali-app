@@ -196,7 +196,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                                   onTap: showVideo ? null : _replayVideo,
                                   child: CustomCachedImage(
                                     imageUrl: content.image,
-                                    fit: BoxFit.cover,
+                                    // fit: BoxFit.cover,
                                   ),
                                 ),
 
@@ -205,11 +205,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                                     _videoController != null &&
                                     _videoController!.value.isInitialized)
                                   VideoPlayer(_videoController!)
-                                else
-                                  CustomCachedImage(
-                                    imageUrl: content.image,
-                                    fit: BoxFit.cover,
-                                  ),
+                                
                               ],
                             ),
                           ),

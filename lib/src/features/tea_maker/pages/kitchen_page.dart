@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/custom_svg.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
 import 'package:onepali/src/features/tea_maker/widgets/bear_with_tea.dart';
 import 'package:onepali/src/features/tea_maker/widgets/dragged_item.dart';
@@ -48,7 +51,7 @@ class _KitchenPageState extends State<KitchenPage> {
       height: height,
       child: IgnorePointer(
         child: SvgPicture.asset(
-          'assets/svg/drag_indicator.svg',
+          'assets/tea_maker/svg/drag_indicator.svg',
           fit: BoxFit.fill,
         ),
       ),
@@ -87,8 +90,9 @@ class _KitchenPageState extends State<KitchenPage> {
                     if (!state.teaReady)
                       Container(
                         height: size.height * 0.25,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.05,
+                        padding: EdgeInsets.only(
+                          left: size.width * 0.05,
+                          right: size.width * 0.1,
                         ),
                         decoration: BoxDecoration(
                           color: Color(0xFF007D28),
@@ -113,7 +117,7 @@ class _KitchenPageState extends State<KitchenPage> {
                               // color: Colors.pink,
                               key: index == 0 ? _taePotKey : null,
                               margin: const EdgeInsets.only(right: 10),
-                              width: size.height * 0.2,
+                              // width: size.height * 0.2,
                               height: size.height * 0.2,
                               child: Stack(
                                 children: [
@@ -153,7 +157,7 @@ class _KitchenPageState extends State<KitchenPage> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: SvgPicture.asset(
-                                          'assets/svg/check.svg',
+                                          'assets/tea_maker/svg/check.svg',
                                         ),
                                       ),
                                     ),
@@ -171,7 +175,7 @@ class _KitchenPageState extends State<KitchenPage> {
                         // decoration: BoxDecoration(color: Colors.orange),
                         child: SvgPicture.asset(
                           key: _stoveKey,
-                          'assets/svg/stove.svg',
+                          'assets/tea_maker/svg/stove.svg',
                           height: size.height * 0.25,
                           fit: BoxFit.fitHeight,
                         ),
@@ -226,34 +230,43 @@ class _KitchenPageState extends State<KitchenPage> {
                 if (state.showDragIndicator) buildIndicator(size),
                 // Ingredient Text
                 if (state.droppedItem != null && !state.teaReady)
+                  // Positioned(
+                  //   right: 0,
+                  //   left: 0,
+                  //   bottom: size.height * 0.09,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       Container(
+                  //         padding: const EdgeInsets.symmetric(
+                  //           horizontal: 20,
+                  //           vertical: 8,
+                  //         ),
+                  //         decoration: BoxDecoration(
+                  //           color: Color(0xFF003893),
+                  //           borderRadius: BorderRadius.circular(50),
+                  //         ),
+                  //         alignment: Alignment.center,
+                  //         child: Text(
+                  //           state.droppedItem!,
+                  //           textAlign: TextAlign.center,
+                  //           style: TextStyle(
+                  //             color: Colors.white,
+                  //             fontSize: 40,
+                  //             fontWeight: FontWeight.bold,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Positioned(
-                    right: 0,
-                    left: 0,
+                      right: 0,
+                      left: 0,
                     bottom: size.height * 0.09,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF003893),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            state.droppedItem!,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: CorrectNameDisplay(
+                      nameNp: state.droppedItem!,
+                      nameEn: '',
                     ),
                   ),
                 if (state.teaReady)
@@ -261,9 +274,23 @@ class _KitchenPageState extends State<KitchenPage> {
                     alignment: Alignment.bottomCenter,
                     child: GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
-                      child: SvgPicture.asset('assets/svg/bear_taking_tea.svg'),
+                      child: SvgPicture.asset(
+                        'assets/tea_maker/svg/bear_taking_tea.svg',
+                      ),
                     ),
                   ),
+
+                Positioned(
+                  top: size.height * 0.03,
+                  right: size.width * 0.03,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: SvgHelper.fromSource(
+                      path: Assets.wrong,
+                      type: SvgSourceType.asset,
+                    ),
+                  ),
+                ),
               ],
             ),
           );

@@ -284,7 +284,11 @@ LessonContent _$LessonContentFromJson(
   Map<String, dynamic> json
 ) {
         switch (json['type']) {
-                  case 'info':
+                  case 'intro':
+          return IntroLessonContent.fromJson(
+            json
+          );
+                case 'info':
           return InfoLessonContent.fromJson(
             json
           );
@@ -395,10 +399,11 @@ extension LessonContentPatterns on LessonContent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case InfoLessonContent() when info != null:
+case IntroLessonContent() when intro != null:
+return intro(_that);case InfoLessonContent() when info != null:
 return info(_that);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that);case DragToMatchLessonContent() when dragToMatch != null:
@@ -421,10 +426,11 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( UnknownLessonContent value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( UnknownLessonContent value)  unknown,}){
 final _that = this;
 switch (_that) {
-case InfoLessonContent():
+case IntroLessonContent():
+return intro(_that);case InfoLessonContent():
 return info(_that);case ChooseCorrectLessonContent():
 return chooseCorrect(_that);case TapToRevealLessonContent():
 return tapToReveal(_that);case DragToMatchLessonContent():
@@ -446,10 +452,11 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( UnknownLessonContent value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( UnknownLessonContent value)?  unknown,}){
 final _that = this;
 switch (_that) {
-case InfoLessonContent() when info != null:
+case IntroLessonContent() when intro != null:
+return intro(_that);case InfoLessonContent() when info != null:
 return info(_that);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that);case DragToMatchLessonContent() when dragToMatch != null:
@@ -471,9 +478,10 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case InfoLessonContent() when info != null:
+case IntroLessonContent() when intro != null:
+return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio);case InfoLessonContent() when info != null:
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that.id,_that.index,_that.bgImage,_that.type,_that.items);case DragToMatchLessonContent() when dragToMatch != null:
@@ -496,9 +504,10 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
 switch (_that) {
-case InfoLessonContent():
+case IntroLessonContent():
+return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio);case InfoLessonContent():
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent():
 return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent():
 return tapToReveal(_that.id,_that.index,_that.bgImage,_that.type,_that.items);case DragToMatchLessonContent():
@@ -520,9 +529,10 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
 switch (_that) {
-case InfoLessonContent() when info != null:
+case IntroLessonContent() when intro != null:
+return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio);case InfoLessonContent() when info != null:
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that.id,_that.index,_that.bgImage,_that.type,_that.items);case DragToMatchLessonContent() when dragToMatch != null:
@@ -532,6 +542,85 @@ return unknown(_that.id,_that.index,_that.type);case _:
 
 }
 }
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class IntroLessonContent implements LessonContent {
+  const IntroLessonContent({required this.id, required this.index, this.type = 'intro', this.bgColor, this.image, this.audio});
+  factory IntroLessonContent.fromJson(Map<String, dynamic> json) => _$IntroLessonContentFromJson(json);
+
+@override final  String id;
+@override final  int index;
+@override@JsonKey() final  String type;
+ final  String? bgColor;
+ final  String? image;
+ final  String? audio;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$IntroLessonContentCopyWith<IntroLessonContent> get copyWith => _$IntroLessonContentCopyWithImpl<IntroLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$IntroLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IntroLessonContent&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.type, type) || other.type == type)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.image, image) || other.image == image)&&(identical(other.audio, audio) || other.audio == audio));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,index,type,bgColor,image,audio);
+
+@override
+String toString() {
+  return 'LessonContent.intro(id: $id, index: $index, type: $type, bgColor: $bgColor, image: $image, audio: $audio)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $IntroLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $IntroLessonContentCopyWith(IntroLessonContent value, $Res Function(IntroLessonContent) _then) = _$IntroLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int index, String type, String? bgColor, String? image, String? audio
+});
+
+
+
+
+}
+/// @nodoc
+class _$IntroLessonContentCopyWithImpl<$Res>
+    implements $IntroLessonContentCopyWith<$Res> {
+  _$IntroLessonContentCopyWithImpl(this._self, this._then);
+
+  final IntroLessonContent _self;
+  final $Res Function(IntroLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? type = null,Object? bgColor = freezed,Object? image = freezed,Object? audio = freezed,}) {
+  return _then(IntroLessonContent(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as String?,audio: freezed == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
 
 }
 

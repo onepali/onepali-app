@@ -21,7 +21,9 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   }
 
   Future<void> _onStarted(_Started event, Emitter<LessonState> emit) async {
-    emit(state.copyWith(lessonId: event.lessonId));
+    emit(state.copyWith(
+      status: LessonStatus.loading,
+      lessonId: event.lessonId));
     await emit.forEach(
       LessonRepository().watchLessonWithContents(event.lessonId),
       onData: (lessonDetail) {
@@ -32,11 +34,14 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
           currentContent: lessonDetail.contents.isNotEmpty
               ? lessonDetail.contents[0]
               : null,
+          status: LessonStatus.success,
         );
       },
       onError: (error, _) {
         log(error.toString());
-        return state;
+        return state.copyWith(
+          status: LessonStatus.failure,
+        );
       },
     );
   }

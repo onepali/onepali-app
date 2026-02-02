@@ -104,6 +104,7 @@ class Assets {
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
+  static String goodRemark1 = 'good_cat1'.remark;
 
   /// [Home] Menu
   static String games = 'game'.icon;

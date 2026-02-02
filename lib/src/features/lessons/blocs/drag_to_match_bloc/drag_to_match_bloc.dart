@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 part 'drag_to_match_state.dart';
@@ -266,6 +267,9 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       if (state.matchedItemIds.length == _items.length) {
         // Game complete!
         print('🎉 All items matched! Game complete!');
+       await Future.delayed(const Duration(seconds: 2));
+        emit(state.copyWith(showCat: true));
+        _audioPlayer.play(AssetSource(Assets.goodFeedback));
       } else {
         // Play next hint after successful match
         await Future.delayed(const Duration(seconds: 2));

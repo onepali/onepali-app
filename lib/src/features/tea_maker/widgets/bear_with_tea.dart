@@ -13,7 +13,7 @@ class BearWithTea extends StatelessWidget {
       builder: (context, state) {
         return state.showBearWithTea
             ? SvgPicture.asset(
-                'assets/svg/bear_with_tea.svg',
+                'assets/tea_maker/svg/bear_with_tea.svg',
                 height: size.height * 0.5,
               )
             : SizedBox.shrink();
