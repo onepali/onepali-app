@@ -281,7 +281,6 @@ class CourseScreenState extends State<CourseScreen> {
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final data = snapshot.data!.docs;
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

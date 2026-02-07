@@ -5,12 +5,17 @@ import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content
 import 'package:onepali/src/features/lessons/blocs/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/letter_selection_page.dart';
+import 'package:onepali/src/features/lessons/views/letter_tracing_view.dart';
+import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class LessonPage extends StatefulWidget {
@@ -47,6 +52,7 @@ class _LessonPageState extends State<LessonPage> {
             switch (lessonContent) {
               case IntroLessonContent():
                 return IntroLessonView(content: lessonContent);
+              // return LetterSelectionScreen();
               case InfoLessonContent():
                 return BlocProvider(
                   key: ValueKey('info_${state.currentIndex}'),
@@ -65,6 +71,14 @@ class _LessonPageState extends State<LessonPage> {
                 );
               case DragToMatchLessonContent():
                 return DragToMatchScreen(lessonContent: lessonContent);
+              case TapToPopLessonContent():
+                return BlocProvider(
+                  create: (context) =>
+                      TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
+                  child: TapToPopLessonView(content: lessonContent),
+                );
+              case CharTracingLessonContent():
+                return NewLetterTracingPage(content: lessonContent);
               default:
                 return Center(child: Text('Unknown content type'));
             }

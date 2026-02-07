@@ -304,6 +304,14 @@ LessonContent _$LessonContentFromJson(
           return DragToMatchLessonContent.fromJson(
             json
           );
+                case 'tap_to_pop':
+          return TapToPopLessonContent.fromJson(
+            json
+          );
+                case 'char_tracing':
+          return CharTracingLessonContent.fromJson(
+            json
+          );
                 case 'unknown':
           return UnknownLessonContent.fromJson(
             json
@@ -399,7 +407,7 @@ extension LessonContentPatterns on LessonContent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( TapToPopLessonContent value)?  tapToPop,TResult Function( CharTracingLessonContent value)?  charTracing,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
@@ -407,7 +415,9 @@ return intro(_that);case InfoLessonContent() when info != null:
 return info(_that);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that);case DragToMatchLessonContent() when dragToMatch != null:
-return dragToMatch(_that);case UnknownLessonContent() when unknown != null:
+return dragToMatch(_that);case TapToPopLessonContent() when tapToPop != null:
+return tapToPop(_that);case CharTracingLessonContent() when charTracing != null:
+return charTracing(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return orElse();
 
@@ -426,7 +436,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( UnknownLessonContent value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( TapToPopLessonContent value)  tapToPop,required TResult Function( CharTracingLessonContent value)  charTracing,required TResult Function( UnknownLessonContent value)  unknown,}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent():
@@ -434,7 +444,9 @@ return intro(_that);case InfoLessonContent():
 return info(_that);case ChooseCorrectLessonContent():
 return chooseCorrect(_that);case TapToRevealLessonContent():
 return tapToReveal(_that);case DragToMatchLessonContent():
-return dragToMatch(_that);case UnknownLessonContent():
+return dragToMatch(_that);case TapToPopLessonContent():
+return tapToPop(_that);case CharTracingLessonContent():
+return charTracing(_that);case UnknownLessonContent():
 return unknown(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -452,7 +464,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( UnknownLessonContent value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( TapToPopLessonContent value)?  tapToPop,TResult? Function( CharTracingLessonContent value)?  charTracing,TResult? Function( UnknownLessonContent value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
@@ -460,7 +472,9 @@ return intro(_that);case InfoLessonContent() when info != null:
 return info(_that);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that);case DragToMatchLessonContent() when dragToMatch != null:
-return dragToMatch(_that);case UnknownLessonContent() when unknown != null:
+return dragToMatch(_that);case TapToPopLessonContent() when tapToPop != null:
+return tapToPop(_that);case CharTracingLessonContent() when charTracing != null:
+return charTracing(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return null;
 
@@ -478,14 +492,16 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String? bgImage,  String? bgColor,  String type,  List<Item> items)?  tapToPop,TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio);case InfoLessonContent() when info != null:
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that.id,_that.index,_that.bgImage,_that.type,_that.items);case DragToMatchLessonContent() when dragToMatch != null:
-return dragToMatch(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent() when unknown != null:
+return dragToMatch(_that.id,_that.index,_that.type,_that.items);case TapToPopLessonContent() when tapToPop != null:
+return tapToPop(_that.id,_that.index,_that.bgImage,_that.bgColor,_that.type,_that.items);case CharTracingLessonContent() when charTracing != null:
+return charTracing(_that.nameEn,_that.nameNp,_that.id,_that.index,_that.bgImage,_that.bgColor,_that.audioBg,_that.audioItem,_that.type);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return orElse();
 
@@ -504,14 +520,16 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String? bgImage,  String? bgColor,  String type,  List<Item> items)  tapToPop,required TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)  charTracing,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
 switch (_that) {
 case IntroLessonContent():
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio);case InfoLessonContent():
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent():
 return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent():
 return tapToReveal(_that.id,_that.index,_that.bgImage,_that.type,_that.items);case DragToMatchLessonContent():
-return dragToMatch(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent():
+return dragToMatch(_that.id,_that.index,_that.type,_that.items);case TapToPopLessonContent():
+return tapToPop(_that.id,_that.index,_that.bgImage,_that.bgColor,_that.type,_that.items);case CharTracingLessonContent():
+return charTracing(_that.nameEn,_that.nameNp,_that.id,_that.index,_that.bgImage,_that.bgColor,_that.audioBg,_that.audioItem,_that.type);case UnknownLessonContent():
 return unknown(_that.id,_that.index,_that.type);case _:
   throw StateError('Unexpected subclass');
 
@@ -529,14 +547,16 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String? bgImage,  String? bgColor,  String type,  List<Item> items)?  tapToPop,TResult? Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio);case InfoLessonContent() when info != null:
 return info(_that.id,_that.index,_that.type,_that.nameEn,_that.nameNp,_that.audioWord,_that.audioBg,_that.image,_that.video,_that.bgImageColor);case ChooseCorrectLessonContent() when chooseCorrect != null:
 return chooseCorrect(_that.id,_that.index,_that.type,_that.items);case TapToRevealLessonContent() when tapToReveal != null:
 return tapToReveal(_that.id,_that.index,_that.bgImage,_that.type,_that.items);case DragToMatchLessonContent() when dragToMatch != null:
-return dragToMatch(_that.id,_that.index,_that.type,_that.items);case UnknownLessonContent() when unknown != null:
+return dragToMatch(_that.id,_that.index,_that.type,_that.items);case TapToPopLessonContent() when tapToPop != null:
+return tapToPop(_that.id,_that.index,_that.bgImage,_that.bgColor,_that.type,_that.items);case CharTracingLessonContent() when charTracing != null:
+return charTracing(_that.nameEn,_that.nameNp,_that.id,_that.index,_that.bgImage,_that.bgColor,_that.audioBg,_that.audioItem,_that.type);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return null;
 
@@ -957,6 +977,176 @@ as List<Item>,
 }
 
 /// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class TapToPopLessonContent implements LessonContent {
+  const TapToPopLessonContent({required this.id, required this.index, this.bgImage, this.bgColor, this.type = 'tap_to_pop', final  List<Item> items = const []}): _items = items;
+  factory TapToPopLessonContent.fromJson(Map<String, dynamic> json) => _$TapToPopLessonContentFromJson(json);
+
+@override final  String id;
+@override final  int index;
+ final  String? bgImage;
+ final  String? bgColor;
+@override@JsonKey() final  String type;
+ final  List<Item> _items;
+@JsonKey() List<Item> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TapToPopLessonContentCopyWith<TapToPopLessonContent> get copyWith => _$TapToPopLessonContentCopyWithImpl<TapToPopLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TapToPopLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapToPopLessonContent&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.bgImage, bgImage) || other.bgImage == bgImage)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._items, _items));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,index,bgImage,bgColor,type,const DeepCollectionEquality().hash(_items));
+
+@override
+String toString() {
+  return 'LessonContent.tapToPop(id: $id, index: $index, bgImage: $bgImage, bgColor: $bgColor, type: $type, items: $items)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TapToPopLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $TapToPopLessonContentCopyWith(TapToPopLessonContent value, $Res Function(TapToPopLessonContent) _then) = _$TapToPopLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int index, String? bgImage, String? bgColor, String type, List<Item> items
+});
+
+
+
+
+}
+/// @nodoc
+class _$TapToPopLessonContentCopyWithImpl<$Res>
+    implements $TapToPopLessonContentCopyWith<$Res> {
+  _$TapToPopLessonContentCopyWithImpl(this._self, this._then);
+
+  final TapToPopLessonContent _self;
+  final $Res Function(TapToPopLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? bgImage = freezed,Object? bgColor = freezed,Object? type = null,Object? items = null,}) {
+  return _then(TapToPopLessonContent(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,bgImage: freezed == bgImage ? _self.bgImage : bgImage // ignore: cast_nullable_to_non_nullable
+as String?,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<Item>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class CharTracingLessonContent implements LessonContent {
+  const CharTracingLessonContent({this.nameEn = "", this.nameNp = "", required this.id, required this.index, this.bgImage, this.bgColor, this.audioBg, this.audioItem, this.type = 'char_tracing'});
+  factory CharTracingLessonContent.fromJson(Map<String, dynamic> json) => _$CharTracingLessonContentFromJson(json);
+
+@JsonKey() final  String nameEn;
+@JsonKey() final  String nameNp;
+@override final  String id;
+@override final  int index;
+ final  String? bgImage;
+ final  String? bgColor;
+ final  String? audioBg;
+ final  String? audioItem;
+@override@JsonKey() final  String type;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CharTracingLessonContentCopyWith<CharTracingLessonContent> get copyWith => _$CharTracingLessonContentCopyWithImpl<CharTracingLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CharTracingLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharTracingLessonContent&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.bgImage, bgImage) || other.bgImage == bgImage)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.type, type) || other.type == type));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,id,index,bgImage,bgColor,audioBg,audioItem,type);
+
+@override
+String toString() {
+  return 'LessonContent.charTracing(nameEn: $nameEn, nameNp: $nameNp, id: $id, index: $index, bgImage: $bgImage, bgColor: $bgColor, audioBg: $audioBg, audioItem: $audioItem, type: $type)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CharTracingLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $CharTracingLessonContentCopyWith(CharTracingLessonContent value, $Res Function(CharTracingLessonContent) _then) = _$CharTracingLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String nameEn, String nameNp, String id, int index, String? bgImage, String? bgColor, String? audioBg, String? audioItem, String type
+});
+
+
+
+
+}
+/// @nodoc
+class _$CharTracingLessonContentCopyWithImpl<$Res>
+    implements $CharTracingLessonContentCopyWith<$Res> {
+  _$CharTracingLessonContentCopyWithImpl(this._self, this._then);
+
+  final CharTracingLessonContent _self;
+  final $Res Function(CharTracingLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? id = null,Object? index = null,Object? bgImage = freezed,Object? bgColor = freezed,Object? audioBg = freezed,Object? audioItem = freezed,Object? type = null,}) {
+  return _then(CharTracingLessonContent(
+nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
+as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,bgImage: freezed == bgImage ? _self.bgImage : bgImage // ignore: cast_nullable_to_non_nullable
+as String?,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_nullable_to_non_nullable
+as String?,audioItem: freezed == audioItem ? _self.audioItem : audioItem // ignore: cast_nullable_to_non_nullable
+as String?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
 @JsonSerializable()
 
 class UnknownLessonContent implements LessonContent {
@@ -1036,7 +1226,7 @@ mixin _$Item {
  String get nameEn; String get nameNp; String get image; String? get imageOutline; String? get question;// eg where is the cat
  String get audioItem;// Cat pronunciation
  String? get audioBg;// eg cat sound meww, dog sound barking
- num? get dxRatio; num? get dyRatio;
+ num? get dxRatio; num? get dyRatio; bool get isCorrect;
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1049,16 +1239,16 @@ $ItemCopyWith<Item> get copyWith => _$ItemCopyWithImpl<Item>(this as Item, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio);
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio,isCorrect);
 
 @override
 String toString() {
-  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio)';
+  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, isCorrect: $isCorrect)';
 }
 
 
@@ -1069,7 +1259,7 @@ abstract mixin class $ItemCopyWith<$Res>  {
   factory $ItemCopyWith(Item value, $Res Function(Item) _then) = _$ItemCopyWithImpl;
 @useResult
 $Res call({
- String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio
+ String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, bool isCorrect
 });
 
 
@@ -1086,7 +1276,7 @@ class _$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? isCorrect = null,}) {
   return _then(_self.copyWith(
 nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
@@ -1097,7 +1287,8 @@ as String?,audioItem: null == audioItem ? _self.audioItem : audioItem // ignore:
 as String,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_nullable_to_non_nullable
 as String?,dxRatio: freezed == dxRatio ? _self.dxRatio : dxRatio // ignore: cast_nullable_to_non_nullable
 as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nullable_to_non_nullable
-as num?,
+as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -1182,10 +1373,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect);case _:
   return orElse();
 
 }
@@ -1203,10 +1394,10 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.q
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect)  $default,) {final _that = this;
 switch (_that) {
 case _Item():
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1223,10 +1414,10 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.q
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect)?  $default,) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect);case _:
   return null;
 
 }
@@ -1238,7 +1429,7 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.q
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Item implements Item {
-  const _Item({required this.nameEn, required this.nameNp, required this.image, this.imageOutline, this.question, required this.audioItem, this.audioBg, this.dxRatio, this.dyRatio});
+  const _Item({required this.nameEn, required this.nameNp, required this.image, this.imageOutline, this.question, required this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.isCorrect = false});
   factory _Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
 @override final  String nameEn;
@@ -1253,6 +1444,7 @@ class _Item implements Item {
 // eg cat sound meww, dog sound barking
 @override final  num? dxRatio;
 @override final  num? dyRatio;
+@override@JsonKey() final  bool isCorrect;
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
@@ -1267,16 +1459,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio);
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio,isCorrect);
 
 @override
 String toString() {
-  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio)';
+  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, isCorrect: $isCorrect)';
 }
 
 
@@ -1287,7 +1479,7 @@ abstract mixin class _$ItemCopyWith<$Res> implements $ItemCopyWith<$Res> {
   factory _$ItemCopyWith(_Item value, $Res Function(_Item) _then) = __$ItemCopyWithImpl;
 @override @useResult
 $Res call({
- String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio
+ String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, bool isCorrect
 });
 
 
@@ -1304,7 +1496,7 @@ class __$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? isCorrect = null,}) {
   return _then(_Item(
 nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
@@ -1315,7 +1507,8 @@ as String?,audioItem: null == audioItem ? _self.audioItem : audioItem // ignore:
 as String,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_nullable_to_non_nullable
 as String?,dxRatio: freezed == dxRatio ? _self.dxRatio : dxRatio // ignore: cast_nullable_to_non_nullable
 as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nullable_to_non_nullable
-as num?,
+as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
