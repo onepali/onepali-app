@@ -116,37 +116,38 @@ class _KitchenPageState extends State<KitchenPage> {
                             (index) => Container(
                               // color: Colors.pink,
                               key: index == 0 ? _taePotKey : null,
-                              margin: const EdgeInsets.only(right: 10),
-                              // width: size.height * 0.2,
-                              height: size.height * 0.2,
+
+                              width: size.height * 0.2,
+                              // height: size.height * 0.2,
                               child: Stack(
                                 children: [
-                                  Center(
-                                    child: Draggable<Map<int, String>>(
-                                      data: {index: state.ingredients[index]},
-                                      feedback: Material(
-                                        color: Colors.transparent,
-                                        child: SvgPicture.asset(
+                                  Positioned.fill(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 24),
+                                      child: Draggable<Map<int, String>>(
+                                        data: {index: state.ingredients[index]},
+                                        feedback: SvgPicture.asset(
                                           state.ingredients[index],
                                         ),
-                                      ),
-                                      onDragStarted: () {
-                                        // On drag start
-                                      },
-                                      onDragEnd: (details) {
-                                        // On drag end
-                                      },
-                                      childWhenDragging: SvgPicture.asset(
-                                        state.ingredients[index],
-                                        colorFilter: ColorFilter.mode(
-                                          Colors.grey,
-                                          BlendMode.modulate,
+                                        onDragStarted: () {
+                                          // On drag start
+                                        },
+                                        onDragEnd: (details) {
+                                          // On drag end
+                                        },
+                                        childWhenDragging: SvgPicture.asset(
+                                          state.ingredients[index],
+                                          colorFilter: ColorFilter.mode(
+                                            Colors.grey,
+                                            BlendMode.modulate,
+                                          ),
                                         ),
-                                      ),
-                                      child: SizedBox(
-                                        child: Ingridient(
-                                          ingridient: state.ingredients[index],
-                                          isSelected: state.index == index,
+                                        child: SizedBox(
+                                          child: Ingridient(
+                                            ingridient:
+                                                state.ingredients[index],
+                                            isSelected: state.index == index,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -261,8 +262,8 @@ class _KitchenPageState extends State<KitchenPage> {
                   //   ),
                   // ),
                   Positioned(
-                      right: 0,
-                      left: 0,
+                    right: 0,
+                    left: 0,
                     bottom: size.height * 0.09,
                     child: CorrectNameDisplay(
                       nameNp: state.droppedItem!,

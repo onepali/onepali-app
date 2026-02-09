@@ -1226,7 +1226,7 @@ mixin _$Item {
  String get nameEn; String get nameNp; String get image; String? get imageOutline; String? get question;// eg where is the cat
  String get audioItem;// Cat pronunciation
  String? get audioBg;// eg cat sound meww, dog sound barking
- num? get dxRatio; num? get dyRatio; bool get isCorrect;
+ num? get dxRatio; num? get dyRatio; bool get isCorrect; String? get bgColor;
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1239,16 +1239,16 @@ $ItemCopyWith<Item> get copyWith => _$ItemCopyWithImpl<Item>(this as Item, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio,isCorrect);
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio,isCorrect,bgColor);
 
 @override
 String toString() {
-  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, isCorrect: $isCorrect)';
+  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, isCorrect: $isCorrect, bgColor: $bgColor)';
 }
 
 
@@ -1259,7 +1259,7 @@ abstract mixin class $ItemCopyWith<$Res>  {
   factory $ItemCopyWith(Item value, $Res Function(Item) _then) = _$ItemCopyWithImpl;
 @useResult
 $Res call({
- String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, bool isCorrect
+ String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, bool isCorrect, String? bgColor
 });
 
 
@@ -1276,7 +1276,7 @@ class _$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? isCorrect = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? isCorrect = null,Object? bgColor = freezed,}) {
   return _then(_self.copyWith(
 nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
@@ -1288,7 +1288,8 @@ as String,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_
 as String?,dxRatio: freezed == dxRatio ? _self.dxRatio : dxRatio // ignore: cast_nullable_to_non_nullable
 as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nullable_to_non_nullable
 as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -1373,10 +1374,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect,  String? bgColor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect,_that.bgColor);case _:
   return orElse();
 
 }
@@ -1394,10 +1395,10 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.q
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect,  String? bgColor)  $default,) {final _that = this;
 switch (_that) {
 case _Item():
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect,_that.bgColor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1414,10 +1415,10 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.q
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nameEn,  String nameNp,  String image,  String? imageOutline,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  bool isCorrect,  String? bgColor)?  $default,) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.isCorrect,_that.bgColor);case _:
   return null;
 
 }
@@ -1429,7 +1430,7 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.imageOutline,_that.q
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Item implements Item {
-  const _Item({required this.nameEn, required this.nameNp, required this.image, this.imageOutline, this.question, required this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.isCorrect = false});
+  const _Item({required this.nameEn, required this.nameNp, required this.image, this.imageOutline, this.question, required this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.isCorrect = false, this.bgColor});
   factory _Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
 @override final  String nameEn;
@@ -1445,6 +1446,7 @@ class _Item implements Item {
 @override final  num? dxRatio;
 @override final  num? dyRatio;
 @override@JsonKey() final  bool isCorrect;
+@override final  String? bgColor;
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
@@ -1459,16 +1461,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio,isCorrect);
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,imageOutline,question,audioItem,audioBg,dxRatio,dyRatio,isCorrect,bgColor);
 
 @override
 String toString() {
-  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, isCorrect: $isCorrect)';
+  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, imageOutline: $imageOutline, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, isCorrect: $isCorrect, bgColor: $bgColor)';
 }
 
 
@@ -1479,7 +1481,7 @@ abstract mixin class _$ItemCopyWith<$Res> implements $ItemCopyWith<$Res> {
   factory _$ItemCopyWith(_Item value, $Res Function(_Item) _then) = __$ItemCopyWithImpl;
 @override @useResult
 $Res call({
- String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, bool isCorrect
+ String nameEn, String nameNp, String image, String? imageOutline, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, bool isCorrect, String? bgColor
 });
 
 
@@ -1496,7 +1498,7 @@ class __$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? isCorrect = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? imageOutline = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? isCorrect = null,Object? bgColor = freezed,}) {
   return _then(_Item(
 nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
@@ -1508,7 +1510,8 @@ as String,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_
 as String?,dxRatio: freezed == dxRatio ? _self.dxRatio : dxRatio // ignore: cast_nullable_to_non_nullable
 as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nullable_to_non_nullable
 as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

@@ -1,5 +1,6 @@
 part of 'letter_tracing_bloc.dart';
 
+
 @freezed
 abstract class LetterTracingEvent with _$LetterTracingEvent {
   const factory LetterTracingEvent.started(CharTracingLessonContent content) =

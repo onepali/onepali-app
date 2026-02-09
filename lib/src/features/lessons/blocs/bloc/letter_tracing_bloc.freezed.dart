@@ -494,7 +494,8 @@ String toString() {
 /// @nodoc
 mixin _$LetterTracingState {
 
- NepaliLetter? get letter; Size get letterSize; int get numberOfStrokes; double get strokeWidth; int get currentStrokeIndex; List<Path> get letterPaths; List<Path> get completedPaths; List<List<Offset>> get pathsPoints; List<Offset> get userStrokes;
+ NepaliLetter? get letter; Size get letterSize; double get strokeWidth; int get numberOfStrokes; List<Path> get letterPaths; Path? get outlinePath; List<List<Offset>> get pathsPoints; List<Offset> get userStrokes; List<Path> get completedPaths; int get currentStrokeIndex; List<Rect> get strokeBoundingBoxes;// New properties for improved features
+ double get currentStrokeProgress; bool get isTracingOutsideBounds; bool get showStartHint; bool get showPointer; Offset? get pointerPosition; String? get feedbackMessage; bool get isLetterComplete; bool get showGuideDots; bool get showStrokeDirection;
 /// Create a copy of LetterTracingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -505,16 +506,16 @@ $LetterTracingStateCopyWith<LetterTracingState> get copyWith => _$LetterTracingS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LetterTracingState&&(identical(other.letter, letter) || other.letter == letter)&&(identical(other.letterSize, letterSize) || other.letterSize == letterSize)&&(identical(other.numberOfStrokes, numberOfStrokes) || other.numberOfStrokes == numberOfStrokes)&&(identical(other.strokeWidth, strokeWidth) || other.strokeWidth == strokeWidth)&&(identical(other.currentStrokeIndex, currentStrokeIndex) || other.currentStrokeIndex == currentStrokeIndex)&&const DeepCollectionEquality().equals(other.letterPaths, letterPaths)&&const DeepCollectionEquality().equals(other.completedPaths, completedPaths)&&const DeepCollectionEquality().equals(other.pathsPoints, pathsPoints)&&const DeepCollectionEquality().equals(other.userStrokes, userStrokes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LetterTracingState&&(identical(other.letter, letter) || other.letter == letter)&&(identical(other.letterSize, letterSize) || other.letterSize == letterSize)&&(identical(other.strokeWidth, strokeWidth) || other.strokeWidth == strokeWidth)&&(identical(other.numberOfStrokes, numberOfStrokes) || other.numberOfStrokes == numberOfStrokes)&&const DeepCollectionEquality().equals(other.letterPaths, letterPaths)&&(identical(other.outlinePath, outlinePath) || other.outlinePath == outlinePath)&&const DeepCollectionEquality().equals(other.pathsPoints, pathsPoints)&&const DeepCollectionEquality().equals(other.userStrokes, userStrokes)&&const DeepCollectionEquality().equals(other.completedPaths, completedPaths)&&(identical(other.currentStrokeIndex, currentStrokeIndex) || other.currentStrokeIndex == currentStrokeIndex)&&const DeepCollectionEquality().equals(other.strokeBoundingBoxes, strokeBoundingBoxes)&&(identical(other.currentStrokeProgress, currentStrokeProgress) || other.currentStrokeProgress == currentStrokeProgress)&&(identical(other.isTracingOutsideBounds, isTracingOutsideBounds) || other.isTracingOutsideBounds == isTracingOutsideBounds)&&(identical(other.showStartHint, showStartHint) || other.showStartHint == showStartHint)&&(identical(other.showPointer, showPointer) || other.showPointer == showPointer)&&(identical(other.pointerPosition, pointerPosition) || other.pointerPosition == pointerPosition)&&(identical(other.feedbackMessage, feedbackMessage) || other.feedbackMessage == feedbackMessage)&&(identical(other.isLetterComplete, isLetterComplete) || other.isLetterComplete == isLetterComplete)&&(identical(other.showGuideDots, showGuideDots) || other.showGuideDots == showGuideDots)&&(identical(other.showStrokeDirection, showStrokeDirection) || other.showStrokeDirection == showStrokeDirection));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,letter,letterSize,numberOfStrokes,strokeWidth,currentStrokeIndex,const DeepCollectionEquality().hash(letterPaths),const DeepCollectionEquality().hash(completedPaths),const DeepCollectionEquality().hash(pathsPoints),const DeepCollectionEquality().hash(userStrokes));
+int get hashCode => Object.hashAll([runtimeType,letter,letterSize,strokeWidth,numberOfStrokes,const DeepCollectionEquality().hash(letterPaths),outlinePath,const DeepCollectionEquality().hash(pathsPoints),const DeepCollectionEquality().hash(userStrokes),const DeepCollectionEquality().hash(completedPaths),currentStrokeIndex,const DeepCollectionEquality().hash(strokeBoundingBoxes),currentStrokeProgress,isTracingOutsideBounds,showStartHint,showPointer,pointerPosition,feedbackMessage,isLetterComplete,showGuideDots,showStrokeDirection]);
 
 @override
 String toString() {
-  return 'LetterTracingState(letter: $letter, letterSize: $letterSize, numberOfStrokes: $numberOfStrokes, strokeWidth: $strokeWidth, currentStrokeIndex: $currentStrokeIndex, letterPaths: $letterPaths, completedPaths: $completedPaths, pathsPoints: $pathsPoints, userStrokes: $userStrokes)';
+  return 'LetterTracingState(letter: $letter, letterSize: $letterSize, strokeWidth: $strokeWidth, numberOfStrokes: $numberOfStrokes, letterPaths: $letterPaths, outlinePath: $outlinePath, pathsPoints: $pathsPoints, userStrokes: $userStrokes, completedPaths: $completedPaths, currentStrokeIndex: $currentStrokeIndex, strokeBoundingBoxes: $strokeBoundingBoxes, currentStrokeProgress: $currentStrokeProgress, isTracingOutsideBounds: $isTracingOutsideBounds, showStartHint: $showStartHint, showPointer: $showPointer, pointerPosition: $pointerPosition, feedbackMessage: $feedbackMessage, isLetterComplete: $isLetterComplete, showGuideDots: $showGuideDots, showStrokeDirection: $showStrokeDirection)';
 }
 
 
@@ -525,7 +526,7 @@ abstract mixin class $LetterTracingStateCopyWith<$Res>  {
   factory $LetterTracingStateCopyWith(LetterTracingState value, $Res Function(LetterTracingState) _then) = _$LetterTracingStateCopyWithImpl;
 @useResult
 $Res call({
- NepaliLetter? letter, Size letterSize, int numberOfStrokes, double strokeWidth, int currentStrokeIndex, List<Path> letterPaths, List<Path> completedPaths, List<List<Offset>> pathsPoints, List<Offset> userStrokes
+ NepaliLetter? letter, Size letterSize, double strokeWidth, int numberOfStrokes, List<Path> letterPaths, Path? outlinePath, List<List<Offset>> pathsPoints, List<Offset> userStrokes, List<Path> completedPaths, int currentStrokeIndex, List<Rect> strokeBoundingBoxes, double currentStrokeProgress, bool isTracingOutsideBounds, bool showStartHint, bool showPointer, Offset? pointerPosition, String? feedbackMessage, bool isLetterComplete, bool showGuideDots, bool showStrokeDirection
 });
 
 
@@ -542,18 +543,29 @@ class _$LetterTracingStateCopyWithImpl<$Res>
 
 /// Create a copy of LetterTracingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? letter = freezed,Object? letterSize = null,Object? numberOfStrokes = null,Object? strokeWidth = null,Object? currentStrokeIndex = null,Object? letterPaths = null,Object? completedPaths = null,Object? pathsPoints = null,Object? userStrokes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? letter = freezed,Object? letterSize = null,Object? strokeWidth = null,Object? numberOfStrokes = null,Object? letterPaths = null,Object? outlinePath = freezed,Object? pathsPoints = null,Object? userStrokes = null,Object? completedPaths = null,Object? currentStrokeIndex = null,Object? strokeBoundingBoxes = null,Object? currentStrokeProgress = null,Object? isTracingOutsideBounds = null,Object? showStartHint = null,Object? showPointer = null,Object? pointerPosition = freezed,Object? feedbackMessage = freezed,Object? isLetterComplete = null,Object? showGuideDots = null,Object? showStrokeDirection = null,}) {
   return _then(_self.copyWith(
 letter: freezed == letter ? _self.letter : letter // ignore: cast_nullable_to_non_nullable
 as NepaliLetter?,letterSize: null == letterSize ? _self.letterSize : letterSize // ignore: cast_nullable_to_non_nullable
-as Size,numberOfStrokes: null == numberOfStrokes ? _self.numberOfStrokes : numberOfStrokes // ignore: cast_nullable_to_non_nullable
-as int,strokeWidth: null == strokeWidth ? _self.strokeWidth : strokeWidth // ignore: cast_nullable_to_non_nullable
-as double,currentStrokeIndex: null == currentStrokeIndex ? _self.currentStrokeIndex : currentStrokeIndex // ignore: cast_nullable_to_non_nullable
+as Size,strokeWidth: null == strokeWidth ? _self.strokeWidth : strokeWidth // ignore: cast_nullable_to_non_nullable
+as double,numberOfStrokes: null == numberOfStrokes ? _self.numberOfStrokes : numberOfStrokes // ignore: cast_nullable_to_non_nullable
 as int,letterPaths: null == letterPaths ? _self.letterPaths : letterPaths // ignore: cast_nullable_to_non_nullable
-as List<Path>,completedPaths: null == completedPaths ? _self.completedPaths : completedPaths // ignore: cast_nullable_to_non_nullable
-as List<Path>,pathsPoints: null == pathsPoints ? _self.pathsPoints : pathsPoints // ignore: cast_nullable_to_non_nullable
+as List<Path>,outlinePath: freezed == outlinePath ? _self.outlinePath : outlinePath // ignore: cast_nullable_to_non_nullable
+as Path?,pathsPoints: null == pathsPoints ? _self.pathsPoints : pathsPoints // ignore: cast_nullable_to_non_nullable
 as List<List<Offset>>,userStrokes: null == userStrokes ? _self.userStrokes : userStrokes // ignore: cast_nullable_to_non_nullable
-as List<Offset>,
+as List<Offset>,completedPaths: null == completedPaths ? _self.completedPaths : completedPaths // ignore: cast_nullable_to_non_nullable
+as List<Path>,currentStrokeIndex: null == currentStrokeIndex ? _self.currentStrokeIndex : currentStrokeIndex // ignore: cast_nullable_to_non_nullable
+as int,strokeBoundingBoxes: null == strokeBoundingBoxes ? _self.strokeBoundingBoxes : strokeBoundingBoxes // ignore: cast_nullable_to_non_nullable
+as List<Rect>,currentStrokeProgress: null == currentStrokeProgress ? _self.currentStrokeProgress : currentStrokeProgress // ignore: cast_nullable_to_non_nullable
+as double,isTracingOutsideBounds: null == isTracingOutsideBounds ? _self.isTracingOutsideBounds : isTracingOutsideBounds // ignore: cast_nullable_to_non_nullable
+as bool,showStartHint: null == showStartHint ? _self.showStartHint : showStartHint // ignore: cast_nullable_to_non_nullable
+as bool,showPointer: null == showPointer ? _self.showPointer : showPointer // ignore: cast_nullable_to_non_nullable
+as bool,pointerPosition: freezed == pointerPosition ? _self.pointerPosition : pointerPosition // ignore: cast_nullable_to_non_nullable
+as Offset?,feedbackMessage: freezed == feedbackMessage ? _self.feedbackMessage : feedbackMessage // ignore: cast_nullable_to_non_nullable
+as String?,isLetterComplete: null == isLetterComplete ? _self.isLetterComplete : isLetterComplete // ignore: cast_nullable_to_non_nullable
+as bool,showGuideDots: null == showGuideDots ? _self.showGuideDots : showGuideDots // ignore: cast_nullable_to_non_nullable
+as bool,showStrokeDirection: null == showStrokeDirection ? _self.showStrokeDirection : showStrokeDirection // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -638,10 +650,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( NepaliLetter? letter,  Size letterSize,  int numberOfStrokes,  double strokeWidth,  int currentStrokeIndex,  List<Path> letterPaths,  List<Path> completedPaths,  List<List<Offset>> pathsPoints,  List<Offset> userStrokes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( NepaliLetter? letter,  Size letterSize,  double strokeWidth,  int numberOfStrokes,  List<Path> letterPaths,  Path? outlinePath,  List<List<Offset>> pathsPoints,  List<Offset> userStrokes,  List<Path> completedPaths,  int currentStrokeIndex,  List<Rect> strokeBoundingBoxes,  double currentStrokeProgress,  bool isTracingOutsideBounds,  bool showStartHint,  bool showPointer,  Offset? pointerPosition,  String? feedbackMessage,  bool isLetterComplete,  bool showGuideDots,  bool showStrokeDirection)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LetterTracingState() when $default != null:
-return $default(_that.letter,_that.letterSize,_that.numberOfStrokes,_that.strokeWidth,_that.currentStrokeIndex,_that.letterPaths,_that.completedPaths,_that.pathsPoints,_that.userStrokes);case _:
+return $default(_that.letter,_that.letterSize,_that.strokeWidth,_that.numberOfStrokes,_that.letterPaths,_that.outlinePath,_that.pathsPoints,_that.userStrokes,_that.completedPaths,_that.currentStrokeIndex,_that.strokeBoundingBoxes,_that.currentStrokeProgress,_that.isTracingOutsideBounds,_that.showStartHint,_that.showPointer,_that.pointerPosition,_that.feedbackMessage,_that.isLetterComplete,_that.showGuideDots,_that.showStrokeDirection);case _:
   return orElse();
 
 }
@@ -659,10 +671,10 @@ return $default(_that.letter,_that.letterSize,_that.numberOfStrokes,_that.stroke
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( NepaliLetter? letter,  Size letterSize,  int numberOfStrokes,  double strokeWidth,  int currentStrokeIndex,  List<Path> letterPaths,  List<Path> completedPaths,  List<List<Offset>> pathsPoints,  List<Offset> userStrokes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( NepaliLetter? letter,  Size letterSize,  double strokeWidth,  int numberOfStrokes,  List<Path> letterPaths,  Path? outlinePath,  List<List<Offset>> pathsPoints,  List<Offset> userStrokes,  List<Path> completedPaths,  int currentStrokeIndex,  List<Rect> strokeBoundingBoxes,  double currentStrokeProgress,  bool isTracingOutsideBounds,  bool showStartHint,  bool showPointer,  Offset? pointerPosition,  String? feedbackMessage,  bool isLetterComplete,  bool showGuideDots,  bool showStrokeDirection)  $default,) {final _that = this;
 switch (_that) {
 case _LetterTracingState():
-return $default(_that.letter,_that.letterSize,_that.numberOfStrokes,_that.strokeWidth,_that.currentStrokeIndex,_that.letterPaths,_that.completedPaths,_that.pathsPoints,_that.userStrokes);case _:
+return $default(_that.letter,_that.letterSize,_that.strokeWidth,_that.numberOfStrokes,_that.letterPaths,_that.outlinePath,_that.pathsPoints,_that.userStrokes,_that.completedPaths,_that.currentStrokeIndex,_that.strokeBoundingBoxes,_that.currentStrokeProgress,_that.isTracingOutsideBounds,_that.showStartHint,_that.showPointer,_that.pointerPosition,_that.feedbackMessage,_that.isLetterComplete,_that.showGuideDots,_that.showStrokeDirection);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -679,10 +691,10 @@ return $default(_that.letter,_that.letterSize,_that.numberOfStrokes,_that.stroke
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( NepaliLetter? letter,  Size letterSize,  int numberOfStrokes,  double strokeWidth,  int currentStrokeIndex,  List<Path> letterPaths,  List<Path> completedPaths,  List<List<Offset>> pathsPoints,  List<Offset> userStrokes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( NepaliLetter? letter,  Size letterSize,  double strokeWidth,  int numberOfStrokes,  List<Path> letterPaths,  Path? outlinePath,  List<List<Offset>> pathsPoints,  List<Offset> userStrokes,  List<Path> completedPaths,  int currentStrokeIndex,  List<Rect> strokeBoundingBoxes,  double currentStrokeProgress,  bool isTracingOutsideBounds,  bool showStartHint,  bool showPointer,  Offset? pointerPosition,  String? feedbackMessage,  bool isLetterComplete,  bool showGuideDots,  bool showStrokeDirection)?  $default,) {final _that = this;
 switch (_that) {
 case _LetterTracingState() when $default != null:
-return $default(_that.letter,_that.letterSize,_that.numberOfStrokes,_that.strokeWidth,_that.currentStrokeIndex,_that.letterPaths,_that.completedPaths,_that.pathsPoints,_that.userStrokes);case _:
+return $default(_that.letter,_that.letterSize,_that.strokeWidth,_that.numberOfStrokes,_that.letterPaths,_that.outlinePath,_that.pathsPoints,_that.userStrokes,_that.completedPaths,_that.currentStrokeIndex,_that.strokeBoundingBoxes,_that.currentStrokeProgress,_that.isTracingOutsideBounds,_that.showStartHint,_that.showPointer,_that.pointerPosition,_that.feedbackMessage,_that.isLetterComplete,_that.showGuideDots,_that.showStrokeDirection);case _:
   return null;
 
 }
@@ -694,14 +706,13 @@ return $default(_that.letter,_that.letterSize,_that.numberOfStrokes,_that.stroke
 
 
 class _LetterTracingState implements LetterTracingState {
-  const _LetterTracingState({this.letter, this.letterSize = Size.zero, this.numberOfStrokes = 0, this.strokeWidth = 20, this.currentStrokeIndex = 0, final  List<Path> letterPaths = const [], final  List<Path> completedPaths = const [], final  List<List<Offset>> pathsPoints = const [], final  List<Offset> userStrokes = const []}): _letterPaths = letterPaths,_completedPaths = completedPaths,_pathsPoints = pathsPoints,_userStrokes = userStrokes;
+  const _LetterTracingState({this.letter, this.letterSize = const Size(300, 300), this.strokeWidth = 20.0, this.numberOfStrokes = 0, final  List<Path> letterPaths = const [], this.outlinePath, final  List<List<Offset>> pathsPoints = const [], final  List<Offset> userStrokes = const [], final  List<Path> completedPaths = const [], this.currentStrokeIndex = 0, final  List<Rect> strokeBoundingBoxes = const [], this.currentStrokeProgress = 0.0, this.isTracingOutsideBounds = false, this.showStartHint = false, this.showPointer = true, this.pointerPosition, this.feedbackMessage, this.isLetterComplete = false, this.showGuideDots = true, this.showStrokeDirection = false}): _letterPaths = letterPaths,_pathsPoints = pathsPoints,_userStrokes = userStrokes,_completedPaths = completedPaths,_strokeBoundingBoxes = strokeBoundingBoxes;
   
 
 @override final  NepaliLetter? letter;
 @override@JsonKey() final  Size letterSize;
-@override@JsonKey() final  int numberOfStrokes;
 @override@JsonKey() final  double strokeWidth;
-@override@JsonKey() final  int currentStrokeIndex;
+@override@JsonKey() final  int numberOfStrokes;
  final  List<Path> _letterPaths;
 @override@JsonKey() List<Path> get letterPaths {
   if (_letterPaths is EqualUnmodifiableListView) return _letterPaths;
@@ -709,13 +720,7 @@ class _LetterTracingState implements LetterTracingState {
   return EqualUnmodifiableListView(_letterPaths);
 }
 
- final  List<Path> _completedPaths;
-@override@JsonKey() List<Path> get completedPaths {
-  if (_completedPaths is EqualUnmodifiableListView) return _completedPaths;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_completedPaths);
-}
-
+@override final  Path? outlinePath;
  final  List<List<Offset>> _pathsPoints;
 @override@JsonKey() List<List<Offset>> get pathsPoints {
   if (_pathsPoints is EqualUnmodifiableListView) return _pathsPoints;
@@ -730,6 +735,31 @@ class _LetterTracingState implements LetterTracingState {
   return EqualUnmodifiableListView(_userStrokes);
 }
 
+ final  List<Path> _completedPaths;
+@override@JsonKey() List<Path> get completedPaths {
+  if (_completedPaths is EqualUnmodifiableListView) return _completedPaths;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_completedPaths);
+}
+
+@override@JsonKey() final  int currentStrokeIndex;
+ final  List<Rect> _strokeBoundingBoxes;
+@override@JsonKey() List<Rect> get strokeBoundingBoxes {
+  if (_strokeBoundingBoxes is EqualUnmodifiableListView) return _strokeBoundingBoxes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_strokeBoundingBoxes);
+}
+
+// New properties for improved features
+@override@JsonKey() final  double currentStrokeProgress;
+@override@JsonKey() final  bool isTracingOutsideBounds;
+@override@JsonKey() final  bool showStartHint;
+@override@JsonKey() final  bool showPointer;
+@override final  Offset? pointerPosition;
+@override final  String? feedbackMessage;
+@override@JsonKey() final  bool isLetterComplete;
+@override@JsonKey() final  bool showGuideDots;
+@override@JsonKey() final  bool showStrokeDirection;
 
 /// Create a copy of LetterTracingState
 /// with the given fields replaced by the non-null parameter values.
@@ -741,16 +771,16 @@ _$LetterTracingStateCopyWith<_LetterTracingState> get copyWith => __$LetterTraci
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LetterTracingState&&(identical(other.letter, letter) || other.letter == letter)&&(identical(other.letterSize, letterSize) || other.letterSize == letterSize)&&(identical(other.numberOfStrokes, numberOfStrokes) || other.numberOfStrokes == numberOfStrokes)&&(identical(other.strokeWidth, strokeWidth) || other.strokeWidth == strokeWidth)&&(identical(other.currentStrokeIndex, currentStrokeIndex) || other.currentStrokeIndex == currentStrokeIndex)&&const DeepCollectionEquality().equals(other._letterPaths, _letterPaths)&&const DeepCollectionEquality().equals(other._completedPaths, _completedPaths)&&const DeepCollectionEquality().equals(other._pathsPoints, _pathsPoints)&&const DeepCollectionEquality().equals(other._userStrokes, _userStrokes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LetterTracingState&&(identical(other.letter, letter) || other.letter == letter)&&(identical(other.letterSize, letterSize) || other.letterSize == letterSize)&&(identical(other.strokeWidth, strokeWidth) || other.strokeWidth == strokeWidth)&&(identical(other.numberOfStrokes, numberOfStrokes) || other.numberOfStrokes == numberOfStrokes)&&const DeepCollectionEquality().equals(other._letterPaths, _letterPaths)&&(identical(other.outlinePath, outlinePath) || other.outlinePath == outlinePath)&&const DeepCollectionEquality().equals(other._pathsPoints, _pathsPoints)&&const DeepCollectionEquality().equals(other._userStrokes, _userStrokes)&&const DeepCollectionEquality().equals(other._completedPaths, _completedPaths)&&(identical(other.currentStrokeIndex, currentStrokeIndex) || other.currentStrokeIndex == currentStrokeIndex)&&const DeepCollectionEquality().equals(other._strokeBoundingBoxes, _strokeBoundingBoxes)&&(identical(other.currentStrokeProgress, currentStrokeProgress) || other.currentStrokeProgress == currentStrokeProgress)&&(identical(other.isTracingOutsideBounds, isTracingOutsideBounds) || other.isTracingOutsideBounds == isTracingOutsideBounds)&&(identical(other.showStartHint, showStartHint) || other.showStartHint == showStartHint)&&(identical(other.showPointer, showPointer) || other.showPointer == showPointer)&&(identical(other.pointerPosition, pointerPosition) || other.pointerPosition == pointerPosition)&&(identical(other.feedbackMessage, feedbackMessage) || other.feedbackMessage == feedbackMessage)&&(identical(other.isLetterComplete, isLetterComplete) || other.isLetterComplete == isLetterComplete)&&(identical(other.showGuideDots, showGuideDots) || other.showGuideDots == showGuideDots)&&(identical(other.showStrokeDirection, showStrokeDirection) || other.showStrokeDirection == showStrokeDirection));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,letter,letterSize,numberOfStrokes,strokeWidth,currentStrokeIndex,const DeepCollectionEquality().hash(_letterPaths),const DeepCollectionEquality().hash(_completedPaths),const DeepCollectionEquality().hash(_pathsPoints),const DeepCollectionEquality().hash(_userStrokes));
+int get hashCode => Object.hashAll([runtimeType,letter,letterSize,strokeWidth,numberOfStrokes,const DeepCollectionEquality().hash(_letterPaths),outlinePath,const DeepCollectionEquality().hash(_pathsPoints),const DeepCollectionEquality().hash(_userStrokes),const DeepCollectionEquality().hash(_completedPaths),currentStrokeIndex,const DeepCollectionEquality().hash(_strokeBoundingBoxes),currentStrokeProgress,isTracingOutsideBounds,showStartHint,showPointer,pointerPosition,feedbackMessage,isLetterComplete,showGuideDots,showStrokeDirection]);
 
 @override
 String toString() {
-  return 'LetterTracingState(letter: $letter, letterSize: $letterSize, numberOfStrokes: $numberOfStrokes, strokeWidth: $strokeWidth, currentStrokeIndex: $currentStrokeIndex, letterPaths: $letterPaths, completedPaths: $completedPaths, pathsPoints: $pathsPoints, userStrokes: $userStrokes)';
+  return 'LetterTracingState(letter: $letter, letterSize: $letterSize, strokeWidth: $strokeWidth, numberOfStrokes: $numberOfStrokes, letterPaths: $letterPaths, outlinePath: $outlinePath, pathsPoints: $pathsPoints, userStrokes: $userStrokes, completedPaths: $completedPaths, currentStrokeIndex: $currentStrokeIndex, strokeBoundingBoxes: $strokeBoundingBoxes, currentStrokeProgress: $currentStrokeProgress, isTracingOutsideBounds: $isTracingOutsideBounds, showStartHint: $showStartHint, showPointer: $showPointer, pointerPosition: $pointerPosition, feedbackMessage: $feedbackMessage, isLetterComplete: $isLetterComplete, showGuideDots: $showGuideDots, showStrokeDirection: $showStrokeDirection)';
 }
 
 
@@ -761,7 +791,7 @@ abstract mixin class _$LetterTracingStateCopyWith<$Res> implements $LetterTracin
   factory _$LetterTracingStateCopyWith(_LetterTracingState value, $Res Function(_LetterTracingState) _then) = __$LetterTracingStateCopyWithImpl;
 @override @useResult
 $Res call({
- NepaliLetter? letter, Size letterSize, int numberOfStrokes, double strokeWidth, int currentStrokeIndex, List<Path> letterPaths, List<Path> completedPaths, List<List<Offset>> pathsPoints, List<Offset> userStrokes
+ NepaliLetter? letter, Size letterSize, double strokeWidth, int numberOfStrokes, List<Path> letterPaths, Path? outlinePath, List<List<Offset>> pathsPoints, List<Offset> userStrokes, List<Path> completedPaths, int currentStrokeIndex, List<Rect> strokeBoundingBoxes, double currentStrokeProgress, bool isTracingOutsideBounds, bool showStartHint, bool showPointer, Offset? pointerPosition, String? feedbackMessage, bool isLetterComplete, bool showGuideDots, bool showStrokeDirection
 });
 
 
@@ -778,18 +808,29 @@ class __$LetterTracingStateCopyWithImpl<$Res>
 
 /// Create a copy of LetterTracingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? letter = freezed,Object? letterSize = null,Object? numberOfStrokes = null,Object? strokeWidth = null,Object? currentStrokeIndex = null,Object? letterPaths = null,Object? completedPaths = null,Object? pathsPoints = null,Object? userStrokes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? letter = freezed,Object? letterSize = null,Object? strokeWidth = null,Object? numberOfStrokes = null,Object? letterPaths = null,Object? outlinePath = freezed,Object? pathsPoints = null,Object? userStrokes = null,Object? completedPaths = null,Object? currentStrokeIndex = null,Object? strokeBoundingBoxes = null,Object? currentStrokeProgress = null,Object? isTracingOutsideBounds = null,Object? showStartHint = null,Object? showPointer = null,Object? pointerPosition = freezed,Object? feedbackMessage = freezed,Object? isLetterComplete = null,Object? showGuideDots = null,Object? showStrokeDirection = null,}) {
   return _then(_LetterTracingState(
 letter: freezed == letter ? _self.letter : letter // ignore: cast_nullable_to_non_nullable
 as NepaliLetter?,letterSize: null == letterSize ? _self.letterSize : letterSize // ignore: cast_nullable_to_non_nullable
-as Size,numberOfStrokes: null == numberOfStrokes ? _self.numberOfStrokes : numberOfStrokes // ignore: cast_nullable_to_non_nullable
-as int,strokeWidth: null == strokeWidth ? _self.strokeWidth : strokeWidth // ignore: cast_nullable_to_non_nullable
-as double,currentStrokeIndex: null == currentStrokeIndex ? _self.currentStrokeIndex : currentStrokeIndex // ignore: cast_nullable_to_non_nullable
+as Size,strokeWidth: null == strokeWidth ? _self.strokeWidth : strokeWidth // ignore: cast_nullable_to_non_nullable
+as double,numberOfStrokes: null == numberOfStrokes ? _self.numberOfStrokes : numberOfStrokes // ignore: cast_nullable_to_non_nullable
 as int,letterPaths: null == letterPaths ? _self._letterPaths : letterPaths // ignore: cast_nullable_to_non_nullable
-as List<Path>,completedPaths: null == completedPaths ? _self._completedPaths : completedPaths // ignore: cast_nullable_to_non_nullable
-as List<Path>,pathsPoints: null == pathsPoints ? _self._pathsPoints : pathsPoints // ignore: cast_nullable_to_non_nullable
+as List<Path>,outlinePath: freezed == outlinePath ? _self.outlinePath : outlinePath // ignore: cast_nullable_to_non_nullable
+as Path?,pathsPoints: null == pathsPoints ? _self._pathsPoints : pathsPoints // ignore: cast_nullable_to_non_nullable
 as List<List<Offset>>,userStrokes: null == userStrokes ? _self._userStrokes : userStrokes // ignore: cast_nullable_to_non_nullable
-as List<Offset>,
+as List<Offset>,completedPaths: null == completedPaths ? _self._completedPaths : completedPaths // ignore: cast_nullable_to_non_nullable
+as List<Path>,currentStrokeIndex: null == currentStrokeIndex ? _self.currentStrokeIndex : currentStrokeIndex // ignore: cast_nullable_to_non_nullable
+as int,strokeBoundingBoxes: null == strokeBoundingBoxes ? _self._strokeBoundingBoxes : strokeBoundingBoxes // ignore: cast_nullable_to_non_nullable
+as List<Rect>,currentStrokeProgress: null == currentStrokeProgress ? _self.currentStrokeProgress : currentStrokeProgress // ignore: cast_nullable_to_non_nullable
+as double,isTracingOutsideBounds: null == isTracingOutsideBounds ? _self.isTracingOutsideBounds : isTracingOutsideBounds // ignore: cast_nullable_to_non_nullable
+as bool,showStartHint: null == showStartHint ? _self.showStartHint : showStartHint // ignore: cast_nullable_to_non_nullable
+as bool,showPointer: null == showPointer ? _self.showPointer : showPointer // ignore: cast_nullable_to_non_nullable
+as bool,pointerPosition: freezed == pointerPosition ? _self.pointerPosition : pointerPosition // ignore: cast_nullable_to_non_nullable
+as Offset?,feedbackMessage: freezed == feedbackMessage ? _self.feedbackMessage : feedbackMessage // ignore: cast_nullable_to_non_nullable
+as String?,isLetterComplete: null == isLetterComplete ? _self.isLetterComplete : isLetterComplete // ignore: cast_nullable_to_non_nullable
+as bool,showGuideDots: null == showGuideDots ? _self.showGuideDots : showGuideDots // ignore: cast_nullable_to_non_nullable
+as bool,showStrokeDirection: null == showStrokeDirection ? _self.showStrokeDirection : showStrokeDirection // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

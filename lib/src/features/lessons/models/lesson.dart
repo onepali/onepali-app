@@ -125,6 +125,7 @@ class Item with _$Item {
     num? dxRatio,
     num? dyRatio,
    @Default(false) bool isCorrect,
+   String? bgColor,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
