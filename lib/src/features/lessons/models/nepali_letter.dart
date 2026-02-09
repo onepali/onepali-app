@@ -23,7 +23,7 @@ class NepaliLetter {
 
   /// Optional tags for filtering (e.g., ["beginner", "common"])
   final List<String>? tags;
-
+  String? outlinePath;
   NepaliLetter({
     required this.letter,
     required this.name,
@@ -32,6 +32,7 @@ class NepaliLetter {
     this.category,
     this.difficulty,
     this.tags,
+    this.outlinePath,
   });
 
   /// Create from JSON
@@ -53,6 +54,7 @@ class NepaliLetter {
       tags: json['tags'] != null
           ? List<String>.from(json['tags'] as List)
           : null,
+        outlinePath: json['outlinePath'] as String?,
     );
   }
 

@@ -195,6 +195,7 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   dxRatio: json['dx_ratio'] as num?,
   dyRatio: json['dy_ratio'] as num?,
   isCorrect: json['is_correct'] as bool? ?? false,
+  bgColor: json['bg_color'] as String?,
 );
 
 Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
@@ -208,4 +209,5 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'dx_ratio': instance.dxRatio,
   'dy_ratio': instance.dyRatio,
   'is_correct': instance.isCorrect,
+  'bg_color': instance.bgColor,
 };
