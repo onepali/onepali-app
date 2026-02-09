@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
@@ -268,19 +269,6 @@ class ItemCard extends StatelessWidget {
   final bool isSelected;
   final Function()? onTap;
 
-  // Get color based on index
-  Color _getCardColor() {
-    final colors = [
-      Colors.orange.shade300,
-      Colors.green.shade700,
-      Colors.blue.shade400,
-      Colors.purple.shade400,
-      Colors.red.shade400,
-      Colors.teal.shade400,
-    ];
-    return colors[index % colors.length];
-  }
-
   @override
   Widget build(BuildContext context) {
     final cardWidth = (size.width * 0.75) / itemCount;
@@ -294,7 +282,7 @@ class ItemCard extends StatelessWidget {
         margin: const EdgeInsets.all(8.0),
         padding: EdgeInsets.only(bottom: 8, top: 8),
         decoration: BoxDecoration(
-          color: _getCardColor(),
+          color: colorFromHex(item.bgColor)??Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: isSelected
               ? Border.all(color: Colors.yellowAccent, width: 2)
@@ -317,7 +305,7 @@ class ItemCard extends StatelessWidget {
                 item.nameNp,
                 style: Theme.of(
                   context,
-                ).textTheme.headlineLarge?.copyWith(color: AppColors.kWhite),
+                ).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -343,7 +331,7 @@ class ItemCard extends StatelessWidget {
                 item.nameEn,
                 style: Theme.of(
                   context,
-                ).textTheme.headlineSmall?.copyWith(color: AppColors.kWhite),
+                ).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
