@@ -151,6 +151,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
 
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
       builder: (context, state) {
@@ -169,13 +170,19 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: GestureDetector(
-                      onTap: () async {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.previousContent(),
-                        );
-                      },
-                      child: SvgHelper.fromSource(path: Assets.leftArrow),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: GestureDetector(
+                          onTap: () async {
+                            context.read<LessonBloc>().add(
+                              const LessonEvent.previousContent(),
+                            );
+                          },
+                          child: SvgHelper.fromSource(path: Assets.leftArrow),
+                        ),
+                      ),
                     ),
                   ),
 
@@ -204,8 +211,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                                 if (showVideo &&
                                     _videoController != null &&
                                     _videoController!.value.isInitialized)
-                                  VideoPlayer(_videoController!)
-                                
+                                  VideoPlayer(_videoController!),
                               ],
                             ),
                           ),
@@ -250,26 +256,38 @@ class _InfoLessonViewState extends State<InfoLessonView> {
 
                   Expanded(
                     flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          LessonEvent.nextContent(),
-                        );
-                      },
-                      child: SvgHelper.fromSource(path: Assets.rightArrow),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.read<LessonBloc>().add(
+                              LessonEvent.nextContent(),
+                            );
+                          },
+                          child: SvgHelper.fromSource(path: Assets.rightArrow),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
 
               Positioned(
-                top: size.height * 0.05,
-                right: size.width * 0.05,
+                top: 16,
+                right: 16,
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: SvgHelper.fromSource(path: Assets.wrong),
+                  child: SizedBox(
+                    child: SvgHelper.fromSource(
+                      path: Assets.wrong,
+                      // height: isMobile ? 48 : null,
+                      // width: isMobile ? 48 : null,
+                    ),
+                  ),
                 ),
               ),
             ],

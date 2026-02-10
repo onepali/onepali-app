@@ -265,7 +265,7 @@ class CourseScreenState extends State<CourseScreen> {
     //     );
     //   },
     // );
-
+    final isMobile = PlatformUtility.isMobile(context);
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('lesson_levels')
@@ -294,7 +294,9 @@ class CourseScreenState extends State<CourseScreen> {
                   ),
                   SizedBox(height: 16),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
+                    height: isMobile
+                        ? MediaQuery.of(context).size.height * 0.45
+                        : MediaQuery.of(context).size.height * 0.3,
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('lessons')

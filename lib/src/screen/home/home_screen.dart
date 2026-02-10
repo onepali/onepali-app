@@ -89,10 +89,10 @@ class _HomeScreenState extends State<HomeScreen> {
           // Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedLessonCard(context),
-              Gaps.verticalGapOf(10),
-            ],
+            // if (!isGuest) ...[
+            //   _buildRecommendedLessonCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
             // _buildLessons(context),
             CourseScreen()
           ] else if (_selectedTabIndex == 1) ...[
@@ -189,17 +189,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildLessons(BuildContext context) {
-    bool isTablet = PlatformUtility.isTablet(context);
-    double lessonCardHeight = isTablet
-        ? AppCardResponsive.getLessonCardHeight(context) *
-              0.8 // 20% smaller for tablets
-        : AppCardResponsive.getLessonCardHeight(context);
-    return SizedBox(
-      height: lessonCardHeight + 50,
-      child: CourseScreen(isMobile: false),
-    );
-  }
 
   Widget _buildSongCard(BuildContext context) {
     bool isTabletLandscape =

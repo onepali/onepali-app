@@ -1,21 +1,14 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/pop_scale_widget.dart';
 import 'package:onepali/src/core/widget/shake_widget.dart';
-import 'package:onepali/src/core/widget/shrink_widget.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/services/nepali_letter_service.dart';
-import 'package:onepali/src/features/lessons/views/letter_selection_page.dart';
-import 'package:onepali/src/features/lessons/views/letter_tracing_view.dart';
-import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
 import 'package:onepali/src/src.dart';
 
 class TapToPopLessonView extends StatelessWidget {

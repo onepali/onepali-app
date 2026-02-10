@@ -139,8 +139,8 @@ class _DragToMatchView extends StatelessWidget {
 
               // Close button
               Positioned(
-                top: size.height * 0.03,
-                right: size.width * 0.03,
+                top: 16,
+                right: 16,
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
