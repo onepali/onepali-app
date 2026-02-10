@@ -131,6 +131,8 @@ class Item with _$Item {
     String? audioBg, // eg cat sound meww, dog sound barking
     num? dxRatio,
     num? dyRatio,
+    num? dxRatioMobile,
+    num? dyRatioMobile,
    @Default(false) bool isCorrect,
    String? bgColor,
   }) = _Item;

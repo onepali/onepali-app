@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,6 +95,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
 
     return BlocConsumer<
       TapToRevealLessonContentBloc,
@@ -141,16 +144,24 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
               final isTapped = state.tappedItem == item;
 
               final itemSize = size.width * 0.15;
-
+              final dx = isMobile
+                  ? item.dxRatioMobile != null
+                        ? item.dxRatioMobile!.toDouble()
+                        : 0.5
+                  : item.dxRatio != null
+                  ? item.dxRatio!.toDouble()
+                  : 0.5;
+              final dy = isMobile
+                  ? item.dyRatioMobile != null
+                        ? item.dyRatioMobile!.toDouble()
+                        : 0.5
+                  : item.dyRatio != null
+                  ? item.dyRatio!.toDouble()
+                  : 0.5;
+              log('dx: $dx, dy: $dy');
               return Positioned(
-                // left: (size.width * dx) - (itemSize / 2),
-                // top: (size.height * dy) - (itemSize / 2),
-                left: item.dxRatio != null
-                    ? (item.dxRatio!.toDouble() * size.width)
-                    : 0.5,
-                top: item.dyRatio != null
-                    ? (item.dyRatio!.toDouble() * size.height)
-                    : 0.5,
+                left: dx*size.width,
+                top: dy*size.height,
                 child: _PositionedItemCard(
                   item: item,
                   itemSize: itemSize,
@@ -158,12 +169,11 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                   isSelected: isTapped,
                   isCorrect: isTapped && state.isCorrect,
                   isWrong: isTapped && !state.isCorrect,
-                  onTap: 
-                      () async {
-                          context.read<TapToRevealLessonContentBloc>().add(
-                            TapToRevealLessonContentEvent.itemTapped(item),
-                          );
-                        },
+                  onTap: () async {
+                    context.read<TapToRevealLessonContentBloc>().add(
+                      TapToRevealLessonContentEvent.itemTapped(item),
+                    );
+                  },
                 ),
               );
             }),
@@ -221,7 +231,11 @@ class CorrectNameDisplay extends StatefulWidget {
   final String nameNp;
   final String nameEn;
 
-  const CorrectNameDisplay({super.key, required this.nameNp, required this.nameEn});
+  const CorrectNameDisplay({
+    super.key,
+    required this.nameNp,
+    required this.nameEn,
+  });
 
   @override
   State<CorrectNameDisplay> createState() => _CorrectNameDisplayState();

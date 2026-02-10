@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -38,16 +37,6 @@ class TapToPopLessonView extends StatelessWidget {
 
           return GestureDetector(
             onTap: () async {
-              // final letters = await LetterService.loadLetters();
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => NewLetterTracingPage(
-              //       letter: letters.firstWhere(
-              //         (letter) => letter.letter == 'न',
-              //       ),
-              //     ),
-              //   ),
-              // );
               context.read<LessonBloc>().add(LessonEvent.nextContent());
             },
             child: Stack(
@@ -57,7 +46,6 @@ class TapToPopLessonView extends StatelessWidget {
                     color: colorFromHex(content.bgColor) ?? Colors.green,
                   ),
                 ),
-
                 Center(
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0.0, end: 1.0),
@@ -78,8 +66,8 @@ class TapToPopLessonView extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: size.height * 0.05,
-                  right: size.width * 0.05,
+                  top: 16,
+                  right: 16,
                   child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).pop();
@@ -128,8 +116,8 @@ class TapToPopLessonView extends StatelessWidget {
               ),
 
             Positioned(
-              top: size.height * 0.05,
-              right: size.width * 0.05,
+              top: 16,
+              right: 16,
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();
