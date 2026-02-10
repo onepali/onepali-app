@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/bloc/letter_tracing_bloc.dart';
@@ -82,8 +80,9 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                     SizedBox(height: size.height * 0.05),
 
                     // Reset button
+                    if(state.isLetterComplete)
                     Visibility(
-                      visible: state.currentStrokeIndex > 0,
+                      visible: true,
                       maintainState: true,
                       maintainSize: true,
                       maintainAnimation: true,
@@ -108,8 +107,8 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: size.width * 0.05,
-        vertical: size.height * 0.05,
+        horizontal: 16,
+        vertical: 16,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -164,6 +163,10 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                 animation: _pointerAnimation,
                 builder: (context, child) {
                   return CustomPaint(
+                    size: Size(
+                      state.letterSize.width * 0.3,
+                      state.letterSize.height * 0.3,
+                    ),
                     painter: LetterPainter(
                       strokeWidth: state.strokeWidth,
                       letterPaths: state.letterPaths,
@@ -223,8 +226,8 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
         // context.read<LetterTracingBloc>().add(const LetterTracingEvent.reset());
         context.read<LessonBloc>().add(const LessonEvent.nextContent());
       },
-      icon: const Icon(Icons.refresh),
-      label: const Text('Start Over'),
+      icon: const Icon(Icons.arrow_forward),
+      label: const Text('Next'),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
@@ -233,64 +236,6 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
       ),
     );
   }
-
-  // void _showCompletionDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (context) => AlertDialog(
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-  //       title: const Text(
-  //         '🎉 Amazing!',
-  //         textAlign: TextAlign.center,
-  //         style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-  //       ),
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           const Text(
-  //             'You traced the letter perfectly!',
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(fontSize: 18),
-  //           ),
-  //           const SizedBox(height: 20),
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: List.generate(
-  //               5,
-  //               (index) => const Padding(
-  //                 padding: EdgeInsets.symmetric(horizontal: 4.0),
-  //                 child: Icon(Icons.star, color: Colors.amber, size: 36),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () {
-  //             Navigator.of(context).pop(); // Close dialog
-  //             context.read<LetterTracingBloc>().add(
-  //               const LetterTracingEvent.reset(),
-  //             );
-  //           },
-  //           child: const Text('Try Again', style: TextStyle(fontSize: 16)),
-  //         ),
-  //         ElevatedButton(
-  //           onPressed: () {
-  //             Navigator.of(context).pop(); // Close dialog
-  //             Navigator.of(context).pop(); // Close page
-  //           },
-  //           style: ElevatedButton.styleFrom(
-  //             backgroundColor: Colors.green,
-  //             foregroundColor: Colors.white,
-  //           ),
-  //           child: const Text('Done', style: TextStyle(fontSize: 16)),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
 
 // Background pattern painter

@@ -178,8 +178,9 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
             }),
             if (state.currentQuestion != null)
               Positioned(
-                top: size.height * 0.05,
-                left: size.width * 0.5 - 40,
+                top: 16,
+                left: 0,
+                right: 0,
                 child: GestureDetector(
                   onTap:
                       state.isQuestionAudioPlaying ||
@@ -205,8 +206,8 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 ),
               ),
             Positioned(
-              top: size.height * 0.05,
-              right: size.width * 0.05,
+              top: 16,
+              right: 16,
               child: InkWell(
                 onTap: () => Navigator.of(context).pop(),
                 child: SvgHelper.fromSource(path: Assets.wrong),

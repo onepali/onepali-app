@@ -75,6 +75,7 @@ class _KitchenPageState extends State<KitchenPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
     return BlocProvider(
       create: (context) => TutorialBloc()..add(TutorialEvent.started()),
       child: BlocBuilder<TutorialBloc, TutorialState>(
@@ -117,13 +118,17 @@ class _KitchenPageState extends State<KitchenPage> {
                               // color: Colors.pink,
                               key: index == 0 ? _taePotKey : null,
 
-                              width: size.height * 0.2,
-                              // height: size.height * 0.2,
+                              width: isMobile
+                                  ? size.height * 0.3
+                                  : size.height * 0.2,
                               child: Stack(
                                 children: [
                                   Positioned.fill(
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 24),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 24,
+                                      ),
                                       child: Draggable<Map<int, String>>(
                                         data: {index: state.ingredients[index]},
                                         feedback: SvgPicture.asset(
@@ -282,8 +287,8 @@ class _KitchenPageState extends State<KitchenPage> {
                   ),
 
                 Positioned(
-                  top: size.height * 0.03,
-                  right: size.width * 0.03,
+                  top: 16,
+                  right: 16,
                   child: GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: SvgHelper.fromSource(

@@ -17,7 +17,7 @@ class MediaCacheManager {
   static CacheManager instance = CacheManager(
     Config(
       key,
-      stalePeriod: const Duration(days: 30),
+      stalePeriod: const Duration(days: 30), // Cache for 30 days
       maxNrOfCacheObjects: 100,
       repo: JsonCacheInfoRepository(databaseName: key),
       fileService: HttpFileService(),
@@ -26,9 +26,9 @@ class MediaCacheManager {
 }
 
 class InfoLessonView extends StatefulWidget {
-  const InfoLessonView({super.key, required this.content});
-
   final InfoLessonContent content;
+
+  const InfoLessonView({super.key, required this.content});
 
   @override
   State<InfoLessonView> createState() => _InfoLessonViewState();
@@ -47,27 +47,32 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     _initializeMedia();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('InfoLessonView didChangeDependencies');
+  }
+
   Future<void> _initializeMedia() async {
     try {
-      final videoUrl = widget.content.video;
-      if (videoUrl != null && videoUrl.isNotEmpty) {
+      // If video is present, cache and initialize it
+      if (widget.content.video != null) {
         final videoFile = await MediaCacheManager.instance.getSingleFile(
-          videoUrl,
+          widget.content.video!,
         );
 
-        final controller = VideoPlayerController.file(videoFile);
-        await controller.initialize();
+        _videoController = VideoPlayerController.file(videoFile);
+        await _videoController!.initialize();
 
-        if (!mounted) {
-          await controller.dispose();
-          return;
+        if (mounted) {
+          _videoController?.play();
         }
-
-        _videoController = controller;
-        _videoController!.addListener(_videoListener);
         setState(() {});
-        await _videoController!.play();
+        // Listen for video completion
+        _videoController!.addListener(_videoListener);
       } else {
+        // No video, mark as initialized and play audio immediately
+        if (mounted) {}
         await _playAudio();
       }
     } catch (e) {
@@ -76,15 +81,16 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   }
 
   void _videoListener() {
-    final controller = _videoController;
-    if (controller == null || !controller.value.isInitialized) return;
+    if (_videoController == null) return;
 
-    final position = controller.value.position;
-    final duration = controller.value.duration;
+    final position = _videoController!.value.position;
+    final duration = _videoController!.value.duration;
 
+    // Check if video has finished playing
     if (duration.inMilliseconds > 0 &&
         position >= duration - const Duration(milliseconds: 100)) {
-      controller.removeListener(_videoListener);
+      // Remove listener to prevent multiple calls
+      _videoController!.removeListener(_videoListener);
 
       final bloc = context.read<InfoLessonContentBloc>();
       bloc.add(const InfoLessonContentEvent.videoCompleted());
@@ -96,8 +102,10 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     final bloc = context.read<InfoLessonContentBloc>();
 
     try {
+      // Dispose previous audio player if exists
       await _audioPlayer?.dispose();
 
+      // Cache the audio file
       final audioFile = await MediaCacheManager.instance.getSingleFile(
         widget.content.audioWord,
       );
@@ -112,17 +120,20 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   }
 
   Future<void> _replayVideo() async {
-    final controller = _videoController;
-    if (controller == null || !controller.value.isInitialized) return;
+    if (_videoController != null && _videoController!.value.isInitialized) {
+      final bloc = context.read<InfoLessonContentBloc>();
 
-    final bloc = context.read<InfoLessonContentBloc>();
-    bloc.add(InfoLessonContentEvent.started(widget.content));
+      // Reset state to show video again
+      bloc.add(InfoLessonContentEvent.started(widget.content));
 
-    controller.removeListener(_videoListener);
-    controller.addListener(_videoListener);
+      // Re-add listener
+      _videoController!.removeListener(_videoListener);
+      _videoController!.addListener(_videoListener);
 
-    await controller.seekTo(Duration.zero);
-    await controller.play();
+      // Seek to beginning and play
+      await _videoController!.seekTo(Duration.zero);
+      await _videoController!.play();
+    }
   }
 
   Future<void> _replayAudio() async {
@@ -140,6 +151,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
 
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
       builder: (context, state) {
@@ -147,11 +159,9 @@ class _InfoLessonViewState extends State<InfoLessonView> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final content = state.lessonContent!;
         final showVideo =
             widget.content.video != null && !state.isVideoCompleted;
-        final videoReady =
-            _videoController != null && _videoController!.value.isInitialized;
+        final content = state.lessonContent!;
 
         return Center(
           child: Stack(
@@ -160,45 +170,57 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.previousContent(),
-                        );
-                      },
-                      child: SvgHelper.fromSource(path: Assets.leftArrow),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: AspectRatio(
-                        aspectRatio: showVideo && videoReady
-                            ? _videoController!.value.aspectRatio
-                            : 16 / 9,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            InkWell(
-                              onTap: showVideo ? null : _replayVideo,
-                              child: CustomCachedImage(
-                                imageUrl: content.image,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            if (showVideo && videoReady)
-                              VideoPlayer(_videoController!)
-                            else
-                              CustomCachedImage(
-                                imageUrl: content.image,
-                                fit: BoxFit.cover,
-                              ),
-                          ],
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: GestureDetector(
+                          onTap: () async {
+                            context.read<LessonBloc>().add(
+                              const LessonEvent.previousContent(),
+                            );
+                          },
+                          child: SvgHelper.fromSource(path: Assets.leftArrow),
                         ),
                       ),
                     ),
                   ),
+
+                  // 👇 VIDEO OR IMAGE
+                  Expanded(
+                    flex: 4,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                // 1️⃣ Image as background
+                                InkWell(
+                                  onTap: showVideo ? null : _replayVideo,
+                                  child: CustomCachedImage(
+                                    imageUrl: content.image,
+                                    // fit: BoxFit.cover,
+                                  ),
+                                ),
+
+                                // 2️⃣ Video player on top if playing
+                                if (showVideo &&
+                                    _videoController != null &&
+                                    _videoController!.value.isInitialized)
+                                  VideoPlayer(_videoController!),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Information Section
                   Expanded(
                     flex: 2,
                     child: Column(
@@ -231,25 +253,41 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                       ],
                     ),
                   ),
+
                   Expanded(
                     flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.nextContent(),
-                        );
-                      },
-                      child: SvgHelper.fromSource(path: Assets.rightArrow),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.read<LessonBloc>().add(
+                              LessonEvent.nextContent(),
+                            );
+                          },
+                          child: SvgHelper.fromSource(path: Assets.rightArrow),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
+
               Positioned(
-                top: size.height * 0.05,
-                right: size.width * 0.05,
+                top: 16,
+                right: 16,
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: SvgHelper.fromSource(path: Assets.wrong),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: SizedBox(
+                    child: SvgHelper.fromSource(
+                      path: Assets.wrong,
+                      // height: isMobile ? 48 : null,
+                      // width: isMobile ? 48 : null,
+                    ),
+                  ),
                 ),
               ),
             ],

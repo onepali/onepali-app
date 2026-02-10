@@ -129,13 +129,19 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: InkWell(
-                        onTap: () async {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.previousContent(),
-                          );
-                        },
-                        child: SvgHelper.fromSource(path: Assets.leftArrow),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: GestureDetector(
+                            onTap: () async {
+                              context.read<LessonBloc>().add(
+                                const LessonEvent.previousContent(),
+                              );
+                            },
+                            child: SvgHelper.fromSource(path: Assets.leftArrow),
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -229,13 +235,19 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: InkWell(
-                        onTap: () {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.nextContent(),
-                          );
-                        },
-                        child: SvgHelper.fromSource(path: Assets.rightArrow),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: GestureDetector(
+                            onTap: () {
+                              context.read<LessonBloc>().add(
+                                const LessonEvent.nextContent(),
+                              );
+                            },
+                            child: SvgHelper.fromSource(path: Assets.rightArrow),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -243,8 +255,8 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
               ),
 
               Positioned(
-                top: size.height * 0.05,
-                right: size.width * 0.05,
+                top: 16,
+                right: 16,
                 child: GestureDetector(
                   onTap: () {
                     //pop

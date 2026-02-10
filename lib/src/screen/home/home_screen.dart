@@ -82,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
     }
-
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -90,12 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
           // Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedLessonCard(context),
-              Gaps.verticalGapOf(10),
-            ],
+            // if (!isGuest) ...[
+            //   _buildRecommendedLessonCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
             // _buildLessons(context),
-            CourseScreen(),
+            CourseScreen()
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
             if (!isGuest) ...[
@@ -189,6 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
 
   Widget _buildSongCard(BuildContext context) {
     bool isTabletLandscape =
