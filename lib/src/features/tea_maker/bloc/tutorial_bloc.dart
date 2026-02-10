@@ -10,6 +10,7 @@ part 'tutorial_bloc.freezed.dart';
 
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final player = AudioPlayer();
+  final hunxaPlayer = AudioPlayer();
   List<String> ingridents = [
     'assets/tea_maker/svg/teapot.svg',
     'assets/tea_maker/svg/water_glass.svg',
@@ -38,9 +39,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   TutorialBloc() : super(TutorialState()) {
     //1: Started
     on<_Started>((event, emit) async {
-      emit(state.copyWith(ingredients: ingridents,
-      index: 0,
-      ));
+      emit(state.copyWith(ingredients: ingridents, index: 0));
 
       await player.play(AssetSource('tea_maker/music/making-tea-1.mp3'));
       emit(state.copyWith(showBearWithTea: true));
@@ -50,8 +49,9 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     });
     on<_HunchaButtonPressed>((event, emit) async {
       emit(state.copyWith(showHunchButton: false));
-      await player.play(AssetSource('tea_maker/music/making-tea-ok.mp3'));
-      await player.onPlayerComplete.first;
+      await hunxaPlayer.play(AssetSource('tea_maker/music/making-tea-ok.mp3'));
+      await Future.delayed(const Duration(seconds: 2));
+
       emit(state.copyWith(showDragIndicator: true));
       await player.play(AssetSource('tea_maker/music/making-tea-2.mp3'));
       await player.onPlayerComplete.first;
@@ -125,6 +125,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   Future<void> close() {
     print('dispose player');
     player.dispose();
+    hunxaPlayer.dispose();
     return super.close();
   }
 }

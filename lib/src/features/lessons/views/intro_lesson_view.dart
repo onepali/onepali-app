@@ -16,8 +16,8 @@ class IntroLessonView extends StatelessWidget {
       children: [
         Positioned.fill(child: Container(color: colorFromHex(content.bgColor))),
         Positioned(
-          top: size.height * 0.03,
-          right: size.width * 0.03,
+          top: 16,
+          right: 16,
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
@@ -37,7 +37,7 @@ class IntroLessonView extends StatelessWidget {
           top: 0,
 
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.only(right: 16),
             child: InkWell(
               onTap: () {
                 context.read<LessonBloc>().add(const LessonEvent.nextContent());

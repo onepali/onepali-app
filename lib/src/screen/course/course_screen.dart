@@ -265,7 +265,7 @@ class CourseScreenState extends State<CourseScreen> {
     //     );
     //   },
     // );
-
+    final isMobile = PlatformUtility.isMobile(context);
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('lesson_levels')
@@ -285,7 +285,7 @@ class CourseScreenState extends State<CourseScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data[index]['name'],
+                    data[index]['name'] as String? ?? '',
                     style: AppStyles.text20PxSemiBold.copyWith(
                       color: AppColors.kBlack,
                       fontSize: isTabletLandscape ? 24 : 20,
@@ -294,7 +294,9 @@ class CourseScreenState extends State<CourseScreen> {
                   ),
                   SizedBox(height: 16),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
+                    height: isMobile
+                        ? MediaQuery.of(context).size.height * 0.45
+                        : MediaQuery.of(context).size.height * 0.3,
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('lessons')
@@ -306,45 +308,49 @@ class CourseScreenState extends State<CourseScreen> {
                           return Row(
                             children: [
                               for (final lesson in data)
-                                GestureDetector(
-                                  onTap: () => _onTapLesson(lesson),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(16),
-                                    width:
-                                        MediaQuery.of(context).size.width *
-                                        0.35,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: lesson['bg_color'] != null
-                                          ? colorFromHex(lesson['bg_color'])
-                                          : Colors.green,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withAlpha(30),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 5),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: Image.network(lesson['image']),
-                                        ),
-                                        SizedBox(height: 32),
-                                        Text(
-                                          lesson['name'],
-                                          style: AppStyles.text16PxMedium
-                                              .copyWith(
-                                                fontSize: isTabletLandscape
-                                                    ? 24
-                                                    : 16,
-                                              ),
-                                        ),
-                                      ],
+                                if (lesson['image'] is String &&
+                                    (lesson['image'] as String).isNotEmpty)
+                                  GestureDetector(
+                                    onTap: () => _onTapLesson(lesson),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      width:
+                                          MediaQuery.of(context).size.width *
+                                          0.35,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: lesson['bg_color'] != null
+                                            ? colorFromHex(lesson['bg_color'])
+                                            : Colors.green,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withAlpha(30),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 5),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: Image.network(
+                                              lesson['image'] as String,
+                                            ),
+                                          ),
+                                          SizedBox(height: 32),
+                                          Text(
+                                            lesson['name'] as String? ?? '',
+                                            style: AppStyles.text16PxMedium
+                                                .copyWith(
+                                                  fontSize: isTabletLandscape
+                                                      ? 24
+                                                      : 16,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                             ],
                           );
                         }
@@ -364,7 +370,7 @@ class CourseScreenState extends State<CourseScreen> {
   }
 
   void _onTapLesson(QueryDocumentSnapshot<Map<String, dynamic>> lesson) {
-    if (lesson.data()['name'] == 'Tea making') {
+    if ((lesson.data()['name'] as String?) == 'Tea making') {
       Utility.navigateMaterialRoute(context, KitchenPage());
       return;
     }

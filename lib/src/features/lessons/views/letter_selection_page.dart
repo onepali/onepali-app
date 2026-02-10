@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
 import 'package:onepali/src/features/lessons/services/nepali_letter_service.dart';
-import 'package:onepali/src/features/lessons/views/letter_tracing_view.dart';
-import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
 
 class NepaliTracingApp extends StatelessWidget {
   const NepaliTracingApp({super.key});
