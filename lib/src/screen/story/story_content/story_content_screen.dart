@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/screen/story/story_content/widget/button_tap_content2.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -119,8 +120,15 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   }
 
   /// Gets the background image path if available
-  String? _getBackgroundImage(int idx, List<Content> contentList) {
+  String? _getBackgroundImage(
+    int idx,
+    List<Content> contentList, {
+    bool isMobile = true,
+  }) {
     if (idx > 0 && idx <= contentList.length) {
+      if (!isMobile && contentList[idx - 1].imageTb != null) {
+        return contentList[idx - 1].imageTb;
+      }
       return contentList[idx - 1].image;
     }
     return null;
@@ -128,7 +136,6 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   /// Builds the full-screen background image widget
   Widget _buildFullScreenBackground(String imagePath) {
-  
     return Positioned.fill(
       child: CustomImage(
         imagePath,
@@ -328,6 +335,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     return Scaffold(
       backgroundColor: AppColors.kSkyBlue,
       body: Builder(
@@ -345,7 +353,11 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
               // Check if current content has background image
               final hasBackgroundImage = _hasBackgroundImage(idx, contentList);
-              final backgroundImage = _getBackgroundImage(idx, contentList);
+              final backgroundImage = _getBackgroundImage(
+                idx,
+                contentList,
+                isMobile: isMobile,
+              );
 
               // Build main content widget
               final mainContent = idx == 0
@@ -364,6 +376,12 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
               // If there's a background image, it should cover the whole screen
               if (hasBackgroundImage && backgroundImage != null) {
+                if (contentList[idx - 1].type == "button_tap2") {
+                  return ButtonTapContent2(
+                    content: contentList[idx-1],
+                    playAudio: true,
+                  );
+                }
                 return Stack(
                   children: [
                     // Background image extends to full screen (behind SafeArea)
