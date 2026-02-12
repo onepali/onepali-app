@@ -26,6 +26,9 @@ class StoryProvider extends ChangeNotifier {
 
   AudioPlayer? _audioPlayerInstance;
 
+  bool _storyFinished = false;
+  bool get isStoryFinished => _storyFinished;
+
   Future<void> fetchStories() async {
     _status = DataFetchStatus.loading;
     notifyListeners();
@@ -122,6 +125,9 @@ class StoryProvider extends ChangeNotifier {
         final content = _currentStory!.content[_currentContentIndex - 1];
         await _playAudioCached(content.audio);
       }
+    } else {
+      _storyFinished = true;
+      notifyListeners();
     }
   }
 
