@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../src.dart';
@@ -110,43 +113,39 @@ class SlideContentState extends State<SlideContent> {
             ),
           ),
         ),
-        Positioned(
-          top: 16,
-          right: Dimensions.kIconMargin(context),
-          child: CircularButtonWidget(
-            type: CircularButtonType.close,
-            onPressed: () {
-              storyProvider.stopAudioAndResetIndex();
-            },
-          ),
+       
+        TopRightPositionedCloseButton(
+          onTap: () {
+            storyProvider.stopAudioAndResetIndex();
+            Navigator.of(context).pop();
+          },
         ),
-        Positioned(
-          left: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.leftArrow,
-              onPressed: () => storyProvider.previousContent(),
-            ),
-          ),
+
+        CenterLeftAlignedBackButton(
+          onTap: () {
+            storyProvider.previousContent();
+          },
         ),
         // Right arrow (center vertically)
-        Positioned(
-          right: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.rightArrow,
-              onPressed: () => storyProvider.nextContent(context),
-            ),
-          ),
+        // Positioned(
+        //   right: Dimensions.kIconMargin(context),
+        //   top: 0,
+        //   bottom: 0,
+        //   child: Center(
+        //     child: CircularButtonWidget(
+        //       type: CircularButtonType.rightArrow,
+        //       onPressed: () => storyProvider.nextContent(context),
+        //     ),
+        //   ),
+        // ),
+        CenterRightAlignedForwardButton(
+          onTap:()=> storyProvider.nextContent(context),
         ),
         Positioned(
           left: 32,
           right: 32,
-          bottom: 70, // Same bottom position as Character 1 (the draggable animal)
+          bottom:
+              70, // Same bottom position as Character 1 (the draggable animal)
           child: IgnorePointer(
             child: AnimatedOpacity(
               opacity: _completed ? 0.0 : 1.0,
@@ -157,9 +156,9 @@ class SlideContentState extends State<SlideContent> {
                   Container(
                     height:
                         PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 70
-                            : 48,
+                            PlatformUtility.isLandscape(context)
+                        ? 70
+                        : 48,
                     decoration: BoxDecoration(
                       color: AppColors.kBlack.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(
@@ -173,17 +172,17 @@ class SlideContentState extends State<SlideContent> {
                   Positioned(
                     left: 12 + _position,
                     child: SvgHelper.fromSource(
-                      path: Assets.scrollRightArrow,
+                      path: Assets.rightArrow,
                       height:
                           PlatformUtility.isTablet(context) &&
-                                  PlatformUtility.isLandscape(context)
-                              ? 70
-                              : 44,
+                              PlatformUtility.isLandscape(context)
+                          ? 70
+                          : 44,
                       width:
                           PlatformUtility.isTablet(context) &&
-                                  PlatformUtility.isLandscape(context)
-                              ? 70
-                              : 44,
+                              PlatformUtility.isLandscape(context)
+                          ? 70
+                          : 44,
                       type: SvgSourceType.asset,
                     ),
                   ),
@@ -203,11 +202,11 @@ class SlideContentState extends State<SlideContent> {
                   // Calculate max width as 90% of screen width
                   final screenWidth = MediaQuery.of(context).size.width;
                   final textBoxMaxWidth = screenWidth * 0.9;
-                  
+
                   // Consistent font sizes based on screen width
                   final baseFontSize = isTabletLandScape ? 24.0 : 16.0;
                   final iconSizeForText = isTabletLandScape ? 36.0 : 24.0;
-                  
+
                   // Prepare conversation rows based on current audio index
                   List<Widget> messageWidgets = [];
 
@@ -269,9 +268,7 @@ class SlideContentState extends State<SlideContent> {
                   }
 
                   return ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: textBoxMaxWidth,
-                    ),
+                    constraints: BoxConstraints(maxWidth: textBoxMaxWidth),
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         vertical: isTabletLandScape ? 12 : 10,

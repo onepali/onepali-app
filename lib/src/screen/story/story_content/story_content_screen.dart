@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/screen/story/story_content/widget/button_tap_content2.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -153,28 +155,32 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
     StoryProvider provider,
   ) {
     return [
-      Positioned(
-        top: 16,
-        right: Dimensions.kIconMargin(context),
-        child: CircularButtonWidget(
-          type: CircularButtonType.close,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+      TopRightPositionedCloseButton(
+        onTap: () {
+          _disposeStoryAudio();
+          provider.stopAudioAndResetIndex();
+          Navigator.of(context).pop();
+        },
       ),
-      Positioned(
-        right: Dimensions.kIconMargin(context),
-        top: 0,
-        bottom: 0,
-        child: Center(
-          child: CircularButtonWidget(
-            type: CircularButtonType.rightArrow,
-            onPressed: () {
-              _disposeStoryAudio();
-              provider.nextContent(context);
-            },
-          ),
-        ),
-      ),
+      // Positioned(
+      //   right: Dimensions.kIconMargin(context),
+      //   top: 0,
+      //   bottom: 0,
+      //   child: Center(
+      //     child: CircularButtonWidget(
+      //       type: CircularButtonType.rightArrow,
+      //       onPressed: () {
+      //         _disposeStoryAudio();
+      //         provider.nextContent(context);
+      //       },
+      //     ),
+      //   ),
+      // ),
+      CenterRightAlignedForwardButton(
+        onTap: () {
+          _disposeStoryAudio();
+          provider.nextContent(context);
+      })
     ];
   }
 

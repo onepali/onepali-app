@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
@@ -24,26 +27,18 @@ class _NormalContentState extends State<NormalContent> {
   @override
   Widget build(BuildContext context) {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+    final isMobile = PlatformUtility.isMobile(context);
     bool isTabletLandScape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
-    Widget arrowButton({required bool isLeft, required VoidCallback onTap}) {
-      return CircularButtonWidget(
-        type: isLeft
-            ? CircularButtonType.leftArrow
-            : CircularButtonType.rightArrow,
-        onPressed: onTap,
-        // margin: const EdgeInsets.symmetric(horizontal: 16),
-      );
-    }
-  
+
     return Stack(
       children: [
         // Background image is handled at parent level in story_content_screen.dart
         // to fill the entire screen (appears once)
         // Top center sound icon
         Positioned(
-          top: 24,
+          top: isMobile? 24:32,
           left: 0,
           right: 0,
           child: Center(
@@ -70,63 +65,41 @@ class _NormalContentState extends State<NormalContent> {
           ),
         ),
         // Top right wrong icon
-        Positioned(
-          top: 16,
-          right: Dimensions.kIconMargin(context),
-          child: CircularButtonWidget(
-            onPressed: () {
-              storyProvider.stopAudioAndResetIndex();
-              logger.d('[NormalContent] Wrong icon tapped, stopping audio');
+        TopRightPositionedCloseButton(
+          onTap: () {
+            storyProvider.stopAudioAndResetIndex();
+            logger.d('[NormalContent] Wrong icon tapped, stopping audio');
 
-              // Navigate to appropriate dashboard based on user type
-              bool isGuest = GuestUtil.isGuestUser();
-              if (isGuest) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.guestDashboardScreen,
-                  (route) => false,
-                );
-                UserAppBar.setTabIndex(0);
-              } else {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.dashboardScreen,
-                  (route) => false,
-                );
-                UserAppBar.setTabIndex(0);
-              }
-            },
-            type: CircularButtonType.close,
-          ),
+            // Navigate to appropriate dashboard based on user type
+            bool isGuest = GuestUtil.isGuestUser();
+            if (isGuest) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                AppRoutes.guestDashboardScreen,
+                (route) => false,
+              );
+              UserAppBar.setTabIndex(0);
+            } else {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                AppRoutes.dashboardScreen,
+                (route) => false,
+              );
+              UserAppBar.setTabIndex(0);
+            }
+          },
         ),
         // Left arrow (center vertically)
-        Positioned(
-          left: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: arrowButton(
-              isLeft: true,
-              onTap: () => storyProvider.previousContent(),
-            ),
-          ),
+        CenterLeftAlignedBackButton(
+          onTap: () => storyProvider.previousContent(),
         ),
         // Right arrow (center vertically)
-        Positioned(
-          right: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: arrowButton(
-              isLeft: false,
-              onTap: () => storyProvider.nextContent(context),
-            ),
-          ),
+        CenterRightAlignedForwardButton(
+          onTap: () => storyProvider.nextContent(context),
         ),
         // Bottom white background with text
         Align(
           alignment: Alignment.bottomCenter,
           child: LayoutBuilder(
             builder: (context, constraints) {
-             
               return Consumer<StoryProvider>(
                 builder: (context, storyProvider, _) {
                   // Calculate max width as 90% of screen width

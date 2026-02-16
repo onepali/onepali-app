@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/custom_svg.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
@@ -236,36 +237,6 @@ class _KitchenPageState extends State<KitchenPage> {
                 if (state.showDragIndicator) buildIndicator(size),
                 // Ingredient Text
                 if (state.droppedItem != null && !state.teaReady)
-                  // Positioned(
-                  //   right: 0,
-                  //   left: 0,
-                  //   bottom: size.height * 0.09,
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: [
-                  //       Container(
-                  //         padding: const EdgeInsets.symmetric(
-                  //           horizontal: 20,
-                  //           vertical: 8,
-                  //         ),
-                  //         decoration: BoxDecoration(
-                  //           color: Color(0xFF003893),
-                  //           borderRadius: BorderRadius.circular(50),
-                  //         ),
-                  //         alignment: Alignment.center,
-                  //         child: Text(
-                  //           state.droppedItem!,
-                  //           textAlign: TextAlign.center,
-                  //           style: TextStyle(
-                  //             color: Colors.white,
-                  //             fontSize: 40,
-                  //             fontWeight: FontWeight.bold,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   Positioned(
                     right: 0,
                     left: 0,
@@ -286,16 +257,8 @@ class _KitchenPageState extends State<KitchenPage> {
                     ),
                   ),
 
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: SvgHelper.fromSource(
-                      path: Assets.wrong,
-                      type: SvgSourceType.asset,
-                    ),
-                  ),
+                TopRightPositionedCloseButton(
+                  onTap: () => Navigator.of(context).pop(),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/blocs/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
@@ -138,25 +139,17 @@ class _DragToMatchView extends StatelessWidget {
                 ),
 
               // Close button
-              Positioned(
-                top: 16,
-                right: 16,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: SvgHelper.fromSource(path: Assets.wrong),
+              TopRightPositionedCloseButton(onTap: Navigator.of(context).pop),
+              if (state.showCat)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Image.asset(
+                    Assets.goodRemark1,
+                    height: size.height * 0.5,
+                    width: size.height * 0.5,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-           if(state.showCat)   Align(
-                alignment: Alignment.bottomRight,
-                child: Image.asset(
-                  Assets.goodRemark1,
-                  height: size.height * 0.5,
-                  width: size.height * 0.5,
-                  fit: BoxFit.cover,
-                ),
-              ),
             ],
           );
         },

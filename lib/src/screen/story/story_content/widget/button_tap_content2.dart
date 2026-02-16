@@ -58,6 +58,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final options = widget.content.conversation;
+    final isMobile = PlatformUtility.isMobile(context);
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     if (storyProvider.isStoryFinished) {
       Navigator.of(context).pop();
@@ -179,7 +180,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
         ),
         // Top center sound icon
         Positioned(
-          top: 16,
+          top: isMobile ? 24 : 32,
           left: 0,
           right: 0,
           child: Center(

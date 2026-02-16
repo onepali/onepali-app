@@ -57,6 +57,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   @override
   Widget build(BuildContext context) {
     final options = widget.content.conversation;
+    final isMobile = PlatformUtility.isMobile(context);
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
 
     return Stack(
@@ -158,7 +159,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
         ),
         // Top center sound icon
         Positioned(
-          top: 16,
+          top: isMobile? 24:32,
           left: 0,
           right: 0,
           child: Center(

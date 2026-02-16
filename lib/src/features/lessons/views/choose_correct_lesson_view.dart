@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -115,21 +118,29 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
               Positioned.fill(
                 child: Row(
                   children: [
+                    // Left arrow
                     Expanded(
                       flex: 1,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16),
-                          child: GestureDetector(
-                            onTap: () async {
-                              context.read<LessonBloc>().add(
-                                const LessonEvent.previousContent(),
-                              );
-                            },
-                            child: SvgHelper.fromSource(path: Assets.leftArrow),
-                          ),
-                        ),
+                      // child: Align(
+                      //   alignment: Alignment.centerLeft,
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.only(left: 16),
+                      //     child: GestureDetector(
+                      //       onTap: () async {
+                      //         context.read<LessonBloc>().add(
+                      //           const LessonEvent.previousContent(),
+                      //         );
+                      //       },
+                      //       child: SvgHelper.fromSource(path: Assets.leftArrow),
+                      //     ),
+                      //   ),
+                      // ),
+                      child: CenterLeftAlignedBackButton(
+                        onTap: () async {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.previousContent(),
+                          );
+                        },
                       ),
                     ),
                     Expanded(
@@ -221,37 +232,27 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                         ],
                       ),
                     ),
+
+                    // Next button
                     Expanded(
                       flex: 1,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16),
-                          child: GestureDetector(
-                            onTap: () {
-                              context.read<LessonBloc>().add(
-                                const LessonEvent.nextContent(),
-                              );
-                            },
-                            child: SvgHelper.fromSource(path: Assets.rightArrow),
-                          ),
-                        ),
+
+                      child: CenterRightAlignedForwardButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-
-              Positioned(
-                top: 16,
-                right: 16,
-                child: GestureDetector(
-                  onTap: () {
-                    //pop
-                    Navigator.pop(context);
-                  },
-                  child: SvgHelper.fromSource(path: Assets.wrong),
-                ),
+              // Close button
+              TopRightPositionedCloseButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
               ),
             ],
           ),
@@ -294,7 +295,7 @@ class ItemCard extends StatelessWidget {
         margin: const EdgeInsets.all(8.0),
         padding: EdgeInsets.only(bottom: 8, top: 8),
         decoration: BoxDecoration(
-          color: colorFromHex(item.bgColor)??Colors.white,
+          color: colorFromHex(item.bgColor) ?? Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: isSelected
               ? Border.all(color: Colors.yellowAccent, width: 2)
@@ -315,9 +316,7 @@ class ItemCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.nameNp,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -341,9 +340,7 @@ class ItemCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.nameEn,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
