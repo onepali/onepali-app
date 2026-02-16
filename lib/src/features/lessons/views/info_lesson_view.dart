@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -169,19 +172,12 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: GestureDetector(
-                          onTap: () async {
-                            context.read<LessonBloc>().add(
-                              const LessonEvent.previousContent(),
-                            );
-                          },
-                          child: SvgHelper.fromSource(path: Assets.leftArrow),
-                        ),
-                      ),
+                    child: CenterLeftAlignedBackButton(
+                      onTap: () {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.previousContent(),
+                        );
+                      },
                     ),
                   ),
 
@@ -255,39 +251,19 @@ class _InfoLessonViewState extends State<InfoLessonView> {
 
                   Expanded(
                     flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.read<LessonBloc>().add(
-                              LessonEvent.nextContent(),
-                            );
-                          },
-                          child: SvgHelper.fromSource(path: Assets.rightArrow),
-                        ),
-                      ),
+                    child: CenterRightAlignedForwardButton(
+                      onTap: () {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.nextContent(),
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
 
-              Positioned(
-                top: 16,
-                right: 16,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: SizedBox(
-                    child: SvgHelper.fromSource(
-                      path: Assets.wrong,
-                      // height: isMobile ? 48 : null,
-                      // width: isMobile ? 48 : null,
-                    ),
-                  ),
-                ),
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.of(context).pop(),
               ),
             ],
           ),
