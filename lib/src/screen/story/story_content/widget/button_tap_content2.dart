@@ -204,7 +204,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
         ),
         // Top center sound icon
         Positioned(
-          top: 16,
+          top: isMobile ? 24 : 32,
           left: 0,
           right: 0,
           child: Center(

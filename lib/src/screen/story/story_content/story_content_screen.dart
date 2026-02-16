@@ -162,12 +162,25 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
           Navigator.of(context).pop();
         },
       ),
+      // Positioned(
+      //   right: Dimensions.kIconMargin(context),
+      //   top: 0,
+      //   bottom: 0,
+      //   child: Center(
+      //     child: CircularButtonWidget(
+      //       type: CircularButtonType.rightArrow,
+      //       onPressed: () {
+      //         _disposeStoryAudio();
+      //         provider.nextContent(context);
+      //       },
+      //     ),
+      //   ),
+      // ),
       CenterRightAlignedForwardButton(
         onTap: () {
           _disposeStoryAudio();
           provider.nextContent(context);
-        },
-      ),
+      })
     ];
   }
 
@@ -189,6 +202,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                   // Get SafeArea padding to reserve space at top and bottom
                   final safeAreaTop = MediaQuery.of(context).padding.top;
                   final safeAreaBottom = MediaQuery.of(context).padding.bottom;
+                  final safeAreaReserve = safeAreaTop + safeAreaBottom;
 
                   // Calculate fixed sizes as percentages of screen height
                   // Top padding: 5% of screen height (but ensure we have space for SafeArea)
@@ -370,7 +384,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               if (hasBackgroundImage && backgroundImage != null) {
                 if (contentList[idx - 1].type == "button_tap2") {
                   return ButtonTapContent2(
-                    content: contentList[idx - 1],
+                    content: contentList[idx-1],
                     playAudio: true,
                   );
                 }
