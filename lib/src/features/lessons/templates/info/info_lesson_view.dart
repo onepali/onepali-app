@@ -3,17 +3,30 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
-import 'package:onepali/src/core/widget/common/speaker_icon.dart';
-import 'package:onepali/src/features/lessons/templates/info/info_lesson_content_bloc/info_lesson_content_bloc.dart';
-import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:video_player/video_player.dart';
+
+class MediaCacheManager {
+  static const key = 'mediaCache';
+
+  static CacheManager instance = CacheManager(
+    Config(
+      key,
+      stalePeriod: const Duration(days: 30), // Cache for 30 days
+      maxNrOfCacheObjects: 100,
+      repo: JsonCacheInfoRepository(databaseName: key),
+      fileService: HttpFileService(),
+    ),
+  );
+}
 
 class InfoLessonView extends StatefulWidget {
   final InfoLessonContent content;
@@ -40,42 +53,33 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    log('InfoLessonView didChangeDependencies');
+    print('InfoLessonView didChangeDependencies');
   }
 
   Future<void> _initializeMedia() async {
     try {
       // If video is present, cache and initialize it
-      final videoUrl = widget.content.video;
-      if (videoUrl?.isNotEmpty == true) {
+      if (widget.content.video != null) {
         final videoFile = await MediaCacheManager.instance.getSingleFile(
-          videoUrl!,
+          widget.content.video!,
         );
 
-        if (!mounted) return;
+        _videoController = VideoPlayerController.file(videoFile);
+        await _videoController!.initialize();
 
-        final videoController = VideoPlayerController.file(videoFile);
-        await videoController.initialize();
-
-        if (!mounted) {
-          await videoController.dispose();
-          return;
+        if (mounted) {
+          _videoController?.play();
         }
-
-        _videoController = videoController;
-        _videoController!.addListener(_videoListener);
-
         setState(() {});
-        await _videoController!.play();
+        // Listen for video completion
+        _videoController!.addListener(_videoListener);
       } else {
         // No video, mark as initialized and play audio immediately
+        if (mounted) {}
         await _playAudio();
       }
     } catch (e) {
       log('Error initializing media: $e');
-      if (mounted) {
-        await _playAudio();
-      }
     }
   }
 
@@ -109,13 +113,10 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         widget.content.audioWord,
       );
 
-      if (!mounted) return;
-
-      final audioPlayer = AudioPlayer();
-      _audioPlayer = audioPlayer;
+      _audioPlayer = AudioPlayer();
       bloc.add(const InfoLessonContentEvent.audioStarted());
 
-      await audioPlayer.play(DeviceFileSource(audioFile.path));
+      await _audioPlayer!.play(DeviceFileSource(audioFile.path));
     } catch (e) {
       log('Error playing audio: $e');
     }
@@ -150,68 +151,10 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     super.dispose();
   }
 
-  Widget _buildMediaContent(InfoLessonContent content, bool showVideo) {
-    final hasVideo = content.video != null && content.video!.isNotEmpty;
-
-    if (hasVideo) {
-      final showVideoWidget =
-          showVideo &&
-          _videoController != null &&
-          _videoController!.value.isInitialized;
-
-      return Stack(
-        children: [
-          if (!showVideoWidget)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: GestureDetector(
-                  onTap: _replayVideo,
-                  child: content.isImageSvg
-                      ? SvgHelper.fromSource(
-                          path: content.image,
-                          type: SvgSourceType.network,
-                          fit: BoxFit.cover,
-                        )
-                      : CustomCachedImage(
-                          imageUrl: content.image,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-              ),
-            ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [if (showVideoWidget) VideoPlayer(_videoController!)],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: content.isImageSvg
-            ? SvgHelper.fromSource(
-                path: content.image,
-                type: SvgSourceType.network,
-                fit: BoxFit.contain,
-              )
-            : CustomCachedImage(imageUrl: content.image, fit: BoxFit.contain),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
       builder: (context, state) {
         if (state.lessonContent == null) {
@@ -219,7 +162,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         }
 
         final showVideo =
-            widget.content.video?.isNotEmpty == true && !state.isVideoCompleted;
+            widget.content.video != null && !state.isVideoCompleted;
         final content = state.lessonContent!;
 
         return Center(
@@ -227,8 +170,10 @@ class _InfoLessonViewState extends State<InfoLessonView> {
             children: [
               Row(
                 children: [
+                  //  LEFT ARROW
                   Expanded(
                     flex: 1,
+
                     child: CenterLeftAlignedBackButton(
                       onTap: () {
                         context.read<LessonBloc>().add(
@@ -238,9 +183,72 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                     ),
                   ),
 
+                  // 👇 VIDEO OR IMAGE
                   Expanded(
                     flex: 4,
-                    child: _buildMediaContent(content, showVideo),
+                    child: widget.content.video != null
+                        ? LayoutBuilder(
+                            builder: (context, constraints) {
+                              final showVideoWidget =
+                                  showVideo &&
+                                  _videoController != null &&
+                                  _videoController!.value.isInitialized;
+                              return Stack(
+                                children: [
+                                  if (!showVideoWidget)
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: AspectRatio(
+                                        aspectRatio: 16 / 9,
+                                        child: GestureDetector(
+                                          onTap: _replayVideo,
+                                          child: content.isImageSvg
+                                              ? SvgHelper.fromSource(
+                                                  path: content.image,
+                                                  type: SvgSourceType.network,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : CustomCachedImage(
+                                                  imageUrl: content.image,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: Stack(
+                                        fit: StackFit.expand,
+                                        children: [
+                                          // 2️⃣ Video player on top if playing
+                                          if (showVideoWidget)
+                                            VideoPlayer(_videoController!),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: content.isImageSvg
+                                  ? SvgHelper.fromSource(
+                                      path: content.image,
+                                      type: SvgSourceType.network,
+                                      fit: BoxFit.contain,
+                                    )
+                                  : CustomCachedImage(
+                                      imageUrl: content.image,
+                                      fit: BoxFit.contain,
+                                    ),
+                            ),
+                          ),
                   ),
 
                   // Information Section
@@ -265,26 +273,33 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        SpeakerIcon(onTap: _replayAudio),
+                        InkWell(
+                          onTap: _replayAudio,
+                          child: SizedBox(
+                            width: size.width * 0.08,
+                            height: size.width * 0.08,
+                            child: SvgHelper.fromSource(path: Assets.sound),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-
+                  // Forward button
                   Expanded(
                     flex: 1,
                     child: CenterRightAlignedForwardButton(
                       onTap: () {
                         context.read<LessonBloc>().add(
-                          const LessonEvent.nextContent(),
+                          LessonEvent.nextContent(),
                         );
                       },
                     ),
                   ),
                 ],
               ),
-
+              // Close button
               TopRightPositionedCloseButton(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),
