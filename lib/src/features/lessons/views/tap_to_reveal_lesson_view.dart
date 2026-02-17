@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
@@ -160,8 +161,8 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                   : 0.5;
               log('dx: $dx, dy: $dy');
               return Positioned(
-                left: dx*size.width,
-                top: dy*size.height,
+                left: dx * size.width,
+                top: dy * size.height,
                 child: _PositionedItemCard(
                   item: item,
                   itemSize: itemSize,
@@ -180,11 +181,12 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
 
             if (state.currentQuestion != null)
               Positioned(
-                top: 16,
+                top: isMobile ? 24 : 32,
                 left: 0,
                 right: 0,
-                child: GestureDetector(
-                  onTap:
+                child: CircularButtonWidget(
+                  type: CircularButtonType.sound,
+                  onPressed:
                       state.isQuestionAudioPlaying ||
                           state.isCorrectAudioPlaying
                       ? null
@@ -195,7 +197,6 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                             );
                           }
                         },
-                  child: SvgHelper.fromSource(path: Assets.sound),
                 ),
               ),
 
@@ -210,15 +211,10 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 ),
               ),
 
-            Positioned(
-              top: 16,
-              right: 16,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: SvgHelper.fromSource(path: Assets.wrong),
-              ),
+            TopRightPositionedCloseButton(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
             ),
           ],
         );

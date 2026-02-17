@@ -24,6 +24,7 @@ dependencies:
   # State Management
   provider: ^6.1.5
   flutter_bloc: ^9.1.1
+  rxdart: ^0.28.0
 
   # Firebase Services
   firebase_core: ^4.0.0
@@ -44,6 +45,9 @@ dependencies:
   youtube_player_flutter: ^9.1.1
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.4.1
+  any_image_view: ^2.0.0
+  path_drawing: ^1.0.1
+  extended_image: ^10.0.1
 
   # Networking & HTTP
   http: ^1.4.0
@@ -74,8 +78,8 @@ dependencies:
   # Code Generation & JSON Serialization
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
-  rxdart: ^0.28.0
-  path_drawing: ^1.0.1
+
+
 
 
 dev_dependencies:

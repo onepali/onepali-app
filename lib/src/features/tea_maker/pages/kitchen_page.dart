@@ -82,7 +82,7 @@ class _KitchenPageState extends State<KitchenPage> {
       child: BlocBuilder<TutorialBloc, TutorialState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: Colors.blue,
+            backgroundColor: AppColors.kBlue,
             body: Stack(
               children: [
                 Column(
@@ -97,7 +97,7 @@ class _KitchenPageState extends State<KitchenPage> {
                           right: size.width * 0.1,
                         ),
                         decoration: BoxDecoration(
-                          color: Color(0xFF007D28),
+                          color: AppColors.kGreen,
                           borderRadius: BorderRadius.vertical(
                             bottom: Radius.circular(50),
                           ),
@@ -127,7 +127,7 @@ class _KitchenPageState extends State<KitchenPage> {
                                   Positioned.fill(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 24,
+                                        horizontal: 16,
                                         vertical: 24,
                                       ),
                                       child: Draggable<Map<int, String>>(
@@ -255,6 +255,15 @@ class _KitchenPageState extends State<KitchenPage> {
                         'assets/tea_maker/svg/bear_taking_tea.svg',
                       ),
                     ),
+                  ),
+                if (state.teaReady)
+                  LottieHelper.fromSource(
+                    path: 'assets/lottie/confetti_1.json',
+                    fit: BoxFit.cover,
+                    repeat: true,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    type: LottieSourceType.asset,
                   ),
 
                 TopRightPositionedCloseButton(
