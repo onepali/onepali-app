@@ -50,6 +50,7 @@ class AppColors {
   // Other colors
   static const Color kStoneGrey = Color(0xFFCDCDCD);
 
+
   static const List<Color> learningColors = [
     Color(0xFFFF6B6B), // learningRed
     Color(0xFFFFA45B), // learningOrange
