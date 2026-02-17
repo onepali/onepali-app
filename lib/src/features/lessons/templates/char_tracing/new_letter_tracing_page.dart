@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onepali/src/features/lessons/templates/char_tracing/letter_tracing_bloc/letter_tracing_bloc.dart';
-import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/features/lessons/blocs/bloc/letter_tracing_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/letter_painter.dart';
 import 'package:onepali/src/src.dart';
@@ -66,57 +68,39 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
               width: size.width,
               height: size.height,
               child: SafeArea(
-                child: Column(
+                child: Stack(
                   children: [
-                    // Header with progress
-                    _buildHeader(context, state, size),
-                    const Spacer(),
-                    // Main tracing area
-                    _buildTracingArea(context, state, size),
-                    const Spacer(),
-                    // Stroke indicators at bottom
-                    _buildStrokeIndicators(state),
-
-                    SizedBox(height: size.height * 0.05),
-
-                    // Reset button
+                    Column(
+                      children: [
+                        // Header with progress
+                        const Spacer(),
+                        // Main tracing area
+                        Center(child: _buildTracingArea(context, state, size)),
+                        SizedBox(height: size.height * 0.02),
+                        // Stroke indicators at bottom
+                        _buildStrokeIndicators(state),
+                        Spacer(),
+                      ],
+                    ),
+                    TopRightPositionedCloseButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                     if (state.isLetterComplete)
-                      Visibility(
-                        visible: true,
-                        maintainState: true,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        child: _buildResetButton(context),
+                      CenterRightAlignedForwardButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
                       ),
-
-                    SizedBox(height: size.height * 0.03),
                   ],
                 ),
               ),
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(
-    BuildContext context,
-    LetterTracingState state,
-    Size size,
-  ) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: SvgHelper.fromSource(path: Assets.wrong),
-          ),
-        ],
       ),
     );
   }
@@ -216,23 +200,6 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
       }),
     );
   }
-
-  Widget _buildResetButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        // context.read<LetterTracingBloc>().add(const LetterTracingEvent.reset());
-        context.read<LessonBloc>().add(const LessonEvent.nextContent());
-      },
-      icon: const Icon(Icons.arrow_forward),
-      label: const Text('Next'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-      ),
-    );
-  }
 }
 
 // Background pattern painter
@@ -240,7 +207,7 @@ class BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withValues(alpha: 0.05)
+      ..color = Colors.grey.withOpacity(0.05)
       ..strokeWidth = 1;
 
     // Draw subtle grid
