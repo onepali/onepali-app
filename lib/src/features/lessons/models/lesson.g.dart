@@ -48,6 +48,7 @@ InfoLessonContent _$InfoLessonContentFromJson(Map<String, dynamic> json) =>
       audioWord: json['audio_word'] as String,
       audioBg: json['audio_bg'] as String?,
       image: json['image'] as String,
+      isImageSvg: json['is_image_svg'] as bool? ?? false,
       video: json['video'] as String?,
       bgImageColor: json['bg_image_color'] as String?,
     );
@@ -62,6 +63,7 @@ Map<String, dynamic> _$InfoLessonContentToJson(InfoLessonContent instance) =>
       'audio_word': instance.audioWord,
       'audio_bg': instance.audioBg,
       'image': instance.image,
+      'is_image_svg': instance.isImageSvg,
       'video': instance.video,
       'bg_image_color': instance.bgImageColor,
     };

@@ -173,21 +173,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                   //  LEFT ARROW
                   Expanded(
                     flex: 1,
-                    // child: Align(
-                    //   alignment: Alignment.centerLeft,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.only(left: 16),
-                    //     child: GestureDetector(
-                    //       onTap: () async {
-                    //         context.read<LessonBloc>().add(
-                    //           const LessonEvent.previousContent(),
-                    //         );
-                    //       },
-                    //       child: SvgHelper.fromSource(path: Assets.leftArrow),
-                    //     ),
-                    //   ),
-                    // )
-                    // ,
+
                     child: CenterLeftAlignedBackButton(
                       onTap: () {
                         context.read<LessonBloc>().add(
@@ -200,35 +186,69 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                   // 👇 VIDEO OR IMAGE
                   Expanded(
                     flex: 4,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                // 1️⃣ Image as background
-                                InkWell(
-                                  onTap: showVideo ? null : _replayVideo,
-                                  child: CustomCachedImage(
-                                    imageUrl: content.image,
-                                    // fit: BoxFit.cover,
+                    child: widget.content.video != null
+                        ? LayoutBuilder(
+                            builder: (context, constraints) {
+                              final showVideoWidget =
+                                  showVideo &&
+                                  _videoController != null &&
+                                  _videoController!.value.isInitialized;
+                              return Stack(
+                                children: [
+                                  if (!showVideoWidget)
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: AspectRatio(
+                                        aspectRatio: 16 / 9,
+                                        child: GestureDetector(
+                                          onTap: _replayVideo,
+                                          child: content.isImageSvg
+                                              ? SvgHelper.fromSource(
+                                                  path: content.image,
+                                                  type: SvgSourceType.network,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : CustomCachedImage(
+                                                  imageUrl: content.image,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: Stack(
+                                        fit: StackFit.expand,
+                                        children: [
+                                          // 2️⃣ Video player on top if playing
+                                          if (showVideoWidget)
+                                            VideoPlayer(_videoController!),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
-
-                                // 2️⃣ Video player on top if playing
-                                if (showVideo &&
-                                    _videoController != null &&
-                                    _videoController!.value.isInitialized)
-                                  VideoPlayer(_videoController!),
-                              ],
+                                ],
+                              );
+                            },
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: content.isImageSvg
+                                  ? SvgHelper.fromSource(
+                                      path: content.image,
+                                      type: SvgSourceType.network,
+                                      fit: BoxFit.contain,
+                                    )
+                                  : CustomCachedImage(
+                                      imageUrl: content.image,
+                                      fit: BoxFit.contain,
+                                    ),
                             ),
                           ),
-                        );
-                      },
-                    ),
                   ),
 
                   // Information Section

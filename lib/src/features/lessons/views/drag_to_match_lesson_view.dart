@@ -9,8 +9,7 @@ import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dar
 class DragToMatchScreen extends StatelessWidget {
   final DragToMatchLessonContent lessonContent;
 
-  const DragToMatchScreen({Key? key, required this.lessonContent})
-    : super(key: key);
+  const DragToMatchScreen({super.key, required this.lessonContent});
 
   @override
   Widget build(BuildContext context) {
