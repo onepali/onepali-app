@@ -76,14 +76,10 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                         const Spacer(),
                         // Main tracing area
                         Center(child: _buildTracingArea(context, state, size)),
-                        const Spacer(),
+                        SizedBox(height: size.height * 0.02),
                         // Stroke indicators at bottom
                         _buildStrokeIndicators(state),
-                        SizedBox(height: size.height * 0.05),
-                        // Reset button
-                       
-                          
-                        SizedBox(height: size.height * 0.03),
+                        Spacer(),
                       ],
                     ),
                     TopRightPositionedCloseButton(
@@ -91,14 +87,14 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                         Navigator.of(context).pop();
                       },
                     ),
-                     if (state.isLetterComplete)
-                     CenterRightAlignedForwardButton(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.nextContent(),
-                        );
-                      },
-                     )
+                    if (state.isLetterComplete)
+                      CenterRightAlignedForwardButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -204,8 +200,6 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
       }),
     );
   }
-
-
 }
 
 // Background pattern painter

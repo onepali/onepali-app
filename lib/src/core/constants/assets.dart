@@ -49,6 +49,7 @@ class Assets {
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
   static String starRewardLottie = 'rewards_star'.lottie;
+  static String starWinnerLottie = 'stars_winner'.lottie;
   static String alarmExtendLottie = 'alarm_extend'.lottie;
   static String completeConfettiLottie = 'complete_confetti'.lottie;
   static String confetti1 = 'confetti_1'.lottie;

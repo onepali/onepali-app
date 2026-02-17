@@ -62,8 +62,8 @@ class TapToPopLessonView extends StatelessWidget {
                 ),
                 Center(
                   child: LottieBuilder.asset(
-                    Assets.successLottie1,
-                    repeat: false,
+                    Assets.starWinnerLottie,
+                    repeat: true,
                   ),
                 ),
                 TopRightPositionedCloseButton(

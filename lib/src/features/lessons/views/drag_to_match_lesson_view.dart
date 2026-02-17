@@ -68,7 +68,7 @@ class _DragToMatchView extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.only(top: padding.height),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: state.itemPositions.map((itemPos) {
                         final item = items.firstWhere(
                           (i) => i.nameEn == itemPos.itemId,
@@ -154,7 +154,9 @@ class _DragToMatchView extends StatelessWidget {
                 ),
               if (state.showCat)
                 Positioned.fill(
-                  child: IgnorePointer(child: LottieHelper.fromSource(path: Assets.confetti1)),
+                  child: IgnorePointer(
+                    child: LottieHelper.fromSource(path: Assets.confetti1),
+                  ),
                 ),
             ],
           );
