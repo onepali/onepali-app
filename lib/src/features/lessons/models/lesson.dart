@@ -131,10 +131,12 @@ class Item with _$Item {
     required String nameEn,
     required String nameNp,
     required String image,
+    @Default(false) bool isImageSvg,
     String? imageOutline,
-    String? question, // eg where is the cat
-    required String audioItem, // Cat pronunciation
-    String? audioBg, // eg cat sound meww, dog sound barking
+    @Default(false) bool isImageOutlineSvg,
+    String? question,
+    required String audioItem,
+    String? audioBg,
     num? dxRatio,
     num? dyRatio,
     num? dxRatioMobile,

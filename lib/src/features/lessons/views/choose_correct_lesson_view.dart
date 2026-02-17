@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
@@ -301,6 +302,7 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     final cardWidth = (size.width * 0.75) / itemCount;
     final maxCardWidth = size.width * 0.25;
     final finalCardWidth = cardWidth > maxCardWidth ? maxCardWidth : cardWidth;
@@ -308,15 +310,16 @@ class ItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: size.height * 0.50,
+        height: isMobile ? size.height * 0.65 : size.height * 0.50,
         margin: const EdgeInsets.all(8.0),
-        padding: EdgeInsets.only(bottom: 8, top: 8),
+        padding: const EdgeInsets.only(bottom: 8, top: 8),
         decoration: BoxDecoration(
           color: colorFromHex(item.bgColor) ?? Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: isSelected
-              ? Border.all(color: Colors.yellowAccent, width: 2)
-              : null,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? AppColors.kButtonGreen : Colors.transparent,
+            width: 4,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(30),
@@ -344,11 +347,17 @@ class ItemCard extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CustomCachedImage(
-                  imageUrl: item.image,
-                  width: finalCardWidth * 0.7,
-                  fit: BoxFit.contain,
-                ),
+                child: item.isImageSvg
+                    ? SvgPicture.network(
+                        item.image,
+                        width: finalCardWidth * 0.7,
+                        fit: BoxFit.contain,
+                      )
+                    : CustomCachedImage(
+                        imageUrl: item.image,
+                        width: finalCardWidth * 0.7,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
 
