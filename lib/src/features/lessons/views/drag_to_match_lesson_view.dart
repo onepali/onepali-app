@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/blocs/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -47,7 +48,7 @@ class _DragToMatchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final Size padding = Size(size.width * 0.05, size.height * 0.05);
+    final Size padding = Size(size.width * 0.1, size.height * 0.2);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: BlocBuilder<DragToMatchBloc, DragToMatchState>(
@@ -64,7 +65,7 @@ class _DragToMatchView extends StatelessWidget {
                 opacity: allMatched ? 0.0 : 1.0,
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: Padding(
+                  child: Container(
                     padding: EdgeInsets.only(top: padding.height),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +79,7 @@ class _DragToMatchView extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 4),
                           child: Opacity(
-                            opacity: isCurrentTarget ? 1.0 : 0.6,
+                            opacity: isCurrentTarget ? 1.0 : 0.8,
                             child: _DraggableItem(
                               position: itemPos,
                               item: item,
@@ -104,7 +105,7 @@ class _DragToMatchView extends StatelessWidget {
                 curve: Curves.easeInOutBack, // Adds a nice "pop" effect
                 alignment: allMatched
                     ? Alignment.center
-                    : const Alignment(0, 0.8),
+                    : const Alignment(0, 0.6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: state.outlinePositions.map((outlinePos) {
@@ -138,7 +139,9 @@ class _DragToMatchView extends StatelessWidget {
                 ),
 
               // Close button
-              TopRightPositionedCloseButton(onTap: Navigator.of(context).pop),
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.of(context).pop(),
+              ),
               if (state.showCat)
                 Align(
                   alignment: Alignment.bottomRight,
@@ -148,6 +151,10 @@ class _DragToMatchView extends StatelessWidget {
                     width: size.height * 0.5,
                     fit: BoxFit.cover,
                   ),
+                ),
+              if (state.showCat)
+                Positioned.fill(
+                  child: IgnorePointer(child: LottieHelper.fromSource(path: Assets.confetti1)),
                 ),
             ],
           );
@@ -242,13 +249,14 @@ class _ItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final width = (size.width - size.width * 0.15) / totalItems;
-    final height = (size.height - size.height * 0.4) / 2;
+    final height = (size.height - size.height * 0.45) / 2;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: width,
       height: height,
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.kStoryColor.withAlpha(100),
+        color: AppColors.kStoneGrey,
         borderRadius: BorderRadius.circular(12),
 
         border: isCurrentTarget
@@ -289,7 +297,7 @@ class _OutlineTarget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final width = (size.width - size.width * 0.15) / totalItems;
-    final height = (size.height - size.height * 0.4) / 2;
+    final height = (size.height - size.height * 0.45) / 2;
 
     final bloc = context.read<DragToMatchBloc>();
 
@@ -311,12 +319,9 @@ class _OutlineTarget extends StatelessWidget {
         return Container(
           width: width,
           height: height,
+          padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: isMatched
-                ? Colors.green.withAlpha(50)
-                : isHovering
-                ? AppColors.kSecondaryColor.withAlpha(50)
-                : AppColors.kGrey.withAlpha(50),
+            color: colorFromHex(item.outlineBgColor),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isMatched

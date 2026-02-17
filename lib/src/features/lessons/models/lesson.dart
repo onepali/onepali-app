@@ -104,7 +104,6 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? audioItem,
     @Default('char_tracing') String type,
   }) = CharTracingLessonContent;
-  
 
   const factory LessonContent.unknown({
     @Default('') String id,
@@ -125,10 +124,15 @@ class Item with _$Item {
   const factory Item({
     required String nameEn,
     required String nameNp,
+    // Image
     required String image,
     @Default(false) bool isImageSvg,
+    String? bgColor,
+    // Outline
     String? imageOutline,
     @Default(false) bool isImageOutlineSvg,
+    String? outlineBgColor,
+
     String? question, // eg where is the cat
     required String audioItem, // Cat pronunciation
     String? audioBg, // eg cat sound meww, dog sound barking
@@ -136,8 +140,7 @@ class Item with _$Item {
     num? dyRatio,
     num? dxRatioMobile,
     num? dyRatioMobile,
-   @Default(false) bool isCorrect,
-   String? bgColor,
+    @Default(false) bool isCorrect,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

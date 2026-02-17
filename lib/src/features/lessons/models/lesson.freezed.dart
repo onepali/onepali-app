@@ -1225,10 +1225,12 @@ as String,
 /// @nodoc
 mixin _$Item {
 
- String get nameEn; String get nameNp; String get image; bool get isImageSvg; String? get imageOutline; bool get isImageOutlineSvg; String? get question;// eg where is the cat
+ String get nameEn; String get nameNp;// Image
+ String get image; bool get isImageSvg; String? get bgColor;// Outline
+ String? get imageOutline; bool get isImageOutlineSvg; String? get outlineBgColor; String? get question;// eg where is the cat
  String get audioItem;// Cat pronunciation
  String? get audioBg;// eg cat sound meww, dog sound barking
- num? get dxRatio; num? get dyRatio; num? get dxRatioMobile; num? get dyRatioMobile; bool get isCorrect; String? get bgColor;
+ num? get dxRatio; num? get dyRatio; num? get dxRatioMobile; num? get dyRatioMobile; bool get isCorrect;
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1241,16 +1243,16 @@ $ItemCopyWith<Item> get copyWith => _$ItemCopyWithImpl<Item>(this as Item, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.outlineBgColor, outlineBgColor) || other.outlineBgColor == outlineBgColor)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,isImageSvg,imageOutline,isImageOutlineSvg,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect,bgColor);
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,isImageSvg,bgColor,imageOutline,isImageOutlineSvg,outlineBgColor,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect);
 
 @override
 String toString() {
-  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect, bgColor: $bgColor)';
+  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, bgColor: $bgColor, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, outlineBgColor: $outlineBgColor, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect)';
 }
 
 
@@ -1261,7 +1263,7 @@ abstract mixin class $ItemCopyWith<$Res>  {
   factory $ItemCopyWith(Item value, $Res Function(Item) _then) = _$ItemCopyWithImpl;
 @useResult
 $Res call({
- String nameEn, String nameNp, String image, bool isImageSvg, String? imageOutline, bool isImageOutlineSvg, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect, String? bgColor
+ String nameEn, String nameNp, String image, bool isImageSvg, String? bgColor, String? imageOutline, bool isImageOutlineSvg, String? outlineBgColor, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect
 });
 
 
@@ -1278,15 +1280,17 @@ class _$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,Object? bgColor = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? bgColor = freezed,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? outlineBgColor = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,}) {
   return _then(_self.copyWith(
 nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
 as String,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as String,isImageSvg: null == isImageSvg ? _self.isImageSvg : isImageSvg // ignore: cast_nullable_to_non_nullable
-as bool,imageOutline: freezed == imageOutline ? _self.imageOutline : imageOutline // ignore: cast_nullable_to_non_nullable
+as bool,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,imageOutline: freezed == imageOutline ? _self.imageOutline : imageOutline // ignore: cast_nullable_to_non_nullable
 as String?,isImageOutlineSvg: null == isImageOutlineSvg ? _self.isImageOutlineSvg : isImageOutlineSvg // ignore: cast_nullable_to_non_nullable
-as bool,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as bool,outlineBgColor: freezed == outlineBgColor ? _self.outlineBgColor : outlineBgColor // ignore: cast_nullable_to_non_nullable
+as String?,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String?,audioItem: null == audioItem ? _self.audioItem : audioItem // ignore: cast_nullable_to_non_nullable
 as String,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_nullable_to_non_nullable
 as String?,dxRatio: freezed == dxRatio ? _self.dxRatio : dxRatio // ignore: cast_nullable_to_non_nullable
@@ -1294,8 +1298,7 @@ as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nu
 as num?,dxRatioMobile: freezed == dxRatioMobile ? _self.dxRatioMobile : dxRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,dyRatioMobile: freezed == dyRatioMobile ? _self.dyRatioMobile : dyRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
-as bool,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
-as String?,
+as bool,
   ));
 }
 
@@ -1380,10 +1383,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? imageOutline,  bool isImageOutlineSvg,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect,  String? bgColor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.imageOutline,_that.isImageOutlineSvg,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect,_that.bgColor);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect);case _:
   return orElse();
 
 }
@@ -1401,10 +1404,10 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.ima
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? imageOutline,  bool isImageOutlineSvg,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect,  String? bgColor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect)  $default,) {final _that = this;
 switch (_that) {
 case _Item():
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.imageOutline,_that.isImageOutlineSvg,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect,_that.bgColor);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1421,10 +1424,10 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.ima
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? imageOutline,  bool isImageOutlineSvg,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect,  String? bgColor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect)?  $default,) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.imageOutline,_that.isImageOutlineSvg,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect,_that.bgColor);case _:
+return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect);case _:
   return null;
 
 }
@@ -1436,15 +1439,19 @@ return $default(_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.ima
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Item implements Item {
-  const _Item({required this.nameEn, required this.nameNp, required this.image, this.isImageSvg = false, this.imageOutline, this.isImageOutlineSvg = false, this.question, required this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.dxRatioMobile, this.dyRatioMobile, this.isCorrect = false, this.bgColor});
+  const _Item({required this.nameEn, required this.nameNp, required this.image, this.isImageSvg = false, this.bgColor, this.imageOutline, this.isImageOutlineSvg = false, this.outlineBgColor, this.question, required this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.dxRatioMobile, this.dyRatioMobile, this.isCorrect = false});
   factory _Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
 @override final  String nameEn;
 @override final  String nameNp;
+// Image
 @override final  String image;
 @override@JsonKey() final  bool isImageSvg;
+@override final  String? bgColor;
+// Outline
 @override final  String? imageOutline;
 @override@JsonKey() final  bool isImageOutlineSvg;
+@override final  String? outlineBgColor;
 @override final  String? question;
 // eg where is the cat
 @override final  String audioItem;
@@ -1456,7 +1463,6 @@ class _Item implements Item {
 @override final  num? dxRatioMobile;
 @override final  num? dyRatioMobile;
 @override@JsonKey() final  bool isCorrect;
-@override final  String? bgColor;
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
@@ -1471,16 +1477,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.outlineBgColor, outlineBgColor) || other.outlineBgColor == outlineBgColor)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,isImageSvg,imageOutline,isImageOutlineSvg,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect,bgColor);
+int get hashCode => Object.hash(runtimeType,nameEn,nameNp,image,isImageSvg,bgColor,imageOutline,isImageOutlineSvg,outlineBgColor,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect);
 
 @override
 String toString() {
-  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect, bgColor: $bgColor)';
+  return 'Item(nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, bgColor: $bgColor, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, outlineBgColor: $outlineBgColor, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect)';
 }
 
 
@@ -1491,7 +1497,7 @@ abstract mixin class _$ItemCopyWith<$Res> implements $ItemCopyWith<$Res> {
   factory _$ItemCopyWith(_Item value, $Res Function(_Item) _then) = __$ItemCopyWithImpl;
 @override @useResult
 $Res call({
- String nameEn, String nameNp, String image, bool isImageSvg, String? imageOutline, bool isImageOutlineSvg, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect, String? bgColor
+ String nameEn, String nameNp, String image, bool isImageSvg, String? bgColor, String? imageOutline, bool isImageOutlineSvg, String? outlineBgColor, String? question, String audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect
 });
 
 
@@ -1508,15 +1514,17 @@ class __$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,Object? bgColor = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? bgColor = freezed,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? outlineBgColor = freezed,Object? question = freezed,Object? audioItem = null,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,}) {
   return _then(_Item(
 nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
 as String,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as String,isImageSvg: null == isImageSvg ? _self.isImageSvg : isImageSvg // ignore: cast_nullable_to_non_nullable
-as bool,imageOutline: freezed == imageOutline ? _self.imageOutline : imageOutline // ignore: cast_nullable_to_non_nullable
+as bool,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,imageOutline: freezed == imageOutline ? _self.imageOutline : imageOutline // ignore: cast_nullable_to_non_nullable
 as String?,isImageOutlineSvg: null == isImageOutlineSvg ? _self.isImageOutlineSvg : isImageOutlineSvg // ignore: cast_nullable_to_non_nullable
-as bool,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as bool,outlineBgColor: freezed == outlineBgColor ? _self.outlineBgColor : outlineBgColor // ignore: cast_nullable_to_non_nullable
+as String?,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String?,audioItem: null == audioItem ? _self.audioItem : audioItem // ignore: cast_nullable_to_non_nullable
 as String,audioBg: freezed == audioBg ? _self.audioBg : audioBg // ignore: cast_nullable_to_non_nullable
 as String?,dxRatio: freezed == dxRatio ? _self.dxRatio : dxRatio // ignore: cast_nullable_to_non_nullable
@@ -1524,8 +1532,7 @@ as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nu
 as num?,dxRatioMobile: freezed == dxRatioMobile ? _self.dxRatioMobile : dxRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,dyRatioMobile: freezed == dyRatioMobile ? _self.dyRatioMobile : dyRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
-as bool,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
-as String?,
+as bool,
   ));
 }
 
