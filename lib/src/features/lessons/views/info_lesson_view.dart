@@ -151,6 +151,66 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     super.dispose();
   }
 
+  Widget _buildMediaContent(InfoLessonContent content, bool showVideo) {
+    final hasVideo = content.video != null && content.video!.isNotEmpty;
+
+    if (hasVideo) {
+      final showVideoWidget =
+          showVideo &&
+          _videoController != null &&
+          _videoController!.value.isInitialized;
+
+      return Stack(
+        children: [
+          if (!showVideoWidget)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: GestureDetector(
+                  onTap: _replayVideo,
+                  child: content.isImageSvg
+                      ? SvgHelper.fromSource(
+                          path: content.image,
+                          type: SvgSourceType.network,
+                          fit: BoxFit.cover,
+                        )
+                      : CustomCachedImage(
+                          imageUrl: content.image,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [if (showVideoWidget) VideoPlayer(_videoController!)],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: content.isImageSvg
+            ? SvgHelper.fromSource(
+                path: content.image,
+                type: SvgSourceType.network,
+                fit: BoxFit.contain,
+              )
+            : CustomCachedImage(imageUrl: content.image, fit: BoxFit.contain),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -181,38 +241,9 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                     ),
                   ),
 
-                  // 👇 VIDEO OR IMAGE
                   Expanded(
                     flex: 4,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                // 1️⃣ Image as background
-                                InkWell(
-                                  onTap: showVideo ? null : _replayVideo,
-                                  child: CustomCachedImage(
-                                    imageUrl: content.image,
-                                    // fit: BoxFit.cover,
-                                  ),
-                                ),
-
-                                // 2️⃣ Video player on top if playing
-                                if (showVideo &&
-                                    _videoController != null &&
-                                    _videoController!.value.isInitialized)
-                                  VideoPlayer(_videoController!),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    child: _buildMediaContent(content, showVideo),
                   ),
 
                   // Information Section

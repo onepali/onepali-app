@@ -49,6 +49,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required String audioWord,
     String? audioBg,
     required String image,
+    @Default(false) bool isImageSvg,
     String? video,
     String? bgImageColor,
   }) = InfoLessonContent;
