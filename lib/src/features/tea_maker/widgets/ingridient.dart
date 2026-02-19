@@ -42,13 +42,13 @@ class _IngridientState extends State<Ingridient>
 
   @override
   Widget build(BuildContext context) {
-    return 
+    return
     // widget.isSelected
     //     ? ScaleTransition(
     //         scale: _animation,
     //         child: SvgPicture.asset(widget.ingridient),
     //       )
     //     :
-         SvgPicture.asset(widget.ingridient);
+    SvgPicture.network(widget.ingridient);
   }
 }

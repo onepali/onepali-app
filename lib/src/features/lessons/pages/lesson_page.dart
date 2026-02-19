@@ -14,6 +14,7 @@ import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key, required this.lessonId});
@@ -76,6 +77,8 @@ class _LessonPageState extends State<LessonPage> {
                 );
               case CharTracingLessonContent():
                 return NewLetterTracingPage(content: lessonContent);
+              case TeaMakingLessonContent():
+                return KitchenPage(content: lessonContent);
               default:
                 return Center(child: Text('Unknown content type'));
             }

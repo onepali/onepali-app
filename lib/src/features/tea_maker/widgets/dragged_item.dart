@@ -72,7 +72,7 @@ class _DraggedItemState extends State<DraggedItem>
           ),
         );
       },
-      child: SvgPicture.asset(
+      child: SvgPicture.network(
         widget.draggedItem,
         key: ValueKey<String>(widget.draggedItem),
         height: size.height * 0.50,

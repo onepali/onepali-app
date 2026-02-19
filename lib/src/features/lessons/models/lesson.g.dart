@@ -190,6 +190,40 @@ Map<String, dynamic> _$CharTracingLessonContentToJson(
   'type': instance.type,
 };
 
+TeaMakingLessonContent _$TeaMakingLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TeaMakingLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'tea_making',
+  audioInstruction: json['audio_instruction'] as String,
+  teapotVapour: json['teapot_vapour'] as String,
+  stoveImage: json['stove_image'] as String,
+  abaPaniUmalaSound: json['aba_pani_umala_sound'] as String,
+  teaReadySound: json['tea_ready_sound'] as String,
+  bearTakingTea: json['bear_taking_tea'] as String,
+  ingredients:
+      (json['ingredients'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TeaMakingLessonContentToJson(
+  TeaMakingLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'audio_instruction': instance.audioInstruction,
+  'teapot_vapour': instance.teapotVapour,
+  'stove_image': instance.stoveImage,
+  'aba_pani_umala_sound': instance.abaPaniUmalaSound,
+  'tea_ready_sound': instance.teaReadySound,
+  'bear_taking_tea': instance.bearTakingTea,
+  'ingredients': instance.ingredients.map((e) => e.toJson()).toList(),
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(
@@ -207,6 +241,7 @@ Map<String, dynamic> _$UnknownLessonContentToJson(
 };
 
 _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
+  order: (json['order'] as num?)?.toInt(),
   nameEn: json['name_en'] as String,
   nameNp: json['name_np'] as String,
   image: json['image'] as String,
@@ -226,6 +261,7 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
 );
 
 Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
+  'order': instance.order,
   'name_en': instance.nameEn,
   'name_np': instance.nameNp,
   'image': instance.image,

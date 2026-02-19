@@ -366,10 +366,10 @@ class CourseScreenState extends State<CourseScreen> {
   }
 
   void _onTapLesson(QueryDocumentSnapshot<Map<String, dynamic>> lesson) {
-    if (lesson.data()['name'] == 'Tea making') {
-      Utility.navigateMaterialRoute(context, KitchenPage());
-      return;
-    }
+    // if (lesson.data()['name'] == 'Tea making') {
+    //   Utility.navigateMaterialRoute(context, KitchenPage());
+    //   return;
+    // }
     Utility.navigateMaterialRoute(context, LessonPage(lessonId: lesson.id));
   }
 }

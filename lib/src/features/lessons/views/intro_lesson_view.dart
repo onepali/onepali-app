@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -7,16 +8,22 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
-class IntroLessonView extends StatelessWidget {
+class IntroLessonView extends StatefulWidget {
   const IntroLessonView({super.key, required this.content});
   final IntroLessonContent content;
 
+  @override
+  State<IntroLessonView> createState() => _IntroLessonViewState();
+}
+
+class _IntroLessonViewState extends State<IntroLessonView> {
+  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Stack(
       children: [
-        Positioned.fill(child: Container(color: colorFromHex(content.bgColor))),
+        Positioned.fill(child: Container(color: colorFromHex(widget.content.bgColor))),
         TopRightPositionedCloseButton(
           onTap: () {
             Navigator.of(context).pop();
@@ -24,7 +31,7 @@ class IntroLessonView extends StatelessWidget {
         ),
         Center(
           child: SvgHelper.fromSource(
-            path: content.image ?? '',
+            path: widget.content.image ?? '',
             type: SvgSourceType.network,
           ),
         ),

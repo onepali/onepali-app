@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
@@ -51,7 +53,6 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -61,22 +62,21 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     final isMobile = PlatformUtility.isMobile(context);
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     if (storyProvider.isStoryFinished) {
-      Navigator.of(context).pop();
+      // Navigator.of(context).pop();
     }
     return Stack(
       children: [
         // Positioned.fill(child: Container(color: Colors.green)),
         Align(
           alignment: Alignment.center,
-          child: CustomImage(
-            (isCorrect == true && widget.content.imageSuccess != null)
+
+          child: CustomCachedImage(
+            imageUrl: (isCorrect == true && widget.content.imageSuccess != null)
                 ? widget.content.imageSuccess!
                 : widget.content.image,
-            imageType: CustomImageType.network,
-            boxFit: BoxFit.cover,
-            cover: true,
-            width: size.width * 0.4,
-            height: size.height * 0.4,
+            height: size.height * 0.3,
+            width: isMobile ? size.width * 0.4 : size.width * 0.7,
+            fit: BoxFit.fill,
           ),
         ),
         // Bottom button container
@@ -202,6 +202,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
             ),
           ),
         ),
+        TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
         if (isCorrect == true && widget.content.confetti.isNotEmpty)
           LottieHelper.fromSource(
             path: widget.content.confetti,
