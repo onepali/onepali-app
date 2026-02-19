@@ -48,6 +48,7 @@ dependencies:
   any_image_view: ^2.0.0
   path_drawing: ^1.0.1
   extended_image: ^10.0.1
+  record: ^6.2.0
 
   # Networking & HTTP
   http: ^1.4.0

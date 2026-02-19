@@ -162,6 +162,40 @@ Map<String, dynamic> _$TapToPopLessonContentToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
+ListenAndRepeatLessonContent _$ListenAndRepeatLessonContentFromJson(
+  Map<String, dynamic> json,
+) => ListenAndRepeatLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'listen_and_repeat',
+  nameEn: json['name_en'] as String,
+  nameNp: json['name_np'] as String,
+  bgImage: json['bg_image'] as String?,
+  bgColor: json['bg_color'] as String?,
+  audioWord: json['audio_word'] as String,
+  audioBg: json['audio_bg'] as String?,
+  image: json['image'] as String?,
+  charImage: json['char_image'] as String?,
+  isImageSvg: json['is_image_svg'] as bool? ?? false,
+);
+
+Map<String, dynamic> _$ListenAndRepeatLessonContentToJson(
+  ListenAndRepeatLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'name_en': instance.nameEn,
+  'name_np': instance.nameNp,
+  'bg_image': instance.bgImage,
+  'bg_color': instance.bgColor,
+  'audio_word': instance.audioWord,
+  'audio_bg': instance.audioBg,
+  'image': instance.image,
+  'char_image': instance.charImage,
+  'is_image_svg': instance.isImageSvg,
+};
+
 CharTracingLessonContent _$CharTracingLessonContentFromJson(
   Map<String, dynamic> json,
 ) => CharTracingLessonContent(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
@@ -14,19 +15,7 @@ import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:video_player/video_player.dart';
 
-class MediaCacheManager {
-  static const key = 'mediaCache';
 
-  static CacheManager instance = CacheManager(
-    Config(
-      key,
-      stalePeriod: const Duration(days: 30), // Cache for 30 days
-      maxNrOfCacheObjects: 100,
-      repo: JsonCacheInfoRepository(databaseName: key),
-      fileService: HttpFileService(),
-    ),
-  );
-}
 
 class InfoLessonView extends StatefulWidget {
   final InfoLessonContent content;

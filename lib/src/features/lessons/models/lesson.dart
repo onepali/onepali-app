@@ -91,6 +91,23 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = TapToPopLessonContent;
 
+  @FreezedUnionValue("listen_and_repeat")
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.listenAndRepeat({
+    required String id,
+    required int index,
+    @Default('listen_and_repeat') String type,
+    required String nameEn,
+    required String nameNp,
+    String? bgImage,
+    String? bgColor,
+    required String audioWord,
+    String? audioBg,
+    String? image, // This is image of the word, eg a man doing namaste 
+    String? charImage, // This is the character image, eg 'न'
+    @Default(false) bool isImageSvg,
+  }) = ListenAndRepeatLessonContent;
+
   @FreezedUnionValue("char_tracing")
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory LessonContent.charTracing({
