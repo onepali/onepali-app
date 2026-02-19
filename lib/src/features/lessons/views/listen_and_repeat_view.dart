@@ -8,8 +8,13 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/mic_progress_button.dart';
 
 class ListenAndRepeatView extends StatefulWidget {
-  const ListenAndRepeatView({super.key, required this.content});
+  const ListenAndRepeatView({
+    super.key,
+    required this.content,
+    required this.onCompleted,
+  });
   final ListenAndRepeatLessonContent content;
+  final VoidCallback onCompleted;
 
   @override
   State<ListenAndRepeatView> createState() => _ListenAndRepeatViewState();
@@ -132,6 +137,7 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
     String imageUrl,
   ) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
     return BlocBuilder<ListenAndRepeatBloc, ListenAndRepeatState>(
       builder: (context, state) {
         return Padding(
@@ -145,16 +151,16 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
                 duration: const Duration(milliseconds: 300),
                 child: SvgPicture.network(
                   charImage,
-                  width: size.width * 0.25,
-                  height: size.width * 0.25,
+                  width: isMobile ? size.width * 0.15 : size.width * 0.25,
+                  height: isMobile ? size.width * 0.15 : size.width * 0.25,
                 ),
               ),
 
               SizedBox(width: size.width * 0.12),
               SvgPicture.network(
                 imageUrl,
-                width: size.width * 0.25,
-                height: size.width * 0.25,
+                width: isMobile ? size.width * 0.15 : size.width * 0.25,
+                height: isMobile ? size.width * 0.15 : size.width * 0.25,
               ),
             ],
           ),
@@ -172,6 +178,7 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
               recordingDuration: state.recordingDuration,
               isActive: state.isRecording,
               isCompleted: state.isRecorded,
+              onCompletedTap: widget.onCompleted,
             ),
             if (state.hasError) ...[
               const SizedBox(height: 8),
