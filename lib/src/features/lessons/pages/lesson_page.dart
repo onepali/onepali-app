@@ -49,6 +49,8 @@ class _LessonPageState extends State<LessonPage> {
               return Center(child: Text('No content found'));
             }
             final lessonContent = state.currentContent!;
+            final contents = state.lessonDetails!.contents;
+            final isLastContent = state.currentIndex >= contents.length - 1;
 
             switch (lessonContent) {
               case IntroLessonContent():
@@ -84,7 +86,18 @@ class _LessonPageState extends State<LessonPage> {
                     audioPlayerService: AudioPlayerServiceImpl(),
                     audioRecorderService: AudioRecorderServiceImpl(),
                   ),
-                  child: ListenAndRepeatView(content: lessonContent),
+                  child: ListenAndRepeatView(
+                    content: lessonContent,
+                    onCompleted: () {
+                      if (isLastContent) {
+                        Navigator.of(context).pop();
+                      } else {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.nextContent(),
+                        );
+                      }
+                    },
+                  ),
                 );
               case CharTracingLessonContent():
                 return NewLetterTracingPage(content: lessonContent);

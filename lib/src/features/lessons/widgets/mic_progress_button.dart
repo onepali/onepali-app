@@ -7,12 +7,14 @@ class MicProgressButton extends StatefulWidget {
   final bool isActive;
 
   final bool isCompleted;
+  final VoidCallback? onCompletedTap;
 
   const MicProgressButton({
     super.key,
     required this.recordingDuration,
     required this.isActive,
     required this.isCompleted,
+    this.onCompletedTap,
   });
 
   @override
@@ -95,63 +97,66 @@ class _MicProgressButtonState extends State<MicProgressButton>
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
-    return SizedBox(
-      width: 280,
-      height: isMobile ? 50 : 88,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // ── Background pill
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.kButtonGrey,
-              borderRadius: BorderRadius.circular(50),
-            ),
-          ),
-
-          // ── Smooth progress fill
-          AnimatedBuilder(
-            animation: _fillController,
-            builder: (context, _) {
-              return ClipRRect(
+    return GestureDetector(
+      onTap: widget.isCompleted ? widget.onCompletedTap : null,
+      child: SizedBox(
+        width: isMobile ? 180 : 280,
+        height: isMobile ? 50 : 88,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // ── Background pill
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.kButtonGrey,
                 borderRadius: BorderRadius.circular(50),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: FractionallySizedBox(
-                    widthFactor: _fillController.value.clamp(0.0, 1.0),
-                    child: Container(
-                      height: isMobile ? 50 : 88,
-                      decoration: BoxDecoration(
-                        color: widget.isCompleted
-                            ? AppColors.kButtonGreen
-                            : AppColors.kPureSkyBlue,
-                        borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+
+            // ── Smooth progress fill
+            AnimatedBuilder(
+              animation: _fillController,
+              builder: (context, _) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: _fillController.value.clamp(0.0, 1.0),
+                      child: Container(
+                        height: isMobile ? 50 : 88,
+                        decoration: BoxDecoration(
+                          color: widget.isCompleted
+                              ? AppColors.kButtonGreen
+                              : AppColors.kPureSkyBlue,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-
-          // ── Mic / check icon with pulse
-          AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (context, child) => Transform.scale(
-              scale: widget.isActive ? _pulseAnimation.value : 1.0,
-              child: child,
+                );
+              },
             ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: Icon(
-                widget.isCompleted ? Icons.check_rounded : Icons.mic_rounded,
-                key: ValueKey(widget.isCompleted),
-                size: 65,
-                color: widget.isCompleted ? null : AppColors.kWhite,
+
+            // ── Mic / check icon with pulse
+            AnimatedBuilder(
+              animation: _pulseAnimation,
+              builder: (context, child) => Transform.scale(
+                scale: widget.isActive ? _pulseAnimation.value : 1.0,
+                child: child,
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: Icon(
+                  widget.isCompleted ? Icons.check_rounded : Icons.mic_rounded,
+                  key: ValueKey(widget.isCompleted),
+                  size: isMobile ? 40 : 65,
+                  color: widget.isCompleted ? null : AppColors.kWhite,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
