@@ -370,7 +370,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               if (hasBackgroundImage && backgroundImage != null) {
                 if (contentList[idx - 1].type == "button_tap2") {
                   return ButtonTapContent2(
-                    content: contentList[idx-1],
+                    content: contentList[idx - 1],
                     playAudio: true,
                   );
                 }
