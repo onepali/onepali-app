@@ -9,6 +9,7 @@ import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -225,8 +226,6 @@ class _InfoLessonViewState extends State<InfoLessonView> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
       builder: (context, state) {
         if (state.lessonContent == null) {
@@ -280,14 +279,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        InkWell(
-                          onTap: _replayAudio,
-                          child: SizedBox(
-                            width: size.width * 0.08,
-                            height: size.width * 0.08,
-                            child: SvgHelper.fromSource(path: Assets.sound),
-                          ),
-                        ),
+                        SpeakerIcon(onTap: _replayAudio),
                       ],
                     ),
                   ),
