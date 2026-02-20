@@ -8,6 +8,7 @@ import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -185,9 +186,8 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 top: isMobile ? 24 : 32,
                 left: 0,
                 right: 0,
-                child: CircularButtonWidget(
-                  type: CircularButtonType.sound,
-                  onPressed:
+                child: SpeakerIcon(
+                  onTap:
                       state.isQuestionAudioPlaying ||
                           state.isCorrectAudioPlaying
                       ? null

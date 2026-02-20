@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/listen_and_repeat_bloc/listen_and_repeat_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/mic_progress_button.dart';
@@ -101,19 +102,12 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
                       top: isMobile ? 24 : 32,
                       left: 0,
                       right: 0,
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: state.isRecorded || state.hasError
-                              ? () => context.read<ListenAndRepeatBloc>().add(
-                                  const ListenAndRepeatEvent.retryRequested(),
-                                )
-                              : null,
-                          child: SvgHelper.fromSource(
-                            path: Assets.sound,
-                            height: Dimensions.kIconSize(context),
-                            width: Dimensions.kIconSize(context),
-                          ),
-                        ),
+                      child: SpeakerIcon(
+                        onTap: state.isRecorded || state.hasError
+                            ? () => context.read<ListenAndRepeatBloc>().add(
+                                const ListenAndRepeatEvent.retryRequested(),
+                              )
+                            : null,
                       ),
                     ),
                   ],

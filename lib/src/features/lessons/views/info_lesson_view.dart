@@ -10,12 +10,11 @@ import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:video_player/video_player.dart';
-
-
 
 class InfoLessonView extends StatefulWidget {
   final InfoLessonContent content;
@@ -262,14 +261,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        InkWell(
-                          onTap: _replayAudio,
-                          child: SizedBox(
-                            width: size.width * 0.08,
-                            height: size.width * 0.08,
-                            child: SvgHelper.fromSource(path: Assets.sound),
-                          ),
-                        ),
+                        SpeakerIcon(onTap: _replayAudio),
                       ],
                     ),
                   ),

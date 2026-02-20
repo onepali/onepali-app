@@ -334,14 +334,23 @@ class CourseScreenState extends State<CourseScreen> {
                                           child: Image.network(lesson['image']),
                                         ),
                                         SizedBox(height: 32),
-                                        Text(
-                                          lesson['name'],
-                                          style: AppStyles.text16PxMedium
-                                              .copyWith(
-                                                fontSize: isTabletLandscape
-                                                    ? 24
-                                                    : 16,
-                                              ),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 12,vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.kBackgroundColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+
+                                          ),
+                                          child: Text(
+                                            lesson['name'],
+                                            style: AppStyles.text16PxMedium
+                                                .copyWith(
+                                                  fontSize: isTabletLandscape
+                                                      ? 24
+                                                      : 16,
+                                                ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -366,10 +375,7 @@ class CourseScreenState extends State<CourseScreen> {
   }
 
   void _onTapLesson(QueryDocumentSnapshot<Map<String, dynamic>> lesson) {
-    // if (lesson.data()['name'] == 'Tea making') {
-    //   Utility.navigateMaterialRoute(context, KitchenPage());
-    //   return;
-    // }
+
     Utility.navigateMaterialRoute(context, LessonPage(lessonId: lesson.id));
   }
 }
