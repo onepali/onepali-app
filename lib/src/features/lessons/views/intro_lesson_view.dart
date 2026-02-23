@@ -17,13 +17,15 @@ class IntroLessonView extends StatefulWidget {
 }
 
 class _IntroLessonViewState extends State<IntroLessonView> {
-  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
     return Stack(
       children: [
-        Positioned.fill(child: Container(color: colorFromHex(widget.content.bgColor))),
+        Positioned.fill(
+          child: Container(color: colorFromHex(widget.content.bgColor)),
+        ),
         TopRightPositionedCloseButton(
           onTap: () {
             Navigator.of(context).pop();
@@ -33,6 +35,8 @@ class _IntroLessonViewState extends State<IntroLessonView> {
           child: SvgHelper.fromSource(
             path: widget.content.image ?? '',
             type: SvgSourceType.network,
+            width: isMobile ? size.height * 0.7 : size.height * 0.6,
+            height: isMobile ? size.height * 0.7 : size.height * 0.6 ,
           ),
         ),
 

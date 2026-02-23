@@ -189,19 +189,22 @@ class LetterService {
 
   /// Validate all letters
   /// Returns list of invalid letters with reasons
-  static Future<Map<String, List<String>>> validateAllLetters() async {
+  static Future<Map<String, List<String>>> validateAllLetters(bool isMobile) async {
     final letters = await loadLetters();
     final errors = <String, List<String>>{};
 
     for (final letter in letters) {
       final letterErrors = <String>[];
 
-      if (!letter.isValid()) {
+      if (!letter.isValid(isMobile)) {
         letterErrors.add('Letter is invalid');
       }
-
-      for (var i = 0; i < letter.strokes.length; i++) {
-        if (!letter.strokes[i].isValid()) {
+      final strokes = isMobile ? letter.strokes.mb : letter.strokes.tb;
+      if (strokes.isEmpty) {
+        letterErrors.add('No strokes found');
+      }
+      for (var i = 0; i < strokes.length; i++) {
+        if (!strokes[i].isValid()) {
           letterErrors.add('Stroke ${i + 1} is invalid');
         }
       }

@@ -11,9 +11,10 @@ class NepaliLetter {
 
   /// SVG viewBox in format "minX minY width height" (e.g., "0 0 78 86")
   final String viewBox;
+  final String viewBoxMobile;
 
   /// List of strokes that make up this letter
-  final List<LetterStroke> strokes;
+  final Strokes strokes;
 
   /// Optional category (e.g., "consonant", "vowel", "number")
   final String? category;
@@ -23,38 +24,38 @@ class NepaliLetter {
 
   /// Optional tags for filtering (e.g., ["beginner", "common"])
   final List<String>? tags;
-  String? outlinePath;
+  String? outlinePathTb;
+  String? outlinePathMb;
   NepaliLetter({
     required this.letter,
     required this.name,
     required this.viewBox,
+    required this.viewBoxMobile,
     required this.strokes,
     this.category,
     this.difficulty,
     this.tags,
-    this.outlinePath,
+    this.outlinePathTb,
+    this.outlinePathMb,
   });
 
   /// Create from JSON
   factory NepaliLetter.fromJson(Map<String, dynamic> json) {
-    final strokes = json['strokes'] as List;
-    strokes.sort((a, b) => (a['order'] as int).compareTo(b['order'] as int));
+    // final strokes = json['strokes'] as Map<String, dynamic>;
+    // strokes.sort((a, b) => (a['order'] as int).compareTo(b['order'] as int));
     return NepaliLetter(
       letter: json['letter'] as String,
       name: json['name'] as String,
       viewBox: json['viewBox'] as String,
-      // strokes: (json['strokes'] as List)
-      //     .map(
-      //       (stroke) => LetterStroke.fromJson(stroke as Map<String, dynamic>),
-      //     )
-      //     .toList(),
-      strokes: strokes.map((stroke) => LetterStroke.fromJson(stroke)).toList(),
+      viewBoxMobile: json['viewBoxMobile'] as String,
+      strokes: Strokes.fromJson(json['strokes'] as Map<String, dynamic>),
       category: json['category'] as String?,
       difficulty: json['difficulty'] as int?,
       tags: json['tags'] != null
           ? List<String>.from(json['tags'] as List)
           : null,
-        outlinePath: json['outlinePath'] as String?,
+      outlinePathTb: json['outlinePathTb'] as String?,
+      outlinePathMb: json['outlinePathMb'] as String?,
     );
   }
 
@@ -64,7 +65,11 @@ class NepaliLetter {
       'letter': letter,
       'name': name,
       'viewBox': viewBox,
-      'strokes': strokes.map((stroke) => stroke.toJson()).toList(),
+      'viewBoxMobile': viewBoxMobile,
+      'strokes': {
+        'mb': strokes.mb.map((s) => s.toJson()).toList(),
+        'tb': strokes.tb.map((s) => s.toJson()).toList(),
+      },
       if (category != null) 'category': category,
       if (difficulty != null) 'difficulty': difficulty,
       if (tags != null) 'tags': tags,
@@ -72,10 +77,12 @@ class NepaliLetter {
   }
 
   /// Parse viewBox to get width and height
-  Size getSize() {
-    final parts = viewBox.split(' ');
+  Size getSize(bool isMobile) {
+    final parts = isMobile ? viewBoxMobile.split(' ') : viewBox.split(' ');
     if (parts.length != 4) {
-      throw FormatException('Invalid viewBox format: $viewBox');
+      throw FormatException(
+        'Invalid viewBox format: ${isMobile ? viewBoxMobile : viewBox}',
+      );
     }
     return Size(double.parse(parts[2]), double.parse(parts[3]));
   }
@@ -90,25 +97,22 @@ class NepaliLetter {
   }
 
   /// Get aspect ratio (width / height)
-  double getAspectRatio() {
-    final size = getSize();
+  double getAspectRatio(bool isMobile) {
+    final size = getSize(isMobile);
     return size.width / size.height;
   }
 
   /// Get total number of strokes
-  int get strokeCount => strokes.length;
+  int get strokeCount => strokes.tb.length;
 
-  /// Check if this letter is valid
-  bool isValid() {
-    return letter.isNotEmpty &&
-        name.isNotEmpty &&
-        strokes.isNotEmpty &&
-        _isValidViewBox();
+  /// Check if this letter is valid`
+  bool isValid(bool isMobile) {
+    return letter.isNotEmpty && name.isNotEmpty && _isValidViewBox(isMobile);
   }
 
-  bool _isValidViewBox() {
+  bool _isValidViewBox(bool isMobile) {
     try {
-      final parts = viewBox.split(' ');
+      final parts = isMobile ? viewBoxMobile.split(' ') : viewBox.split(' ');
       if (parts.length != 4) return false;
 
       for (var part in parts) {
@@ -125,7 +129,8 @@ class NepaliLetter {
     String? letter,
     String? name,
     String? viewBox,
-    List<LetterStroke>? strokes,
+    String? viewBoxMobile,
+    Strokes? strokes,
     String? category,
     int? difficulty,
     List<String>? tags,
@@ -134,6 +139,7 @@ class NepaliLetter {
       letter: letter ?? this.letter,
       name: name ?? this.name,
       viewBox: viewBox ?? this.viewBox,
+      viewBoxMobile: this.viewBoxMobile,
       strokes: strokes ?? this.strokes,
       category: category ?? this.category,
       difficulty: difficulty ?? this.difficulty,
@@ -143,7 +149,7 @@ class NepaliLetter {
 
   @override
   String toString() {
-    return 'NepaliLetter(letter: $letter, name: $name, strokes: ${strokes.length})';
+    return 'NepaliLetter(letter: $letter, name: $name, strokes: ${strokes.tb.length})';
   }
 
   @override
@@ -155,12 +161,12 @@ class NepaliLetter {
         other.name == name;
   }
 
-  Size getActualSize() {
+  Size getActualSize(bool isMobile) {
     double minX = double.infinity;
     double minY = double.infinity;
     double maxX = double.negativeInfinity;
     double maxY = double.negativeInfinity;
-
+    final strokes = isMobile ? this.strokes.mb : this.strokes.tb;
     for (var stroke in strokes) {
       Path p = parseSvgPathData(stroke.path);
       Rect bounds = p.getBounds();
@@ -177,6 +183,34 @@ class NepaliLetter {
 
   @override
   int get hashCode => letter.hashCode ^ name.hashCode;
+}
+
+class Strokes {
+  List<LetterStroke> mb;
+  List<LetterStroke> tb;
+  Strokes({required this.mb, required this.tb});
+  factory Strokes.fromJson(Map<String, dynamic> json) {
+    return Strokes(
+      mb: (json['mb'] as List)
+          .map(
+            (stroke) => LetterStroke.fromJson(stroke as Map<String, dynamic>),
+          )
+          .toList(),
+      tb: (json['tb'] as List)
+          .map(
+            (stroke) => LetterStroke.fromJson(stroke as Map<String, dynamic>),
+          )
+          .toList(),
+    );
+  }
+  Strokes copyWith({List<LetterStroke>? mb, List<LetterStroke>? tb}) {
+    return Strokes(mb: mb ?? this.mb, tb: tb ?? this.tb);
+  }
+
+  @override
+  String toString() {
+    return 'Strokes(mb: ${mb.length}, tb: ${tb.length})';
+  }
 }
 
 /// Represents a single stroke of a Nepali letter

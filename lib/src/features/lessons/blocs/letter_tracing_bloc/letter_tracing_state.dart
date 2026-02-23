@@ -7,6 +7,7 @@ abstract class LetterTracingState with _$LetterTracingState {
     @Default(Size(300, 300)) Size letterSize,
     @Default(20.0) double strokeWidth,
     @Default(0) int numberOfStrokes,
+    @Default(0) int repetations,
     @Default([]) List<Path> letterPaths,
     Path? outlinePath,
     @Default([]) List<List<Offset>> pathsPoints,

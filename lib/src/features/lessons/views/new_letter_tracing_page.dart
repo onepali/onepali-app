@@ -47,9 +47,11 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isMobile = PlatformUtility.isMobile(context);
     return BlocProvider(
       create: (context) =>
-          LetterTracingBloc()..add(LetterTracingEvent.started(widget.content)),
+          LetterTracingBloc()
+            ..add(LetterTracingEvent.started(widget.content, isMobile)),
       child: Scaffold(
         body: BlocConsumer<LetterTracingBloc, LetterTracingState>(
           listener: (context, state) {
@@ -77,7 +79,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                         // Main tracing area
                         Center(child: _buildTracingArea(context, state, size)),
                         SizedBox(height: size.height * 0.02),
-                        // Stroke indicators at bottom
+                        // Number of completed repetation at bottom
                         _buildStrokeIndicators(state),
                         Spacer(),
                       ],
@@ -87,7 +89,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                         Navigator.of(context).pop();
                       },
                     ),
-                    if (state.isLetterComplete)
+                    if (state.repetations >= 3)
                       CenterRightAlignedForwardButton(
                         onTap: () {
                           context.read<LessonBloc>().add(
@@ -163,6 +165,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                       showGuideDots: state.showGuideDots,
                       showStrokeDirection: state.showStrokeDirection,
                       strokeBoundingBoxes: state.strokeBoundingBoxes,
+                      isMobile: PlatformUtility.isMobile(context),
                     ),
                   );
                 },
@@ -177,16 +180,16 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
   Widget _buildStrokeIndicators(LetterTracingState state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(state.numberOfStrokes, (index) {
-        final isComplete = index < state.currentStrokeIndex;
-        final isCurrent = index == state.currentStrokeIndex;
+      children: List.generate(3, (index) {
+        final isComplete = index < state.repetations;
+        // final isCurrent = index == state.currentStrokeIndex;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6.0),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            width: isCurrent ? 50 : 40,
-            height: isCurrent ? 50 : 40,
+            width: 50,
+            height: 50,
 
             child: Center(
               child: Icon(

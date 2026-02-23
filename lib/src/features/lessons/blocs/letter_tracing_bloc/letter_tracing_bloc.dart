@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
 import 'package:onepali/src/features/lessons/services/nepali_letter_service.dart';
@@ -13,6 +14,7 @@ part 'letter_tracing_state.dart';
 part 'letter_tracing_bloc.freezed.dart';
 
 class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
+  final AudioPlayerService audioPlayerService = AudioPlayerServiceImpl();
   LetterTracingBloc() : super(_LetterTracingState()) {
     on<_Started>(_onStarted);
     on<_OnPanStart>(_onPanStart);
@@ -23,22 +25,26 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
 
   void _onStarted(_Started event, Emitter<LetterTracingState> emit) async {
     Path? outlinePath;
+    final isMobile = event.isMobile;
     final content = event.content;
     final char = content.nameNp;
     final letters = await LetterService.loadLetters();
     final letter = letters.firstWhere((letter) => letter.letter == char);
-    final size = letter.getSize();
-    final letterPaths = letter.strokes
+    final size = letter.getSize(event.isMobile);
+    final strokes = isMobile ? letter.strokes.mb : letter.strokes.tb;
+    final letterPaths = strokes
         .map((stroke) => parseSvgPathData(stroke.path))
         .toList();
     final pathsPoints = letterPaths
         .map((path) => getPointsFromPath(path))
         .toList();
-    if (letter.outlinePath != null) {
-      outlinePath = parseSvgPathData(letter.outlinePath!);
+    if (letter.outlinePathTb != null && !isMobile) {
+      outlinePath = parseSvgPathData(letter.outlinePathTb!);
+    }else if (letter.outlinePathMb != null && isMobile) {
+      outlinePath = parseSvgPathData(letter.outlinePathMb!);
     }
-    final strokeWidth = letter.strokes.isNotEmpty
-        ? letter.strokes.first.strokeWidth ?? 20.0
+    final strokeWidth = strokes.isNotEmpty
+        ? strokes.first.strokeWidth ?? 20.0
         : 20.0;
 
     // Calculate bounding boxes for each stroke
@@ -49,7 +55,7 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
         strokeWidth: strokeWidth.toDouble(),
         letter: letter,
         letterSize: size,
-        numberOfStrokes: letter.strokes.length,
+        numberOfStrokes: strokes.length,
         outlinePath: outlinePath,
         pathsPoints: pathsPoints,
         letterPaths: letterPaths,
@@ -174,6 +180,43 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
 
       // Check if all strokes are completed
       final isLetterComplete = nextIndex >= state.numberOfStrokes;
+      int newRepetations = state.repetations;
+      if (isLetterComplete) {
+        audioPlayerService.playAsset('audio/sfx/star_blast.mp3');
+        newRepetations = state.repetations + 1;
+        if (newRepetations >= 3) {
+          // Reset to first stroke after 3 repetations
+          emit(
+            state.copyWith(
+              repetations: newRepetations,
+              currentStrokeIndex: nextIndex,
+              userStrokes: [],
+              completedPaths: completedPaths,
+              currentStrokeProgress: 0.0,
+              feedbackMessage: 'Great job! 👍',
+              showPointer: false,
+              pointerPosition: null,
+              isLetterComplete: true,
+            ),
+          );
+          return;
+        } else {
+          emit(
+            state.copyWith(
+              repetations: newRepetations,
+              currentStrokeIndex: 0,
+              userStrokes: [],
+              completedPaths: [],
+              currentStrokeProgress: 0.0,
+              feedbackMessage: "Great job! Let's do it again.",
+              showPointer: true,
+              pointerPosition: state.pathsPoints[0].first,
+              isLetterComplete: false,
+            ),
+          );
+          return;
+        }
+      }
 
       emit(
         state.copyWith(
@@ -330,6 +373,12 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
       }
     }
     return points;
+  }
+
+  @override
+  Future<void> close() {
+    audioPlayerService.dispose();
+    return super.close();
   }
 }
 

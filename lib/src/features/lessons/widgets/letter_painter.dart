@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 
@@ -17,6 +16,7 @@ class LetterPainter extends CustomPainter {
   final bool showGuideDots;
   final bool showStrokeDirection;
   final List<Rect> strokeBoundingBoxes;
+  final bool isMobile;
 
   LetterPainter({
     required this.strokeWidth,
@@ -33,6 +33,7 @@ class LetterPainter extends CustomPainter {
     this.showGuideDots = true,
     this.showStrokeDirection = true,
     required this.strokeBoundingBoxes,
+    required this.isMobile,
   });
 
   @override
@@ -44,7 +45,7 @@ class LetterPainter extends CustomPainter {
         Paint()
           ..color = AppColors.kBlack
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 4
+          ..strokeWidth = isMobile ? 2 : 4
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round,
       );
@@ -106,8 +107,8 @@ class LetterPainter extends CustomPainter {
     if (userStrokes.isNotEmpty) {
       final userPaint = Paint()
         ..color = isTracingOutsideBounds
-            ? Colors.red.withOpacity(0.6)
-            : Colors.orange.withOpacity(0.8)
+            ? AppColors.kPrimaryColor
+            : AppColors.kOrange
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth * 0.8
         ..strokeCap = StrokeCap.round
@@ -144,7 +145,7 @@ class LetterPainter extends CustomPainter {
 
     // Inner solid circle
     final innerCirclePaint = Paint()
-      ..color = Colors.orange
+      ..color = AppColors.kOrange
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(position, strokeWidth * 0.6, innerCirclePaint);
@@ -182,13 +183,13 @@ class LetterPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     for (int i = 0; i < points.length; i += 15) {
-      canvas.drawCircle(points[i], 3, dotPaint);
+      canvas.drawCircle(points[i], isMobile ? 2 : 3, dotPaint);
     }
   }
 
   void _drawProgressIndicator(Canvas canvas, Path path, double progress) {
     final progressPaint = Paint()
-      ..color = Colors.green.withOpacity(0.5)
+      ..color = AppColors.kButtonGreen.withOpacity(0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth * 1.2
       ..strokeCap = StrokeCap.round;

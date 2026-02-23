@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/core/widget/pop_scale_widget.dart';
 import 'package:onepali/src/core/widget/shake_widget.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
@@ -18,14 +19,7 @@ class TapToPopLessonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return BlocConsumer<TapToPopBloc, TapToPopState>(
-      listener: (context, state) async {
-        if (state.completed) {
-          // show snackbar
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Completed')));
-        }
-      },
+      listener: (context, state) async {},
       builder: (context, state) {
         if (state.content == null) {
           return const Center(child: Text('No content found'));
@@ -36,42 +30,44 @@ class TapToPopLessonView extends StatelessWidget {
             orElse: () => state.content!.items.first,
           );
 
-          return GestureDetector(
-            onTap: () async {
-              context.read<LessonBloc>().add(LessonEvent.nextContent());
-            },
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: ColoredBox(
-                    color: colorFromHex(content.bgColor) ?? Colors.green,
-                  ),
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: ColoredBox(
+                  color: colorFromHex(content.bgColor) ?? Colors.green,
                 ),
-                Center(
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    duration: const Duration(seconds: 2),
-                    curve: Curves.elasticOut,
-                    builder: (context, scale, child) {
-                      return Transform.scale(
-                        scale: scale * 4,
-                        child: CustomCachedImage(imageUrl: correctItem.image),
-                      );
-                    },
-                  ),
+              ),
+              Center(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(seconds: 2),
+                  curve: Curves.elasticOut,
+                  builder: (context, scale, child) {
+                    return CustomCachedImage(
+                      imageUrl: content.successImage ?? correctItem.image,
+                      height: size.height * 0.4,
+                      width: size.height * 0.4,
+                    );
+                  },
                 ),
-                Center(
-                  child: LottieBuilder.asset(
-                    Assets.starWinnerLottie,
-                    repeat: true,
-                  ),
+              ),
+              Center(
+                child: LottieBuilder.asset(
+                  Assets.starWinnerLottie,
+                  repeat: true,
                 ),
-                TopRightPositionedCloseButton(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                })
-              ],
-            ),
+              ),
+              TopRightPositionedCloseButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CenterRightAlignedForwardButton(
+                onTap: () async {
+                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                },
+              ),
+            ],
           );
         }
         final items = state.content!.items;
