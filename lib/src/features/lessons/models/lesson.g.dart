@@ -142,6 +142,7 @@ TapToPopLessonContent _$TapToPopLessonContentFromJson(
   id: json['id'] as String,
   index: (json['index'] as num).toInt(),
   bgImage: json['bg_image'] as String?,
+  successImage: json['success_image'] as String?,
   bgColor: json['bg_color'] as String?,
   type: json['type'] as String? ?? 'tap_to_pop',
   items:
@@ -157,6 +158,7 @@ Map<String, dynamic> _$TapToPopLessonContentToJson(
   'id': instance.id,
   'index': instance.index,
   'bg_image': instance.bgImage,
+  'success_image': instance.successImage,
   'bg_color': instance.bgColor,
   'type': instance.type,
   'items': instance.items.map((e) => e.toJson()).toList(),
