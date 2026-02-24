@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
@@ -40,7 +41,7 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
         .toList();
     if (letter.outlinePathTb != null && !isMobile) {
       outlinePath = parseSvgPathData(letter.outlinePathTb!);
-    }else if (letter.outlinePathMb != null && isMobile) {
+    } else if (letter.outlinePathMb != null && isMobile) {
       outlinePath = parseSvgPathData(letter.outlinePathMb!);
     }
     final strokeWidth = strokes.isNotEmpty
@@ -199,6 +200,8 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
               isLetterComplete: true,
             ),
           );
+          // play local audio
+          audioPlayerService.playAsset(Assets.goodFeedback);
           return;
         } else {
           emit(

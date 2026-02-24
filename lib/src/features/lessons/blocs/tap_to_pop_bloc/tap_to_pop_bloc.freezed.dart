@@ -55,11 +55,12 @@ extension TapToPopEventPatterns on TapToPopEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _TapItem value)?  tapItem,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _InstructionAudioCompleted value)?  instructionAudioCompleted,TResult Function( _TapItem value)?  tapItem,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that);case _TapItem() when tapItem != null:
+return started(_that);case _InstructionAudioCompleted() when instructionAudioCompleted != null:
+return instructionAudioCompleted(_that);case _TapItem() when tapItem != null:
 return tapItem(_that);case _:
   return orElse();
 
@@ -78,11 +79,12 @@ return tapItem(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _TapItem value)  tapItem,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _InstructionAudioCompleted value)  instructionAudioCompleted,required TResult Function( _TapItem value)  tapItem,}){
 final _that = this;
 switch (_that) {
 case _Started():
-return started(_that);case _TapItem():
+return started(_that);case _InstructionAudioCompleted():
+return instructionAudioCompleted(_that);case _TapItem():
 return tapItem(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -100,11 +102,12 @@ return tapItem(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _TapItem value)?  tapItem,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _InstructionAudioCompleted value)?  instructionAudioCompleted,TResult? Function( _TapItem value)?  tapItem,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that);case _TapItem() when tapItem != null:
+return started(_that);case _InstructionAudioCompleted() when instructionAudioCompleted != null:
+return instructionAudioCompleted(_that);case _TapItem() when tapItem != null:
 return tapItem(_that);case _:
   return null;
 
@@ -122,10 +125,11 @@ return tapItem(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( TapToPopLessonContent content)?  started,TResult Function( Item item)?  tapItem,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( TapToPopLessonContent content)?  started,TResult Function()?  instructionAudioCompleted,TResult Function( Item item)?  tapItem,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that.content);case _TapItem() when tapItem != null:
+return started(_that.content);case _InstructionAudioCompleted() when instructionAudioCompleted != null:
+return instructionAudioCompleted();case _TapItem() when tapItem != null:
 return tapItem(_that.item);case _:
   return orElse();
 
@@ -144,10 +148,11 @@ return tapItem(_that.item);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( TapToPopLessonContent content)  started,required TResult Function( Item item)  tapItem,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( TapToPopLessonContent content)  started,required TResult Function()  instructionAudioCompleted,required TResult Function( Item item)  tapItem,}) {final _that = this;
 switch (_that) {
 case _Started():
-return started(_that.content);case _TapItem():
+return started(_that.content);case _InstructionAudioCompleted():
+return instructionAudioCompleted();case _TapItem():
 return tapItem(_that.item);case _:
   throw StateError('Unexpected subclass');
 
@@ -165,10 +170,11 @@ return tapItem(_that.item);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( TapToPopLessonContent content)?  started,TResult? Function( Item item)?  tapItem,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( TapToPopLessonContent content)?  started,TResult? Function()?  instructionAudioCompleted,TResult? Function( Item item)?  tapItem,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that.content);case _TapItem() when tapItem != null:
+return started(_that.content);case _InstructionAudioCompleted() when instructionAudioCompleted != null:
+return instructionAudioCompleted();case _TapItem() when tapItem != null:
 return tapItem(_that.item);case _:
   return null;
 
@@ -242,6 +248,38 @@ as TapToPopLessonContent,
 
 
 }
+
+/// @nodoc
+
+
+class _InstructionAudioCompleted implements TapToPopEvent {
+  const _InstructionAudioCompleted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InstructionAudioCompleted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TapToPopEvent.instructionAudioCompleted()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 
@@ -321,7 +359,7 @@ $ItemCopyWith<$Res> get item {
 /// @nodoc
 mixin _$TapToPopState {
 
- TapToPopLessonContent? get content; List<Item>? get correctItems; List<Item>? get selectedItems; bool get completed;
+ TapToPopLessonContent? get content; int get correctItemsCount; List<Item>? get selectedItems; bool get completed; bool get instructionAudioPlayed;
 /// Create a copy of TapToPopState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -332,16 +370,16 @@ $TapToPopStateCopyWith<TapToPopState> get copyWith => _$TapToPopStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapToPopState&&const DeepCollectionEquality().equals(other.content, content)&&const DeepCollectionEquality().equals(other.correctItems, correctItems)&&const DeepCollectionEquality().equals(other.selectedItems, selectedItems)&&(identical(other.completed, completed) || other.completed == completed));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapToPopState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.correctItemsCount, correctItemsCount) || other.correctItemsCount == correctItemsCount)&&const DeepCollectionEquality().equals(other.selectedItems, selectedItems)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.instructionAudioPlayed, instructionAudioPlayed) || other.instructionAudioPlayed == instructionAudioPlayed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),const DeepCollectionEquality().hash(correctItems),const DeepCollectionEquality().hash(selectedItems),completed);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),correctItemsCount,const DeepCollectionEquality().hash(selectedItems),completed,instructionAudioPlayed);
 
 @override
 String toString() {
-  return 'TapToPopState(content: $content, correctItems: $correctItems, selectedItems: $selectedItems, completed: $completed)';
+  return 'TapToPopState(content: $content, correctItemsCount: $correctItemsCount, selectedItems: $selectedItems, completed: $completed, instructionAudioPlayed: $instructionAudioPlayed)';
 }
 
 
@@ -352,7 +390,7 @@ abstract mixin class $TapToPopStateCopyWith<$Res>  {
   factory $TapToPopStateCopyWith(TapToPopState value, $Res Function(TapToPopState) _then) = _$TapToPopStateCopyWithImpl;
 @useResult
 $Res call({
- TapToPopLessonContent? content, List<Item>? correctItems, List<Item>? selectedItems, bool completed
+ TapToPopLessonContent? content, int correctItemsCount, List<Item>? selectedItems, bool completed, bool instructionAudioPlayed
 });
 
 
@@ -369,12 +407,13 @@ class _$TapToPopStateCopyWithImpl<$Res>
 
 /// Create a copy of TapToPopState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? correctItems = freezed,Object? selectedItems = freezed,Object? completed = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? correctItemsCount = null,Object? selectedItems = freezed,Object? completed = null,Object? instructionAudioPlayed = null,}) {
   return _then(_self.copyWith(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as TapToPopLessonContent?,correctItems: freezed == correctItems ? _self.correctItems : correctItems // ignore: cast_nullable_to_non_nullable
-as List<Item>?,selectedItems: freezed == selectedItems ? _self.selectedItems : selectedItems // ignore: cast_nullable_to_non_nullable
+as TapToPopLessonContent?,correctItemsCount: null == correctItemsCount ? _self.correctItemsCount : correctItemsCount // ignore: cast_nullable_to_non_nullable
+as int,selectedItems: freezed == selectedItems ? _self.selectedItems : selectedItems // ignore: cast_nullable_to_non_nullable
 as List<Item>?,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as bool,instructionAudioPlayed: null == instructionAudioPlayed ? _self.instructionAudioPlayed : instructionAudioPlayed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -460,10 +499,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TapToPopLessonContent? content,  List<Item>? correctItems,  List<Item>? selectedItems,  bool completed)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TapToPopLessonContent? content,  int correctItemsCount,  List<Item>? selectedItems,  bool completed,  bool instructionAudioPlayed)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when $default != null:
-return $default(_that.content,_that.correctItems,_that.selectedItems,_that.completed);case _:
+return $default(_that.content,_that.correctItemsCount,_that.selectedItems,_that.completed,_that.instructionAudioPlayed);case _:
   return orElse();
 
 }
@@ -481,10 +520,10 @@ return $default(_that.content,_that.correctItems,_that.selectedItems,_that.compl
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TapToPopLessonContent? content,  List<Item>? correctItems,  List<Item>? selectedItems,  bool completed)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TapToPopLessonContent? content,  int correctItemsCount,  List<Item>? selectedItems,  bool completed,  bool instructionAudioPlayed)  $default,) {final _that = this;
 switch (_that) {
 case _Initial():
-return $default(_that.content,_that.correctItems,_that.selectedItems,_that.completed);case _:
+return $default(_that.content,_that.correctItemsCount,_that.selectedItems,_that.completed,_that.instructionAudioPlayed);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -501,10 +540,10 @@ return $default(_that.content,_that.correctItems,_that.selectedItems,_that.compl
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TapToPopLessonContent? content,  List<Item>? correctItems,  List<Item>? selectedItems,  bool completed)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TapToPopLessonContent? content,  int correctItemsCount,  List<Item>? selectedItems,  bool completed,  bool instructionAudioPlayed)?  $default,) {final _that = this;
 switch (_that) {
 case _Initial() when $default != null:
-return $default(_that.content,_that.correctItems,_that.selectedItems,_that.completed);case _:
+return $default(_that.content,_that.correctItemsCount,_that.selectedItems,_that.completed,_that.instructionAudioPlayed);case _:
   return null;
 
 }
@@ -516,19 +555,11 @@ return $default(_that.content,_that.correctItems,_that.selectedItems,_that.compl
 
 
 class _Initial implements TapToPopState {
-  const _Initial({this.content, final  List<Item>? correctItems, final  List<Item>? selectedItems, this.completed = false}): _correctItems = correctItems,_selectedItems = selectedItems;
+  const _Initial({this.content, this.correctItemsCount = 0, final  List<Item>? selectedItems, this.completed = false, this.instructionAudioPlayed = false}): _selectedItems = selectedItems;
   
 
 @override final  TapToPopLessonContent? content;
- final  List<Item>? _correctItems;
-@override List<Item>? get correctItems {
-  final value = _correctItems;
-  if (value == null) return null;
-  if (_correctItems is EqualUnmodifiableListView) return _correctItems;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
-
+@override@JsonKey() final  int correctItemsCount;
  final  List<Item>? _selectedItems;
 @override List<Item>? get selectedItems {
   final value = _selectedItems;
@@ -539,6 +570,7 @@ class _Initial implements TapToPopState {
 }
 
 @override@JsonKey() final  bool completed;
+@override@JsonKey() final  bool instructionAudioPlayed;
 
 /// Create a copy of TapToPopState
 /// with the given fields replaced by the non-null parameter values.
@@ -550,16 +582,16 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&const DeepCollectionEquality().equals(other.content, content)&&const DeepCollectionEquality().equals(other._correctItems, _correctItems)&&const DeepCollectionEquality().equals(other._selectedItems, _selectedItems)&&(identical(other.completed, completed) || other.completed == completed));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.correctItemsCount, correctItemsCount) || other.correctItemsCount == correctItemsCount)&&const DeepCollectionEquality().equals(other._selectedItems, _selectedItems)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.instructionAudioPlayed, instructionAudioPlayed) || other.instructionAudioPlayed == instructionAudioPlayed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),const DeepCollectionEquality().hash(_correctItems),const DeepCollectionEquality().hash(_selectedItems),completed);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),correctItemsCount,const DeepCollectionEquality().hash(_selectedItems),completed,instructionAudioPlayed);
 
 @override
 String toString() {
-  return 'TapToPopState(content: $content, correctItems: $correctItems, selectedItems: $selectedItems, completed: $completed)';
+  return 'TapToPopState(content: $content, correctItemsCount: $correctItemsCount, selectedItems: $selectedItems, completed: $completed, instructionAudioPlayed: $instructionAudioPlayed)';
 }
 
 
@@ -570,7 +602,7 @@ abstract mixin class _$InitialCopyWith<$Res> implements $TapToPopStateCopyWith<$
   factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
 @override @useResult
 $Res call({
- TapToPopLessonContent? content, List<Item>? correctItems, List<Item>? selectedItems, bool completed
+ TapToPopLessonContent? content, int correctItemsCount, List<Item>? selectedItems, bool completed, bool instructionAudioPlayed
 });
 
 
@@ -587,12 +619,13 @@ class __$InitialCopyWithImpl<$Res>
 
 /// Create a copy of TapToPopState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? correctItems = freezed,Object? selectedItems = freezed,Object? completed = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? correctItemsCount = null,Object? selectedItems = freezed,Object? completed = null,Object? instructionAudioPlayed = null,}) {
   return _then(_Initial(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as TapToPopLessonContent?,correctItems: freezed == correctItems ? _self._correctItems : correctItems // ignore: cast_nullable_to_non_nullable
-as List<Item>?,selectedItems: freezed == selectedItems ? _self._selectedItems : selectedItems // ignore: cast_nullable_to_non_nullable
+as TapToPopLessonContent?,correctItemsCount: null == correctItemsCount ? _self.correctItemsCount : correctItemsCount // ignore: cast_nullable_to_non_nullable
+as int,selectedItems: freezed == selectedItems ? _self._selectedItems : selectedItems // ignore: cast_nullable_to_non_nullable
 as List<Item>?,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as bool,instructionAudioPlayed: null == instructionAudioPlayed ? _self.instructionAudioPlayed : instructionAudioPlayed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

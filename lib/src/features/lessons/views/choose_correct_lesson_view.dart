@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:any_image_view/any_image_view.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,12 +14,16 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 
 class ChooseCorrectLessonView extends StatefulWidget {
   final ChooseCorrectLessonContent content;
+  final bool isLastContent;
 
-  const ChooseCorrectLessonView({super.key, required this.content});
+  const ChooseCorrectLessonView({
+    super.key,
+    required this.content,
+    required this.isLastContent,
+  });
 
   @override
   State<ChooseCorrectLessonView> createState() =>
@@ -230,17 +232,23 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                     Expanded(
                       flex: 1,
 
-                      child: CenterRightAlignedForwardButton(
-                        onTap: () {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.nextContent(),
-                          );
-                        },
-                      ),
+                      child: widget.isLastContent
+                          ? SizedBox.shrink()
+                          : CenterRightAlignedForwardButton(
+                              onTap: () {
+                                context.read<LessonBloc>().add(
+                                  const LessonEvent.nextContent(),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
               ),
+              if (widget.isLastContent && state.isCorrect)
+                Positioned.fill(
+                  child: LottieHelper.fromSource(path: Assets.confetti1),
+                ),
               // Close button
               TopRightPositionedCloseButton(
                 onTap: () {

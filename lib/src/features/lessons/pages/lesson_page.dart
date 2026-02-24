@@ -50,6 +50,8 @@ class _LessonPageState extends State<LessonPage> {
               return Center(child: Text('No content found'));
             }
             final lessonContent = state.currentContent!;
+            final isLastContent =
+                state.currentIndex == state.lessonDetails!.contents.length - 1;
 
             switch (lessonContent) {
               case IntroLessonContent():
@@ -64,7 +66,10 @@ class _LessonPageState extends State<LessonPage> {
               case ChooseCorrectLessonContent():
                 return BlocProvider(
                   create: (context) => ChooseCorrectLessonContentBloc(),
-                  child: ChooseCorrectLessonView(content: lessonContent),
+                  child: ChooseCorrectLessonView(
+                    content: lessonContent,
+                    isLastContent: isLastContent,
+                  ),
                 );
               case TapToRevealLessonContent():
                 return BlocProvider(

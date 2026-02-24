@@ -84,24 +84,30 @@ class TapToPopLessonView extends StatelessWidget {
               Positioned(
                 top: (item.dxRatio ?? 0.5) * size.height,
                 left: (item.dyRatio ?? 0.5) * size.width,
-                child: state.correctItems!.contains(item)
+                child: item.isCorrect
                     ? Transform.scale(
                         scale: 1.1,
                         child: PopScaleOnTap(
-                          onTap: () {
-                            context.read<TapToPopBloc>().add(
-                              TapToPopEvent.tapItem(item),
-                            );
-                          },
+                          key: ValueKey(item.order.toString()),
+                          onTap: state.instructionAudioPlayed
+                              ? () {
+                                  context.read<TapToPopBloc>().add(
+                                    TapToPopEvent.tapItem(item),
+                                  );
+                                }
+                              : null,
                           child: CustomCachedImage(imageUrl: item.image),
                         ),
                       )
                     : ShakeWidget(
-                        onTap: () {
-                          context.read<TapToPopBloc>().add(
-                            TapToPopEvent.tapItem(item),
-                          );
-                        },
+                        key: ValueKey(item.order.toString()),
+                        onTap: state.instructionAudioPlayed
+                            ? () {
+                                context.read<TapToPopBloc>().add(
+                                  TapToPopEvent.tapItem(item),
+                                );
+                              }
+                            : null,
                         child: CustomCachedImage(imageUrl: item.image),
                       ),
               ),

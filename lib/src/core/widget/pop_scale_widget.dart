@@ -27,10 +27,7 @@ class _PopScaleOnTapState extends State<PopScaleOnTap>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
 
     _scale = TweenSequence<double>([
       TweenSequenceItem(
@@ -41,18 +38,15 @@ class _PopScaleOnTapState extends State<PopScaleOnTap>
         tween: Tween(begin: widget.maxScale, end: 1.0),
         weight: 40,
       ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutBack,
-      ),
-    );
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
   }
 
   void _pop() {
     if (!_controller.isAnimating) {
       _controller.forward(from: 0);
-      widget.onTap?.call();
+      if (widget.onTap != null) {
+        widget.onTap!();
+      }
     }
   }
 
@@ -65,14 +59,11 @@ class _PopScaleOnTapState extends State<PopScaleOnTap>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _pop,
+      onTap: widget.onTap == null ? null : _pop,
       child: AnimatedBuilder(
         animation: _scale,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _scale.value,
-            child: child,
-          );
+          return Transform.scale(scale: _scale.value, child: child);
         },
         child: widget.child,
       ),

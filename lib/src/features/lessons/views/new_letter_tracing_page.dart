@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/core/widget/shake_widget.dart';
 import 'package:onepali/src/features/lessons/blocs/letter_tracing_bloc/letter_tracing_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -97,6 +99,18 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                           );
                         },
                       ),
+
+                    if (state.repetations >= 3)
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Animate(
+                          effects: [ScaleEffect(),ShakeEffect()],
+                          child: Image.asset(
+                            Assets.goodRemark1,
+                            height: size.height * 0.4,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -184,18 +198,21 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
         final isComplete = index < state.repetations;
         // final isCurrent = index == state.currentStrokeIndex;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: 50,
-            height: 50,
-
-            child: Center(
-              child: Icon(
-                isComplete ? Icons.star : Icons.star_outline,
-                color: AppColors.kOrange,
-                size: 32,
+        return Animate(
+          effects: [ScaleEffect()],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 50,
+              height: 50,
+          
+              child: Center(
+                child: Icon(
+                  isComplete ? Icons.star : Icons.star_outline,
+                  color: AppColors.kOrange,
+                  size: 32,
+                ),
               ),
             ),
           ),

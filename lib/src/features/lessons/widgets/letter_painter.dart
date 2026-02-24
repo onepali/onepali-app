@@ -45,7 +45,7 @@ class LetterPainter extends CustomPainter {
         Paint()
           ..color = AppColors.kBlack
           ..style = PaintingStyle.stroke
-          ..strokeWidth = isMobile ? 2 : 4
+          ..strokeWidth = isMobile ? 4 : 8
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round,
       );
