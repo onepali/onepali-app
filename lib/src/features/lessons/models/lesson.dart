@@ -93,6 +93,8 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgImage,
     String? successImage,
     String? bgColor,
+    String? audioWord,
+    String? instructionAudio,
     @Default('tap_to_pop') String type,
     @Default([]) List<Item> items,
   }) = TapToPopLessonContent;

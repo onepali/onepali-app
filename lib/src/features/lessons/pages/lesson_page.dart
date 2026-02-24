@@ -65,7 +65,10 @@ class _LessonPageState extends State<LessonPage> {
               case ChooseCorrectLessonContent():
                 return BlocProvider(
                   create: (context) => ChooseCorrectLessonContentBloc(),
-                  child: ChooseCorrectLessonView(content: lessonContent),
+                  child: ChooseCorrectLessonView(
+                    content: lessonContent,
+                    isLastContent: isLastContent,
+                  ),
                 );
               case TapToRevealLessonContent():
                 return BlocProvider(
