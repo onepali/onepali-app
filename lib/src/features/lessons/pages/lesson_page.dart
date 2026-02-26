@@ -12,12 +12,14 @@ import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
 import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key, required this.lessonId});
@@ -51,10 +53,16 @@ class _LessonPageState extends State<LessonPage> {
             final lessonContent = state.currentContent!;
             final contents = state.lessonDetails!.contents;
             final isLastContent = state.currentIndex >= contents.length - 1;
+            final isFirstContent = state.currentIndex == 0;
 
             switch (lessonContent) {
               case IntroLessonContent():
-                return IntroLessonView(content: lessonContent);
+                return IntroLessonView(
+                  key: ValueKey('intro_${state.currentIndex}'),
+                  content: lessonContent,
+                  isLast: isLastContent,
+                  isFirst: isFirstContent,
+                );
               // return LetterSelectionScreen();
               case InfoLessonContent():
                 return BlocProvider(
@@ -104,6 +112,21 @@ class _LessonPageState extends State<LessonPage> {
                 );
               case CharTracingLessonContent():
                 return NewLetterTracingPage(content: lessonContent);
+              case TeaMakingLessonContent():
+                return const KitchenPage();
+              case BallSlideLessonContent():
+                return BallSlideView(
+                  content: lessonContent,
+                  onNext: () {
+                    if (isLastContent) {
+                      Navigator.of(context).pop();
+                    } else {
+                      context.read<LessonBloc>().add(
+                        const LessonEvent.nextContent(),
+                      );
+                    }
+                  },
+                );
               default:
                 return Center(child: Text('Unknown content type'));
             }

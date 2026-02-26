@@ -309,7 +309,7 @@ class CourseScreenState extends State<CourseScreen> {
                             children: [
                               for (final lesson in data)
                                 if (lesson['image'] is String &&
-                                    (lesson['image'] as String).isNotEmpty)
+                                    (lesson['image'] as String).isNotEmpty) ...[
                                   GestureDetector(
                                     onTap: () => _onTapLesson(lesson),
                                     child: Container(
@@ -338,19 +338,32 @@ class CourseScreenState extends State<CourseScreen> {
                                             ),
                                           ),
                                           SizedBox(height: 32),
-                                          Text(
-                                            lesson['name'] as String? ?? '',
-                                            style: AppStyles.text16PxMedium
-                                                .copyWith(
-                                                  fontSize: isTabletLandscape
-                                                      ? 24
-                                                      : 16,
-                                                ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.kBackgroundColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              lesson['name'] as String? ?? '',
+                                              style: AppStyles.text16PxMedium
+                                                  .copyWith(
+                                                    fontSize: isTabletLandscape
+                                                        ? 24
+                                                        : 16,
+                                                  ),
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
+                                  Gaps.horizontalGapOf(16),
+                                ],
                             ],
                           );
                         }
