@@ -33,6 +33,8 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgColor,
     String? image,
     String? audio,
+    String? bgImageMobile,
+    String? bgImageTablet,
   }) = IntroLessonContent;
 
   @FreezedUnionValue('info')
@@ -106,7 +108,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgColor,
     required String audioWord,
     String? audioBg,
-    String? image, // This is image of the word, eg a man doing namaste 
+    String? image, // This is image of the word, eg a man doing namaste
     String? charImage, // This is the character image, eg 'न'
     @Default(false) bool isImageSvg,
   }) = ListenAndRepeatLessonContent;
@@ -141,6 +143,22 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     List<Item>
     ingredients, // In this case, imageOutline is the placed image on top of stove
   }) = TeaMakingLessonContent;
+
+  //--------------------Football lesson contents----------------
+  @FreezedUnionValue('ball_slide') // football_slide_forward
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LessonContent.ballSlide({
+    required String id,
+    required int index,
+    @Default('ball_slide') String type,
+    String? bgImageMobile, // png
+    String? bgImageTablet, // png
+    String? player1, //png
+    String? player2, //png
+    String? ballImage, //png
+   @Default('ltr') String direction,
+    @Default([]) List<String> conversation, // List of audio urls
+  }) = BallSlideLessonContent;
 
   const factory LessonContent.unknown({
     @Default('') String id,

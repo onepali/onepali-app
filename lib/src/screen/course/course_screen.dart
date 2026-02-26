@@ -308,7 +308,8 @@ class CourseScreenState extends State<CourseScreen> {
                           return Row(
                             children: [
                               for (final lesson in data)
-                                GestureDetector(
+                               ...[
+                                 GestureDetector(
                                   onTap: () => _onTapLesson(lesson),
                                   child: Container(
                                     padding: const EdgeInsets.all(16),
@@ -356,6 +357,8 @@ class CourseScreenState extends State<CourseScreen> {
                                     ),
                                   ),
                                 ),
+                                Gaps.horizontalGapOf(16), 
+                               ]
                             ],
                           );
                         }

@@ -26,6 +26,8 @@ IntroLessonContent _$IntroLessonContentFromJson(Map<String, dynamic> json) =>
       bgColor: json['bg_color'] as String?,
       image: json['image'] as String?,
       audio: json['audio'] as String?,
+      bgImageMobile: json['bg_image_mobile'] as String?,
+      bgImageTablet: json['bg_image_tablet'] as String?,
     );
 
 Map<String, dynamic> _$IntroLessonContentToJson(IntroLessonContent instance) =>
@@ -36,6 +38,8 @@ Map<String, dynamic> _$IntroLessonContentToJson(IntroLessonContent instance) =>
       'bg_color': instance.bgColor,
       'image': instance.image,
       'audio': instance.audio,
+      'bg_image_mobile': instance.bgImageMobile,
+      'bg_image_tablet': instance.bgImageTablet,
     };
 
 InfoLessonContent _$InfoLessonContentFromJson(Map<String, dynamic> json) =>
@@ -262,6 +266,40 @@ Map<String, dynamic> _$TeaMakingLessonContentToJson(
   'tea_ready_sound': instance.teaReadySound,
   'bear_taking_tea': instance.bearTakingTea,
   'ingredients': instance.ingredients.map((e) => e.toJson()).toList(),
+};
+
+BallSlideLessonContent _$BallSlideLessonContentFromJson(
+  Map<String, dynamic> json,
+) => BallSlideLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'ball_slide',
+  bgImageMobile: json['bg_image_mobile'] as String?,
+  bgImageTablet: json['bg_image_tablet'] as String?,
+  player1: json['player1'] as String?,
+  player2: json['player2'] as String?,
+  ballImage: json['ball_image'] as String?,
+  direction: json['direction'] as String? ?? 'ltr',
+  conversation:
+      (json['conversation'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$BallSlideLessonContentToJson(
+  BallSlideLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'bg_image_mobile': instance.bgImageMobile,
+  'bg_image_tablet': instance.bgImageTablet,
+  'player1': instance.player1,
+  'player2': instance.player2,
+  'ball_image': instance.ballImage,
+  'direction': instance.direction,
+  'conversation': instance.conversation,
 };
 
 UnknownLessonContent _$UnknownLessonContentFromJson(

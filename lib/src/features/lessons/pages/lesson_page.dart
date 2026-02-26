@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
+import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
@@ -52,10 +54,16 @@ class _LessonPageState extends State<LessonPage> {
             final lessonContent = state.currentContent!;
             final isLastContent =
                 state.currentIndex == state.lessonDetails!.contents.length - 1;
+            final isFirstContent = state.currentIndex == 0;
 
             switch (lessonContent) {
               case IntroLessonContent():
-                return IntroLessonView(content: lessonContent);
+                return IntroLessonView(
+                  key: ValueKey('intro_${state.currentIndex}'),
+                  content: lessonContent,
+                  isLast: isLastContent,
+                  isFirst: isFirstContent,
+                );
               // return LetterSelectionScreen();
               case InfoLessonContent():
                 return BlocProvider(
@@ -96,6 +104,8 @@ class _LessonPageState extends State<LessonPage> {
                 return NewLetterTracingPage(content: lessonContent);
               case TeaMakingLessonContent():
                 return KitchenPage(content: lessonContent);
+              case BallSlideLessonContent():
+                return BallSlideView(content: lessonContent);
               default:
                 return Center(child: Text('Unknown content type'));
             }
