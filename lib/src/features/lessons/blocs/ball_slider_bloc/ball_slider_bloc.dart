@@ -83,7 +83,9 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
       _startPhysicsLoop();
       emit(state.copyWith(isAnimating: true));
     } else {
-      _startSnapBack();
+      // if(state.value<0.5){
+      //   _startSnapBack();
+      // }
       emit(state.copyWith(isAnimating: true));
     }
   }

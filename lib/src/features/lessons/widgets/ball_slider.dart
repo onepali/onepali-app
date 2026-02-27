@@ -26,6 +26,7 @@ class BallSlider extends StatelessWidget {
         return LayoutBuilder(
           builder: (context, constraints) {
             final trackWidth = constraints.maxWidth;
+            print(trackWidth);
             final usableWidth = trackWidth - ballSize;
 
             final ballLeft = isRtL
@@ -76,6 +77,7 @@ class BallSlider extends StatelessWidget {
                     Center(
                       child: Container(
                         height: trackHeight,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: AppColors.kLightGrey.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(trackHeight / 2),

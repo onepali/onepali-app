@@ -67,6 +67,7 @@ class _SliderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
+    final size = MediaQuery.sizeOf(context);
     return Stack(
       children: [
         // Background
@@ -97,13 +98,23 @@ class _SliderView extends StatelessWidget {
         ),
         // Ball Slider
         Positioned(
-          bottom: isMobile ? 80 : 120,
-          left: isMobile ? 20 : 200,
-          right: isMobile ? 20 : 200,
-          child: BallSlider(
-            trackHeight: isMobile ? 52 : 80,
-            ballSize: isMobile ? 70 : 120,
-            ballImagePath: content.ballImage ?? '',
+          bottom: isMobile
+              ? content.pDyMb.toDouble()
+              : content.pDyTb.toDouble(),
+
+          left: isMobile
+              ? (size.width - (content.sliderLengthMb * size.width)) / 2
+              : (size.width - (content.sliderLengthTb * size.width)) / 2,
+          right: isMobile
+              ? (size.width - (content.sliderLengthMb * size.width)) / 2
+              : (size.width - (content.sliderLengthTb * size.width)) / 2,
+          child: Transform.rotate(
+            angle: content.angle.toDouble(),
+            child: BallSlider(
+              trackHeight: isMobile ? 52 : 80,
+              ballSize: isMobile ? 70 : 120,
+              ballImagePath: content.ballImage ?? '',
+            ),
           ),
         ),
 
@@ -129,7 +140,7 @@ class _SliderView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: const Text(
-                    '⚽  Goal!  🎉',
+                    'Goal!',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
