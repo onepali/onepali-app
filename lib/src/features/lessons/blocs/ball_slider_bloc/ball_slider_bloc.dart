@@ -83,7 +83,9 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
       _startPhysicsLoop();
       emit(state.copyWith(isAnimating: true));
     } else {
-      _startSnapBack();
+      // if(state.value<0.5){
+      //   _startSnapBack();
+      // }
       emit(state.copyWith(isAnimating: true));
     }
   }
@@ -126,12 +128,6 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     _stopPhysics();
     _velocity = 0;
     emit(const BallSliderState());
-  }
-
-  //  Snap-back animation (no fling velocity — slides smoothly to 0)
-  void _startSnapBack() {
-    _velocity = -2.5; // normalized units/s — moves left at a fixed speed
-    _startPhysicsLoop();
   }
 
   //  Helpers

@@ -154,6 +154,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
 
   //--------------------Football lesson contents----------------
   @FreezedUnionValue('ball_slide') // football_slide_forward
+  // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory LessonContent.ballSlide({
     required String id,
@@ -164,8 +165,13 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? player1, //png
     String? player2, //png
     String? ballImage, //png
-   @Default('ltr') String direction,
+    @Default('ltr') String direction,
     @Default([]) List<String> conversation, // List of audio urls
+    @Default(0) num angle,
+    @Default(1) num sliderLengthMb,
+    @Default(1) num sliderLengthTb,
+    @Default(0) int pDyMb,
+    @Default(0) int pDyTb,
   }) = BallSlideLessonContent;
 
   const factory LessonContent.unknown({

@@ -76,6 +76,7 @@ class BallSlider extends StatelessWidget {
                     Center(
                       child: Container(
                         height: trackHeight,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: AppColors.kLightGrey.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(trackHeight / 2),
