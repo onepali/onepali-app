@@ -285,6 +285,11 @@ BallSlideLessonContent _$BallSlideLessonContentFromJson(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  angle: json['angle'] as num? ?? 0,
+  sliderLengthMb: json['slider_length_mb'] as num? ?? 1,
+  sliderLengthTb: json['slider_length_tb'] as num? ?? 1,
+  pDyMb: (json['p_dy_mb'] as num?)?.toInt() ?? 0,
+  pDyTb: (json['p_dy_tb'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$BallSlideLessonContentToJson(
@@ -300,6 +305,11 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'ball_image': instance.ballImage,
   'direction': instance.direction,
   'conversation': instance.conversation,
+  'angle': instance.angle,
+  'slider_length_mb': instance.sliderLengthMb,
+  'slider_length_tb': instance.sliderLengthTb,
+  'p_dy_mb': instance.pDyMb,
+  'p_dy_tb': instance.pDyTb,
 };
 
 UnknownLessonContent _$UnknownLessonContentFromJson(
