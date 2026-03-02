@@ -8,21 +8,39 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/heading_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
 
 class BallSlideView extends StatelessWidget {
   const BallSlideView({super.key, required this.content});
   final BallSlideLessonContent content;
 
+  Widget buildSlider(String direction) {
+    switch (direction) {
+      case 'ltr':
+        return BallSliderLtrView(content: content);
+      case 'rtl':
+        return BallSliderRtlView(content: content);
+      case 'ltr_heading':
+      case 'rtl_heading':
+        return HeadingSliderLtrScreen(content: content);
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final direction = content.direction == 'ltr'
-        ? SliderDirection.leftToRight
-        : SliderDirection.rightToLeft;
-    final isLtr = direction == SliderDirection.leftToRight;
-    return isLtr
-        ? BallSliderLtrView(content: content)
-        : BallSliderRtlView(content: content);
+    // final direction = content.direction == 'ltr'
+    //     ? SliderDirection.leftToRight
+    //       : content.direction == 'rtl'
+    //         ? SliderDirection.rightToLeft
+    //         : SliderDirection.leftToRightHeading;
+    // final isLtr = direction == SliderDirection.leftToRight;
+    // return isLtr
+    //     ? BallSliderLtrView(content: content)
+    //     : BallSliderRtlView(content: content);
+    return buildSlider(content.direction);
   }
 }
 
@@ -57,6 +75,16 @@ class BallSliderRtlView extends StatelessWidget {
       ),
       child: _SliderView(content: content),
     );
+  }
+}
+
+class HeadingSliderLtrScreen extends StatelessWidget {
+  const HeadingSliderLtrScreen({super.key, required this.content});
+  final BallSlideLessonContent content;
+
+  @override
+  Widget build(BuildContext context) {
+    return HeadingView(content: content);
   }
 }
 

@@ -8,7 +8,7 @@ part 'ball_slider_event.dart';
 part 'ball_slider_state.dart';
 part 'ball_slider_bloc.freezed.dart';
 
-enum SliderDirection { leftToRight, rightToLeft }
+enum SliderDirection { leftToRight, rightToLeft, leftToRightHeading }
 
 class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
   final double ballSize;
