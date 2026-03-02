@@ -9,6 +9,7 @@ import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/heading_view.dart';
+import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
 
 class BallSlideView extends StatelessWidget {
@@ -24,6 +25,8 @@ class BallSlideView extends StatelessWidget {
       case 'ltr_heading':
       case 'rtl_heading':
         return HeadingSliderLtrScreen(content: content);
+      case 'penalty':
+        return PenaltySlideView(content: content);
       default:
         return const SizedBox.shrink();
     }
@@ -31,15 +34,6 @@ class BallSlideView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final direction = content.direction == 'ltr'
-    //     ? SliderDirection.leftToRight
-    //       : content.direction == 'rtl'
-    //         ? SliderDirection.rightToLeft
-    //         : SliderDirection.leftToRightHeading;
-    // final isLtr = direction == SliderDirection.leftToRight;
-    // return isLtr
-    //     ? BallSliderLtrView(content: content)
-    //     : BallSliderRtlView(content: content);
     return buildSlider(content.direction);
   }
 }
