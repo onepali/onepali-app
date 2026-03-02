@@ -8,6 +8,7 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/heading_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
 
 class BallSlideView extends StatelessWidget {
@@ -15,15 +16,23 @@ class BallSlideView extends StatelessWidget {
   final BallSlideLessonContent content;
   final VoidCallback onNext;
 
+  Widget buildSlider(String direction) {
+    switch (direction) {
+      case 'ltr':
+        return BallSliderLtrView(content: content, onNext: onNext);
+      case 'rtl':
+        return BallSliderRtlView(content: content, onNext: onNext);
+      case 'ltr_heading':
+      case 'rtl_heading':
+        return HeadingSliderLtrScreen(content: content, onNext: onNext);
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final direction = content.direction == 'ltr'
-        ? SliderDirection.leftToRight
-        : SliderDirection.rightToLeft;
-    final isLtr = direction == SliderDirection.leftToRight;
-    return isLtr
-        ? BallSliderLtrView(content: content, onNext: onNext)
-        : BallSliderRtlView(content: content, onNext: onNext);
+    return buildSlider(content.direction);
   }
 }
 
@@ -68,6 +77,21 @@ class BallSliderRtlView extends StatelessWidget {
       ),
       child: _SliderView(content: content, onNext: onNext),
     );
+  }
+}
+
+class HeadingSliderLtrScreen extends StatelessWidget {
+  const HeadingSliderLtrScreen({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
+  final BallSlideLessonContent content;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    return HeadingView(content: content, onNext: onNext);
   }
 }
 
