@@ -20,6 +20,7 @@ dependencies:
   # UI & Icons
   flutter_svg: ^2.2.0
   lottie: ^3.3.1
+  flutter_animate: ^4.5.2
 
   # State Management
   provider: ^6.1.5
@@ -79,7 +80,7 @@ dependencies:
   # Code Generation & JSON Serialization
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
-  flutter_animate: ^4.5.2
+  flutter_flip_card: ^0.0.6
 
 
 

@@ -116,7 +116,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
         }
 
         if (state.isCorrectAudioPlaying && state.tappedItem != null) {
-          _playItemAudio(state.tappedItem!.audioItem);
+          _playItemAudio(state.tappedItem!.audioItem!);
         }
       },
       builder: (context, state) {

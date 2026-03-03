@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -58,6 +60,7 @@ class _PenaltySliderState extends State<PenaltySlider>
   }
 
   void _onPanEnd() {
+    log("Ball progress at pan end: $_ballProgress");
     final double p = _ballProgress.abs();
     if (p > 0.85) {
       _animateTo(_ballProgress < 0 ? -1.0 : 1.0);
@@ -131,9 +134,9 @@ class _PenaltySliderState extends State<PenaltySlider>
                 widget.content.ballImage ?? '',
                 ballSize,
               ),
-
+            if (_showGoal) _showGoalImage(isMobile, _ballProgress > 0),
             // Goal overlay
-            if (_showGoal) _goalOverlay(),
+            // if (_showGoal) _goalOverlay(),
             TopRightPositionedCloseButton(
               onTap: () {
                 Navigator.pop(context);
@@ -152,6 +155,20 @@ class _PenaltySliderState extends State<PenaltySlider>
           ],
         );
       },
+    );
+  }
+
+  Widget _showGoalImage(bool isMobile, bool isRightGoal) {
+    final goalImage = isMobile
+        ? (isRightGoal
+              ? widget.content.goalRightImageMb
+              : widget.content.goalLeftImageMb)
+        : (isRightGoal
+              ? widget.content.goalRightImageTb
+              : widget.content.goalLeftImageTb);
+    if (goalImage == null) return const SizedBox.shrink();
+    return Positioned.fill(
+      child: CustomCachedImage(imageUrl: goalImage, fit: BoxFit.cover),
     );
   }
 

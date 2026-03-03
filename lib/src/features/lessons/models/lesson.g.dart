@@ -290,6 +290,10 @@ BallSlideLessonContent _$BallSlideLessonContentFromJson(
   sliderLengthTb: json['slider_length_tb'] as num? ?? 1,
   pDyMb: (json['p_dy_mb'] as num?)?.toInt() ?? 0,
   pDyTb: (json['p_dy_tb'] as num?)?.toInt() ?? 0,
+  goalLeftImageMb: json['goal_left_image_mb'] as String?,
+  goalLeftImageTb: json['goal_left_image_tb'] as String?,
+  goalRightImageMb: json['goal_right_image_mb'] as String?,
+  goalRightImageTb: json['goal_right_image_tb'] as String?,
 );
 
 Map<String, dynamic> _$BallSlideLessonContentToJson(
@@ -310,6 +314,34 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'slider_length_tb': instance.sliderLengthTb,
   'p_dy_mb': instance.pDyMb,
   'p_dy_tb': instance.pDyTb,
+  'goal_left_image_mb': instance.goalLeftImageMb,
+  'goal_left_image_tb': instance.goalLeftImageTb,
+  'goal_right_image_mb': instance.goalRightImageMb,
+  'goal_right_image_tb': instance.goalRightImageTb,
+};
+
+FlipCardLessonContent _$FlipCardLessonContentFromJson(
+  Map<String, dynamic> json,
+) => FlipCardLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'flip_card',
+  bgImage: json['bg_image'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$FlipCardLessonContentToJson(
+  FlipCardLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
 UnknownLessonContent _$UnknownLessonContentFromJson(
@@ -339,7 +371,7 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   isImageOutlineSvg: json['is_image_outline_svg'] as bool? ?? false,
   outlineBgColor: json['outline_bg_color'] as String?,
   question: json['question'] as String?,
-  audioItem: json['audio_item'] as String,
+  audioItem: json['audio_item'] as String?,
   audioBg: json['audio_bg'] as String?,
   dxRatio: json['dx_ratio'] as num?,
   dyRatio: json['dy_ratio'] as num?,

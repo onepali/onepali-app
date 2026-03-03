@@ -223,11 +223,12 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
 
       try {
         // await _audioPlayer.play(AssetSource(item.audioItem));
-
-        final audioFile = await MediaCacheManager.instance.getSingleFile(
-          item.audioItem,
-        );
-        await _audioPlayer.play(DeviceFileSource(audioFile.path));
+        if (item.audioItem != null) {
+          final audioFile = await MediaCacheManager.instance.getSingleFile(
+            item.audioItem!,
+          );
+          await _audioPlayer.play(DeviceFileSource(audioFile.path));
+        }
       } catch (e) {
         print('Error playing item audio: $e');
       }
@@ -268,7 +269,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       if (state.matchedItemIds.length == _items.length) {
         // Game complete!
         print('🎉 All items matched! Game complete!');
-       await Future.delayed(const Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
         emit(state.copyWith(showCat: true));
         _audioPlayer.play(AssetSource(Assets.goodFeedback));
       } else {
