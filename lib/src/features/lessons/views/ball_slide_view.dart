@@ -8,6 +8,7 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/conversation_view.dart';
 import 'package:onepali/src/features/lessons/views/heading_view.dart';
 import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
@@ -28,6 +29,8 @@ class BallSlideView extends StatelessWidget {
         return HeadingSliderLtrScreen(content: content, onNext: onNext);
       case 'penalty':
         return PenaltySlideView(content: content, onNext: onNext);
+      case 'none':
+        return ConversationView(content: content, onNext: onNext);
       default:
         return const SizedBox.shrink();
     }

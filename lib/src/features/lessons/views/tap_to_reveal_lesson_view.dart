@@ -123,7 +123,14 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
         }
 
         if (state.isCorrectAudioPlaying && state.tappedItem != null) {
-          _playItemAudio(state.tappedItem!.audioItem);
+          final audioItem = state.tappedItem!.audioItem;
+          if (audioItem != null && audioItem.isNotEmpty) {
+            _playItemAudio(audioItem);
+          } else {
+            context.read<TapToRevealLessonContentBloc>().add(
+              const TapToRevealLessonContentEvent.correctAudioCompleted(),
+            );
+          }
         }
       },
       builder: (context, state) {

@@ -13,6 +13,7 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
+import 'package:onepali/src/features/lessons/views/flip_card_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
@@ -116,6 +117,19 @@ class _LessonPageState extends State<LessonPage> {
                 return const KitchenPage();
               case BallSlideLessonContent():
                 return BallSlideView(
+                  content: lessonContent,
+                  onNext: () {
+                    if (isLastContent) {
+                      Navigator.of(context).pop();
+                    } else {
+                      context.read<LessonBloc>().add(
+                        const LessonEvent.nextContent(),
+                      );
+                    }
+                  },
+                );
+              case FlipCardLessonContent():
+                return FlipCardView(
                   content: lessonContent,
                   onNext: () {
                     if (isLastContent) {
