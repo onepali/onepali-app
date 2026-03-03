@@ -113,7 +113,9 @@ class _IntroLessonViewState extends State<IntroLessonView> {
               log('isAudioCompleted: $isAudioCompleted');
               return CenterRightAlignedForwardButton(
                 onTap: () {
-                  context.read<LessonBloc>().add(const LessonEvent.nextContent());
+                  context.read<LessonBloc>().add(
+                    const LessonEvent.nextContent(),
+                  );
                 },
               );
             },

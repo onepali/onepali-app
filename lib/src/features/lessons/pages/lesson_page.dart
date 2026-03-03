@@ -10,9 +10,9 @@ import 'package:onepali/src/features/lessons/blocs/listen_and_repeat_bloc/listen
 import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
-import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/flip_card_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
@@ -56,94 +56,70 @@ class _LessonPageState extends State<LessonPage> {
             final isLastContent = state.currentIndex >= contents.length - 1;
             final isFirstContent = state.currentIndex == 0;
 
-            switch (lessonContent) {
-              case IntroLessonContent():
-                return IntroLessonView(
-                  key: ValueKey('intro_${state.currentIndex}'),
-                  content: lessonContent,
-                  isLast: isLastContent,
-                  isFirst: isFirstContent,
-                );
-              // return LetterSelectionScreen();
-              case InfoLessonContent():
-                return BlocProvider(
-                  key: ValueKey('info_${state.currentIndex}'),
-                  create: (context) => InfoLessonContentBloc(),
-                  child: InfoLessonView(content: lessonContent),
-                );
-              case ChooseCorrectLessonContent():
-                return BlocProvider(
-                  create: (context) => ChooseCorrectLessonContentBloc(),
-                  child: ChooseCorrectLessonView(
-                    content: lessonContent,
-                    isLastContent: isLastContent,
-                  ),
-                );
-              case TapToRevealLessonContent():
-                return BlocProvider(
-                  create: (context) => TapToRevealLessonContentBloc(),
-                  child: TapToRevealLessonView(content: lessonContent),
-                );
-              case DragToMatchLessonContent():
-                return DragToMatchScreen(lessonContent: lessonContent);
-              case TapToPopLessonContent():
-                return BlocProvider(
-                  create: (context) =>
-                      TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
-                  child: TapToPopLessonView(content: lessonContent),
-                );
-              case ListenAndRepeatLessonContent():
-                return BlocProvider(
-                  create: (context) => ListenAndRepeatBloc(
-                    audioPlayerService: AudioPlayerServiceImpl(),
-                    audioRecorderService: AudioRecorderServiceImpl(),
-                  ),
-                  child: ListenAndRepeatView(
-                    content: lessonContent,
-                    onCompleted: () {
-                      if (isLastContent) {
-                        Navigator.of(context).pop();
-                      } else {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.nextContent(),
-                        );
-                      }
-                    },
-                  ),
-                );
-              case CharTracingLessonContent():
-                return NewLetterTracingPage(content: lessonContent);
-              case TeaMakingLessonContent():
-                return const KitchenPage();
-              case BallSlideLessonContent():
-                return BallSlideView(
-                  content: lessonContent,
-                  onNext: () {
-                    if (isLastContent) {
-                      Navigator.of(context).pop();
-                    } else {
-                      context.read<LessonBloc>().add(
-                        const LessonEvent.nextContent(),
-                      );
-                    }
-                  },
-                );
-              case FlipCardLessonContent():
-                return FlipCardView(
-                  content: lessonContent,
-                  onNext: () {
-                    if (isLastContent) {
-                      Navigator.of(context).pop();
-                    } else {
-                      context.read<LessonBloc>().add(
-                        const LessonEvent.nextContent(),
-                      );
-                    }
-                  },
-                );
-              default:
-                return Center(child: Text('Unknown content type'));
+            void handleNext() {
+              if (isLastContent) {
+                Navigator.of(context).pop();
+              } else {
+                context.read<LessonBloc>().add(const LessonEvent.nextContent());
+              }
             }
+
+            return switch (lessonContent) {
+              IntroLessonContent() => IntroLessonView(
+                key: ValueKey('intro_${state.currentIndex}'),
+                content: lessonContent,
+                isLast: isLastContent,
+                isFirst: isFirstContent,
+              ),
+              InfoLessonContent() => BlocProvider(
+                key: ValueKey('info_${state.currentIndex}'),
+                create: (context) => InfoLessonContentBloc(),
+                child: InfoLessonView(content: lessonContent),
+              ),
+              ChooseCorrectLessonContent() => BlocProvider(
+                create: (context) => ChooseCorrectLessonContentBloc(),
+                child: ChooseCorrectLessonView(
+                  content: lessonContent,
+                  isLastContent: isLastContent,
+                ),
+              ),
+              TapToRevealLessonContent() => BlocProvider(
+                create: (context) => TapToRevealLessonContentBloc(),
+                child: TapToRevealLessonView(content: lessonContent),
+              ),
+              DragToMatchLessonContent() => DragToMatchScreen(
+                lessonContent: lessonContent,
+              ),
+              TapToPopLessonContent() => BlocProvider(
+                create: (context) =>
+                    TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
+                child: TapToPopLessonView(content: lessonContent),
+              ),
+              ListenAndRepeatLessonContent() => BlocProvider(
+                create: (context) => ListenAndRepeatBloc(
+                  audioPlayerService: AudioPlayerServiceImpl(),
+                  audioRecorderService: AudioRecorderServiceImpl(),
+                ),
+                child: ListenAndRepeatView(
+                  content: lessonContent,
+                  onCompleted: handleNext,
+                ),
+              ),
+              CharTracingLessonContent() => NewLetterTracingPage(
+                content: lessonContent,
+              ),
+              TeaMakingLessonContent() => const KitchenPage(),
+              BallSlideLessonContent() => BallSlideView(
+                key: ValueKey('ball_slide_${state.currentIndex}'),
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              FlipCardLessonContent() => FlipCardView(
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              _ => Center(child: Text('Unknown content type')),
+            };
           },
         ),
       ),
