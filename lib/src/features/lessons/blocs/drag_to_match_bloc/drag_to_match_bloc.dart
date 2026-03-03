@@ -217,11 +217,12 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
 
       try {
         // await _audioPlayer.play(AssetSource(item.audioItem));
-
-        final audioFile = await MediaCacheManager.instance.getSingleFile(
-          item.audioItem,
-        );
-        await _audioPlayer.play(DeviceFileSource(audioFile.path));
+        if (item.audioItem != null) {
+          final audioFile = await MediaCacheManager.instance.getSingleFile(
+            item.audioItem!,
+          );
+          await _audioPlayer.play(DeviceFileSource(audioFile.path));
+        }
       } catch (e) {
         log('Error playing item audio: $e');
       }

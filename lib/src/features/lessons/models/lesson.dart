@@ -165,14 +165,31 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? player1, //png
     String? player2, //png
     String? ballImage, //png
-    @Default('ltr') String direction,
+    @Default('ltr')
+    String
+    direction, // ltr, rtl, ltr_heading, rtl_heading, none(only play conversation audios)
     @Default([]) List<String> conversation, // List of audio urls
     @Default(0) num angle,
     @Default(1) num sliderLengthMb,
     @Default(1) num sliderLengthTb,
     @Default(0) int pDyMb,
     @Default(0) int pDyTb,
+    String? goalLeftImageMb, //png
+    String? goalLeftImageTb, //png
+    String? goalRightImageMb, //png
+    String? goalRightImageTb, //png
   }) = BallSlideLessonContent;
+
+  @FreezedUnionValue("flip_card")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.flipCard({
+    required String id,
+    required int index,
+    @Default('flip_card') String type,
+    String? bgImage,
+    @Default([]) List<Item> items,
+  }) = FlipCardLessonContent;
 
   const factory LessonContent.unknown({
     @Default('') String id,
@@ -201,9 +218,9 @@ class Item with _$Item {
     String? imageOutline,
     @Default(false) bool isImageOutlineSvg,
     String? outlineBgColor,
-    String? question,
-    required String audioItem,
-    String? audioBg,
+    String? question, // eg where is the cat
+    String? audioItem, // Cat pronunciation
+    String? audioBg, // eg cat sound meww, dog sound barking
     num? dxRatio,
     num? dyRatio,
     num? dxRatioMobile,

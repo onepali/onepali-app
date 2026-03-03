@@ -121,7 +121,14 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
 
         // Play correct audio when correct item is tapped
         if (state.isAudioPlaying && state.selectedItem != null) {
-          _playCorrectAudio(state.selectedItem!.audioItem);
+          final audioItem = state.selectedItem!.audioItem;
+          if (audioItem != null && audioItem.isNotEmpty) {
+            _playCorrectAudio(audioItem);
+          } else {
+            context.read<ChooseCorrectLessonContentBloc>().add(
+              const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
+            );
+          }
         }
       },
       builder: (context, state) {
