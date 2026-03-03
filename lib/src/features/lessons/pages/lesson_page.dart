@@ -56,84 +56,54 @@ class _LessonPageState extends State<LessonPage> {
             final isLastContent =
                 state.currentIndex == state.lessonDetails!.contents.length - 1;
             final isFirstContent = state.currentIndex == 0;
-            return lessonContent.map(
-              intro: (content) => IntroLessonView(
+            return switch (lessonContent) {
+              IntroLessonContent() => IntroLessonView(
                 key: ValueKey('intro_${state.currentIndex}'),
-                content: content,
+                content: lessonContent,
                 isLast: isLastContent,
                 isFirst: isFirstContent,
               ),
-              info: (content) => InfoLessonView(content: content),
-              chooseCorrect: (content) => ChooseCorrectLessonView(
+              InfoLessonContent() => BlocProvider(
                 key: ValueKey('info_${state.currentIndex}'),
-                content: content,
-                isLastContent: isLastContent,
+                create: (context) => InfoLessonContentBloc(),
+                child: InfoLessonView(content: lessonContent),
               ),
-              tapToReveal: (content) => TapToRevealLessonView(content: content),
-              dragToMatch: (content) =>
-                  DragToMatchScreen(lessonContent: content),
-              tapToPop: (content) => TapToPopLessonView(content: content),
-              listenAndRepeat: (content) =>
-                  ListenAndRepeatView(content: content),
-              charTracing: (content) => NewLetterTracingPage(content: content),
-              teaMaking: (content) => KitchenPage(content: content),
-              ballSlide: (content) => BallSlideView(
+              ChooseCorrectLessonContent() => BlocProvider(
+                create: (context) => ChooseCorrectLessonContentBloc(),
+                child: ChooseCorrectLessonView(
+                  content: lessonContent,
+                  isLastContent: isLastContent,
+                ),
+              ),
+              TapToRevealLessonContent() => BlocProvider(
+                create: (context) => TapToRevealLessonContentBloc(),
+                child: TapToRevealLessonView(content: lessonContent),
+              ),
+              DragToMatchLessonContent() => DragToMatchScreen(
+                lessonContent: lessonContent,
+              ),
+              TapToPopLessonContent() => BlocProvider(
+                create: (context) =>
+                    TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
+                child: TapToPopLessonView(content: lessonContent),
+              ),
+              ListenAndRepeatLessonContent() => BlocProvider(
+                create: (context) => ListenAndRepeatBloc(
+                  audioPlayerService: AudioPlayerServiceImpl(),
+                  audioRecorderService: AudioRecorderServiceImpl(),
+                ),
+                child: ListenAndRepeatView(content: lessonContent),
+              ),
+              CharTracingLessonContent() => NewLetterTracingPage(
+                content: lessonContent,
+              ),
+              TeaMakingLessonContent() => KitchenPage(content: lessonContent),
+              BallSlideLessonContent() => BallSlideView(
                 key: ValueKey('ball_slide_${state.currentIndex}'),
-                content: content,
+                content: lessonContent,
               ),
-              flipCard: (content) => FlipCardView(content: content),
-              unknown: (content) => Center(child: Text('Unknown content type')),
-            );
-
-            // return switch (lessonContent) {
-            //   IntroLessonContent() => IntroLessonView(
-            //     key: ValueKey('intro_${state.currentIndex}'),
-            //     content: lessonContent,
-            //     isLast: isLastContent,
-            //     isFirst: isFirstContent,
-            //   ),
-            //   // return LetterSelectionScreen();
-            //   InfoLessonContent() => BlocProvider(
-            //     key: ValueKey('info_${state.currentIndex}'),
-            //     create: (context) => InfoLessonContentBloc(),
-            //     child: InfoLessonView(content: lessonContent),
-            //   ),
-            //   ChooseCorrectLessonContent() => BlocProvider(
-            //     create: (context) => ChooseCorrectLessonContentBloc(),
-            //     child: ChooseCorrectLessonView(
-            //       content: lessonContent,
-            //       isLastContent: isLastContent,
-            //     ),
-            //   ),
-            //   TapToRevealLessonContent() => BlocProvider(
-            //     create: (context) => TapToRevealLessonContentBloc(),
-            //     child: TapToRevealLessonView(content: lessonContent),
-            //   ),
-            //   DragToMatchLessonContent() => DragToMatchScreen(
-            //     lessonContent: lessonContent,
-            //   ),
-            //   TapToPopLessonContent() => BlocProvider(
-            //     create: (context) =>
-            //         TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
-            //     child: TapToPopLessonView(content: lessonContent),
-            //   ),
-            //   ListenAndRepeatLessonContent() => BlocProvider(
-            //     create: (context) => ListenAndRepeatBloc(
-            //       audioPlayerService: AudioPlayerServiceImpl(),
-            //       audioRecorderService: AudioRecorderServiceImpl(),
-            //     ),
-            //     child: ListenAndRepeatView(content: lessonContent),
-            //   ),
-            //   CharTracingLessonContent() => NewLetterTracingPage(
-            //     content: lessonContent,
-            //   ),
-            //   TeaMakingLessonContent() => KitchenPage(content: lessonContent),
-            //   BallSlideLessonContent() => BallSlideView(
-            //     key: ValueKey('ball_slide_${state.currentIndex}'),
-            //     content: lessonContent,
-            //   ),
-            //   _ => Center(child: Text('Unknown content type')),
-            // };
+              _ => Center(child: Text('Unknown content type')),
+            };
           },
         ),
       ),
