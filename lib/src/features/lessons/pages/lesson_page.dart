@@ -115,6 +115,7 @@ class _LessonPageState extends State<LessonPage> {
                 onNext: handleNext,
               ),
               FlipCardLessonContent() => FlipCardView(
+                key: ValueKey('flip_card_${state.currentIndex}'),
                 content: lessonContent,
                 onNext: handleNext,
               ),
