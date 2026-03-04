@@ -85,6 +85,16 @@ class _CurvedBallSliderState extends State<CurvedBallSlider> {
                   ),
                 ),
 
+                CustomPaint(
+                  size: Size(width, widget.height),
+                  painter: _ArrowPainter(
+                    path: path,
+                    progress: progress,
+                    isRTL: widget.isRTL,
+                    strokeWidth: trackHeight.toDouble(),
+                  ),
+                ),
+
                 // Ball Image
                 Positioned(
                   left: tangent.position.dx - ballSize / 2,
@@ -182,4 +192,66 @@ class _CurvePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class _ArrowPainter extends CustomPainter {
+  final Path path;
+  final double progress;
+  final bool isRTL;
+  final double strokeWidth;
+
+  _ArrowPainter({
+    required this.path,
+    required this.progress,
+    required this.isRTL,
+    required this.strokeWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (progress >= 0.95) return;
+
+    final metric = path.computeMetrics().first;
+    final pathLength = metric.length;
+
+    final linePaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.85)
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    final arrowPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.85)
+      ..style = PaintingStyle.fill;
+
+    final startOffset = (pathLength * progress) + 20;
+    if (startOffset < pathLength) {
+      final remainingPath = metric.extractPath(startOffset, pathLength);
+      canvas.drawPath(remainingPath, linePaint);
+    }
+
+    final tangent = metric.getTangentForOffset(pathLength - 1.0)!;
+    final pos = tangent.position;
+    final angle = tangent.angle;
+
+    const double arrowSize = 12.0;
+
+    canvas.save();
+    canvas.translate(pos.dx, pos.dy);
+
+    canvas.rotate(isRTL ? 2.628 : -angle);
+
+    final arrowPath = Path()
+      ..moveTo(arrowSize, 0) // The tip
+      ..lineTo(-arrowSize * 0.8, -arrowSize * 0.6) // Bottom left
+      ..lineTo(-arrowSize * 0.8, arrowSize * 0.6) // Bottom right
+      ..close();
+
+    canvas.drawPath(arrowPath, arrowPaint);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_ArrowPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }
