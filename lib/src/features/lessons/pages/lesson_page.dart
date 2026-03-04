@@ -102,6 +102,10 @@ class _LessonPageState extends State<LessonPage> {
                 key: ValueKey('ball_slide_${state.currentIndex}'),
                 content: lessonContent,
               ),
+              FlipCardLessonContent() => FlipCardView(
+                key: ValueKey('flip_card_${state.currentIndex}'),
+                content: lessonContent,
+              ),
               _ => Center(child: Text('Unknown content type')),
             };
           },
