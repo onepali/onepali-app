@@ -171,6 +171,16 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? goalRightImageTb, //png
   }) = BallSlideLessonContent;
 
+  @FreezedUnionValue('slide_up_to_match')
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LessonContent.slideUpToMatch({
+    required String id,
+    required int index,
+    @Default('slide_up_to_match') String type,
+    String? bgImage,
+    @Default([]) List<Item> items,
+  }) = SlideUpToMatchLessonContent;
+
   @FreezedUnionValue("flip_card")
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory LessonContent.flipCard({

@@ -5,6 +5,7 @@ import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/features/lessons/blocs/ball_heading_bloc/ball_heading_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -52,7 +53,7 @@ class BallSliderLtrView extends StatelessWidget {
         ballSize: 60.0,
         completionThreshold: 0.98,
         direction: SliderDirection.leftToRight,
-      ),
+      )..add(BallSliderEvent.started(content)),
       child: _SliderView(content: content),
     );
   }
@@ -69,19 +70,9 @@ class BallSliderRtlView extends StatelessWidget {
         ballSize: 60.0,
         completionThreshold: 0.98,
         direction: SliderDirection.rightToLeft, // ← reversed
-      ),
+      )..add(BallSliderEvent.started(content)),
       child: _SliderView(content: content),
     );
-  }
-}
-
-class HeadingSliderLtrScreen extends StatelessWidget {
-  const HeadingSliderLtrScreen({super.key, required this.content});
-  final BallSlideLessonContent content;
-
-  @override
-  Widget build(BuildContext context) {
-    return HeadingView(content: content);
   }
 }
 
@@ -178,6 +169,20 @@ class _SliderView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class HeadingSliderLtrScreen extends StatelessWidget {
+  const HeadingSliderLtrScreen({super.key, required this.content});
+  final BallSlideLessonContent content;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) =>
+          BallHeadingBloc()..add(BallHeadingEvent.started(content)),
+      child: HeadingView(content: content),
     );
   }
 }

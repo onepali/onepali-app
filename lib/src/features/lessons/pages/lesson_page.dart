@@ -11,6 +11,7 @@ import 'package:onepali/src/features/lessons/blocs/listen_and_repeat_bloc/listen
 import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/ball_match_view.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
@@ -104,6 +105,10 @@ class _LessonPageState extends State<LessonPage> {
               ),
               FlipCardLessonContent() => FlipCardView(
                 key: ValueKey('flip_card_${state.currentIndex}'),
+                content: lessonContent,
+              ),
+              SlideUpToMatchLessonContent() => MatchGameScreen(
+                key: ValueKey('slide_up_to_match_${state.currentIndex}'),
                 content: lessonContent,
               ),
               _ => Center(child: Text('Unknown content type')),

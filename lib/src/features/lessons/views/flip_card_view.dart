@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -29,6 +31,15 @@ class _FlipCardViewState extends State<FlipCardView> {
       widget.content.items.length,
       (_) => FlipCardController(),
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadImages();
+    });
+  }
+
+  Future<void> _preloadImages() async {
+    for (final item in widget.content.items) {
+      precacheImage(CachedNetworkImageProvider(item.image), context);
+    }
   }
 
   @override
@@ -80,25 +91,14 @@ class _FlipCardViewState extends State<FlipCardView> {
                               color: colorFromHex(e.bgColor),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.sports_soccer,
-                                  color: Colors.white,
-                                  size: 60,
-                                ),
-                              ],
-                            ),
+                            child: CustomCachedImage(imageUrl: e.image),
                           ),
                         ),
                         const SizedBox(height: 12),
                         Text(
                           e.nameNp,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -107,7 +107,11 @@ class _FlipCardViewState extends State<FlipCardView> {
                 .toList(),
           ),
         ),
-        TopRightPositionedCloseButton(),
+        TopRightPositionedCloseButton(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
         CenterLeftAlignedBackButton(
           onTap: () {
             context.read<LessonBloc>().add(LessonEvent.previousContent());

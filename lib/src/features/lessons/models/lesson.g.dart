@@ -320,6 +320,30 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'goal_right_image_tb': instance.goalRightImageTb,
 };
 
+SlideUpToMatchLessonContent _$SlideUpToMatchLessonContentFromJson(
+  Map<String, dynamic> json,
+) => SlideUpToMatchLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'slide_up_to_match',
+  bgImage: json['bg_image'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$SlideUpToMatchLessonContentToJson(
+  SlideUpToMatchLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'items': instance.items,
+};
+
 FlipCardLessonContent _$FlipCardLessonContentFromJson(
   Map<String, dynamic> json,
 ) => FlipCardLessonContent(
