@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
 part 'ball_slider_event.dart';
@@ -30,6 +31,7 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
   double _usableWidth = 1.0;
   double _velocity = 0.0; // normalized units per second
   Timer? _physicsTimer;
+  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
 
   BallSliderBloc({
     this.ballSize = 60.0,
@@ -43,8 +45,16 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     on<_BallReset>(_onBallReset);
     on<_PhysicsTick>(_onPhysicsTick);
   }
-  void _onStarted(_Started event, Emitter<BallSliderState> emit) {
+  void _onStarted(_Started event, Emitter<BallSliderState> emit) async {
     emit(state.copyWith(content: event.content));
+    final conversationAudios = event.content.conversation;
+    if (conversationAudios.isNotEmpty) {
+      // play all audios in conversation sequentially
+      for (final audio in conversationAudios) {
+        _audioPlayerService.play(audio);
+        await _audioPlayerService.onPlayerComplete.first;
+      }
+    }
   }
 
   double _toForwardDelta(double rawNormalisedDelta) =>
@@ -163,6 +173,7 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
   @override
   Future<void> close() {
     _stopPhysics();
+    _audioPlayerService.dispose();
     return super.close();
   }
 }
