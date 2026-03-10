@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
@@ -30,6 +31,15 @@ class _FlipCardViewState extends State<FlipCardView> {
       widget.content.items.length,
       (_) => FlipCardController(),
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadImages();
+    });
+  }
+
+  Future<void> _preloadImages() async {
+    for (final item in widget.content.items) {
+      precacheImage(CachedNetworkImageProvider(item.image), context);
+    }
   }
 
   @override
@@ -106,7 +116,11 @@ class _FlipCardViewState extends State<FlipCardView> {
                 .toList(),
           ),
         ),
-        TopRightPositionedCloseButton(),
+        TopRightPositionedCloseButton(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
         CenterLeftAlignedBackButton(
           onTap: () {
             context.read<LessonBloc>().add(LessonEvent.previousContent());

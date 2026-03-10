@@ -5,6 +5,7 @@ import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/features/lessons/blocs/ball_heading_bloc/ball_heading_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -97,7 +98,11 @@ class HeadingSliderLtrScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HeadingView(content: content, onNext: onNext);
+    return BlocProvider(
+      create: (_) =>
+          BallHeadingBloc()..add(BallHeadingEvent.started(content)),
+      child: HeadingView(content: content, onNext: onNext),
+    );
   }
 }
 
