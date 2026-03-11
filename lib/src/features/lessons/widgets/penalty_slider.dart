@@ -145,6 +145,19 @@ class _PenaltySliderState extends State<PenaltySlider>
                 ballSize,
               ),
             if (_showGoal) _showGoalImage(isMobile, _ballProgress > 0),
+            if (_showGoal)
+              Positioned(
+                top: _ballProgress > 0
+                    ? size.height * 0.15
+                    : size.height * 0.40,
+                left:_ballProgress > 0
+                    ? size.width * 0.70
+                    : size.width * 0.20,
+                child: SizedBox(
+                  height: size.height * 0.2,
+                  width: size.height * 0.2,
+                  child: LottieHelper.fromSource(path: Assets.starWinnerLottie)),
+              ),
             // Goal overlay
             // if (_showGoal) _goalOverlay(),
             TopRightPositionedCloseButton(

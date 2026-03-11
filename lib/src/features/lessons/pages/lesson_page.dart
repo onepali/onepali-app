@@ -110,6 +110,7 @@ class _LessonPageState extends State<LessonPage> {
               SlideUpToMatchLessonContent() => MatchGameScreen(
                 key: ValueKey('slide_up_to_match_${state.currentIndex}'),
                 content: lessonContent,
+                isLastContent: isLastContent,
               ),
               _ => Center(child: Text('Unknown content type')),
             };

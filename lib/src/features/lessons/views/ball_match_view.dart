@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -67,13 +68,15 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
                   SizedBox(height: isMobile ? 60 : size.height * 0.15),
                 ],
               ),
-              if (state.isAnsweredAll)
+              if (state.isAnsweredAll & widget.isLastContent)
                 Positioned.fill(
                   child: LottieHelper.fromSource(path: Assets.confetti1),
                 ),
-              CenterLeftAlignedBackButton(onTap: () {
-                context.read<LessonBloc>().add(LessonEvent.previousContent());
-              }),
+              CenterLeftAlignedBackButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.previousContent());
+                },
+              ),
               if (!widget.isLastContent)
                 CenterRightAlignedForwardButton(
                   onTap: () {
@@ -107,17 +110,26 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
   }
 
   Widget _labelContainer(String text, {double opacity = 1.0}) {
+    final isMobile = PlatformUtility.isMobile(context);
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 8 : 12,
+        horizontal: isMobile ? 16 : 32,
+      ),
       decoration: BoxDecoration(
         color: AppColors.kSecondaryColor,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Text(
         text,
-        style: Theme.of(
-          context,
-        ).textTheme.headlineLarge?.copyWith(color: Colors.white),
+        style: isMobile
+            ? Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: AppColors.kWhite,
+                fontWeight: FontWeight.w600,
+              )
+            : Theme.of(
+                context,
+              ).textTheme.headlineLarge?.copyWith(color: AppColors.kWhite),
       ),
     );
   }
@@ -145,7 +157,6 @@ class TopItems extends StatelessWidget {
     return DragTarget(
       onAcceptWithDetails: (details) {
         if (details.data == labelNp) {
-          log('accepted with details ${details.data}');
           context.read<MatchBloc>().add(MatchEvent.onAccept(labelNp));
         }
       },
@@ -156,19 +167,39 @@ class TopItems extends StatelessWidget {
             height: isMobile ? 120 : 200,
             child: CustomCachedImage(imageUrl: image, fit: BoxFit.cover),
           ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isCorrect ? AppColors.kButtonGreen : AppColors.kButtonGrey,
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(color: AppColors.kGrey, width: 2),
+          SizedBox(height: isMobile ? 16 : 24),
+          DottedBorder(
+            options: RoundedRectDottedBorderOptions(
+              radius: Radius.circular(50),
+              strokeWidth: 2,
+              dashPattern: [8, 8],
+              color: isCorrect ? Colors.transparent : AppColors.kStoneGrey,
             ),
-            child: Text(
-              labelEn,
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: isMobile ? 8 : 12,
+                horizontal: isMobile ? 16 : 32,
+              ),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: isCorrect
+                    ? AppColors.kButtonGreen
+                    : AppColors.kButtonGrey,
+                borderRadius: BorderRadius.circular(50),
+                // border: isCorrect
+                //     ? null
+                //     : Border.all(color: AppColors.kGrey, width: 2),
+              ),
+              child: Text(
+                isCorrect ? labelNp : labelEn,
+                style: isMobile
+                    ? Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
+                        fontWeight: FontWeight.w600,
+                      )
+                    : Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
+                      ),
               ),
             ),
           ),

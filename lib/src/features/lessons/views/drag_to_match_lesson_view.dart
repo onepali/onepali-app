@@ -79,7 +79,8 @@ class _DragToMatchView extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 4),
                           child: Opacity(
-                            opacity: isCurrentTarget ? 1.0 : 0.8,
+                            opacity:1,
+                            // opacity: isCurrentTarget ? 1.0 : 0.8,
                             child: _DraggableItem(
                               position: itemPos,
                               item: item,
@@ -261,11 +262,11 @@ class _ItemWidget extends StatelessWidget {
         color: AppColors.kStoneGrey,
         borderRadius: BorderRadius.circular(12),
 
-        border: isCurrentTarget
-            ? Border.all(color: AppColors.kGreen, width: 2)
-            : isPlayingAudio
-            ? Border.all(color: Colors.orange, width: 3)
-            : null,
+        // border: isCurrentTarget
+        //     ? Border.all(color: AppColors.kGreen, width: 2)
+        //     : isPlayingAudio
+        //     ? Border.all(color: Colors.orange, width: 3)
+        //     : null,
       ),
       child: Center(
         child: ClipRRect(
