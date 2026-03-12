@@ -15,7 +15,7 @@ import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:video_player/video_player.dart';
 
-class MediaCacheManager {
+class InfoLessonMediaCache {
   static const key = 'mediaCache';
 
   static CacheManager instance = CacheManager(
@@ -62,7 +62,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
       // If video is present, cache and initialize it
       final videoUrl = widget.content.video;
       if (videoUrl?.isNotEmpty == true) {
-        final videoFile = await MediaCacheManager.instance.getSingleFile(
+        final videoFile = await InfoLessonMediaCache.instance.getSingleFile(
           videoUrl!,
         );
 
@@ -119,7 +119,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
       await _audioPlayer?.dispose();
 
       // Cache the audio file
-      final audioFile = await MediaCacheManager.instance.getSingleFile(
+      final audioFile = await InfoLessonMediaCache.instance.getSingleFile(
         widget.content.audioWord,
       );
 
