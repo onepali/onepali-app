@@ -173,6 +173,7 @@ void main() {
     test('storyModelToJson should convert to JSON string', () {
       final stories = [
         StoryModel(
+          levelId: 'level1',
           nameEn: 'Story 1',
           nameNp: 'कथा १',
           thumbnail: 'thumb1.png',
