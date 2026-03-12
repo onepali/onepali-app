@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
             //   Gaps.verticalGapOf(10),
             // ],
             // _buildLessons(context),
-            CourseScreen()
+            CourseScreen(),
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
             if (!isGuest) ...[
@@ -104,11 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildSongCard(context),
           ] else if (_selectedTabIndex == 2) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedStoryCard(context),
-              Gaps.verticalGapOf(10),
-            ],
-            _buildStories(context),
+            // if (!isGuest) ...[
+            //   _buildRecommendedStoryCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
+            StoryScreen(),
           ],
         ],
       ),
@@ -188,7 +188,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
 
   Widget _buildSongCard(BuildContext context) {
     bool isTabletLandscape =
@@ -289,28 +288,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildStories(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return TitleActionChild(
-      title: 'Level 1',
-      titlePadding: EdgeInsets.only(
-        bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-      ),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(
-        color: AppColors.kBlack,
-        fontSize: isTabletLandscape ? 24 : 20,
-        fontWeight: FontWeight.bold,
-      ),
-      child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
     );
   }
 }
