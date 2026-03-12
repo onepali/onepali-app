@@ -29,6 +29,35 @@ class IntroLessonView extends StatefulWidget {
 }
 
 class _IntroLessonViewState extends State<IntroLessonView> {
+  StreamSubscription? audioSubscription;
+  late AudioPlayerService audioProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    audioProvider = AudioPlayerServiceImpl();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _playAudio();
+    });
+  }
+
+  void _playAudio() async {
+    if (widget.content.audio != null && widget.content.audio!.isNotEmpty) {
+      await audioProvider.play(widget.content.audio!);
+      audioSubscription = audioProvider.onPlayerComplete.listen((event) {
+        // context.read<LessonBloc>().add(LessonEvent.nextContent());
+        log('audio completed');
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    audioProvider.dispose();
+    audioSubscription?.cancel();
+    super.dispose();
+  }
+
   Widget _buildBackgroundImage(bool isMobile) {
     if (isMobile) {
       return widget.content.bgImageMobile == null
@@ -49,34 +78,6 @@ class _IntroLessonViewState extends State<IntroLessonView> {
               ),
             );
     }
-  }
-
-  StreamSubscription? audioSubscription;
-  late AudioPlayerService audioProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    audioProvider = AudioPlayerServiceImpl();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _playAudio();
-    });
-  }
-
-  void _playAudio() async {
-    if (widget.content.audio != null && widget.content.audio!.isNotEmpty) {
-      await audioProvider.play(widget.content.audio!);
-      audioSubscription = audioProvider.onPlayerComplete.listen((event) {
-        log('audio completed');
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    audioProvider.dispose();
-    audioSubscription?.cancel();
-    super.dispose();
   }
 
   @override

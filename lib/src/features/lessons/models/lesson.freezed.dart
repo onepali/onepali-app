@@ -627,6 +627,7 @@ class IntroLessonContent implements LessonContent {
 @override@JsonKey() final  String type;
  final  String? bgColor;
  final  String? image;
+// svg
  final  String? audio;
  final  String? bgImageMobile;
  final  String? bgImageTablet;
