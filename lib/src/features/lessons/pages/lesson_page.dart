@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
+import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
@@ -45,7 +46,18 @@ class _LessonPageState extends State<LessonPage> {
       create: (context) =>
           LessonBloc()..add(LessonEvent.started(widget.lessonId)),
       child: Scaffold(
-        body: BlocBuilder<LessonBloc, LessonState>(
+        body: BlocConsumer<LessonBloc, LessonState>(
+          listenWhen: (previous, current) =>
+              current.status == LessonStatus.success &&
+              previous.lessonDetails != current.lessonDetails,
+          listener: (context, state) {
+            if (state.lessonDetails != null) {
+              MediaCacheManager().cacheLessonImages(
+                state.lessonDetails!.contents,
+                context,
+              );
+            }
+          },
           builder: (context, state) {
             if (state.lessonDetails == null) {
               return Center(child: CircularProgressIndicator());

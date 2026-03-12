@@ -31,7 +31,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required int index,
     @Default('intro') String type,
     String? bgColor,
-    String? image,
+    String? image,// svg
     String? audio,
     String? bgImageMobile,
     String? bgImageTablet,

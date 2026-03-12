@@ -32,16 +32,8 @@ class _FlipCardViewState extends State<FlipCardView> {
       widget.content.items.length,
       (_) => FlipCardController(),
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _preloadImages();
-    });
   }
 
-  Future<void> _preloadImages() async {
-    for (final item in widget.content.items) {
-      precacheImage(CachedNetworkImageProvider(item.image), context);
-    }
-  }
 
   @override
   void dispose() {

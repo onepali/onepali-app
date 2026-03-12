@@ -12,7 +12,7 @@ import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-
+  
 class IntroLessonView extends StatefulWidget {
   const IntroLessonView({
     super.key,
@@ -29,6 +29,38 @@ class IntroLessonView extends StatefulWidget {
 }
 
 class _IntroLessonViewState extends State<IntroLessonView> {
+
+  StreamSubscription? audioSubscription;
+  late AudioPlayerService audioProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    audioProvider = AudioPlayerServiceImpl();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _playAudio();
+    });
+  }
+
+
+
+  void _playAudio() async {
+    if (widget.content.audio != null && widget.content.audio!.isNotEmpty) {
+      await audioProvider.play(widget.content.audio!);
+      audioSubscription = audioProvider.onPlayerComplete.listen((event) {
+        // context.read<LessonBloc>().add(LessonEvent.nextContent());
+        log('audio completed');
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    audioProvider.dispose();
+    audioSubscription?.cancel();
+    super.dispose();
+  }
+    
   Widget _buildBackgroundImage(bool isMobile) {
     if (isMobile) {
       return widget.content.bgImageMobile == null
@@ -51,34 +83,6 @@ class _IntroLessonViewState extends State<IntroLessonView> {
     }
   }
 
-  StreamSubscription? audioSubscription;
-  late AudioPlayerService audioProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    audioProvider = AudioPlayerServiceImpl();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _playAudio();
-    });
-  }
-
-  void _playAudio() async {
-    if (widget.content.audio != null && widget.content.audio!.isNotEmpty) {
-      await audioProvider.play(widget.content.audio!);
-      audioSubscription = audioProvider.onPlayerComplete.listen((event) {
-        // context.read<LessonBloc>().add(LessonEvent.nextContent());
-        log('audio completed');
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    audioProvider.dispose();
-    audioSubscription?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
