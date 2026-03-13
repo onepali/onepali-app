@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
@@ -14,20 +14,6 @@ import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:video_player/video_player.dart';
-
-class InfoLessonMediaCache {
-  static const key = 'mediaCache';
-
-  static CacheManager instance = CacheManager(
-    Config(
-      key,
-      stalePeriod: const Duration(days: 30), // Cache for 30 days
-      maxNrOfCacheObjects: 100,
-      repo: JsonCacheInfoRepository(databaseName: key),
-      fileService: HttpFileService(),
-    ),
-  );
-}
 
 class InfoLessonView extends StatefulWidget {
   final InfoLessonContent content;
@@ -62,7 +48,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
       // If video is present, cache and initialize it
       final videoUrl = widget.content.video;
       if (videoUrl?.isNotEmpty == true) {
-        final videoFile = await InfoLessonMediaCache.instance.getSingleFile(
+        final videoFile = await MediaCacheManager.instance.getSingleFile(
           videoUrl!,
         );
 
@@ -119,7 +105,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
       await _audioPlayer?.dispose();
 
       // Cache the audio file
-      final audioFile = await InfoLessonMediaCache.instance.getSingleFile(
+      final audioFile = await MediaCacheManager.instance.getSingleFile(
         widget.content.audioWord,
       );
 
