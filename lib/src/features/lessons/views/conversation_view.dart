@@ -66,7 +66,6 @@ class _ConversationViewState extends State<ConversationView> {
             fit: BoxFit.cover,
           ),
         ),
-
         CenterLeftAlignedBackButton(
           onTap: () {
             context.read<LessonBloc>().add(LessonEvent.previousContent());

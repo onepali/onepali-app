@@ -99,8 +99,7 @@ class HeadingSliderLtrScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          BallHeadingBloc()..add(BallHeadingEvent.started(content)),
+      create: (_) => BallHeadingBloc()..add(BallHeadingEvent.started(content)),
       child: HeadingView(content: content, onNext: onNext),
     );
   }
@@ -152,6 +151,7 @@ class _SliderView extends StatelessWidget {
               ? (size.width - (content.sliderLengthMb * size.width)) / 2
               : (size.width - (content.sliderLengthTb * size.width)) / 2,
           child: Transform.rotate(
+            // rotate opposite if not 'ltr'
             angle: content.angle.toDouble(),
             child: BallSlider(
               trackHeight: isMobile ? 52 : 80,
