@@ -125,6 +125,7 @@ class _SliderView extends StatelessWidget {
               ? (size.width - (content.sliderLengthMb * size.width)) / 2
               : (size.width - (content.sliderLengthTb * size.width)) / 2,
           child: Transform.rotate(
+            // rotate opposite if not 'ltr'
             angle: content.angle.toDouble(),
             child: BallSlider(
               trackHeight: isMobile ? 52 : 80,
@@ -135,39 +136,39 @@ class _SliderView extends StatelessWidget {
         ),
 
         // Goal message
-        BlocBuilder<BallSliderBloc, BallSliderState>(
-          buildWhen: (p, c) => p.isComplete != c.isComplete,
-          builder: (context, state) => AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: state.isComplete ? 60 : 20,
-            left: 0,
-            right: 0,
-            child: AnimatedOpacity(
-              opacity: state.isComplete ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kYellow,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: const Text(
-                    'Goal!',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        // BlocBuilder<BallSliderBloc, BallSliderState>(
+        //   buildWhen: (p, c) => p.isComplete != c.isComplete,
+        //   builder: (context, state) => AnimatedPositioned(
+        //     duration: const Duration(milliseconds: 300),
+        //     bottom: state.isComplete ? 60 : 20,
+        //     left: 0,
+        //     right: 0,
+        //     child: AnimatedOpacity(
+        //       opacity: state.isComplete ? 1.0 : 0.0,
+        //       duration: const Duration(milliseconds: 300),
+        //       child: Center(
+        //         child: Container(
+        //           padding: const EdgeInsets.symmetric(
+        //             horizontal: 24,
+        //             vertical: 12,
+        //           ),
+        //           decoration: BoxDecoration(
+        //             color: AppColors.kYellow,
+        //             borderRadius: BorderRadius.circular(30),
+        //           ),
+        //           child: const Text(
+        //             'Goal!',
+        //             style: TextStyle(
+        //               fontSize: 22,
+        //               fontWeight: FontWeight.bold,
+        //               color: Colors.black87,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -180,8 +181,7 @@ class HeadingSliderLtrScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          BallHeadingBloc()..add(BallHeadingEvent.started(content)),
+      create: (_) => BallHeadingBloc()..add(BallHeadingEvent.started(content)),
       child: HeadingView(content: content),
     );
   }

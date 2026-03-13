@@ -106,38 +106,38 @@ class _HeadingViewState extends State<HeadingView> {
               ),
             ),
 
-            if (isComplete)
-              AnimatedOpacity(
-                opacity: 1.0,
-                duration: const Duration(milliseconds: 300),
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.yellow,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Text(
-                      'Header!',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            // if (isComplete)
+            //   AnimatedOpacity(
+            //     opacity: 1.0,
+            //     duration: const Duration(milliseconds: 300),
+            //     child: Center(
+            //       child: Container(
+            //         padding: const EdgeInsets.symmetric(
+            //           horizontal: 24,
+            //           vertical: 12,
+            //         ),
+            //         decoration: BoxDecoration(
+            //           color: Colors.yellow,
+            //           borderRadius: BorderRadius.circular(30),
+            //           boxShadow: [
+            //             BoxShadow(
+            //               color: Colors.black.withOpacity(0.2),
+            //               blurRadius: 8,
+            //               offset: const Offset(0, 4),
+            //             ),
+            //           ],
+            //         ),
+            //         child: const Text(
+            //           'Header!',
+            //           style: TextStyle(
+            //             fontSize: 22,
+            //             fontWeight: FontWeight.bold,
+            //             color: Colors.black87,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
           ],
         );
       },

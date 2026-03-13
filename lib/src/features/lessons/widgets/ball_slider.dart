@@ -132,7 +132,9 @@ class BallSlider extends StatelessWidget {
                       left: ballLeft,
                       top: 0,
                       child: Transform.rotate(
-                        angle: state.rotationAngle,
+                        angle: direction == SliderDirection.rightToLeft
+                            ? -state.rotationAngle
+                            : state.rotationAngle,
                         child: CustomCachedImage(
                           imageUrl: ballImagePath,
                           width: ballSize,

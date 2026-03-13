@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
@@ -24,6 +25,7 @@ class FlipCardView extends StatefulWidget {
 class _FlipCardViewState extends State<FlipCardView> {
   List<FlipCardController> _controllers = [];
   final Random _random = Random();
+  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
 
   @override
   void initState() {
@@ -34,9 +36,9 @@ class _FlipCardViewState extends State<FlipCardView> {
     );
   }
 
-
   @override
   void dispose() {
+    _audioPlayerService.dispose();
     super.dispose();
   }
 
@@ -67,35 +69,46 @@ class _FlipCardViewState extends State<FlipCardView> {
                       (e) => Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          FlipCard(
-                            rotateSide: RotateSide.bottom,
-                            animationDuration: Duration(milliseconds: 500),
-                            onTapFlipping: true,
-                            axis:
-                                FlipAxis.values[_random.nextInt(
-                                  FlipAxis.values.length,
-                                )],
-                            controller:
-                                _controllers[widget.content.items.indexOf(e)],
-                            frontWidget: Transform.rotate(
-                              angle: 0.15,
-                              child: Container(
+                          GestureDetector(
+                            onTap: () {
+                              print('playing audio');
+                              final c =
+                                  _controllers[widget.content.items.indexOf(e)];
+                              c.flipcard();
+                              if (!c.state!.isFront) {
+                                _audioPlayerService.playAsset(Assets.cardFlip);
+                              }
+                            },
+                            child: FlipCard(
+                              rotateSide: RotateSide.bottom,
+                              animationDuration: Duration(milliseconds: 500),
+                              onTapFlipping: false,
+                              axis:
+                                  FlipAxis.values[_random.nextInt(
+                                    FlipAxis.values.length,
+                                  )],
+                              controller:
+                                  _controllers[widget.content.items.indexOf(e)],
+                              frontWidget: Transform.rotate(
+                                angle: 0.15,
+                                child: Container(
+                                  height: isMobile ? 100 : 200,
+                                  width: isMobile ? 100 : 200,
+                                  decoration: BoxDecoration(
+                                    color: colorFromHex(e.bgColor),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                              backWidget: Container(
                                 height: isMobile ? 100 : 200,
                                 width: isMobile ? 100 : 200,
                                 decoration: BoxDecoration(
                                   color: colorFromHex(e.bgColor),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
+                                child: CustomCachedImage(imageUrl: e.image),
                               ),
-                            ),
-                            backWidget: Container(
-                              height: isMobile ? 100 : 200,
-                              width: isMobile ? 100 : 200,
-                              decoration: BoxDecoration(
-                                color: colorFromHex(e.bgColor),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: CustomCachedImage(imageUrl: e.image),
                             ),
                           ),
                           const SizedBox(height: 12),
