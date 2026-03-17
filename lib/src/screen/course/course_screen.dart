@@ -64,6 +64,7 @@ class CourseScreenState extends State<CourseScreen> {
                       stream: FirebaseFirestore.instance
                           .collection('lessons')
                           .where('level_id', isEqualTo: data[index]['id'])
+                          .where('active', isEqualTo: true)
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {

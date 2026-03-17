@@ -8,17 +8,20 @@ class ContentCard extends StatelessWidget {
   final String nameEn;
   final String nameNp;
   final VoidCallback onTap;
-  final String image;
+  final String? image;
   final bool isImageSvg;
   final String? bgColor;
+  //PNG or JPG
+  final String? bgImage;
   const ContentCard({
     super.key,
     required this.nameEn,
     required this.nameNp,
     required this.onTap,
-    required this.image,
+    this.image,
     this.isImageSvg = false,
     this.bgColor,
+    this.bgImage,
   });
 
   @override
@@ -32,6 +35,12 @@ class ContentCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         width: MediaQuery.of(context).size.width * 0.35,
         decoration: BoxDecoration(
+          image: bgImage != null
+              ? DecorationImage(
+                  image: NetworkImage(bgImage!),
+                  fit: BoxFit.cover,
+                )
+              : null,
           borderRadius: BorderRadius.circular(20),
           color: bgColor != null ? colorFromHex(bgColor!) : Colors.green,
           boxShadow: [
@@ -44,16 +53,19 @@ class ContentCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Expanded(
-              child: isImageSvg
-                  ? SvgPicture.network(
-                      image,
-                      fit: BoxFit.contain,
-                      placeholderBuilder: (context) =>
-                          const Center(child: CircularProgressIndicator()),
-                    )
-                  : CustomCachedImage(imageUrl: image, fit: BoxFit.contain),
-            ),
+            if (image != null)
+              Expanded(
+                child: isImageSvg
+                    ? SvgPicture.network(
+                        image!,
+                        fit: BoxFit.contain,
+                        placeholderBuilder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
+                      )
+                    : CustomCachedImage(imageUrl: image!, fit: BoxFit.contain),
+              )
+            else
+              Expanded(child: SizedBox()),
             SizedBox(height: 32),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
