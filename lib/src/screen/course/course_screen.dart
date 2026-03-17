@@ -68,7 +68,11 @@ class CourseScreenState extends State<CourseScreen> {
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          final data = snapshot.data!.docs;
+                          final data = snapshot.data!.docs
+                              .where(
+                                (lesson) => lesson.data()['active'] != false,
+                              )
+                              .toList();
                           return Row(
                             children: [
                               for (final lesson in data) ...[
