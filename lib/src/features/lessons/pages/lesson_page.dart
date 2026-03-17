@@ -51,7 +51,7 @@ class _LessonPageState extends State<LessonPage> {
               previous.lessonDetails != current.lessonDetails,
           listener: (context, state) {
             if (state.lessonDetails != null) {
-              MediaCacheManager().cacheLessonImages(
+              MediaCacheManager().cacheLessonMedia(
                 state.lessonDetails!.contents,
                 context,
               );
