@@ -8,6 +8,7 @@ class Lesson with _$Lesson {
     required String id,
     required String name,
     required String image,
+    @Default(false) bool active,
   }) = _Lesson;
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
