@@ -7,15 +7,17 @@ class CustomCachedImage extends StatelessWidget {
   final String imageUrl;
   final BoxFit? fit;
   final Alignment? alignment;
+  final Widget? errorWidget;
 
   const CustomCachedImage({
-    Key? key,
+    super.key,
     this.height,
     this.width,
     required this.imageUrl,
     this.fit,
     this.alignment,
-  }) : super(key: key);
+    this.errorWidget
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class CustomCachedImage extends StatelessWidget {
       imageUrl: imageUrl,
       alignment: alignment ?? Alignment.center,
       errorWidget: (context, url, error) {
-        return Icon(
+        return errorWidget?? Icon(
           Icons.broken_image,
           color: Colors.grey,
           size: width != null && height != null

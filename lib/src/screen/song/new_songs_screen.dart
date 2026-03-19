@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/src.dart';
 
@@ -11,7 +11,6 @@ class NewSongsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: Stack(
         children: [
           Positioned.fill(
@@ -55,7 +54,6 @@ class NewSongsScreen extends StatelessWidget {
                                 image: Utility.generateYoutubeThumbnailUrl(
                                   data[index]['media']['youtube_link'],
                                 ),
-                                // childId: childId,
                               ),
                             ),
                           );
@@ -65,23 +63,7 @@ class NewSongsScreen extends StatelessWidget {
                           data[index]['media']['youtube_link'],
                         ),
                       );
-                      return Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              Utility.generateYoutubeThumbnailUrl(
-                                data[index]['media']['youtube_link'],
-                              ),
-                            ),
-                            fit: BoxFit.cover,
-                            onError: (exception, stackTrace) {
-                              logger.e('Error loading image: $exception');
-                              AssetImage(Assets.placeholder);
-                            },
-                          ),
-                        ),
-                        child: Text('data'),
-                      );
+                  
                     },
                   );
                 } else {
@@ -90,6 +72,9 @@ class NewSongsScreen extends StatelessWidget {
               },
             ),
           ),
+          TopRightPositionedCloseButton(onTap: (){
+            Navigator.of(context).pop();
+          },)
         ],
       ),
     );

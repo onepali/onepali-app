@@ -31,32 +31,32 @@ class _SongsCategoryGridState extends State<SongsCategoryGrid> {
         }
 
         return GridView.builder(
-          // itemCount: snapshot.data!.docs.length,
-          itemCount: 7,
+          itemCount: snapshot.data!.docs.length,
+          
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             childAspectRatio: 3 / 2.0,
             mainAxisSpacing: 16.0,
-            crossAxisSpacing: 24.0,
+            crossAxisSpacing: 16.0,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             final data = snapshot.data!.docs;
             return ContentCard(
-              nameEn: data[0]['name_en'],
-              nameNp: data[0]['name_np'],
+              nameEn: data[index]['name_en'],
+              nameNp: data[index]['name_np'],
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
-                        NewSongsScreen(categoryId: data[0]['id']),
+                        NewSongsScreen(categoryId: data[index]['id']),
                   ),
                 );
               },
               image: null,
-              bgImage: data[0]['image'],
+              bgImage: data[index]['image'],
             );
           },
         );

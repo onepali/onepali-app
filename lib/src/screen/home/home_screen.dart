@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/screen/song/songs_category_grid.dart';
 import 'package:onepali/src/src.dart';
 import 'package:onepali/src/screen/course/lesson/widget/recommended_lessons_list.dart';
 import 'package:provider/provider.dart';
@@ -97,11 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
             CourseScreen(),
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedSongCard(context),
-              Gaps.verticalGapOf(10),
-            ],
-            _buildSongCard(context),
+            // if (!isGuest) ...[
+            //   _buildRecommendedSongCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
+            // _buildSongCard(context),
+            SongsCategoryGrid(),
           ] else if (_selectedTabIndex == 2) ...[
             // Only show recommended card for non-guest users
             // if (!isGuest) ...[
