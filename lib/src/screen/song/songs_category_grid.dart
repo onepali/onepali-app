@@ -33,9 +33,9 @@ class _SongsCategoryGridState extends State<SongsCategoryGrid> {
             crossAxisCount: 3,
             childAspectRatio: 3 / 2.0,
             mainAxisSpacing: 16.0,
-            crossAxisSpacing: 24.0,
+            crossAxisSpacing: 16.0,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {

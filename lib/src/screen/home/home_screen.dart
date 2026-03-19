@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/screen/song/songs_category_grid.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -55,10 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  double _getCardHeight(BuildContext context) {
-    return AppCardResponsive.getDashboardCardHeight(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     // Check if user is guest
@@ -96,11 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
             CourseScreen(),
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedSongCard(context),
-              Gaps.verticalGapOf(10),
-            ],
-            _buildSongCard(context),
+            // if (!isGuest) ...[
+            //   _buildRecommendedSongCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
+            // _buildSongCard(context),
+            SongsCategoryGrid(),
           ] else if (_selectedTabIndex == 2) ...[
             // Only show recommended card for non-guest users
             // if (!isGuest) ...[
@@ -152,77 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
       onRetry: onRetry,
       isInternetError: true,
       isDataError: false,
-    );
-  }
-
-  Widget _buildSongCard(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return TitleActionChild(
-      title: 'Songs',
-      titlePadding: EdgeInsets.only(
-        bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-      ),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(
-        color: AppColors.kBlack,
-        fontSize:
-            PlatformUtility.isTablet(context) &&
-                PlatformUtility.isLandscape(context)
-            ? 24
-            : 20,
-        fontWeight: FontWeight.bold,
-      ),
-      subTitle: 'View all',
-      subTitleStyle: AppStyles.text14PxMedium.copyWith(
-        color: AppColors.kSecondaryColor,
-        fontWeight: FontWeight.w500,
-        fontSize:
-            PlatformUtility.isTablet(context) &&
-                PlatformUtility.isLandscape(context)
-            ? 18
-            : 14,
-      ),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => SongScreen(showCategoryList: true)),
-        );
-      },
-      child: SizedBox(height: _getCardHeight(context), child: SongScreen()),
-    );
-  }
-
-  Widget _buildRecommendedSongCard(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return Consumer<RcmSongProvider>(
-      builder: (context, provider, child) {
-        if (!provider.hasData) return const SizedBox();
-        return TitleActionChild(
-          title: 'Recommended songs',
-          titlePadding: EdgeInsets.only(
-            bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-          ),
-          titleStyle: AppStyles.text20PxSemiBold.copyWith(
-            color: AppColors.kBlack,
-            fontSize: isTabletLandscape ? 24 : 20,
-            fontWeight: FontWeight.bold,
-          ),
-          child: SizedBox(
-            height: _getCardHeight(context),
-            child: RecommendedSongScreen(),
-          ),
-        );
-      },
     );
   }
 }

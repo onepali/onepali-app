@@ -183,7 +183,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ? currentChild.fullName
           : 'User';
     }
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (index, value) {
@@ -192,8 +191,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         color: AppColors.kWhite,
         child: SafeArea(
-          left: true,
-          top: true,
+          left: false,
+          top: false,
           right: false,
           bottom: false,
           child: Scaffold(
