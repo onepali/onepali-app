@@ -76,10 +76,10 @@ class CourseScreenState extends State<CourseScreen> {
                                   nameEn: lesson['name'],
                                   nameNp: lesson['name'],
                                   image: lesson['image'],
+                                  bgImage: lesson['bg_image'],
                                   bgColor: lesson['bg_color'],
                                   onTap: () => _onTapLesson(lesson),
                                 ),
-                              
                                 Gaps.horizontalGapOf(16),
                               ],
                             ],
