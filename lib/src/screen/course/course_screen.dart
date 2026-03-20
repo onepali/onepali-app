@@ -80,6 +80,7 @@ class CourseScreenState extends State<CourseScreen> {
                                   nameEn: lesson['name'],
                                   nameNp: lesson['name'],
                                   image: lesson['image'],
+                                  bgImage: lesson.data()['bg_image'] as String?,
                                   bgColor: lesson['bg_color'],
                                   onTap: () => _onTapLesson(lesson),
                                 ),
