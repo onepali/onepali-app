@@ -9,7 +9,8 @@ part of 'lesson.dart';
 _Lesson _$LessonFromJson(Map<String, dynamic> json) => _Lesson(
   id: json['id'] as String,
   name: json['name'] as String,
-  image: json['image'] as String,
+  image: json['image'] as String?,
+  bgImage: json['bg_image'] as String?,
   active: json['active'] as bool? ?? false,
 );
 
@@ -17,6 +18,7 @@ Map<String, dynamic> _$LessonToJson(_Lesson instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'image': instance.image,
+  'bg_image': instance.bgImage,
   'active': instance.active,
 };
 

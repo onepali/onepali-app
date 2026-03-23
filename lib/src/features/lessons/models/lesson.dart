@@ -7,7 +7,8 @@ class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String name,
-    required String image,
+    String? image,
+    @JsonKey(name: 'bg_image') String? bgImage,
     @Default(false) bool active,
   }) = _Lesson;
 
