@@ -21,6 +21,7 @@ dependencies:
   flutter_svg: ^2.2.0
   lottie: ^3.3.1
   flutter_animate: ^4.5.2
+  google_fonts: ^8.0.2
 
   # State Management
   provider: ^6.1.5
@@ -82,6 +83,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   dotted_border: ^3.1.0
+
 
 
 

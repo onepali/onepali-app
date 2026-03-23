@@ -51,7 +51,9 @@ class _SongsCategoryGridState extends State<SongsCategoryGrid> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
-                        NewSongsScreen(categoryId: data[index]['id']),
+                        NewSongsScreen(categoryId: data[index]['id'],
+                        title: data[index]['name_en'],
+                        ),
                   ),
                 );
               },

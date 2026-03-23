@@ -7,7 +7,8 @@ class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String name,
-    required String image,
+    String? image,
+    String? bgImage,
     @Default(false) bool active,
   }) = _Lesson;
 
@@ -32,7 +33,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required int index,
     @Default('intro') String type,
     String? bgColor,
-    String? image,// svg
+    String? image, // svg
     String? audio,
     String? bgImageMobile,
     String? bgImageTablet,
@@ -222,7 +223,7 @@ class Item with _$Item {
     String? outlineBgColor,
 
     String? question, // eg where is the cat
-     String? audioItem, // Cat pronunciation
+    String? audioItem, // Cat pronunciation
     String? audioBg, // eg cat sound meww, dog sound barking
     num? dxRatio,
     num? dyRatio,
