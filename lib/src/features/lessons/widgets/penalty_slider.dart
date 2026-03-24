@@ -34,6 +34,7 @@ class _PenaltySliderState extends State<PenaltySlider>
   double _snapTarget = 0.0;
 
   bool _showGoal = false;
+  bool _isAllAudioCompleted = false;
 
   @override
   void initState() {
@@ -48,12 +49,21 @@ class _PenaltySliderState extends State<PenaltySlider>
         _ballProgress = _lerp(_snapFrom, _snapTarget, _snapAnim.value);
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      for (final audio in widget.content.conversation) {
-        _audioPlayerService.play(audio);
-        await _audioPlayerService.onPlayerComplete.first;
-      }
-    });
+    if (widget.content.conversation.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        for (final audio in widget.content.conversation) {
+          _audioPlayerService.play(audio);
+          await _audioPlayerService.onPlayerComplete.first;
+        }
+        setState(() {
+          _isAllAudioCompleted = true;
+        });
+      });
+    } else {
+      setState(() {
+        _isAllAudioCompleted = true;
+      });
+    }
   }
 
   @override
@@ -72,9 +82,10 @@ class _PenaltySliderState extends State<PenaltySlider>
   void _onPanEnd() {
     log("Ball progress at pan end: $_ballProgress");
     final double p = _ballProgress.abs();
-    if (p > 0.85) {
+    if (p > 0.9) {
       _animateTo(_ballProgress < 0 ? -1.0 : 1.0);
-      Future.delayed(const Duration(milliseconds: 420), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _audioPlayerService.playAsset(Assets.starBlast);
         if (mounted) setState(() => _showGoal = true);
       });
     } else if (p > 0.04) {
@@ -112,31 +123,32 @@ class _PenaltySliderState extends State<PenaltySlider>
             ),
 
             // Goal-zone glows
-            IgnorePointer(
-              child: CustomPaint(
-                size: size,
-                painter: GoalZonePainter(
-                  config: widget.config,
-                  progress: _ballProgress,
-                ),
-              ),
-            ),
+            //  if(_ballProgress.abs()>0.9)   IgnorePointer(
+            //       child: CustomPaint(
+            //         size: size,
+            //         painter: GoalZonePainter(
+            //           config: widget.config,
+            //           progress: _ballProgress,
+            //         ),
+            //       ),
+            //     ),
 
             // Tracks
-            IgnorePointer(
-              child: CustomPaint(
-                size: size,
-                painter: PathPainter(
-                  leftPath: leftPath,
-                  rightPath: rightPath,
-                  progress: _ballProgress,
-                  strokeWidth: trackHeight,
+            if (_isAllAudioCompleted)
+              IgnorePointer(
+                child: CustomPaint(
+                  size: size,
+                  painter: PathPainter(
+                    leftPath: leftPath,
+                    rightPath: rightPath,
+                    progress: _ballProgress,
+                    strokeWidth: trackHeight,
+                  ),
                 ),
               ),
-            ),
 
             // Ball
-            if (!_showGoal)
+            if (!_showGoal && _isAllAudioCompleted)
               _ball(
                 size,
                 leftPath,
@@ -150,13 +162,12 @@ class _PenaltySliderState extends State<PenaltySlider>
                 top: _ballProgress > 0
                     ? size.height * 0.15
                     : size.height * 0.40,
-                left:_ballProgress > 0
-                    ? size.width * 0.70
-                    : size.width * 0.20,
+                left: _ballProgress > 0 ? size.width * 0.70 : size.width * 0.20,
                 child: SizedBox(
                   height: size.height * 0.2,
                   width: size.height * 0.2,
-                  child: LottieHelper.fromSource(path: Assets.starWinnerLottie)),
+                  child: LottieHelper.fromSource(path: Assets.starWinnerLottie),
+                ),
               ),
             // Goal overlay
             // if (_showGoal) _goalOverlay(),
@@ -165,16 +176,18 @@ class _PenaltySliderState extends State<PenaltySlider>
                 Navigator.pop(context);
               },
             ),
-            CenterRightAlignedForwardButton(
-              onTap: () {
-                context.read<LessonBloc>().add(LessonEvent.nextContent());
-              },
-            ),
-            CenterLeftAlignedBackButton(
-              onTap: () {
-                context.read<LessonBloc>().add(LessonEvent.previousContent());
-              },
-            ),
+            if (_showGoal)
+              CenterRightAlignedForwardButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                },
+              ),
+            if (_showGoal)
+              CenterLeftAlignedBackButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.previousContent());
+                },
+              ),
           ],
         );
       },

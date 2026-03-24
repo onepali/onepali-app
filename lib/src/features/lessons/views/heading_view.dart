@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
@@ -10,7 +12,7 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_heading_bloc/ball_heading_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/widgets/heading_slider.dart';
+import 'package:onepali/src/features/lessons/widgets/curved_ball_slider.dart';
 
 class HeadingView extends StatefulWidget {
   final BallSlideLessonContent content;
@@ -22,6 +24,20 @@ class HeadingView extends StatefulWidget {
 
 class _HeadingViewState extends State<HeadingView> {
   bool isComplete = false;
+  late AudioPlayerService audioPlayerService;
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayerService = AudioPlayerServiceImpl();
+  }
+
+  @override
+  void dispose() {
+    audioPlayerService.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
@@ -44,67 +60,72 @@ class _HeadingViewState extends State<HeadingView> {
               },
             ),
 
-            CenterLeftAlignedBackButton(
-              onTap: () {
-                context.read<LessonBloc>().add(LessonEvent.previousContent());
-              },
-            ),
-            CenterRightAlignedForwardButton(
-              onTap: () {
-                context.read<LessonBloc>().add(LessonEvent.nextContent());
-              },
-            ),
-
-            Positioned.fill(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = constraints.maxWidth;
-                  final height = constraints.maxHeight;
-
-                  final startX = isMobile
-                      ? (width - (width * widget.content.sliderLengthMb)) / 2
-                      : (width - (width * widget.content.sliderLengthTb)) / 2;
-
-                  return Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Positioned(
-                        top: isMobile ? 0 : height * 0.1,
-                        left: startX,
-                        child: Container(
-                          // color: Colors.pink,
-                          width: isMobile
-                              ? width * widget.content.sliderLengthMb
-                              : width * widget.content.sliderLengthTb,
-
-                          child: CurvedBallSlider(
-                            height: isMobile ? 150 : 300,
-                            isRTL: widget.content.direction == 'rtl_heading',
-                            value: 0.0,
-                            onChanged: (v) {
-                              if (v == 1.0) {
-                                if (isComplete) return;
-                                setState(() {
-                                  log('isComplete: $isComplete');
-                                  isComplete = true;
-                                });
-                              } else {
-                                if (!isComplete) return;
-                                setState(() {
-                                  log('isComplete: $isComplete');
-                                  isComplete = false;
-                                });
-                              }
-                            },
-                            content: widget.content,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+            if (isComplete)
+              CenterLeftAlignedBackButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.previousContent());
                 },
               ),
-            ),
+            if (isComplete)
+              CenterRightAlignedForwardButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                },
+              ),
+            if (state.isAllAudioCompleted)
+              Positioned.fill(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final width = constraints.maxWidth;
+                    final height = constraints.maxHeight;
+
+                    final startX = isMobile
+                        ? (width - (width * widget.content.sliderLengthMb)) / 2
+                        : (width - (width * widget.content.sliderLengthTb)) / 2;
+
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          top: isMobile ? 0 : height * 0.1,
+                          left: startX,
+                          child: Container(
+                            // color: Colors.pink,
+                            width: isMobile
+                                ? width * widget.content.sliderLengthMb
+                                : width * widget.content.sliderLengthTb,
+
+                            child: CurvedBallSlider(
+                              height: isMobile ? 150 : 300,
+                              isRTL: widget.content.direction == 'rtl_heading',
+                              value: 0.0,
+                              onChanged: (v) {
+                                if (v == 1.0) {
+                                  if (isComplete) return;
+                                  setState(() {
+                                    log('isComplete: $isComplete');
+                                    isComplete = true;
+                                  });
+                                  audioPlayerService.playAsset(
+                                    Assets.starBlast,
+                                  );
+                                } else {
+                                  if (!isComplete) return;
+                                  setState(() {
+                                    log('isComplete: $isComplete');
+                                    isComplete = false;
+                                  });
+                                }
+                              },
+                              content: widget.content,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
 
             // if (isComplete)
             //   AnimatedOpacity(

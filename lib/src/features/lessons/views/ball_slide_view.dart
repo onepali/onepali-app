@@ -76,100 +76,120 @@ class BallSliderRtlView extends StatelessWidget {
   }
 }
 
-class _SliderView extends StatelessWidget {
+class _SliderView extends StatefulWidget {
   final BallSlideLessonContent content;
   const _SliderView({required this.content});
 
   @override
+  State<_SliderView> createState() => _SliderViewState();
+}
+
+class _SliderViewState extends State<_SliderView> {
+  @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.sizeOf(context);
-    return Stack(
-      children: [
-        // Background
-        Positioned.fill(
-          child: CustomCachedImage(
-            imageUrl: isMobile
-                ? content.bgImageMobile ?? ''
-                : content.bgImageTablet ?? '',
-            fit: BoxFit.cover,
-          ),
-        ),
-
-        // Close button
-        TopRightPositionedCloseButton(
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        CenterRightAlignedForwardButton(
-          onTap: () {
-            context.read<LessonBloc>().add(LessonEvent.nextContent());
-          },
-        ),
-        CenterLeftAlignedBackButton(
-          onTap: () {
-            context.read<LessonBloc>().add(LessonEvent.previousContent());
-          },
-        ),
-        // Ball Slider
-        Positioned(
-          bottom: isMobile
-              ? content.pDyMb.toDouble()
-              : content.pDyTb.toDouble(),
-
-          left: isMobile
-              ? (size.width - (content.sliderLengthMb * size.width)) / 2
-              : (size.width - (content.sliderLengthTb * size.width)) / 2,
-          right: isMobile
-              ? (size.width - (content.sliderLengthMb * size.width)) / 2
-              : (size.width - (content.sliderLengthTb * size.width)) / 2,
-          child: Transform.rotate(
-            // rotate opposite if not 'ltr'
-            angle: content.angle.toDouble(),
-            child: BallSlider(
-              trackHeight: isMobile ? 52 : 80,
-              ballSize: isMobile ? 70 : 120,
-              ballImagePath: content.ballImage ?? '',
+    return BlocBuilder<BallSliderBloc, BallSliderState>(
+      buildWhen: (p, c) => p.isComplete != c.isComplete,
+      builder: (context, state) {
+        return Stack(
+          children: [
+            // Background
+            Positioned.fill(
+              child: CustomCachedImage(
+                imageUrl: isMobile
+                    ? widget.content.bgImageMobile ?? ''
+                    : widget.content.bgImageTablet ?? '',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ),
 
-        // Goal message
-        // BlocBuilder<BallSliderBloc, BallSliderState>(
-        //   buildWhen: (p, c) => p.isComplete != c.isComplete,
-        //   builder: (context, state) => AnimatedPositioned(
-        //     duration: const Duration(milliseconds: 300),
-        //     bottom: state.isComplete ? 60 : 20,
-        //     left: 0,
-        //     right: 0,
-        //     child: AnimatedOpacity(
-        //       opacity: state.isComplete ? 1.0 : 0.0,
-        //       duration: const Duration(milliseconds: 300),
-        //       child: Center(
-        //         child: Container(
-        //           padding: const EdgeInsets.symmetric(
-        //             horizontal: 24,
-        //             vertical: 12,
-        //           ),
-        //           decoration: BoxDecoration(
-        //             color: AppColors.kYellow,
-        //             borderRadius: BorderRadius.circular(30),
-        //           ),
-        //           child: const Text(
-        //             'Goal!',
-        //             style: TextStyle(
-        //               fontSize: 22,
-        //               fontWeight: FontWeight.bold,
-        //               color: Colors.black87,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
-      ],
+            // Close button
+            TopRightPositionedCloseButton(
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            if (state.isComplete)
+              CenterRightAlignedForwardButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                },
+              ),
+            if (state.isComplete)
+              CenterLeftAlignedBackButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.previousContent());
+                },
+              ),
+            // Ball Slider
+            Positioned(
+              bottom: isMobile
+                  ? widget.content.pDyMb.toDouble()
+                  : widget.content.pDyTb.toDouble(),
+
+              left: isMobile
+                  ? (size.width -
+                            (widget.content.sliderLengthMb * size.width)) /
+                        2
+                  : (size.width -
+                            (widget.content.sliderLengthTb * size.width)) /
+                        2,
+              right: isMobile
+                  ? (size.width -
+                            (widget.content.sliderLengthMb * size.width)) /
+                        2
+                  : (size.width -
+                            (widget.content.sliderLengthTb * size.width)) /
+                        2,
+              child: Transform.rotate(
+                // rotate opposite if not 'ltr'
+                angle: widget.content.angle.toDouble(),
+                child: BallSlider(
+                  trackHeight: isMobile ? 52 : 80,
+                  ballSize: isMobile ? 70 : 120,
+                  ballImagePath: widget.content.ballImage ?? '',
+                ),
+              ),
+            ),
+
+            // Goal message
+            // BlocBuilder<BallSliderBloc, BallSliderState>(
+            //   buildWhen: (p, c) => p.isComplete != c.isComplete,
+            //   builder: (context, state) => AnimatedPositioned(
+            //     duration: const Duration(milliseconds: 300),
+            //     bottom: state.isComplete ? 60 : 20,
+            //     left: 0,
+            //     right: 0,
+            //     child: AnimatedOpacity(
+            //       opacity: state.isComplete ? 1.0 : 0.0,
+            //       duration: const Duration(milliseconds: 300),
+            //       child: Center(
+            //         child: Container(
+            //           padding: const EdgeInsets.symmetric(
+            //             horizontal: 24,
+            //             vertical: 12,
+            //           ),
+            //           decoration: BoxDecoration(
+            //             color: AppColors.kYellow,
+            //             borderRadius: BorderRadius.circular(30),
+            //           ),
+            //           child: const Text(
+            //             'Goal!',
+            //             style: TextStyle(
+            //               fontSize: 22,
+            //               fontWeight: FontWeight.bold,
+            //               color: Colors.black87,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
+        );
+      },
     );
   }
 }

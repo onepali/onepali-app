@@ -8,5 +8,6 @@ abstract class BallSliderState with _$BallSliderState {
     @Default(0.0) double rotationAngle,
     @Default(false) bool isComplete,
     @Default(false) bool isAnimating,
+    @Default(false) bool isAllAudioCompleted,
   }) = _BallSliderState;
 }

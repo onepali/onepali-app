@@ -58,6 +58,7 @@ class _CurvedBallSliderState extends State<CurvedBallSlider> {
 
           return GestureDetector(
             onPanUpdate: (details) {
+              if(progress == 1.0) return;
               final width = context.size!.width;
 
               double delta = details.delta.dx / width;

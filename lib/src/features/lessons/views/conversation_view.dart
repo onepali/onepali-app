@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
@@ -18,6 +19,7 @@ class ConversationView extends StatefulWidget {
 
 class _ConversationViewState extends State<ConversationView> {
   final _audioPlayerService = AudioPlayerServiceImpl();
+  bool _isAudioCompleted = false;
   @override
   void initState() {
     super.initState();
@@ -26,6 +28,9 @@ class _ConversationViewState extends State<ConversationView> {
         _audioPlayerService.play(audio);
         await _audioPlayerService.onPlayerComplete.first;
       }
+      setState(() {
+        _isAudioCompleted = true;
+      });
     });
   }
 
@@ -48,17 +53,23 @@ class _ConversationViewState extends State<ConversationView> {
             fit: BoxFit.cover,
           ),
         ),
-
-        CenterLeftAlignedBackButton(
+        TopRightPositionedCloseButton(
           onTap: () {
-            context.read<LessonBloc>().add(LessonEvent.previousContent());
+            Navigator.of(context).pop();
           },
         ),
-        CenterRightAlignedForwardButton(
-          onTap: () {
-            context.read<LessonBloc>().add(LessonEvent.nextContent());
-          },
-        ),
+        if (_isAudioCompleted)
+          CenterLeftAlignedBackButton(
+            onTap: () {
+              context.read<LessonBloc>().add(LessonEvent.previousContent());
+            },
+          ),
+        if (_isAudioCompleted)
+          CenterRightAlignedForwardButton(
+            onTap: () {
+              context.read<LessonBloc>().add(LessonEvent.nextContent());
+            },
+          ),
       ],
     );
   }
