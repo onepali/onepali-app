@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
@@ -54,6 +55,9 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
         _audioPlayerService.play(audio);
         await _audioPlayerService.onPlayerComplete.first;
       }
+      emit(state.copyWith(isAllAudioCompleted: true));
+    } else {
+      emit(state.copyWith(isAllAudioCompleted: true));
     }
   }
 
@@ -157,10 +161,14 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     required bool isAnimating,
   }) {
     final clamped = raw.clamp(0.0, 1.0);
-    return BallSliderState(
+    final isComplete = clamped >= completionThreshold;
+    if (isComplete && !state.isComplete) {
+      _audioPlayerService.playAsset(Assets.starBlast);
+    }
+    return state.copyWith(
       value: clamped,
       rotationAngle: rotation,
-      isComplete: clamped >= completionThreshold,
+      isComplete: isComplete,
       isAnimating: isAnimating,
     );
   }

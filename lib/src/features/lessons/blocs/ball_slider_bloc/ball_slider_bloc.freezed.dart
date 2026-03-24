@@ -538,7 +538,7 @@ String toString() {
 /// @nodoc
 mixin _$BallSliderState {
 
- BallSlideLessonContent? get content; double get value; double get rotationAngle; bool get isComplete; bool get isAnimating;
+ BallSlideLessonContent? get content; double get value; double get rotationAngle; bool get isComplete; bool get isAnimating; bool get isAllAudioCompleted;
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -549,16 +549,16 @@ $BallSliderStateCopyWith<BallSliderState> get copyWith => _$BallSliderStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating,isAllAudioCompleted);
 
 @override
 String toString() {
-  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating)';
+  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating, isAllAudioCompleted: $isAllAudioCompleted)';
 }
 
 
@@ -569,7 +569,7 @@ abstract mixin class $BallSliderStateCopyWith<$Res>  {
   factory $BallSliderStateCopyWith(BallSliderState value, $Res Function(BallSliderState) _then) = _$BallSliderStateCopyWithImpl;
 @useResult
 $Res call({
- BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating
+ BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating, bool isAllAudioCompleted
 });
 
 
@@ -586,13 +586,14 @@ class _$BallSliderStateCopyWithImpl<$Res>
 
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,Object? isAllAudioCompleted = null,}) {
   return _then(_self.copyWith(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as BallSlideLessonContent?,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as double,rotationAngle: null == rotationAngle ? _self.rotationAngle : rotationAngle // ignore: cast_nullable_to_non_nullable
 as double,isComplete: null == isComplete ? _self.isComplete : isComplete // ignore: cast_nullable_to_non_nullable
 as bool,isAnimating: null == isAnimating ? _self.isAnimating : isAnimating // ignore: cast_nullable_to_non_nullable
+as bool,isAllAudioCompleted: null == isAllAudioCompleted ? _self.isAllAudioCompleted : isAllAudioCompleted // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -678,10 +679,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BallSliderState() when $default != null:
-return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating);case _:
+return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted);case _:
   return orElse();
 
 }
@@ -699,10 +700,10 @@ return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted)  $default,) {final _that = this;
 switch (_that) {
 case _BallSliderState():
-return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating);case _:
+return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -719,10 +720,10 @@ return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted)?  $default,) {final _that = this;
 switch (_that) {
 case _BallSliderState() when $default != null:
-return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating);case _:
+return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted);case _:
   return null;
 
 }
@@ -734,7 +735,7 @@ return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_
 
 
 class _BallSliderState implements BallSliderState {
-  const _BallSliderState({this.content, this.value = 0.0, this.rotationAngle = 0.0, this.isComplete = false, this.isAnimating = false});
+  const _BallSliderState({this.content, this.value = 0.0, this.rotationAngle = 0.0, this.isComplete = false, this.isAnimating = false, this.isAllAudioCompleted = false});
   
 
 @override final  BallSlideLessonContent? content;
@@ -742,6 +743,7 @@ class _BallSliderState implements BallSliderState {
 @override@JsonKey() final  double rotationAngle;
 @override@JsonKey() final  bool isComplete;
 @override@JsonKey() final  bool isAnimating;
+@override@JsonKey() final  bool isAllAudioCompleted;
 
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
@@ -753,16 +755,16 @@ _$BallSliderStateCopyWith<_BallSliderState> get copyWith => __$BallSliderStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating,isAllAudioCompleted);
 
 @override
 String toString() {
-  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating)';
+  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating, isAllAudioCompleted: $isAllAudioCompleted)';
 }
 
 
@@ -773,7 +775,7 @@ abstract mixin class _$BallSliderStateCopyWith<$Res> implements $BallSliderState
   factory _$BallSliderStateCopyWith(_BallSliderState value, $Res Function(_BallSliderState) _then) = __$BallSliderStateCopyWithImpl;
 @override @useResult
 $Res call({
- BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating
+ BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating, bool isAllAudioCompleted
 });
 
 
@@ -790,13 +792,14 @@ class __$BallSliderStateCopyWithImpl<$Res>
 
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,Object? isAllAudioCompleted = null,}) {
   return _then(_BallSliderState(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as BallSlideLessonContent?,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as double,rotationAngle: null == rotationAngle ? _self.rotationAngle : rotationAngle // ignore: cast_nullable_to_non_nullable
 as double,isComplete: null == isComplete ? _self.isComplete : isComplete // ignore: cast_nullable_to_non_nullable
 as bool,isAnimating: null == isAnimating ? _self.isAnimating : isAnimating // ignore: cast_nullable_to_non_nullable
+as bool,isAllAudioCompleted: null == isAllAudioCompleted ? _self.isAllAudioCompleted : isAllAudioCompleted // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

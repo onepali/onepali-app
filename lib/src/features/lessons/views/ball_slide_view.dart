@@ -22,16 +22,16 @@ class BallSlideView extends StatelessWidget {
   Widget buildSlider(String direction) {
     switch (direction) {
       case 'ltr':
-        return BallSliderLtrView(content: content, onNext: onNext);
+        return BallSliderLtrView(content: content);
       case 'rtl':
-        return BallSliderRtlView(content: content, onNext: onNext);
+        return BallSliderRtlView(content: content);
       case 'ltr_heading':
       case 'rtl_heading':
-        return HeadingSliderLtrScreen(content: content, onNext: onNext);
+        return HeadingSliderLtrScreen(content: content);
       case 'penalty':
-        return PenaltySlideView(content: content, onNext: onNext);
+        return PenaltySlideView(content: content);
       case 'none':
-        return ConversationView(content: content, onNext: onNext);
+        return ConversationView(content: content);
       default:
         return const SizedBox.shrink();
     }
@@ -44,13 +44,8 @@ class BallSlideView extends StatelessWidget {
 }
 
 class BallSliderLtrView extends StatelessWidget {
-  const BallSliderLtrView({
-    super.key,
-    required this.content,
-    required this.onNext,
-  });
+  const BallSliderLtrView({super.key, required this.content});
   final BallSlideLessonContent content;
-  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -59,20 +54,15 @@ class BallSliderLtrView extends StatelessWidget {
         ballSize: 60.0,
         completionThreshold: 0.98,
         direction: SliderDirection.leftToRight,
-      ),
-      child: _SliderView(content: content, onNext: onNext),
+      )..add(BallSliderEvent.started(content)),
+      child: _SliderView(content: content),
     );
   }
 }
 
 class BallSliderRtlView extends StatelessWidget {
-  const BallSliderRtlView({
-    super.key,
-    required this.content,
-    required this.onNext,
-  });
+  const BallSliderRtlView({super.key, required this.content});
   final BallSlideLessonContent content;
-  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -81,121 +71,139 @@ class BallSliderRtlView extends StatelessWidget {
         ballSize: 60.0,
         completionThreshold: 0.98,
         direction: SliderDirection.rightToLeft, // ← reversed
-      ),
-      child: _SliderView(content: content, onNext: onNext),
+      )..add(BallSliderEvent.started(content)),
+      child: _SliderView(content: content),
+    );
+  }
+}
+
+class _SliderView extends StatefulWidget {
+  final BallSlideLessonContent content;
+  const _SliderView({required this.content});
+
+  @override
+  State<_SliderView> createState() => _SliderViewState();
+}
+
+class _SliderViewState extends State<_SliderView> {
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
+    final size = MediaQuery.sizeOf(context);
+    return BlocBuilder<BallSliderBloc, BallSliderState>(
+      buildWhen: (p, c) => p.isComplete != c.isComplete,
+      builder: (context, state) {
+        return Stack(
+          children: [
+            // Background
+            Positioned.fill(
+              child: CustomCachedImage(
+                imageUrl: isMobile
+                    ? widget.content.bgImageMobile ?? ''
+                    : widget.content.bgImageTablet ?? '',
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            // Close button
+            TopRightPositionedCloseButton(
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            if (state.isComplete)
+              CenterRightAlignedForwardButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                },
+              ),
+            if (state.isComplete)
+              CenterLeftAlignedBackButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(LessonEvent.previousContent());
+                },
+              ),
+            // Ball Slider
+            Positioned(
+              bottom: isMobile
+                  ? widget.content.pDyMb.toDouble()
+                  : widget.content.pDyTb.toDouble(),
+
+              left: isMobile
+                  ? (size.width -
+                            (widget.content.sliderLengthMb * size.width)) /
+                        2
+                  : (size.width -
+                            (widget.content.sliderLengthTb * size.width)) /
+                        2,
+              right: isMobile
+                  ? (size.width -
+                            (widget.content.sliderLengthMb * size.width)) /
+                        2
+                  : (size.width -
+                            (widget.content.sliderLengthTb * size.width)) /
+                        2,
+              child: Transform.rotate(
+                // rotate opposite if not 'ltr'
+                angle: widget.content.angle.toDouble(),
+                child: BallSlider(
+                  trackHeight: isMobile ? 52 : 80,
+                  ballSize: isMobile ? 70 : 120,
+                  ballImagePath: widget.content.ballImage ?? '',
+                ),
+              ),
+            ),
+
+            // Goal message
+            // BlocBuilder<BallSliderBloc, BallSliderState>(
+            //   buildWhen: (p, c) => p.isComplete != c.isComplete,
+            //   builder: (context, state) => AnimatedPositioned(
+            //     duration: const Duration(milliseconds: 300),
+            //     bottom: state.isComplete ? 60 : 20,
+            //     left: 0,
+            //     right: 0,
+            //     child: AnimatedOpacity(
+            //       opacity: state.isComplete ? 1.0 : 0.0,
+            //       duration: const Duration(milliseconds: 300),
+            //       child: Center(
+            //         child: Container(
+            //           padding: const EdgeInsets.symmetric(
+            //             horizontal: 24,
+            //             vertical: 12,
+            //           ),
+            //           decoration: BoxDecoration(
+            //             color: AppColors.kYellow,
+            //             borderRadius: BorderRadius.circular(30),
+            //           ),
+            //           child: const Text(
+            //             'Goal!',
+            //             style: TextStyle(
+            //               fontSize: 22,
+            //               fontWeight: FontWeight.bold,
+            //               color: Colors.black87,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
+        );
+      },
     );
   }
 }
 
 class HeadingSliderLtrScreen extends StatelessWidget {
-  const HeadingSliderLtrScreen({
-    super.key,
-    required this.content,
-    required this.onNext,
-  });
+  const HeadingSliderLtrScreen({super.key, required this.content});
   final BallSlideLessonContent content;
-  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => BallHeadingBloc()..add(BallHeadingEvent.started(content)),
-      child: HeadingView(content: content, onNext: onNext),
-    );
-  }
-}
-
-class _SliderView extends StatelessWidget {
-  final BallSlideLessonContent content;
-  final VoidCallback onNext;
-  const _SliderView({required this.content, required this.onNext});
-
-  @override
-  Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
-    final size = MediaQuery.sizeOf(context);
-    return Stack(
-      children: [
-        // Background
-        Positioned.fill(
-          child: CustomCachedImage(
-            imageUrl: isMobile
-                ? content.bgImageMobile ?? ''
-                : content.bgImageTablet ?? '',
-            fit: BoxFit.cover,
-          ),
-        ),
-
-        // Close button
-        TopRightPositionedCloseButton(
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        CenterRightAlignedForwardButton(onTap: onNext),
-        CenterLeftAlignedBackButton(
-          onTap: () {
-            context.read<LessonBloc>().add(LessonEvent.previousContent());
-          },
-        ),
-        // Ball Slider
-        Positioned(
-          bottom: isMobile
-              ? content.pDyMb.toDouble()
-              : content.pDyTb.toDouble(),
-
-          left: isMobile
-              ? (size.width - (content.sliderLengthMb * size.width)) / 2
-              : (size.width - (content.sliderLengthTb * size.width)) / 2,
-          right: isMobile
-              ? (size.width - (content.sliderLengthMb * size.width)) / 2
-              : (size.width - (content.sliderLengthTb * size.width)) / 2,
-          child: Transform.rotate(
-            // rotate opposite if not 'ltr'
-            angle: content.angle.toDouble(),
-            child: BallSlider(
-              trackHeight: isMobile ? 52 : 80,
-              ballSize: isMobile ? 70 : 120,
-              ballImagePath: content.ballImage ?? '',
-            ),
-          ),
-        ),
-
-        // Goal message
-        BlocBuilder<BallSliderBloc, BallSliderState>(
-          buildWhen: (p, c) => p.isComplete != c.isComplete,
-          builder: (context, state) => AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: state.isComplete ? 60 : 20,
-            left: 0,
-            right: 0,
-            child: AnimatedOpacity(
-              opacity: state.isComplete ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.kYellow,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: const Text(
-                    'Goal!',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+      child: HeadingView(content: content),
     );
   }
 }

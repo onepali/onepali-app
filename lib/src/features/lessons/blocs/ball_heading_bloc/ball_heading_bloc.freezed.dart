@@ -271,7 +271,7 @@ as BallSlideLessonContent,
 /// @nodoc
 mixin _$BallHeadingState {
 
- BallSlideLessonContent? get content;
+ BallSlideLessonContent? get content; bool get isAllAudioCompleted; bool get isComplete;
 /// Create a copy of BallHeadingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -282,16 +282,16 @@ $BallHeadingStateCopyWith<BallHeadingState> get copyWith => _$BallHeadingStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallHeadingState&&const DeepCollectionEquality().equals(other.content, content));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallHeadingState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),isAllAudioCompleted,isComplete);
 
 @override
 String toString() {
-  return 'BallHeadingState(content: $content)';
+  return 'BallHeadingState(content: $content, isAllAudioCompleted: $isAllAudioCompleted, isComplete: $isComplete)';
 }
 
 
@@ -302,7 +302,7 @@ abstract mixin class $BallHeadingStateCopyWith<$Res>  {
   factory $BallHeadingStateCopyWith(BallHeadingState value, $Res Function(BallHeadingState) _then) = _$BallHeadingStateCopyWithImpl;
 @useResult
 $Res call({
- BallSlideLessonContent? content
+ BallSlideLessonContent? content, bool isAllAudioCompleted, bool isComplete
 });
 
 
@@ -319,10 +319,12 @@ class _$BallHeadingStateCopyWithImpl<$Res>
 
 /// Create a copy of BallHeadingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? isAllAudioCompleted = null,Object? isComplete = null,}) {
   return _then(_self.copyWith(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as BallSlideLessonContent?,
+as BallSlideLessonContent?,isAllAudioCompleted: null == isAllAudioCompleted ? _self.isAllAudioCompleted : isAllAudioCompleted // ignore: cast_nullable_to_non_nullable
+as bool,isComplete: null == isComplete ? _self.isComplete : isComplete // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -407,10 +409,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BallSlideLessonContent? content)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  bool isAllAudioCompleted,  bool isComplete)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BallHeadingState() when $default != null:
-return $default(_that.content);case _:
+return $default(_that.content,_that.isAllAudioCompleted,_that.isComplete);case _:
   return orElse();
 
 }
@@ -428,10 +430,10 @@ return $default(_that.content);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BallSlideLessonContent? content)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  bool isAllAudioCompleted,  bool isComplete)  $default,) {final _that = this;
 switch (_that) {
 case _BallHeadingState():
-return $default(_that.content);case _:
+return $default(_that.content,_that.isAllAudioCompleted,_that.isComplete);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -448,10 +450,10 @@ return $default(_that.content);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BallSlideLessonContent? content)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BallSlideLessonContent? content,  bool isAllAudioCompleted,  bool isComplete)?  $default,) {final _that = this;
 switch (_that) {
 case _BallHeadingState() when $default != null:
-return $default(_that.content);case _:
+return $default(_that.content,_that.isAllAudioCompleted,_that.isComplete);case _:
   return null;
 
 }
@@ -463,10 +465,12 @@ return $default(_that.content);case _:
 
 
 class _BallHeadingState implements BallHeadingState {
-  const _BallHeadingState({this.content});
+  const _BallHeadingState({this.content, this.isAllAudioCompleted = false, this.isComplete = false});
   
 
 @override final  BallSlideLessonContent? content;
+@override@JsonKey() final  bool isAllAudioCompleted;
+@override@JsonKey() final  bool isComplete;
 
 /// Create a copy of BallHeadingState
 /// with the given fields replaced by the non-null parameter values.
@@ -478,16 +482,16 @@ _$BallHeadingStateCopyWith<_BallHeadingState> get copyWith => __$BallHeadingStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallHeadingState&&const DeepCollectionEquality().equals(other.content, content));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallHeadingState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),isAllAudioCompleted,isComplete);
 
 @override
 String toString() {
-  return 'BallHeadingState(content: $content)';
+  return 'BallHeadingState(content: $content, isAllAudioCompleted: $isAllAudioCompleted, isComplete: $isComplete)';
 }
 
 
@@ -498,7 +502,7 @@ abstract mixin class _$BallHeadingStateCopyWith<$Res> implements $BallHeadingSta
   factory _$BallHeadingStateCopyWith(_BallHeadingState value, $Res Function(_BallHeadingState) _then) = __$BallHeadingStateCopyWithImpl;
 @override @useResult
 $Res call({
- BallSlideLessonContent? content
+ BallSlideLessonContent? content, bool isAllAudioCompleted, bool isComplete
 });
 
 
@@ -515,10 +519,12 @@ class __$BallHeadingStateCopyWithImpl<$Res>
 
 /// Create a copy of BallHeadingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? isAllAudioCompleted = null,Object? isComplete = null,}) {
   return _then(_BallHeadingState(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as BallSlideLessonContent?,
+as BallSlideLessonContent?,isAllAudioCompleted: null == isAllAudioCompleted ? _self.isAllAudioCompleted : isAllAudioCompleted // ignore: cast_nullable_to_non_nullable
+as bool,isComplete: null == isComplete ? _self.isComplete : isComplete // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
