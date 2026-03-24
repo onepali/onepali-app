@@ -33,10 +33,8 @@ class PenaltySlideView extends StatelessWidget {
   const PenaltySlideView({
     super.key,
     required this.content,
-    required this.onNext,
   });
   final BallSlideLessonContent content;
-  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +77,6 @@ class PenaltySlideView extends StatelessWidget {
       body: PenaltySlider(
         config: isMobile ? mobileConfig : tabletConfig,
         content: content,
-        onNext: onNext,
       ),
     );
   }

@@ -31,6 +31,7 @@ class IntroLessonView extends StatefulWidget {
 class _IntroLessonViewState extends State<IntroLessonView> {
   StreamSubscription? audioSubscription;
   late AudioPlayerService audioProvider;
+  bool _isAudioCompleted = false;
 
   @override
   void initState() {
@@ -47,6 +48,15 @@ class _IntroLessonViewState extends State<IntroLessonView> {
       audioSubscription = audioProvider.onPlayerComplete.listen((event) {
         // context.read<LessonBloc>().add(LessonEvent.nextContent());
         log('audio completed');
+        if (!mounted) return;
+        setState(() {
+          _isAudioCompleted = true;
+        });
+      });
+    } else {
+      if (!mounted) return;
+      setState(() {
+        _isAudioCompleted = true;
       });
     }
   }
@@ -106,22 +116,13 @@ class _IntroLessonViewState extends State<IntroLessonView> {
             Navigator.of(context).pop();
           },
         ),
-        if (!widget.isLast)
-          StreamBuilder(
-            stream: audioProvider.onPlayerComplete,
-            builder: (context, asyncSnapshot) {
-              final isAudioCompleted = asyncSnapshot.hasData;
-              log('isAudioCompleted: $isAudioCompleted');
-              return CenterRightAlignedForwardButton(
-                onTap: () {
-                  context.read<LessonBloc>().add(
-                    const LessonEvent.nextContent(),
-                  );
-                },
-              );
+        if (!widget.isLast && _isAudioCompleted)
+          CenterRightAlignedForwardButton(
+            onTap: () {
+              context.read<LessonBloc>().add(const LessonEvent.nextContent());
             },
           ),
-        if (!widget.isFirst)
+        if (!widget.isFirst && _isAudioCompleted)
           CenterLeftAlignedBackButton(
             onTap: () {
               context.read<LessonBloc>().add(

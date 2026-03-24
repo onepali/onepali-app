@@ -1,55 +1,44 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
 class ConversationView extends StatefulWidget {
-  const ConversationView({
-    super.key,
-    required this.content,
-    required this.onNext,
-  });
+  const ConversationView({super.key, required this.content});
   final BallSlideLessonContent content;
-  final VoidCallback onNext;
 
   @override
   State<ConversationView> createState() => _ConversationViewState();
 }
 
 class _ConversationViewState extends State<ConversationView> {
-  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
-  bool _disposed = false;
-
+  final _audioPlayerService = AudioPlayerServiceImpl();
+  bool _isAudioCompleted = false;
   @override
   void initState() {
     super.initState();
-    unawaited(_playConversation());
-  }
-
-  Future<void> _playConversation() async {
-    for (final audioUrl in widget.content.conversation) {
-      if (_disposed || audioUrl.isEmpty) continue;
-      try {
-        await _audioPlayerService.play(audioUrl);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      for (final audio in widget.content.conversation) {
+        if (!mounted) return;
+        await _audioPlayerService.play(audio);
         await _audioPlayerService.onPlayerComplete.first;
-      } catch (error) {
-        log('Error playing conversation audio: $error');
       }
-    }
+      if (!mounted) return;
+      setState(() {
+        _isAudioCompleted = true;
+      });
+    });
   }
 
   @override
   void dispose() {
-    _disposed = true;
-    unawaited(_audioPlayerService.dispose());
+    _audioPlayerService.dispose();
     super.dispose();
   }
 
@@ -66,12 +55,23 @@ class _ConversationViewState extends State<ConversationView> {
             fit: BoxFit.cover,
           ),
         ),
-        CenterLeftAlignedBackButton(
+        TopRightPositionedCloseButton(
           onTap: () {
-            context.read<LessonBloc>().add(LessonEvent.previousContent());
+            Navigator.of(context).pop();
           },
         ),
-        CenterRightAlignedForwardButton(onTap: widget.onNext),
+        if (_isAudioCompleted)
+          CenterLeftAlignedBackButton(
+            onTap: () {
+              context.read<LessonBloc>().add(LessonEvent.previousContent());
+            },
+          ),
+        if (_isAudioCompleted)
+          CenterRightAlignedForwardButton(
+            onTap: () {
+              context.read<LessonBloc>().add(LessonEvent.nextContent());
+            },
+          ),
       ],
     );
   }
