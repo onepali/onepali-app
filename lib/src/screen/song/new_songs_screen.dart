@@ -15,32 +15,22 @@ class NewSongsScreen extends StatelessWidget {
   });
 
   Widget _buildRainbowText(BuildContext context, String text) {
-    final rainbowColors = [
-      AppColors.kRed,
-      AppColors.lessonBgColor,
-      AppColors.kSongColor,
-      AppColors.kGreen,
-      AppColors.kBlue,
-      AppColors.kButtonGreen,
-      AppColors.kPurple,
-    ];
- 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(text.length, (index) {
         return Text(
           text[index],
           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontFamily: GoogleFonts.lemon().fontFamily,
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: rainbowColors[index % rainbowColors.length],
-              ),
+            fontFamily: GoogleFonts.lemon().fontFamily,
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+            color: AppColors
+                .learningColors[index % AppColors.learningColors.length],
+          ),
         );
       }),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +57,7 @@ class NewSongsScreen extends StatelessWidget {
                       ? closeBtnPositionMobile
                       : closeBtnPositionTablet,
                 ),
-                child: TopRightPositionedCloseButton(
+                child: CustomCloseButton(
                   onTap: () {
                     Navigator.of(context).pop();
                   },
@@ -92,10 +82,15 @@ class NewSongsScreen extends StatelessWidget {
                       mainAxisSpacing: 16.0,
                       crossAxisSpacing: 16.0,
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.only(
+                      right: 24,
+                      left: 24,
+                      bottom: 24,
+                    ),
                     itemBuilder: (context, index) {
                       final data = snapshot.data!.docs;
                       return ContentCard(
+                        showPlay: true,
                         nameEn: data[index]['title_en'],
                         nameNp: 'nameNp',
                         onTap: () {

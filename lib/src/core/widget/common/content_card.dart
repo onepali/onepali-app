@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 
-
-class ContentCard extends StatelessWidget {
+class ContentCard extends StatefulWidget {
   final String nameEn;
   final String nameNp;
   final VoidCallback onTap;
@@ -14,6 +13,7 @@ class ContentCard extends StatelessWidget {
   final bool isImageSvg;
   final String? bgColor;
   final String? bgImage;
+  final bool showPlay;
 
   const ContentCard({
     super.key,
@@ -24,8 +24,15 @@ class ContentCard extends StatelessWidget {
     this.isImageSvg = false,
     this.bgColor,
     this.bgImage,
+    this.showPlay = false,
   });
 
+  @override
+  State<ContentCard> createState() => _ContentCardState();
+}
+
+class _ContentCardState extends State<ContentCard> {
+  final Random randomColor = Random();
   @override
   Widget build(BuildContext context) {
     bool isTabletLandscape =
@@ -33,13 +40,13 @@ class ContentCard extends StatelessWidget {
         PlatformUtility.isLandscape(context);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.35,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: bgColor != null
-              ? colorFromHex(bgColor!)
+          color: widget.bgColor != null
+              ? colorFromHex(widget.bgColor!)
               : AppColors.kButtonGreen,
           boxShadow: [
             BoxShadow(
@@ -53,10 +60,10 @@ class ContentCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              if (bgImage != null)
+              if (widget.bgImage != null)
                 Positioned.fill(
                   child: CustomCachedImage(
-                    imageUrl: bgImage!,
+                    imageUrl: widget.bgImage!,
                     fit: BoxFit.cover,
                     errorWidget: Image.asset(
                       Assets.placeholder,
@@ -64,23 +71,23 @@ class ContentCard extends StatelessWidget {
                     ),
                   ),
                 ),
-              
+
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    if (image != null)
+                    if (widget.image != null)
                       Expanded(
-                        child: isImageSvg
+                        child: widget.isImageSvg
                             ? SvgPicture.network(
-                                image!,
+                                widget.image!,
                                 fit: BoxFit.contain,
                                 placeholderBuilder: (context) => const Center(
                                   child: CircularProgressIndicator(),
                                 ),
                               )
                             : CustomCachedImage(
-                                imageUrl: image!,
+                                imageUrl: widget.image!,
                                 fit: BoxFit.contain,
                               ),
                       )
@@ -98,7 +105,7 @@ class ContentCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          nameEn,
+                          widget.nameEn,
                           maxLines: 1,
                           style: AppStyles.text16PxMedium.copyWith(
                             fontSize: isTabletLandscape ? 24 : 16,
@@ -109,6 +116,25 @@ class ContentCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (widget.showPlay)
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color:
+                          AppColors.learningColors[randomColor.nextInt(
+                            AppColors.learningColors.length,
+                          )],
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.play_arrow,
+                      size: 48,
+                      color: AppColors.kWhite,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
