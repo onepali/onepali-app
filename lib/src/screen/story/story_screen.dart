@@ -76,6 +76,7 @@ class _StoryScreenState extends State<StoryScreen> {
                                   nameEn: lesson['nameEn'],
                                   nameNp: lesson['nameNp'],
                                   image: lesson['thumbnail'],
+                                  bgImage: lesson['bg_image'],
                                   isImageSvg: true,
                                   bgColor: lesson['bg_color'],
                                   onTap: () {

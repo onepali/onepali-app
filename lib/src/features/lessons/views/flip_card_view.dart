@@ -115,7 +115,10 @@ class _FlipCardViewState extends State<FlipCardView> {
                           Text(
                             e.nameNp,
                             style: Theme.of(context).textTheme.headlineLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                                ?.copyWith(fontWeight: FontWeight.bold,
+                                 fontFamily: AppConstants.kMuktaFont,
+                                 fontSize: 40,
+                                ),
                           ),
                         ],
                       ),
