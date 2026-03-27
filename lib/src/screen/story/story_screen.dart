@@ -41,20 +41,20 @@ class _StoryScreenState extends State<StoryScreen> {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final levels = snapshot.data!.docs;
+          final data = snapshot.data!.docs;
 
           return ListView.builder(
-            itemCount: levels.length,
+            itemCount: data.length,
             padding: EdgeInsets.symmetric(horizontal: 24),
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              final level = levels[index];
+              final data = snapshot.data!.docs;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    level['name'] as String? ?? '',
+                    data[index]['name'],
                     style: AppStyles.text20PxSemiBold.copyWith(
                       color: AppColors.kBlack,
                       fontSize: isTabletLandscape ? 24 : 20,
@@ -69,7 +69,7 @@ class _StoryScreenState extends State<StoryScreen> {
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('stories')
-                          .where('level_id', isEqualTo: level['id'])
+                          .where('level_id', isEqualTo: data[index]['id'])
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -81,24 +81,16 @@ class _StoryScreenState extends State<StoryScreen> {
                                 Gaps.horizontalGapOf(16),
                             itemBuilder: (context, storyIndex) {
                               final storyDoc = stories[storyIndex];
-                              final story = StoryModel.fromJson(
-                                storyDoc.data(),
-                              );
-                              final isLocked = storyIndex > 0;
-                              final isGuest = GuestUtil.isGuestUser();
-
+                              final storyData = storyDoc.data();
+                              final story = StoryModel.fromJson(storyData);
                               return ContentCard(
                                 nameEn: story.nameEn,
                                 nameNp: story.nameNp,
                                 image: story.thumbnail,
+                                bgImage: storyData['bg_image'] as String?,
                                 isImageSvg: _isSvgImage(story.thumbnail),
-                                bgColor: story.bgColor,
+                                bgColor: storyData['bg_color'] as String?,
                                 onTap: () {
-                                  if (isGuest && isLocked) {
-                                    GuestUtil.showGuestAccountPrompt(context);
-                                    return;
-                                  }
-
                                   Utility.navigateMaterialRoute(
                                     context,
                                     StoryContentScreen(

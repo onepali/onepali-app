@@ -115,18 +115,21 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
       ),
       decoration: BoxDecoration(
         color: AppColors.kSecondaryColor,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(50),
       ),
       child: Text(
         text,
         style: isMobile
             ? Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppColors.kWhite,
+                fontSize: 32,
                 fontWeight: FontWeight.w600,
               )
-            : Theme.of(
-                context,
-              ).textTheme.headlineLarge?.copyWith(color: AppColors.kWhite),
+            : Theme.of(context).textTheme.headlineLarge?.copyWith(
+                color: AppColors.kWhite,
+                fontSize: 44,
+                fontFamily: AppConstants.kMuktaFont,
+              ),
       ),
     );
   }
@@ -183,9 +186,6 @@ class TopItems extends StatelessWidget {
                     ? AppColors.kButtonGreen
                     : AppColors.kButtonGrey,
                 borderRadius: BorderRadius.circular(50),
-                // border: isCorrect
-                //     ? null
-                //     : Border.all(color: AppColors.kGrey, width: 2),
               ),
               child: Text(
                 isCorrect ? labelNp : labelEn,
@@ -193,9 +193,11 @@ class TopItems extends StatelessWidget {
                     ? Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
                         fontWeight: FontWeight.w600,
+                        fontFamily: AppConstants.kMuktaFont,
                       )
                     : Theme.of(context).textTheme.headlineLarge?.copyWith(
                         color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
+                        fontFamily: AppConstants.kMuktaFont,
                       ),
               ),
             ),
