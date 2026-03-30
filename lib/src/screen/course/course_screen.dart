@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
-import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class CourseScreen extends StatefulWidget {
@@ -17,10 +17,21 @@ class CourseScreenState extends State<CourseScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      context.read<LessonProvider>().fetchCourses();
-      context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
-    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> _getLessonsStream(
+    String levelId,
+  ) {
+    // In debug mode, ignore .where('active', isEqualTo: true)
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection('lessons')
+        .where('level_id', isEqualTo: levelId);
+
+    if (!kDebugMode) {
+      query = query.where('active', isEqualTo: true);
+    }
+
+    return query.snapshots();
   }
 
   @override
@@ -61,11 +72,7 @@ class CourseScreenState extends State<CourseScreen> {
                         ? MediaQuery.of(context).size.height * 0.45
                         : MediaQuery.of(context).size.height * 0.3,
                     child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('lessons')
-                          .where('level_id', isEqualTo: data[index]['id'])
-                          .where('active', isEqualTo: true)
-                          .snapshots(),
+                      stream: _getLessonsStream(data[index]['id']),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final data = snapshot.data!.docs;

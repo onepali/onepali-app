@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/src.dart';
-import 'package:provider/provider.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -15,12 +15,20 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      context.read<StoryProvider>().fetchStories();
-      context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
-        context,
-      );
-    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> _getStoriesStream(
+    String levelId,
+  ) {
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection('stories')
+        .where('level_id', isEqualTo: levelId);
+
+    if (!kDebugMode) {
+      query = query.where('active', isEqualTo: true);
+    }
+
+    return query.snapshots();
   }
 
   @override
@@ -62,10 +70,7 @@ class _StoryScreenState extends State<StoryScreen> {
                         ? MediaQuery.of(context).size.height * 0.45
                         : MediaQuery.of(context).size.height * 0.3,
                     child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('stories')
-                          .where('level_id', isEqualTo: data[index]['id'])
-                          .snapshots(),
+                      stream: _getStoriesStream(data[index]['id']),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final data = snapshot.data!.docs;
@@ -108,50 +113,6 @@ class _StoryScreenState extends State<StoryScreen> {
           );
         }
         return SizedBox();
-      },
-    );
-    return Consumer<StoryProvider>(
-      builder: (context, provider, _) {
-        return StatusHandler(
-          status: provider.status,
-          hasData: provider.stories.isNotEmpty,
-          errorTitle: 'No stories found',
-          errorMessage: 'Please check back later for new stories.',
-          checkConnectivity: false,
-          onRetry: () {
-            context.read<StoryProvider>().fetchStories();
-          },
-          successBuilder: () {
-            final stories = provider.stories;
-            // double cardHeight = AppCardResponsive.getDashboardCardHeight(context);
-
-            return SizedBox(
-              height: isMobile
-                  ? MediaQuery.of(context).size.height * 0.45
-                  : MediaQuery.of(context).size.height * 0.3,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                itemCount: stories.length,
-                separatorBuilder: (_, _) => Gaps.horizontalGapOf(16),
-                itemBuilder: (context, i) {
-                  final story = stories[i];
-                  return ContentCard(
-                    nameEn: story.nameEn,
-                    nameNp: story.nameNp,
-                    image: story.thumbnail,
-                    isImageSvg: true,
-                    bgColor: '#FFC107',
-                    onTap: () {},
-                  );
-                },
-              ),
-            );
-          },
-        );
       },
     );
   }
