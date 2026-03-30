@@ -14,21 +14,16 @@ class NewSongsScreen extends StatelessWidget {
     required this.title,
   });
 
-  Widget _buildRainbowText(BuildContext context, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(text.length, (index) {
-        return Text(
-          text[index],
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            fontFamily: GoogleFonts.lemon().fontFamily,
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            color: AppColors
-                .learningColors[index % AppColors.learningColors.length],
-          ),
-        );
-      }),
+  Widget _buildTitleText(BuildContext context, String text) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontSize: 36,
+        letterSpacing: 5,
+        fontWeight: FontWeight.bold,
+        color: AppColors.kDrawerBgColor,
+      ),
     );
   }
 
@@ -39,29 +34,38 @@ class NewSongsScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Stack(
             children: [
-              SizedBox.shrink(),
-              _buildRainbowText(context, title),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: isMobile
-                      ? closeBtnPositionMobile
-                      : closeBtnPositionTablet,
-                  bottom: isMobile
-                      ? closeBtnPositionMobile
-                      : closeBtnPositionTablet,
-                  right: isMobile
-                      ? closeBtnPositionMobile
-                      : closeBtnPositionTablet,
-                ),
-                child: CustomCloseButton(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: isMobile
+                          ? closeBtnPositionMobile
+                          : closeBtnPositionTablet,
+                      bottom: isMobile
+                          ? closeBtnPositionMobile
+                          : closeBtnPositionTablet,
+                      right: isMobile
+                          ? closeBtnPositionMobile
+                          : closeBtnPositionTablet,
+                    ),
+                    child: CustomCloseButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Center(child: _buildTitleText(context, title)),
               ),
             ],
           ),
