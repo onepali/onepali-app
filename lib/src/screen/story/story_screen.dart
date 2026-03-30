@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/src.dart';
-import 'package:provider/provider.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -20,12 +20,15 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      context.read<StoryProvider>().fetchStories();
-      context.read<StoryProvider>().fetchRecommendedStoriesForActiveChild(
-        context,
-      );
-    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> _getStoriesStream(
+    String levelId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('stories')
+        .where('level_id', isEqualTo: levelId)
+        .snapshots();
   }
 
   @override
@@ -67,13 +70,16 @@ class _StoryScreenState extends State<StoryScreen> {
                         ? MediaQuery.of(context).size.height * 0.45
                         : MediaQuery.of(context).size.height * 0.3,
                     child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('stories')
-                          .where('level_id', isEqualTo: data[index]['id'])
-                          .snapshots(),
+                      stream: _getStoriesStream(data[index]['id']),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          final stories = snapshot.data!.docs;
+                          final stories = snapshot.data!.docs
+                              .where(
+                                (story) =>
+                                    kDebugMode ||
+                                    story.data()['active'] != false,
+                              )
+                              .toList();
                           return ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemCount: stories.length,
