@@ -372,6 +372,34 @@ Map<String, dynamic> _$FlipCardLessonContentToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
+BalloonFillLessonContent _$BalloonFillLessonContentFromJson(
+  Map<String, dynamic> json,
+) => BalloonFillLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'balloon_fill',
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$BalloonFillLessonContentToJson(
+  BalloonFillLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(
