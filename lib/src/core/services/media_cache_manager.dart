@@ -69,6 +69,9 @@ class MediaCacheManager {
         if (content is FlipCardLessonContent) {
           _precacheFlipCardLessonContent(content, context);
         }
+        if (content is BalloonFillLessonContent) {
+          _precacheBalloonFillLessonContent(content, context);
+        }
       }
     } catch (e) {
       log('Error pre caching medias: $e');
@@ -315,6 +318,25 @@ class MediaCacheManager {
   ) {
     if (content.bgImage != null) {
       precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+    for (var item in content.items) {
+      _precacheItemMedia(item, context);
+    }
+  }
+
+  // 13. Balloon fill
+  _precacheBalloonFillLessonContent(
+    BalloonFillLessonContent content,
+    BuildContext context,
+  ) {
+    if(content.audio!=null){
+      _precacheMedia(content.audio!);
+    }
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
     }
     for (var item in content.items) {
       _precacheItemMedia(item, context);

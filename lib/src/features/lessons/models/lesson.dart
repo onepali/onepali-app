@@ -192,6 +192,19 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgImage,
     @Default([]) List<Item> items,
   }) = FlipCardLessonContent;
+  // Holi lesson content
+
+  @FreezedUnionValue("balloon_fill")
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.balloonFill({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('balloon_fill') String type,
+    String? bgImage,
+    String? bgImageTb,
+    @Default([]) List<Item> items,
+  }) = BalloonFillLessonContent;
 
   const factory LessonContent.unknown({
     @Default('') String id,

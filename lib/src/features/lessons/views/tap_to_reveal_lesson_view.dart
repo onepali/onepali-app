@@ -275,6 +275,7 @@ class _CorrectNameDisplayState extends State<CorrectNameDisplay>
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -284,9 +285,9 @@ class _CorrectNameDisplayState extends State<CorrectNameDisplay>
             child: Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
+                padding:  EdgeInsets.symmetric(
+                  horizontal: isMobile? 16: 32,
+                  vertical: isMobile? 6: 12,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.kSecondaryColor,
@@ -294,10 +295,11 @@ class _CorrectNameDisplayState extends State<CorrectNameDisplay>
                 ),
                 child: Text(
                   widget.nameNp,
-                  style: const TextStyle(
-                    fontSize: 48,
+                  style:  TextStyle(
+                    fontSize: isMobile ? 32 : 48,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    fontFamily: AppConstants.kMuktaFont,
                   ),
                   textAlign: TextAlign.center,
                 ),

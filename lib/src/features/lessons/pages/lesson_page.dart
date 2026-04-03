@@ -13,6 +13,7 @@ import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bl
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/ball_match_view.dart';
+import 'package:onepali/src/features/lessons/views/balloon_fill_view.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
@@ -124,6 +125,7 @@ class _LessonPageState extends State<LessonPage> {
                 content: lessonContent,
                 isLastContent: isLastContent,
               ),
+              BalloonFillLessonContent() => BalloonFillView(content: lessonContent),
               _ => Center(child: Text('Unknown content type')),
             };
           },
