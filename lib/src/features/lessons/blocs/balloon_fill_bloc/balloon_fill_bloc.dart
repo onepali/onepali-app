@@ -73,8 +73,9 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
   ) async {
     final index = state.fillingIndex;
     if (index == null) return;
-
-    final label = state.content?.items[index].nameNp;
+    final item = state.content?.items[index];
+    if (item == null) return;
+    final label = item.nameNp;
     final updatedFilled = {...state.filledIndexes, index};
 
     emit(
@@ -85,11 +86,12 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
         colorLabelNp: label,
       ),
     );
+    if (item.audioItem != null) {
+      _audioPlayer.play(state.content?.items[index].audioItem ?? '');
 
-    _audioPlayer.playAsset(Assets.starBlast);
-
-    // BLoC owns the label timer — not the UI
-    await Future.delayed(const Duration(seconds: 2));
+      // BLoC owns the label timer — not the UI
+      await Future.delayed(const Duration(seconds: 2));
+    }
     add(const BalloonFillEvent.labelHidden());
   }
 
