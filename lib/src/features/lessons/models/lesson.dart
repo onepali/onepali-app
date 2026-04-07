@@ -203,8 +203,8 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgImage,
     @Default([]) List<Item> items,
   }) = FlipCardLessonContent;
-  // Holi lesson content
 
+  //--------------------Holi lesson contents----------------
   @FreezedUnionValue("balloon_fill")
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -217,6 +217,19 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgImageTb,
     @Default([]) List<Item> items,
   }) = BalloonFillLessonContent;
+
+  @FreezedUnionValue("gun_fill")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.gunFill({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('gun_fill') String type,
+    String? bgImage, // Svg Image
+    String? bgImageTb, // Svg Image
+    @Default([]) List<Item> items,
+  }) = GunFillLessonContent;
 
   const factory LessonContent.unknown({
     @Default('') String id,

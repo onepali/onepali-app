@@ -342,6 +342,10 @@ LessonContent _$LessonContentFromJson(
           return BalloonFillLessonContent.fromJson(
             json
           );
+                case 'gun_fill':
+          return GunFillLessonContent.fromJson(
+            json
+          );
                 case 'unknown':
           return UnknownLessonContent.fromJson(
             json
@@ -437,7 +441,7 @@ extension LessonContentPatterns on LessonContent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( TapToPopLessonContent value)?  tapToPop,TResult Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult Function( CharTracingLessonContent value)?  charTracing,TResult Function( TeaMakingLessonContent value)?  teaMaking,TResult Function( BallSlideLessonContent value)?  ballSlide,TResult Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult Function( FlipCardLessonContent value)?  flipCard,TResult Function( BalloonFillLessonContent value)?  balloonFill,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( TapToPopLessonContent value)?  tapToPop,TResult Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult Function( CharTracingLessonContent value)?  charTracing,TResult Function( TeaMakingLessonContent value)?  teaMaking,TResult Function( BallSlideLessonContent value)?  ballSlide,TResult Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult Function( FlipCardLessonContent value)?  flipCard,TResult Function( BalloonFillLessonContent value)?  balloonFill,TResult Function( GunFillLessonContent value)?  gunFill,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
@@ -453,7 +457,8 @@ return teaMaking(_that);case BallSlideLessonContent() when ballSlide != null:
 return ballSlide(_that);case SlideUpToMatchLessonContent() when slideUpToMatch != null:
 return slideUpToMatch(_that);case FlipCardLessonContent() when flipCard != null:
 return flipCard(_that);case BalloonFillLessonContent() when balloonFill != null:
-return balloonFill(_that);case UnknownLessonContent() when unknown != null:
+return balloonFill(_that);case GunFillLessonContent() when gunFill != null:
+return gunFill(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return orElse();
 
@@ -472,7 +477,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( TapToPopLessonContent value)  tapToPop,required TResult Function( ListenAndRepeatLessonContent value)  listenAndRepeat,required TResult Function( CharTracingLessonContent value)  charTracing,required TResult Function( TeaMakingLessonContent value)  teaMaking,required TResult Function( BallSlideLessonContent value)  ballSlide,required TResult Function( SlideUpToMatchLessonContent value)  slideUpToMatch,required TResult Function( FlipCardLessonContent value)  flipCard,required TResult Function( BalloonFillLessonContent value)  balloonFill,required TResult Function( UnknownLessonContent value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( TapToPopLessonContent value)  tapToPop,required TResult Function( ListenAndRepeatLessonContent value)  listenAndRepeat,required TResult Function( CharTracingLessonContent value)  charTracing,required TResult Function( TeaMakingLessonContent value)  teaMaking,required TResult Function( BallSlideLessonContent value)  ballSlide,required TResult Function( SlideUpToMatchLessonContent value)  slideUpToMatch,required TResult Function( FlipCardLessonContent value)  flipCard,required TResult Function( BalloonFillLessonContent value)  balloonFill,required TResult Function( GunFillLessonContent value)  gunFill,required TResult Function( UnknownLessonContent value)  unknown,}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent():
@@ -488,7 +493,8 @@ return teaMaking(_that);case BallSlideLessonContent():
 return ballSlide(_that);case SlideUpToMatchLessonContent():
 return slideUpToMatch(_that);case FlipCardLessonContent():
 return flipCard(_that);case BalloonFillLessonContent():
-return balloonFill(_that);case UnknownLessonContent():
+return balloonFill(_that);case GunFillLessonContent():
+return gunFill(_that);case UnknownLessonContent():
 return unknown(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -506,7 +512,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( TapToPopLessonContent value)?  tapToPop,TResult? Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult? Function( CharTracingLessonContent value)?  charTracing,TResult? Function( TeaMakingLessonContent value)?  teaMaking,TResult? Function( BallSlideLessonContent value)?  ballSlide,TResult? Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult? Function( FlipCardLessonContent value)?  flipCard,TResult? Function( BalloonFillLessonContent value)?  balloonFill,TResult? Function( UnknownLessonContent value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( TapToPopLessonContent value)?  tapToPop,TResult? Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult? Function( CharTracingLessonContent value)?  charTracing,TResult? Function( TeaMakingLessonContent value)?  teaMaking,TResult? Function( BallSlideLessonContent value)?  ballSlide,TResult? Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult? Function( FlipCardLessonContent value)?  flipCard,TResult? Function( BalloonFillLessonContent value)?  balloonFill,TResult? Function( GunFillLessonContent value)?  gunFill,TResult? Function( UnknownLessonContent value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
@@ -522,7 +528,8 @@ return teaMaking(_that);case BallSlideLessonContent() when ballSlide != null:
 return ballSlide(_that);case SlideUpToMatchLessonContent() when slideUpToMatch != null:
 return slideUpToMatch(_that);case FlipCardLessonContent() when flipCard != null:
 return flipCard(_that);case BalloonFillLessonContent() when balloonFill != null:
-return balloonFill(_that);case UnknownLessonContent() when unknown != null:
+return balloonFill(_that);case GunFillLessonContent() when gunFill != null:
+return gunFill(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return null;
 
@@ -540,7 +547,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  gunFill,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio,_that.bgImageMobile,_that.bgImageTablet);case InfoLessonContent() when info != null:
@@ -555,7 +562,8 @@ return teaMaking(_that.id,_that.index,_that.type,_that.audioInstruction,_that.te
 return ballSlide(_that.id,_that.index,_that.type,_that.bgImageMobile,_that.bgImageTablet,_that.player1,_that.player2,_that.ballImage,_that.direction,_that.conversation,_that.angle,_that.sliderLengthMb,_that.sliderLengthTb,_that.pDyMb,_that.pDyTb,_that.goalLeftImageMb,_that.goalLeftImageTb,_that.goalRightImageMb,_that.goalRightImageTb);case SlideUpToMatchLessonContent() when slideUpToMatch != null:
 return slideUpToMatch(_that.id,_that.index,_that.type,_that.bgImage,_that.items);case FlipCardLessonContent() when flipCard != null:
 return flipCard(_that.id,_that.index,_that.type,_that.bgImage,_that.items);case BalloonFillLessonContent() when balloonFill != null:
-return balloonFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case UnknownLessonContent() when unknown != null:
+return balloonFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case GunFillLessonContent() when gunFill != null:
+return gunFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return orElse();
 
@@ -574,7 +582,7 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)  tapToPop,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)  listenAndRepeat,required TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)  charTracing,required TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)  teaMaking,required TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)  ballSlide,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  slideUpToMatch,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  flipCard,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  balloonFill,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)  tapToPop,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)  listenAndRepeat,required TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)  charTracing,required TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)  teaMaking,required TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)  ballSlide,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  slideUpToMatch,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  flipCard,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  balloonFill,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  gunFill,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
 switch (_that) {
 case IntroLessonContent():
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio,_that.bgImageMobile,_that.bgImageTablet);case InfoLessonContent():
@@ -589,7 +597,8 @@ return teaMaking(_that.id,_that.index,_that.type,_that.audioInstruction,_that.te
 return ballSlide(_that.id,_that.index,_that.type,_that.bgImageMobile,_that.bgImageTablet,_that.player1,_that.player2,_that.ballImage,_that.direction,_that.conversation,_that.angle,_that.sliderLengthMb,_that.sliderLengthTb,_that.pDyMb,_that.pDyTb,_that.goalLeftImageMb,_that.goalLeftImageTb,_that.goalRightImageMb,_that.goalRightImageTb);case SlideUpToMatchLessonContent():
 return slideUpToMatch(_that.id,_that.index,_that.type,_that.bgImage,_that.items);case FlipCardLessonContent():
 return flipCard(_that.id,_that.index,_that.type,_that.bgImage,_that.items);case BalloonFillLessonContent():
-return balloonFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case UnknownLessonContent():
+return balloonFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case GunFillLessonContent():
+return gunFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case UnknownLessonContent():
 return unknown(_that.id,_that.index,_that.type);case _:
   throw StateError('Unexpected subclass');
 
@@ -607,7 +616,7 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult? Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult? Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult? Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult? Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult? Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult? Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  gunFill,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio,_that.bgImageMobile,_that.bgImageTablet);case InfoLessonContent() when info != null:
@@ -622,7 +631,8 @@ return teaMaking(_that.id,_that.index,_that.type,_that.audioInstruction,_that.te
 return ballSlide(_that.id,_that.index,_that.type,_that.bgImageMobile,_that.bgImageTablet,_that.player1,_that.player2,_that.ballImage,_that.direction,_that.conversation,_that.angle,_that.sliderLengthMb,_that.sliderLengthTb,_that.pDyMb,_that.pDyTb,_that.goalLeftImageMb,_that.goalLeftImageTb,_that.goalRightImageMb,_that.goalRightImageTb);case SlideUpToMatchLessonContent() when slideUpToMatch != null:
 return slideUpToMatch(_that.id,_that.index,_that.type,_that.bgImage,_that.items);case FlipCardLessonContent() when flipCard != null:
 return flipCard(_that.id,_that.index,_that.type,_that.bgImage,_that.items);case BalloonFillLessonContent() when balloonFill != null:
-return balloonFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case UnknownLessonContent() when unknown != null:
+return balloonFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case GunFillLessonContent() when gunFill != null:
+return gunFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.items);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return null;
 
@@ -1772,6 +1782,96 @@ class _$BalloonFillLessonContentCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? audio = freezed,Object? type = null,Object? bgImage = freezed,Object? bgImageTb = freezed,Object? items = null,}) {
   return _then(BalloonFillLessonContent(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,audio: freezed == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
+as String?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,bgImage: freezed == bgImage ? _self.bgImage : bgImage // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTb: freezed == bgImageTb ? _self.bgImageTb : bgImageTb // ignore: cast_nullable_to_non_nullable
+as String?,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<Item>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class GunFillLessonContent implements LessonContent {
+  const GunFillLessonContent({required this.id, required this.index, this.audio, this.type = 'gun_fill', this.bgImage, this.bgImageTb, final  List<Item> items = const []}): _items = items;
+  factory GunFillLessonContent.fromJson(Map<String, dynamic> json) => _$GunFillLessonContentFromJson(json);
+
+@override final  String id;
+@override final  int index;
+ final  String? audio;
+@override@JsonKey() final  String type;
+ final  String? bgImage;
+// Svg Image
+ final  String? bgImageTb;
+// Svg Image
+ final  List<Item> _items;
+// Svg Image
+@JsonKey() List<Item> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GunFillLessonContentCopyWith<GunFillLessonContent> get copyWith => _$GunFillLessonContentCopyWithImpl<GunFillLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$GunFillLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GunFillLessonContent&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.audio, audio) || other.audio == audio)&&(identical(other.type, type) || other.type == type)&&(identical(other.bgImage, bgImage) || other.bgImage == bgImage)&&(identical(other.bgImageTb, bgImageTb) || other.bgImageTb == bgImageTb)&&const DeepCollectionEquality().equals(other._items, _items));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,index,audio,type,bgImage,bgImageTb,const DeepCollectionEquality().hash(_items));
+
+@override
+String toString() {
+  return 'LessonContent.gunFill(id: $id, index: $index, audio: $audio, type: $type, bgImage: $bgImage, bgImageTb: $bgImageTb, items: $items)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GunFillLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $GunFillLessonContentCopyWith(GunFillLessonContent value, $Res Function(GunFillLessonContent) _then) = _$GunFillLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int index, String? audio, String type, String? bgImage, String? bgImageTb, List<Item> items
+});
+
+
+
+
+}
+/// @nodoc
+class _$GunFillLessonContentCopyWithImpl<$Res>
+    implements $GunFillLessonContentCopyWith<$Res> {
+  _$GunFillLessonContentCopyWithImpl(this._self, this._then);
+
+  final GunFillLessonContent _self;
+  final $Res Function(GunFillLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? audio = freezed,Object? type = null,Object? bgImage = freezed,Object? bgImageTb = freezed,Object? items = null,}) {
+  return _then(GunFillLessonContent(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int,audio: freezed == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
