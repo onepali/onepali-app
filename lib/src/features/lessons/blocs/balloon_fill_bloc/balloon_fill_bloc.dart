@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
@@ -73,8 +73,10 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
   ) async {
     final index = state.fillingIndex;
     if (index == null) return;
-
-    final label = state.content?.items[index].nameNp;
+    final items = state.content?.items;
+    if (items == null || index < 0 || index >= items.length) return;
+    final item = items[index];
+    final label = item.nameNp;
     final updatedFilled = {...state.filledIndexes, index};
 
     emit(
@@ -86,9 +88,20 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
       ),
     );
 
-    _audioPlayer.playAsset(Assets.starBlast);
+    final itemAudio = item.audioItem;
+    if (itemAudio != null && itemAudio.isNotEmpty) {
+      try {
+        await _audioPlayer.play(itemAudio);
+      } catch (error, stackTrace) {
+        log(
+          'Failed to play balloon fill item audio',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
 
-    // BLoC owns the label timer — not the UI
+    // BLoC owns the label timer — not the UI.
     await Future.delayed(const Duration(seconds: 2));
     add(const BalloonFillEvent.labelHidden());
   }
