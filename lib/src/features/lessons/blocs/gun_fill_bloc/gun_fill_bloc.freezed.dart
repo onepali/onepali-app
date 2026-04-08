@@ -1045,7 +1045,7 @@ $ItemCopyWith<$Res>? get item {
 /// @nodoc
 mixin _$GunLabel {
 
- String get path; String? get color;
+ String get path; String? get color; String? get gunPartId;
 /// Create a copy of GunLabel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1056,16 +1056,16 @@ $GunLabelCopyWith<GunLabel> get copyWith => _$GunLabelCopyWithImpl<GunLabel>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GunLabel&&(identical(other.path, path) || other.path == path)&&(identical(other.color, color) || other.color == color));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GunLabel&&(identical(other.path, path) || other.path == path)&&(identical(other.color, color) || other.color == color)&&(identical(other.gunPartId, gunPartId) || other.gunPartId == gunPartId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path,color);
+int get hashCode => Object.hash(runtimeType,path,color,gunPartId);
 
 @override
 String toString() {
-  return 'GunLabel(path: $path, color: $color)';
+  return 'GunLabel(path: $path, color: $color, gunPartId: $gunPartId)';
 }
 
 
@@ -1076,7 +1076,7 @@ abstract mixin class $GunLabelCopyWith<$Res>  {
   factory $GunLabelCopyWith(GunLabel value, $Res Function(GunLabel) _then) = _$GunLabelCopyWithImpl;
 @useResult
 $Res call({
- String path, String? color
+ String path, String? color, String? gunPartId
 });
 
 
@@ -1093,10 +1093,11 @@ class _$GunLabelCopyWithImpl<$Res>
 
 /// Create a copy of GunLabel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? color = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? color = freezed,Object? gunPartId = freezed,}) {
   return _then(_self.copyWith(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as String?,gunPartId: freezed == gunPartId ? _self.gunPartId : gunPartId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -1182,10 +1183,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String path,  String? color)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String path,  String? color,  String? gunPartId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GunLabel() when $default != null:
-return $default(_that.path,_that.color);case _:
+return $default(_that.path,_that.color,_that.gunPartId);case _:
   return orElse();
 
 }
@@ -1203,10 +1204,10 @@ return $default(_that.path,_that.color);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String path,  String? color)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String path,  String? color,  String? gunPartId)  $default,) {final _that = this;
 switch (_that) {
 case _GunLabel():
-return $default(_that.path,_that.color);case _:
+return $default(_that.path,_that.color,_that.gunPartId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1223,10 +1224,10 @@ return $default(_that.path,_that.color);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String path,  String? color)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String path,  String? color,  String? gunPartId)?  $default,) {final _that = this;
 switch (_that) {
 case _GunLabel() when $default != null:
-return $default(_that.path,_that.color);case _:
+return $default(_that.path,_that.color,_that.gunPartId);case _:
   return null;
 
 }
@@ -1238,11 +1239,12 @@ return $default(_that.path,_that.color);case _:
 
 
 class _GunLabel implements GunLabel {
-  const _GunLabel({required this.path, this.color});
+  const _GunLabel({required this.path, this.color, this.gunPartId});
   
 
 @override final  String path;
 @override final  String? color;
+@override final  String? gunPartId;
 
 /// Create a copy of GunLabel
 /// with the given fields replaced by the non-null parameter values.
@@ -1254,16 +1256,16 @@ _$GunLabelCopyWith<_GunLabel> get copyWith => __$GunLabelCopyWithImpl<_GunLabel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GunLabel&&(identical(other.path, path) || other.path == path)&&(identical(other.color, color) || other.color == color));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GunLabel&&(identical(other.path, path) || other.path == path)&&(identical(other.color, color) || other.color == color)&&(identical(other.gunPartId, gunPartId) || other.gunPartId == gunPartId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path,color);
+int get hashCode => Object.hash(runtimeType,path,color,gunPartId);
 
 @override
 String toString() {
-  return 'GunLabel(path: $path, color: $color)';
+  return 'GunLabel(path: $path, color: $color, gunPartId: $gunPartId)';
 }
 
 
@@ -1274,7 +1276,7 @@ abstract mixin class _$GunLabelCopyWith<$Res> implements $GunLabelCopyWith<$Res>
   factory _$GunLabelCopyWith(_GunLabel value, $Res Function(_GunLabel) _then) = __$GunLabelCopyWithImpl;
 @override @useResult
 $Res call({
- String path, String? color
+ String path, String? color, String? gunPartId
 });
 
 
@@ -1291,10 +1293,11 @@ class __$GunLabelCopyWithImpl<$Res>
 
 /// Create a copy of GunLabel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? path = null,Object? color = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? path = null,Object? color = freezed,Object? gunPartId = freezed,}) {
   return _then(_GunLabel(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as String?,gunPartId: freezed == gunPartId ? _self.gunPartId : gunPartId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

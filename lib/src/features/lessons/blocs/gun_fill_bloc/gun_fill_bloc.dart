@@ -38,6 +38,7 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
               GunLabel(
                 path: element.getAttribute('d') ?? '',
                 color: element.getAttribute('fill'),
+                gunPartId: element.getAttribute('partId') ?? '#FFFFFF',
               ),
             );
             continue;

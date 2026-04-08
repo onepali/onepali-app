@@ -428,6 +428,36 @@ Map<String, dynamic> _$GunFillLessonContentToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
+HoliAnimateLessonContent _$HoliAnimateLessonContentFromJson(
+  Map<String, dynamic> json,
+) => HoliAnimateLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'holi_animate',
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  image: json['image'] as String,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$HoliAnimateLessonContentToJson(
+  HoliAnimateLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'image': instance.image,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(

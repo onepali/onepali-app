@@ -205,6 +205,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgImageTb,
     @Default([]) List<Item> items,
   }) = BalloonFillLessonContent;
+
   @FreezedUnionValue("gun_fill")
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory LessonContent.gunFill({
@@ -217,6 +218,19 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = GunFillLessonContent;
 
+  @FreezedUnionValue("holi_animate")
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.holiAnimate({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('holi_animate') String type,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    required String image, // Image to animate
+    @Default([]) List<Item> items,
+  }) = HoliAnimateLessonContent;
+ 
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
