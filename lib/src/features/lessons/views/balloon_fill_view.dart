@@ -6,12 +6,12 @@ import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
-import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/balloon_fill_bloc/balloon_fill_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/background_image.dart';
 
 class BalloonFillView extends StatefulWidget {
   final BalloonFillLessonContent content;
@@ -24,21 +24,6 @@ class BalloonFillView extends StatefulWidget {
 
 class _BalloonFillViewState extends State<BalloonFillView> {
   int currentIndex = 0;
-  Widget _buildBackground(bool isMobile) {
-    if (widget.content.bgImage != null && isMobile) {
-      return CustomCachedImage(
-        imageUrl: widget.content.bgImage!,
-        fit: BoxFit.cover,
-      );
-    }
-    if (widget.content.bgImageTb != null && !isMobile) {
-      return CustomCachedImage(
-        imageUrl: widget.content.bgImageTb!,
-        fit: BoxFit.cover,
-      );
-    }
-    return SizedBox.shrink();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +75,12 @@ class _BalloonFillViewState extends State<BalloonFillView> {
           ),
           ColorLabel(size: size),
           Positioned.fill(
-            child: IgnorePointer(child: _buildBackground(isMobile)),
+            child: IgnorePointer(
+              child: BackgroundImage(
+                bgImageMb: widget.content.bgImage,
+                bgImageTb: widget.content.bgImageTb,
+              ),
+            ),
           ),
           TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
           BlocBuilder<BalloonFillBloc, BalloonFillState>(
