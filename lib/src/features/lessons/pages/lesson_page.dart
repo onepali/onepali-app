@@ -18,6 +18,7 @@ import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.da
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/flip_card_view.dart';
 import 'package:onepali/src/features/lessons/views/gun_fill_view.dart';
+import 'package:onepali/src/features/lessons/views/holi_animate_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
@@ -144,6 +145,9 @@ class _LessonPageState extends State<LessonPage> {
                 content: lessonContent,
               ),
               GunFillLessonContent() => GunFillLessonView(
+                content: lessonContent,
+              ),
+              HoliAnimateLessonContent() => HoliAnimateView(
                 content: lessonContent,
               ),
               _ => Center(child: Text('Unknown content type')),
