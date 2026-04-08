@@ -54,7 +54,11 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
 
           if (partId.isEmpty || !partId.startsWith("#")) {
             gunLabels.add(
-              GunLabel(path: pathData, color: element.getAttribute('fill')),
+              GunLabel(
+                path: pathData,
+                color: element.getAttribute('fill'),
+                gunPartId: element.getAttribute('partId'),
+              ),
             );
             continue;
           }

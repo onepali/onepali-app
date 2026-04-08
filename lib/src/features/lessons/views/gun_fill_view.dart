@@ -80,6 +80,7 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                           (part) => Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Draggable(
+                              data: part.id,
                               onDragCompleted: () {
                                 context.read<GunFillBloc>().add(
                                   GunFillEvent.colorFilled(part.id),
@@ -134,79 +135,103 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                         return Center(
                           child: FittedBox(
                             fit: BoxFit.contain,
-                            child: DragTarget(
-                              builder:
-                                  (
-                                    context,
-                                    candidateItems,
-                                    rejectedItems,
-                                  ) => Container(
-                                    padding: const EdgeInsets.all(16),
-                                    width: svgWidth,
-                                    height: svgHeight,
-                                    child: Stack(
-                                      children: [
-                                        // Gun parts
-                                        ...gunParts.map(
-                                          (part) => part.isFilled
-                                              ? ClipPath(
-                                                      clipper: PartClipper(
-                                                        part.path,
-                                                      ),
-                                                      child: Container(
-                                                        width: svgWidth,
-                                                        height: svgHeight,
-                                                        color: colorFromHex(
-                                                          part.id,
-                                                        ),
-                                                      ),
-                                                    )
-                                                    .animate()
-                                                    .shake(
-                                                      hz: 3,
-                                                      duration: const Duration(
-                                                        milliseconds: 600,
-                                                      ),
-                                                    )
-                                                    .then()
-                                                    .shimmer(
-                                                      duration: const Duration(
-                                                        milliseconds: 800,
-                                                      ),
-                                                    )
-                                              : ClipPath(
-                                                  clipper: PartClipper(
-                                                    part.path,
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              width: svgWidth,
+                              height: svgHeight,
+                              child: Stack(
+                                children: [
+                                  // Gun parts
+                                  ...gunParts.map(
+                                    (part) => part.isFilled
+                                        ? ClipPath(
+                                                clipper: PartClipper(part.path),
+                                                child: Container(
+                                                  width: svgWidth,
+                                                  height: svgHeight,
+                                                  color: colorFromHex(part.id),
+                                                ),
+                                              )
+                                              .animate()
+                                              .shake(
+                                                hz: 3,
+                                                duration: const Duration(
+                                                  milliseconds: 600,
+                                                ),
+                                              )
+                                              .then()
+                                              .shimmer(
+                                                duration: const Duration(
+                                                  milliseconds: 800,
+                                                ),
+                                              )
+                                        : ClipPath(
+                                            clipper: PartClipper(part.path),
+                                            child: DragTarget(
+                                              onWillAcceptWithDetails:
+                                                  (details) {
+                                                    return details.data ==
+                                                        part.id;
+                                                  },
+                                              onAcceptWithDetails: (details) {
+                                                context.read<GunFillBloc>().add(
+                                                  GunFillEvent.colorFilled(
+                                                    part.id,
                                                   ),
-                                                  child: Container(
+                                                );
+                                              },
+                                              builder:
+                                                  (
+                                                    context,
+                                                    candidateItems,
+                                                    rejectedItems,
+                                                  ) => Container(
                                                     width: svgWidth,
                                                     height: svgHeight,
                                                     color: Colors.grey,
                                                   ),
-                                                ),
-                                        ),
-                                        // Labels
-                                        ...state.labelPaths.map(
-                                          (labelPath) => ClipPath(
-                                            clipper: PartClipper(
-                                              labelPath.path,
-                                              fillColor: labelPath.color,
-                                            ),
-                                            child: Container(
-                                              width: svgWidth,
-                                              height: svgHeight,
-                                              color:
-                                                  colorFromHex(
-                                                    labelPath.color ??
-                                                        '#B1B1B1',
-                                                  ) ??
-                                                  Colors.grey,
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                  ),
+                                  // Labels
+                                  ...state.labelPaths.map(
+                                    (labelPath) => ClipPath(
+                                      clipper: PartClipper(labelPath.path),
+                                      child: DragTarget(
+                                        onWillAcceptWithDetails: (details) {
+                                          final gunPartId = labelPath.gunPartId;
+                                          if (gunPartId == null) return false;
+                                          return details.data == gunPartId;
+                                        },
+                                        onAcceptWithDetails: (details) {
+                                          final gunPartId = labelPath.gunPartId;
+                                          if (gunPartId == null) return;
+                                          context.read<GunFillBloc>().add(
+                                            GunFillEvent.colorFilled(gunPartId),
+                                          );
+                                        },
+                                        builder:
+                                            (
+                                              context,
+                                              candidateItems,
+                                              rejectedItems,
+                                            ) {
+                                              return Container(
+                                                width: svgWidth,
+                                                height: svgHeight,
+                                                color:
+                                                    colorFromHex(
+                                                      labelPath.color ??
+                                                          '#B1B1B1',
+                                                    ) ??
+                                                    Colors.grey,
+                                              );
+                                            },
+                                      ),
                                     ),
                                   ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -238,9 +263,8 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
 
 class PartClipper extends CustomClipper<Path> {
   final String pathData;
-  final String? fillColor;
 
-  PartClipper(this.pathData, {this.fillColor});
+  PartClipper(this.pathData);
 
   @override
   Path getClip(Size size) {
@@ -257,7 +281,5 @@ class PartClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(oldClipper) => false;
 }

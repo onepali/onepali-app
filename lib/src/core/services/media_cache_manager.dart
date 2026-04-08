@@ -69,8 +69,13 @@ class MediaCacheManager {
         if (content is FlipCardLessonContent) {
           _precacheFlipCardLessonContent(content, context);
         }
+        //13.Balloon fill
         if (content is BalloonFillLessonContent) {
           _precacheBalloonFillLessonContent(content, context);
+        }
+        //14. Gun fill
+        if (content is GunFillLessonContent) {
+          _precacheGunFillLessonContent(content, context);
         }
       }
     } catch (e) {
@@ -338,6 +343,26 @@ class MediaCacheManager {
     if (content.bgImageTb != null) {
       precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
     }
+    for (var item in content.items) {
+      _precacheItemMedia(item, context);
+    }
+  }
+
+  // 14. Gun fill
+  _precacheGunFillLessonContent(
+    GunFillLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.bgImage != null) {
+      _precacheMedia(content.bgImage!);
+    }
+    if (content.bgImageTb != null) {
+      _precacheMedia(content.bgImageTb!);
+    }
+    if (content.audio != null) {
+      _precacheMedia(content.audio!);
+    }
+
     for (var item in content.items) {
       _precacheItemMedia(item, context);
     }
