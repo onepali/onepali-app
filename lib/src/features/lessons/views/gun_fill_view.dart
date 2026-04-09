@@ -226,7 +226,9 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                   onTap: () =>
                       context.read<LessonBloc>().add(LessonEvent.nextContent()),
                 ),
-              TopRightPositionedCloseButton(),
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.of(context).pop(),
+              ),
             ],
           );
         },

@@ -55,7 +55,7 @@ extension BalloonFillEventPatterns on BalloonFillEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _AudioCompleted value)?  audioCompleted,TResult Function( _BalloonTapped value)?  balloonTapped,TResult Function( _FillAnimationCompleted value)?  fillAnimationCompleted,TResult Function( _LabelHidden value)?  labelHidden,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _AudioCompleted value)?  audioCompleted,TResult Function( _BalloonTapped value)?  balloonTapped,TResult Function( _FillAnimationCompleted value)?  fillAnimationCompleted,TResult Function( _LabelHidden value)?  labelHidden,TResult Function( _FilledBalloonTapped value)?  filledBalloonTapped,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -63,7 +63,8 @@ return started(_that);case _AudioCompleted() when audioCompleted != null:
 return audioCompleted(_that);case _BalloonTapped() when balloonTapped != null:
 return balloonTapped(_that);case _FillAnimationCompleted() when fillAnimationCompleted != null:
 return fillAnimationCompleted(_that);case _LabelHidden() when labelHidden != null:
-return labelHidden(_that);case _Reset() when reset != null:
+return labelHidden(_that);case _FilledBalloonTapped() when filledBalloonTapped != null:
+return filledBalloonTapped(_that);case _Reset() when reset != null:
 return reset(_that);case _:
   return orElse();
 
@@ -82,7 +83,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _AudioCompleted value)  audioCompleted,required TResult Function( _BalloonTapped value)  balloonTapped,required TResult Function( _FillAnimationCompleted value)  fillAnimationCompleted,required TResult Function( _LabelHidden value)  labelHidden,required TResult Function( _Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _AudioCompleted value)  audioCompleted,required TResult Function( _BalloonTapped value)  balloonTapped,required TResult Function( _FillAnimationCompleted value)  fillAnimationCompleted,required TResult Function( _LabelHidden value)  labelHidden,required TResult Function( _FilledBalloonTapped value)  filledBalloonTapped,required TResult Function( _Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -90,7 +91,8 @@ return started(_that);case _AudioCompleted():
 return audioCompleted(_that);case _BalloonTapped():
 return balloonTapped(_that);case _FillAnimationCompleted():
 return fillAnimationCompleted(_that);case _LabelHidden():
-return labelHidden(_that);case _Reset():
+return labelHidden(_that);case _FilledBalloonTapped():
+return filledBalloonTapped(_that);case _Reset():
 return reset(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -108,7 +110,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _AudioCompleted value)?  audioCompleted,TResult? Function( _BalloonTapped value)?  balloonTapped,TResult? Function( _FillAnimationCompleted value)?  fillAnimationCompleted,TResult? Function( _LabelHidden value)?  labelHidden,TResult? Function( _Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _AudioCompleted value)?  audioCompleted,TResult? Function( _BalloonTapped value)?  balloonTapped,TResult? Function( _FillAnimationCompleted value)?  fillAnimationCompleted,TResult? Function( _LabelHidden value)?  labelHidden,TResult? Function( _FilledBalloonTapped value)?  filledBalloonTapped,TResult? Function( _Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -116,7 +118,8 @@ return started(_that);case _AudioCompleted() when audioCompleted != null:
 return audioCompleted(_that);case _BalloonTapped() when balloonTapped != null:
 return balloonTapped(_that);case _FillAnimationCompleted() when fillAnimationCompleted != null:
 return fillAnimationCompleted(_that);case _LabelHidden() when labelHidden != null:
-return labelHidden(_that);case _Reset() when reset != null:
+return labelHidden(_that);case _FilledBalloonTapped() when filledBalloonTapped != null:
+return filledBalloonTapped(_that);case _Reset() when reset != null:
 return reset(_that);case _:
   return null;
 
@@ -134,14 +137,15 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BalloonFillLessonContent content)?  started,TResult Function()?  audioCompleted,TResult Function( int index)?  balloonTapped,TResult Function()?  fillAnimationCompleted,TResult Function()?  labelHidden,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BalloonFillLessonContent content)?  started,TResult Function()?  audioCompleted,TResult Function( int index)?  balloonTapped,TResult Function()?  fillAnimationCompleted,TResult Function()?  labelHidden,TResult Function( int index)?  filledBalloonTapped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content);case _AudioCompleted() when audioCompleted != null:
 return audioCompleted();case _BalloonTapped() when balloonTapped != null:
 return balloonTapped(_that.index);case _FillAnimationCompleted() when fillAnimationCompleted != null:
 return fillAnimationCompleted();case _LabelHidden() when labelHidden != null:
-return labelHidden();case _Reset() when reset != null:
+return labelHidden();case _FilledBalloonTapped() when filledBalloonTapped != null:
+return filledBalloonTapped(_that.index);case _Reset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -160,14 +164,15 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BalloonFillLessonContent content)  started,required TResult Function()  audioCompleted,required TResult Function( int index)  balloonTapped,required TResult Function()  fillAnimationCompleted,required TResult Function()  labelHidden,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BalloonFillLessonContent content)  started,required TResult Function()  audioCompleted,required TResult Function( int index)  balloonTapped,required TResult Function()  fillAnimationCompleted,required TResult Function()  labelHidden,required TResult Function( int index)  filledBalloonTapped,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started(_that.content);case _AudioCompleted():
 return audioCompleted();case _BalloonTapped():
 return balloonTapped(_that.index);case _FillAnimationCompleted():
 return fillAnimationCompleted();case _LabelHidden():
-return labelHidden();case _Reset():
+return labelHidden();case _FilledBalloonTapped():
+return filledBalloonTapped(_that.index);case _Reset():
 return reset();case _:
   throw StateError('Unexpected subclass');
 
@@ -185,14 +190,15 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BalloonFillLessonContent content)?  started,TResult? Function()?  audioCompleted,TResult? Function( int index)?  balloonTapped,TResult? Function()?  fillAnimationCompleted,TResult? Function()?  labelHidden,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BalloonFillLessonContent content)?  started,TResult? Function()?  audioCompleted,TResult? Function( int index)?  balloonTapped,TResult? Function()?  fillAnimationCompleted,TResult? Function()?  labelHidden,TResult? Function( int index)?  filledBalloonTapped,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content);case _AudioCompleted() when audioCompleted != null:
 return audioCompleted();case _BalloonTapped() when balloonTapped != null:
 return balloonTapped(_that.index);case _FillAnimationCompleted() when fillAnimationCompleted != null:
 return fillAnimationCompleted();case _LabelHidden() when labelHidden != null:
-return labelHidden();case _Reset() when reset != null:
+return labelHidden();case _FilledBalloonTapped() when filledBalloonTapped != null:
+return filledBalloonTapped(_that.index);case _Reset() when reset != null:
 return reset();case _:
   return null;
 
@@ -428,6 +434,72 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _FilledBalloonTapped implements BalloonFillEvent {
+  const _FilledBalloonTapped(this.index);
+  
+
+ final  int index;
+
+/// Create a copy of BalloonFillEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$FilledBalloonTappedCopyWith<_FilledBalloonTapped> get copyWith => __$FilledBalloonTappedCopyWithImpl<_FilledBalloonTapped>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FilledBalloonTapped&&(identical(other.index, index) || other.index == index));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,index);
+
+@override
+String toString() {
+  return 'BalloonFillEvent.filledBalloonTapped(index: $index)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$FilledBalloonTappedCopyWith<$Res> implements $BalloonFillEventCopyWith<$Res> {
+  factory _$FilledBalloonTappedCopyWith(_FilledBalloonTapped value, $Res Function(_FilledBalloonTapped) _then) = __$FilledBalloonTappedCopyWithImpl;
+@useResult
+$Res call({
+ int index
+});
+
+
+
+
+}
+/// @nodoc
+class __$FilledBalloonTappedCopyWithImpl<$Res>
+    implements _$FilledBalloonTappedCopyWith<$Res> {
+  __$FilledBalloonTappedCopyWithImpl(this._self, this._then);
+
+  final _FilledBalloonTapped _self;
+  final $Res Function(_FilledBalloonTapped) _then;
+
+/// Create a copy of BalloonFillEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? index = null,}) {
+  return _then(_FilledBalloonTapped(
+null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

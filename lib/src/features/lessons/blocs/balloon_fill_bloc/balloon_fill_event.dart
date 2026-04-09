@@ -10,5 +10,7 @@ class BalloonFillEvent with _$BalloonFillEvent {
       _FillAnimationCompleted; // called by UI after 800ms
   const factory BalloonFillEvent.labelHidden() =
       _LabelHidden; // called by UI or timer
+  const factory BalloonFillEvent.filledBalloonTapped(int index) =
+      _FilledBalloonTapped;
   const factory BalloonFillEvent.reset() = _Reset;
 }

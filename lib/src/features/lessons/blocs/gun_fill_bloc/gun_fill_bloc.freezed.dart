@@ -752,7 +752,11 @@ as bool,
 /// @nodoc
 mixin _$GunPart {
 
- String get id; String get path; String? get color; bool get isFilled; Item? get item;
+/// This is the id of the part. It is also used as the color code eg: #ff0000
+ String get id;/// Path of the part in svg image
+ String get path;/// This is the fill color of the part in svg image. 
+ String? get color;/// To track the part is filled or not with color
+ bool get isFilled; Item? get item;
 /// Create a copy of GunPart
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -963,9 +967,13 @@ class _GunPart implements GunPart {
   const _GunPart({required this.id, required this.path, this.color, this.isFilled = false, this.item});
   
 
+/// This is the id of the part. It is also used as the color code eg: #ff0000
 @override final  String id;
+/// Path of the part in svg image
 @override final  String path;
+/// This is the fill color of the part in svg image. 
 @override final  String? color;
+/// To track the part is filled or not with color
 @override@JsonKey() final  bool isFilled;
 @override final  Item? item;
 
@@ -1045,7 +1053,10 @@ $ItemCopyWith<$Res>? get item {
 /// @nodoc
 mixin _$GunLabel {
 
- String get path; String? get color; String? get gunPartId;
+/// Path of the label in svg image
+ String get path;/// Color of the label. Make sure to replace the color name with color code in the path
+ String? get color;/// This is the gun part color code like #ff0000 used to drage and drop the color over the lable so that the gun part is filled.
+ String? get gunPartId;
 /// Create a copy of GunLabel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1242,8 +1253,11 @@ class _GunLabel implements GunLabel {
   const _GunLabel({required this.path, this.color, this.gunPartId});
   
 
+/// Path of the label in svg image
 @override final  String path;
+/// Color of the label. Make sure to replace the color name with color code in the path
 @override final  String? color;
+/// This is the gun part color code like #ff0000 used to drage and drop the color over the lable so that the gun part is filled.
 @override final  String? gunPartId;
 
 /// Create a copy of GunLabel

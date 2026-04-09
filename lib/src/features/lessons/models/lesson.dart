@@ -158,6 +158,11 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? player1, //png
     String? player2, //png
     String? ballImage, //png
+    String? sliderColor, // Hex color
+    @Default(true) bool rotateBall,
+
+    /// This image[PNG] replaces the ball image when the ball reaches the end
+    String? ballImageEnd,
     @Default('ltr')
     String
     direction, // ltr, rtl, ltr_heading, rtl_heading, none(only play conversation audios)
@@ -230,7 +235,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required String image, // Image to animate
     @Default([]) List<Item> items,
   }) = HoliAnimateLessonContent;
- 
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
