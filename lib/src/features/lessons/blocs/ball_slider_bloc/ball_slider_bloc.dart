@@ -77,10 +77,14 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
   //  Drag update
   void _onBallDragged(_BallDragged event, Emitter<BallSliderState> emit) {
     _stopPhysics();
+    final rotateBall = state.content?.rotateBall ?? true;
     _usableWidth = event.usableWidth;
     final forwardDelta = _toForwardDelta(event.delta);
     final newValue = (state.value + forwardDelta).clamp(0.0, 1.0);
-    final newRotation = state.rotationAngle + _deltaToRadians(forwardDelta);
+    var newRotation = state.rotationAngle;
+    if (rotateBall == true) {
+      newRotation = state.rotationAngle + _deltaToRadians(forwardDelta);
+    }
     emit(_compute(newValue, newRotation, isAnimating: false));
   }
 

@@ -54,14 +54,26 @@ class _BalloonFillViewState extends State<BalloonFillView> {
 
                           return FillBalloon(
                             balloonImage: item.image,
+                            nameNp: item.nameNp,
                             fillColorHex: item.bgColor ?? '#FF0000',
                             isFilled: state.filledIndexes.contains(index),
                             isFillingNow: isFillingNow,
                             onTap: state.isLocked
                                 ? null
-                                : () => context.read<BalloonFillBloc>().add(
-                                    BalloonFillEvent.balloonTapped(index),
-                                  ),
+                                : () {
+                                    if (state.filledIndexes.contains(index)) {
+                                      context.read<BalloonFillBloc>().add(
+                                        BalloonFillEvent.filledBalloonTapped(
+                                          index,
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    context.read<BalloonFillBloc>().add(
+                                      BalloonFillEvent.balloonTapped(index),
+                                    );
+                                  },
                             onFillComplete: isFillingNow
                                 ? () => context.read<BalloonFillBloc>().add(
                                     const BalloonFillEvent.fillAnimationCompleted(),
@@ -165,6 +177,7 @@ class FillBalloon extends StatelessWidget {
     required this.isFillingNow,
     required this.onTap,
     required this.onFillComplete,
+    required this.nameNp,
   });
 
   final String balloonImage;
@@ -173,9 +186,11 @@ class FillBalloon extends StatelessWidget {
   final bool isFillingNow;
   final VoidCallback? onTap;
   final VoidCallback? onFillComplete;
+  final String nameNp;
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -212,6 +227,37 @@ class FillBalloon extends StatelessWidget {
                       color: Colors.white.withValues(alpha: 0.6),
                     ),
           ),
+          if (isFilled)
+            Center(
+              child: IgnorePointer(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 12 : 16,
+                    vertical: 4,
+                  ),
+
+                  // width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhite,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Text(
+                    nameNp,
+                    textAlign: TextAlign.center,
+                    style: isMobile
+                        ? Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontFamily: AppConstants.kMuktaFont,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            fontFamily: AppConstants.kMuktaFont,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 48,
+                          ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -238,14 +284,26 @@ class MobileView extends StatelessWidget {
                     height: size.width / state.content!.items.length - 32,
                     child: FillBalloon(
                       balloonImage: item.image,
+                      nameNp: item.nameNp,
                       fillColorHex: item.bgColor ?? '#FF0000',
                       isFilled: state.filledIndexes.contains(entry.key),
                       isFillingNow: state.fillingIndex == entry.key,
                       onTap: state.isLocked
                           ? null
-                          : () => context.read<BalloonFillBloc>().add(
-                              BalloonFillEvent.balloonTapped(entry.key),
-                            ),
+                          : () {
+                              if (state.filledIndexes.contains(entry.key)) {
+                                context.read<BalloonFillBloc>().add(
+                                  BalloonFillEvent.filledBalloonTapped(
+                                    entry.key,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              context.read<BalloonFillBloc>().add(
+                                BalloonFillEvent.balloonTapped(entry.key),
+                              );
+                            },
                       onFillComplete: isFillingNow
                           ? () => context.read<BalloonFillBloc>().add(
                               const BalloonFillEvent.fillAnimationCompleted(),

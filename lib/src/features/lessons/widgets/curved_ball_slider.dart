@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
@@ -9,6 +10,7 @@ class CurvedBallSlider extends StatefulWidget {
   final double height;
   final bool isRTL;
   final BallSlideLessonContent content;
+  final String? sliderColor;
 
   const CurvedBallSlider({
     required this.content,
@@ -17,6 +19,7 @@ class CurvedBallSlider extends StatefulWidget {
     this.onChanged,
     this.height = 160,
     this.isRTL = false,
+    this.sliderColor,
   });
 
   @override
@@ -58,7 +61,7 @@ class _CurvedBallSliderState extends State<CurvedBallSlider> {
 
           return GestureDetector(
             onPanUpdate: (details) {
-              if(progress == 1.0) return;
+              if (progress == 1.0) return;
               final width = context.size!.width;
 
               double delta = details.delta.dx / width;
@@ -83,6 +86,7 @@ class _CurvedBallSliderState extends State<CurvedBallSlider> {
                     progress: progress,
                     strokeWidth: trackHeight.toDouble(),
                     isRTL: widget.isRTL,
+                    sliderColor: widget.sliderColor,
                   ),
                 ),
 
@@ -101,7 +105,11 @@ class _CurvedBallSliderState extends State<CurvedBallSlider> {
                   left: tangent.position.dx - ballSize / 2,
                   top: tangent.position.dy - ballSize / 2,
                   child: CustomCachedImage(
-                    imageUrl: widget.content.ballImage ?? '',
+                    imageUrl: progress >= 1.0
+                        ? widget.content.ballImageEnd ??
+                              widget.content.ballImage ??
+                              ''
+                        : widget.content.ballImage ?? '',
                     width: ballSize.toDouble(),
                     height: ballSize.toDouble(),
                   ),
@@ -145,11 +153,13 @@ class _CurvePainter extends CustomPainter {
   final double progress;
   final double strokeWidth;
   final bool isRTL;
+  final String? sliderColor;
 
   _CurvePainter({
     required this.progress,
     required this.strokeWidth,
     required this.isRTL,
+    this.sliderColor,
   });
 
   @override
@@ -164,7 +174,7 @@ class _CurvePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final redPaint = Paint()
-      ..color = AppColors.kButtonGreen
+      ..color = colorFromHex(sliderColor) ?? AppColors.kButtonGreen
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;

@@ -17,6 +17,7 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
     on<_BalloonTapped>(_onBalloonTapped);
     on<_FillAnimationCompleted>(_onFillAnimationCompleted);
     on<_LabelHidden>(_onLabelHidden);
+    on<_FilledBalloonTapped>(_onFilledBalloonTapped);
     on<_Reset>(_onReset);
   }
 
@@ -108,6 +109,29 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
 
   void _onLabelHidden(_LabelHidden event, Emitter<BalloonFillState> emit) {
     emit(state.copyWith(status: BalloonFillStatus.idle, colorLabelNp: null));
+  }
+
+  void _onFilledBalloonTapped(
+    _FilledBalloonTapped event,
+    Emitter<BalloonFillState> emit,
+  ) async {
+    final items = state.content?.items;
+    if (items == null || event.index < 0 || event.index >= items.length) {
+      return;
+    }
+
+    final itemAudio = items[event.index].audioItem;
+    if (itemAudio == null || itemAudio.isEmpty) return;
+
+    try {
+      await _audioPlayer.play(itemAudio);
+    } catch (error, stackTrace) {
+      log(
+        'Failed to replay balloon fill item audio',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   void _onReset(_Reset event, Emitter<BalloonFillState> emit) {

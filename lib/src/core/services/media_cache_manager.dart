@@ -274,6 +274,12 @@ class MediaCacheManager {
       if (content.ballImage != null) {
         precacheImage(CachedNetworkImageProvider(content.ballImage!), context);
       }
+      if (content.ballImageEnd != null) {
+        precacheImage(
+          CachedNetworkImageProvider(content.ballImageEnd!),
+          context,
+        );
+      }
       if (content.goalLeftImageMb != null) {
         precacheImage(
           CachedNetworkImageProvider(content.goalLeftImageMb!),
