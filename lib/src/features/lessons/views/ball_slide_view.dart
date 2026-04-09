@@ -149,7 +149,12 @@ class _SliderViewState extends State<_SliderView> {
                 child: BallSlider(
                   trackHeight: isMobile ? 52 : 80,
                   ballSize: isMobile ? 70 : 120,
-                  ballImagePath: widget.content.ballImage ?? '',
+                  ballImagePath: state.isComplete
+                      ? widget.content.ballImageEnd ??
+                            widget.content.ballImage ??
+                            ''
+                      : widget.content.ballImage ?? '',
+                  sliderColor: widget.content.sliderColor,
                 ),
               ),
             ),

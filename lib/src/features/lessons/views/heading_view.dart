@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -85,7 +86,9 @@ class _HeadingViewState extends State<HeadingView> {
                       clipBehavior: Clip.none,
                       children: [
                         Positioned(
-                          top: isMobile ? 0 : height * 0.1,
+                          top: isMobile
+                              ? widget.content.pDyMb.toDouble()
+                              : height * 0.1,
                           left: startX,
                           child: SizedBox(
                             width: isMobile
@@ -96,6 +99,7 @@ class _HeadingViewState extends State<HeadingView> {
                               height: isMobile ? 150 : 300,
                               isRTL: widget.content.direction == 'rtl_heading',
                               value: 0.0,
+                              sliderColor: widget.content.sliderColor,
                               onChanged: (v) {
                                 if (v == 1.0) {
                                   if (isComplete) return;
