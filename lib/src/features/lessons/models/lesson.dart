@@ -250,6 +250,23 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = HoliAnimateLessonContent;
 
+  @FreezedUnionValue("tap_to_change")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapToChange({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('tap_to_change') String type,
+    required String bgImage, // png Image
+    required String afterBgImage,
+    required String bgImageTb, // png Image
+    required String afterBgImageTb,
+    String? tapGesture, // Png image
+    String? splashImage,
+    @Default([]) List<Item> items,
+  }) = TapToChangeLessonContent;
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
