@@ -25,7 +25,7 @@ abstract class LessonContentBase {
 }
 
 @Freezed(unionKey: "type")
-class LessonContent with _$LessonContent implements LessonContentBase {
+abstract class LessonContent with _$LessonContent implements LessonContentBase {
   @FreezedUnionValue('intro')
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory LessonContent.intro({
@@ -258,11 +258,23 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default('unknown') String type,
   }) = UnknownLessonContent;
 
-  factory LessonContent.fromJson(Map<String, dynamic> json) =>
-      _$LessonContentFromJson(json);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  // factory LessonContent.fromJson(Map<String, dynamic> json) =>
+  //     _$LessonContentFromJson(json);
+ 
+  factory LessonContent.fromJson(Map<String, dynamic> json) {
+    try {
+      return _$LessonContentFromJson(json);
+    } catch (e) {
+      final id = json['id'] as String? ?? '';
+      final index = json['index'] as int? ?? -1;
+      final type = json['type'] as String? ?? 'unknown';
+      return LessonContent.unknown(
+        id: id,
+        index: index,
+        type: type,
+      );
+    }
+  }
 }
 
 @freezed

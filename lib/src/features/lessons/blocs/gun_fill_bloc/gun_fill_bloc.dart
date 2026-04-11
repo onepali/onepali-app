@@ -51,6 +51,7 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
             GunPart(id: partId, path: partPath, color: partId, item: item),
           );
         }
+        gunParts.shuffle();
         emit(
           state.copyWith(
             content: event.content,

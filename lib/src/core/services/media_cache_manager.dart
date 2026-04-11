@@ -394,6 +394,12 @@ class MediaCacheManager {
     if(content.audio != null) {
       _precacheMedia(content.audio!);
     }
+    if(content.tapGesture!=null){
+      precacheImage(CachedNetworkImageProvider(content.tapGesture!), context);
+    }
+    if(content.splashImage!=null){
+      precacheImage(CachedNetworkImageProvider(content.splashImage!), context);
+    }
   }
 
   // Item images
