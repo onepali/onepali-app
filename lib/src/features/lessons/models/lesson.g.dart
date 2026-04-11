@@ -464,6 +464,42 @@ Map<String, dynamic> _$HoliAnimateLessonContentToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
+TapToChangeLessonContent _$TapToChangeLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TapToChangeLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'tap_to_change',
+  bgImage: json['bg_image'] as String,
+  afterBgImage: json['after_bg_image'] as String,
+  bgImageTb: json['bg_image_tb'] as String,
+  afterBgImageTb: json['after_bg_image_tb'] as String,
+  tapGesture: json['tap_gesture'] as String?,
+  splashImage: json['splash_image'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TapToChangeLessonContentToJson(
+  TapToChangeLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'after_bg_image': instance.afterBgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'after_bg_image_tb': instance.afterBgImageTb,
+  'tap_gesture': instance.tapGesture,
+  'splash_image': instance.splashImage,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(

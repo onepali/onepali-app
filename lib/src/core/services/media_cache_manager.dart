@@ -77,6 +77,10 @@ class MediaCacheManager {
         if (content is GunFillLessonContent) {
           _precacheGunFillLessonContent(content, context);
         }
+        //15. Tap to change
+        if (content is TapToChangeLessonContent) {
+          _precacheTapToChangeLessonContent(content, context);
+        }
       }
     } catch (e) {
       log('Error pre caching medias: $e');
@@ -371,6 +375,24 @@ class MediaCacheManager {
 
     for (var item in content.items) {
       _precacheItemMedia(item, context);
+    }
+  }
+
+  // 15. Tap to change
+  _precacheTapToChangeLessonContent(
+    TapToChangeLessonContent content,
+    BuildContext context,
+  ) {
+    precacheImage(CachedNetworkImageProvider(content.bgImage), context);
+    precacheImage(CachedNetworkImageProvider(content.afterBgImage), context);
+
+    precacheImage(CachedNetworkImageProvider(content.bgImageTb), context);
+    precacheImage(CachedNetworkImageProvider(content.afterBgImageTb), context);
+    for (var item in content.items) {
+      _precacheItemMedia(item, context);
+    }
+    if(content.audio != null) {
+      _precacheMedia(content.audio!);
     }
   }
 

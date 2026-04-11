@@ -24,6 +24,7 @@ import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
 import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_change_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
@@ -136,6 +137,7 @@ class _LessonPageState extends State<LessonPage> {
               HoliAnimateLessonContent() => HoliAnimateView(
                 content: lessonContent,
               ),
+              TapToChangeLessonContent() => TapToChangeView(content: lessonContent),
               _ => Center(child: Text('Unknown content type')),
             };
           },
