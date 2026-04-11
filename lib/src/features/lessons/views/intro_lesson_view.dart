@@ -130,6 +130,12 @@ class _IntroLessonViewState extends State<IntroLessonView> {
               );
             },
           ),
+        if (widget.isLast && _isAudioCompleted)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: LottieHelper.fromSource(path: Assets.confetti1),
+            ),
+          ),
       ],
     );
   }
