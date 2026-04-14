@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
-import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
+import 'package:onepali/src/features/lessons/pages/lesson_category_page.dart';
 import 'package:onepali/src/src.dart';
 
 class CourseScreen extends StatefulWidget {
@@ -23,8 +23,9 @@ class CourseScreenState extends State<CourseScreen> {
     String levelId,
   ) {
     return FirebaseFirestore.instance
-        .collection('lessons')
-        .where('level_id', isEqualTo: levelId)
+        .collection('lesson_levels')
+        .doc(levelId)
+        .collection('categories')
         .snapshots();
   }
 
@@ -114,6 +115,9 @@ class CourseScreenState extends State<CourseScreen> {
   }
 
   void _onTapLesson(QueryDocumentSnapshot<Map<String, dynamic>> lesson) {
-    Utility.navigateMaterialRoute(context, LessonPage(lessonId: lesson.id));
+    Utility.navigateMaterialRoute(
+      context,
+      LessonCategoryPage(categoryId: lesson.id, title: lesson['name']),
+    );
   }
 }
