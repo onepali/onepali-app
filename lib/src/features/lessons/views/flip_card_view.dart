@@ -70,13 +70,21 @@ class _FlipCardViewState extends State<FlipCardView> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               print('playing audio');
                               final c =
                                   _controllers[widget.content.items.indexOf(e)];
                               c.flipcard();
                               if (!c.state!.isFront) {
-                                _audioPlayerService.playAsset(Assets.cardFlip);
+                                await _audioPlayerService.playAsset(
+                                  Assets.cardFlip,
+                                );
+                                await Future.delayed(
+                                  const Duration(milliseconds: 500),
+                                );
+                                if (e.audioItem != null) {
+                                  await _audioPlayerService.play(e.audioItem!);
+                                }
                               }
                             },
                             child: FlipCard(
@@ -115,9 +123,10 @@ class _FlipCardViewState extends State<FlipCardView> {
                           Text(
                             e.nameNp,
                             style: Theme.of(context).textTheme.headlineLarge
-                                ?.copyWith(fontWeight: FontWeight.bold,
-                                 fontFamily: AppConstants.kMuktaFont,
-                                 fontSize: 40,
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppConstants.kMuktaFont,
+                                  fontSize: 40,
                                 ),
                           ),
                         ],
