@@ -11,6 +11,7 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class PenaltySlider extends StatefulWidget {
   final GameSliderConfig config;
@@ -154,20 +155,25 @@ class _PenaltySliderState extends State<PenaltySlider>
                 ballSize,
               ),
             if (_showGoal) _showGoalImage(isMobile, _ballProgress > 0),
-            if (_showGoal)
+            if (_showGoal && widget.content.message != null)
               Positioned(
-                top: _ballProgress > 0
-                    ? size.height * 0.15
-                    : size.height * 0.40,
-                left: _ballProgress > 0 ? size.width * 0.70 : size.width * 0.20,
-                child: SizedBox(
-                  height: size.height * 0.2,
-                  width: size.height * 0.2,
-                  child: LottieHelper.fromSource(path: Assets.starWinnerLottie),
-                ),
+                top: size.height * 0.1,
+                left: 0,
+                right: 0,
+                child: CorrectNameDisplay(nameNp: 'Goal', nameEn: ''),
               ),
-            // Goal overlay
-            // if (_showGoal) _goalOverlay(),
+            // if (_showGoal)
+            //   Positioned(
+            //     top: _ballProgress > 0
+            //         ? size.height * 0.15
+            //         : size.height * 0.40,
+            //     left: _ballProgress > 0 ? size.width * 0.70 : size.width * 0.20,
+            //     child: SizedBox(
+            //       height: size.height * 0.2,
+            //       width: size.height * 0.2,
+            //       child: LottieHelper.fromSource(path: Assets.starWinnerLottie),
+            //     ),
+            //   ),
             TopRightPositionedCloseButton(
               onTap: () {
                 Navigator.pop(context);
