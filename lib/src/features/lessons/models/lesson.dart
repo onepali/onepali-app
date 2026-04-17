@@ -170,6 +170,9 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     String? sliderColor, // Hex color
     @Default(true) bool rotateBall,
 
+    /// This message is for display when the action is done.
+    String? message,
+
     /// This image[PNG] replaces the ball image when the ball reaches the end
     String? ballImageEnd,
     @Default('ltr')
