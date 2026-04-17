@@ -70,7 +70,10 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
               ),
               if (state.isAnsweredAll & widget.isLastContent)
                 Positioned.fill(
-                  child: LottieHelper.fromSource(path: Assets.confetti1),
+                  child: LottieHelper.fromSource(
+                    path: Assets.confetti1,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               CenterLeftAlignedBackButton(
                 onTap: () {

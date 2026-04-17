@@ -13,6 +13,8 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_heading_bloc/ball_heading_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/background_image.dart';
 import 'package:onepali/src/features/lessons/widgets/curved_ball_slider.dart';
 
 class HeadingView extends StatefulWidget {
@@ -42,16 +44,15 @@ class _HeadingViewState extends State<HeadingView> {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
+    final size = MediaQuery.of(context).size;
     return BlocBuilder<BallHeadingBloc, BallHeadingState>(
       builder: (context, state) {
         return Stack(
           children: [
             Positioned.fill(
-              child: CustomCachedImage(
-                imageUrl: isMobile
-                    ? widget.content.bgImageMobile ?? ''
-                    : widget.content.bgImageTablet ?? '',
-                fit: BoxFit.cover,
+              child: BackgroundImage(
+                bgImageMb: widget.content.bgImageMobile,
+                bgImageTb: widget.content.bgImageTablet,
               ),
             ),
 
@@ -72,6 +73,16 @@ class _HeadingViewState extends State<HeadingView> {
                 onTap: () {
                   context.read<LessonBloc>().add(LessonEvent.nextContent());
                 },
+              ),
+            if (isComplete && state.content?.message != null)
+              Positioned(
+                top: size.height * 0.1,
+                left: 0,
+                right: 0,
+                child: CorrectNameDisplay(
+                  nameNp: state.content?.message ?? '',
+                  nameEn: '',
+                ),
               ),
             if (state.isAllAudioCompleted)
               Positioned.fill(
@@ -130,39 +141,6 @@ class _HeadingViewState extends State<HeadingView> {
                   },
                 ),
               ),
-
-            // if (isComplete)
-            //   AnimatedOpacity(
-            //     opacity: 1.0,
-            //     duration: const Duration(milliseconds: 300),
-            //     child: Center(
-            //       child: Container(
-            //         padding: const EdgeInsets.symmetric(
-            //           horizontal: 24,
-            //           vertical: 12,
-            //         ),
-            //         decoration: BoxDecoration(
-            //           color: Colors.yellow,
-            //           borderRadius: BorderRadius.circular(30),
-            //           boxShadow: [
-            //             BoxShadow(
-            //               color: Colors.black.withOpacity(0.2),
-            //               blurRadius: 8,
-            //               offset: const Offset(0, 4),
-            //             ),
-            //           ],
-            //         ),
-            //         child: const Text(
-            //           'Header!',
-            //           style: TextStyle(
-            //             fontSize: 22,
-            //             fontWeight: FontWeight.bold,
-            //             color: Colors.black87,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
           ],
         );
       },

@@ -160,6 +160,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     String? ballImage, //png
     String? sliderColor, // Hex color
     @Default(true) bool rotateBall,
+    /// This message is for display when the action is done.
+    String? message,
 
     /// This image[PNG] replaces the ball image when the ball reaches the end
     String? ballImageEnd,
@@ -258,23 +260,23 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     @Default('unknown') String type,
   }) = UnknownLessonContent;
 
-  // factory LessonContent.fromJson(Map<String, dynamic> json) =>
-  //     _$LessonContentFromJson(json);
+  factory LessonContent.fromJson(Map<String, dynamic> json) =>
+      _$LessonContentFromJson(json);
  
-  factory LessonContent.fromJson(Map<String, dynamic> json) {
-    try {
-      return _$LessonContentFromJson(json);
-    } catch (e) {
-      final id = json['id'] as String? ?? '';
-      final index = json['index'] as int? ?? -1;
-      final type = json['type'] as String? ?? 'unknown';
-      return LessonContent.unknown(
-        id: id,
-        index: index,
-        type: type,
-      );
-    }
-  }
+  // factory LessonContent.fromJson(Map<String, dynamic> json) {
+  //   try {
+  //     return _$LessonContentFromJson(json);
+  //   } catch (e) {
+  //     final id = json['id'] as String? ?? '';
+  //     final index = json['index'] as int? ?? -1;
+  //     final type = json['type'] as String? ?? 'unknown';
+  //     return LessonContent.unknown(
+  //       id: id,
+  //       index: index,
+  //       type: type,
+  //     );
+  //   }
+  // }
 }
 
 @freezed

@@ -285,6 +285,7 @@ BallSlideLessonContent _$BallSlideLessonContentFromJson(
   ballImage: json['ball_image'] as String?,
   sliderColor: json['slider_color'] as String?,
   rotateBall: json['rotate_ball'] as bool? ?? true,
+  message: json['message'] as String?,
   ballImageEnd: json['ball_image_end'] as String?,
   direction: json['direction'] as String? ?? 'ltr',
   conversation:
@@ -316,6 +317,7 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'ball_image': instance.ballImage,
   'slider_color': instance.sliderColor,
   'rotate_ball': instance.rotateBall,
+  'message': instance.message,
   'ball_image_end': instance.ballImageEnd,
   'direction': instance.direction,
   'conversation': instance.conversation,
