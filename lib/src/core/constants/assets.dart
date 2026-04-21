@@ -151,7 +151,8 @@ class Assets {
   static String neJson = 'ne'.json;
 
   /// [Audio] assets
-  static String eww = 'audio/eww'.audio;
+  static String eww = 'audio/sfx/eww'.audio;
+  static String wrongSfx = 'audio/sfx/wrong'.audio;
   static String goodFeedback = 'audio/sfx/good_feedback'.audio;
   static String confettiFeedback = 'audio/sfx/confetti_feedback'.audio;
   static String starBlast = 'audio/sfx/star_blast.mp3';
