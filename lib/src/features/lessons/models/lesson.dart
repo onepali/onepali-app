@@ -3,7 +3,7 @@ part 'lesson.freezed.dart';
 part 'lesson.g.dart';
 
 @freezed
-class Lesson with _$Lesson {
+abstract class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String name,
@@ -13,9 +13,6 @@ class Lesson with _$Lesson {
   }) = _Lesson;
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 abstract class LessonContentBase {
@@ -270,6 +267,46 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = TapToChangeLessonContent;
 
+  ///--------------------Daily Conversation Lesson Content----------------
+  @FreezedUnionValue("tap_to_fill")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapToFill({
+    required String id,
+    required int index,
+    @Default('tap_to_fill') String type,
+    String? instruction,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    @Default([]) List<Option> options,
+  }) = TapToFillLessonContent;
+
+  @FreezedUnionValue("option_selection")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.optionSelection({
+    required String id,
+    required int index,
+    @Default('option_selection') String type,
+    required String? image, // png Image
+    String? instruction,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    @Default([]) List<Option> options,
+  }) = OptionSelectionLessonContent;
+
+  @FreezedUnionValue("lesson_recommendation")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.lessonRecommendation({
+    required String id,
+    required int index,
+    @Default('lesson_recommendation') String type,
+    String? bgColor,
+    @Default([])
+    List<Map<String, dynamic>> lessons, // id and image of recommended lessons
+  }) = LessonRecommendationLessonContent;
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
@@ -292,7 +329,7 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
 }
 
 @freezed
-class Item with _$Item {
+abstract class Item with _$Item {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Item({
@@ -316,9 +353,21 @@ class Item with _$Item {
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+}
 
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+@freezed
+abstract class Option with _$Option {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory Option({
+    int? order,
+    required String nameEn,
+    required String nameNp,
+    String? audio,
+    @Default(false) bool isCorrect,
+  }) = _Option;
+
+  factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 }
 
 class LessonDetail {

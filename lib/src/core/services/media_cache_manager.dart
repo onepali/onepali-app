@@ -81,6 +81,14 @@ class MediaCacheManager {
         if (content is TapToChangeLessonContent) {
           _precacheTapToChangeLessonContent(content, context);
         }
+        //16. Tap to fill
+        if (content is TapToFillLessonContent) {
+          _precacheTapToFillLessonContent(content, context);
+        }
+        //17. Option selection
+        if (content is OptionSelectionLessonContent) {
+          _precacheOptionSelectionLessonContent(content, context);
+        }
       }
     } catch (e) {
       log('Error pre caching medias: $e');
@@ -399,6 +407,41 @@ class MediaCacheManager {
     }
     if (content.splashImage != null) {
       precacheImage(CachedNetworkImageProvider(content.splashImage!), context);
+    }
+  }
+
+  //16. Tap to fill
+  _precacheTapToFillLessonContent(
+    TapToFillLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.instruction != null) {
+      _precacheMedia(content.instruction!);
+    }
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+    }
+  }
+
+  //16. Tap to fill
+  _precacheOptionSelectionLessonContent(
+    OptionSelectionLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.instruction != null) {
+      _precacheMedia(content.instruction!);
+    }
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+    }
+    if (content.image != null) {
+      precacheImage(CachedNetworkImageProvider(content.image!), context);
     }
   }
 

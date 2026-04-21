@@ -21,9 +21,12 @@ import 'package:onepali/src/features/lessons/views/gun_fill_view.dart';
 import 'package:onepali/src/features/lessons/views/holi_animate_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/lesson_recommendation_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
 import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
+import 'package:onepali/src/features/lessons/views/option_selection_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_change_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_fill_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/unknown_lesson_type.dart';
@@ -155,6 +158,18 @@ class _LessonPageState extends State<LessonPage> {
               TapToChangeLessonContent() => TapToChangeView(
                 content: lessonContent,
                 onNext: handleNext,
+              ),
+              TapToFillLessonContent() => TapToFillView(
+                key: ValueKey('tap_to_fill_${state.currentIndex}'),
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              OptionSelectionLessonContent() => OptionSelectionView(
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              LessonRecommendationLessonContent() => LessonRecommendationView(
+                content: lessonContent,
               ),
               _ => UnknownLessonType(
                 isFirst: isFirstContent,
