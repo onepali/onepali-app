@@ -73,6 +73,7 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String id,
     required int index,
     String? bgImage,
+    String? bgImageTb,
     @Default('tap_to_reveal') String type,
     @Default([]) List<Item> items,
   }) = TapToRevealLessonContent;
