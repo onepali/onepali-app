@@ -176,7 +176,7 @@ void _onCorrectAudioCompleted(
     final validItems = items.where((e) => e.question != null).toList();
 
     if (validItems.length < 2) {
-      return [];
+      return validItems;
     }
 
     validItems.shuffle();

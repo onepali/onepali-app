@@ -104,6 +104,7 @@ TapToRevealLessonContent _$TapToRevealLessonContentFromJson(
   id: json['id'] as String,
   index: (json['index'] as num).toInt(),
   bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
   type: json['type'] as String? ?? 'tap_to_reveal',
   items:
       (json['items'] as List<dynamic>?)
@@ -118,6 +119,7 @@ Map<String, dynamic> _$TapToRevealLessonContentToJson(
   'id': instance.id,
   'index': instance.index,
   'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
   'type': instance.type,
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
