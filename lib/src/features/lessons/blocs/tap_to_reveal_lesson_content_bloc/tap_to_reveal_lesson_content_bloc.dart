@@ -176,7 +176,7 @@ class TapToRevealLessonContentBloc
         .toList();
 
     if (validItems.length < 2) {
-      return [];
+      return validItems;
     }
 
     validItems.shuffle();
