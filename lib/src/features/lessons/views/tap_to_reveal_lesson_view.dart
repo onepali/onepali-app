@@ -134,7 +134,12 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
         return Stack(
           children: [
             Positioned.fill(
-              child: SvgPicture.network(bgImage ?? '', fit: BoxFit.cover),
+              child: SvgPicture.network(
+                isMobile
+                    ? content.bgImage ?? content.bgImageTb ?? ''
+                    : content.bgImageTb ?? content.bgImage ?? '',
+                fit: BoxFit.cover,
+              ),
             ),
 
             ...content.items.asMap().entries.map((entry) {
@@ -285,9 +290,9 @@ class _CorrectNameDisplayState extends State<CorrectNameDisplay>
             child: Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                padding:  EdgeInsets.symmetric(
-                  horizontal: isMobile? 16: 32,
-                  vertical: isMobile? 6: 12,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 16 : 32,
+                  vertical: isMobile ? 6 : 12,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.kSecondaryColor,
@@ -295,7 +300,7 @@ class _CorrectNameDisplayState extends State<CorrectNameDisplay>
                 ),
                 child: Text(
                   widget.nameNp,
-                  style:  TextStyle(
+                  style: TextStyle(
                     fontSize: isMobile ? 32 : 48,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
