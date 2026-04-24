@@ -162,14 +162,16 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
         }
 
         final content = state.content!;
-        final bgImage = content.bgImage;
+        final selectedBgImage = isMobile
+            ? content.bgImage ?? content.bgImageTb
+            : content.bgImageTb ?? content.bgImage;
 
         return Stack(
           children: [
             Positioned.fill(
-              child: bgImage == null || bgImage.isEmpty
+              child: selectedBgImage == null || selectedBgImage.isEmpty
                   ? Container(color: Colors.grey[100])
-                  : SvgPicture.network(bgImage, fit: BoxFit.cover),
+                  : SvgPicture.network(selectedBgImage, fit: BoxFit.cover),
             ),
 
             ...content.items.asMap().entries.map((entry) {
