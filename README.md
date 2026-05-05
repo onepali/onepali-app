@@ -1,8 +1,6 @@
-██████      ███    ██ ███████ ██████   █████  ██      ██ 
-██    ██     ████   ██ ██      ██   ██ ██   ██ ██      ██ 
-██    ██     ██ ██  ██ █████   ██████  ███████ ██      ██ 
-██    ██     ██  ██ ██ ██      ██      ██   ██ ██      ██ 
- ██████      ██   ████ ███████ ██      ██   ██ ███████ ██ 
+<p align="center">
+  <img src="assets/images/user_avatar.png" alt="O Nepali logo" width="120" />
+</p>
 
 # O Nepali Kids Learning App Documentation
 
