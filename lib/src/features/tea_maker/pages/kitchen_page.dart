@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
 import 'package:onepali/src/features/tea_maker/widgets/bear_with_tea.dart';
 import 'package:onepali/src/features/tea_maker/widgets/dragged_item.dart';
@@ -265,10 +265,7 @@ class _KitchenPageState extends State<KitchenPage> {
                     right: 0,
                     left: 0,
                     bottom: size.height * 0.09,
-                    child: CorrectNameDisplay(
-                      nameNp: state.droppedItem!,
-                      nameEn: '',
-                    ),
+                    child: LabelDisplay(nameNp: state.droppedItem!, nameEn: ''),
                   ),
                 if (state.teaReady)
                   Align(

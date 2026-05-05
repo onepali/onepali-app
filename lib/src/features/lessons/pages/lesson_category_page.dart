@@ -28,6 +28,13 @@ class LessonCategoryPage extends StatelessWidget {
     );
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getLessonsStream() {
+    return FirebaseFirestore.instance
+        .collection('lessons')
+        .where('category_id', isEqualTo: categoryId)
+        .snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
@@ -72,13 +79,12 @@ class LessonCategoryPage extends StatelessWidget {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('lessons')
-                  .where('category_id', isEqualTo: categoryId)
-                  .snapshots(),
+              stream: getLessonsStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final data = snapshot.data!.docs;
+                  final data = snapshot.data!.docs
+                      .where((lesson) => lesson.data()['active'] != false)
+                      .toList();
                   return GridView.builder(
                     itemCount: data.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
