@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
-import 'package:onepali/src/features/lessons/blocs/ball_slider_bloc/ball_slider_bloc.dart';
+import 'package:onepali/src/features/lessons/templates/ball_slide/ball_slider_bloc/ball_slider_bloc.dart';
 
 class BallSlider extends StatelessWidget {
   final double trackHeight;

@@ -8,10 +8,9 @@ import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
-import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
-import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/templates/ball_slide/penalty_slide_view.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class PenaltySlider extends StatefulWidget {
@@ -95,11 +94,6 @@ class _PenaltySliderState extends State<PenaltySlider>
     }
   }
 
-  void _reset() => setState(() {
-    _showGoal = false;
-    _ballProgress = 0.0;
-  });
-
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
@@ -164,7 +158,10 @@ class _PenaltySliderState extends State<PenaltySlider>
                 top: size.height * 0.1,
                 left: 0,
                 right: 0,
-                child: LabelDisplay(nameNp: 'Goal', nameEn: ''),
+                child: LabelDisplay(
+                  nameNp: widget.content.message ?? '',
+                  nameEn: '',
+                ),
               ),
             // if (_showGoal)
             //   Positioned(

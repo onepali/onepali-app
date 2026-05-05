@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 
 class MicProgressButton extends StatefulWidget {
   final int recordingDuration;
