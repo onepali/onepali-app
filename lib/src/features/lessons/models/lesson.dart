@@ -72,8 +72,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
   const factory LessonContent.tapToReveal({
     required String id,
     required int index,
-    String? bgImage,
-    String? bgImageTb,
+    String? bgImage, // Svg Image
+    String? bgImageTb, // Svg Image
     @Default('tap_to_reveal') String type,
     @Default([]) List<Item> items,
   }) = TapToRevealLessonContent;
@@ -296,6 +296,42 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Option> options,
   }) = OptionSelectionLessonContent;
 
+  @FreezedUnionValue("put_in_bag")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.putInBag({
+    required String id,
+    required int index,
+    @Default('put_in_bag') String type,
+
+    /// If true, only one choice is allowed
+    @Default(false) bool onlyOneChoice,
+    String? instructionAudio,
+
+    /// Bag in the background
+    String? bagImage,
+    String? bgColor,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    @Default([]) List<Item> items,
+    // 0 to 1. This is used to add gap between top items and the bag. 0 means no gap, 1 means full height of the screen.
+    @Default(0.0) num topBagPaddingRatio,
+  }) = PutInBagLessonContent;
+
+  @FreezedUnionValue("tap_the_button")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapTheButton({
+    required String id,
+    required int index,
+    @Default('tap_the_button') String type,
+    String? instruction,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    String? buttonImage, // png Image
+    String? tapAudio, // Played when the button is tapped
+  }) = TapTheButtonLessonContent;
+
   @FreezedUnionValue("lesson_recommendation")
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -351,6 +387,10 @@ abstract class Item with _$Item {
     num? dxRatioMobile,
     num? dyRatioMobile,
     @Default(false) bool isCorrect,
+    // Size of mb. This is used to scale the image in mb.
+    @Default(1.0) num sizeMb,
+    // Size of tb. This is used to scale the image in tb.
+    @Default(1.0) num sizeTb,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

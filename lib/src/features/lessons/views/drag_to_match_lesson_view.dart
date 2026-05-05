@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/features/lessons/blocs/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class DragToMatchScreen extends StatelessWidget {
   final DragToMatchLessonContent lessonContent;
@@ -122,7 +122,7 @@ class _DragToMatchView extends StatelessWidget {
               if (state.showNepaliword)
                 Positioned.fill(
                   child: Center(
-                    child: CorrectNameDisplay(
+                    child: LabelDisplay(
                       nameNp: state.itemPositions
                           .firstWhere(
                             (i) => i.itemId == state.currentTargetItemId,

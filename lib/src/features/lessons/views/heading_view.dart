@@ -10,9 +10,9 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/ball_heading_bloc/ball_heading_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
 import 'package:onepali/src/features/lessons/widgets/curved_ball_slider.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class HeadingView extends StatefulWidget {
   final BallSlideLessonContent content;
@@ -76,7 +76,7 @@ class _HeadingViewState extends State<HeadingView> {
                 top: size.height * 0.1,
                 left: 0,
                 right: 0,
-                child: CorrectNameDisplay(
+                child: LabelDisplay(
                   nameNp: state.content?.message ?? '',
                   nameEn: '',
                 ),

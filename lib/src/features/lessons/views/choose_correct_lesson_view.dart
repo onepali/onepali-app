@@ -276,7 +276,12 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
               ),
               if (widget.isLastContent && state.isCorrect)
                 Positioned.fill(
-                  child: LottieHelper.fromSource(path: Assets.confetti1),
+                  child: IgnorePointer(
+                    child: LottieHelper.fromSource(
+                      path: Assets.confetti1,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               TopRightPositionedCloseButton(
                 onTap: () => Navigator.pop(context),

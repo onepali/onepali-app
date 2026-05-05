@@ -10,8 +10,8 @@ import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/balloon_fill_bloc/balloon_fill_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class BalloonFillView extends StatefulWidget {
   final BalloonFillLessonContent content;
@@ -153,7 +153,7 @@ class ColorLabel extends StatelessWidget {
                   duration: 300.ms,
                   curve: Curves.easeIn,
                   child: state.colorLabelNp != null
-                      ? CorrectNameDisplay(
+                      ? LabelDisplay(
                           nameNp: state.colorLabelNp ?? '',
                           nameEn: '',
                         )
