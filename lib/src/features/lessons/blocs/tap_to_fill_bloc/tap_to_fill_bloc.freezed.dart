@@ -188,7 +188,7 @@ return optionTapped(_that.option);case _:
 
 class _Started implements TapToFillEvent {
   const _Started(this.content);
-
+  
 
  final  TapToFillLessonContent content;
 
@@ -254,7 +254,7 @@ as TapToFillLessonContent,
 
 class _AudioCompleted implements TapToFillEvent {
   const _AudioCompleted();
-
+  
 
 
 
@@ -286,7 +286,7 @@ String toString() {
 
 class _OptionTapped implements TapToFillEvent {
   const _OptionTapped(this.option);
-
+  
 
  final  Option option;
 
@@ -349,7 +349,7 @@ as Option,
 @override
 @pragma('vm:prefer-inline')
 $OptionCopyWith<$Res> get option {
-
+  
   return $OptionCopyWith<$Res>(_self.option, (value) {
     return _then(_self.copyWith(option: value));
   });
@@ -553,7 +553,7 @@ return $default(_that.status,_that.content);case _:
 
 class _TapToFillState implements TapToFillState {
   const _TapToFillState({this.status = TapToFillStatus.initial, this.content});
-
+  
 
 @override@JsonKey() final  TapToFillStatus status;
 @override final  TapToFillLessonContent? content;

@@ -188,7 +188,7 @@ return optionTapped(_that.option);case _:
 
 class _Started implements OptionSlectionEvent {
   const _Started(this.content);
-
+  
 
  final  OptionSelectionLessonContent content;
 
@@ -254,7 +254,7 @@ as OptionSelectionLessonContent,
 
 class _AudioCompleted implements OptionSlectionEvent {
   const _AudioCompleted();
-
+  
 
 
 
@@ -286,7 +286,7 @@ String toString() {
 
 class _OptionTapped implements OptionSlectionEvent {
   const _OptionTapped(this.option);
-
+  
 
  final  Option option;
 
@@ -349,7 +349,7 @@ as Option,
 @override
 @pragma('vm:prefer-inline')
 $OptionCopyWith<$Res> get option {
-
+  
   return $OptionCopyWith<$Res>(_self.option, (value) {
     return _then(_self.copyWith(option: value));
   });
@@ -553,7 +553,7 @@ return $default(_that.content,_that.status);case _:
 
 class _OptionSlectionState implements OptionSlectionState {
   const _OptionSlectionState({this.content, this.status = OptionSelectionStatus.initial});
-
+  
 
 @override final  OptionSelectionLessonContent? content;
 @override@JsonKey() final  OptionSelectionStatus status;
