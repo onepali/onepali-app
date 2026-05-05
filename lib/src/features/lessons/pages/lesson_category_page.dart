@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
@@ -26,6 +27,16 @@ class LessonCategoryPage extends StatelessWidget {
         color: AppColors.kDrawerBgColor,
       ),
     );
+  }
+
+  Stream<QuerySnapshot> getLessonsStream() {
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+        .collection('lessons')
+        .where('category_id', isEqualTo: categoryId);
+    if (!kDebugMode) {
+      query = query.where('active', isEqualTo: true);
+    }
+    return query.snapshots();
   }
 
   @override
@@ -72,10 +83,7 @@ class LessonCategoryPage extends StatelessWidget {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('lessons')
-                  .where('category_id', isEqualTo: categoryId)
-                  .snapshots(),
+              stream: getLessonsStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final data = snapshot.data!.docs;

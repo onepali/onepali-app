@@ -362,6 +362,14 @@ LessonContent _$LessonContentFromJson(
           return OptionSelectionLessonContent.fromJson(
             json
           );
+                case 'put_in_bag':
+          return PutInBagLessonContent.fromJson(
+            json
+          );
+                case 'tap_the_button':
+          return TapTheButtonLessonContent.fromJson(
+            json
+          );
                 case 'lesson_recommendation':
           return LessonRecommendationLessonContent.fromJson(
             json
@@ -385,7 +393,8 @@ LessonContent _$LessonContentFromJson(
 /// @nodoc
 mixin _$LessonContent {
 
- String get id; int get index; String get type;
+ String get id; int get index;// Svg Image
+ String get type;
 /// Create a copy of LessonContent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -461,7 +470,7 @@ extension LessonContentPatterns on LessonContent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( TapToPopLessonContent value)?  tapToPop,TResult Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult Function( CharTracingLessonContent value)?  charTracing,TResult Function( TeaMakingLessonContent value)?  teaMaking,TResult Function( BallSlideLessonContent value)?  ballSlide,TResult Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult Function( FlipCardLessonContent value)?  flipCard,TResult Function( BalloonFillLessonContent value)?  balloonFill,TResult Function( GunFillLessonContent value)?  gunFill,TResult Function( HoliAnimateLessonContent value)?  holiAnimate,TResult Function( TapToChangeLessonContent value)?  tapToChange,TResult Function( TapToFillLessonContent value)?  tapToFill,TResult Function( OptionSelectionLessonContent value)?  optionSelection,TResult Function( LessonRecommendationLessonContent value)?  lessonRecommendation,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( IntroLessonContent value)?  intro,TResult Function( InfoLessonContent value)?  info,TResult Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult Function( TapToRevealLessonContent value)?  tapToReveal,TResult Function( DragToMatchLessonContent value)?  dragToMatch,TResult Function( TapToPopLessonContent value)?  tapToPop,TResult Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult Function( CharTracingLessonContent value)?  charTracing,TResult Function( TeaMakingLessonContent value)?  teaMaking,TResult Function( BallSlideLessonContent value)?  ballSlide,TResult Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult Function( FlipCardLessonContent value)?  flipCard,TResult Function( BalloonFillLessonContent value)?  balloonFill,TResult Function( GunFillLessonContent value)?  gunFill,TResult Function( HoliAnimateLessonContent value)?  holiAnimate,TResult Function( TapToChangeLessonContent value)?  tapToChange,TResult Function( TapToFillLessonContent value)?  tapToFill,TResult Function( OptionSelectionLessonContent value)?  optionSelection,TResult Function( PutInBagLessonContent value)?  putInBag,TResult Function( TapTheButtonLessonContent value)?  tapTheButton,TResult Function( LessonRecommendationLessonContent value)?  lessonRecommendation,TResult Function( UnknownLessonContent value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
@@ -482,7 +491,9 @@ return gunFill(_that);case HoliAnimateLessonContent() when holiAnimate != null:
 return holiAnimate(_that);case TapToChangeLessonContent() when tapToChange != null:
 return tapToChange(_that);case TapToFillLessonContent() when tapToFill != null:
 return tapToFill(_that);case OptionSelectionLessonContent() when optionSelection != null:
-return optionSelection(_that);case LessonRecommendationLessonContent() when lessonRecommendation != null:
+return optionSelection(_that);case PutInBagLessonContent() when putInBag != null:
+return putInBag(_that);case TapTheButtonLessonContent() when tapTheButton != null:
+return tapTheButton(_that);case LessonRecommendationLessonContent() when lessonRecommendation != null:
 return lessonRecommendation(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return orElse();
@@ -502,7 +513,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( TapToPopLessonContent value)  tapToPop,required TResult Function( ListenAndRepeatLessonContent value)  listenAndRepeat,required TResult Function( CharTracingLessonContent value)  charTracing,required TResult Function( TeaMakingLessonContent value)  teaMaking,required TResult Function( BallSlideLessonContent value)  ballSlide,required TResult Function( SlideUpToMatchLessonContent value)  slideUpToMatch,required TResult Function( FlipCardLessonContent value)  flipCard,required TResult Function( BalloonFillLessonContent value)  balloonFill,required TResult Function( GunFillLessonContent value)  gunFill,required TResult Function( HoliAnimateLessonContent value)  holiAnimate,required TResult Function( TapToChangeLessonContent value)  tapToChange,required TResult Function( TapToFillLessonContent value)  tapToFill,required TResult Function( OptionSelectionLessonContent value)  optionSelection,required TResult Function( LessonRecommendationLessonContent value)  lessonRecommendation,required TResult Function( UnknownLessonContent value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( IntroLessonContent value)  intro,required TResult Function( InfoLessonContent value)  info,required TResult Function( ChooseCorrectLessonContent value)  chooseCorrect,required TResult Function( TapToRevealLessonContent value)  tapToReveal,required TResult Function( DragToMatchLessonContent value)  dragToMatch,required TResult Function( TapToPopLessonContent value)  tapToPop,required TResult Function( ListenAndRepeatLessonContent value)  listenAndRepeat,required TResult Function( CharTracingLessonContent value)  charTracing,required TResult Function( TeaMakingLessonContent value)  teaMaking,required TResult Function( BallSlideLessonContent value)  ballSlide,required TResult Function( SlideUpToMatchLessonContent value)  slideUpToMatch,required TResult Function( FlipCardLessonContent value)  flipCard,required TResult Function( BalloonFillLessonContent value)  balloonFill,required TResult Function( GunFillLessonContent value)  gunFill,required TResult Function( HoliAnimateLessonContent value)  holiAnimate,required TResult Function( TapToChangeLessonContent value)  tapToChange,required TResult Function( TapToFillLessonContent value)  tapToFill,required TResult Function( OptionSelectionLessonContent value)  optionSelection,required TResult Function( PutInBagLessonContent value)  putInBag,required TResult Function( TapTheButtonLessonContent value)  tapTheButton,required TResult Function( LessonRecommendationLessonContent value)  lessonRecommendation,required TResult Function( UnknownLessonContent value)  unknown,}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent():
@@ -523,7 +534,9 @@ return gunFill(_that);case HoliAnimateLessonContent():
 return holiAnimate(_that);case TapToChangeLessonContent():
 return tapToChange(_that);case TapToFillLessonContent():
 return tapToFill(_that);case OptionSelectionLessonContent():
-return optionSelection(_that);case LessonRecommendationLessonContent():
+return optionSelection(_that);case PutInBagLessonContent():
+return putInBag(_that);case TapTheButtonLessonContent():
+return tapTheButton(_that);case LessonRecommendationLessonContent():
 return lessonRecommendation(_that);case UnknownLessonContent():
 return unknown(_that);case _:
   throw StateError('Unexpected subclass');
@@ -542,7 +555,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( TapToPopLessonContent value)?  tapToPop,TResult? Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult? Function( CharTracingLessonContent value)?  charTracing,TResult? Function( TeaMakingLessonContent value)?  teaMaking,TResult? Function( BallSlideLessonContent value)?  ballSlide,TResult? Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult? Function( FlipCardLessonContent value)?  flipCard,TResult? Function( BalloonFillLessonContent value)?  balloonFill,TResult? Function( GunFillLessonContent value)?  gunFill,TResult? Function( HoliAnimateLessonContent value)?  holiAnimate,TResult? Function( TapToChangeLessonContent value)?  tapToChange,TResult? Function( TapToFillLessonContent value)?  tapToFill,TResult? Function( OptionSelectionLessonContent value)?  optionSelection,TResult? Function( LessonRecommendationLessonContent value)?  lessonRecommendation,TResult? Function( UnknownLessonContent value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( IntroLessonContent value)?  intro,TResult? Function( InfoLessonContent value)?  info,TResult? Function( ChooseCorrectLessonContent value)?  chooseCorrect,TResult? Function( TapToRevealLessonContent value)?  tapToReveal,TResult? Function( DragToMatchLessonContent value)?  dragToMatch,TResult? Function( TapToPopLessonContent value)?  tapToPop,TResult? Function( ListenAndRepeatLessonContent value)?  listenAndRepeat,TResult? Function( CharTracingLessonContent value)?  charTracing,TResult? Function( TeaMakingLessonContent value)?  teaMaking,TResult? Function( BallSlideLessonContent value)?  ballSlide,TResult? Function( SlideUpToMatchLessonContent value)?  slideUpToMatch,TResult? Function( FlipCardLessonContent value)?  flipCard,TResult? Function( BalloonFillLessonContent value)?  balloonFill,TResult? Function( GunFillLessonContent value)?  gunFill,TResult? Function( HoliAnimateLessonContent value)?  holiAnimate,TResult? Function( TapToChangeLessonContent value)?  tapToChange,TResult? Function( TapToFillLessonContent value)?  tapToFill,TResult? Function( OptionSelectionLessonContent value)?  optionSelection,TResult? Function( PutInBagLessonContent value)?  putInBag,TResult? Function( TapTheButtonLessonContent value)?  tapTheButton,TResult? Function( LessonRecommendationLessonContent value)?  lessonRecommendation,TResult? Function( UnknownLessonContent value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
@@ -563,7 +576,9 @@ return gunFill(_that);case HoliAnimateLessonContent() when holiAnimate != null:
 return holiAnimate(_that);case TapToChangeLessonContent() when tapToChange != null:
 return tapToChange(_that);case TapToFillLessonContent() when tapToFill != null:
 return tapToFill(_that);case OptionSelectionLessonContent() when optionSelection != null:
-return optionSelection(_that);case LessonRecommendationLessonContent() when lessonRecommendation != null:
+return optionSelection(_that);case PutInBagLessonContent() when putInBag != null:
+return putInBag(_that);case TapTheButtonLessonContent() when tapTheButton != null:
+return tapTheButton(_that);case LessonRecommendationLessonContent() when lessonRecommendation != null:
 return lessonRecommendation(_that);case UnknownLessonContent() when unknown != null:
 return unknown(_that);case _:
   return null;
@@ -582,7 +597,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String? bgImageTb,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String? sliderColor,  bool rotateBall,  String? message,  String? ballImageEnd,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  gunFill,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  String image,  List<Item> items)?  holiAnimate,TResult Function( String id,  int index,  String? audio,  String type,  String bgImage,  String afterBgImage,  String bgImageTb,  String afterBgImageTb,  String? tapGesture,  String? splashImage,  List<Item> items)?  tapToChange,TResult Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  tapToFill,TResult Function( String id,  int index,  String type,  String? image,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  optionSelection,TResult Function( String id,  int index,  String type,  String? bgColor,  List<Map<String, dynamic>> lessons)?  lessonRecommendation,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult Function( String id,  int index,  String? bgImage,  String? bgImageTb,  String type,  List<Item> items)?  tapToReveal,TResult Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String? sliderColor,  bool rotateBall,  String? message,  String? ballImageEnd,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  gunFill,TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  String image,  List<Item> items)?  holiAnimate,TResult Function( String id,  int index,  String? audio,  String type,  String bgImage,  String afterBgImage,  String bgImageTb,  String afterBgImageTb,  String? tapGesture,  String? splashImage,  List<Item> items)?  tapToChange,TResult Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  tapToFill,TResult Function( String id,  int index,  String type,  String? image,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  optionSelection,TResult Function( String id,  int index,  String type,  bool onlyOneChoice,  String? instructionAudio,  String? bagImage,  String? bgColor,  String? bgImage,  String? bgImageTb,  List<Item> items,  num topBagPaddingRatio)?  putInBag,TResult Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  String? buttonImage,  String? tapAudio)?  tapTheButton,TResult Function( String id,  int index,  String type,  String? bgColor,  List<Map<String, dynamic>> lessons)?  lessonRecommendation,TResult Function( String id,  int index,  String type)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio,_that.bgImageMobile,_that.bgImageTablet);case InfoLessonContent() when info != null:
@@ -602,7 +617,9 @@ return gunFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.b
 return holiAnimate(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.image,_that.items);case TapToChangeLessonContent() when tapToChange != null:
 return tapToChange(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.afterBgImage,_that.bgImageTb,_that.afterBgImageTb,_that.tapGesture,_that.splashImage,_that.items);case TapToFillLessonContent() when tapToFill != null:
 return tapToFill(_that.id,_that.index,_that.type,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case OptionSelectionLessonContent() when optionSelection != null:
-return optionSelection(_that.id,_that.index,_that.type,_that.image,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case LessonRecommendationLessonContent() when lessonRecommendation != null:
+return optionSelection(_that.id,_that.index,_that.type,_that.image,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case PutInBagLessonContent() when putInBag != null:
+return putInBag(_that.id,_that.index,_that.type,_that.onlyOneChoice,_that.instructionAudio,_that.bagImage,_that.bgColor,_that.bgImage,_that.bgImageTb,_that.items,_that.topBagPaddingRatio);case TapTheButtonLessonContent() when tapTheButton != null:
+return tapTheButton(_that.id,_that.index,_that.type,_that.instruction,_that.bgImage,_that.bgImageTb,_that.buttonImage,_that.tapAudio);case LessonRecommendationLessonContent() when lessonRecommendation != null:
 return lessonRecommendation(_that.id,_that.index,_that.type,_that.bgColor,_that.lessons);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return orElse();
@@ -622,7 +639,7 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String? bgImageTb,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)  tapToPop,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)  listenAndRepeat,required TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)  charTracing,required TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)  teaMaking,required TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String? sliderColor,  bool rotateBall,  String? message,  String? ballImageEnd,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)  ballSlide,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  slideUpToMatch,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  flipCard,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  balloonFill,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  gunFill,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  String image,  List<Item> items)  holiAnimate,required TResult Function( String id,  int index,  String? audio,  String type,  String bgImage,  String afterBgImage,  String bgImageTb,  String afterBgImageTb,  String? tapGesture,  String? splashImage,  List<Item> items)  tapToChange,required TResult Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)  tapToFill,required TResult Function( String id,  int index,  String type,  String? image,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)  optionSelection,required TResult Function( String id,  int index,  String type,  String? bgColor,  List<Map<String, dynamic>> lessons)  lessonRecommendation,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)  intro,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)  info,required TResult Function( String id,  int index,  String type,  List<Item> items)  chooseCorrect,required TResult Function( String id,  int index,  String? bgImage,  String? bgImageTb,  String type,  List<Item> items)  tapToReveal,required TResult Function( String id,  int index,  String type,  List<Item> items)  dragToMatch,required TResult Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)  tapToPop,required TResult Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)  listenAndRepeat,required TResult Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)  charTracing,required TResult Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)  teaMaking,required TResult Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String? sliderColor,  bool rotateBall,  String? message,  String? ballImageEnd,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)  ballSlide,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  slideUpToMatch,required TResult Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)  flipCard,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  balloonFill,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)  gunFill,required TResult Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  String image,  List<Item> items)  holiAnimate,required TResult Function( String id,  int index,  String? audio,  String type,  String bgImage,  String afterBgImage,  String bgImageTb,  String afterBgImageTb,  String? tapGesture,  String? splashImage,  List<Item> items)  tapToChange,required TResult Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)  tapToFill,required TResult Function( String id,  int index,  String type,  String? image,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)  optionSelection,required TResult Function( String id,  int index,  String type,  bool onlyOneChoice,  String? instructionAudio,  String? bagImage,  String? bgColor,  String? bgImage,  String? bgImageTb,  List<Item> items,  num topBagPaddingRatio)  putInBag,required TResult Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  String? buttonImage,  String? tapAudio)  tapTheButton,required TResult Function( String id,  int index,  String type,  String? bgColor,  List<Map<String, dynamic>> lessons)  lessonRecommendation,required TResult Function( String id,  int index,  String type)  unknown,}) {final _that = this;
 switch (_that) {
 case IntroLessonContent():
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio,_that.bgImageMobile,_that.bgImageTablet);case InfoLessonContent():
@@ -642,7 +659,9 @@ return gunFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.b
 return holiAnimate(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.image,_that.items);case TapToChangeLessonContent():
 return tapToChange(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.afterBgImage,_that.bgImageTb,_that.afterBgImageTb,_that.tapGesture,_that.splashImage,_that.items);case TapToFillLessonContent():
 return tapToFill(_that.id,_that.index,_that.type,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case OptionSelectionLessonContent():
-return optionSelection(_that.id,_that.index,_that.type,_that.image,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case LessonRecommendationLessonContent():
+return optionSelection(_that.id,_that.index,_that.type,_that.image,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case PutInBagLessonContent():
+return putInBag(_that.id,_that.index,_that.type,_that.onlyOneChoice,_that.instructionAudio,_that.bagImage,_that.bgColor,_that.bgImage,_that.bgImageTb,_that.items,_that.topBagPaddingRatio);case TapTheButtonLessonContent():
+return tapTheButton(_that.id,_that.index,_that.type,_that.instruction,_that.bgImage,_that.bgImageTb,_that.buttonImage,_that.tapAudio);case LessonRecommendationLessonContent():
 return lessonRecommendation(_that.id,_that.index,_that.type,_that.bgColor,_that.lessons);case UnknownLessonContent():
 return unknown(_that.id,_that.index,_that.type);case _:
   throw StateError('Unexpected subclass');
@@ -661,7 +680,7 @@ return unknown(_that.id,_that.index,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String? bgImageTb,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult? Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult? Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult? Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String? sliderColor,  bool rotateBall,  String? message,  String? ballImageEnd,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  gunFill,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  String image,  List<Item> items)?  holiAnimate,TResult? Function( String id,  int index,  String? audio,  String type,  String bgImage,  String afterBgImage,  String bgImageTb,  String afterBgImageTb,  String? tapGesture,  String? splashImage,  List<Item> items)?  tapToChange,TResult? Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  tapToFill,TResult? Function( String id,  int index,  String type,  String? image,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  optionSelection,TResult? Function( String id,  int index,  String type,  String? bgColor,  List<Map<String, dynamic>> lessons)?  lessonRecommendation,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int index,  String type,  String? bgColor,  String? image,  String? audio,  String? bgImageMobile,  String? bgImageTablet)?  intro,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String audioWord,  String? audioBg,  String image,  bool isImageSvg,  String? video,  String? bgImageColor)?  info,TResult? Function( String id,  int index,  String type,  List<Item> items)?  chooseCorrect,TResult? Function( String id,  int index,  String? bgImage,  String? bgImageTb,  String type,  List<Item> items)?  tapToReveal,TResult? Function( String id,  int index,  String type,  List<Item> items)?  dragToMatch,TResult? Function( String id,  int index,  String? bgImage,  String? successImage,  String? bgColor,  String? audioWord,  String? instructionAudio,  String type,  List<Item> items)?  tapToPop,TResult? Function( String id,  int index,  String type,  String nameEn,  String nameNp,  String? bgImage,  String? bgColor,  String audioWord,  String? audioBg,  String? image,  String? charImage,  bool isImageSvg)?  listenAndRepeat,TResult? Function( String nameEn,  String nameNp,  String id,  int index,  String? bgImage,  String? bgColor,  String? audioBg,  String? audioItem,  String type)?  charTracing,TResult? Function( String id,  int index,  String type,  String audioInstruction,  String teapotVapour,  String stoveImage,  String abaPaniUmalaSound,  String teaReadySound,  String bearTakingTea,  List<Item> ingredients)?  teaMaking,TResult? Function( String id,  int index,  String type,  String? bgImageMobile,  String? bgImageTablet,  String? player1,  String? player2,  String? ballImage,  String? sliderColor,  bool rotateBall,  String? message,  String? ballImageEnd,  String direction,  List<String> conversation,  num angle,  num sliderLengthMb,  num sliderLengthTb,  int pDyMb,  int pDyTb,  String? goalLeftImageMb,  String? goalLeftImageTb,  String? goalRightImageMb,  String? goalRightImageTb)?  ballSlide,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  slideUpToMatch,TResult? Function( String id,  int index,  String type,  String? bgImage,  List<Item> items)?  flipCard,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  balloonFill,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  List<Item> items)?  gunFill,TResult? Function( String id,  int index,  String? audio,  String type,  String? bgImage,  String? bgImageTb,  String image,  List<Item> items)?  holiAnimate,TResult? Function( String id,  int index,  String? audio,  String type,  String bgImage,  String afterBgImage,  String bgImageTb,  String afterBgImageTb,  String? tapGesture,  String? splashImage,  List<Item> items)?  tapToChange,TResult? Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  tapToFill,TResult? Function( String id,  int index,  String type,  String? image,  String? instruction,  String? bgImage,  String? bgImageTb,  List<Option> options)?  optionSelection,TResult? Function( String id,  int index,  String type,  bool onlyOneChoice,  String? instructionAudio,  String? bagImage,  String? bgColor,  String? bgImage,  String? bgImageTb,  List<Item> items,  num topBagPaddingRatio)?  putInBag,TResult? Function( String id,  int index,  String type,  String? instruction,  String? bgImage,  String? bgImageTb,  String? buttonImage,  String? tapAudio)?  tapTheButton,TResult? Function( String id,  int index,  String type,  String? bgColor,  List<Map<String, dynamic>> lessons)?  lessonRecommendation,TResult? Function( String id,  int index,  String type)?  unknown,}) {final _that = this;
 switch (_that) {
 case IntroLessonContent() when intro != null:
 return intro(_that.id,_that.index,_that.type,_that.bgColor,_that.image,_that.audio,_that.bgImageMobile,_that.bgImageTablet);case InfoLessonContent() when info != null:
@@ -681,7 +700,9 @@ return gunFill(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.b
 return holiAnimate(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.bgImageTb,_that.image,_that.items);case TapToChangeLessonContent() when tapToChange != null:
 return tapToChange(_that.id,_that.index,_that.audio,_that.type,_that.bgImage,_that.afterBgImage,_that.bgImageTb,_that.afterBgImageTb,_that.tapGesture,_that.splashImage,_that.items);case TapToFillLessonContent() when tapToFill != null:
 return tapToFill(_that.id,_that.index,_that.type,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case OptionSelectionLessonContent() when optionSelection != null:
-return optionSelection(_that.id,_that.index,_that.type,_that.image,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case LessonRecommendationLessonContent() when lessonRecommendation != null:
+return optionSelection(_that.id,_that.index,_that.type,_that.image,_that.instruction,_that.bgImage,_that.bgImageTb,_that.options);case PutInBagLessonContent() when putInBag != null:
+return putInBag(_that.id,_that.index,_that.type,_that.onlyOneChoice,_that.instructionAudio,_that.bagImage,_that.bgColor,_that.bgImage,_that.bgImageTb,_that.items,_that.topBagPaddingRatio);case TapTheButtonLessonContent() when tapTheButton != null:
+return tapTheButton(_that.id,_that.index,_that.type,_that.instruction,_that.bgImage,_that.bgImageTb,_that.buttonImage,_that.tapAudio);case LessonRecommendationLessonContent() when lessonRecommendation != null:
 return lessonRecommendation(_that.id,_that.index,_that.type,_that.bgColor,_that.lessons);case UnknownLessonContent() when unknown != null:
 return unknown(_that.id,_that.index,_that.type);case _:
   return null;
@@ -955,7 +976,9 @@ class TapToRevealLessonContent implements LessonContent {
 @override final  String id;
 @override final  int index;
  final  String? bgImage;
+// Svg Image
  final  String? bgImageTb;
+// Svg Image
 @override@JsonKey() final  String type;
  final  List<Item> _items;
 @JsonKey() List<Item> get items {
@@ -2326,6 +2349,193 @@ as List<Option>,
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class PutInBagLessonContent implements LessonContent {
+  const PutInBagLessonContent({required this.id, required this.index, this.type = 'put_in_bag', this.onlyOneChoice = false, this.instructionAudio, this.bagImage, this.bgColor, this.bgImage, this.bgImageTb, final  List<Item> items = const [], this.topBagPaddingRatio = 0.0}): _items = items;
+  factory PutInBagLessonContent.fromJson(Map<String, dynamic> json) => _$PutInBagLessonContentFromJson(json);
+
+@override final  String id;
+@override final  int index;
+@override@JsonKey() final  String type;
+/// If true, only one choice is allowed
+@JsonKey() final  bool onlyOneChoice;
+ final  String? instructionAudio;
+/// Bag in the background
+ final  String? bagImage;
+ final  String? bgColor;
+ final  String? bgImage;
+// png Image
+ final  String? bgImageTb;
+// png Image
+ final  List<Item> _items;
+// png Image
+@JsonKey() List<Item> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+// 0 to 1. This is used to add gap between top items and the bag. 0 means no gap, 1 means full height of the screen.
+@JsonKey() final  num topBagPaddingRatio;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PutInBagLessonContentCopyWith<PutInBagLessonContent> get copyWith => _$PutInBagLessonContentCopyWithImpl<PutInBagLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PutInBagLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PutInBagLessonContent&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.type, type) || other.type == type)&&(identical(other.onlyOneChoice, onlyOneChoice) || other.onlyOneChoice == onlyOneChoice)&&(identical(other.instructionAudio, instructionAudio) || other.instructionAudio == instructionAudio)&&(identical(other.bagImage, bagImage) || other.bagImage == bagImage)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.bgImage, bgImage) || other.bgImage == bgImage)&&(identical(other.bgImageTb, bgImageTb) || other.bgImageTb == bgImageTb)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.topBagPaddingRatio, topBagPaddingRatio) || other.topBagPaddingRatio == topBagPaddingRatio));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,index,type,onlyOneChoice,instructionAudio,bagImage,bgColor,bgImage,bgImageTb,const DeepCollectionEquality().hash(_items),topBagPaddingRatio);
+
+@override
+String toString() {
+  return 'LessonContent.putInBag(id: $id, index: $index, type: $type, onlyOneChoice: $onlyOneChoice, instructionAudio: $instructionAudio, bagImage: $bagImage, bgColor: $bgColor, bgImage: $bgImage, bgImageTb: $bgImageTb, items: $items, topBagPaddingRatio: $topBagPaddingRatio)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PutInBagLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $PutInBagLessonContentCopyWith(PutInBagLessonContent value, $Res Function(PutInBagLessonContent) _then) = _$PutInBagLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int index, String type, bool onlyOneChoice, String? instructionAudio, String? bagImage, String? bgColor, String? bgImage, String? bgImageTb, List<Item> items, num topBagPaddingRatio
+});
+
+
+
+
+}
+/// @nodoc
+class _$PutInBagLessonContentCopyWithImpl<$Res>
+    implements $PutInBagLessonContentCopyWith<$Res> {
+  _$PutInBagLessonContentCopyWithImpl(this._self, this._then);
+
+  final PutInBagLessonContent _self;
+  final $Res Function(PutInBagLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? type = null,Object? onlyOneChoice = null,Object? instructionAudio = freezed,Object? bagImage = freezed,Object? bgColor = freezed,Object? bgImage = freezed,Object? bgImageTb = freezed,Object? items = null,Object? topBagPaddingRatio = null,}) {
+  return _then(PutInBagLessonContent(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,onlyOneChoice: null == onlyOneChoice ? _self.onlyOneChoice : onlyOneChoice // ignore: cast_nullable_to_non_nullable
+as bool,instructionAudio: freezed == instructionAudio ? _self.instructionAudio : instructionAudio // ignore: cast_nullable_to_non_nullable
+as String?,bagImage: freezed == bagImage ? _self.bagImage : bagImage // ignore: cast_nullable_to_non_nullable
+as String?,bgColor: freezed == bgColor ? _self.bgColor : bgColor // ignore: cast_nullable_to_non_nullable
+as String?,bgImage: freezed == bgImage ? _self.bgImage : bgImage // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTb: freezed == bgImageTb ? _self.bgImageTb : bgImageTb // ignore: cast_nullable_to_non_nullable
+as String?,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<Item>,topBagPaddingRatio: null == topBagPaddingRatio ? _self.topBagPaddingRatio : topBagPaddingRatio // ignore: cast_nullable_to_non_nullable
+as num,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class TapTheButtonLessonContent implements LessonContent {
+  const TapTheButtonLessonContent({required this.id, required this.index, this.type = 'tap_the_button', this.instruction, this.bgImage, this.bgImageTb, this.buttonImage, this.tapAudio});
+  factory TapTheButtonLessonContent.fromJson(Map<String, dynamic> json) => _$TapTheButtonLessonContentFromJson(json);
+
+@override final  String id;
+@override final  int index;
+@override@JsonKey() final  String type;
+ final  String? instruction;
+ final  String? bgImage;
+// png Image
+ final  String? bgImageTb;
+// png Image
+ final  String? buttonImage;
+// png Image
+ final  String? tapAudio;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TapTheButtonLessonContentCopyWith<TapTheButtonLessonContent> get copyWith => _$TapTheButtonLessonContentCopyWithImpl<TapTheButtonLessonContent>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TapTheButtonLessonContentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapTheButtonLessonContent&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.type, type) || other.type == type)&&(identical(other.instruction, instruction) || other.instruction == instruction)&&(identical(other.bgImage, bgImage) || other.bgImage == bgImage)&&(identical(other.bgImageTb, bgImageTb) || other.bgImageTb == bgImageTb)&&(identical(other.buttonImage, buttonImage) || other.buttonImage == buttonImage)&&(identical(other.tapAudio, tapAudio) || other.tapAudio == tapAudio));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,index,type,instruction,bgImage,bgImageTb,buttonImage,tapAudio);
+
+@override
+String toString() {
+  return 'LessonContent.tapTheButton(id: $id, index: $index, type: $type, instruction: $instruction, bgImage: $bgImage, bgImageTb: $bgImageTb, buttonImage: $buttonImage, tapAudio: $tapAudio)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TapTheButtonLessonContentCopyWith<$Res> implements $LessonContentCopyWith<$Res> {
+  factory $TapTheButtonLessonContentCopyWith(TapTheButtonLessonContent value, $Res Function(TapTheButtonLessonContent) _then) = _$TapTheButtonLessonContentCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, int index, String type, String? instruction, String? bgImage, String? bgImageTb, String? buttonImage, String? tapAudio
+});
+
+
+
+
+}
+/// @nodoc
+class _$TapTheButtonLessonContentCopyWithImpl<$Res>
+    implements $TapTheButtonLessonContentCopyWith<$Res> {
+  _$TapTheButtonLessonContentCopyWithImpl(this._self, this._then);
+
+  final TapTheButtonLessonContent _self;
+  final $Res Function(TapTheButtonLessonContent) _then;
+
+/// Create a copy of LessonContent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? type = null,Object? instruction = freezed,Object? bgImage = freezed,Object? bgImageTb = freezed,Object? buttonImage = freezed,Object? tapAudio = freezed,}) {
+  return _then(TapTheButtonLessonContent(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,instruction: freezed == instruction ? _self.instruction : instruction // ignore: cast_nullable_to_non_nullable
+as String?,bgImage: freezed == bgImage ? _self.bgImage : bgImage // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTb: freezed == bgImageTb ? _self.bgImageTb : bgImageTb // ignore: cast_nullable_to_non_nullable
+as String?,buttonImage: freezed == buttonImage ? _self.buttonImage : buttonImage // ignore: cast_nullable_to_non_nullable
+as String?,tapAudio: freezed == tapAudio ? _self.tapAudio : tapAudio // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class LessonRecommendationLessonContent implements LessonContent {
   const LessonRecommendationLessonContent({required this.id, required this.index, this.type = 'lesson_recommendation', this.bgColor, final  List<Map<String, dynamic>> lessons = const []}): _lessons = lessons;
   factory LessonRecommendationLessonContent.fromJson(Map<String, dynamic> json) => _$LessonRecommendationLessonContentFromJson(json);
@@ -2488,7 +2698,9 @@ mixin _$Item {
  String? get imageOutline; bool get isImageOutlineSvg; String? get outlineBgColor; String? get question;// eg where is the cat
  String? get audioItem;// Cat pronunciation
  String? get audioBg;// eg cat sound meww, dog sound barking
- num? get dxRatio; num? get dyRatio; num? get dxRatioMobile; num? get dyRatioMobile; bool get isCorrect;
+ num? get dxRatio; num? get dyRatio; num? get dxRatioMobile; num? get dyRatioMobile; bool get isCorrect;// Size of mb. This is used to scale the image in mb.
+ num get sizeMb;// Size of tb. This is used to scale the image in tb.
+ num get sizeTb;
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2501,16 +2713,16 @@ $ItemCopyWith<Item> get copyWith => _$ItemCopyWithImpl<Item>(this as Item, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.order, order) || other.order == order)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.outlineBgColor, outlineBgColor) || other.outlineBgColor == outlineBgColor)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Item&&(identical(other.order, order) || other.order == order)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.outlineBgColor, outlineBgColor) || other.outlineBgColor == outlineBgColor)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.sizeMb, sizeMb) || other.sizeMb == sizeMb)&&(identical(other.sizeTb, sizeTb) || other.sizeTb == sizeTb));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,order,nameEn,nameNp,image,isImageSvg,bgColor,imageOutline,isImageOutlineSvg,outlineBgColor,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect);
+int get hashCode => Object.hashAll([runtimeType,order,nameEn,nameNp,image,isImageSvg,bgColor,imageOutline,isImageOutlineSvg,outlineBgColor,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect,sizeMb,sizeTb]);
 
 @override
 String toString() {
-  return 'Item(order: $order, nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, bgColor: $bgColor, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, outlineBgColor: $outlineBgColor, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect)';
+  return 'Item(order: $order, nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, bgColor: $bgColor, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, outlineBgColor: $outlineBgColor, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect, sizeMb: $sizeMb, sizeTb: $sizeTb)';
 }
 
 
@@ -2521,7 +2733,7 @@ abstract mixin class $ItemCopyWith<$Res>  {
   factory $ItemCopyWith(Item value, $Res Function(Item) _then) = _$ItemCopyWithImpl;
 @useResult
 $Res call({
- int? order, String nameEn, String nameNp, String image, bool isImageSvg, String? bgColor, String? imageOutline, bool isImageOutlineSvg, String? outlineBgColor, String? question, String? audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect
+ int? order, String nameEn, String nameNp, String image, bool isImageSvg, String? bgColor, String? imageOutline, bool isImageOutlineSvg, String? outlineBgColor, String? question, String? audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect, num sizeMb, num sizeTb
 });
 
 
@@ -2538,7 +2750,7 @@ class _$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? order = freezed,Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? bgColor = freezed,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? outlineBgColor = freezed,Object? question = freezed,Object? audioItem = freezed,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? order = freezed,Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? bgColor = freezed,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? outlineBgColor = freezed,Object? question = freezed,Object? audioItem = freezed,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,Object? sizeMb = null,Object? sizeTb = null,}) {
   return _then(_self.copyWith(
 order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int?,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -2557,7 +2769,9 @@ as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nu
 as num?,dxRatioMobile: freezed == dxRatioMobile ? _self.dxRatioMobile : dxRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,dyRatioMobile: freezed == dyRatioMobile ? _self.dyRatioMobile : dyRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,sizeMb: null == sizeMb ? _self.sizeMb : sizeMb // ignore: cast_nullable_to_non_nullable
+as num,sizeTb: null == sizeTb ? _self.sizeTb : sizeTb // ignore: cast_nullable_to_non_nullable
+as num,
   ));
 }
 
@@ -2642,10 +2856,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? order,  String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String? audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? order,  String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String? audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect,  num sizeMb,  num sizeTb)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect);case _:
+return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect,_that.sizeMb,_that.sizeTb);case _:
   return orElse();
 
 }
@@ -2663,10 +2877,10 @@ return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageS
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? order,  String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String? audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? order,  String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String? audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect,  num sizeMb,  num sizeTb)  $default,) {final _that = this;
 switch (_that) {
 case _Item():
-return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect);case _:
+return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect,_that.sizeMb,_that.sizeTb);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2683,10 +2897,10 @@ return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageS
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? order,  String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String? audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? order,  String nameEn,  String nameNp,  String image,  bool isImageSvg,  String? bgColor,  String? imageOutline,  bool isImageOutlineSvg,  String? outlineBgColor,  String? question,  String? audioItem,  String? audioBg,  num? dxRatio,  num? dyRatio,  num? dxRatioMobile,  num? dyRatioMobile,  bool isCorrect,  num sizeMb,  num sizeTb)?  $default,) {final _that = this;
 switch (_that) {
 case _Item() when $default != null:
-return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect);case _:
+return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageSvg,_that.bgColor,_that.imageOutline,_that.isImageOutlineSvg,_that.outlineBgColor,_that.question,_that.audioItem,_that.audioBg,_that.dxRatio,_that.dyRatio,_that.dxRatioMobile,_that.dyRatioMobile,_that.isCorrect,_that.sizeMb,_that.sizeTb);case _:
   return null;
 
 }
@@ -2698,7 +2912,7 @@ return $default(_that.order,_that.nameEn,_that.nameNp,_that.image,_that.isImageS
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Item implements Item {
-  const _Item({this.order, required this.nameEn, required this.nameNp, required this.image, this.isImageSvg = false, this.bgColor, this.imageOutline, this.isImageOutlineSvg = false, this.outlineBgColor, this.question, this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.dxRatioMobile, this.dyRatioMobile, this.isCorrect = false});
+  const _Item({this.order, required this.nameEn, required this.nameNp, required this.image, this.isImageSvg = false, this.bgColor, this.imageOutline, this.isImageOutlineSvg = false, this.outlineBgColor, this.question, this.audioItem, this.audioBg, this.dxRatio, this.dyRatio, this.dxRatioMobile, this.dyRatioMobile, this.isCorrect = false, this.sizeMb = 1.0, this.sizeTb = 1.0});
   factory _Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
 @override final  int? order;
@@ -2723,6 +2937,10 @@ class _Item implements Item {
 @override final  num? dxRatioMobile;
 @override final  num? dyRatioMobile;
 @override@JsonKey() final  bool isCorrect;
+// Size of mb. This is used to scale the image in mb.
+@override@JsonKey() final  num sizeMb;
+// Size of tb. This is used to scale the image in tb.
+@override@JsonKey() final  num sizeTb;
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
@@ -2737,16 +2955,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.order, order) || other.order == order)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.outlineBgColor, outlineBgColor) || other.outlineBgColor == outlineBgColor)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Item&&(identical(other.order, order) || other.order == order)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.image, image) || other.image == image)&&(identical(other.isImageSvg, isImageSvg) || other.isImageSvg == isImageSvg)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor)&&(identical(other.imageOutline, imageOutline) || other.imageOutline == imageOutline)&&(identical(other.isImageOutlineSvg, isImageOutlineSvg) || other.isImageOutlineSvg == isImageOutlineSvg)&&(identical(other.outlineBgColor, outlineBgColor) || other.outlineBgColor == outlineBgColor)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem)&&(identical(other.audioBg, audioBg) || other.audioBg == audioBg)&&(identical(other.dxRatio, dxRatio) || other.dxRatio == dxRatio)&&(identical(other.dyRatio, dyRatio) || other.dyRatio == dyRatio)&&(identical(other.dxRatioMobile, dxRatioMobile) || other.dxRatioMobile == dxRatioMobile)&&(identical(other.dyRatioMobile, dyRatioMobile) || other.dyRatioMobile == dyRatioMobile)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.sizeMb, sizeMb) || other.sizeMb == sizeMb)&&(identical(other.sizeTb, sizeTb) || other.sizeTb == sizeTb));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,order,nameEn,nameNp,image,isImageSvg,bgColor,imageOutline,isImageOutlineSvg,outlineBgColor,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect);
+int get hashCode => Object.hashAll([runtimeType,order,nameEn,nameNp,image,isImageSvg,bgColor,imageOutline,isImageOutlineSvg,outlineBgColor,question,audioItem,audioBg,dxRatio,dyRatio,dxRatioMobile,dyRatioMobile,isCorrect,sizeMb,sizeTb]);
 
 @override
 String toString() {
-  return 'Item(order: $order, nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, bgColor: $bgColor, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, outlineBgColor: $outlineBgColor, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect)';
+  return 'Item(order: $order, nameEn: $nameEn, nameNp: $nameNp, image: $image, isImageSvg: $isImageSvg, bgColor: $bgColor, imageOutline: $imageOutline, isImageOutlineSvg: $isImageOutlineSvg, outlineBgColor: $outlineBgColor, question: $question, audioItem: $audioItem, audioBg: $audioBg, dxRatio: $dxRatio, dyRatio: $dyRatio, dxRatioMobile: $dxRatioMobile, dyRatioMobile: $dyRatioMobile, isCorrect: $isCorrect, sizeMb: $sizeMb, sizeTb: $sizeTb)';
 }
 
 
@@ -2757,7 +2975,7 @@ abstract mixin class _$ItemCopyWith<$Res> implements $ItemCopyWith<$Res> {
   factory _$ItemCopyWith(_Item value, $Res Function(_Item) _then) = __$ItemCopyWithImpl;
 @override @useResult
 $Res call({
- int? order, String nameEn, String nameNp, String image, bool isImageSvg, String? bgColor, String? imageOutline, bool isImageOutlineSvg, String? outlineBgColor, String? question, String? audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect
+ int? order, String nameEn, String nameNp, String image, bool isImageSvg, String? bgColor, String? imageOutline, bool isImageOutlineSvg, String? outlineBgColor, String? question, String? audioItem, String? audioBg, num? dxRatio, num? dyRatio, num? dxRatioMobile, num? dyRatioMobile, bool isCorrect, num sizeMb, num sizeTb
 });
 
 
@@ -2774,7 +2992,7 @@ class __$ItemCopyWithImpl<$Res>
 
 /// Create a copy of Item
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? order = freezed,Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? bgColor = freezed,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? outlineBgColor = freezed,Object? question = freezed,Object? audioItem = freezed,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? order = freezed,Object? nameEn = null,Object? nameNp = null,Object? image = null,Object? isImageSvg = null,Object? bgColor = freezed,Object? imageOutline = freezed,Object? isImageOutlineSvg = null,Object? outlineBgColor = freezed,Object? question = freezed,Object? audioItem = freezed,Object? audioBg = freezed,Object? dxRatio = freezed,Object? dyRatio = freezed,Object? dxRatioMobile = freezed,Object? dyRatioMobile = freezed,Object? isCorrect = null,Object? sizeMb = null,Object? sizeTb = null,}) {
   return _then(_Item(
 order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int?,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -2793,7 +3011,9 @@ as num?,dyRatio: freezed == dyRatio ? _self.dyRatio : dyRatio // ignore: cast_nu
 as num?,dxRatioMobile: freezed == dxRatioMobile ? _self.dxRatioMobile : dxRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,dyRatioMobile: freezed == dyRatioMobile ? _self.dyRatioMobile : dyRatioMobile // ignore: cast_nullable_to_non_nullable
 as num?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,sizeMb: null == sizeMb ? _self.sizeMb : sizeMb // ignore: cast_nullable_to_non_nullable
+as num,sizeTb: null == sizeTb ? _self.sizeTb : sizeTb // ignore: cast_nullable_to_non_nullable
+as num,
   ));
 }
 

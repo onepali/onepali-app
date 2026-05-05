@@ -13,6 +13,7 @@ import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 import 'package:onepali/src/screen/course/lesson/widget/grid_position_helper.dart';
 
 class TapToRevealLessonView extends StatefulWidget {
@@ -170,18 +171,23 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
               return Positioned(
                 left: dx * size.width,
                 top: dy * size.height,
-                child: _PositionedItemCard(
-                  item: item,
-                  itemSize: itemSize,
-                  index: index,
-                  isSelected: isTapped,
-                  isCorrect: isTapped && state.isCorrect,
-                  isWrong: isTapped && !state.isCorrect,
-                  onTap: () async {
-                    context.read<TapToRevealLessonContentBloc>().add(
-                      TapToRevealLessonContentEvent.itemTapped(item),
-                    );
-                  },
+                child: Transform.scale(
+                  scale: isMobile
+                      ? item.sizeMb.toDouble()
+                      : item.sizeTb.toDouble(),
+                  child: _PositionedItemCard(
+                    item: item,
+                    itemSize: itemSize,
+                    index: index,
+                    isSelected: isTapped,
+                    isCorrect: isTapped && state.isCorrect,
+                    isWrong: isTapped && !state.isCorrect,
+                    onTap: () async {
+                      context.read<TapToRevealLessonContentBloc>().add(
+                        TapToRevealLessonContentEvent.itemTapped(item),
+                      );
+                    },
+                  ),
                 ),
               );
             }),
@@ -211,7 +217,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 top: size.height * 0.05 + 50,
                 right: 0,
                 left: 0,
-                child: CorrectNameDisplay(
+                child: LabelDisplay(
                   nameNp: state.tappedItem!.nameNp,
                   nameEn: state.tappedItem!.nameEn,
                 ),
@@ -223,94 +229,6 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
               },
             ),
           ],
-        );
-      },
-    );
-  }
-}
-
-class CorrectNameDisplay extends StatefulWidget {
-  final String nameNp;
-  final String nameEn;
-
-  const CorrectNameDisplay({
-    super.key,
-    required this.nameNp,
-    required this.nameEn,
-  });
-
-  @override
-  State<CorrectNameDisplay> createState() => _CorrectNameDisplayState();
-}
-
-class _CorrectNameDisplayState extends State<CorrectNameDisplay>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _opacityAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
-
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
-      ),
-    );
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Center(
-          child: Opacity(
-            opacity: _opacityAnimation.value,
-            child: Transform.scale(
-              scale: _scaleAnimation.value,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 16 : 32,
-                  vertical: isMobile ? 6 : 12,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.kSecondaryColor,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Text(
-                  widget.nameNp,
-                  style: TextStyle(
-                    fontSize: isMobile ? 32 : 48,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontFamily: AppConstants.kMuktaFont,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
         );
       },
     );

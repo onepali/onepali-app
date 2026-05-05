@@ -14,6 +14,7 @@ import 'package:onepali/src/features/lessons/views/heading_view.dart';
 import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class BallSlideView extends StatelessWidget {
   const BallSlideView({super.key, required this.content});
@@ -168,7 +169,7 @@ class _SliderViewState extends State<_SliderView> {
                     top: size.height * 0.1,
                     left: 0,
                     right: 0,
-                    child: CorrectNameDisplay(
+                    child: LabelDisplay(
                       nameNp: state.content?.message ?? '',
                       nameEn: '',
                     ),

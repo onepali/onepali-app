@@ -562,6 +562,68 @@ Map<String, dynamic> _$OptionSelectionLessonContentToJson(
   'options': instance.options.map((e) => e.toJson()).toList(),
 };
 
+PutInBagLessonContent _$PutInBagLessonContentFromJson(
+  Map<String, dynamic> json,
+) => PutInBagLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'put_in_bag',
+  onlyOneChoice: json['only_one_choice'] as bool? ?? false,
+  instructionAudio: json['instruction_audio'] as String?,
+  bagImage: json['bag_image'] as String?,
+  bgColor: json['bg_color'] as String?,
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  topBagPaddingRatio: json['top_bag_padding_ratio'] as num? ?? 0.0,
+);
+
+Map<String, dynamic> _$PutInBagLessonContentToJson(
+  PutInBagLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'only_one_choice': instance.onlyOneChoice,
+  'instruction_audio': instance.instructionAudio,
+  'bag_image': instance.bagImage,
+  'bg_color': instance.bgColor,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+  'top_bag_padding_ratio': instance.topBagPaddingRatio,
+};
+
+TapTheButtonLessonContent _$TapTheButtonLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TapTheButtonLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'tap_the_button',
+  instruction: json['instruction'] as String?,
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  buttonImage: json['button_image'] as String?,
+  tapAudio: json['tap_audio'] as String?,
+);
+
+Map<String, dynamic> _$TapTheButtonLessonContentToJson(
+  TapTheButtonLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'instruction': instance.instruction,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'button_image': instance.buttonImage,
+  'tap_audio': instance.tapAudio,
+};
+
 LessonRecommendationLessonContent _$LessonRecommendationLessonContentFromJson(
   Map<String, dynamic> json,
 ) => LessonRecommendationLessonContent(
@@ -620,6 +682,8 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   dxRatioMobile: json['dx_ratio_mobile'] as num?,
   dyRatioMobile: json['dy_ratio_mobile'] as num?,
   isCorrect: json['is_correct'] as bool? ?? false,
+  sizeMb: json['size_mb'] as num? ?? 1.0,
+  sizeTb: json['size_tb'] as num? ?? 1.0,
 );
 
 Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
@@ -640,6 +704,8 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'dx_ratio_mobile': instance.dxRatioMobile,
   'dy_ratio_mobile': instance.dyRatioMobile,
   'is_correct': instance.isCorrect,
+  'size_mb': instance.sizeMb,
+  'size_tb': instance.sizeTb,
 };
 
 _Option _$OptionFromJson(Map<String, dynamic> json) => _Option(

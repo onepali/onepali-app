@@ -12,6 +12,7 @@ import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class PenaltySlider extends StatefulWidget {
   final GameSliderConfig config;
@@ -163,7 +164,7 @@ class _PenaltySliderState extends State<PenaltySlider>
                 top: size.height * 0.1,
                 left: 0,
                 right: 0,
-                child: CorrectNameDisplay(nameNp: 'Goal', nameEn: ''),
+                child: LabelDisplay(nameNp: 'Goal', nameEn: ''),
               ),
             // if (_showGoal)
             //   Positioned(

@@ -110,8 +110,9 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
 
         // Play correct audio when correct item is tapped
         if (state.isAudioPlaying && state.selectedItem != null) {
-
-          _playCorrectAudio(state.selectedItem!.audioItem!);
+          if (state.selectedItem!.audioItem != null) {
+            _playCorrectAudio(state.selectedItem!.audioItem!);
+          }
         }
       },
       builder: (context, state) {
@@ -194,6 +195,10 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (state.isAnswered && state.isCorrect) {
+                                    if (widget.isLastContent) {
+                                      Navigator.of(context).pop();
+                                      return;
+                                    }
                                     context.read<LessonBloc>().add(
                                       LessonEvent.nextContent(),
                                     );
@@ -248,7 +253,12 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
               ),
               if (widget.isLastContent && state.isCorrect)
                 Positioned.fill(
-                  child: LottieHelper.fromSource(path: Assets.confetti1),
+                  child: IgnorePointer(
+                    child: LottieHelper.fromSource(
+                      path: Assets.confetti1,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               // Close button
               TopRightPositionedCloseButton(
