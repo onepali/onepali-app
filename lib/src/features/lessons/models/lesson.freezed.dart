@@ -374,17 +374,10 @@ LessonContent _$LessonContentFromJson(
           return LessonRecommendationLessonContent.fromJson(
             json
           );
-                case 'unknown':
-          return UnknownLessonContent.fromJson(
-            json
-          );
         
           default:
-            throw CheckedFromJsonException(
-  json,
-  'type',
-  'LessonContent',
-  'Invalid union type "${json['type']}"!'
+            return UnknownLessonContent.fromJson(
+  json
 );
         }
       

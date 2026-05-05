@@ -188,7 +188,7 @@ return audioCompleted(_that.isCompleted);case _:
 
 class _Started implements PutInBagEvent {
   const _Started(this.content);
-
+  
 
  final  PutInBagLessonContent content;
 
@@ -254,7 +254,7 @@ as PutInBagLessonContent,
 
 class _ItemDropped implements PutInBagEvent {
   const _ItemDropped(this.itemIndex);
-
+  
 
  final  int itemIndex;
 
@@ -320,7 +320,7 @@ as int,
 
 class _AudioCompleted implements PutInBagEvent {
   const _AudioCompleted(this.isCompleted);
-
+  
 
  final  bool isCompleted;
 
@@ -582,7 +582,7 @@ return $default(_that.status,_that.content,_that.droppedItemIndexes,_that.curren
 
 class _PutInBagState extends PutInBagState {
   const _PutInBagState({this.status = PutInBagStatus.initial, this.content, final  List<int> droppedItemIndexes = const [], this.currentBagItemImage, this.currentPlayingItemIndex, this.showActionButton = false}): _droppedItemIndexes = droppedItemIndexes,super._();
-
+  
 
 @override@JsonKey() final  PutInBagStatus status;
 @override final  PutInBagLessonContent? content;

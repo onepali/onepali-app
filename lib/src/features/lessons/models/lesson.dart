@@ -21,7 +21,7 @@ abstract class LessonContentBase {
   String get type;
 }
 
-@Freezed(unionKey: "type")
+@Freezed(unionKey: "type", fallbackUnion: "unknown")
 abstract class LessonContent with _$LessonContent implements LessonContentBase {
   @FreezedUnionValue('intro')
   // ignore: invalid_annotation_target
@@ -344,25 +344,15 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     List<Map<String, dynamic>> lessons, // id and image of recommended lessons
   }) = LessonRecommendationLessonContent;
 
+  @FreezedUnionValue("unknown")
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
     @Default('unknown') String type,
   }) = UnknownLessonContent;
 
-  // factory LessonContent.fromJson(Map<String, dynamic> json) =>
-  //     _$LessonContentFromJson(json);
-
-  factory LessonContent.fromJson(Map<String, dynamic> json) {
-    try {
-      return _$LessonContentFromJson(json);
-    } catch (e) {
-      final id = json['id'] as String? ?? '';
-      final index = json['index'] as int? ?? -1;
-      final type = json['type'] as String? ?? 'unknown';
-      return LessonContent.unknown(id: id, index: index, type: type);
-    }
-  }
+  factory LessonContent.fromJson(Map<String, dynamic> json) =>
+      _$LessonContentFromJson(json);
 }
 
 @freezed

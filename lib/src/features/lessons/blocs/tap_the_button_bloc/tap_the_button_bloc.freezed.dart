@@ -188,7 +188,7 @@ return tapped();case _:
 
 class _Started implements TapTheButtonEvent {
   const _Started(this.content);
-
+  
 
  final  TapTheButtonLessonContent content;
 
@@ -254,7 +254,7 @@ as TapTheButtonLessonContent,
 
 class _AudioCompleted implements TapTheButtonEvent {
   const _AudioCompleted(this.isCompleted);
-
+  
 
  final  bool isCompleted;
 
@@ -320,7 +320,7 @@ as bool,
 
 class _Tapped implements TapTheButtonEvent {
   const _Tapped();
-
+  
 
 
 
@@ -544,7 +544,7 @@ return $default(_that.content,_that.status);case _:
 
 class _TapTheButtonState extends TapTheButtonState {
   const _TapTheButtonState({this.content, this.status = TapTheButtonStatus.initial}): super._();
-
+  
 
 @override final  TapTheButtonLessonContent? content;
 @override@JsonKey() final  TapTheButtonStatus status;
