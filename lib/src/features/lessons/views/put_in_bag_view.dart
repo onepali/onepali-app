@@ -88,11 +88,10 @@ class _PutInBagViewState extends State<PutInBagView> {
                                               data: entry.key,
                                               feedback: Material(
                                                 color: Colors.transparent,
-                                                child: Transform.scale(
-                                                 scale: 0.7,
-                                                  child: CustomCachedImage(
-                                                    imageUrl: entry.value.image,
-                                                  ),
+                                                child: CustomCachedImage(
+                                                  imageUrl: entry.value.image,
+                                                  height: size.height * 0.3,
+                                                  width: size.width * 0.3,
                                                 ),
                                               ),
                                               childWhenDragging: Opacity(
@@ -133,7 +132,7 @@ class _PutInBagViewState extends State<PutInBagView> {
                         ),
                       ),
                     ),
-                  SizedBox(height:isMobile ? 24 : 48),
+                  SizedBox(height: isMobile ? 24 : 48),
                 ],
               ),
 
