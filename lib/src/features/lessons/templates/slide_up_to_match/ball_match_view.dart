@@ -63,7 +63,7 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: state.nepaliWords.map((item) {
-                      return _buildDraggableLabel(item);
+                      return _buildDraggableLabel(item.word, item.isMatched);
                     }).toList(),
                   ),
                   SizedBox(height: isMobile ? 60 : size.height * 0.15),
@@ -97,21 +97,40 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
   }
 
   // Helper for the Draggable Nepali words at the bottom
-  Widget _buildDraggableLabel(String text) {
+  Widget _buildDraggableLabel(String text, bool isMatched) {
     return Draggable<String>(
       data: text,
       feedback: Material(
         color: Colors.transparent,
-        child: _labelContainer(text, opacity: 0.7),
+        child: _labelContainer(text, opacity: 0.7, isMatched: isMatched),
       ),
-      childWhenDragging: Opacity(opacity: 0.3, child: _labelContainer(text)),
-      child: _labelContainer(text),
+      childWhenDragging: Opacity(
+        opacity: 0.3,
+        child: _labelContainer(text, isMatched: isMatched),
+      ),
+      child: _labelContainer(text, isMatched: isMatched),
     );
   }
 
-  Widget _labelContainer(String text, {double opacity = 1.0}) {
+  Widget _labelContainer(
+    String text, {
+    double opacity = 1.0,
+    bool isMatched = false,
+  }) {
     final isMobile = PlatformUtility.isMobile(context);
+    if (isMatched) {
+      return Container(
+        width: isMobile ? 180 : 250,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(
+          vertical: isMobile ? 8 : 12,
+          horizontal: isMobile ? 16 : 32,
+        ),
+      );
+    }
     return Container(
+      width: isMobile ? 180 : 250,
+      alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
         vertical: isMobile ? 8 : 12,
         horizontal: isMobile ? 16 : 32,
@@ -120,20 +139,23 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
         color: AppColors.kSecondaryColor,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Text(
-        text,
-        style: isMobile
-            ? Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: AppColors.kWhite,
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-              )
-            : Theme.of(context).textTheme.headlineLarge?.copyWith(
-                color: AppColors.kWhite,
-                fontSize: 44,
-                fontFamily: AppConstants.kMuktaFont,
-              ),
-      ),
+      child: isMatched
+          ? SizedBox.shrink()
+          : Text(
+              text,
+              style: isMobile
+                  ? Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: AppColors.kWhite,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: AppConstants.kMuktaFont,
+                    )
+                  : Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: AppColors.kWhite,
+                      fontSize: 44,
+                      fontFamily: AppConstants.kMuktaFont,
+                    ),
+            ),
     );
   }
 }
@@ -179,6 +201,7 @@ class TopItems extends StatelessWidget {
               color: isCorrect ? Colors.transparent : AppColors.kStoneGrey,
             ),
             child: Container(
+              width: isMobile ? 180 : 250,
               padding: EdgeInsets.symmetric(
                 vertical: isMobile ? 8 : 12,
                 horizontal: isMobile ? 16 : 32,
@@ -196,6 +219,7 @@ class TopItems extends StatelessWidget {
                     ? Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
                         fontWeight: FontWeight.w600,
+                        fontSize: 24,
                         fontFamily: AppConstants.kMuktaFont,
                       )
                     : Theme.of(context).textTheme.headlineLarge?.copyWith(

@@ -9,7 +9,7 @@
 - `audioInstruction`
 - `teapotVapour`, `stoveImage`
 - `abaPaniUmalaSound`, `teaReadySound`
-- `bearTakingTea`
+- `bearTakingTeaTb`, `bearTakingTeaMb`
 - `ingredients` (`List<Item>`)
 
 ## UI

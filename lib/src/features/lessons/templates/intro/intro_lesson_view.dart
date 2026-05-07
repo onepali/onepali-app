@@ -12,6 +12,7 @@ import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class IntroLessonView extends StatefulWidget {
   const IntroLessonView({
@@ -31,7 +32,10 @@ class IntroLessonView extends StatefulWidget {
 class _IntroLessonViewState extends State<IntroLessonView> {
   StreamSubscription? audioSubscription;
   late AudioPlayerService audioProvider;
+  late AudioPlayerService messageSoundProvider;
+  StreamSubscription? messageSoundSubscription;
   bool _isAudioCompleted = false;
+  bool _isMessageSoundCompleted = false;
 
   @override
   void initState() {
@@ -40,13 +44,37 @@ class _IntroLessonViewState extends State<IntroLessonView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _playAudio();
     });
+    messageSoundProvider = AudioPlayerServiceImpl();
+  }
+
+  Future<void> _playMessageSound() async {
+    if (widget.content.messageSound != null &&
+        widget.content.messageSound!.isNotEmpty) {
+      await messageSoundSubscription?.cancel();
+      messageSoundSubscription = messageSoundProvider.onPlayerComplete.listen((
+        event,
+      ) {
+        log('message sound completed');
+        if (!mounted) return;
+        setState(() {
+          _isMessageSoundCompleted = true;
+        });
+      });
+      await messageSoundProvider.play(widget.content.messageSound!);
+    } else {
+      if (!mounted) return;
+      setState(() {
+        _isMessageSoundCompleted = true;
+      });
+    }
   }
 
   void _playAudio() async {
     if (widget.content.audio != null && widget.content.audio!.isNotEmpty) {
       await audioProvider.play(widget.content.audio!);
-      audioSubscription = audioProvider.onPlayerComplete.listen((event) {
+      audioSubscription = audioProvider.onPlayerComplete.listen((event) async {
         // context.read<LessonBloc>().add(LessonEvent.nextContent());
+        await _playMessageSound();
         log('audio completed');
         if (!mounted) return;
         setState(() {
@@ -54,6 +82,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
         });
       });
     } else {
+      _playMessageSound();
       if (!mounted) return;
       setState(() {
         _isAudioCompleted = true;
@@ -63,8 +92,10 @@ class _IntroLessonViewState extends State<IntroLessonView> {
 
   @override
   void dispose() {
-    audioProvider.dispose();
     audioSubscription?.cancel();
+    messageSoundSubscription?.cancel();
+    audioProvider.dispose();
+    messageSoundProvider.dispose();
     super.dispose();
   }
 
@@ -111,18 +142,25 @@ class _IntroLessonViewState extends State<IntroLessonView> {
               height: isMobile ? size.height * 0.7 : size.height * 0.6,
             ),
           ),
+        if (_isAudioCompleted && widget.content.message != null)
+          Positioned(
+            top: size.height * 0.1,
+            left: 0,
+            right: 0,
+            child: LabelDisplay(nameEn: '', nameNp: widget.content.message!),
+          ),
         TopRightPositionedCloseButton(
           onTap: () {
             Navigator.of(context).pop();
           },
         ),
-        if (!widget.isLast && _isAudioCompleted)
+        if (!widget.isLast && _isMessageSoundCompleted)
           CenterRightAlignedForwardButton(
             onTap: () {
               context.read<LessonBloc>().add(const LessonEvent.nextContent());
             },
           ),
-        if (!widget.isFirst && _isAudioCompleted)
+        if (!widget.isFirst && _isMessageSoundCompleted)
           CenterLeftAlignedBackButton(
             onTap: () {
               context.read<LessonBloc>().add(
@@ -130,7 +168,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
               );
             },
           ),
-        if (widget.isLast && _isAudioCompleted)
+        if (widget.isLast && _isMessageSoundCompleted)
           Positioned.fill(
             child: IgnorePointer(
               child: LottieHelper.fromSource(
