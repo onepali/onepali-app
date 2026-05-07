@@ -2,6 +2,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'lesson.freezed.dart';
 part 'lesson.g.dart';
 
+Object? _readBearTakingTeaTb(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['bear_taking_tea'];
+
+Object? _readBearTakingTeaMb(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['bear_taking_tea'];
+
 @freezed
 abstract class Lesson with _$Lesson {
   const factory Lesson({
@@ -35,6 +41,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     String? audio,
     String? bgImageMobile,
     String? bgImageTablet,
+    String? message,
+    String? messageSound,
   }) = IntroLessonContent;
 
   @FreezedUnionValue('info')
@@ -146,7 +154,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String stoveImage,
     required String abaPaniUmalaSound,
     required String teaReadySound,
-    required String bearTakingTea,
+    @JsonKey(readValue: _readBearTakingTeaTb) required String bearTakingTeaTb,
+    @JsonKey(readValue: _readBearTakingTeaMb) required String bearTakingTeaMb,
     @Default([])
     List<Item>
     ingredients, // In this case, imageOutline is the placed image on top of stove
@@ -170,6 +179,9 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
 
     /// This message is for display when the action is done.
     String? message,
+
+    /// This message sound is for display when the action is done.
+    String? messageSound,
 
     /// This image[PNG] replaces the ball image when the ball reaches the end
     String? ballImageEnd,

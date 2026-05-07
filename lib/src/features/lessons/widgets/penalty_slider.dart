@@ -88,7 +88,11 @@ class _PenaltySliderState extends State<PenaltySlider>
     if (p > 0.9) {
       _animateTo(_ballProgress < 0 ? -1.0 : 1.0);
       Future.delayed(const Duration(milliseconds: 300), () {
-        _audioPlayerService.playAsset(Assets.starBlast);
+        if (widget.content.messageSound != null) {
+          _audioPlayerService.play(widget.content.messageSound!);
+        } else {
+          _audioPlayerService.playAsset(Assets.starBlast);
+        }
         if (mounted) setState(() => _showGoal = true);
       });
     } else if (p > 0.04) {
@@ -160,7 +164,10 @@ class _PenaltySliderState extends State<PenaltySlider>
                 top: size.height * 0.1,
                 left: 0,
                 right: 0,
-                child: LabelDisplay(nameNp: 'Goal', nameEn: ''),
+                child: LabelDisplay(
+                  nameNp: widget.content.message!,
+                  nameEn: '',
+                ),
               ),
             // if (_showGoal)
             //   Positioned(
