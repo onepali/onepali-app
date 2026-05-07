@@ -13,7 +13,8 @@ abstract class TutorialState with _$TutorialState {
     String? draggedItemPath,
     String? droppedItem,
     String? stoveImage,
-    String? bearTakingTea,
+    String? bearTakingTeaTb,
+    String? bearTakingTeaMb,
     @Default(false) bool teaReady,
   }) = _TutorialState;
 }

@@ -34,6 +34,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     String? audio,
     String? bgImageMobile,
     String? bgImageTablet,
+    String? message,
+    String? messageSound,
   }) = IntroLessonContent;
 
   @FreezedUnionValue('info')
@@ -138,7 +140,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String stoveImage,
     required String abaPaniUmalaSound,
     required String teaReadySound,
-    required String bearTakingTea,
+    required String bearTakingTeaTb,
+    required String bearTakingTeaMb,
     @Default([])
     List<Item>
     ingredients, // In this case, imageOutline is the placed image on top of stove
@@ -161,6 +164,8 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
 
     /// This message is for display when the action is done.
     String? message,
+    /// This message sound is for display when the action is done.
+    String? messageSound,
 
     /// This image[PNG] replaces the ball image when the ball reaches the end
     String? ballImageEnd,

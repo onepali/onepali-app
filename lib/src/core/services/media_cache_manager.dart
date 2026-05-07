@@ -115,6 +115,10 @@ class MediaCacheManager {
       if (content.audio != null) {
         await _precacheMedia(content.audio!);
       }
+      if (content.messageSound != null) {
+        await _precacheMedia(content.messageSound!);
+      }
+      // Image
       if (content.bgImageMobile != null) {
         precacheImage(
           CachedNetworkImageProvider(content.bgImageMobile!),
