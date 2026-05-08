@@ -36,7 +36,7 @@ class SlideContentState extends State<SlideContent> {
     // Images: content.characters = [char1, char2]
     // Background image is handled at parent level in story_content_screen.dart
     // to fill the entire screen (appears once)
-    final charList = widget.content.characters ?? [];
+    final charList = widget.content.characters;
     final char1 = charList.isNotEmpty ? charList[0] : widget.content.image;
     final char2 = charList.length > 1 ? charList[1] : widget.content.image;
     bool isTabletLandScape =

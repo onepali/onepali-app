@@ -26,7 +26,6 @@ Widget buildStoryContentWidget({
       );
     case "button_tap2":
       return ButtonTapContent2(content: content, playAudio: playAudio);
-
     default:
       return const SizedBox();
   }
