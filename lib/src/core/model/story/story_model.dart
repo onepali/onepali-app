@@ -19,8 +19,7 @@ abstract class StoryModel with _$StoryModel {
     @Default('') String tooltip,
     @Default('') String description,
     @Default(<Content>[]) List<Content> content,
-    @JsonKey(name: 'bg_color')
-    String? bgColor,
+    @JsonKey(name: 'bg_color') String? bgColor,
   }) = _StoryModel;
 
   factory StoryModel.fromJson(Map<String, dynamic> json) =>
@@ -31,7 +30,7 @@ abstract class StoryModel with _$StoryModel {
 abstract class Content with _$Content {
   @JsonSerializable(explicitToJson: true)
   const factory Content({
-    @Default('') String image,
+    String? image,
     @JsonKey(name: 'image_tb') String? imageTb, // for tablet
     @JsonKey(name: 'image_success') String? imageSuccess,
     @JsonKey(name: 'image_success_tb') String? imageSuccessTb,
@@ -39,8 +38,7 @@ abstract class Content with _$Content {
     @Default('') String lottie,
     @Default('') String type,
     @Default(<Conversation>[]) List<Conversation> conversation,
-    @JsonKey(name: 'character')
-    @Default(<String>[]) List<String> characters,
+    @JsonKey(name: 'character') @Default(<String>[]) List<String> characters,
     @Default('') String confetti,
   }) = _Content;
 
@@ -59,6 +57,7 @@ abstract class Conversation with _$Conversation {
     @Default('') String messageNp,
     @Default('') String icon,
     @Default(false) bool correct,
+    String? question, // Audio question
   }) = _Conversation;
 
   factory Conversation.fromJson(Map<String, dynamic> json) =>

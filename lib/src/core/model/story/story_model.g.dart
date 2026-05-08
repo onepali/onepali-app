@@ -40,7 +40,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     };
 
 _Content _$ContentFromJson(Map<String, dynamic> json) => _Content(
-  image: json['image'] as String? ?? '',
+  image: json['image'] as String?,
   imageTb: json['image_tb'] as String?,
   imageSuccess: json['image_success'] as String?,
   imageSuccessTb: json['image_success_tb'] as String?,
@@ -80,6 +80,7 @@ _Conversation _$ConversationFromJson(Map<String, dynamic> json) =>
       messageNp: json['messageNp'] as String? ?? '',
       icon: json['icon'] as String? ?? '',
       correct: json['correct'] as bool? ?? false,
+      question: json['question'] as String?,
     );
 
 Map<String, dynamic> _$ConversationToJson(_Conversation instance) =>
@@ -89,4 +90,5 @@ Map<String, dynamic> _$ConversationToJson(_Conversation instance) =>
       'messageNp': instance.messageNp,
       'icon': instance.icon,
       'correct': instance.correct,
+      'question': instance.question,
     };

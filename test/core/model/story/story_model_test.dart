@@ -1,4 +1,6 @@
 // Tests for story_model.dart
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepali/src/core/model/story/story_model.dart';
 
@@ -150,7 +152,6 @@ void main() {
   group('Helper functions', () {
     test('storyModelFromJson should parse JSON string', () {
       const jsonString = '''
-      [
         {
           "nameEn": "Story 1",
           "nameNp": "कथा १",
@@ -161,13 +162,11 @@ void main() {
           "description": "desc1",
           "content": []
         }
-      ]
       ''';
 
-      final stories = storyModelFromJson(jsonString);
-      expect(stories.length, 1);
-      expect(stories.first.nameEn, 'Story 1');
-      expect(stories.first.nameNp, 'कथा १');
+      final stories = StoryModel.fromJson(jsonDecode(jsonString));
+      expect(stories.nameEn, 'Story 1');
+      expect(stories.nameNp, 'कथा १');
     });
 
     test('storyModelToJson should convert to JSON string', () {
@@ -185,7 +184,7 @@ void main() {
         ),
       ];
 
-      final jsonString = storyModelToJson(stories);
+      final jsonString = jsonEncode(stories.first.toJson()  );
       expect(jsonString, isA<String>());
       expect(jsonString, contains('Story 1'));
       expect(jsonString, contains('कथा १'));

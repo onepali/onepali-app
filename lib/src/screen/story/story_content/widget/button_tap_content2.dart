@@ -66,23 +66,35 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   Widget backgroundImage(bool isCorrect, bool isMobile) {
     if (isMobile) {
       if (isCorrect) {
+        if (widget.content.imageSuccess == null) {
+          return Container();
+        }
         return CustomCachedImage(
           imageUrl: widget.content.imageSuccess ?? '',
           fit: BoxFit.cover,
         );
       } else {
+        if (widget.content.image == null) {
+          return Container();
+        }
         return CustomCachedImage(
-          imageUrl: widget.content.image,
+          imageUrl: widget.content.image ?? '',
           fit: BoxFit.cover,
         );
       }
     } else {
       if (isCorrect) {
+        if (widget.content.imageSuccessTb == null) {
+          return Container();
+        }
         return CustomCachedImage(
           imageUrl: widget.content.imageSuccessTb ?? '',
           fit: BoxFit.cover,
         );
       } else {
+        if (widget.content.imageTb == null) {
+          return Container();
+        }
         return CustomCachedImage(
           imageUrl: widget.content.imageTb ?? '',
           fit: BoxFit.cover,

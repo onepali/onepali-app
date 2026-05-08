@@ -365,4 +365,13 @@ class StoryProvider extends ChangeNotifier {
       logger.e('Error tracking story answer: $e');
     }
   }
+  void resetStoryProvider() {
+    _currentStory = null;
+    _currentContentIndex = 0;
+    _currentAudioIndex = 0;
+    _isAudioCompleted = false;
+    _isPlaying = false;
+    _storyFinished = false;
+    notifyListeners();
+  }
 }

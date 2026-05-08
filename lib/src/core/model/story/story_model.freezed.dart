@@ -317,7 +317,7 @@ as String?,
 /// @nodoc
 mixin _$Content {
 
- String get image;@JsonKey(name: 'image_tb') String? get imageTb;// for tablet
+ String? get image;@JsonKey(name: 'image_tb') String? get imageTb;// for tablet
 @JsonKey(name: 'image_success') String? get imageSuccess;@JsonKey(name: 'image_success_tb') String? get imageSuccessTb; List<String> get audio; String get lottie; String get type; List<Conversation> get conversation;@JsonKey(name: 'character') List<String> get characters; String get confetti;
 /// Create a copy of Content
 /// with the given fields replaced by the non-null parameter values.
@@ -351,7 +351,7 @@ abstract mixin class $ContentCopyWith<$Res>  {
   factory $ContentCopyWith(Content value, $Res Function(Content) _then) = _$ContentCopyWithImpl;
 @useResult
 $Res call({
- String image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb, List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character') List<String> characters, String confetti
+ String? image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb, List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character') List<String> characters, String confetti
 });
 
 
@@ -368,10 +368,10 @@ class _$ContentCopyWithImpl<$Res>
 
 /// Create a copy of Content
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? image = null,Object? imageTb = freezed,Object? imageSuccess = freezed,Object? imageSuccessTb = freezed,Object? audio = null,Object? lottie = null,Object? type = null,Object? conversation = null,Object? characters = null,Object? confetti = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? image = freezed,Object? imageTb = freezed,Object? imageSuccess = freezed,Object? imageSuccessTb = freezed,Object? audio = null,Object? lottie = null,Object? type = null,Object? conversation = null,Object? characters = null,Object? confetti = null,}) {
   return _then(_self.copyWith(
-image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String,imageTb: freezed == imageTb ? _self.imageTb : imageTb // ignore: cast_nullable_to_non_nullable
+image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as String?,imageTb: freezed == imageTb ? _self.imageTb : imageTb // ignore: cast_nullable_to_non_nullable
 as String?,imageSuccess: freezed == imageSuccess ? _self.imageSuccess : imageSuccess // ignore: cast_nullable_to_non_nullable
 as String?,imageSuccessTb: freezed == imageSuccessTb ? _self.imageSuccessTb : imageSuccessTb // ignore: cast_nullable_to_non_nullable
 as String?,audio: null == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
@@ -465,7 +465,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Content() when $default != null:
 return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessTb,_that.audio,_that.lottie,_that.type,_that.conversation,_that.characters,_that.confetti);case _:
@@ -486,7 +486,7 @@ return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessT
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)  $default,) {final _that = this;
 switch (_that) {
 case _Content():
 return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessTb,_that.audio,_that.lottie,_that.type,_that.conversation,_that.characters,_that.confetti);case _:
@@ -506,7 +506,7 @@ return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessT
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)?  $default,) {final _that = this;
 switch (_that) {
 case _Content() when $default != null:
 return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessTb,_that.audio,_that.lottie,_that.type,_that.conversation,_that.characters,_that.confetti);case _:
@@ -521,10 +521,10 @@ return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessT
 
 @JsonSerializable(explicitToJson: true)
 class _Content implements Content {
-  const _Content({this.image = '', @JsonKey(name: 'image_tb') this.imageTb, @JsonKey(name: 'image_success') this.imageSuccess, @JsonKey(name: 'image_success_tb') this.imageSuccessTb, final  List<String> audio = const <String>[], this.lottie = '', this.type = '', final  List<Conversation> conversation = const <Conversation>[], @JsonKey(name: 'character') final  List<String> characters = const <String>[], this.confetti = ''}): _audio = audio,_conversation = conversation,_characters = characters;
+  const _Content({this.image, @JsonKey(name: 'image_tb') this.imageTb, @JsonKey(name: 'image_success') this.imageSuccess, @JsonKey(name: 'image_success_tb') this.imageSuccessTb, final  List<String> audio = const <String>[], this.lottie = '', this.type = '', final  List<Conversation> conversation = const <Conversation>[], @JsonKey(name: 'character') final  List<String> characters = const <String>[], this.confetti = ''}): _audio = audio,_conversation = conversation,_characters = characters;
   factory _Content.fromJson(Map<String, dynamic> json) => _$ContentFromJson(json);
 
-@override@JsonKey() final  String image;
+@override final  String? image;
 @override@JsonKey(name: 'image_tb') final  String? imageTb;
 // for tablet
 @override@JsonKey(name: 'image_success') final  String? imageSuccess;
@@ -587,7 +587,7 @@ abstract mixin class _$ContentCopyWith<$Res> implements $ContentCopyWith<$Res> {
   factory _$ContentCopyWith(_Content value, $Res Function(_Content) _then) = __$ContentCopyWithImpl;
 @override @useResult
 $Res call({
- String image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb, List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character') List<String> characters, String confetti
+ String? image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb, List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character') List<String> characters, String confetti
 });
 
 
@@ -604,10 +604,10 @@ class __$ContentCopyWithImpl<$Res>
 
 /// Create a copy of Content
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? image = null,Object? imageTb = freezed,Object? imageSuccess = freezed,Object? imageSuccessTb = freezed,Object? audio = null,Object? lottie = null,Object? type = null,Object? conversation = null,Object? characters = null,Object? confetti = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? image = freezed,Object? imageTb = freezed,Object? imageSuccess = freezed,Object? imageSuccessTb = freezed,Object? audio = null,Object? lottie = null,Object? type = null,Object? conversation = null,Object? characters = null,Object? confetti = null,}) {
   return _then(_Content(
-image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String,imageTb: freezed == imageTb ? _self.imageTb : imageTb // ignore: cast_nullable_to_non_nullable
+image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as String?,imageTb: freezed == imageTb ? _self.imageTb : imageTb // ignore: cast_nullable_to_non_nullable
 as String?,imageSuccess: freezed == imageSuccess ? _self.imageSuccess : imageSuccess // ignore: cast_nullable_to_non_nullable
 as String?,imageSuccessTb: freezed == imageSuccessTb ? _self.imageSuccessTb : imageSuccessTb // ignore: cast_nullable_to_non_nullable
 as String?,audio: null == audio ? _self._audio : audio // ignore: cast_nullable_to_non_nullable
@@ -627,7 +627,7 @@ as String,
 /// @nodoc
 mixin _$Conversation {
 
-@JsonKey(fromJson: _idFromJson) String get id; String get messageEn; String get messageNp; String get icon; bool get correct;
+@JsonKey(fromJson: _idFromJson) String get id; String get messageEn; String get messageNp; String get icon; bool get correct; String? get question;
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -640,16 +640,16 @@ $ConversationCopyWith<Conversation> get copyWith => _$ConversationCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct)&&(identical(other.question, question) || other.question == question));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct);
+int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct,question);
 
 @override
 String toString() {
-  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct)';
+  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct, question: $question)';
 }
 
 
@@ -660,7 +660,7 @@ abstract mixin class $ConversationCopyWith<$Res>  {
   factory $ConversationCopyWith(Conversation value, $Res Function(Conversation) _then) = _$ConversationCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct
+@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct, String? question
 });
 
 
@@ -677,14 +677,15 @@ class _$ConversationCopyWithImpl<$Res>
 
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,Object? question = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,messageEn: null == messageEn ? _self.messageEn : messageEn // ignore: cast_nullable_to_non_nullable
 as String,messageNp: null == messageNp ? _self.messageNp : messageNp // ignore: cast_nullable_to_non_nullable
 as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,correct: null == correct ? _self.correct : correct // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -769,10 +770,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Conversation() when $default != null:
-return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct);case _:
+return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question);case _:
   return orElse();
 
 }
@@ -790,10 +791,10 @@ return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correc
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question)  $default,) {final _that = this;
 switch (_that) {
 case _Conversation():
-return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct);case _:
+return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -810,10 +811,10 @@ return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correc
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question)?  $default,) {final _that = this;
 switch (_that) {
 case _Conversation() when $default != null:
-return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct);case _:
+return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question);case _:
   return null;
 
 }
@@ -825,7 +826,7 @@ return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correc
 
 @JsonSerializable(explicitToJson: true)
 class _Conversation implements Conversation {
-  const _Conversation({@JsonKey(fromJson: _idFromJson) this.id = '', this.messageEn = '', this.messageNp = '', this.icon = '', this.correct = false});
+  const _Conversation({@JsonKey(fromJson: _idFromJson) this.id = '', this.messageEn = '', this.messageNp = '', this.icon = '', this.correct = false, this.question});
   factory _Conversation.fromJson(Map<String, dynamic> json) => _$ConversationFromJson(json);
 
 @override@JsonKey(fromJson: _idFromJson) final  String id;
@@ -833,6 +834,7 @@ class _Conversation implements Conversation {
 @override@JsonKey() final  String messageNp;
 @override@JsonKey() final  String icon;
 @override@JsonKey() final  bool correct;
+@override final  String? question;
 
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
@@ -847,16 +849,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct)&&(identical(other.question, question) || other.question == question));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct);
+int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct,question);
 
 @override
 String toString() {
-  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct)';
+  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct, question: $question)';
 }
 
 
@@ -867,7 +869,7 @@ abstract mixin class _$ConversationCopyWith<$Res> implements $ConversationCopyWi
   factory _$ConversationCopyWith(_Conversation value, $Res Function(_Conversation) _then) = __$ConversationCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct
+@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct, String? question
 });
 
 
@@ -884,14 +886,15 @@ class __$ConversationCopyWithImpl<$Res>
 
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,Object? question = freezed,}) {
   return _then(_Conversation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,messageEn: null == messageEn ? _self.messageEn : messageEn // ignore: cast_nullable_to_non_nullable
 as String,messageNp: null == messageNp ? _self.messageNp : messageNp // ignore: cast_nullable_to_non_nullable
 as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,correct: null == correct ? _self.correct : correct // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
