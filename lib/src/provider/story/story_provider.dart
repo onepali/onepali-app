@@ -21,6 +21,9 @@ class StoryProvider extends ChangeNotifier {
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
+  bool _isAudioCompleted = false;
+  bool get isAudioCompleted => _isAudioCompleted;
+
   int _currentAudioIndex = 0;
   int get currentAudioIndex => _currentAudioIndex;
 
@@ -63,10 +66,13 @@ class StoryProvider extends ChangeNotifier {
       _currentContentIndex = 0;
     }
     _currentAudioIndex = 0;
+    _isAudioCompleted = false;
     notifyListeners();
   }
 
   void nextContent(BuildContext context) async {
+    _isAudioCompleted = false;
+    notifyListeners();
     if (_currentStory == null) return;
     if (_currentContentIndex < _currentStory!.content.length) {
       _currentContentIndex++;
@@ -148,6 +154,9 @@ class StoryProvider extends ChangeNotifier {
   Future<void> _playAudioCached(dynamic url) async {
     if (url == null) return;
 
+    _isAudioCompleted = false;
+    notifyListeners();
+
     await stopAudioAndResetIndex();
 
     if (url is String) {
@@ -199,6 +208,7 @@ class StoryProvider extends ChangeNotifier {
       }
 
       _isPlaying = false;
+      _isAudioCompleted = true;
       notifyListeners();
     }
   }
@@ -209,6 +219,7 @@ class StoryProvider extends ChangeNotifier {
       await _audioPlayerInstance!.dispose();
       _audioPlayerInstance = null;
       _isPlaying = false;
+      _isAudioCompleted = false;
       // Don't reset _currentAudioIndex here - it should persist after audio completes
       notifyListeners();
     }
@@ -221,6 +232,7 @@ class StoryProvider extends ChangeNotifier {
       _audioPlayerInstance = null;
       _isPlaying = false;
       _currentAudioIndex = 0; // Reset index when manually stopping
+      _isAudioCompleted = false;
       notifyListeners();
     }
   }
@@ -232,6 +244,8 @@ class StoryProvider extends ChangeNotifier {
     logger.d(
       '[StoryProvider] playAudio called with url: $url, isPlaying: $_isPlaying',
     );
+    _isAudioCompleted = false;
+    notifyListeners();
     // Stop any currently playing audio before starting new and reset index
     await stopAudioAndResetIndex();
     if (url == null ||
@@ -274,6 +288,7 @@ class StoryProvider extends ChangeNotifier {
       logger.e('Audio play error: $e');
     }
     _isPlaying = false;
+    _isAudioCompleted = true;
     notifyListeners();
     logger.d('[StoryProvider] playAudio finished, isPlaying: $_isPlaying');
   }
