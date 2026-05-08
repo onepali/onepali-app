@@ -88,11 +88,11 @@ class _NormalContentState extends State<NormalContent> {
           },
         ),
         // Left arrow (center vertically)
-        CenterLeftAlignedBackButton(
+      if(storyProvider.isAudioCompleted)  CenterLeftAlignedBackButton(
           onTap: () => storyProvider.previousContent(),
         ),
         // Right arrow (center vertically)
-        CenterRightAlignedForwardButton(
+        if(storyProvider.isAudioCompleted) CenterRightAlignedForwardButton(
           onTap: () => storyProvider.nextContent(context),
         ),
         // Bottom white background with text
