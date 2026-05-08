@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/model/model.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/src.dart';
 
 class ChooseCorrectStoryProvider extends ChangeNotifier {
-
   Content? _content;
   Content? get content => _content;
   final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
@@ -52,7 +52,9 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
     // check if user selected the correct answer
     if (conversation == _currentConversation) {
       _isCorrectAnswerSelected = true;
+      _audioPlayerService.playAsset(Assets.starBlast);
     } else {
+      _audioPlayerService.playAsset(Assets.wrongSfx);
       _isCorrectAnswerSelected = false;
     }
     notifyListeners();
