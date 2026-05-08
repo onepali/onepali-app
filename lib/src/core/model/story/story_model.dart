@@ -1,151 +1,66 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'dart:convert';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-List<StoryModel> storyModelFromJson(String str) =>
-    List<StoryModel>.from(json.decode(str).map((x) => StoryModel.fromJson(x)));
+part 'story_model.freezed.dart';
+part 'story_model.g.dart';
 
-String storyModelToJson(List<StoryModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+@freezed
+abstract class StoryModel with _$StoryModel {
+  @JsonSerializable(explicitToJson: true)
+  const factory StoryModel({
+    @JsonKey(name: 'level_id') @Default('') String levelId,
+    @Default('') String nameEn,
+    @Default('') String nameNp,
+    @Default('') String thumbnail,
+    @Default('') String lottie,
+    @Default(<String>[]) List<String> audio,
+    @Default('') String tooltip,
+    @Default('') String description,
+    @Default(<Content>[]) List<Content> content,
+    @JsonKey(name: 'bg_color')
+    String? bgColor,
+  }) = _StoryModel;
 
-class StoryModel {
-  final String levelId;
-  final String nameEn;
-  final String nameNp;
-  final String thumbnail;
-  final String lottie;
-  final List<String> audio;
-  final String tooltip;
-  final String description;
-  final List<Content> content;
-  final String? bgColor;
-
-  StoryModel({
-    required this.levelId,
-    required this.nameEn,
-    required this.nameNp,
-    required this.thumbnail,
-    required this.lottie,
-    required this.audio,
-    required this.tooltip,
-    required this.description,
-    required this.content,
-    this.bgColor,
-  });
-
-  factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
-    levelId: json["level_id"] ?? "",
-    nameEn: json["nameEn"] ?? "",
-    nameNp: json["nameNp"] ?? "",
-    thumbnail: json["thumbnail"] ?? "",
-    lottie: json["lottie"] ?? "",
-    audio: json["audio"] == null
-        ? []
-        : List<String>.from(json["audio"].map((x) => x.toString())),
-    tooltip: json["tooltip"] ?? "",
-    description: json["description"] ?? "",
-    content: json["content"] == null
-        ? []
-        : List<Content>.from(json["content"].map((x) => Content.fromJson(x))),
-    bgColor: json['bg_color'] != null ? json["bg_color"] : null,
-  );
-
-  Map<String, dynamic> toJson() => {
-    "level_id": levelId,
-    "nameEn": nameEn,
-    "nameNp": nameNp,
-    "thumbnail": thumbnail,
-    "lottie": lottie,
-    "audio": List<dynamic>.from(audio.map((x) => x.toString())),
-    "tooltip": tooltip,
-    "description": description,
-    "content": List<dynamic>.from(content.map((x) => x.toJson())),
-    "bg_color": bgColor,
-  };
+  factory StoryModel.fromJson(Map<String, dynamic> json) =>
+      _$StoryModelFromJson(json);
 }
 
-class Content {
-  final String image;
-  final String? imageTb; // for tablet
-  final String? imageSuccess;
-  final List<String> audio;
-  final String lottie;
-  final String type;
-  final List<Conversation> conversation;
-  final List<String>? characters;
-  final String confetti;
+@freezed
+abstract class Content with _$Content {
+  @JsonSerializable(explicitToJson: true)
+  const factory Content({
+    @Default('') String image,
+    @JsonKey(name: 'image_tb') String? imageTb, // for tablet
+    @JsonKey(name: 'image_success') String? imageSuccess,
+    @JsonKey(name: 'image_success_tb') String? imageSuccessTb,
+    @Default(<String>[]) List<String> audio,
+    @Default('') String lottie,
+    @Default('') String type,
+    @Default(<Conversation>[]) List<Conversation> conversation,
+    @JsonKey(name: 'character')
+    @Default(<String>[]) List<String> characters,
+    @Default('') String confetti,
+  }) = _Content;
 
-  Content({
-    required this.image,
-    this.imageTb,
-    this.imageSuccess,
-    required this.audio,
-    required this.lottie,
-    required this.type,
-    required this.conversation,
-    this.characters = const [],
-    required this.confetti,
-  });
-
-  factory Content.fromJson(Map<String, dynamic> json) => Content(
-    image: json["image"] ?? "",
-    imageTb: json["image_tb"],
-    imageSuccess: json["image_success"],
-    audio: json["audio"] == null
-        ? []
-        : List<String>.from(json["audio"].map((x) => x.toString())),
-    lottie: json["lottie"] ?? "",
-    type: json["type"] ?? "",
-    conversation: json["conversation"] == null
-        ? []
-        : List<Conversation>.from(
-            json["conversation"].map((x) => Conversation.fromJson(x)),
-          ),
-    characters: json["character"] == null
-        ? []
-        : List<String>.from(json["character"].map((x) => x.toString())),
-    confetti: json["confetti"] ?? "",
-  );
-
-  Map<String, dynamic> toJson() => {
-    "image": image,
-    "image_tb": imageTb,
-    "image_success": imageSuccess,
-    "audio": List<dynamic>.from(audio.map((x) => x.toString())),
-    "lottie": lottie,
-    "type": type,
-    "character": List<dynamic>.from(characters!.map((x) => x.toString())),
-    "conversation": List<dynamic>.from(conversation.map((x) => x.toJson())),
-    "confetti": confetti,
-  };
+  factory Content.fromJson(Map<String, dynamic> json) =>
+      _$ContentFromJson(json);
 }
 
-class Conversation {
-  final String id;
-  final String messageEn;
-  final String messageNp;
-  final String icon;
-  final bool? correct;
+String _idFromJson(Object? value) => value?.toString() ?? '';
 
-  Conversation({
-    required this.id,
-    required this.messageEn,
-    required this.messageNp,
-    required this.icon,
-    this.correct = false,
-  });
+@freezed
+abstract class Conversation with _$Conversation {
+  @JsonSerializable(explicitToJson: true)
+  const factory Conversation({
+    @JsonKey(fromJson: _idFromJson) @Default('') String id,
+    @Default('') String messageEn,
+    @Default('') String messageNp,
+    @Default('') String icon,
+    @Default(false) bool correct,
+  }) = _Conversation;
 
-  factory Conversation.fromJson(Map<String, dynamic> json) => Conversation(
-    id: json["id"]?.toString() ?? "",
-    messageEn: json["messageEn"] ?? "",
-    messageNp: json["messageNp"] ?? "",
-    icon: json["icon"] ?? "",
-    correct: json["correct"] ?? false,
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "messageEn": messageEn,
-    "messageNp": messageNp,
-    "icon": icon,
-    "correct": correct,
-  };
+  factory Conversation.fromJson(Map<String, dynamic> json) =>
+      _$ConversationFromJson(json);
 }
