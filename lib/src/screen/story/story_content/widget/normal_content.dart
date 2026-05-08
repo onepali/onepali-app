@@ -31,7 +31,6 @@ class _NormalContentState extends State<NormalContent> {
     bool isTabletLandScape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
-
     return Stack(
       children: [
         // Background image is handled at parent level in story_content_screen.dart
@@ -88,13 +87,15 @@ class _NormalContentState extends State<NormalContent> {
           },
         ),
         // Left arrow (center vertically)
-      if(storyProvider.isAudioCompleted)  CenterLeftAlignedBackButton(
-          onTap: () => storyProvider.previousContent(),
-        ),
+        if (storyProvider.isAudioCompleted)
+          CenterLeftAlignedBackButton(
+            onTap: () => storyProvider.previousContent(),
+          ),
         // Right arrow (center vertically)
-        if(storyProvider.isAudioCompleted) CenterRightAlignedForwardButton(
-          onTap: () => storyProvider.nextContent(context),
-        ),
+        if (storyProvider.isAudioCompleted)
+          CenterRightAlignedForwardButton(
+            onTap: () => storyProvider.nextContent(context),
+          ),
         // Bottom white background with text
         Align(
           alignment: Alignment.bottomCenter,

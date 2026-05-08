@@ -80,6 +80,7 @@ _Conversation _$ConversationFromJson(Map<String, dynamic> json) =>
       messageNp: json['messageNp'] as String? ?? '',
       icon: json['icon'] as String? ?? '',
       correct: json['correct'] as bool? ?? false,
+      question: json['question'] as String?,
     );
 
 Map<String, dynamic> _$ConversationToJson(_Conversation instance) =>
@@ -89,4 +90,5 @@ Map<String, dynamic> _$ConversationToJson(_Conversation instance) =>
       'messageNp': instance.messageNp,
       'icon': instance.icon,
       'correct': instance.correct,
+      'question': instance.question,
     };
