@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/constants/assets.dart';
 import 'package:onepali/src/core/model/model.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 
@@ -22,6 +23,14 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   void _notifyListenersIfActive() {
     if (!_disposed) {
       notifyListeners();
+    }
+  }
+
+  void _cancelAudioSubscription() {
+    final audioSub = _audioSub;
+    _audioSub = null;
+    if (audioSub != null) {
+      unawaited(audioSub.cancel());
     }
   }
 
@@ -50,7 +59,7 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
 
     _isQuestionAudioPlaying = true;
     _notifyListenersIfActive();
-    _audioSub?.cancel();
+    _cancelAudioSubscription();
     _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
       onQuestionAudioCompleted();
     });
@@ -63,13 +72,25 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   }
 
   void onQuestionAudioCompleted() {
+    _cancelAudioSubscription();
     _isQuestionAudioPlaying = false;
     _notifyListenersIfActive();
   }
 
   void onTappedItem(Conversation conversation) {
+    if (_disposed) return;
+
     _userSelectedConversation = conversation;
     _isCorrectAnswerSelected = conversation == _currentConversation;
+    _cancelAudioSubscription();
+    _isQuestionAudioPlaying = false;
+    unawaited(
+      _audioPlayerService
+          .playAsset(
+            _isCorrectAnswerSelected ? Assets.starBlast : Assets.wrongSfx,
+          )
+          .catchError((_) {}),
+    );
     _notifyListenersIfActive();
   }
 
@@ -82,7 +103,7 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
-    _audioSub?.cancel();
+    _cancelAudioSubscription();
     unawaited(_audioPlayerService.dispose());
     super.dispose();
   }
