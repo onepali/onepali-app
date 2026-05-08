@@ -32,6 +32,8 @@ IntroLessonContent _$IntroLessonContentFromJson(Map<String, dynamic> json) =>
       audio: json['audio'] as String?,
       bgImageMobile: json['bg_image_mobile'] as String?,
       bgImageTablet: json['bg_image_tablet'] as String?,
+      message: json['message'] as String?,
+      messageSound: json['message_sound'] as String?,
     );
 
 Map<String, dynamic> _$IntroLessonContentToJson(IntroLessonContent instance) =>
@@ -44,6 +46,8 @@ Map<String, dynamic> _$IntroLessonContentToJson(IntroLessonContent instance) =>
       'audio': instance.audio,
       'bg_image_mobile': instance.bgImageMobile,
       'bg_image_tablet': instance.bgImageTablet,
+      'message': instance.message,
+      'message_sound': instance.messageSound,
     };
 
 InfoLessonContent _$InfoLessonContentFromJson(Map<String, dynamic> json) =>
@@ -251,7 +255,8 @@ TeaMakingLessonContent _$TeaMakingLessonContentFromJson(
   stoveImage: json['stove_image'] as String,
   abaPaniUmalaSound: json['aba_pani_umala_sound'] as String,
   teaReadySound: json['tea_ready_sound'] as String,
-  bearTakingTea: json['bear_taking_tea'] as String,
+  bearTakingTeaTb: json['bear_taking_tea_tb'] as String,
+  bearTakingTeaMb: json['bear_taking_tea_mb'] as String,
   ingredients:
       (json['ingredients'] as List<dynamic>?)
           ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
@@ -270,7 +275,8 @@ Map<String, dynamic> _$TeaMakingLessonContentToJson(
   'stove_image': instance.stoveImage,
   'aba_pani_umala_sound': instance.abaPaniUmalaSound,
   'tea_ready_sound': instance.teaReadySound,
-  'bear_taking_tea': instance.bearTakingTea,
+  'bear_taking_tea_tb': instance.bearTakingTeaTb,
+  'bear_taking_tea_mb': instance.bearTakingTeaMb,
   'ingredients': instance.ingredients.map((e) => e.toJson()).toList(),
 };
 
@@ -288,6 +294,7 @@ BallSlideLessonContent _$BallSlideLessonContentFromJson(
   sliderColor: json['slider_color'] as String?,
   rotateBall: json['rotate_ball'] as bool? ?? true,
   message: json['message'] as String?,
+  messageSound: json['message_sound'] as String?,
   ballImageEnd: json['ball_image_end'] as String?,
   direction: json['direction'] as String? ?? 'ltr',
   conversation:
@@ -320,6 +327,7 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'slider_color': instance.sliderColor,
   'rotate_ball': instance.rotateBall,
   'message': instance.message,
+  'message_sound': instance.messageSound,
   'ball_image_end': instance.ballImageEnd,
   'direction': instance.direction,
   'conversation': instance.conversation,

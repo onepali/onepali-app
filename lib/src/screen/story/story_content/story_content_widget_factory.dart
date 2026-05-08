@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/screen/story/story_content/widget/button_tap_content2.dart';
+import 'package:onepali/src/screen/story/story_content/widget/choose_correct.dart';
 import 'package:onepali/src/src.dart';
 
 Widget buildStoryContentWidget({
@@ -24,9 +25,10 @@ Widget buildStoryContentWidget({
         isLast: isLast,
         playAudio: playAudio,
       );
-      case "button_tap2":
+    case "button_tap2":
       return ButtonTapContent2(content: content, playAudio: playAudio);
-
+    case 'choose_correct':
+      return ChooseCorrect(content: content,isLast: isLast,);
     default:
       return const SizedBox();
   }

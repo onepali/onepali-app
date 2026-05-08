@@ -37,6 +37,13 @@ class _HeadingViewState extends State<HeadingView> {
     super.dispose();
   }
 
+  void _playMessageSound() async {
+    if (widget.content.messageSound != null &&
+        widget.content.messageSound!.isNotEmpty) {
+      await audioPlayerService.play(widget.content.messageSound!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
@@ -70,16 +77,7 @@ class _HeadingViewState extends State<HeadingView> {
                   context.read<LessonBloc>().add(LessonEvent.nextContent());
                 },
               ),
-            if (isComplete && state.content?.message != null)
-              Positioned(
-                top: size.height * 0.1,
-                left: 0,
-                right: 0,
-                child: LabelDisplay(
-                  nameNp: state.content?.message ?? '',
-                  nameEn: '',
-                ),
-              ),
+
             if (state.isAllAudioCompleted)
               Positioned.fill(
                 child: LayoutBuilder(
@@ -108,7 +106,7 @@ class _HeadingViewState extends State<HeadingView> {
                             child: CurvedBallSlider(
                               height: isMobile ? 150 : 300,
                               isRTL: widget.content.direction == 'rtl_heading',
-                              value: 0.0,
+                              value: isComplete? 1.0: 0.0,
                               sliderColor: widget.content.sliderColor,
                               onChanged: (v) {
                                 if (v == 1.0) {
@@ -117,9 +115,13 @@ class _HeadingViewState extends State<HeadingView> {
                                     log('isComplete: $isComplete');
                                     isComplete = true;
                                   });
-                                  audioPlayerService.playAsset(
-                                    Assets.starBlast,
-                                  );
+                                  if (widget.content.messageSound != null) {
+                                    _playMessageSound();
+                                  } else {
+                                    audioPlayerService.playAsset(
+                                      Assets.starBlast,
+                                    );
+                                  }
                                 } else {
                                   if (!isComplete) return;
                                   setState(() {
@@ -135,6 +137,17 @@ class _HeadingViewState extends State<HeadingView> {
                       ],
                     );
                   },
+                ),
+              ),
+
+            if (isComplete && state.content?.message != null)
+              Positioned(
+                top: size.height * 0.1,
+                left: 0,
+                right: 0,
+                child: LabelDisplay(
+                  nameNp: state.content?.message ?? '',
+                  nameEn: '',
                 ),
               ),
           ],

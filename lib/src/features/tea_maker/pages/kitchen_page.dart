@@ -194,7 +194,7 @@ class _KitchenPageState extends State<KitchenPage> {
                               // decoration: BoxDecoration(color: Colors.orange),
                               child: SvgPicture.network(
                                 key: _stoveKey,
-                                state.stoveImage??'',
+                                state.stoveImage ?? '',
                                 height: size.height * 0.25,
                                 fit: BoxFit.fitHeight,
                               ),
@@ -267,9 +267,15 @@ class _KitchenPageState extends State<KitchenPage> {
                           child: GestureDetector(
                             onTap: () => Navigator.of(context).pop(),
                             child: Padding(
-                              padding: EdgeInsetsGeometry.only(top:100,right:100,left: 100),
+                              padding: EdgeInsetsGeometry.only(
+                                top: 100,
+                                right: 100,
+                                left: 100,
+                              ),
                               child: SvgPicture.network(
-                               state.bearTakingTea??''
+                                isMobile
+                                    ? state.bearTakingTeaMb??''
+                                    : state.bearTakingTeaTb??'',
                               ),
                             ),
                           ),

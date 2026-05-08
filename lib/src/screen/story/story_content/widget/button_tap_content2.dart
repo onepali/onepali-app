@@ -55,10 +55,52 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.playAudio) {
-        Provider.of<StoryProvider>(context, listen: false)
-            .playAudio(widget.content.audio);
+        Provider.of<StoryProvider>(
+          context,
+          listen: false,
+        ).playAudio(widget.content.audio);
       }
     });
+  }
+
+  Widget backgroundImage(bool isCorrect, bool isMobile) {
+    if (isMobile) {
+      if (isCorrect) {
+        if (widget.content.imageSuccess == null) {
+          return Container();
+        }
+        return CustomCachedImage(
+          imageUrl: widget.content.imageSuccess ?? '',
+          fit: BoxFit.cover,
+        );
+      } else {
+        if (widget.content.image == null) {
+          return Container();
+        }
+        return CustomCachedImage(
+          imageUrl: widget.content.image ?? '',
+          fit: BoxFit.cover,
+        );
+      }
+    } else {
+      if (isCorrect) {
+        if (widget.content.imageSuccessTb == null) {
+          return Container();
+        }
+        return CustomCachedImage(
+          imageUrl: widget.content.imageSuccessTb ?? '',
+          fit: BoxFit.cover,
+        );
+      } else {
+        if (widget.content.imageTb == null) {
+          return Container();
+        }
+        return CustomCachedImage(
+          imageUrl: widget.content.imageTb ?? '',
+          fit: BoxFit.cover,
+        );
+      }
+    }
   }
 
   @override
@@ -73,17 +115,9 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     return Stack(
       children: [
         // Positioned.fill(child: Container(color: Colors.green)),
-        Align(
-          alignment: Alignment.center,
-
-          child: CustomCachedImage(
-            imageUrl: (isCorrect == true && widget.content.imageSuccess != null)
-                ? widget.content.imageSuccess!
-                : widget.content.image,
-            height: size.height * 0.3,
-            width: isMobile ? size.width * 0.4 : size.width * 0.7,
-            fit: BoxFit.fill,
-          ),
+        Positioned.fill(
+          // alignment: Alignment.center,
+          child: backgroundImage(isCorrect ?? false, isMobile),
         ),
         // Bottom button container
         Align(

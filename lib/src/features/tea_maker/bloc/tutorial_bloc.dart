@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
 part 'tutorial_event.dart';
@@ -14,15 +15,18 @@ part 'tutorial_bloc.freezed.dart';
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final player = AudioPlayer();
   final hunxaPlayer = AudioPlayer();
+  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
   List<String> ingridents = [];
   List<String> onDraggedItems = [];
   List<String> audioFiles = [];
+  List<String> ingredientAudioFiles = [];
   String kitleyLeyAudio = '';
   String teapotVapour = '';
   String abaPaniUmalaSound = '';
   String teaReadySound = '';
   String stoveImage = '';
-  String bearTakingTea = '';
+  String bearTakingTeaTb = '';
+  String bearTakingTeaMb = '';
 
   Map<String, String> _cachedPaths = {};
 
@@ -34,15 +38,22 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       onDraggedItems = content.ingredients
           .map((e) => e.imageOutline ?? '')
           .toList();
-      audioFiles = content.ingredients.map((e) => e.question ?? '').toList();
-
+      audioFiles = content.ingredients
+          .map((e) => e.question ?? '')
+          .where((e) => e.isNotEmpty)
+          .toList();
+      ingredientAudioFiles = content.ingredients
+          .map((e) => e.audioItem != null ? e.audioItem! : '')
+          .where((e) => e.isNotEmpty)
+          .toList();
       kitleyLeyAudio = audioFiles.first;
       audioFiles.removeAt(0);
       teapotVapour = content.teapotVapour;
       abaPaniUmalaSound = content.abaPaniUmalaSound;
       teaReadySound = content.teaReadySound;
       stoveImage = content.stoveImage;
-      bearTakingTea = content.bearTakingTea;
+      bearTakingTeaTb = content.bearTakingTeaTb;
+      bearTakingTeaMb = content.bearTakingTeaMb;
 
       emit(state.copyWith(showLoading: true));
 
@@ -51,13 +62,15 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         ...onDraggedItems,
         teapotVapour,
         stoveImage,
-        bearTakingTea,
+        bearTakingTeaTb,
+        bearTakingTeaMb,
       ].where((e) => e.isNotEmpty).toList();
 
       final allAudioUrls = [
         event.content.audioInstruction,
         kitleyLeyAudio,
         ...audioFiles,
+        ...ingredientAudioFiles,
         abaPaniUmalaSound,
         teaReadySound,
       ].where((e) => e.isNotEmpty).toList();
@@ -75,7 +88,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
           ingredients: ingridents,
           index: 0,
           stoveImage: stoveImage,
-          bearTakingTea: bearTakingTea,
+          bearTakingTeaTb: bearTakingTeaTb,
+          bearTakingTeaMb: bearTakingTeaMb,
         ),
       );
 
@@ -106,7 +120,6 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       if (player.state == PlayerState.playing) return;
 
       droppedItemText(event.index, emit);
-      unawaited(player.play(AssetSource('tea_maker/music/correct.mp3')));
 
       emit(
         state.copyWith(
@@ -157,22 +170,38 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     switch (index) {
       case 0:
         emit(state.copyWith(droppedItem: 'कित्ली'));
+        await _audioPlayerService.play(ingredientAudioFiles[0]);
         break;
       case 1:
         emit(state.copyWith(droppedItem: 'पानी'));
+          await _audioPlayerService.play(ingredientAudioFiles[1]);
         break;
       case 2:
         emit(state.copyWith(droppedItem: 'दुध'));
+        await _audioPlayerService.play(ingredientAudioFiles[2]);
+        break;
       case 3:
         emit(state.copyWith(droppedItem: 'अदुवा'));
+        await _audioPlayerService.play(ingredientAudioFiles[3]);
         break;
       case 4:
         emit(state.copyWith(droppedItem: 'चियापति'));
+        await _audioPlayerService.play(ingredientAudioFiles[4]);
         break;
       case 5:
         emit(state.copyWith(droppedItem: 'चम्चा'));
         break;
     }
+  }
+
+  @override
+  Future<void> close() {
+    _audioPlayerService.dispose();
+    player.stop();
+    player.dispose();
+    hunxaPlayer.stop();
+    hunxaPlayer.dispose();
+    return super.close();
   }
 }
 

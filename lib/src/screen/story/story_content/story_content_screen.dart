@@ -116,7 +116,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   bool _hasBackgroundImage(int idx, List<Content> contentList) {
     if (idx > 0 && idx <= contentList.length) {
       final currentContent = contentList[idx - 1];
-      return currentContent.image.isNotEmpty;
+      return currentContent.image?.isNotEmpty ?? false;
     }
     return false;
   }
@@ -180,7 +180,8 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
         onTap: () {
           _disposeStoryAudio();
           provider.nextContent(context);
-      })
+        },
+      ),
     ];
   }
 
@@ -384,7 +385,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               if (hasBackgroundImage && backgroundImage != null) {
                 if (contentList[idx - 1].type == "button_tap2") {
                   return ButtonTapContent2(
-                    content: contentList[idx-1],
+                    content: contentList[idx - 1],
                     playAudio: true,
                   );
                 }
@@ -394,6 +395,9 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     _buildFullScreenBackground(backgroundImage),
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
+                      left: false,
+                      top: false,
                       child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
@@ -413,9 +417,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                       ),
                     ),
                     // Content with SafeArea for interactive elements
-                    SafeArea(
-                      child: Stack(children: [mainContent, ...actionButtons]),
-                    ),
+                    Stack(children: [mainContent, ...actionButtons]),
                   ],
                 );
               }
@@ -423,9 +425,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               // For other screens without background image, use Container + SafeArea pattern
               return Container(
                 color: AppColors.kSkyBlue,
-                child: SafeArea(
-                  child: Stack(children: [mainContent, ...actionButtons]),
-                ),
+                child: Stack(children: [mainContent, ...actionButtons]),
               );
             },
           );
