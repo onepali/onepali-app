@@ -63,6 +63,30 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     });
   }
 
+  String _nonEmptyOr(String? value, String fallback) =>
+      value != null && value.isNotEmpty ? value : fallback;
+
+  String _backgroundImageUrl(bool isCorrect, bool isMobile) {
+    if (!isCorrect) {
+      return isMobile
+          ? widget.content.image
+          : _nonEmptyOr(widget.content.imageTb, widget.content.image);
+    }
+
+    final mobileSuccess = _nonEmptyOr(
+      widget.content.imageSuccess,
+      widget.content.image,
+    );
+    return isMobile
+        ? mobileSuccess
+        : _nonEmptyOr(widget.content.imageSuccessTb, mobileSuccess);
+  }
+
+  Widget backgroundImage(bool isCorrect, bool isMobile) => CustomCachedImage(
+    imageUrl: _backgroundImageUrl(isCorrect, isMobile),
+    fit: BoxFit.cover,
+  );
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -75,17 +99,9 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     return Stack(
       children: [
         // Positioned.fill(child: Container(color: Colors.green)),
-        Align(
-          alignment: Alignment.center,
-
-          child: CustomCachedImage(
-            imageUrl: (isCorrect == true && widget.content.imageSuccess != null)
-                ? widget.content.imageSuccess!
-                : widget.content.image,
-            height: size.height * 0.3,
-            width: isMobile ? size.width * 0.4 : size.width * 0.7,
-            fit: BoxFit.fill,
-          ),
+        Positioned.fill(
+          // alignment: Alignment.center,
+          child: backgroundImage(isCorrect ?? false, isMobile),
         ),
         // Bottom button container
         Align(
