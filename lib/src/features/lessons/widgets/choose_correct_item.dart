@@ -46,6 +46,7 @@ class ItemCard extends StatelessWidget {
       child: Container(
         height: isMobile ? size.height * 0.6 : size.height * 0.50,
         margin: const EdgeInsets.all(8.0),
+        clipBehavior: Clip.hardEdge,
         padding: bgImage == null
             ? const EdgeInsets.only(bottom: 8, top: 8)
             : null,
