@@ -76,7 +76,7 @@ class StorageService {
     // Verify the URI is still valid
     try {
       if (Platform.isAndroid) {
-        final bool isValid = await _channel.invokeMethod('verifyFolderUri', {'uri': uri});
+        final bool? isValid = await _channel.invokeMethod<bool>('verifyFolderUri', {'uri': uri});
         return isValid ?? false;
       }
     } catch (e) {
@@ -103,7 +103,7 @@ class StorageService {
 
     try {
       logger.d('Saving file: $filename (${fileBytes.length} bytes)');
-      final bool success = await _channel.invokeMethod('saveFile', {
+      final bool? success = await _channel.invokeMethod<bool>('saveFile', {
         'folderUri': folderUri,
         'filename': filename,
         'fileBytes': fileBytes,

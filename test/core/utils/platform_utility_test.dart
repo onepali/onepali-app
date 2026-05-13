@@ -6,7 +6,11 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('PlatformUtility', () {
     testWidgets('isTablet should detect tablet devices', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1024, 768));
+      // shortestSide must be >= 720dp for isTablet to be true.
+      tester.view.devicePixelRatio = 1.0;
+      tester.view.physicalSize = const Size(1024, 768);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
@@ -18,12 +22,15 @@ void main() {
         ),
       );
 
-      // Since isWeb returns false in this test environment, tablet detection works normally
       expect(find.text('true'), findsOneWidget);
     });
 
     testWidgets('isMobile should detect mobile devices', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(375, 667));
+      // shortestSide < 720dp for isMobile to be true.
+      tester.view.devicePixelRatio = 1.0;
+      tester.view.physicalSize = const Size(375, 667);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
@@ -35,9 +42,7 @@ void main() {
         ),
       );
 
-      // The test framework uses 800x600 by default, making it tablet size
-      // So isMobile returns false
-      expect(find.text('false'), findsOneWidget);
+      expect(find.text('true'), findsOneWidget);
     });
     testWidgets('isWeb should return consistent value', (tester) async {
       await tester.pumpWidget(

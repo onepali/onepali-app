@@ -7,12 +7,14 @@ class AppCheckUtil {
     try {
       await FirebaseAppCheck.instance.activate(
         // For Android
-        androidProvider:
-            kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+        providerAndroid: kDebugMode
+            ? const AndroidDebugProvider()
+            : const AndroidPlayIntegrityProvider(),
 
         // For iOS
-        appleProvider:
-            kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
+        providerApple: kDebugMode
+            ? const AppleDebugProvider()
+            : const AppleAppAttestProvider(),
 
         // For Web (you'll need to configure reCAPTCHA v3 in Firebase Console)
         providerWeb: ReCaptchaV3Provider('recaptcha-v3-site-key'),

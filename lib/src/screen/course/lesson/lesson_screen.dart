@@ -42,8 +42,7 @@ class LessonScreen extends StatelessWidget {
     logger.d(
       'LessonScreen Responsive Values: cardHeight: $cardHeight, lessonCardHeight: $lessonCardHeight, thumbnailWidth: $thumbnailWidth, thumbnailHeight: $thumbnailHeight, screenWidth: $screenWidth, screenHeight: $screenHeight',
     );
-    final isMobileLandscape = isMobile && isLandscape;
-    
+
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       appBar: CustomAppBar(

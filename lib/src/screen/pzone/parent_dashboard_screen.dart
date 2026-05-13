@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +31,7 @@ class _ParentDashboardScreenState extends State<ParentDashboardScreen> {
       await childProvider.fetchChildUser();
 
       if (context.mounted) {
-        ParentProfileUtil.checkAndShowProfileCompletion(context,);
+        ParentProfileUtil.checkAndShowProfileCompletion(context);
       }
     });
   }

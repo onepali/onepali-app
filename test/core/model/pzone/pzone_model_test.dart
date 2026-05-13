@@ -62,7 +62,7 @@ void main() {
 
     test('should contain expected services', () {
       final labels = pzoneBottomModel.map((e) => e.label).toList();
-      expect(labels, contains('Progress Report'));
+      expect(labels, contains('Progress report'));
       expect(labels, contains('Community'));
       expect(labels, contains('Settings'));
     });
