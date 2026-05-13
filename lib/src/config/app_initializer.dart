@@ -149,7 +149,7 @@ class AppInitializer {
       ]);
     } else {
       await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
+        // DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
     }
