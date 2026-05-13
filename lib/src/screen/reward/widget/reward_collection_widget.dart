@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../src.dart';
@@ -73,19 +75,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          widget.childId != null
-                              ? 'Sticker Collection'
-                              : 'My Stickers',
-                          style: AppStyles.text22PxSemiBold.copyWith(
-                            fontSize: titleFontSize,
-                            fontFamily: 'Luckiest Guy',
-                            letterSpacing: 5,
-                          ),
-                        ),
-                      ),
-                      Gaps.verticalGapOf(stickerMargin + 10),
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: stickerContainerMargin,
@@ -256,24 +245,63 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
 
             return Scaffold(
               backgroundColor: AppColors.kWhite,
-              body: SafeArea(
-                child: Stack(
-                  children: [
-                    stickerGrid(),
-                    // Close button positioned consistently with other reward screens
-                    Positioned(
-                      top: isMobile ? 16 : 24,
-                      right: Dimensions.kIconMargin(context),
-                      child: CircularButtonWidget(
-                        onPressed: () {
-                          UserAppBar.setTabIndex(0);
-                          Utility.navigate(context, AppRoutes.dashboardScreen);
-                        },
-                        type: CircularButtonType.closeGrey,
+              body: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: isMobile
+                                  ? closeBtnPositionMobile
+                                  : closeBtnPositionTablet,
+                              bottom: isMobile
+                                  ? closeBtnPositionMobile
+                                  : closeBtnPositionTablet,
+                              right: isMobile
+                                  ? closeBtnPositionMobile
+                                  : closeBtnPositionTablet,
+                            ),
+                            child: CustomCloseButton(
+                              onTap: () {
+                                UserAppBar.setTabIndex(0);
+                                Utility.navigate(
+                                  context,
+                                  AppRoutes.dashboardScreen,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Center(
+                          child: Text(
+                            widget.childId != null
+                                ? 'Sticker Collection'
+                                : 'My Stickers',
+                            style: Theme.of(context).textTheme.headlineLarge
+                                ?.copyWith(
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontSize: 36,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.kDrawerBgColor,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  stickerGrid(),
+                ],
               ),
             );
           },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
@@ -50,67 +51,76 @@ class _DrawerScreenState extends State<DrawerScreen> {
     return Scaffold(
       backgroundColor:
           AppColors.kPurple, // Scaffold background matches right side
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: [
-          // Left side - children profiles with black background (exactly half)
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: AppColors.kDrawerBgColor, // Black only on left side
-              child: SizedBox.expand(
-                child: SafeArea(
-                  left: true,
-                  top: true,
-                  right: false,
-                  bottom: true,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [_buildChildProfilesGrid()],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Left side - children profiles with black background (exactly half)
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: AppColors.kDrawerBgColor, // Black only on left side
+                  child: SizedBox.expand(
+                    child: SafeArea(
+                      left: true,
+                      top: true,
+                      right: false,
+                      bottom: true,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [_buildChildProfilesGrid()],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
 
-          // Right side - settings with purple background (exactly half)
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: AppColors.kPurple,
-              child: SafeArea(
-                left: false,
-                top: true,
-                right: true,
-                bottom: true,
-                child: Stack(
-                  children: [
-                    _buildSettingsSection(),
-                    // Close button on right side - top right
-                    Positioned(
-                      top: 16,
-                      right: Dimensions.kIconMargin(context),
-                      child: CircularButtonWidget(
-                        type: CircularButtonType.closeGrey,
-                        onPressed: () {
-                          // Go back to where user came from (works for both dashboard and parent zone)
-                          Navigator.pop(context);
-                        },
-                      ),
+              // Right side - settings with purple background (exactly half)
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: AppColors.kPurple,
+                  child: SafeArea(
+                    left: false,
+                    top: true,
+                    right: true,
+                    bottom: true,
+                    child: Stack(
+                      children: [
+                        _buildSettingsSection(),
+                        // Close button on right side - top right
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
+          ),
+          // Positioned(
+          //   top: 16,
+          //   right: Dimensions.kIconMargin(context),
+          //   child: CircularButtonWidget(
+          //     type: CircularButtonType.closeGrey,
+          //     onPressed: () {
+          //       // Go back to where user came from (works for both dashboard and parent zone)
+          //       Navigator.pop(context);
+          //     },
+          //   ),
+          // ),
+          TopRightPositionedCloseButton(
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
