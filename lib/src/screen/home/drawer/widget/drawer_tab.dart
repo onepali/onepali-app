@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -118,13 +119,9 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             ],
           ),
           // Close button positioned consistently
-          Positioned(
-            top: 32,
-            right: Dimensions.kIconMargin(context),
-                  child: CircularButtonWidget(
-                    type: CircularButtonType.closeGrey,
-                    onPressed: () async {
-                      final isParentLogged =
+          TopRightPositionedCloseButton(
+            onTap: ()async{
+                    final isParentLogged =
                           await ParentLocalStorage.isParentLogged();
                       logger.d('isParentLogged: $isParentLogged');
                       if (isParentLogged) {
@@ -136,9 +133,8 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                       } else {
                         Navigator.pop(context);
                       }
-                    },
-                  ),
-                ),
+            },
+          ),
         ],
       ),
     );

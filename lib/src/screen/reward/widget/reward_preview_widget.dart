@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../src.dart';
@@ -88,6 +89,7 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
+    final size = MediaQuery.of(context).size;
 
     // Responsive values
     final double titleFontSize = isMobileLandscape ? 40 : 64;
@@ -113,23 +115,8 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
           // Content
           SafeArea(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: Dimensions.kIconMargin(context),
-                    top: isMobile ? 16 : 24,
-                  ),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: CircularButtonWidget(
-                      type: CircularButtonType.closeGrey,
-                      onPressed: () => Utility.navigate(
-                        context,
-                        AppRoutes.rewardCollectionScreen,
-                      ),
-                    ),
-                  ),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,6 +203,12 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                 ),
               ],
             ),
+          ),
+
+          TopRightPositionedCloseButton(
+            onTap: () {
+              Utility.navigate(context, AppRoutes.rewardCollectionScreen);
+            },
           ),
         ],
       ),
