@@ -22,7 +22,7 @@ class BackArrowButton extends StatelessWidget {
   }
 }
 
-/// Default padding to the left [24] mobile and [32] tablet
+/// Keeps the back button clear of the left safe area.
 class CenterLeftAlignedBackButton extends StatelessWidget {
   const CenterLeftAlignedBackButton({super.key, this.onTap});
   final VoidCallback? onTap;
@@ -32,8 +32,14 @@ class CenterLeftAlignedBackButton extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.only(left: isMobile ? 24 : 32),
-        child: BackArrowButton(onTap: onTap),
+        padding: isMobile ? EdgeInsets.zero : const EdgeInsets.only(left: 32),
+        child: SafeArea(
+          right: false,
+          bottom: false,
+          top: false,
+          left: true,
+          child: BackArrowButton(onTap: onTap),
+        ),
       ),
     );
   }

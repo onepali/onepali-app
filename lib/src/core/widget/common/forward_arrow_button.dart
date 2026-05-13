@@ -22,7 +22,7 @@ class ForwardArrowButton extends StatelessWidget {
   }
 }
 
-/// Default padding to the right [24] mobile and [32] tablet
+/// Keeps the forward button aligned away from the right edge.
 class CenterRightAlignedForwardButton extends StatelessWidget {
   const CenterRightAlignedForwardButton({super.key, this.onTap});
   final VoidCallback? onTap;
@@ -32,7 +32,7 @@ class CenterRightAlignedForwardButton extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: EdgeInsets.only(right: isMobile ? 24 : 32),
+        padding: EdgeInsets.only(right: 32),
         child: ForwardArrowButton(onTap: onTap),
       ),
     );
