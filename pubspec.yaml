@@ -68,7 +68,7 @@ dependencies:
   in_app_review: ^2.0.9
   app_settings: ^7.0.0
   responsive_builder: ^0.7.1
-  crypto: ^3.0.5
+  crypto: ^3.0.7
 
 dev_dependencies:
   flutter_test:
