@@ -162,11 +162,11 @@ class AAuthProvider with ChangeNotifier {
         // Error 1000 - Unknown error
         logger.e('Apple Sign In Error 1000 (Unknown). Common causes: missing capability, provisioning profile, or 2FA not enabled.');
         handleError(
-          "Apple Sign In failed. Please ensure Sign in with Apple is properly configured. Error: ${e.message ?? 'Unknown error (1000)'}",
+          "Apple Sign In failed. Please ensure Sign in with Apple is properly configured. Error: ${e.message}",
           context,
         );
       } else {
-        handleError("Apple Sign In failed: ${e.message ?? 'Unknown error'} (Code: ${e.code})", context);
+        handleError("Apple Sign In failed: ${e.message} (Code: ${e.code})", context);
       }
     } on PlatformException catch (e) {
       _handlePlatformException(context, e);

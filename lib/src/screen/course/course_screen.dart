@@ -47,8 +47,6 @@ class CourseScreenState extends State<CourseScreen> {
                     .toList();
 
             if (widget.isMobile) {
-              final isMobileLandscape = PlatformUtility.isMobile(context) &&
-                  PlatformUtility.isLandscape(context);
               return SafeArea(
                 left: true,
                 top: true,

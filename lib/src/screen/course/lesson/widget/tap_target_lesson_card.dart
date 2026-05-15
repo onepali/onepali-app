@@ -661,12 +661,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     bool isMobile,
   ) {
     final mediaQuery = MediaQuery.of(context);
-    
-    // Calculate actual image sizes using the same dimensions as _getTargetSizeForAnimal
-    final dimensions = _getUsableDimensions(screenWidth, screenHeight, isMobile);
-    final double usableWidth = dimensions['usableWidth']!;
-    final double usableHeight = dimensions['usableHeight']!;
-    
+
     // Build image size map for accurate bottom-left alignment
     final isLandscape = PlatformUtility.isLandscape(context);
     final imageSizeMap = <String, double>{};

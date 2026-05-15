@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -33,31 +32,26 @@ class _ParentBlogScreenState extends State<ParentBlogScreen> {
             errorTitle: 'No blogs available',
             errorMessage: 'Please check back later for new blogs.',
             onRetry: () => context.read<PzBlogProvider>().fetchBlogs(),
-            successBuilder:
-                () => ListView.separated(
-                  itemCount: provider.blogs.length,
-                  separatorBuilder:
-                      (context, index) => SizedBox(
-                        height: 50,
-                        child: Divider(
-                          color: AppColors.kLightGrey,
-                          thickness: 0.2,
-                        ),
-                      ),
-                  itemBuilder: (context, index) {
-                    final blog = provider.blogs[index];
-                    return PBlogCard(
-                      blog: blog,
-                      onTap: () {
-                        Utility.navigateMaterialRoute(
-                          context,
-                          PBlogDetailScreen(data: blog),
-                          routeName: AppRoutes.blogDetailScreen,
-                        );
-                      },
+            successBuilder: () => ListView.separated(
+              itemCount: provider.blogs.length,
+              separatorBuilder: (context, index) => SizedBox(
+                height: 50,
+                child: Divider(color: AppColors.kLightGrey, thickness: 0.2),
+              ),
+              itemBuilder: (context, index) {
+                final blog = provider.blogs[index];
+                return PBlogCard(
+                  blog: blog,
+                  onTap: () {
+                    Utility.navigateMaterialRoute(
+                      context,
+                      PBlogDetailScreen(data: blog),
+                      routeName: AppRoutes.blogDetailScreen,
                     );
                   },
-                ),
+                );
+              },
+            ),
           );
         },
       ),

@@ -257,11 +257,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
       // Mobile layout - original unchanged
       return LayoutBuilder(
         builder: (context, constraints) {
-          final availableHeight = constraints.maxHeight.isFinite
-              ? constraints.maxHeight
-              : (isTabletLandScape
-                  ? MediaQuery.of(context).size.height
-                  : MediaQuery.of(context).size.height * 0.8);
           final availableWidth = constraints.maxWidth.isFinite
               ? constraints.maxWidth
               : MediaQuery.of(context).size.width;
@@ -387,9 +382,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
               LayoutBuilder(
                 builder: (context, constraints) {
                   final screenWidth = MediaQuery.of(context).size.width;
-                  final availableHeight = constraints.maxHeight.isFinite
-                      ? constraints.maxHeight
-                      : MediaQuery.of(context).size.height;
                   // Use 40% of screen width for congratulations section, minimum 180px, maximum 250px
                   final congratsWidth = (screenWidth * 0.4).clamp(180.0, 250.0);
                   return Row(
