@@ -35,8 +35,8 @@ class _TapToFillViewState extends State<TapToFillView> {
           TapToFillBloc()..add(TapToFillEvent.started(widget.content)),
       child: BlocConsumer<TapToFillBloc, TapToFillState>(
         listener: (context, state) {
-          if(state.status == TapToFillStatus.completed) {
-             audioPlayerService.playAsset(Assets.starBlast);
+          if (state.status == TapToFillStatus.completed) {
+            audioPlayerService.playAsset(Assets.starBlast);
           }
         },
         builder: (context, state) {
@@ -47,8 +47,8 @@ class _TapToFillViewState extends State<TapToFillView> {
             children: [
               Positioned.fill(
                 child: BackgroundImage(
-                  bgImageMb: state.content!.bgImage,
-                  bgImageTb: state.content!.bgImageTb,
+                  bgImageMb: state.bgImageMb,
+                  bgImageTb: state.bgImageTb,
                 ),
               ),
               TopRightPositionedCloseButton(
