@@ -7,6 +7,8 @@
 ## Variables (`TapToFillLessonContent`)
 - `id`, `index`, `type`
 - `instruction`
+- `audioBeforeOptions`
+- `preBgImageMb`, `preBgImageTb`
 - `bgImage`, `bgImageTb`
 - `options` (`List<Option>`)
 
