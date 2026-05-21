@@ -32,9 +32,9 @@ class CenterLeftAlignedBackButton extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: isMobile ? EdgeInsets.zero : const EdgeInsets.only(left: 32),
+        padding: EdgeInsets.only(left: isMobile ? 24 : 32),
         child: SafeArea(
-          right: false,
+          right: true,
           bottom: false,
           top: false,
           left: true,

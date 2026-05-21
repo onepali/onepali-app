@@ -4,7 +4,7 @@ import '../../../../src.dart';
 
 class PDashboardMetricsWidget extends StatelessWidget {
   final int averageDailyLearningTime;
-  final List<String> mostPracticedTopics;
+  final List<PzCompletedContentModel> mostPracticedTopics;
   final bool isMobilePortrait;
 
   const PDashboardMetricsWidget({
@@ -16,8 +16,15 @@ class PDashboardMetricsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = [AppColors.kPink, AppColors.kYellow, AppColors.kPurple];
+    final colors = [
+      AppColors.kAccentColor,
+      AppColors.sunshineYellow,
+      AppColors.kVideoColor,
+    ];
     final minHeight = isMobilePortrait ? 140.0 : 290.0;
+    mostPracticedTopics.sort(
+      (a, b) => b.completedCount.compareTo(a.completedCount),
+    );
 
     return Column(
       children: [
@@ -108,13 +115,21 @@ class PDashboardMetricsWidget extends StatelessWidget {
                               // ),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Text(
-                              '${i + 1}. ${mostPracticedTopics[i]}',
-                              style: AppStyles.text16PxMedium.copyWith(
-                                // color: colors[i % colors.length],
-                                fontFamily: AppConstants.kDMSansFont,
-                                fontSize: isMobilePortrait ? 16 : 24,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${i + 1}. ${mostPracticedTopics[i].contentName}',
+                                  style: AppStyles.text16PxMedium.copyWith(
+                                    // color: colors[i % colors.length],
+                                    fontFamily: AppConstants.kDMSansFont,
+                                    fontSize: isMobilePortrait ? 16 : 24,
+                                  ),
+                                ),
+                                Text(
+                                  'x${mostPracticedTopics[i].completedCount}',
+                                ),
+                              ],
                             ),
                           ),
                         ),

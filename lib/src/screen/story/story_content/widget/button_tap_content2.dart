@@ -93,9 +93,6 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     final options = widget.content.conversation;
     final isMobile = PlatformUtility.isMobile(context);
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
-    if (storyProvider.isStoryFinished) {
-      // Navigator.of(context).pop();
-    }
     return Stack(
       children: [
         // Positioned.fill(child: Container(color: Colors.green)),

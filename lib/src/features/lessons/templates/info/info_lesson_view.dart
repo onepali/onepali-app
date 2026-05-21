@@ -46,36 +46,27 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   Future<void> _initializeMedia() async {
     try {
       // If video is present, cache and initialize it
-      final videoUrl = widget.content.video;
-      if (videoUrl?.isNotEmpty == true) {
+      if (widget.content.video != null) {
         final videoFile = await MediaCacheManager.instance.getSingleFile(
-          videoUrl!,
+          widget.content.video!,
         );
 
-        if (!mounted) return;
+        _videoController = VideoPlayerController.file(videoFile);
+        await _videoController!.initialize();
 
-        final videoController = VideoPlayerController.file(videoFile);
-        await videoController.initialize();
-
-        if (!mounted) {
-          await videoController.dispose();
-          return;
+        if (mounted) {
+          _videoController?.play();
         }
-
-        _videoController = videoController;
-        _videoController!.addListener(_videoListener);
-
         setState(() {});
-        await _videoController!.play();
+        // Listen for video completion
+        _videoController!.addListener(_videoListener);
       } else {
         // No video, mark as initialized and play audio immediately
+        if (mounted) {}
         await _playAudio();
       }
     } catch (e) {
       log('Error initializing media: $e');
-      if (mounted) {
-        await _playAudio();
-      }
     }
   }
 
@@ -109,13 +100,10 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         widget.content.audioWord,
       );
 
-      if (!mounted) return;
-
-      final audioPlayer = AudioPlayer();
-      _audioPlayer = audioPlayer;
+      _audioPlayer = AudioPlayer();
       bloc.add(const InfoLessonContentEvent.audioStarted());
 
-      await audioPlayer.play(DeviceFileSource(audioFile.path));
+      await _audioPlayer!.play(DeviceFileSource(audioFile.path));
     } catch (e) {
       log('Error playing audio: $e');
     }
@@ -150,66 +138,6 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     super.dispose();
   }
 
-  Widget _buildMediaContent(InfoLessonContent content, bool showVideo) {
-    final hasVideo = content.video != null && content.video!.isNotEmpty;
-
-    if (hasVideo) {
-      final showVideoWidget =
-          showVideo &&
-          _videoController != null &&
-          _videoController!.value.isInitialized;
-
-      return Stack(
-        children: [
-          if (!showVideoWidget)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: GestureDetector(
-                  onTap: _replayVideo,
-                  child: content.isImageSvg
-                      ? SvgHelper.fromSource(
-                          path: content.image,
-                          type: SvgSourceType.network,
-                          fit: BoxFit.cover,
-                        )
-                      : CustomCachedImage(
-                          imageUrl: content.image,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-              ),
-            ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [if (showVideoWidget) VideoPlayer(_videoController!)],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: content.isImageSvg
-            ? SvgHelper.fromSource(
-                path: content.image,
-                type: SvgSourceType.network,
-                fit: BoxFit.contain,
-              )
-            : CustomCachedImage(imageUrl: content.image, fit: BoxFit.contain),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
@@ -219,75 +147,127 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         }
 
         final showVideo =
-            widget.content.video?.isNotEmpty == true && !state.isVideoCompleted;
+            widget.content.video != null && !state.isVideoCompleted;
         final content = state.lessonContent!;
 
-        return Center(
-          child: Stack(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: CenterLeftAlignedBackButton(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.previousContent(),
-                        );
-                      },
-                    ),
-                  ),
-
-                  Expanded(
-                    flex: 4,
-                    child: _buildMediaContent(content, showVideo),
-                  ),
-
-                  // Information Section
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          content.nameNp,
-                          style: AppStyles.text32PxBold.copyWith(
-                            color: AppColors.kDrawerBgColor,
-                            fontFamily: AppConstants.kMuktaFont,
-                            fontSize: 64,
+        return Stack(
+          children: [
+            Row(
+              children: [
+                Expanded(flex: 1, child: SizedBox.shrink()),
+                // 👇 VIDEO OR IMAGE
+                Expanded(
+                  flex: 4,
+                  child: widget.content.video != null
+                      ? LayoutBuilder(
+                          builder: (context, constraints) {
+                            final showVideoWidget =
+                                showVideo &&
+                                _videoController != null &&
+                                _videoController!.value.isInitialized;
+                            return Stack(
+                              children: [
+                                if (!showVideoWidget)
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: GestureDetector(
+                                        onTap: _replayVideo,
+                                        child: content.isImageSvg
+                                            ? SvgHelper.fromSource(
+                                                path: content.image,
+                                                type: SvgSourceType.network,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : CustomCachedImage(
+                                                imageUrl: content.image,
+                                                fit: BoxFit.cover,
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        // 2️⃣ Video player on top if playing
+                                        if (showVideoWidget)
+                                          VideoPlayer(_videoController!),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: content.isImageSvg
+                                ? SvgHelper.fromSource(
+                                    path: content.image,
+                                    type: SvgSourceType.network,
+                                    fit: BoxFit.contain,
+                                  )
+                                : CustomCachedImage(
+                                    imageUrl: content.image,
+                                    fit: BoxFit.contain,
+                                  ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Text(
-                          content.nameEn,
-                          style: AppStyles.text20PxMedium.copyWith(
-                            fontSize: 32,
-                          ),
+                ),
+
+                // Information Section
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        content.nameNp,
+                        style: AppStyles.text32PxBold.copyWith(
+                          color: AppColors.kDrawerBgColor,
+                          fontFamily: AppConstants.kMuktaFont,
+                          fontSize: 64,
                         ),
-                        const SizedBox(height: 20),
-                        SpeakerIcon(onTap: _replayAudio),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        content.nameEn,
+                        style: AppStyles.text20PxMedium.copyWith(fontSize: 32),
+                      ),
+                      const SizedBox(height: 20),
+                      SpeakerIcon(onTap: _replayAudio),
+                    ],
                   ),
+                ),
+                Expanded(flex: 1, child: SizedBox.shrink()),
+              ],
+            ),
+            // Close button
+            TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
 
-                  Expanded(
-                    flex: 1,
-                    child: CenterRightAlignedForwardButton(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.nextContent(),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              TopRightPositionedCloseButton(
-                onTap: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
+            //  LEFT ARROW
+            CenterLeftAlignedBackButton(
+              onTap: () {
+                context.read<LessonBloc>().add(
+                  const LessonEvent.previousContent(),
+                );
+              },
+            ),
+            // Forward button
+            CenterRightAlignedForwardButton(
+              onTap: () {
+                context.read<LessonBloc>().add(LessonEvent.nextContent());
+              },
+            ),
+          ],
         );
       },
     );

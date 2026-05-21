@@ -136,7 +136,6 @@ class AppInitializer {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
 

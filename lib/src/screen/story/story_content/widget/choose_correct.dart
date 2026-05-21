@@ -81,21 +81,19 @@ class ChooseCorrect extends StatelessWidget {
                                   child: Consumer<StoryProvider>(
                                     builder: (context, provider, _) =>
                                         ElevatedButton(
-                                          onPressed: () {
-                                            if (!storyProvider
-                                                .isCorrectAnswerSelected) {
-                                              storyProvider.clearSelection();
-                                              return;
-                                            }
-                                            if (isLast) {
-                                              Navigator.of(context).pop();
-                                            } else {
-                                              provider.nextContent(context);
-                                            }
-                                          },
+                                          onPressed:
+                                              storyProvider
+                                                  .isCorrectAnswerSelected
+                                              ? null
+                                              : storyProvider.resetSelection,
                                           style: ElevatedButton.styleFrom(
                                             elevation: 0,
                                             backgroundColor:
+                                                storyProvider
+                                                    .isCorrectAnswerSelected
+                                                ? AppColors.kButtonGreen
+                                                : AppColors.kButtonRed,
+                                            disabledBackgroundColor:
                                                 storyProvider
                                                     .isCorrectAnswerSelected
                                                 ? AppColors.kButtonGreen
@@ -150,11 +148,10 @@ class ChooseCorrect extends StatelessWidget {
                   ),
 
                   if (!isLast && storyProvider.isCorrectAnswerSelected)
-                    Consumer<StoryProvider>(
-                      builder: (context, provider, _) =>
-                          CenterRightAlignedForwardButton(
-                            onTap: () => provider.nextContent(context),
-                          ),
+                    CenterRightAlignedForwardButton(
+                      onTap: () {
+                        context.read<StoryProvider>().nextContent(context);
+                      },
                     ),
                   Consumer<StoryProvider>(
                     builder: (context, storyProvider, _) {

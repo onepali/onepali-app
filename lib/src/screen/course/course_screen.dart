@@ -22,11 +22,17 @@ class CourseScreenState extends State<CourseScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>> _getLessonsStream(
     String levelId,
   ) {
-    return FirebaseFirestore.instance
+    // In debug mode, ignore .where('active', isEqualTo: true)
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('lesson_levels')
         .doc(levelId)
-        .collection('categories')
-        .snapshots();
+        .collection('categories');
+
+    if (!kDebugMode) {
+      query = query.where('active', isEqualTo: true);
+    }
+
+    return query.snapshots();
   }
 
   @override
@@ -36,6 +42,10 @@ class CourseScreenState extends State<CourseScreen> {
         PlatformUtility.isLandscape(context);
     final isMobile = PlatformUtility.isMobile(context);
     return SafeArea(
+      right: true,
+      bottom: false,
+      top: false,
+      left: true,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('lesson_levels')
@@ -46,7 +56,7 @@ class CourseScreenState extends State<CourseScreen> {
 
             return ListView.builder(
               itemCount: data.length,
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
@@ -62,47 +72,52 @@ class CourseScreenState extends State<CourseScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    SizedBox(
-                      height: isMobile
-                          ? MediaQuery.of(context).size.height * 0.45
-                          : MediaQuery.of(context).size.height * 0.3,
-                      child: StreamBuilder(
-                        stream: _getLessonsStream(data[index]['id']),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final data = snapshot.data!.docs
-                                .where(
-                                  (lesson) =>
-                                      kDebugMode ||
-                                      lesson.data()['active'] != false,
-                                )
-                                .toList();
-                            return Row(
-                              children: [
-                                for (final lesson in data) ...[
-                                  ContentCard(
-                                    nameEn:
-                                        lesson.data()['name'] as String? ?? '',
-                                    nameNp:
-                                        lesson.data()['name'] as String? ?? '',
-                                    image: lesson.data()['image'] as String?,
-                                    bgImage:
-                                        lesson.data()['bg_image'] as String?,
-                                    bgColor:
-                                        lesson.data()['bg_color'] as String?,
-                                    onTap: () => _onTapLesson(lesson),
-                                  ),
-                                  Gaps.horizontalGapOf(16),
-                                ],
-                              ],
-                            );
-                          }
-                          return const CircularProgressIndicator();
-                        },
-                      ),
+                    SizedBox(height: 8),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final cardWidth = AppConstants.contentCardGridWidth(
+                          constraints.maxWidth,
+                          isMobile: isMobile,
+                        );
+                        return StreamBuilder(
+                          stream: _getLessonsStream(data[index]['id']),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final lessons = snapshot.data!.docs;
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    for (final lesson in lessons) ...[
+                                      SizedBox(
+                                        width: cardWidth,
+                                        child: AspectRatio(
+                                          aspectRatio: AppConstants
+                                              .contentCardAspectRatio,
+                                          child: ContentCard(
+                                            nameEn: lesson['name'],
+                                            nameNp: lesson['name'],
+                                            image: lesson['image'],
+                                            bgImage: lesson['bg_image'],
+                                            bgColor: lesson['bg_color'],
+                                            onTap: () => _onTapLesson(lesson),
+                                          ),
+                                        ),
+                                      ),
+                                      Gaps.horizontalGapOf(
+                                        AppConstants.contentCardGridSpacing,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        );
+                      },
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 24),
                   ],
                 );
               },

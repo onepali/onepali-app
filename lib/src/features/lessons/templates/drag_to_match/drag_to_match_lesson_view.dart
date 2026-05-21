@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/templates/drag_to_match/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
@@ -21,107 +24,125 @@ class DragToMatchScreen extends StatelessWidget {
   }
 }
 
-// Alternative constructor if you want to pass items directly
-class DragToMatchScreenDirect extends StatelessWidget {
-  final List<Item> items;
-
-  const DragToMatchScreenDirect({super.key, required this.items});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          DragToMatchBloc()..add(DragToMatchEvent.initialize(items: items)),
-      child: _DragToMatchView(items: items),
-    );
-  }
-}
-
-class _DragToMatchView extends StatelessWidget {
+class _DragToMatchView extends StatefulWidget {
   final List<Item> items;
 
   const _DragToMatchView({required this.items});
 
   @override
+  State<_DragToMatchView> createState() => _DragToMatchViewState();
+}
+
+class _DragToMatchViewState extends State<_DragToMatchView> {
+  late AudioPlayerService _audioPlayerService;
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayerService = AudioPlayerServiceImpl();
+  }
+
+  @override
+  void dispose() {
+    _audioPlayerService.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final Size padding = Size(size.width * 0.05, size.height * 0.05);
+    final Size padding = Size(size.width * 0.1, size.height * 0.2);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: BlocBuilder<DragToMatchBloc, DragToMatchState>(
+      body: BlocConsumer<DragToMatchBloc, DragToMatchState>(
+        listener: (context, state) {
+          if (state.showCat) {
+            _audioPlayerService.playAsset(Assets.confettiFeedback);
+          }
+        },
         builder: (context, state) {
           final allMatched =
               state.matchedItemIds.length == state.itemPositions.length;
 
-          return Stack(
-            children: [
-              // 1. Draggable Items Row (Top)
-              // We use AnimatedOpacity to fade it out when finished
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
-                opacity: allMatched ? 0.0 : 1.0,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: padding.height),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: state.itemPositions.map((itemPos) {
-                        final item = items.firstWhere(
-                          (i) => i.nameEn == itemPos.itemId,
-                        );
+          return SafeArea(
+            right: false,
+            bottom: false,
+            child: Stack(
+              children: [
+                // 1. Draggable Items Row (Top)
+                // We use AnimatedOpacity to fade it out when finished
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 500),
+                  opacity: allMatched ? 0.0 : 1.0,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      padding: EdgeInsets.only(top: padding.height),
+                      child: Row(
+                        mainAxisAlignment: state.matchedItemIds.isEmpty
+                            ? MainAxisAlignment.spaceEvenly
+                            : MainAxisAlignment.center,
+                        children: state.itemPositions.map((itemPos) {
+                          final item = widget.items.firstWhere(
+                            (i) => i.nameEn == itemPos.itemId,
+                          );
 
-                        final isCurrentTarget =
-                            state.currentTargetItemId == itemPos.itemId;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: Opacity(
-                            opacity: isCurrentTarget ? 1.0 : 0.6,
-                            child: _DraggableItem(
-                              position: itemPos,
-                              item: item,
-                              totalItems: state.itemPositions.length,
-                              isBeingDragged:
-                                  state.draggedItemId == itemPos.itemId,
-                              isPlayingAudio:
-                                  state.currentPlayingAudioId == itemPos.itemId,
-                              isCurrentTarget: isCurrentTarget,
+                          final isCurrentTarget =
+                              state.currentTargetItemId == itemPos.itemId;
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              right: state.matchedItemIds.isEmpty ? 4 : 20,
                             ),
-                          ),
-                        );
-                      }).toList(),
+                            child: Opacity(
+                              opacity: 1,
+                              // opacity: isCurrentTarget ? 1.0 : 0.8,
+                              child: _DraggableItem(
+                                position: itemPos,
+                                item: item,
+                                totalItems: state.itemPositions.length,
+                                isBeingDragged:
+                                    state.draggedItemId == itemPos.itemId,
+                                isPlayingAudio:
+                                    state.currentPlayingAudioId ==
+                                    itemPos.itemId,
+                                isCurrentTarget: isCurrentTarget,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // 2. Animated Outline Target Row
-              // This will move from the bottom area to the center
-              AnimatedAlign(
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeInOutBack, // Adds a nice "pop" effect
-                alignment: allMatched
-                    ? Alignment.center
-                    : const Alignment(0, 0.8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: state.outlinePositions.map((outlinePos) {
-                    final item = items.firstWhere(
-                      (i) => i.nameEn == outlinePos.itemId,
-                    );
-                    return _OutlineTarget(
-                      position: outlinePos,
-                      item: item,
-                      isMatched: outlinePos.isMatched,
-                      totalItems: state.outlinePositions.length,
-                    );
-                  }).toList(),
+                // 2. Animated Outline Target Row
+                // This will move from the bottom area to the center
+                AnimatedAlign(
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeInOutBack, // Adds a nice "pop" effect
+                  alignment: allMatched
+                      ? Alignment.center
+                      : const Alignment(0, 0.6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: state.outlinePositions.map((outlinePos) {
+                      final item = widget.items.firstWhere(
+                        (i) => i.nameEn == outlinePos.itemId,
+                      );
+                      return _OutlineTarget(
+                        position: outlinePos,
+                        item: item,
+                        isMatched: outlinePos.isMatched,
+                        totalItems: state.outlinePositions.length,
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
 
-              if (state.showNepaliword)
-                Positioned.fill(
-                  child: Center(
+                if (state.showNepaliword)
+                  Positioned(
+                    top: size.height * 0.05 + 50,
+                    right: 0,
+                    left: 0,
                     child: LabelDisplay(
                       nameNp: state.itemPositions
                           .firstWhere(
@@ -133,30 +154,32 @@ class _DragToMatchView extends StatelessWidget {
                           .nameNp,
                     ),
                   ),
-                ),
 
-              // Close button
-              Positioned(
-                top: 16,
-                right: 16,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: SvgHelper.fromSource(path: Assets.wrong),
+                // Close button
+                TopRightPositionedCloseButton(
+                  onTap: () => Navigator.of(context).pop(),
                 ),
-              ),
-              if (state.showCat)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Image.asset(
-                    Assets.goodRemark1,
-                    height: size.height * 0.5,
-                    width: size.height * 0.5,
-                    fit: BoxFit.cover,
+                if (state.showCat)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Image.asset(
+                      Assets.goodRemark1,
+                      height: size.height * 0.5,
+                      width: size.height * 0.5,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-            ],
+                if (state.showCat)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: LottieHelper.fromSource(
+                        path: Assets.confetti1,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           );
         },
       ),
@@ -249,13 +272,14 @@ class _ItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final width = (size.width - size.width * 0.15) / totalItems;
-    final height = (size.height - size.height * 0.4) / 2;
+    final height = (size.height - size.height * 0.45) / 2;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: width,
       height: height,
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.kStoryColor.withAlpha(100),
+        color: AppColors.sunshineYellow,
         borderRadius: BorderRadius.circular(12),
 
         // border: isCurrentTarget
@@ -296,7 +320,7 @@ class _OutlineTarget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final width = (size.width - size.width * 0.15) / totalItems;
-    final height = (size.height - size.height * 0.4) / 2;
+    final height = (size.height - size.height * 0.45) / 2;
 
     final bloc = context.read<DragToMatchBloc>();
 
@@ -318,12 +342,9 @@ class _OutlineTarget extends StatelessWidget {
         return Container(
           width: width,
           height: height,
+          padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: isMatched
-                ? Colors.green.withAlpha(50)
-                : isHovering
-                ? AppColors.kSecondaryColor.withAlpha(50)
-                : AppColors.kGrey.withAlpha(50),
+            color: colorFromHex(item.outlineBgColor),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isMatched

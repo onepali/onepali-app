@@ -34,13 +34,18 @@ class SongVideoPlayerScreen extends StatefulWidget {
 class _SongVideoPlayerScreenState extends State<SongVideoPlayerScreen> {
   double _lastProgress = 0.0;
   bool _lastCompleted = false;
+  bool _hasTrackedCompletion = false;
 
   void _onProgress(double progress, bool isCompleted) {
     _lastProgress = progress;
     _lastCompleted = isCompleted;
 
     // Track song completion for parent metrics
-    if (isCompleted && widget.songId != null && widget.songId!.isNotEmpty) {
+    if (isCompleted &&
+        !_hasTrackedCompletion &&
+        widget.songId != null &&
+        widget.songId!.isNotEmpty) {
+      _hasTrackedCompletion = true;
       MetricsTrackingHelper.trackSongCompletion(
         context: context,
         songId: widget.songId!,

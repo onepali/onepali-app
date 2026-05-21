@@ -114,6 +114,7 @@ class Assets {
   static String games = 'game'.icon;
   static String stories = 'story'.icon;
   static String songsRhymes = 'song'.icon;
+  static String video = 'video'.icon;
   static String lessons = 'lesson'.icon;
 
   /// [Home] --> [Drawer] assets

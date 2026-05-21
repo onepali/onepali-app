@@ -15,9 +15,10 @@ extension ConnectivityResultX on ConnectivityResult {
         return NetworkType.bluetooth;
       case ConnectivityResult.vpn:
         return NetworkType.vpn;
-      case ConnectivityResult.satellite:
       case ConnectivityResult.other:
         return NetworkType.other;
+      case ConnectivityResult.satellite:
+        return NetworkType.satellite;
       case ConnectivityResult.none:
         return NetworkType.none;
     }

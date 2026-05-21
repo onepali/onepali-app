@@ -28,10 +28,11 @@ class CenterRightAlignedForwardButton extends StatelessWidget {
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: EdgeInsets.only(right: 32),
+        padding: EdgeInsets.only(right: isMobile ? 24 : 32),
         child: ForwardArrowButton(onTap: onTap),
       ),
     );

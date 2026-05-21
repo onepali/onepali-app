@@ -49,10 +49,6 @@ class _PHomeScreenState extends State<PHomeScreen> {
   }
 
   void _onChildSelected(String childUid) {
-    setState(() {
-      selectedChildUid = childUid;
-    });
-
     // Fetch metrics for selected child
     final parentUid = context.read<UserProvider>().userId;
     if (parentUid != null) {
@@ -72,6 +68,9 @@ class _PHomeScreenState extends State<PHomeScreen> {
               childUid: childUid,
             );
           });
+      setState(() {
+        selectedChildUid = childUid;
+      });
     }
   }
 
@@ -111,6 +110,7 @@ class _PHomeScreenState extends State<PHomeScreen> {
                       metricsStatus: metricsStatus,
                       isMobilePortrait: isMobilePortrait,
                       parentUid: parentUid,
+                      completedContents: metricsProvider.completedContents,
                     );
                   },
                 ),
