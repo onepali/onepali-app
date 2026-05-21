@@ -110,38 +110,65 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
         }
         return part;
       }).toList();
-      final isCompleted = updatedParts.every((part) => part.isFilled);
-      emit(state.copyWith(gunParts: updatedParts, isCompleted: isCompleted));
+
+      emit(state.copyWith(gunParts: updatedParts));
       emit(state.copyWith(status: GunFillStatus.audioPlaying));
-      await _audioPlayerService.playAsset(
-        Assets.starBlast,
-      ); // Play the star blust
       await _audioSub?.cancel();
       _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
         add(GunFillEvent.starBlustCompleted(part));
       });
+      try {
+        await _audioPlayerService.playAsset(
+          Assets.starBlast,
+        ); // Play the star blust
+      } catch (error, stackTrace) {
+        log(
+          'Failed to play gun fill star blast audio',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        add(GunFillEvent.starBlustCompleted(part));
+      }
     });
     on<_StarBlustCompleted>((event, emit) async {
+      await _audioSub?.cancel();
+      _audioSub = null;
       final part = event.part;
-      if (part.item?.audioItem != null) {
-        await _audioPlayerService.play(part.item!.audioItem!);
-        await _audioSub?.cancel();
+      final itemAudio = part.item?.audioItem;
+      if (itemAudio != null && itemAudio.isNotEmpty) {
         _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
           add(GunFillEvent.audioComplete());
         });
+        try {
+          await _audioPlayerService.play(itemAudio);
+        } catch (error, stackTrace) {
+          log(
+            'Failed to play gun fill item audio',
+            error: error,
+            stackTrace: stackTrace,
+          );
+          add(const GunFillEvent.audioComplete());
+        }
       } else {
-        emit(state.copyWith(status: GunFillStatus.ideal));
+        _emitAudioComplete(emit);
       }
     });
-    on<_AudioComplete>((event, emit) {
-      emit(state.copyWith(status: GunFillStatus.ideal));
+    on<_AudioComplete>((event, emit) async {
+      await _audioSub?.cancel();
+      _audioSub = null;
+      _emitAudioComplete(emit);
     });
   }
   @override
   Future<void> close() async {
     await _audioSub?.cancel();
-    _audioPlayerService.dispose();
-    super.close();
+    await _audioPlayerService.dispose();
+    await super.close();
+  }
+
+  void _emitAudioComplete(Emitter<GunFillState> emit) {
+    final isCompleted = state.gunParts.every((part) => part.isFilled);
+    emit(state.copyWith(status: GunFillStatus.ideal, isCompleted: isCompleted));
   }
 
   Item? _findItemByPartId(List<Item> items, String partId) {
@@ -169,12 +196,14 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
 
     try {
       emit(state.copyWith(status: GunFillStatus.instructionPlaying));
-      await _audioPlayerService.play(content.audio!);
       await _audioSub?.cancel();
       _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
         add(const GunFillEvent.instructionComplete());
       });
+      await _audioPlayerService.play(content.audio!);
     } catch (error, stackTrace) {
+      await _audioSub?.cancel();
+      _audioSub = null;
       log(
         'Failed to play gun fill instruction audio',
         error: error,
