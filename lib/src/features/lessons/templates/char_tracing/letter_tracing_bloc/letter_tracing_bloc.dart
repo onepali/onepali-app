@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
 import 'package:onepali/src/features/lessons/services/nepali_letter_service.dart';
@@ -12,6 +14,7 @@ part 'letter_tracing_state.dart';
 part 'letter_tracing_bloc.freezed.dart';
 
 class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
+  final AudioPlayerService audioPlayerService = AudioPlayerServiceImpl();
   LetterTracingBloc() : super(_LetterTracingState()) {
     on<_Started>(_onStarted);
     on<_OnPanStart>(_onPanStart);
@@ -22,19 +25,20 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
 
   void _onStarted(_Started event, Emitter<LetterTracingState> emit) async {
     Path? outlinePath;
+    final isMobile = event.isMobile;
     final content = event.content;
     final char = content.nameNp;
     final letters = await LetterService.loadLetters();
     final letter = letters.firstWhere((letter) => letter.letter == char);
-    final size = letter.getSize(isMobile: event.isMobile);
-    final strokes = letter.strokesFor(isMobile: event.isMobile);
+    final size = letter.getSize(isMobile: isMobile);
+    final strokes = letter.strokesFor(isMobile: isMobile);
     final letterPaths = strokes
         .map((stroke) => parseSvgPathData(stroke.path))
         .toList();
     final pathsPoints = letterPaths
         .map((path) => getPointsFromPath(path))
         .toList();
-    final selectedOutlinePath = letter.outlinePathFor(isMobile: event.isMobile);
+    final selectedOutlinePath = letter.outlinePathFor(isMobile: isMobile);
     if (selectedOutlinePath != null) {
       outlinePath = parseSvgPathData(selectedOutlinePath);
     }
@@ -175,10 +179,10 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
 
       // Check if all strokes are completed
       final isLetterComplete = nextIndex >= state.numberOfStrokes;
-
       if (isLetterComplete) {
         final repetitions = state.repetitions + 1;
         final hasCompletedPractice = repetitions >= 3;
+        audioPlayerService.playAsset(Assets.starBlast);
 
         emit(
           state.copyWith(
@@ -187,8 +191,8 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
             completedPaths: hasCompletedPractice ? completedPaths : [],
             currentStrokeProgress: 0.0,
             feedbackMessage: hasCompletedPractice
-                ? 'Perfect! ⭐'
-                : 'Great job! 👍',
+                ? 'Great job! 👍'
+                : "Great job! Let's do it again.",
             showPointer: !hasCompletedPractice,
             pointerPosition:
                 !hasCompletedPractice && state.pathsPoints.isNotEmpty
@@ -357,6 +361,12 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
       }
     }
     return points;
+  }
+
+  @override
+  Future<void> close() async {
+    await audioPlayerService.dispose();
+    await super.close();
   }
 }
 

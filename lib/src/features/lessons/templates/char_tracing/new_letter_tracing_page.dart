@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/bottom_right_cat.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/templates/char_tracing/letter_tracing_bloc/letter_tracing_bloc.dart';
@@ -93,6 +95,14 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                       },
                     ),
                     if (state.repetitions >= 3)
+                      CenterLeftAlignedBackButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.previousContent(),
+                          );
+                        },
+                      ),
+                    if (state.repetitions >= 3)
                       CenterRightAlignedForwardButton(
                         onTap: () {
                           context.read<LessonBloc>().add(
@@ -101,17 +111,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                         },
                       ),
 
-                    if (state.repetitions >= 3)
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Animate(
-                          effects: [ScaleEffect(), ShakeEffect()],
-                          child: Image.asset(
-                            Assets.goodRemark1,
-                            height: size.height * 0.4,
-                          ),
-                        ),
-                      ),
+                    if (state.repetitions >= 3) const BottomRightCat(),
                   ],
                 ),
               ),
@@ -176,6 +176,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                       showGuideDots: state.showGuideDots,
                       showStrokeDirection: state.showStrokeDirection,
                       strokeBoundingBoxes: state.strokeBoundingBoxes,
+                      isMobile: PlatformUtility.isMobile(context),
                     ),
                   );
                 },
