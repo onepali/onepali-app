@@ -12,8 +12,14 @@ class NepaliLetter {
   /// SVG viewBox in format "minX minY width height" (e.g., "0 0 78 86")
   final String viewBox;
 
+  /// Optional mobile-specific SVG viewBox.
+  final String? viewBoxMobile;
+
   /// List of strokes that make up this letter
   final List<LetterStroke> strokes;
+
+  /// Optional mobile-specific strokes.
+  final List<LetterStroke>? mobileStrokes;
 
   /// Optional category (e.g., "consonant", "vowel", "number")
   final String? category;
@@ -23,39 +29,67 @@ class NepaliLetter {
 
   /// Optional tags for filtering (e.g., ["beginner", "common"])
   final List<String>? tags;
-  String? outlinePath;
+  final String? outlinePath;
+  final String? outlinePathMobile;
+
   NepaliLetter({
     required this.letter,
     required this.name,
     required this.viewBox,
     required this.strokes,
+    this.viewBoxMobile,
+    this.mobileStrokes,
     this.category,
     this.difficulty,
     this.tags,
     this.outlinePath,
+    this.outlinePathMobile,
   });
 
   /// Create from JSON
   factory NepaliLetter.fromJson(Map<String, dynamic> json) {
-    final strokes = json['strokes'] as List;
-    strokes.sort((a, b) => (a['order'] as int).compareTo(b['order'] as int));
+    final rawStrokes = json['strokes'];
+    late final List<LetterStroke> strokes;
+    List<LetterStroke>? mobileStrokes;
+
+    if (rawStrokes is Map<String, dynamic>) {
+      strokes = _parseStrokes(rawStrokes['tb'] as List? ?? const []);
+      final parsedMobileStrokes = _parseStrokes(
+        rawStrokes['mb'] as List? ?? const [],
+      );
+      mobileStrokes = parsedMobileStrokes.isEmpty ? null : parsedMobileStrokes;
+    } else {
+      strokes = _parseStrokes(rawStrokes as List? ?? const []);
+    }
+
     return NepaliLetter(
       letter: json['letter'] as String,
       name: json['name'] as String,
       viewBox: json['viewBox'] as String,
-      // strokes: (json['strokes'] as List)
-      //     .map(
-      //       (stroke) => LetterStroke.fromJson(stroke as Map<String, dynamic>),
-      //     )
-      //     .toList(),
-      strokes: strokes.map((stroke) => LetterStroke.fromJson(stroke)).toList(),
+      viewBoxMobile: json['viewBoxMobile'] as String?,
+      strokes: strokes,
+      mobileStrokes: mobileStrokes,
       category: json['category'] as String?,
       difficulty: json['difficulty'] as int?,
       tags: json['tags'] != null
           ? List<String>.from(json['tags'] as List)
           : null,
-      outlinePath: json['outlinePath'] as String?,
+      outlinePath: (json['outlinePathTb'] ?? json['outlinePath']) as String?,
+      outlinePathMobile: json['outlinePathMb'] as String?,
     );
+  }
+
+  static List<LetterStroke> _parseStrokes(List<dynamic> rawStrokes) {
+    final sortedStrokes = List<dynamic>.from(rawStrokes)
+      ..sort((a, b) {
+        final aOrder = (a as Map<String, dynamic>)['order'] as int? ?? 0;
+        final bOrder = (b as Map<String, dynamic>)['order'] as int? ?? 0;
+        return aOrder.compareTo(bOrder);
+      });
+
+    return sortedStrokes
+        .map((stroke) => LetterStroke.fromJson(stroke as Map<String, dynamic>))
+        .toList();
   }
 
   /// Convert to JSON
@@ -64,18 +98,27 @@ class NepaliLetter {
       'letter': letter,
       'name': name,
       'viewBox': viewBox,
-      'strokes': strokes.map((stroke) => stroke.toJson()).toList(),
+      if (viewBoxMobile != null) 'viewBoxMobile': viewBoxMobile,
+      'strokes': mobileStrokes == null
+          ? strokes.map((stroke) => stroke.toJson()).toList()
+          : {
+              'tb': strokes.map((stroke) => stroke.toJson()).toList(),
+              'mb': mobileStrokes!.map((stroke) => stroke.toJson()).toList(),
+            },
       if (category != null) 'category': category,
       if (difficulty != null) 'difficulty': difficulty,
       if (tags != null) 'tags': tags,
+      if (outlinePath != null) 'outlinePath': outlinePath,
+      if (outlinePathMobile != null) 'outlinePathMb': outlinePathMobile,
     };
   }
 
   /// Parse viewBox to get width and height
-  Size getSize() {
-    final parts = viewBox.split(' ');
+  Size getSize({bool isMobile = false}) {
+    final selectedViewBox = isMobile ? viewBoxMobile ?? viewBox : viewBox;
+    final parts = selectedViewBox.split(' ');
     if (parts.length != 4) {
-      throw FormatException('Invalid viewBox format: $viewBox');
+      throw FormatException('Invalid viewBox format: $selectedViewBox');
     }
     return Size(double.parse(parts[2]), double.parse(parts[3]));
   }
@@ -97,6 +140,14 @@ class NepaliLetter {
 
   /// Get total number of strokes
   int get strokeCount => strokes.length;
+
+  List<LetterStroke> strokesFor({required bool isMobile}) {
+    return isMobile ? mobileStrokes ?? strokes : strokes;
+  }
+
+  String? outlinePathFor({required bool isMobile}) {
+    return isMobile ? outlinePathMobile ?? outlinePath : outlinePath;
+  }
 
   /// Check if this letter is valid
   bool isValid() {
@@ -125,19 +176,27 @@ class NepaliLetter {
     String? letter,
     String? name,
     String? viewBox,
+    String? viewBoxMobile,
     List<LetterStroke>? strokes,
+    List<LetterStroke>? mobileStrokes,
     String? category,
     int? difficulty,
     List<String>? tags,
+    String? outlinePath,
+    String? outlinePathMobile,
   }) {
     return NepaliLetter(
       letter: letter ?? this.letter,
       name: name ?? this.name,
       viewBox: viewBox ?? this.viewBox,
+      viewBoxMobile: viewBoxMobile ?? this.viewBoxMobile,
       strokes: strokes ?? this.strokes,
+      mobileStrokes: mobileStrokes ?? this.mobileStrokes,
       category: category ?? this.category,
       difficulty: difficulty ?? this.difficulty,
       tags: tags ?? this.tags,
+      outlinePath: outlinePath ?? this.outlinePath,
+      outlinePathMobile: outlinePathMobile ?? this.outlinePathMobile,
     );
   }
 

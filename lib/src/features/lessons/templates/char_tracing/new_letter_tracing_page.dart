@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/templates/char_tracing/letter_tracing_bloc/letter_tracing_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -45,9 +48,11 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isMobile = PlatformUtility.isMobile(context);
     return BlocProvider(
       create: (context) =>
-          LetterTracingBloc()..add(LetterTracingEvent.started(widget.content)),
+          LetterTracingBloc()
+            ..add(LetterTracingEvent.started(widget.content, isMobile)),
       child: Scaffold(
         body: BlocConsumer<LetterTracingBloc, LetterTracingState>(
           listener: (context, state) {
@@ -66,30 +71,47 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
               width: size.width,
               height: size.height,
               child: SafeArea(
-                child: Column(
+                bottom: false,
+                right: false,
+                child: Stack(
                   children: [
-                    // Header with progress
-                    _buildHeader(context, state, size),
-                    const Spacer(),
-                    // Main tracing area
-                    _buildTracingArea(context, state, size),
-                    const Spacer(),
-                    // Stroke indicators at bottom
-                    _buildStrokeIndicators(state),
-
-                    SizedBox(height: size.height * 0.05),
-
-                    // Reset button
-                    if (state.isLetterComplete)
-                      Visibility(
-                        visible: true,
-                        maintainState: true,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        child: _buildResetButton(context),
+                    Column(
+                      children: [
+                        // Header with progress
+                        const Spacer(),
+                        // Main tracing area
+                        Center(child: _buildTracingArea(context, state)),
+                        SizedBox(height: size.height * 0.02),
+                        // Number of completed repetitions at bottom
+                        _buildStrokeIndicators(state),
+                        const Spacer(),
+                      ],
+                    ),
+                    TopRightPositionedCloseButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    if (state.repetitions >= 3)
+                      CenterRightAlignedForwardButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
                       ),
 
-                    SizedBox(height: size.height * 0.03),
+                    if (state.repetitions >= 3)
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Animate(
+                          effects: [ScaleEffect(), ShakeEffect()],
+                          child: Image.asset(
+                            Assets.goodRemark1,
+                            height: size.height * 0.4,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -100,32 +122,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
     );
   }
 
-  Widget _buildHeader(
-    BuildContext context,
-    LetterTracingState state,
-    Size size,
-  ) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: SvgHelper.fromSource(path: Assets.wrong),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTracingArea(
-    BuildContext context,
-    LetterTracingState state,
-    Size size,
-  ) {
+  Widget _buildTracingArea(BuildContext context, LetterTracingState state) {
     return Center(
       child: GestureDetector(
         onPanStart: (details) {
@@ -193,44 +190,30 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
   Widget _buildStrokeIndicators(LetterTracingState state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(state.numberOfStrokes, (index) {
-        final isComplete = index < state.currentStrokeIndex;
-        final isCurrent = index == state.currentStrokeIndex;
+      children: List.generate(3, (index) {
+        final isComplete = index < state.repetitions;
+        // final isCurrent = index == state.currentStrokeIndex;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: isCurrent ? 50 : 40,
-            height: isCurrent ? 50 : 40,
+        return Animate(
+          effects: [ScaleEffect()],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 50,
+              height: 50,
 
-            child: Center(
-              child: Icon(
-                isComplete ? Icons.star : Icons.star_outline,
-                color: AppColors.kOrange,
-                size: 32,
+              child: Center(
+                child: Icon(
+                  isComplete ? Icons.star : Icons.star_outline,
+                  color: AppColors.kOrange,
+                  size: 32,
+                ),
               ),
             ),
           ),
         );
       }),
-    );
-  }
-
-  Widget _buildResetButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        // context.read<LetterTracingBloc>().add(const LetterTracingEvent.reset());
-        context.read<LessonBloc>().add(const LessonEvent.nextContent());
-      },
-      icon: const Icon(Icons.arrow_forward),
-      label: const Text('Next'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-      ),
     );
   }
 }
