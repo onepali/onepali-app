@@ -13,43 +13,42 @@ class AboutUsScreen extends StatelessWidget {
         isMobile && PlatformUtility.isPortrait(context);
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
-    final double containerPadding =
-        isMobile ? (isMobilePortrait ? 16.0 : 32.0) : 40.0;
+    final double containerPadding = isMobile
+        ? (isMobilePortrait ? 16.0 : 32.0)
+        : 40.0;
 
-    final TextStyle noDataStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxRegular.copyWith(
+    final TextStyle noDataStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxRegular.copyWith(
                   color: Colors.grey,
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text20PxRegular.copyWith(
+              : AppStyles.text20PxRegular.copyWith(
                   color: Colors.grey,
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text24PxRegular.copyWith(
-              color: Colors.grey,
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text24PxRegular.copyWith(
+            color: Colors.grey,
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle infoStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxRegular.copyWith(
+    final TextStyle infoStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxRegular.copyWith(
                   height: 1.6,
                   color: AppColors.kDrawerBgColor,
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text20PxRegular.copyWith(
+              : AppStyles.text20PxRegular.copyWith(
                   height: 1.6,
                   color: AppColors.kDrawerBgColor,
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text22PxRegular.copyWith(
-              height: 1.7,
-              color: AppColors.kDrawerBgColor,
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text22PxRegular.copyWith(
+            height: 1.7,
+            color: AppColors.kDrawerBgColor,
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
     if (aboutData == null) {
       return Center(

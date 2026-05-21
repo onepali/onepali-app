@@ -148,17 +148,16 @@ class _CustomAvatarGlowState extends State<CustomAvatarGlow>
 
     return RepaintBoundary(
       child: CustomPaint(
-        painter:
-            _painter
-              ..curve = widget.curve
-              ..opacityTween = _opacityTween
-              ..glowCount = widget.glowCount
-              ..glowDecoration = BoxDecoration(
-                color: widget.glowColor,
-                shape: widget.glowShape,
-                borderRadius: widget.glowBorderRadius,
-              )
-              ..glowRadiusFactor = widget.glowRadiusFactor,
+        painter: _painter
+          ..curve = widget.curve
+          ..opacityTween = _opacityTween
+          ..glowCount = widget.glowCount
+          ..glowDecoration = BoxDecoration(
+            color: widget.glowColor,
+            shape: widget.glowShape,
+            borderRadius: widget.glowBorderRadius,
+          )
+          ..glowRadiusFactor = widget.glowRadiusFactor,
         child: widget.child,
       ),
     );
@@ -231,10 +230,9 @@ class _GlowPainter extends ChangeNotifier implements CustomPainter {
     final glowColor = glowDecoration.color!;
     final opacity = opacityTween.evaluate(progress);
 
-    final paint =
-        Paint()
-          ..color = glowColor.withValues(alpha: opacity)
-          ..style = PaintingStyle.fill;
+    final paint = Paint()
+      ..color = glowColor.withValues(alpha: opacity)
+      ..style = PaintingStyle.fill;
 
     final glowSize = math.min(size.width, size.height);
     final glowRadius = glowSize / 2;

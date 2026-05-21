@@ -34,10 +34,9 @@ class ButtonTapContentState extends State<ButtonTapContent> {
       await MetricsTrackingHelper.trackStoryAnswer(
         context: context,
         isCorrect: correct,
-        storyTitle:
-            storyProvider.currentStory!.nameNp.isNotEmpty
-                ? storyProvider.currentStory!.nameNp
-                : storyProvider.currentStory!.nameEn,
+        storyTitle: storyProvider.currentStory!.nameNp.isNotEmpty
+            ? storyProvider.currentStory!.nameNp
+            : storyProvider.currentStory!.nameEn,
       );
     }
 
@@ -65,7 +64,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             decoration: const BoxDecoration(
               color: AppColors.kWhite,
               borderRadius: BorderRadius.only(
@@ -73,88 +72,89 @@ class ButtonTapContentState extends State<ButtonTapContent> {
                 topRight: Radius.circular(16),
               ),
             ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                spacing: 120,
-                children: List.generate(options.length, (i) {
-                  final opt = options[i];
-                  final correct = opt.correct == true;
-                  final isSelected = selectedIdx == i;
-                  Color bgColor = AppColors.kButtonGrey;
-                  String label = opt.messageEn;
-                  dynamic icon;
-                  String iconType = '';
-                  Color textColor =
-                      isSelected ? AppColors.kWhite : AppColors.kBlack;
-                  TextStyle? textStyle = AppStyles.text16PxBold.copyWith(
-                    color: textColor,
-                    fontSize:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 32
-                            : 16,
-                  );
-                  if (isSelected) {
-                    if (isCorrect == true && correct) {
-                      bgColor = AppColors.kButtonGreen;
-                      icon = Assets.correct;
-                      iconType = 'svg';
-                      label = '';
-                      textColor = AppColors.kWhite;
-                      textStyle = AppStyles.text16PxBold.copyWith(
-                        color: AppColors.kWhite,
-                        fontSize:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 28
-                                : 16,
-                      );
-                    } else if (isCorrect == false && !correct) {
-                      bgColor = AppColors.kButtonRed;
-                      label = 'Try Again';
-                      textColor = AppColors.kDrawerBgColor;
-                      textStyle = AppStyles.text16PxBold.copyWith(
-                        color: AppColors.kDrawerBgColor,
-                        fontSize:
-                            PlatformUtility.isTablet(context) &&
-                                    PlatformUtility.isLandscape(context)
-                                ? 28
-                                : 16,
-                      );
-                    }
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 120,
+              children: List.generate(options.length, (i) {
+                final opt = options[i];
+                final correct = opt.correct == true;
+                final isSelected = selectedIdx == i;
+                Color bgColor = AppColors.kButtonGrey;
+                String label = opt.messageEn;
+                dynamic icon;
+                String iconType = '';
+                Color textColor = isSelected
+                    ? AppColors.kWhite
+                    : AppColors.kBlack;
+                TextStyle? textStyle = AppStyles.text16PxBold.copyWith(
+                  color: textColor,
+                  fontSize:
+                      PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? 32
+                      : 16,
+                );
+                if (isSelected) {
+                  if (isCorrect == true && correct) {
+                    bgColor = AppColors.kButtonGreen;
+                    icon = Assets.correct;
+                    iconType = 'svg';
+                    label = '';
+                    textColor = AppColors.kWhite;
+                    textStyle = AppStyles.text16PxBold.copyWith(
+                      color: AppColors.kWhite,
+                      fontSize:
+                          PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context)
+                          ? 28
+                          : 16,
+                    );
+                  } else if (isCorrect == false && !correct) {
+                    bgColor = AppColors.kButtonRed;
+                    label = 'Try Again';
+                    textColor = AppColors.kDrawerBgColor;
+                    textStyle = AppStyles.text16PxBold.copyWith(
+                      color: AppColors.kDrawerBgColor,
+                      fontSize:
+                          PlatformUtility.isTablet(context) &&
+                              PlatformUtility.isLandscape(context)
+                          ? 28
+                          : 16,
+                    );
                   }
-                  return CustomMaterialButton(
-                    backgroundColor: bgColor,
-                    showBorder: true,
-                    elevation: 0,
-                    radius: 60,
-                    height:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 60
-                            : 48,
-                    textStyle: textStyle,
-                    width:
-                        PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 220
-                            : 120,
-                    onTap: () {
-                      if (isCorrect == true && correct) {
-                        return;
-                      }
-                      _handleTap(i, storyProvider);
-                    },
-                    label: label,
-                    iconType: iconType,
-                    icon: icon,
-                    fillButton: isSelected,
-                  );
-                }),
-              ),
+                }
+                return CustomMaterialButton(
+                  backgroundColor: bgColor,
+                  showBorder: true,
+                  elevation: 0,
+                  radius: 60,
+                  height:
+                      PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? 60
+                      : 48,
+                  textStyle: textStyle,
+                  width:
+                      PlatformUtility.isTablet(context) &&
+                          PlatformUtility.isLandscape(context)
+                      ? 220
+                      : 120,
+                  onTap: () {
+                    if (isCorrect == true && correct) {
+                      return;
+                    }
+                    _handleTap(i, storyProvider);
+                  },
+                  label: label,
+                  iconType: iconType,
+                  icon: icon,
+                  fillButton: isSelected,
+                );
+              }),
             ),
+          ),
         ),
         // Top center sound icon
         Positioned(

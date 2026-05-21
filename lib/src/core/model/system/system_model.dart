@@ -37,8 +37,11 @@ class AboutModel {
 
   AboutModel({required this.info, this.title, this.tip});
 
-  factory AboutModel.fromJson(Map<String, dynamic> json) =>
-      AboutModel(info: json["info"] ?? '', title: json["title"], tip: json["tip"]);
+  factory AboutModel.fromJson(Map<String, dynamic> json) => AboutModel(
+    info: json["info"] ?? '',
+    title: json["title"],
+    tip: json["tip"],
+  );
 
   Map<String, dynamic> toJson() => {
     "info": info,

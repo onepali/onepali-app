@@ -41,91 +41,93 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           color: AppColors.kWhite,
           child: SafeArea(
             child: Padding(
-            padding: EdgeInsets.all(containerPadding),
-            child: Column(
-              children: [
-                Gaps.verticalGapOf(topSpacing),
-                Container(
-                  height: logoContainerSize,
-                  width: logoContainerSize,
-                  padding: EdgeInsets.all(isTabletPortrait ? 40.0 : 30.0),
-                  // decoration: BoxDecoration(
-                  //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
-                  //   shape: BoxShape.circle,
-                  // ),
-                  child: SvgHelper.fromSource(
-                    path: Assets.leoSvg,
-                    width: logoSize,
-                    height: logoSize,
+              padding: EdgeInsets.all(containerPadding),
+              child: Column(
+                children: [
+                  Gaps.verticalGapOf(topSpacing),
+                  Container(
+                    height: logoContainerSize,
+                    width: logoContainerSize,
+                    padding: EdgeInsets.all(isTabletPortrait ? 40.0 : 30.0),
+                    // decoration: BoxDecoration(
+                    //   color: AppColors.kPrimaryColor.withValues(alpha: 0.1),
+                    //   shape: BoxShape.circle,
+                    // ),
+                    child: SvgHelper.fromSource(
+                      path: Assets.leoSvg,
+                      width: logoSize,
+                      height: logoSize,
+                    ),
                   ),
-                ),
-                SvgHelper.fromSource(
-                  path: Assets.logoSvg,
-                  width: brandLogoWidth,
-                  height: brandLogoHeight,
-                  color: AppColors.kBlack,
-                ),
-                Gaps.verticalGapOf(taglineGap),
-                Text(
-                  context.tr('tagline'),
-                  style: taglineStyle.copyWith(color: AppColors.kPrimaryColor),
-                  textAlign: TextAlign.center,
-                ),
-                const Spacer(),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomMaterialButton(
-                      label: context.tr('login'),
-                      onTap: () {
-                        Utility.navigate(context, AppRoutes.loginScreen);
-                      },
-                      elevation: 0,
-                      height: buttonHeight,
-                      width: double.infinity,
-                      textStyle: buttonTextStyle,
-                      showBorder: false,
-                      backgroundColor: AppColors.kButtonGreen,
-                      radius: buttonRadius,
+                  SvgHelper.fromSource(
+                    path: Assets.logoSvg,
+                    width: brandLogoWidth,
+                    height: brandLogoHeight,
+                    color: AppColors.kBlack,
+                  ),
+                  Gaps.verticalGapOf(taglineGap),
+                  Text(
+                    context.tr('tagline'),
+                    style: taglineStyle.copyWith(
+                      color: AppColors.kPrimaryColor,
                     ),
-                    Gaps.verticalGapOf(buttonGap),
-                    CustomMaterialButton(
-                      label: context.tr('create_account'),
-                      onTap: () {
-                        Utility.navigate(context, AppRoutes.registerScreen);
-                      },
-                      elevation: 0,
-                      height: buttonHeight,
-                      width: double.infinity,
-                      showBorder: false,
-                      textStyle: buttonTextStyle,
-                      backgroundColor: AppColors.kButtonGrey,
-                      radius: buttonRadius,
-                    ),
-                    Gaps.verticalGapOf(buttonGap),
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacer(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CustomMaterialButton(
+                        label: context.tr('login'),
+                        onTap: () {
+                          Utility.navigate(context, AppRoutes.loginScreen);
+                        },
+                        elevation: 0,
+                        height: buttonHeight,
+                        width: double.infinity,
+                        textStyle: buttonTextStyle,
+                        showBorder: false,
+                        backgroundColor: AppColors.kButtonGreen,
+                        radius: buttonRadius,
+                      ),
+                      Gaps.verticalGapOf(buttonGap),
+                      CustomMaterialButton(
+                        label: context.tr('create_account'),
+                        onTap: () {
+                          Utility.navigate(context, AppRoutes.registerScreen);
+                        },
+                        elevation: 0,
+                        height: buttonHeight,
+                        width: double.infinity,
+                        showBorder: false,
+                        textStyle: buttonTextStyle,
+                        backgroundColor: AppColors.kButtonGrey,
+                        radius: buttonRadius,
+                      ),
+                      Gaps.verticalGapOf(buttonGap),
 
-                    CustomMaterialButton(
-                      label: context.tr('try_lesson_guest'),
-                      onTap: () {
-                        UserAppBar.setTabIndex(0);
-                        Utility.navigate(
-                          context,
-                          AppRoutes.guestDashboardScreen,
-                        );
-                      },
-                      elevation: 0,
-                      height: buttonHeight,
-                      width: double.infinity,
-                      textStyle: buttonTextStyle,
-                      showBorder: false,
-                      backgroundColor: AppColors.kButtonGrey,
-                      radius: buttonRadius,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      CustomMaterialButton(
+                        label: context.tr('try_lesson_guest'),
+                        onTap: () {
+                          UserAppBar.setTabIndex(0);
+                          Utility.navigate(
+                            context,
+                            AppRoutes.guestDashboardScreen,
+                          );
+                        },
+                        elevation: 0,
+                        height: buttonHeight,
+                        width: double.infinity,
+                        textStyle: buttonTextStyle,
+                        showBorder: false,
+                        backgroundColor: AppColors.kButtonGrey,
+                        radius: buttonRadius,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

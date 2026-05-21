@@ -171,31 +171,36 @@ class Utility {
       // IMPORTANT: This function never throws errors - sign-in will always complete successfully
       // even if user clicks "Don't allow" or any error occurs
       final fcmSettings = await FirebaseMessaging.instance.requestPermission();
-      
+
       // If user clicked "Don't allow", skip token saving gracefully - no errors thrown
       // Sign-in will continue normally - this is completely optional
       if (fcmSettings.authorizationStatus == AuthorizationStatus.denied) {
-        logger.d('User declined notification permissions. Skipping FCM token save. Sign-in will continue normally.');
+        logger.d(
+          'User declined notification permissions. Skipping FCM token save. Sign-in will continue normally.',
+        );
         // Setup listener in case user enables notifications later in settings
         _setupTokenRefreshListener(userId);
         return; // Return early - sign-in continues successfully
       }
-      
+
       // If permissions are not determined or provisional, wait a bit and try again
-      if (fcmSettings.authorizationStatus == AuthorizationStatus.notDetermined ||
+      if (fcmSettings.authorizationStatus ==
+              AuthorizationStatus.notDetermined ||
           fcmSettings.authorizationStatus == AuthorizationStatus.provisional) {
-        logger.d('Notification permissions not fully determined. Will retry when available.');
+        logger.d(
+          'Notification permissions not fully determined. Will retry when available.',
+        );
         _setupTokenRefreshListener(userId);
         return;
       }
-      
+
       // Permissions granted - proceed to get FCM token
       // On iOS, wait for APNS token to be available before getting FCM token
       if (Platform.isIOS) {
         String? apnsToken;
         int retries = 3;
         int delayMs = 500;
-        
+
         // Wait for APNS token to be set
         for (int i = 0; i < retries; i++) {
           try {
@@ -205,22 +210,26 @@ class Utility {
               break;
             }
           } catch (e) {
-            logger.d('APNS token not available yet (attempt ${i + 1}/$retries): $e');
+            logger.d(
+              'APNS token not available yet (attempt ${i + 1}/$retries): $e',
+            );
           }
-          
+
           if (apnsToken == null && i < retries - 1) {
             // Wait before retrying (exponential backoff)
             await Future.delayed(Duration(milliseconds: delayMs * (i + 1)));
           }
         }
-        
+
         if (apnsToken == null) {
-          logger.d('APNS token not available yet. FCM token will be saved when APNS token is ready via onTokenRefresh.');
+          logger.d(
+            'APNS token not available yet. FCM token will be saved when APNS token is ready via onTokenRefresh.',
+          );
           _setupTokenRefreshListener(userId);
           return;
         }
       }
-      
+
       // Now get the FCM token (permissions granted and APNS token available on iOS)
       String? fcmToken;
       try {
@@ -228,19 +237,24 @@ class Utility {
       } catch (e) {
         final errorMessage = e.toString().toLowerCase();
         // Check for the specific APNS token error format
-        if (errorMessage.contains('apns-token-not-set') || 
-            (errorMessage.contains('apns') && errorMessage.contains('not set'))) {
-          logger.d('FCM token error (APNS not set): $e. Token will be saved when available via onTokenRefresh.');
+        if (errorMessage.contains('apns-token-not-set') ||
+            (errorMessage.contains('apns') &&
+                errorMessage.contains('not set'))) {
+          logger.d(
+            'FCM token error (APNS not set): $e. Token will be saved when available via onTokenRefresh.',
+          );
           _setupTokenRefreshListener(userId);
           return;
         } else {
           // Different error, log and return gracefully - no errors thrown
-          logger.d('Error getting FCM token: $e. This is optional - app will continue without push notifications.');
+          logger.d(
+            'Error getting FCM token: $e. This is optional - app will continue without push notifications.',
+          );
           _setupTokenRefreshListener(userId);
           return;
         }
       }
-      
+
       if (fcmToken != null) {
         await FirebaseFirestore.instance
             .collection(AppConstants.usersCollection)
@@ -248,17 +262,19 @@ class Utility {
             .set({'fcmToken': fcmToken}, SetOptions(merge: true));
         logger.d('FCM token saved to Firestore for user: $userId');
       }
-      
+
       // Setup token refresh listener for future updates
       _setupTokenRefreshListener(userId);
     } catch (e) {
       // Completely optional - don't throw errors, just log
       // User can decline notifications and app will work fine
-      logger.d('Error saving FCM token to Firestore (optional): $e. App will continue without push notifications.');
+      logger.d(
+        'Error saving FCM token to Firestore (optional): $e. App will continue without push notifications.',
+      );
       _setupTokenRefreshListener(userId);
     }
   }
-  
+
   // Helper method to setup token refresh listener
   static void _setupTokenRefreshListener(String userId) {
     // Listen for token refresh - this will catch the token when APNS is ready
@@ -268,7 +284,9 @@ class Utility {
             .collection(AppConstants.usersCollection)
             .doc(userId)
             .set({'fcmToken': newToken}, SetOptions(merge: true));
-        logger.d('FCM token refreshed and saved to Firestore for user: $userId');
+        logger.d(
+          'FCM token refreshed and saved to Firestore for user: $userId',
+        );
       } catch (e) {
         logger.e('Error saving refreshed FCM token: $e');
       }

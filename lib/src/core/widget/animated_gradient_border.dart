@@ -120,12 +120,11 @@ class _SolidColorBorderPainter extends CustomPainter {
     final segmentSweep = totalSweep / colors.length;
     double startAngle = -math.pi / 2;
     for (final color in colors) {
-      final paint =
-          Paint()
-            ..color = color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = borderWidth
-            ..strokeCap = StrokeCap.butt;
+      final paint = Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = borderWidth
+        ..strokeCap = StrokeCap.butt;
       final sweep = segmentSweep;
       if (progress > 0) {
         canvas.drawArc(

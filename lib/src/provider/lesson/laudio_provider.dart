@@ -128,8 +128,8 @@ class LessonAudioProvider extends ChangeNotifier {
       final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
       if (childId.isNotEmpty) {
         if (!context.mounted) return;
-        final recommendedLessonProvider =
-            context.read<RecommendedLessonProvider>();
+        final recommendedLessonProvider = context
+            .read<RecommendedLessonProvider>();
         await recommendedLessonProvider.saveOrUpdateLessonProgress(
           childId: childId,
           lessonId: lesson.id.toString(),
@@ -164,8 +164,8 @@ class LessonAudioProvider extends ChangeNotifier {
       final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
       if (!context.mounted) return;
       if (childId.isNotEmpty) {
-        final recommendedLessonProvider =
-            context.read<RecommendedLessonProvider>();
+        final recommendedLessonProvider = context
+            .read<RecommendedLessonProvider>();
         await recommendedLessonProvider.saveOrUpdateLessonProgress(
           childId: childId,
           lessonId: lesson.id.toString(),

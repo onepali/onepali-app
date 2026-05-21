@@ -54,18 +54,17 @@ class PlanScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              bottomNavigationBar:
-                  ((plan?.id ?? 'free') == 'free'
-                      ? Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: CustomMaterialButton(
-                          label: 'Upgrade and save 5,99 a month',
-                          onTap: () {},
-                          backgroundColor: AppColors.kButtonGreen,
-                          elevation: 0,
-                        ),
-                      )
-                      : null),
+              bottomNavigationBar: ((plan?.id ?? 'free') == 'free'
+                  ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: CustomMaterialButton(
+                        label: 'Upgrade and save 5,99 a month',
+                        onTap: () {},
+                        backgroundColor: AppColors.kButtonGreen,
+                        elevation: 0,
+                      ),
+                    )
+                  : null),
             );
           },
         );

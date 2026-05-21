@@ -31,8 +31,9 @@ class _PreviewCardState extends State<PreviewCard> {
         isMobile && PlatformUtility.isPortrait(context);
 
     // Responsive sizing and styling
-    final double horizontalPadding =
-        isTabletPortrait ? 32 : (isMobilePortrait ? 20 : 80);
+    final double horizontalPadding = isTabletPortrait
+        ? 32
+        : (isMobilePortrait ? 20 : 80);
     final double verticalPadding = isTabletPortrait ? 24.0 : 12.0;
     final double titleGap = isTabletPortrait ? 12.0 : 8.0;
     final double subtitleGap = isTabletPortrait ? 24.0 : 18.0;
@@ -45,33 +46,29 @@ class _PreviewCardState extends State<PreviewCard> {
     final double buttonSpacing = isTabletPortrait ? 20.0 : 12.0;
     final double starSize = isTabletPortrait ? 44.0 : 36.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text28PxSemiBold.copyWith(color: AppColors.kBlack)
-            : AppStyles.text22PxSemiBold.copyWith(color: AppColors.kBlack);
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text28PxSemiBold.copyWith(color: AppColors.kBlack)
+        : AppStyles.text22PxSemiBold.copyWith(color: AppColors.kBlack);
 
-    final TextStyle subtitleStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular.copyWith(color: AppColors.kDarkGrey)
-            : AppStyles.text16PxRegular.copyWith(color: AppColors.kDarkGrey);
+    final TextStyle subtitleStyle = isTabletPortrait
+        ? AppStyles.text18PxRegular.copyWith(color: AppColors.kDarkGrey)
+        : AppStyles.text16PxRegular.copyWith(color: AppColors.kDarkGrey);
 
-    final TextStyle tapRateStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular.copyWith(color: AppColors.kDarkGrey)
-            : AppStyles.text14PxRegular.copyWith(color: AppColors.kDarkGrey);
+    final TextStyle tapRateStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular.copyWith(color: AppColors.kDarkGrey)
+        : AppStyles.text14PxRegular.copyWith(color: AppColors.kDarkGrey);
 
-    final TextStyle labelStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxMedium.copyWith(color: AppColors.kBlack)
-            : AppStyles.text14PxMedium.copyWith(color: AppColors.kBlack);
+    final TextStyle labelStyle = isTabletPortrait
+        ? AppStyles.text16PxMedium.copyWith(color: AppColors.kBlack)
+        : AppStyles.text14PxMedium.copyWith(color: AppColors.kBlack);
 
-    final TextStyle characterCountStyle =
-        isTabletPortrait
-            ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
-            : AppStyles.text12PxRegular.copyWith(color: AppColors.kGrey);
+    final TextStyle characterCountStyle = isTabletPortrait
+        ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
+        : AppStyles.text12PxRegular.copyWith(color: AppColors.kGrey);
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text18PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxMedium
+        : AppStyles.text16PxMedium;
 
     return Consumer<PzReviewProvider>(
       builder: (context, reviewProvider, child) {

@@ -63,30 +63,28 @@ class NotificationService {
   // Request permissions when user first accesses notification settings
   static Future<void> requestPermissions() async {
     // Request Android 13+ notification permission
-    final androidImplementation =
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >();
-    final androidPermission =
-        await androidImplementation?.requestNotificationsPermission();
+    final androidImplementation = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    final androidPermission = await androidImplementation
+        ?.requestNotificationsPermission();
     debugPrint(
       '[NotificationService] Android notification permission: $androidPermission',
     );
 
     // Request exact alarm permission (Android 12+)
-    final exactAlarmPermission =
-        await androidImplementation?.requestExactAlarmsPermission();
+    final exactAlarmPermission = await androidImplementation
+        ?.requestExactAlarmsPermission();
     debugPrint(
       '[NotificationService] Exact alarm permission: $exactAlarmPermission',
     );
 
     // Request iOS notification permissions
-    final iosImplementation =
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin
-            >();
+    final iosImplementation = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
     final iosPermission = await iosImplementation?.requestPermissions(
       alert: true,
       badge: true,
@@ -158,13 +156,12 @@ class NotificationService {
       time.hour,
       time.minute,
     );
-    final tz.TZDateTime tzScheduledDate =
-        scheduledDate.isBefore(DateTime.now())
-            ? tz.TZDateTime.from(
-              scheduledDate.add(const Duration(days: 1)),
-              tz.local,
-            )
-            : tz.TZDateTime.from(scheduledDate, tz.local);
+    final tz.TZDateTime tzScheduledDate = scheduledDate.isBefore(DateTime.now())
+        ? tz.TZDateTime.from(
+            scheduledDate.add(const Duration(days: 1)),
+            tz.local,
+          )
+        : tz.TZDateTime.from(scheduledDate, tz.local);
     debugPrint(
       '[NotificationService] Scheduling daily reminder for: '
       '${tzScheduledDate.toString()} (tz: \\${tz.local.name})',
@@ -207,8 +204,8 @@ class NotificationService {
 
   // Log pending notifications
   static Future<void> logPendingNotifications() async {
-    final pending =
-        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    final pending = await flutterLocalNotificationsPlugin
+        .pendingNotificationRequests();
     debugPrint('[NotificationService] Pending notifications:');
     for (final n in pending) {
       debugPrint(

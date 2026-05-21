@@ -15,8 +15,9 @@ class LessonScreen extends StatelessWidget {
     double listHeight;
     if (isTablet) {
       cardWidth = isLandscape ? AppCardResponsive.getCardWidth(context) : 300;
-      listHeight =
-          isLandscape ? AppCardResponsive.getLessonCardHeight(context) : 350;
+      listHeight = isLandscape
+          ? AppCardResponsive.getLessonCardHeight(context)
+          : 350;
       // Make list height smaller for tablets
       listHeight = listHeight * 0.8; // 20% smaller for tablets
     } else if (isMobile) {
@@ -74,15 +75,14 @@ class LessonScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder:
-                              (_) => LessonContentScreen(
-                                lesson: lesson,
-                                lessons: chapter.lessons,
-                                initialIndex: 0,
-                                hasSound: true,
-                                nameNp: chapter.nameNp,
-                                nameEn: chapter.nameEn,
-                              ),
+                          builder: (_) => LessonContentScreen(
+                            lesson: lesson,
+                            lessons: chapter.lessons,
+                            initialIndex: 0,
+                            hasSound: true,
+                            nameNp: chapter.nameNp,
+                            nameEn: chapter.nameEn,
+                          ),
                         ),
                       );
                     },

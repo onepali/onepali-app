@@ -114,12 +114,17 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               isMobilePortrait: isMobilePortrait,
               onTap: () async {
                 // Check if parent has verified passcode
-                final isParentLogged = await ParentLocalStorage.isParentLogged();
-                logger.d('👨‍👩‍👧‍👦 Family menu clicked - isParentLogged: $isParentLogged');
+                final isParentLogged =
+                    await ParentLocalStorage.isParentLogged();
+                logger.d(
+                  '👨‍👩‍👧‍👦 Family menu clicked - isParentLogged: $isParentLogged',
+                );
                 ChildLocalStorage.clear();
                 // Navigate immediately after async operations complete (no delay needed)
                 if (isMobile) {
-                  logger.d('📱 Navigating to DrawerScreen with isParent: $isParentLogged');
+                  logger.d(
+                    '📱 Navigating to DrawerScreen with isParent: $isParentLogged',
+                  );
                   Utility.navigateMaterialRoute(
                     context,
                     DrawerScreen(
@@ -130,7 +135,9 @@ class PZAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     routeName: AppRoutes.drawerRoutes,
                   );
                 } else {
-                  logger.d('📱 Navigating to TabDrawerScreen with isParent: $isParentLogged');
+                  logger.d(
+                    '📱 Navigating to TabDrawerScreen with isParent: $isParentLogged',
+                  );
                   Utility.navigateMaterialRoute(
                     context,
                     TabDrawerScreen(

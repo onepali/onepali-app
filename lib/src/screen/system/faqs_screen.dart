@@ -21,68 +21,70 @@ class _FaqsScreenState extends State<FaqsScreen> {
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
     final double bottomMargin = isMobile ? (isMobilePortrait ? 12 : 20) : 24;
-    final double tilePaddingHorizontal =
-        isMobile ? (isMobilePortrait ? 16 : 24) : 32;
-    final double tilePaddingVertical =
-        isMobile ? (isMobilePortrait ? 8 : 12) : 16;
-    final double childrenPaddingHorizontal =
-        isMobile ? (isMobilePortrait ? 16 : 24) : 32;
-    final double childrenPaddingBottom =
-        isMobile ? (isMobilePortrait ? 16 : 24) : 32;
+    final double tilePaddingHorizontal = isMobile
+        ? (isMobilePortrait ? 16 : 24)
+        : 32;
+    final double tilePaddingVertical = isMobile
+        ? (isMobilePortrait ? 8 : 12)
+        : 16;
+    final double childrenPaddingHorizontal = isMobile
+        ? (isMobilePortrait ? 16 : 24)
+        : 32;
+    final double childrenPaddingBottom = isMobile
+        ? (isMobilePortrait ? 16 : 24)
+        : 32;
     final double answerPadding = isMobile ? (isMobilePortrait ? 12 : 16) : 20;
-    final double answerBorderRadius =
-        isMobile ? (isMobilePortrait ? 8 : 12) : 16;
+    final double answerBorderRadius = isMobile
+        ? (isMobilePortrait ? 8 : 12)
+        : 16;
 
-    final TextStyle titleStyleExpanded =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxSemiBold.copyWith(
+    final TextStyle titleStyleExpanded = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxSemiBold.copyWith(
                   color: AppColors.kDrawerBgColor,
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text20PxSemiBold.copyWith(
+              : AppStyles.text20PxSemiBold.copyWith(
                   color: AppColors.kDrawerBgColor,
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text24PxSemiBold.copyWith(
-              color: AppColors.kDrawerBgColor,
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text24PxSemiBold.copyWith(
+            color: AppColors.kDrawerBgColor,
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle titleStyleCollapsed =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxMedium.copyWith(
+    final TextStyle titleStyleCollapsed = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxMedium.copyWith(
                   color: AppColors.kPitchBlack,
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text20PxMedium.copyWith(
+              : AppStyles.text20PxMedium.copyWith(
                   color: AppColors.kPitchBlack,
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text24PxMedium.copyWith(
-              color: AppColors.kPitchBlack,
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text24PxMedium.copyWith(
+            color: AppColors.kPitchBlack,
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle answerStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxRegular.copyWith(
+    final TextStyle answerStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxRegular.copyWith(
                   height: 1.5,
                   fontFamily: AppConstants.kDMSansFont,
                   color: AppColors.kDrawerBgColor,
                 )
-                : AppStyles.text18PxRegular.copyWith(
+              : AppStyles.text18PxRegular.copyWith(
                   height: 1.5,
                   fontFamily: AppConstants.kDMSansFont,
                   color: AppColors.kDrawerBgColor,
                 ))
-            : AppStyles.text20PxRegular.copyWith(
-              height: 1.6,
-              fontFamily: AppConstants.kDMSansFont,
-              color: AppColors.kDrawerBgColor,
-            );
+        : AppStyles.text20PxRegular.copyWith(
+            height: 1.6,
+            fontFamily: AppConstants.kDMSansFont,
+            color: AppColors.kDrawerBgColor,
+          );
 
     if (widget.faqsData.isEmpty) {
       return ErrorScreen(
@@ -94,21 +96,19 @@ class _FaqsScreenState extends State<FaqsScreen> {
 
     return ListView.separated(
       itemCount: widget.faqsData.length,
-      separatorBuilder:
-          (context, index) => Divider(
-            height: 0,
-            thickness: 1,
-            color: AppColors.kLightGrey.withValues(alpha: 0.5),
-          ),
+      separatorBuilder: (context, index) => Divider(
+        height: 0,
+        thickness: 1,
+        color: AppColors.kLightGrey.withValues(alpha: 0.5),
+      ),
       itemBuilder: (context, index) {
         final faq = widget.faqsData[index];
         return Container(
           margin: EdgeInsets.only(bottom: bottomMargin),
 
-          color:
-              _expandedIndex == index
-                  ? AppColors.kLightGrey.withValues(alpha: 0.02)
-                  : AppColors.kWhite,
+          color: _expandedIndex == index
+              ? AppColors.kLightGrey.withValues(alpha: 0.02)
+              : AppColors.kWhite,
           child: ExpansionTile(
             key: Key('faq_$index${_expandedIndex == index ? '_expanded' : ''}'),
             initiallyExpanded: _expandedIndex == index,
@@ -134,10 +134,9 @@ class _FaqsScreenState extends State<FaqsScreen> {
 
             title: Text(
               faq.title,
-              style:
-                  _expandedIndex == index
-                      ? titleStyleExpanded
-                      : titleStyleCollapsed,
+              style: _expandedIndex == index
+                  ? titleStyleExpanded
+                  : titleStyleCollapsed,
             ),
             children: [
               Container(

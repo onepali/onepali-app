@@ -17,23 +17,20 @@ class LanguageScreen extends StatelessWidget {
         children: [
           for (final lang in AppConstants.languages)
             ListTile(
-              leading:
-                  lang['flag'].endsWith('.svg')
-                      ? SvgHelper.fromSource(
-                        path: lang['flag'],
-                        width: 32,
-                        height: 32,
-                      )
-                      : null,
+              leading: lang['flag'].endsWith('.svg')
+                  ? SvgHelper.fromSource(
+                      path: lang['flag'],
+                      width: 32,
+                      height: 32,
+                    )
+                  : null,
               title: Text(lang['name']),
-              trailing:
-                  currentLocale == lang['code']
-                      ? const Icon(Icons.check)
-                      : null,
-              onTap:
-                  () => context.read<LanguageProvider>().setLocale(
-                    Locale(lang['code']),
-                  ),
+              trailing: currentLocale == lang['code']
+                  ? const Icon(Icons.check)
+                  : null,
+              onTap: () => context.read<LanguageProvider>().setLocale(
+                Locale(lang['code']),
+              ),
             ),
         ],
       ),

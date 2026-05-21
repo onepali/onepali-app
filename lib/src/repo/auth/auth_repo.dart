@@ -43,11 +43,10 @@ class AuthRepository {
   }
 
   Future<UserModel?> fetchUser(String uid) async {
-    final doc =
-        await _firestore
-            .collection(AppConstants.usersCollection)
-            .doc(uid)
-            .get();
+    final doc = await _firestore
+        .collection(AppConstants.usersCollection)
+        .doc(uid)
+        .get();
     if (doc.exists) {
       return UserModel.fromJson(doc.data()!);
     }

@@ -30,7 +30,7 @@ class _SongScreenState extends State<SongScreen> {
     bool isTablet = PlatformUtility.isTablet(context);
     return isTablet
         ? AppCardResponsive.getCardHeight(context) *
-            0.8 // 20% smaller for tablets
+              0.8 // 20% smaller for tablets
         : AppCardResponsive.getCardHeight(context);
   }
 
@@ -51,23 +51,20 @@ class _SongScreenState extends State<SongScreen> {
             context.read<SongProvider>().fetchSongs();
           },
           successBuilder: () {
-            final songs =
-                widget.showCategoryList && selectedCategory != null
-                    ? songProvider.songs
-                        .where((s) => s.categoryName == selectedCategory)
-                        .toList()
-                    : songProvider.songs;
-            final categories =
-                songProvider.songs
-                    .map((s) => s.categoryName)
-                    .toSet()
-                    .where((c) => c.isNotEmpty)
-                    .toList();
+            final songs = widget.showCategoryList && selectedCategory != null
+                ? songProvider.songs
+                      .where((s) => s.categoryName == selectedCategory)
+                      .toList()
+                : songProvider.songs;
+            final categories = songProvider.songs
+                .map((s) => s.categoryName)
+                .toSet()
+                .where((c) => c.isNotEmpty)
+                .toList();
             return Scaffold(
-              appBar:
-                  widget.showCategoryList
-                      ? CustomAppBar(title: 'Songs', centerTitle: false)
-                      : null,
+              appBar: widget.showCategoryList
+                  ? CustomAppBar(title: 'Songs', centerTitle: false)
+                  : null,
               backgroundColor: AppColors.kWhite,
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,10 +86,9 @@ class _SongScreenState extends State<SongScreen> {
                               label: Text(
                                 cat,
                                 style: AppStyles.text14PxMedium.copyWith(
-                                  color:
-                                      selectedCategory == cat
-                                          ? AppColors.kWhite
-                                          : AppColors.kPitchBlack,
+                                  color: selectedCategory == cat
+                                      ? AppColors.kWhite
+                                      : AppColors.kPitchBlack,
                                   fontSize: isTabletLandscape ? 18 : 14,
                                 ),
                                 textAlign: TextAlign.center,
@@ -106,10 +102,9 @@ class _SongScreenState extends State<SongScreen> {
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               side: BorderSide(
-                                color:
-                                    selectedCategory == cat
-                                        ? AppColors.kButtonGreen
-                                        : AppColors.kGrey,
+                                color: selectedCategory == cat
+                                    ? AppColors.kButtonGreen
+                                    : AppColors.kGrey,
                               ),
                               onSelected: (_) {
                                 setState(() {

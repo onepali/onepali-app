@@ -92,17 +92,19 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     logger.d('Question Audio (wordAudio): ${widget.content.wordAudio}');
     logger.d('Correct Answer ID: ${widget.content.correctAnswerId}');
     logger.d('Content Type: ${widget.content.type}');
-    
+
     if (widget.content.tapTargets != null) {
       logger.d('Available Animals (${widget.content.tapTargets!.length}):');
       for (final target in widget.content.tapTargets!) {
         final isCorrect = target.id == widget.content.correctAnswerId;
-        logger.d('  - ${target.id} (${target.nameEn} / ${target.nameNp})${isCorrect ? " ⭐ CORRECT" : ""}');
+        logger.d(
+          '  - ${target.id} (${target.nameEn} / ${target.nameNp})${isCorrect ? " ⭐ CORRECT" : ""}',
+        );
         logger.d('    Image: ${target.image}');
         logger.d('    Audio: ${target.audio}');
       }
     }
-    
+
     // Check if this is rabbit or cat question
     if (widget.content.correctAnswerId?.toLowerCase() == 'rabbit') {
       logger.d('>>> THIS IS THE RABBIT QUESTION <<<');
@@ -443,7 +445,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
     return SizedBox.expand(
       child: Stack(
-        clipBehavior: Clip.none, // Allow overflow so rabbit can be visible at edges
+        clipBehavior:
+            Clip.none, // Allow overflow so rabbit can be visible at edges
         children: [
           // Background image is handled at parent level in lesson_content_screen.dart
           // to fill the entire screen (appears once)
@@ -493,7 +496,12 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 // Position at 1/3rd from the top of the screen
                 final screenHeight = MediaQuery.of(context).size.height;
                 return Positioned(
-                  top: (screenHeight / 3) - 30 + (10 * _textController.value), // 1/3rd from top with animation
+                  top:
+                      (screenHeight / 3) -
+                      30 +
+                      (10 *
+                          _textController
+                              .value), // 1/3rd from top with animation
                   left: 0,
                   right: 0,
                   child: Center(
@@ -536,13 +544,14 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 );
                 final selectedTarget = widget.content.tapTargets?[targetIndex];
                 final animalId = selectedTarget?.id?.toLowerCase() ?? '';
-                final position = positionsMap[animalId] ?? positionsMap.values.first;
+                final position =
+                    positionsMap[animalId] ?? positionsMap.values.first;
 
                 return Positioned(
                   left:
                       position['left']! - 10, // Center the lottie on the target
-                  bottom: position['bottom'] != null 
-                      ? position['bottom']! - 10 
+                  bottom: position['bottom'] != null
+                      ? position['bottom']! - 10
                       : null,
                   child: Transform.scale(
                     scale: _feedbackController.value,
@@ -554,7 +563,6 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
                 );
               },
             ),
-
         ],
       ),
     );
@@ -572,12 +580,20 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     final isMobile = PlatformUtility.isMobile(context);
 
     // Use centralized dimension calculation
-    final dimensions = _getUsableDimensions(screenWidth, screenHeight, isMobile);
+    final dimensions = _getUsableDimensions(
+      screenWidth,
+      screenHeight,
+      isMobile,
+    );
     final double usableWidth = dimensions['usableWidth']!;
     final double usableHeight = dimensions['usableHeight']!;
 
     // Get position by animal ID (same as drag-to-match)
-    final positionsMap = _getTargetPositionsMap(screenWidth, screenHeight, isMobile);
+    final positionsMap = _getTargetPositionsMap(
+      screenWidth,
+      screenHeight,
+      isMobile,
+    );
     final animalId = target.id?.toLowerCase() ?? '';
     final position = positionsMap[animalId] ?? positionsMap.values.first;
 
@@ -622,8 +638,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
             : Transform.scale(
                 scale: isSelected ? 1.1 : 1.0,
                 child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                child: _buildTargetImage(target, targetSize, isSelected),
+                  duration: const Duration(milliseconds: 200),
+                  child: _buildTargetImage(target, targetSize, isSelected),
                 ),
               ),
       ),
@@ -673,7 +689,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
         isLandscape: isLandscape,
       );
     }
-    
+
     return GridPositionHelper.getTargetPositionsMap(
       screenWidth,
       screenHeight,
@@ -692,7 +708,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       width: double.infinity,
       height: double.infinity,
       child: Stack(
-        clipBehavior: Clip.none, // Allow overflow so rabbit can be visible at edges
+        clipBehavior:
+            Clip.none, // Allow overflow so rabbit can be visible at edges
         children: [
           // Main park scene content
           _buildParkScene(),

@@ -95,83 +95,69 @@ class CustomMaterialButton extends StatelessWidget {
       onPressed: isDisabled || isLoading ? null : onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
-        side:
-            showBorder
-                ? BorderSide(
-                  color:
-                      islowOpBorder
-                          ? isBorderPrimary
-                              ? const Color.fromARGB(72, 153, 29, 60)
-                              : backgroundColor
-                          : isBorderPrimary
-                          ? AppColors.kButtonGreen
-                          : backgroundColor,
-                )
-                : BorderSide.none,
+        side: showBorder
+            ? BorderSide(
+                color: islowOpBorder
+                    ? isBorderPrimary
+                          ? const Color.fromARGB(72, 153, 29, 60)
+                          : backgroundColor
+                    : isBorderPrimary
+                    ? AppColors.kButtonGreen
+                    : backgroundColor,
+              )
+            : BorderSide.none,
       ),
       elevation: elevation,
       height: height,
       minWidth: width,
-      color:
-          isLoading
-              ? backgroundColor.withValues(alpha: 0.3)
-              : !isDisabled && fillButton
-              ? backgroundColor
-              : AppColors.kWhite,
-      disabledColor:
-          isLoading
-              ? backgroundColor.withValues(alpha: 0.3)
-              : isDisabled
-              ? AppColors.kGrey
-              : null,
-      child:
-          isLoading
-              ? SizedBox(
-                height: loaderSize,
-                width: loaderSize,
-                child: const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.kButtonGreen,
-                  ),
-                  strokeWidth: 2,
+      color: isLoading
+          ? backgroundColor.withValues(alpha: 0.3)
+          : !isDisabled && fillButton
+          ? backgroundColor
+          : AppColors.kWhite,
+      disabledColor: isLoading
+          ? backgroundColor.withValues(alpha: 0.3)
+          : isDisabled
+          ? AppColors.kGrey
+          : null,
+      child: isLoading
+          ? SizedBox(
+              height: loaderSize,
+              width: loaderSize,
+              child: const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  AppColors.kButtonGreen,
                 ),
-              )
-              : Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null)
-                    iconType == 'svg'
-                        ? SvgHelper.fromSource(
-                          path: icon,
-                          height: 16,
-                          width: 16,
-                        )
-                        : Icon(
+                strokeWidth: 2,
+              ),
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (icon != null)
+                  iconType == 'svg'
+                      ? SvgHelper.fromSource(path: icon, height: 16, width: 16)
+                      : Icon(
                           icon,
                           color: fillButton ? AppColors.kWhite : color,
                           size: iconSize ?? 16,
                         ),
-                  if (icon != null) Gaps.horizontalGapOf(8.0),
-                  Text(
-                    label,
-                    style:
-                        smallbutton
-                            ? AppStyles.text12PxRegular.copyWith(
-                              color:
-                                  fillButton ? AppColors.kButtonGreen : color,
-                            )
-                            : textStyle ??
-                                AppStyles.text16PxMedium.copyWith(
-                                  color:
-                                      fillButton
-                                          ? AppColors.kPitchBlack
-                                          : color,
-                                ),
-                  ),
-                ],
-              ),
+                if (icon != null) Gaps.horizontalGapOf(8.0),
+                Text(
+                  label,
+                  style: smallbutton
+                      ? AppStyles.text12PxRegular.copyWith(
+                          color: fillButton ? AppColors.kButtonGreen : color,
+                        )
+                      : textStyle ??
+                            AppStyles.text16PxMedium.copyWith(
+                              color: fillButton ? AppColors.kPitchBlack : color,
+                            ),
+                ),
+              ],
+            ),
     );
   }
 }

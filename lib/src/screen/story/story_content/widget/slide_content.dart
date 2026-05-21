@@ -146,7 +146,8 @@ class SlideContentState extends State<SlideContent> {
         Positioned(
           left: 32,
           right: 32,
-          bottom: 70, // Same bottom position as Character 1 (the draggable animal)
+          bottom:
+              70, // Same bottom position as Character 1 (the draggable animal)
           child: IgnorePointer(
             child: AnimatedOpacity(
               opacity: _completed ? 0.0 : 1.0,
@@ -157,9 +158,9 @@ class SlideContentState extends State<SlideContent> {
                   Container(
                     height:
                         PlatformUtility.isTablet(context) &&
-                                PlatformUtility.isLandscape(context)
-                            ? 70
-                            : 48,
+                            PlatformUtility.isLandscape(context)
+                        ? 70
+                        : 48,
                     decoration: BoxDecoration(
                       color: AppColors.kBlack.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(
@@ -176,14 +177,14 @@ class SlideContentState extends State<SlideContent> {
                       path: Assets.scrollRightArrow,
                       height:
                           PlatformUtility.isTablet(context) &&
-                                  PlatformUtility.isLandscape(context)
-                              ? 70
-                              : 44,
+                              PlatformUtility.isLandscape(context)
+                          ? 70
+                          : 44,
                       width:
                           PlatformUtility.isTablet(context) &&
-                                  PlatformUtility.isLandscape(context)
-                              ? 70
-                              : 44,
+                              PlatformUtility.isLandscape(context)
+                          ? 70
+                          : 44,
                       type: SvgSourceType.asset,
                     ),
                   ),
@@ -203,11 +204,11 @@ class SlideContentState extends State<SlideContent> {
                   // Calculate max width as 90% of screen width
                   final screenWidth = MediaQuery.of(context).size.width;
                   final textBoxMaxWidth = screenWidth * 0.9;
-                  
+
                   // Consistent font sizes based on screen width
                   final baseFontSize = isTabletLandScape ? 24.0 : 16.0;
                   final iconSizeForText = isTabletLandScape ? 36.0 : 24.0;
-                  
+
                   // Prepare conversation rows based on current audio index
                   List<Widget> messageWidgets = [];
 
@@ -269,9 +270,7 @@ class SlideContentState extends State<SlideContent> {
                   }
 
                   return ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: textBoxMaxWidth,
-                    ),
+                    constraints: BoxConstraints(maxWidth: textBoxMaxWidth),
                     child: Container(
                       padding: EdgeInsets.symmetric(
                         vertical: isTabletLandScape ? 12 : 10,

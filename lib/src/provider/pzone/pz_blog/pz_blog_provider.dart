@@ -36,10 +36,12 @@ class PzBlogProvider extends ChangeNotifier {
     }
 
     try {
-      final querySnapshot =
-          await _firestore.collection(AppConstants.blogCollection).get();
-      final List<Map<String, dynamic>> blogList =
-          querySnapshot.docs.map((doc) => doc.data()).toList();
+      final querySnapshot = await _firestore
+          .collection(AppConstants.blogCollection)
+          .get();
+      final List<Map<String, dynamic>> blogList = querySnapshot.docs
+          .map((doc) => doc.data())
+          .toList();
       _blogs.clear();
       _blogs.addAll(pzBlogModelFromJson(jsonEncode(blogList)));
       setStatus(DataFetchStatus.success);

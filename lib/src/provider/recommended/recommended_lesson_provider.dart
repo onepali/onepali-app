@@ -35,15 +35,13 @@ class RecommendedLessonProvider extends ChangeNotifier {
     }
 
     try {
-      final query =
-          await _firestore
-              .collection(AppConstants.recomLessonCollection)
-              .where('childId', isEqualTo: childId)
-              .get();
-      _recommendedLessons =
-          query.docs
-              .map((doc) => RecommendedLessonModel.fromJson(doc.data()))
-              .toList();
+      final query = await _firestore
+          .collection(AppConstants.recomLessonCollection)
+          .where('childId', isEqualTo: childId)
+          .get();
+      _recommendedLessons = query.docs
+          .map((doc) => RecommendedLessonModel.fromJson(doc.data()))
+          .toList();
       _hasData = _recommendedLessons.isNotEmpty;
       logger.d('Fetched ${_recommendedLessons.length} recommended lessons');
       _status = DataFetchStatus.success;

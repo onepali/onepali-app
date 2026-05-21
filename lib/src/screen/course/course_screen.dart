@@ -41,10 +41,9 @@ class CourseScreenState extends State<CourseScreen> {
           },
           successBuilder: () {
             final courseModel = lessonProvider.courses.first;
-            final categoriesWithChapters =
-                courseModel.courses
-                    .where((c) => c.chapters.isNotEmpty)
-                    .toList();
+            final categoriesWithChapters = courseModel.courses
+                .where((c) => c.chapters.isNotEmpty)
+                .toList();
 
             if (widget.isMobile) {
               return SafeArea(
@@ -89,17 +88,21 @@ class CourseScreenState extends State<CourseScreen> {
                                 context,
                               );
                               final cardHeight =
-                                  AppCardResponsive.getDashboardCardHeight(context);
+                                  AppCardResponsive.getDashboardCardHeight(
+                                    context,
+                                  );
                               final isMobile = PlatformUtility.isMobile(
                                 context,
                               );
                               final isLandscape = PlatformUtility.isLandscape(
                                 context,
                               );
-                              final screenWidth =
-                                  MediaQuery.of(context).size.width;
-                              final screenHeight =
-                                  MediaQuery.of(context).size.height;
+                              final screenWidth = MediaQuery.of(
+                                context,
+                              ).size.width;
+                              final screenHeight = MediaQuery.of(
+                                context,
+                              ).size.height;
 
                               logger.d(
                                 'CourseScreen Card Dimensions (Mobile Mode): cardWidth: $cardWidth, cardHeight: $cardHeight, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape, screenWidth: $screenWidth, screenHeight: $screenHeight',
@@ -112,43 +115,38 @@ class CourseScreenState extends State<CourseScreen> {
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
                                   ),
-                                  children:
-                                      category.chapters.map((chapter) {
-                                        return SizedBox(
-                                          width: cardWidth,
-                                          height: cardHeight,
-                                          child: CourseCard(
-                                            title:
-                                                chapter.nameEn.isNotEmpty
-                                                    ? chapter.nameEn
-                                                    : chapter.nameNp,
-                                            thumbnail: chapter.thumbnail,
-                                            color: AppColors.lessonBgColor,
-                                            isLocked:
-                                                GuestUtil.isGuestUser() &&
-                                                catIdx > 0,
-                                            isCompleted: false,
-                                            isGuestUser:
-                                                GuestUtil.isGuestUser(),
-                                            onTap: () {
-                                              if (GuestUtil.isGuestUser() &&
-                                                  catIdx > 0) {
-                                                // Show guest account prompt for locked lessons
-                                                GuestUtil.showGuestAccountPrompt(
-                                                  context,
-                                                );
-                                              } else {
-                                                Utility.navigateMaterialRoute(
-                                                  context,
-                                                  LessonScreen(
-                                                    chapter: chapter,
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        );
-                                      }).toList(),
+                                  children: category.chapters.map((chapter) {
+                                    return SizedBox(
+                                      width: cardWidth,
+                                      height: cardHeight,
+                                      child: CourseCard(
+                                        title: chapter.nameEn.isNotEmpty
+                                            ? chapter.nameEn
+                                            : chapter.nameNp,
+                                        thumbnail: chapter.thumbnail,
+                                        color: AppColors.lessonBgColor,
+                                        isLocked:
+                                            GuestUtil.isGuestUser() &&
+                                            catIdx > 0,
+                                        isCompleted: false,
+                                        isGuestUser: GuestUtil.isGuestUser(),
+                                        onTap: () {
+                                          if (GuestUtil.isGuestUser() &&
+                                              catIdx > 0) {
+                                            // Show guest account prompt for locked lessons
+                                            GuestUtil.showGuestAccountPrompt(
+                                              context,
+                                            );
+                                          } else {
+                                            Utility.navigateMaterialRoute(
+                                              context,
+                                              LessonScreen(chapter: chapter),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               );
                             },
@@ -203,8 +201,9 @@ class CourseScreenState extends State<CourseScreen> {
                             context,
                           );
                           final screenWidth = MediaQuery.of(context).size.width;
-                          final screenHeight =
-                              MediaQuery.of(context).size.height;
+                          final screenHeight = MediaQuery.of(
+                            context,
+                          ).size.height;
 
                           logger.d(
                             'CourseScreen Card Dimensions (HomeScreen Mode): cardWidth: $cardWidth, cardHeight: $cardHeight, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape, screenWidth: $screenWidth, screenHeight: $screenHeight',
@@ -213,37 +212,33 @@ class CourseScreenState extends State<CourseScreen> {
                           return ListView(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
-                            children:
-                                category.chapters.map((chapter) {
-                                  return SizedBox(
-                                    width: cardWidth,
-                                    height: cardHeight,
-                                    child: CourseCard(
-                                      title:
-                                          chapter.nameEn.isNotEmpty
-                                              ? chapter.nameEn
-                                              : chapter.nameNp,
-                                      thumbnail: chapter.thumbnail,
-                                      color: AppColors.lessonBgColor,
-                                      isLocked: category.chapters.length > 1,
-                                      isCompleted: false,
-                                      isGuestUser: GuestUtil.isGuestUser(),
-                                      onTap: () {
-                                        if (category.chapters.length > 1) {
-                                          // Show guest account prompt for locked lessons
-                                          GuestUtil.showGuestAccountPrompt(
-                                            context,
-                                          );
-                                        } else {
-                                          Utility.navigateMaterialRoute(
-                                            context,
-                                            LessonScreen(chapter: chapter),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  );
-                                }).toList(),
+                            children: category.chapters.map((chapter) {
+                              return SizedBox(
+                                width: cardWidth,
+                                height: cardHeight,
+                                child: CourseCard(
+                                  title: chapter.nameEn.isNotEmpty
+                                      ? chapter.nameEn
+                                      : chapter.nameNp,
+                                  thumbnail: chapter.thumbnail,
+                                  color: AppColors.lessonBgColor,
+                                  isLocked: category.chapters.length > 1,
+                                  isCompleted: false,
+                                  isGuestUser: GuestUtil.isGuestUser(),
+                                  onTap: () {
+                                    if (category.chapters.length > 1) {
+                                      // Show guest account prompt for locked lessons
+                                      GuestUtil.showGuestAccountPrompt(context);
+                                    } else {
+                                      Utility.navigateMaterialRoute(
+                                        context,
+                                        LessonScreen(chapter: chapter),
+                                      );
+                                    }
+                                  },
+                                ),
+                              );
+                            }).toList(),
                           );
                         },
                       ),

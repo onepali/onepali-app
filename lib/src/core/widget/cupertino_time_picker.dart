@@ -167,8 +167,9 @@ class _CupertinoTimePickerFieldState extends State<CupertinoTimePickerField> {
   }
 
   String get _displayText {
-    final hour =
-        selectedTime.hourOfPeriod == 0 ? 12 : selectedTime.hourOfPeriod;
+    final hour = selectedTime.hourOfPeriod == 0
+        ? 12
+        : selectedTime.hourOfPeriod;
     final minute = selectedTime.minute.toString().padLeft(2, '0');
     final period = selectedTime.period == DayPeriod.am ? 'AM' : 'PM';
     return '$hour:$minute $period';
@@ -244,10 +245,9 @@ class _CupertinoTimePickerWidgetState
   @override
   void initState() {
     super.initState();
-    selectedHour =
-        widget.initialTime.hourOfPeriod == 0
-            ? 12
-            : widget.initialTime.hourOfPeriod;
+    selectedHour = widget.initialTime.hourOfPeriod == 0
+        ? 12
+        : widget.initialTime.hourOfPeriod;
     selectedMinute = widget.initialTime.minute;
     selectedPeriod = widget.initialTime.period;
   }
@@ -280,10 +280,9 @@ class _CupertinoTimePickerWidgetState
             Center(
               child: Text(
                 i.toString().padLeft(2, '0'),
-                style:
-                    isTabletPortrait
-                        ? AppStyles.text28PxMedium
-                        : AppStyles.text16PxMedium,
+                style: isTabletPortrait
+                    ? AppStyles.text28PxMedium
+                    : AppStyles.text16PxMedium,
               ),
             ),
         ],
@@ -307,10 +306,9 @@ class _CupertinoTimePickerWidgetState
             Center(
               child: Text(
                 i.toString().padLeft(2, '0'),
-                style:
-                    isTabletPortrait
-                        ? AppStyles.text28PxMedium
-                        : AppStyles.text16PxMedium,
+                style: isTabletPortrait
+                    ? AppStyles.text28PxMedium
+                    : AppStyles.text16PxMedium,
               ),
             ),
         ],
@@ -333,19 +331,17 @@ class _CupertinoTimePickerWidgetState
           Center(
             child: Text(
               'AM',
-              style:
-                  isTabletPortrait
-                      ? AppStyles.text28PxMedium
-                      : AppStyles.text16PxMedium,
+              style: isTabletPortrait
+                  ? AppStyles.text28PxMedium
+                  : AppStyles.text16PxMedium,
             ),
           ),
           Center(
             child: Text(
               'PM',
-              style:
-                  isTabletPortrait
-                      ? AppStyles.text28PxMedium
-                      : AppStyles.text16PxMedium,
+              style: isTabletPortrait
+                  ? AppStyles.text28PxMedium
+                  : AppStyles.text16PxMedium,
             ),
           ),
         ],

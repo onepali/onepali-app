@@ -32,18 +32,14 @@ class StoryModel {
     nameNp: json["nameNp"] ?? "",
     thumbnail: json["thumbnail"] ?? "",
     lottie: json["lottie"] ?? "",
-    audio:
-        json["audio"] == null
-            ? []
-            : List<String>.from(json["audio"].map((x) => x.toString())),
+    audio: json["audio"] == null
+        ? []
+        : List<String>.from(json["audio"].map((x) => x.toString())),
     tooltip: json["tooltip"] ?? "",
     description: json["description"] ?? "",
-    content:
-        json["content"] == null
-            ? []
-            : List<Content>.from(
-              json["content"].map((x) => Content.fromJson(x)),
-            ),
+    content: json["content"] == null
+        ? []
+        : List<Content>.from(json["content"].map((x) => Content.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -79,22 +75,19 @@ class Content {
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
     image: json["image"] ?? "",
-    audio:
-        json["audio"] == null
-            ? []
-            : List<String>.from(json["audio"].map((x) => x.toString())),
+    audio: json["audio"] == null
+        ? []
+        : List<String>.from(json["audio"].map((x) => x.toString())),
     lottie: json["lottie"] ?? "",
     type: json["type"] ?? "",
-    conversation:
-        json["conversation"] == null
-            ? []
-            : List<Conversation>.from(
-              json["conversation"].map((x) => Conversation.fromJson(x)),
-            ),
-    characters:
-        json["character"] == null
-            ? []
-            : List<String>.from(json["character"].map((x) => x.toString())),
+    conversation: json["conversation"] == null
+        ? []
+        : List<Conversation>.from(
+            json["conversation"].map((x) => Conversation.fromJson(x)),
+          ),
+    characters: json["character"] == null
+        ? []
+        : List<String>.from(json["character"].map((x) => x.toString())),
     confetti: json["confetti"] ?? "",
   );
 

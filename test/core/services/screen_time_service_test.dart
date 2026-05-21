@@ -118,10 +118,9 @@ void main() {
 
       // Try to subtract time (should clamp to 0)
       final clampedScreenTime = screenTime.copyWith(
-        totalUsed:
-            (screenTime.totalUsed - 10.0)
-                .clamp(0.0, double.infinity)
-                .toDouble(),
+        totalUsed: (screenTime.totalUsed - 10.0)
+            .clamp(0.0, double.infinity)
+            .toDouble(),
       );
 
       expect(clampedScreenTime.totalUsed, equals(0.0));
@@ -135,10 +134,7 @@ void main() {
       );
 
       final json = screenTime.toJson();
-      expect(
-        json['totalAllowed'],
-        equals(60.0),
-      );
+      expect(json['totalAllowed'], equals(60.0));
       expect(json['totalUsed'], equals(25.5));
       expect(json['lastUpdated'], equals('2024-01-15T10:30:00.000Z'));
 

@@ -35,14 +35,14 @@ class RcmSongProvider extends ChangeNotifier {
     }
 
     try {
-      final query =
-          await _firestore
-              .collection(AppConstants.recomSongCollection)
-              .where('childId', isEqualTo: childId)
-              .orderBy('lastWatched', descending: true)
-              .get();
-      _recommendedSongs =
-          query.docs.map((doc) => RcmSongsModel.fromJson(doc.data())).toList();
+      final query = await _firestore
+          .collection(AppConstants.recomSongCollection)
+          .where('childId', isEqualTo: childId)
+          .orderBy('lastWatched', descending: true)
+          .get();
+      _recommendedSongs = query.docs
+          .map((doc) => RcmSongsModel.fromJson(doc.data()))
+          .toList();
       _hasData = _recommendedSongs.isNotEmpty;
       logger.d(
         'Fetched \\${_recommendedSongs.length} recommended songs for childId: $childId',

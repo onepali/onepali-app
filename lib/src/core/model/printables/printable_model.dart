@@ -37,12 +37,9 @@ class PrintableModel {
     description: json["description"] ?? "",
     thumbnail: json["thumbnail"] ?? "",
     totalWorksheets: json["total_worksheets"] ?? 0,
-    lessons:
-        json["lessons"] == null
-            ? []
-            : List<PLesson>.from(
-              json["lessons"].map((x) => PLesson.fromJson(x)),
-            ),
+    lessons: json["lessons"] == null
+        ? []
+        : List<PLesson>.from(json["lessons"].map((x) => PLesson.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -67,10 +64,9 @@ class PLesson {
   factory PLesson.fromJson(Map<String, dynamic> json) => PLesson(
     id: json["id"] ?? "",
     title: json["title"] ?? "",
-    worksheet:
-        json["worksheet"] == null
-            ? Worksheet(previewImage: "", pdfUrl: "", level: "")
-            : Worksheet.fromJson(json["worksheet"]),
+    worksheet: json["worksheet"] == null
+        ? Worksheet(previewImage: "", pdfUrl: "", level: "")
+        : Worksheet.fromJson(json["worksheet"]),
   );
 
   Map<String, dynamic> toJson() => {

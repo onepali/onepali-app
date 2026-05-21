@@ -19,8 +19,8 @@ class ConnectivityService {
 
   /// Get current network type
   Future<NetworkType> getCurrentNetworkType() async {
-    final List<ConnectivityResult> result =
-        await _connectivity.checkConnectivity();
+    final List<ConnectivityResult> result = await _connectivity
+        .checkConnectivity();
     if (result.isEmpty) return NetworkType.none;
     // Prefer wifi > mobile > others
     if (result.contains(ConnectivityResult.wifi)) return NetworkType.wifi;
