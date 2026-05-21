@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -91,17 +92,16 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 ? constraints.maxHeight
                 : MediaQuery.of(context).size.height,
             child: Row(
-              children:
-                  achievementList.map((achievement) {
-                    final value = _getAchievementValue(achievement.id);
-                    return Expanded(
-                      child: AchievementTabCard(
-                        achievement: achievement,
-                        dynamicValue: value,
-                        onTap: () {},
-                      ),
-                    );
-                  }).toList(),
+              children: achievementList.map((achievement) {
+                final value = _getAchievementValue(achievement.id);
+                return Expanded(
+                  child: AchievementTabCard(
+                    achievement: achievement,
+                    dynamicValue: value,
+                    onTap: () {},
+                  ),
+                );
+              }).toList(),
             ),
           );
         },
@@ -141,10 +141,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
         PlatformUtility.isLandscape(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
-    final double titleFontSize =
-        isTabletLandScape ? 22 : (isMobileLandscape ? 20 : 24);
-    final double imageSize =
-        isTabletLandScape ? 150 : (isMobileLandscape ? 80 : 120);
+    final double titleFontSize = isTabletLandScape
+        ? 22
+        : (isMobileLandscape ? 20 : 24);
+    final double imageSize = isTabletLandScape
+        ? 150
+        : (isMobileLandscape ? 80 : 120);
     final double paddingH = isTabletLandScape ? 50 : 16;
     final double paddingV = isTabletLandScape ? 50 : 16;
 
@@ -191,9 +193,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                           ? constraints.maxHeight
                           : 200.0;
                       return Container(
-                        constraints: BoxConstraints(
-                          maxHeight: availableHeight,
-                        ),
+                        constraints: BoxConstraints(maxHeight: availableHeight),
                         padding: EdgeInsets.symmetric(
                           horizontal: paddingH,
                           vertical: paddingV,
@@ -227,11 +227,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   ),
                 ),
                 Gaps.horizontalGapOf(24),
-
-                CircularButtonWidget(
-                  onPressed: () => Navigator.pop(context),
-                  type: CircularButtonType.closeGrey,
-                ),
               ],
             ),
           ),
@@ -260,12 +255,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
           final availableHeight = constraints.maxHeight.isFinite
               ? constraints.maxHeight
               : (isTabletLandScape
-                  ? MediaQuery.of(context).size.height
-                  : MediaQuery.of(context).size.height * 0.8);
+                    ? MediaQuery.of(context).size.height
+                    : MediaQuery.of(context).size.height * 0.8);
           final availableWidth = constraints.maxWidth.isFinite
               ? constraints.maxWidth
               : MediaQuery.of(context).size.width;
-          
+
           return Container(
             height: isTabletLandScape
                 ? MediaQuery.of(context).size.height
@@ -357,22 +352,19 @@ class _AchievementScreenState extends State<AchievementScreen> {
   Widget build(BuildContext context) {
     final bool isTablet = PlatformUtility.isTablet(context);
     return Scaffold(
-        backgroundColor: AppColors.kBlack,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Background
-            Positioned.fill(
-              child: Image.asset(
-                Assets.rewardBackground,
-                  fit: BoxFit.cover,
-              ),
-            ),
+      backgroundColor: AppColors.kBlack,
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: Image.asset(Assets.rewardBackground, fit: BoxFit.cover),
+          ),
 
-            // Content
-            if (isTablet)
-              // Tablet layout - Column structure
-              SingleChildScrollView(
+          // Content
+          if (isTablet)
+            // Tablet layout - Column structure
+            SafeArea(
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
                     // Congratulations section at top
@@ -381,10 +373,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     buildAchievementGrid(),
                   ],
                 ),
-              )
-            else
-              // Mobile layout - Row structure
-              LayoutBuilder(
+              ),
+            )
+          else
+            // Mobile layout - Row structure
+            SafeArea(
+              child: LayoutBuilder(
                 builder: (context, constraints) {
                   final screenWidth = MediaQuery.of(context).size.width;
                   final availableHeight = constraints.maxHeight.isFinite
@@ -399,26 +393,19 @@ class _AchievementScreenState extends State<AchievementScreen> {
                         width: congratsWidth,
                         child: buildCongratulationsSection(),
                       ),
-                      Expanded(
-                        child: buildAchievementGrid(),
-                      ),
+                      Expanded(child: buildAchievementGrid()),
                     ],
                   );
                 },
               ),
+            ),
 
-            // Close button at top-right corner
-            if (!isTablet)
-              Positioned(
-                top: 16,
-                right: Dimensions.kIconMargin(context) - 8,
-                child: CircularButtonWidget(
-                  onPressed: () => Navigator.pop(context),
-                  type: CircularButtonType.closeGrey,
-                ),
-              ),
-          ],
-        ),
+          // Close button at top-right corner
+          TopRightPositionedCloseButton(
+            iconPath: Assets.closeGreyIcon,
+            onTap: () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }

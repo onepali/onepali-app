@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
@@ -18,6 +19,7 @@ class TapToPopLessonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isMobile = PlatformUtility.isMobile(context);
     return BlocConsumer<TapToPopBloc, TapToPopState>(
       listener: (context, state) async {},
       builder: (context, state) {
@@ -82,11 +84,13 @@ class TapToPopLessonView extends StatelessWidget {
               ),
             for (final item in items)
               Positioned(
-                top: (item.dxRatio ?? 0.5) * size.height,
-                left: (item.dyRatio ?? 0.5) * size.width,
+                top: (item.dyRatio ?? 0.5) * size.height,
+                left: (item.dxRatio ?? 0.5) * size.width,
                 child: item.isCorrect
                     ? Transform.scale(
-                        scale: 1.1,
+                        scale: isMobile
+                            ? item.sizeMb.toDouble()
+                            : item.sizeTb.toDouble(),
                         child: PopScaleOnTap(
                           key: ValueKey(item.order.toString()),
                           onTap: state.instructionAudioPlayed
@@ -96,19 +100,24 @@ class TapToPopLessonView extends StatelessWidget {
                                   );
                                 }
                               : null,
-                          child: CustomCachedImage(imageUrl: item.image),
+                          child: SvgPicture.network(item.image),
                         ),
                       )
-                    : ShakeWidget(
-                        key: ValueKey(item.order.toString()),
-                        onTap: state.instructionAudioPlayed
-                            ? () {
-                                context.read<TapToPopBloc>().add(
-                                  TapToPopEvent.tapItem(item),
-                                );
-                              }
-                            : null,
-                        child: CustomCachedImage(imageUrl: item.image),
+                    : Transform.scale(
+                        scale: isMobile
+                            ? item.sizeMb.toDouble()
+                            : item.sizeTb.toDouble(),
+                        child: ShakeWidget(
+                          key: ValueKey(item.order.toString()),
+                          onTap: state.instructionAudioPlayed
+                              ? () {
+                                  context.read<TapToPopBloc>().add(
+                                    TapToPopEvent.tapItem(item),
+                                  );
+                                }
+                              : null,
+                          child: SvgPicture.network(item.image),
+                        ),
                       ),
               ),
 

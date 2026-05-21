@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +35,7 @@ import 'package:onepali/src/features/lessons/templates/tap_to_pop/tap_to_pop_les
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/unknown_lesson_type.dart';
 import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
+import 'package:onepali/src/src.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key, required this.lessonId});
@@ -55,121 +58,140 @@ class _LessonPageState extends State<LessonPage> {
       create: (context) =>
           LessonBloc()..add(LessonEvent.started(widget.lessonId)),
       child: Scaffold(
-        body: BlocConsumer<LessonBloc, LessonState>(
+        body: BlocListener<LessonBloc, LessonState>(
           listenWhen: (previous, current) =>
-              current.status == LessonStatus.success &&
-              previous.lessonDetails != current.lessonDetails,
+              previous.lessonDetails == null && current.lessonDetails != null,
           listener: (context, state) {
-            if (state.lessonDetails != null) {
-              MediaCacheManager().cacheLessonMedia(
-                state.lessonDetails!.contents,
-                context,
-              );
-            }
+            MediaCacheManager().cacheLessonMedia(
+              state.lessonDetails!.contents,
+              context,
+            );
           },
-          builder: (context, state) {
-            if (state.lessonDetails == null) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (state.currentContent == null) {
-              return Center(child: Text('No content found'));
-            }
-            final lessonContent = state.currentContent!;
-            final isLastContent =
-                state.currentIndex == state.lessonDetails!.contents.length - 1;
-            final isFirstContent = state.currentIndex == 0;
-            return switch (lessonContent) {
-              IntroLessonContent() => IntroLessonView(
-                key: ValueKey('intro_${state.currentIndex}'),
-                content: lessonContent,
-                isLast: isLastContent,
-                isFirst: isFirstContent,
-              ),
-              InfoLessonContent() => BlocProvider(
-                key: ValueKey('info_${state.currentIndex}'),
-                create: (context) => InfoLessonContentBloc(),
-                child: InfoLessonView(content: lessonContent),
-              ),
-              ChooseCorrectLessonContent() => BlocProvider(
-                create: (context) => ChooseCorrectLessonContentBloc(),
-                child: ChooseCorrectLessonView(
-                  content: lessonContent,
-                  isLastContent: isLastContent,
-                ),
-              ),
-              TapToRevealLessonContent() => BlocProvider(
-                key: ValueKey('tap_to_reveal_${state.currentIndex}'),
-                create: (context) => TapToRevealLessonContentBloc(),
-                child: TapToRevealLessonView(content: lessonContent),
-              ),
-              DragToMatchLessonContent() => DragToMatchScreen(
-                lessonContent: lessonContent,
-              ),
-              TapToPopLessonContent() => BlocProvider(
-                create: (context) =>
-                    TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
-                child: TapToPopLessonView(content: lessonContent),
-              ),
-              ListenAndRepeatLessonContent() => BlocProvider(
-                create: (context) => ListenAndRepeatBloc(
-                  audioPlayerService: AudioPlayerServiceImpl(),
-                  audioRecorderService: AudioRecorderServiceImpl(),
-                ),
-                child: ListenAndRepeatView(content: lessonContent),
-              ),
-              CharTracingLessonContent() => NewLetterTracingPage(
-                content: lessonContent,
-              ),
-              TeaMakingLessonContent() => KitchenPage(content: lessonContent),
-              BallSlideLessonContent() => BallSlideView(
-                key: ValueKey('ball_slide_${state.currentIndex}'),
-                content: lessonContent,
-              ),
-              FlipCardLessonContent() => FlipCardView(
-                key: ValueKey('flip_card_${state.currentIndex}'),
-                content: lessonContent,
-              ),
-              SlideUpToMatchLessonContent() => MatchGameScreen(
-                key: ValueKey('slide_up_to_match_${state.currentIndex}'),
-                content: lessonContent,
-                isLastContent: isLastContent,
-              ),
-              BalloonFillLessonContent() => BalloonFillView(
-                content: lessonContent,
-              ),
-              GunFillLessonContent() => GunFillLessonView(
-                content: lessonContent,
-              ),
-              HoliAnimateLessonContent() => HoliAnimateView(
-                content: lessonContent,
-              ),
-              TapToChangeLessonContent() => TapToChangeView(
-                content: lessonContent,
-              ),
-              TapToFillLessonContent() => TapToFillView(
-                key: ValueKey('tap_to_fill_${state.currentIndex}'),
-                content: lessonContent,
-              ),
-              OptionSelectionLessonContent() => OptionSelectionView(
-                content: lessonContent,
-              ),
-              PutInBagLessonContent() => PutInBagView(
-                key: ValueKey('put_in_bag_${state.currentIndex}'),
-                content: lessonContent,
-              ),
-              TapTheButtonLessonContent() => TapTheButtonView(
-                key: ValueKey('tap_the_button_${state.currentIndex}'),
-                content: lessonContent,
-              ),
-              LessonRecommendationLessonContent() => LessonRecommendationView(
-                content: lessonContent,
-              ),
-              _ => UnknownLessonType(
-                isFirst: isFirstContent,
-                isLast: isLastContent,
-              ),
-            };
-          },
+          child: BlocListener<LessonBloc, LessonState>(
+            listenWhen: (previous, current) =>
+                !previous.hasCompletedLesson && current.hasCompletedLesson,
+            listener: (context, state) {
+              log('Tracking lesson completion');
+              if (state.lessonDetails?.contents != null &&
+                  state.lessonDetails!.contents.length > 2) {
+                // Because the tea making lesson has only 2 content, we track the lesson completion only if the lesson has more than 2 contents.
+                // For tea making like lesson we track if the activity is completed.
+                MetricsTrackingHelper.trackLessonCompletion(
+                  context: context,
+                  lessonId: widget.lessonId,
+                  topicName: state.lessonDetails?.lesson.name ?? '',
+                );
+              }
+            },
+            child: BlocBuilder<LessonBloc, LessonState>(
+              builder: (context, state) {
+                if (state.lessonDetails == null) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (state.currentContent == null) {
+                  return Center(child: Text('No content found'));
+                }
+                final lessonContent = state.currentContent!;
+                final isLastContent =
+                    state.currentIndex ==
+                    state.lessonDetails!.contents.length - 1;
+                final isFirstContent = state.currentIndex == 0;
+                return switch (lessonContent) {
+                  IntroLessonContent() => IntroLessonView(
+                    key: ValueKey('intro_${state.currentIndex}'),
+                    content: lessonContent,
+                    isLast: isLastContent,
+                    isFirst: isFirstContent,
+                  ),
+                  InfoLessonContent() => BlocProvider(
+                    key: ValueKey('info_${state.currentIndex}'),
+                    create: (context) => InfoLessonContentBloc(),
+                    child: InfoLessonView(content: lessonContent),
+                  ),
+                  ChooseCorrectLessonContent() => BlocProvider(
+                    create: (context) => ChooseCorrectLessonContentBloc(),
+                    child: ChooseCorrectLessonView(
+                      content: lessonContent,
+                      isLastContent: isLastContent,
+                    ),
+                  ),
+                  TapToRevealLessonContent() => BlocProvider(
+                    key: ValueKey('tap_to_reveal_${state.currentIndex}'),
+                    create: (context) => TapToRevealLessonContentBloc(),
+                    child: TapToRevealLessonView(content: lessonContent),
+                  ),
+                  DragToMatchLessonContent() => DragToMatchScreen(
+                    lessonContent: lessonContent,
+                  ),
+                  TapToPopLessonContent() => BlocProvider(
+                    create: (context) =>
+                        TapToPopBloc()
+                          ..add(TapToPopEvent.started(lessonContent)),
+                    child: TapToPopLessonView(content: lessonContent),
+                  ),
+                  ListenAndRepeatLessonContent() => BlocProvider(
+                    create: (context) => ListenAndRepeatBloc(
+                      audioPlayerService: AudioPlayerServiceImpl(),
+                      audioRecorderService: AudioRecorderServiceImpl(),
+                    ),
+                    child: ListenAndRepeatView(content: lessonContent),
+                  ),
+                  CharTracingLessonContent() => NewLetterTracingPage(
+                    content: lessonContent,
+                  ),
+                  TeaMakingLessonContent() => KitchenPage(
+                    content: lessonContent,
+                  ),
+                  BallSlideLessonContent() => BallSlideView(
+                    key: ValueKey('ball_slide_${state.currentIndex}'),
+                    content: lessonContent,
+                  ),
+                  FlipCardLessonContent() => FlipCardView(
+                    key: ValueKey('flip_card_${state.currentIndex}'),
+                    content: lessonContent,
+                  ),
+                  SlideUpToMatchLessonContent() => MatchGameScreen(
+                    key: ValueKey('slide_up_to_match_${state.currentIndex}'),
+                    content: lessonContent,
+                    isLastContent: isLastContent,
+                  ),
+                  BalloonFillLessonContent() => BalloonFillView(
+                    content: lessonContent,
+                  ),
+                  GunFillLessonContent() => GunFillLessonView(
+                    content: lessonContent,
+                  ),
+                  HoliAnimateLessonContent() => HoliAnimateView(
+                    content: lessonContent,
+                  ),
+                  TapToChangeLessonContent() => TapToChangeView(
+                    content: lessonContent,
+                  ),
+                  TapToFillLessonContent() => TapToFillView(
+                    key: ValueKey('tap_to_fill_${state.currentIndex}'),
+                    content: lessonContent,
+                  ),
+                  OptionSelectionLessonContent() => OptionSelectionView(
+                    content: lessonContent,
+                  ),
+                  PutInBagLessonContent() => PutInBagView(
+                    key: ValueKey('put_in_bag_${state.currentIndex}'),
+                    content: lessonContent,
+                  ),
+                  TapTheButtonLessonContent() => TapTheButtonView(
+                    key: ValueKey('tap_the_button_${state.currentIndex}'),
+                    content: lessonContent,
+                  ),
+                  LessonRecommendationLessonContent() =>
+                    LessonRecommendationView(content: lessonContent),
+                  _ => UnknownLessonType(
+                    isFirst: isFirstContent,
+                    isLast: isLastContent,
+                  ),
+                };
+              },
+            ),
+          ),
         ),
       ),
     );

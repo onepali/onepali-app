@@ -47,33 +47,41 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   }
 
   void _onNextContent(_NextContent event, Emitter<LessonState> emit) {
-     
     final lessonDetails = state.lessonDetails;
     if (lessonDetails == null) return;
 
     final nextIndex = state.currentIndex + 1;
     if (nextIndex < lessonDetails.contents.length) {
       final nextContent = lessonDetails.contents[nextIndex];
-      emit(
-        state.copyWith(currentIndex: nextIndex, currentContent: nextContent),
-      );
+      emit(_stateAtContentIndex(nextIndex, nextContent));
     }
-    
   }
 
   void _onPreviousContent(_PreviousContent event, Emitter<LessonState> emit) {
-   
     final lessonDetails = state.lessonDetails;
     if (lessonDetails == null) return;
 
     final prevIndex = state.currentIndex - 1;
     if (prevIndex >= 0) {
       final prevContent = lessonDetails.contents[prevIndex];
-      emit(
-        state.copyWith(currentIndex: prevIndex, currentContent: prevContent),
-      );
+      emit(_stateAtContentIndex(prevIndex, prevContent));
     }
-   
+  }
+
+  /// Updates index/content and marks completion only the first time the user
+  /// lands on the last content index (revisiting the last screen does nothing).
+  /// Approach: sticky one-time flag to track completion.
+  LessonState _stateAtContentIndex(int index, LessonContent content) {
+    final lastIndex = state.lessonDetails!.contents.length - 1;
+    final isFirstTimeOnLast =
+        index == lastIndex && !state.hasCompletedLesson;
+
+    return state.copyWith(
+      currentIndex: index,
+      currentContent: content,
+      hasCompletedLesson:
+          state.hasCompletedLesson || isFirstTimeOnLast,
+    );
   }
 
   @override

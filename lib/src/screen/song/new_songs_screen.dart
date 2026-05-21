@@ -18,9 +18,9 @@ class NewSongsScreen extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontFamily: GoogleFonts.poppins().fontFamily,
         fontSize: 36,
-        letterSpacing: 5,
+        letterSpacing: 1,
         fontWeight: FontWeight.bold,
         color: AppColors.kDrawerBgColor,
       ),
@@ -32,104 +32,107 @@ class NewSongsScreen extends StatelessWidget {
     final isMobile = PlatformUtility.isMobile(context);
 
     return Scaffold(
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                      bottom: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                      right: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                    ),
-                    child: CustomCloseButton(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: Center(child: _buildTitleText(context, title)),
-              ),
-            ],
-          ),
-          Expanded(
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('songs')
-                  .where('category_id', isEqualTo: categoryId)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final data = snapshot.data!.docs;
-                  return GridView.builder(
-                    itemCount: data.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3 / 2.0,
-                      mainAxisSpacing: 16.0,
-                      crossAxisSpacing: 16.0,
-                    ),
-                    padding: const EdgeInsets.only(
-                      right: 24,
-                      left: 24,
-                      bottom: 24,
-                    ),
-                    itemBuilder: (context, index) {
-                      final data = snapshot.data!.docs;
-                      return ContentCard(
-                        showPlay: true,
-                        nameEn: data[index]['title_en'],
-                        nameNp: 'nameNp',
+      body: SafeArea(
+        right: true,
+        bottom: false,
+        top: false,
+        left: true,
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: isMobile
+                            ? closeBtnPositionMobile
+                            : closeBtnPositionTablet,
+                        bottom: isMobile
+                            ? closeBtnPositionMobile
+                            : closeBtnPositionTablet,
+                        right: isMobile
+                            ? closeBtnPositionMobile
+                            : closeBtnPositionTablet,
+                      ),
+                      child: CustomCloseButton(
                         onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => SongVideoPlayerScreen(
-                                youtubeUrl:
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(child: _buildTitleText(context, title)),
+                ),
+              ],
+            ),
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('songs')
+                    .where('category_id', isEqualTo: categoryId)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final data = snapshot.data!.docs;
+                    return GridView.builder(
+                      itemCount: data.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 3 / 2.0,
+                        mainAxisSpacing: 24.0,
+                        crossAxisSpacing: 24.0,
+                      ),
+                      padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
+                      itemBuilder: (context, index) {
+                        final data = snapshot.data!.docs;
+                        final song = SongModel.fromJson(data[index].data());
+                        return ContentCard(
+                          showPlay: true,
+                          nameEn: song.titleEn,
+                          nameNp: song.titleNe,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => SongVideoPlayerScreen(
+                                  youtubeUrl:
+                                      data[index]['media']['youtube_link'],
+                                  title: data[index]['title_en'],
+                                  subtitle: '',
+                                  isLocked: false,
+                                  info: '',
+                                  songId: data[index].id,
+                                  initialPosition: 0.0,
+                                  image: Utility.generateYoutubeThumbnailUrl(
                                     data[index]['media']['youtube_link'],
-                                title: data[index]['title_en'],
-                                subtitle: '',
-                                isLocked: false,
-                                info: '',
-                                songId: data[index].id,
-                                initialPosition: 0.0,
-                                image: Utility.generateYoutubeThumbnailUrl(
-                                  data[index]['media']['youtube_link'],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                        image: null,
-                        bgImage: Utility.generateYoutubeThumbnailUrl(
-                          data[index]['media']['youtube_link'],
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
+                            );
+                          },
+                          image: null,
+                          bgImage: Utility.generateYoutubeThumbnailUrl(
+                            song.media.youtubeLink,
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

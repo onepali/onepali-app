@@ -20,9 +20,9 @@ class LessonCategoryPage extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontFamily: GoogleFonts.poppins().fontFamily,
         fontSize: 36,
-        letterSpacing: 5,
+        letterSpacing: 1,
         fontWeight: FontWeight.bold,
         color: AppColors.kDrawerBgColor,
       ),
@@ -87,35 +87,43 @@ class LessonCategoryPage extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final data = snapshot.data!.docs;
-                  return GridView.builder(
-                    itemCount: data.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3 / 2.0,
-                      mainAxisSpacing: 16.0,
-                      crossAxisSpacing: 16.0,
-                    ),
-                    padding: const EdgeInsets.only(
-                      right: 24,
-                      left: 24,
-                      bottom: 24,
-                    ),
-                    itemBuilder: (context, index) {
-                      final data = snapshot.data!.docs;
-                      return ContentCard(
-                        nameEn: data[index]['name'],
-                        bgColor: data[index]['bg_color'],
-                        nameNp: 'name_np',
-                        onTap: () {
-                          Utility.navigateMaterialRoute(
-                            context,
-                            LessonPage(lessonId: data[index].id),
+                  return SafeArea(
+                    right: false,
+                    bottom: false,
+                    top: false,
+                    child: Container(
+                      // color:Colors.green,
+                      child: GridView.builder(
+                        itemCount: data.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 3 / 2.0,
+                          mainAxisSpacing: 16.0,
+                          crossAxisSpacing: 16.0,
+                        ),
+                        padding: EdgeInsets.only(
+                          right: 24,
+                          left: 24,
+                          bottom: 24,
+                        ),
+                        itemBuilder: (context, index) {
+                          final data = snapshot.data!.docs;
+                          return ContentCard(
+                            nameEn: data[index]['name'],
+                            bgColor: data[index]['bg_color'],
+                            nameNp: 'name_np',
+                            onTap: () {
+                              Utility.navigateMaterialRoute(
+                                context,
+                                LessonPage(lessonId: data[index].id),
+                              );
+                            },
+                            image: data[index]['image'],
+                            bgImage: data[index]['bg_image'],
                           );
                         },
-                        image: data[index]['image'],
-                        bgImage: data[index]['bg_image'],
-                      );
-                    },
+                      ),
+                    ),
                   );
                 } else {
                   return const Center(child: CircularProgressIndicator());

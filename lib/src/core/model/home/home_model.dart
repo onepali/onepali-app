@@ -32,10 +32,10 @@ List<HomeServiceModel> homeServices = [
   //   route: AppRoutes.comingSoon,
   // ),
   HomeServiceModel(
-    name: 'Songs',
-    icon: Assets.songsRhymes,
-    tooltip: 'Songs',
-    color: AppColors.kSongColor,
+    name: 'Videos',
+    icon: Assets.video,
+    tooltip: 'Videos',
+    color: AppColors.kVideoColor,
     route: AppRoutes.comingSoon,
   ),
   HomeServiceModel(

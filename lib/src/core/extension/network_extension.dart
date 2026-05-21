@@ -17,6 +17,8 @@ extension ConnectivityResultX on ConnectivityResult {
         return NetworkType.vpn;
       case ConnectivityResult.other:
         return NetworkType.other;
+      case ConnectivityResult.satellite:
+        return NetworkType.satellite;
       case ConnectivityResult.none:
         return NetworkType.none;
     }

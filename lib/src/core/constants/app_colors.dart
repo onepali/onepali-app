@@ -37,6 +37,7 @@ class AppColors {
   /// [Menu] Color
   static const Color kLessonColor = Color(0xFF003893);
   static const Color kSongColor = Color(0xFFFA642D);
+  static const Color kVideoColor = Color(0xFFB98CF5);
   static const Color kStoryColor = Color(0xFF0F9696);
 
   /// Status Color

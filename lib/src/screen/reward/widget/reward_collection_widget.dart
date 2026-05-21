@@ -70,6 +70,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
             Widget stickerGrid() {
               return Center(
                 child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,

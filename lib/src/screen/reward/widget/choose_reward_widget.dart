@@ -13,30 +13,40 @@ class ChooseRewardWidget extends StatefulWidget {
 class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
   int selectedIndex = 0;
 
+  String? childId;
+
   @override
   void initState() {
     super.initState();
     Misc.onLayoutRendered(() {
-      _fetchRewards();
+      _fetchChildId();
     });
   }
 
-  Future<void> _fetchRewards() async {
+  Future<void> _fetchChildId() async {
+    childId = await ChildLocalStorage.getCurrentChildId();
+    if (childId != null) {
+      _fetchClaimableRewards(childId!);
+    }
+  }
+
+  Future<void> _fetchClaimableRewards(String childId) async {
     final rewardProvider = context.read<RewardProvider>();
-    await rewardProvider.fetchRewardCollection();
+    await rewardProvider.fetchClaimableRewards(childId);
   }
 
   Widget stickerGrid(List<RewardModel> rewards) {
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
-
+    // If rewards length is greater than 3, show only 3, otherwise show all
+    final rewardToShow = rewards.length > 3 ? rewards.sublist(0, 3) : rewards;
     // Responsive values
     final double stickerSize = isMobileLandscape ? 130 : 300;
     final double stickerMargin = isMobileLandscape ? 10 : 24;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(rewards.length, (index) {
-        // final isSelected = selectedIndex == index;
+      children: List.generate(rewardToShow.length, (index) {
+        final reward = rewardToShow[index];
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -45,29 +55,18 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => RewardPreviewWidget(data: rewards[index]),
+                builder: (context) => RewardPreviewWidget(data: reward),
               ),
             );
           },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+          child: Container(
             margin: EdgeInsets.symmetric(horizontal: stickerMargin),
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              // border:
-              //     isSelected
-              //         ? Border.all(
-              //           color: AppColors.kPurple.withValues(alpha: 0.8),
-              //           width: 4,
-              //         )
-              //         : null,
-              borderRadius: BorderRadius.circular(18),
-            ),
             child: SizedBox(
               width: stickerSize,
               height: stickerSize,
               child: SvgHelper.fromSource(
-                path: rewards[index].imageOutline ?? rewards[index].image,
+                path: reward.imageOutline ?? reward.image,
                 fit: BoxFit.contain,
                 type: SvgSourceType.network,
               ),
@@ -81,8 +80,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
   @override
   Widget build(BuildContext context) {
     final rewardProvider = Provider.of<RewardProvider>(context);
-    final rewards = rewardProvider.rewards;
-    // final stickers = AppConstants.rewardOutlinedStickers;
+    final rewards = rewardProvider.claimableRewards;
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 

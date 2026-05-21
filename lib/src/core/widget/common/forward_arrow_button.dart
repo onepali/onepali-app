@@ -32,7 +32,7 @@ class CenterRightAlignedForwardButton extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: EdgeInsets.only(right: 32),
+        padding: EdgeInsets.only(right: isMobile ? 24 : 32),
         child: ForwardArrowButton(onTap: onTap),
       ),
     );

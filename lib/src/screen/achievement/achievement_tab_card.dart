@@ -18,7 +18,7 @@ class AchievementTabCard extends StatelessWidget {
     final isTablet =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
-
+  
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableHeight = constraints.maxHeight.isFinite

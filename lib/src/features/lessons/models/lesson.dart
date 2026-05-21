@@ -164,6 +164,7 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
 
     /// This message is for display when the action is done.
     String? message,
+
     /// This message sound is for display when the action is done.
     String? messageSound,
 
@@ -265,7 +266,10 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String id,
     required int index,
     @Default('tap_to_fill') String type,
+    String? audioBeforeOptions,
     String? instruction,
+    String? preBgImageMb,
+    String? preBgImageTb,
     String? bgImage, // png Image
     String? bgImageTb, // png Image
     @Default([]) List<Option> options,

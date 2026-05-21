@@ -98,11 +98,12 @@ class _MicProgressButtonState extends State<MicProgressButton>
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     return GestureDetector(
-      onTap: widget.isCompleted
-          ? () {
-              context.read<LessonBloc>().add(LessonEvent.nextContent());
-            }
-          : null,
+      // onTap: widget.isCompleted
+      //     ? () {
+      //         context.read<LessonBloc>().add(LessonEvent.nextContent());
+      //       }
+      //     : null,
+      onTap: null,
       child: SizedBox(
         width: isMobile ? 180 : 280,
         height: isMobile ? 50 : 88,

@@ -24,7 +24,7 @@ class TapTheButtonView extends StatelessWidget {
       child: BlocBuilder<TapTheButtonBloc, TapTheButtonState>(
         builder: (context, state) {
           if (state.content == null) {
-            return const Center(child: Text('No content found'));
+            return const SizedBox.shrink();
           }
           return Stack(
             children: [
@@ -34,7 +34,7 @@ class TapTheButtonView extends StatelessWidget {
                   bgImageTb: content.bgImageTb,
                 ),
               ),
-              if (!state.isTapped && !state.isCompleted)
+              if (state.isIdle)
                 Center(
                   child: GestureDetector(
                     onTap: () {

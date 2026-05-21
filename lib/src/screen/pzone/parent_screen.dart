@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../src.dart';
@@ -341,115 +342,109 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.kPurple,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              if (isTablet)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: IgnorePointer(
-                    child: CustomImage(
-                      Assets.parentZoneImage,
-                      imageType: CustomImageType.local,
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      boxFit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              Align(
-                alignment: !isTablet ? Alignment.center : Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (isTablet) Gaps.verticalGapOf(80),
-                      Text(
-                        'Parents only',
-                        style: AppStyles.text40PxBold.copyWith(
-                          color: AppColors.kWhite,
-                          fontSize: isTablet ? 52 : 40,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Gaps.verticalGapOf(16),
-                      Text(
-                        _getSubtitleText(),
-                        style: AppStyles.text20PxRegular.copyWith(
-                          color: AppColors.kWhite,
-                          fontSize: isTablet ? 24 : 20,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Gaps.verticalGapOf(32),
-                      CustomPinput(
-                        key: ValueKey(_screenState),
-                        length: AppConstants.passcodeDefaultLength,
-                        controller: _getCurrentController(),
-                        boxSize: isTablet ? 70 : 56,
-                        boxSpacing: 16,
-                        activeColor: AppColors.kWhite,
-                        inactiveColor: AppColors.kWhite.withValues(alpha: 0.3),
-                        errorColor: AppColors.kRed,
-                        validator: (val) => _isError
-                            ? (_errorMessage ?? 'Invalid input')
-                            : null,
-                      ),
-                      Gaps.verticalGapOf(32),
-                      if (_isLoading)
-                        const CircularProgressIndicator(
-                          color: AppColors.kWhite,
-                        ),
-                      if (_screenState == PasscodeScreenState.enterPasscode &&
-                          !_isLoading)
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _screenState = PasscodeScreenState.resetPasscode;
-                            });
-                            _passcodeController.clear();
-                          },
-                          child: Text(
-                            'Forgot passcode?',
-                            style: AppStyles.text16PxRegular.copyWith(
-                              color: AppColors.kWhite.withValues(alpha: 0.8),
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+        body: Stack(
+          children: [
+            if (isTablet)
               Positioned(
-                top: 16,
-                right: Dimensions.kIconMargin(context),
-                child: CircularButtonWidget(
-                  onPressed: () {
-                    if (widget.fromScreenTimeLimit || widget.fromAddChild) {
-                      logger.i(
-                        'Exiting app from parent screen (from screen time limit or add child)',
-                      );
-                      UserAppBar.setTabIndex(0);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => DashboardScreen(),
-                          settings: RouteSettings(
-                            name: AppRoutes.dashboardScreen,
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  type: CircularButtonType.closeGrey,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: IgnorePointer(
+                  child: CustomImage(
+                    Assets.parentZoneImage,
+                    imageType: CustomImageType.local,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    boxFit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ],
-          ),
+            Align(
+              alignment: !isTablet ? Alignment.center : Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (isTablet) Gaps.verticalGapOf(80),
+                    Text(
+                      'Parents only',
+                      style: AppStyles.text40PxBold.copyWith(
+                        color: AppColors.kWhite,
+                        fontSize: isTablet ? 52 : 40,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Gaps.verticalGapOf(16),
+                    Text(
+                      _getSubtitleText(),
+                      style: AppStyles.text20PxRegular.copyWith(
+                        color: AppColors.kWhite,
+                        fontSize: isTablet ? 24 : 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Gaps.verticalGapOf(32),
+                    CustomPinput(
+                      key: ValueKey(_screenState),
+                      length: AppConstants.passcodeDefaultLength,
+                      controller: _getCurrentController(),
+                      boxSize: isTablet ? 70 : 56,
+                      boxSpacing: 16,
+                      activeColor: AppColors.kWhite,
+                      inactiveColor: AppColors.kWhite.withValues(alpha: 0.3),
+                      errorColor: AppColors.kRed,
+                      validator: (val) => _isError
+                          ? (_errorMessage ?? 'Invalid input')
+                          : null,
+                    ),
+                    Gaps.verticalGapOf(32),
+                    if (_isLoading)
+                      const CircularProgressIndicator(
+                        color: AppColors.kWhite,
+                      ),
+                    if (_screenState == PasscodeScreenState.enterPasscode &&
+                        !_isLoading)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _screenState = PasscodeScreenState.resetPasscode;
+                          });
+                          _passcodeController.clear();
+                        },
+                        child: Text(
+                          'Forgot passcode?',
+                          style: AppStyles.text16PxRegular.copyWith(
+                            color: AppColors.kWhite.withValues(alpha: 0.8),
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            TopRightPositionedCloseButton(
+              iconPath: Assets.closeGreyIcon,
+              onTap: () {
+                if (widget.fromScreenTimeLimit || widget.fromAddChild) {
+                  logger.i(
+                    'Exiting app from parent screen (from screen time limit or add child)',
+                  );
+                  UserAppBar.setTabIndex(0);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => DashboardScreen(),
+                      settings: RouteSettings(
+                        name: AppRoutes.dashboardScreen,
+                      ),
+                    ),
+                  );
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

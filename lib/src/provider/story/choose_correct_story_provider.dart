@@ -64,11 +64,9 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   void dispose() {
     super.dispose();
     _audioSub?.cancel();
-    notifyListeners();
     _currentConversation = null;
     _userSelectedConversation = null;
     _isCorrectAnswerSelected = false;
     _isQuestionAudioPlaying = false;
-    notifyListeners();
   }
 }

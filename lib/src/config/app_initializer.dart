@@ -39,17 +39,19 @@ class AppInitializer {
       }
 
       HttpOverrides.global = MyHttpOverrides();
-      
+
       // Notification service - handle errors gracefully
       if (!kIsWeb) {
         try {
           await NotificationService.initialize();
           logger.i('✅ Notification service initialized');
         } catch (e) {
-          logger.w('⚠️ Notification service initialization failed, continuing: $e');
+          logger.w(
+            '⚠️ Notification service initialization failed, continuing: $e',
+          );
         }
       }
-      
+
       // Timezone initialization - handle errors gracefully
       try {
         tz.initializeTimeZones();
@@ -73,7 +75,7 @@ class AppInitializer {
           // If even UTC fails, just continue without timezone
         }
       }
-      
+
       // Initialize guest user status
       try {
         await GuestUtil.init();
@@ -81,7 +83,7 @@ class AppInitializer {
       } catch (e) {
         logger.w('⚠️ Guest utilities initialization failed, continuing: $e');
       }
-      
+
       logger.i('✅ App initialization completed');
     } catch (e, stackTrace) {
       logger.e('❌ Critical error during app initialization: $e');
@@ -129,17 +131,17 @@ class AppInitializer {
     // Check if initial route should be portrait
     final portraitRoutes = OrientationRouteObserver.portraitRoutes;
     final shouldBePortrait = portraitRoutes.contains(initialRoute);
-    
+
     // Use "allow all then lock" pattern for better reliability
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
+      // DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    
+
     await Future.delayed(const Duration(milliseconds: 100));
-    
+
     if (shouldBePortrait) {
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -151,7 +153,7 @@ class AppInitializer {
         DeviceOrientation.landscapeRight,
       ]);
     }
-    
+
     logger.d(
       '🔒 Initial orientation set: ${shouldBePortrait ? "PORTRAIT" : "LANDSCAPE"} '
       'for route: $initialRoute',
@@ -160,7 +162,7 @@ class AppInitializer {
 
   static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     final initialRoute = getInitialRoute(logged, isParentLogged);
-    
+
     // Set initial orientation based on initial route (non-blocking)
     // Don't await - let it happen in background to prevent blocking app launch
     _setInitialRouteOrientation(initialRoute).catchError((e) {
@@ -178,16 +180,18 @@ class AppInitializer {
               logger.w('⚠️ ResponsiveConfig initialization failed: $e');
               // Continue with default values
             }
-            
+
             // Safely get locale from Provider, with fallback
             Locale appLocale;
             try {
               appLocale = context.watch<LanguageProvider>().locale;
             } catch (e) {
-              logger.w('⚠️ Failed to get locale from LanguageProvider, using default: $e');
+              logger.w(
+                '⚠️ Failed to get locale from LanguageProvider, using default: $e',
+              );
               appLocale = const Locale('en'); // Default fallback
             }
-            
+
             return MaterialApp(
               title: AppConstants.appName,
               navigatorKey: navigatorKey,
@@ -229,11 +233,9 @@ class AppInitializer {
                     context,
                   ).copyWith(textScaler: const TextScaler.linear(1)),
                   child: Material(
-                    child: widget != null 
-                        ? widget 
-                        : const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                    child: widget != null
+                        ? widget
+                        : const Center(child: CircularProgressIndicator()),
                   ),
                 );
               },

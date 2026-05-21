@@ -27,7 +27,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   AudioPlayer? _questionAudioPlayer;
   AudioPlayer? _itemAudioPlayer;
   AudioPlayer? _wrongSfxPlayer;
-  Timer? _hintTimer;
+  Timer? _hintTimer; 
   String? _hintQuestionKey;
   bool _showHintPulse = false;
 
@@ -118,7 +118,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
 
     _cancelHintPulse();
     _hintQuestionKey = nextQuestionKey;
-    _hintTimer = Timer(const Duration(seconds: 4), () {
+    _hintTimer = Timer(const Duration(seconds: 7), () {
       if (!mounted) return;
       final latestState = context.read<TapToRevealLessonContentBloc>().state;
       final latestQuestionKey = _questionKey(latestState.currentQuestion);
