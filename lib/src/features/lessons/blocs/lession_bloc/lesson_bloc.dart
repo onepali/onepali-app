@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -38,6 +37,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
         lessonDetail.contents.sort((a, b) => a.index.compareTo(b.index));
         return state.copyWith(
           lessonDetails: lessonDetail,
+          errorMessage: null,
           currentIndex: 0,
           currentContent: lessonDetail.contents.isNotEmpty
               ? lessonDetail.contents[0]
@@ -45,7 +45,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
         );
       },
       onError: (error, _) {
-        return state;
+        return state.copyWith(errorMessage: error.toString());
       },
     );
   }
@@ -108,7 +108,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
       await audioPlayer.play(DeviceFileSource(file.path));
     } else {
       // cache the file and then play
-      DefaultCacheManager().removeFile(url);
+      await DefaultCacheManager().removeFile(url);
       await audioPlayer.play(UrlSource(url));
     }
   }
@@ -155,8 +155,8 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   @override
   Future<void> close() async {
     log('Disposing LessonBloc');
-    _wordPlayer.dispose();
-    _soundPlayer.dispose();
+    await _wordPlayer.dispose();
+    await _soundPlayer.dispose();
     return super.close();
   }
 }

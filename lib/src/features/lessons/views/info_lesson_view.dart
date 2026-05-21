@@ -42,23 +42,38 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final file = await _videoCacheManager.getSingleFile(
-        widget.lessonInformation.video,
-        headers: {'Cache-Control': 'max-age=604800'},
-      );
-      if (!mounted) return;
-      final controller = VideoPlayerController.file(file);
-      await controller.initialize();
+      final videoUrl = widget.lessonInformation.video;
+      if (videoUrl.isEmpty) return;
 
-      if (!mounted) {
-        await controller.dispose();
+      try {
+        final file = await _videoCacheManager.getSingleFile(
+          videoUrl,
+          headers: {'Cache-Control': 'max-age=604800'},
+        );
+        if (!mounted) return;
+
+        final controller = VideoPlayerController.file(file);
+        await controller.initialize();
+
+        if (!mounted) {
+          await controller.dispose();
+          return;
+        }
+
+        _controller = controller;
+        _controller!.addListener(_videoListener);
+
+        setState(() {});
+        _controller!.play();
+      } catch (error) {
+        debugPrint('Failed to load lesson video: $error');
+        if (!mounted) return;
+        setState(() {
+          _controller = null;
+          _isVideoFinished = true;
+        });
         return;
       }
-      _controller = controller;
-      _controller!.addListener(_videoListener);
-
-      setState(() {});
-      _controller!.play();
     });
   }
 
@@ -69,6 +84,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         _controller!.value.position >= _controller!.value.duration;
 
     if (isFinished && !_isVideoFinished) {
+      if (!mounted) return;
       setState(() {
         _isVideoFinished = true;
       });

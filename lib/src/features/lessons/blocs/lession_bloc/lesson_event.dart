@@ -8,8 +8,7 @@ class LessonEvent with _$LessonEvent {
   const factory LessonEvent.playItemAudio() = _PlayItemAudio;
 
   // Choose correct related content events
-  const factory LessonEvent.playChooseCorrectItem() =
-      _PlayChooseCorrectItem;
+  const factory LessonEvent.playChooseCorrectItem() = _PlayChooseCorrectItem;
   const factory LessonEvent.chooseItem(Item item) = _ChooseItem;
 
   //Common events

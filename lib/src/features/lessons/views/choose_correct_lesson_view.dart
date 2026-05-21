@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
@@ -78,10 +77,14 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                         width: size.width * 0.2, // or any fixed width you want
                         child: ElevatedButton(
                           onPressed: () {
-                            if(isCorrect){
-                              context
-                                  .read<LessonBloc>()
-                                  .add(LessonEvent.nextContent());
+                            if (isCorrect) {
+                              context.read<LessonBloc>().add(
+                                LessonEvent.nextContent(),
+                              );
+                            } else {
+                              context.read<LessonBloc>().add(
+                                LessonEvent.playChooseCorrectItem(),
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -117,7 +120,8 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
             right: size.width * 0.05,
             child: InkWell(
               onTap: () => Navigator.of(context).pop(),
-              child: SvgHelper.fromSource(path: Assets.wrong)),
+              child: SvgHelper.fromSource(path: Assets.wrong),
+            ),
           ),
         ],
       ),

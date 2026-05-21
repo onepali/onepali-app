@@ -10,7 +10,14 @@ class LessonRepository {
         .collection('lessons')
         .doc(lessonId)
         .snapshots()
-        .map((doc) => Lesson.fromJson(doc.data()!));
+        .map((doc) {
+          final data = doc.data();
+          if (!doc.exists || data == null) {
+            throw StateError('Lesson $lessonId not found');
+          }
+
+          return Lesson.fromJson({...data, 'id': data['id'] ?? doc.id});
+        });
 
     final contentsStream = _firestore
         .collection('lessons')
@@ -18,18 +25,19 @@ class LessonRepository {
         .collection('contents')
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => LessonContent.fromJson(doc.data()))
-              .toList(),
+          (snapshot) => snapshot.docs.map((doc) {
+            final data = doc.data();
+            return LessonContent.fromJson({
+              ...data,
+              'id': data['id'] ?? doc.id,
+            });
+          }).toList(),
         );
 
     return Rx.combineLatest2<Lesson, List<LessonContent>, LessonDetail>(
       lessonStream,
       contentsStream,
-      (lesson, contents) => LessonDetail(
-        lesson: lesson,
-        contents: contents,
-      ),
+      (lesson, contents) => LessonDetail(lesson: lesson, contents: contents),
     );
   }
 }

@@ -82,7 +82,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required int index,
     @Default('choose_correct') String type,
 
-    @Default([])List<Item> items,
+    @Default([]) List<Item> items,
   }) = ChooseCorrectLessonContent;
 
   const factory LessonContent.unknown({

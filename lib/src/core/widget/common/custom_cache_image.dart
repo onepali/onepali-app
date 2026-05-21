@@ -34,11 +34,8 @@ class CustomCachedImage extends StatelessWidget {
               : 24,
         );
       },
-      placeholder: (context, url) => Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          ),
-      ),
+      placeholder: (context, url) =>
+          Center(child: CircularProgressIndicator(strokeWidth: 2)),
     );
   }
 }

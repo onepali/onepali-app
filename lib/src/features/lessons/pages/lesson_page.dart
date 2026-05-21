@@ -22,6 +22,12 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
@@ -29,23 +35,32 @@ class _LessonPageState extends State<LessonPage> {
       child: Scaffold(
         body: BlocBuilder<LessonBloc, LessonState>(
           builder: (context, state) {
-            if (state.lessonDetails == null) {
-              return Center(child: CircularProgressIndicator());
+            if (state.errorMessage != null) {
+              return Center(child: Text(state.errorMessage!));
             }
-            final index = state.currentIndex;
-            final lessonContent = state.lessonDetails!.contents[index];
+            if (state.lessonDetails == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final contents = state.lessonDetails!.contents;
+            if (contents.isEmpty) {
+              return const Center(child: Text('No lesson content available'));
+            }
+
+            final index = state.currentIndex.clamp(0, contents.length - 1);
+            final lessonContent = contents[index];
             switch (lessonContent) {
               case InfoLessonContent():
                 return InfoLessonView(
-                   key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
-                  lessonInformation: lessonContent);
+                  key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
+                  lessonInformation: lessonContent,
+                );
               case ChooseCorrectLessonContent():
                 return ChooseCorrectLessonView(
-                   key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
+                  key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
                   lessonInformation: lessonContent,
                 );
               default:
-                return Center(child: Text('Unknown content type'));
+                return const Center(child: Text('Unknown content type'));
             }
           },
         ),

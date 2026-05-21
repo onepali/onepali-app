@@ -5,13 +5,13 @@ class LessonState with _$LessonState {
   const factory LessonState({
     String? lessonId,
     LessonDetail? lessonDetails,
+    String? errorMessage,
     @Default(0) int currentIndex,
     LessonContent? currentContent,
     // Choose correct related content state
     Item? itemQuestioned,
     Item? userSelectedItem,
     bool? isAnswerCorrect,
-
   }) = _LessonState;
 
   @override

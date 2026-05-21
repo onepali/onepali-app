@@ -545,7 +545,7 @@ String toString() {
 /// @nodoc
 mixin _$LessonState {
 
- String? get lessonId; LessonDetail? get lessonDetails; int get currentIndex; LessonContent? get currentContent;// Choose correct related content state
+ String? get lessonId; LessonDetail? get lessonDetails; String? get errorMessage; int get currentIndex; LessonContent? get currentContent;// Choose correct related content state
  Item? get itemQuestioned; Item? get userSelectedItem; bool? get isAnswerCorrect;
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
@@ -557,16 +557,16 @@ $LessonStateCopyWith<LessonState> get copyWith => _$LessonStateCopyWithImpl<Less
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect);
+int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,errorMessage,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect);
 
 @override
 String toString() {
-  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect)';
+  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, errorMessage: $errorMessage, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect)';
 }
 
 
@@ -577,7 +577,7 @@ abstract mixin class $LessonStateCopyWith<$Res>  {
   factory $LessonStateCopyWith(LessonState value, $Res Function(LessonState) _then) = _$LessonStateCopyWithImpl;
 @useResult
 $Res call({
- String? lessonId, LessonDetail? lessonDetails, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect
+ String? lessonId, LessonDetail? lessonDetails, String? errorMessage, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect
 });
 
 
@@ -594,11 +594,12 @@ class _$LessonStateCopyWithImpl<$Res>
 
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? errorMessage = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,}) {
   return _then(_self.copyWith(
 lessonId: freezed == lessonId ? _self.lessonId : lessonId // ignore: cast_nullable_to_non_nullable
 as String?,lessonDetails: freezed == lessonDetails ? _self.lessonDetails : lessonDetails // ignore: cast_nullable_to_non_nullable
-as LessonDetail?,currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
+as LessonDetail?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
 as int,currentContent: freezed == currentContent ? _self.currentContent : currentContent // ignore: cast_nullable_to_non_nullable
 as LessonContent?,itemQuestioned: freezed == itemQuestioned ? _self.itemQuestioned : itemQuestioned // ignore: cast_nullable_to_non_nullable
 as Item?,userSelectedItem: freezed == userSelectedItem ? _self.userSelectedItem : userSelectedItem // ignore: cast_nullable_to_non_nullable
@@ -724,10 +725,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  String? errorMessage,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LessonState() when $default != null:
-return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
+return $default(_that.lessonId,_that.lessonDetails,_that.errorMessage,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
   return orElse();
 
 }
@@ -745,10 +746,10 @@ return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.curr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? lessonId,  LessonDetail? lessonDetails,  String? errorMessage,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)  $default,) {final _that = this;
 switch (_that) {
 case _LessonState():
-return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
+return $default(_that.lessonId,_that.lessonDetails,_that.errorMessage,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -765,10 +766,10 @@ return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.curr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? lessonId,  LessonDetail? lessonDetails,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? lessonId,  LessonDetail? lessonDetails,  String? errorMessage,  int currentIndex,  LessonContent? currentContent,  Item? itemQuestioned,  Item? userSelectedItem,  bool? isAnswerCorrect)?  $default,) {final _that = this;
 switch (_that) {
 case _LessonState() when $default != null:
-return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
+return $default(_that.lessonId,_that.lessonDetails,_that.errorMessage,_that.currentIndex,_that.currentContent,_that.itemQuestioned,_that.userSelectedItem,_that.isAnswerCorrect);case _:
   return null;
 
 }
@@ -780,11 +781,12 @@ return $default(_that.lessonId,_that.lessonDetails,_that.currentIndex,_that.curr
 
 
 class _LessonState implements LessonState {
-  const _LessonState({this.lessonId, this.lessonDetails, this.currentIndex = 0, this.currentContent, this.itemQuestioned, this.userSelectedItem, this.isAnswerCorrect});
+  const _LessonState({this.lessonId, this.lessonDetails, this.errorMessage, this.currentIndex = 0, this.currentContent, this.itemQuestioned, this.userSelectedItem, this.isAnswerCorrect});
   
 
 @override final  String? lessonId;
 @override final  LessonDetail? lessonDetails;
+@override final  String? errorMessage;
 @override@JsonKey() final  int currentIndex;
 @override final  LessonContent? currentContent;
 // Choose correct related content state
@@ -802,16 +804,16 @@ _$LessonStateCopyWith<_LessonState> get copyWith => __$LessonStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LessonState&&(identical(other.lessonId, lessonId) || other.lessonId == lessonId)&&(identical(other.lessonDetails, lessonDetails) || other.lessonDetails == lessonDetails)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.currentContent, currentContent) || other.currentContent == currentContent)&&(identical(other.itemQuestioned, itemQuestioned) || other.itemQuestioned == itemQuestioned)&&(identical(other.userSelectedItem, userSelectedItem) || other.userSelectedItem == userSelectedItem)&&(identical(other.isAnswerCorrect, isAnswerCorrect) || other.isAnswerCorrect == isAnswerCorrect));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect);
+int get hashCode => Object.hash(runtimeType,lessonId,lessonDetails,errorMessage,currentIndex,currentContent,itemQuestioned,userSelectedItem,isAnswerCorrect);
 
 @override
 String toString() {
-  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect)';
+  return 'LessonState(lessonId: $lessonId, lessonDetails: $lessonDetails, errorMessage: $errorMessage, currentIndex: $currentIndex, currentContent: $currentContent, itemQuestioned: $itemQuestioned, userSelectedItem: $userSelectedItem, isAnswerCorrect: $isAnswerCorrect)';
 }
 
 
@@ -822,7 +824,7 @@ abstract mixin class _$LessonStateCopyWith<$Res> implements $LessonStateCopyWith
   factory _$LessonStateCopyWith(_LessonState value, $Res Function(_LessonState) _then) = __$LessonStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? lessonId, LessonDetail? lessonDetails, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect
+ String? lessonId, LessonDetail? lessonDetails, String? errorMessage, int currentIndex, LessonContent? currentContent, Item? itemQuestioned, Item? userSelectedItem, bool? isAnswerCorrect
 });
 
 
@@ -839,11 +841,12 @@ class __$LessonStateCopyWithImpl<$Res>
 
 /// Create a copy of LessonState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lessonId = freezed,Object? lessonDetails = freezed,Object? errorMessage = freezed,Object? currentIndex = null,Object? currentContent = freezed,Object? itemQuestioned = freezed,Object? userSelectedItem = freezed,Object? isAnswerCorrect = freezed,}) {
   return _then(_LessonState(
 lessonId: freezed == lessonId ? _self.lessonId : lessonId // ignore: cast_nullable_to_non_nullable
 as String?,lessonDetails: freezed == lessonDetails ? _self.lessonDetails : lessonDetails // ignore: cast_nullable_to_non_nullable
-as LessonDetail?,currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
+as LessonDetail?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
 as int,currentContent: freezed == currentContent ? _self.currentContent : currentContent // ignore: cast_nullable_to_non_nullable
 as LessonContent?,itemQuestioned: freezed == itemQuestioned ? _self.itemQuestioned : itemQuestioned // ignore: cast_nullable_to_non_nullable
 as Item?,userSelectedItem: freezed == userSelectedItem ? _self.userSelectedItem : userSelectedItem // ignore: cast_nullable_to_non_nullable
