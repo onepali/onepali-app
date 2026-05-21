@@ -45,7 +45,7 @@ dependencies:
   flutter_cache_manager: ^3.4.1
 
   # Networking & HTTP
-  http: ^1.4.0
+  http: ^1.6.0
   connectivity_plus: ^7.1.1
 
   # Storage & File System
