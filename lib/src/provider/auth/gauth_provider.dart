@@ -68,11 +68,11 @@ class GoogleAuthProvider with ChangeNotifier {
 
       _user = googleUser;
 
-      final firebase_auth.OAuthCredential credential = firebase_auth
-          .GoogleAuthProvider.credential(
-        accessToken: accessToken,
-        idToken: idToken,
-      );
+      final firebase_auth.OAuthCredential credential =
+          firebase_auth.GoogleAuthProvider.credential(
+            accessToken: accessToken,
+            idToken: idToken,
+          );
 
       final firebase_auth.UserCredential userCredential = await firebase_auth
           .FirebaseAuth
@@ -89,10 +89,9 @@ class GoogleAuthProvider with ChangeNotifier {
       final Map<String, dynamic> userInfo = {
         'full_name': googleUser.displayName,
         'email': googleUser.email,
-        'user_dp':
-            Utility.isAccessible(googleUser.photoUrl)
-                ? googleUser.photoUrl!.replaceAll('=s96-c', '=s512-c')
-                : "",
+        'user_dp': Utility.isAccessible(googleUser.photoUrl)
+            ? googleUser.photoUrl!.replaceAll('=s96-c', '=s512-c')
+            : "",
         'login_type': AuthProviderType.google.name,
         'access_token': accessToken,
       };
@@ -128,7 +127,10 @@ class GoogleAuthProvider with ChangeNotifier {
         );
         await _sharedPrefs.setBoolPref(AppConstants.logged, true);
         // Reset parent login status on new login - user must verify passcode again
-        await _sharedPrefs.setBoolPref(AppConstants.parentDashboardLogged, false);
+        await _sharedPrefs.setBoolPref(
+          AppConstants.parentDashboardLogged,
+          false,
+        );
         // Save FCM token after login
         await Utility.saveFcmTokenToFirestore(firebaseUser.uid);
       }

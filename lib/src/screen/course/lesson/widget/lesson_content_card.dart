@@ -9,7 +9,8 @@ class LessonContentCard extends StatefulWidget {
   final bool hasSound;
   final VoidCallback? onPlay;
   final int index;
-  final bool showOnlyAnimation; // When true, only shows animation (no text/audio)
+  final bool
+  showOnlyAnimation; // When true, only shows animation (no text/audio)
   final double? parentWidth; // Parent container width for relative sizing
   const LessonContentCard({
     super.key,
@@ -276,29 +277,31 @@ class _LessonContentCardState extends State<LessonContentCard>
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
-    
+
     // If showOnlyAnimation is true, only render animation for both mobile and tablet
     if (widget.showOnlyAnimation) {
       // Use parent width for relative sizing, or fallback to screen-based
-      final containerWidth = widget.parentWidth ?? MediaQuery.of(context).size.width * 0.4;
+      final containerWidth =
+          widget.parentWidth ?? MediaQuery.of(context).size.width * 0.4;
       // Container takes ~87% of parent width (35.w / 0.4 ≈ 87.5% of 40%)
       final containerSize = containerWidth * 0.875;
       // Fixed dimensions consistent for ALL animals (same as bird - wider box)
       // Use wider aspect ratio (width > height) to match bird's box dimensions
       // containerHeight = containerSize * 0.75; // Wider box, height is 75% of width
-      
+
       // Ensure container fits within parent width
       final maxContainerWidth = containerWidth;
       final actualContainerSize = containerSize.clamp(0.0, maxContainerWidth);
       // Fixed height: always 75% of container size (wider box, not square)
       final actualContainerHeight = actualContainerSize * 0.75;
-      
+
       // Animation fills container completely (100%), image is 80% of container
       final animWidth = actualContainerSize;
       final animHeight = actualContainerHeight;
       final imageWidth = actualContainerSize * 0.80; // 80% of container width
-      final imageHeight = actualContainerHeight * 0.80; // 80% of container height
-      
+      final imageHeight =
+          actualContainerHeight * 0.80; // 80% of container height
+
       return Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -315,21 +318,26 @@ class _LessonContentCardState extends State<LessonContentCard>
                   ? Utility.parseHexColors(widget.content.color!).first
                   : AppColors.learningColors[widget.index %
                         AppColors.learningColors.length],
-              borderRadius: BorderRadius.circular(containerWidth * 0.06), // ~24px for 400px width
+              borderRadius: BorderRadius.circular(
+                containerWidth * 0.06,
+              ), // ~24px for 400px width
             ),
             child: Center(
               child: Builder(
                 builder: (context) {
                   // Animation uses full size, image uses 80% size
                   final effectiveWidth = _showLottie ? animWidth : imageWidth;
-                  final effectiveHeight = _showLottie ? animHeight : imageHeight;
-                  
+                  final effectiveHeight = _showLottie
+                      ? animHeight
+                      : imageHeight;
+
                   // For rabbit, scale down the image after animation to 90%
-                  final isRabbit = widget.content.nameEn?.toLowerCase() == 'rabbit';
+                  final isRabbit =
+                      widget.content.nameEn?.toLowerCase() == 'rabbit';
                   final rabbitScale = isRabbit && !_showLottie ? 0.9 : 1.0;
                   final finalWidth = effectiveWidth * rabbitScale;
                   final finalHeight = effectiveHeight * rabbitScale;
-                  
+
                   return Transform.scale(
                     scale: rabbitScale,
                     child: _buildImageOrLottie(
@@ -345,18 +353,18 @@ class _LessonContentCardState extends State<LessonContentCard>
         ),
       );
     }
-    
+
     if (!isMobile) {
       // Tablet: Use larger container size, but same logic as mobile
       final containerWidth = 70.h(context);
       final containerHeight = 50.h(context);
-      
+
       // Animation fills container completely (100%), image is 80% of container
       final animWidth = containerWidth;
       final animHeight = containerHeight;
       final imageWidth = containerWidth * 0.80; // 80% of container width
       final imageHeight = containerHeight * 0.80; // 80% of container height
-      
+
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -376,20 +384,23 @@ class _LessonContentCardState extends State<LessonContentCard>
                 builder: (context) {
                   // Animation uses full size, image uses 80% size
                   final effectiveWidth = _showLottie ? animWidth : imageWidth;
-                  final effectiveHeight = _showLottie ? animHeight : imageHeight;
-                  
+                  final effectiveHeight = _showLottie
+                      ? animHeight
+                      : imageHeight;
+
                   // For rabbit, scale down the image after animation to 90%
-                  final isRabbit = widget.content.nameEn?.toLowerCase() == 'rabbit';
+                  final isRabbit =
+                      widget.content.nameEn?.toLowerCase() == 'rabbit';
                   final rabbitScale = isRabbit && !_showLottie ? 0.9 : 1.0;
                   final finalWidth = effectiveWidth * rabbitScale;
                   final finalHeight = effectiveHeight * rabbitScale;
-                  
+
                   return Transform.scale(
                     scale: rabbitScale,
-              child: _buildImageOrLottie(
+                    child: _buildImageOrLottie(
                       width: finalWidth,
                       height: finalHeight,
-                isMobile: false,
+                      isMobile: false,
                     ),
                   );
                 },
@@ -431,7 +442,7 @@ class _LessonContentCardState extends State<LessonContentCard>
       // Regular layout (not showOnlyAnimation) - uses animal-specific sizing
       bool isDog = widget.content.nameEn?.toLowerCase() == 'dog';
       bool isFish = widget.content.nameEn?.toLowerCase() == 'fish';
-      
+
       return SizedBox(
         width: double.infinity,
         child: Row(

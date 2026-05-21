@@ -22,10 +22,9 @@ class PrintablesCard extends StatelessWidget {
     final double horizontalGap = isMobile ? 12.0 : 16.0;
     final double verticalGap = isMobile ? 0.0 : 12.0;
 
-    final TextStyle titleStyle =
-        isMobile
-            ? AppStyles.text16PxRegular.copyWith()
-            : AppStyles.text20PxMedium;
+    final TextStyle titleStyle = isMobile
+        ? AppStyles.text16PxRegular.copyWith()
+        : AppStyles.text20PxMedium;
 
     return customInkwell(
       onTap: onTap,
@@ -41,17 +40,17 @@ class PrintablesCard extends StatelessWidget {
           children: [
             isMobile
                 ? _buildMobileLayout(
-                  cardPadding,
-                  imageSize,
-                  horizontalGap,
-                  titleStyle,
-                )
+                    cardPadding,
+                    imageSize,
+                    horizontalGap,
+                    titleStyle,
+                  )
                 : _buildTabletLayout(
-                  cardPadding,
-                  imageSize,
-                  verticalGap,
-                  titleStyle,
-                ),
+                    cardPadding,
+                    imageSize,
+                    verticalGap,
+                    titleStyle,
+                  ),
           ],
         ),
       ),

@@ -91,17 +91,16 @@ class _AchievementScreenState extends State<AchievementScreen> {
                 ? constraints.maxHeight
                 : MediaQuery.of(context).size.height,
             child: Row(
-              children:
-                  achievementList.map((achievement) {
-                    final value = _getAchievementValue(achievement.id);
-                    return Expanded(
-                      child: AchievementTabCard(
-                        achievement: achievement,
-                        dynamicValue: value,
-                        onTap: () {},
-                      ),
-                    );
-                  }).toList(),
+              children: achievementList.map((achievement) {
+                final value = _getAchievementValue(achievement.id);
+                return Expanded(
+                  child: AchievementTabCard(
+                    achievement: achievement,
+                    dynamicValue: value,
+                    onTap: () {},
+                  ),
+                );
+              }).toList(),
             ),
           );
         },
@@ -141,10 +140,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
         PlatformUtility.isLandscape(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
 
-    final double titleFontSize =
-        isTabletLandScape ? 22 : (isMobileLandscape ? 20 : 24);
-    final double imageSize =
-        isTabletLandScape ? 150 : (isMobileLandscape ? 80 : 120);
+    final double titleFontSize = isTabletLandScape
+        ? 22
+        : (isMobileLandscape ? 20 : 24);
+    final double imageSize = isTabletLandScape
+        ? 150
+        : (isMobileLandscape ? 80 : 120);
     final double paddingH = isTabletLandScape ? 50 : 16;
     final double paddingV = isTabletLandScape ? 50 : 16;
 
@@ -191,9 +192,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                           ? constraints.maxHeight
                           : 200.0;
                       return Container(
-                        constraints: BoxConstraints(
-                          maxHeight: availableHeight,
-                        ),
+                        constraints: BoxConstraints(maxHeight: availableHeight),
                         padding: EdgeInsets.symmetric(
                           horizontal: paddingH,
                           vertical: paddingV,
@@ -260,7 +259,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
           final availableWidth = constraints.maxWidth.isFinite
               ? constraints.maxWidth
               : MediaQuery.of(context).size.width;
-          
+
           return Container(
             height: isTabletLandScape
                 ? MediaQuery.of(context).size.height
@@ -352,16 +351,13 @@ class _AchievementScreenState extends State<AchievementScreen> {
   Widget build(BuildContext context) {
     final bool isTablet = PlatformUtility.isTablet(context);
     return Scaffold(
-        backgroundColor: AppColors.kBlack,
+      backgroundColor: AppColors.kBlack,
       body: SafeArea(
         child: Stack(
           children: [
             // Background
             Positioned.fill(
-              child: Image.asset(
-                Assets.rewardBackground,
-                  fit: BoxFit.cover,
-              ),
+              child: Image.asset(Assets.rewardBackground, fit: BoxFit.cover),
             ),
 
             // Content
@@ -391,9 +387,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                         width: congratsWidth,
                         child: buildCongratulationsSection(),
                       ),
-                      Expanded(
-                        child: buildAchievementGrid(),
-                      ),
+                      Expanded(child: buildAchievementGrid()),
                     ],
                   );
                 },

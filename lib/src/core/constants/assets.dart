@@ -111,21 +111,26 @@ class Assets {
   static String setting = 'setting'.icon;
   static String parentZone = 'parent'.icon;
   static String download = 'download'.icon;
-  
+
   /// Get drawer icon path based on device type (w24 for mobile, w32 for tablet)
   static String getDrawerIcon(BuildContext context, String baseName) {
     final isTablet = PlatformUtility.isTablet(context);
-    return isTablet 
+    return isTablet
         ? 'assets/svg/icons/${baseName}_tablet.svg'
         : 'assets/svg/icons/$baseName.svg';
   }
-  
+
   /// Drawer icons with device-aware selection
-  static String homeIcon(BuildContext context) => getDrawerIcon(context, 'home');
-  static String familyIcon(BuildContext context) => getDrawerIcon(context, 'family');
-  static String logoutIcon(BuildContext context) => getDrawerIcon(context, 'logout');
-  static String downloadIcon(BuildContext context) => getDrawerIcon(context, 'download');
-  static String parentZoneIcon(BuildContext context) => getDrawerIcon(context, 'parent');
+  static String homeIcon(BuildContext context) =>
+      getDrawerIcon(context, 'home');
+  static String familyIcon(BuildContext context) =>
+      getDrawerIcon(context, 'family');
+  static String logoutIcon(BuildContext context) =>
+      getDrawerIcon(context, 'logout');
+  static String downloadIcon(BuildContext context) =>
+      getDrawerIcon(context, 'download');
+  static String parentZoneIcon(BuildContext context) =>
+      getDrawerIcon(context, 'parent');
 
   /// [Json] assets
   // static String user = 'user'.json;

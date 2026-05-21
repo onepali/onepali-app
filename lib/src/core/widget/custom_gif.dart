@@ -188,11 +188,11 @@ class _GifState extends State<Gif> with SingleTickerProviderStateMixin {
         : widget.excludeFromSemantics
         ? image
         : Semantics(
-          container: widget.semanticLabel != null,
-          image: true,
-          label: widget.semanticLabel ?? '',
-          child: image,
-        );
+            container: widget.semanticLabel != null,
+            image: true,
+            label: widget.semanticLabel ?? '',
+            child: image,
+          );
   }
 
   @override
@@ -271,10 +271,9 @@ class _GifState extends State<Gif> with SingleTickerProviderStateMixin {
   void _listener() {
     if (_frames.isNotEmpty && mounted) {
       setState(() {
-        _frameIndex =
-            _frames.isEmpty
-                ? 0
-                : ((_frames.length - 1) * _controller.value).floor();
+        _frameIndex = _frames.isEmpty
+            ? 0
+            : ((_frames.length - 1) * _controller.value).floor();
       });
     }
   }
@@ -285,12 +284,11 @@ class _GifState extends State<Gif> with SingleTickerProviderStateMixin {
   Future<void> _loadFrames() async {
     if (!mounted) return;
 
-    GifInfo gif =
-        widget.useCache
-            ? Gif.cache.caches.containsKey(_getImageKey(widget.image))
-                ? Gif.cache.caches[_getImageKey(widget.image)]!
-                : await _fetchFrames(widget.image)
-            : await _fetchFrames(widget.image);
+    GifInfo gif = widget.useCache
+        ? Gif.cache.caches.containsKey(_getImageKey(widget.image))
+              ? Gif.cache.caches[_getImageKey(widget.image)]!
+              : await _fetchFrames(widget.image)
+        : await _fetchFrames(widget.image);
 
     if (!mounted) return;
 
@@ -300,12 +298,11 @@ class _GifState extends State<Gif> with SingleTickerProviderStateMixin {
 
     setState(() {
       _frames = gif.frames;
-      _controller.duration =
-          widget.fps != null
-              ? Duration(
-                milliseconds: (_frames.length / widget.fps! * 1000).round(),
-              )
-              : widget.duration ?? gif.duration;
+      _controller.duration = widget.fps != null
+          ? Duration(
+              milliseconds: (_frames.length / widget.fps! * 1000).round(),
+            )
+          : widget.duration ?? gif.duration;
       if (widget.onFetchCompleted != null) {
         widget.onFetchCompleted!();
       }

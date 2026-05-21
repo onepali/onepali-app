@@ -11,10 +11,9 @@ class NotificationCard extends StatelessWidget {
       child: ListTile(
         title: Text(notification.title),
         subtitle: Text(notification.body),
-        trailing:
-            notification.seen
-                ? const Icon(Icons.check_circle, color: Colors.green)
-                : const Icon(Icons.circle, color: Colors.grey),
+        trailing: notification.seen
+            ? const Icon(Icons.check_circle, color: Colors.green)
+            : const Icon(Icons.circle, color: Colors.grey),
       ),
     );
   }

@@ -43,7 +43,9 @@ class PasscodeModel {
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
       'attempts': attempts,
-      'lockedUntil': lockedUntil != null ? Timestamp.fromDate(lockedUntil!) : null,
+      'lockedUntil': lockedUntil != null
+          ? Timestamp.fromDate(lockedUntil!)
+          : null,
       'mode': mode.name,
     };
   }

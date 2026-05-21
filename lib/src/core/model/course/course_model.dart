@@ -69,10 +69,9 @@ class Course {
     lessons: List<Lesson>.from(
       (json["lessons"] ?? []).map((x) => Lesson.fromJson(x)),
     ),
-    levelUnlockCriteria:
-        json["level_unlock_criteria"] != null
-            ? LevelUnlockCriteria.fromJson(json["level_unlock_criteria"])
-            : null,
+    levelUnlockCriteria: json["level_unlock_criteria"] != null
+        ? LevelUnlockCriteria.fromJson(json["level_unlock_criteria"])
+        : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -214,25 +213,23 @@ class LessonContent {
     text: json["text"] ?? "",
     mbImage: json["mb_image"] ?? "",
     tbImage: json["tb_image"] ?? "",
-    tapTargets:
-        json["tap_targets"] != null
-            ? List<TapTarget>.from(
-              json["tap_targets"].map((x) => TapTarget.fromJson(x)),
-            )
-            : null,
+    tapTargets: json["tap_targets"] != null
+        ? List<TapTarget>.from(
+            json["tap_targets"].map((x) => TapTarget.fromJson(x)),
+          )
+        : null,
     correctAnswerId: json["correct_answer_id"] ?? "",
-    feedback:
-        json["feedback"] != null ? Feedback.fromJson(json["feedback"]) : null,
-    dragTargets:
-        json["drag_targets"] != null
-            ? List<DragTargets>.from(
-              json["drag_targets"].map((x) => DragTargets.fromJson(x)),
-            )
-            : null,
-    correctAnswerIds:
-        json["correct_answer_ids"] != null
-            ? List<String>.from(json["correct_answer_ids"])
-            : null,
+    feedback: json["feedback"] != null
+        ? Feedback.fromJson(json["feedback"])
+        : null,
+    dragTargets: json["drag_targets"] != null
+        ? List<DragTargets>.from(
+            json["drag_targets"].map((x) => DragTargets.fromJson(x)),
+          )
+        : null,
+    correctAnswerIds: json["correct_answer_ids"] != null
+        ? List<String>.from(json["correct_answer_ids"])
+        : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -367,14 +364,12 @@ class Feedback {
   });
 
   factory Feedback.fromJson(Map<String, dynamic> json) => Feedback(
-    correct:
-        json["correct"] != null
-            ? FeedbackDetails.fromJson(json["correct"])
-            : null,
-    incorrect:
-        json["incorrect"] != null
-            ? FeedbackDetails.fromJson(json["incorrect"])
-            : null,
+    correct: json["correct"] != null
+        ? FeedbackDetails.fromJson(json["correct"])
+        : null,
+    incorrect: json["incorrect"] != null
+        ? FeedbackDetails.fromJson(json["incorrect"])
+        : null,
     reminderAfterAttempts: json["reminder_after_attempts"] ?? 0,
     confettiOnComplete: json["confetti_on_complete"] ?? false,
   );

@@ -26,15 +26,16 @@ class AchievementCard extends StatelessWidget {
     // Get screen dimensions for calculations
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Container height is 80% of screen height (from achievement_screen.dart)
     final containerHeight = screenHeight * 0.8;
-    
+
     // Responsive values based on screen dimensions (relative sizing)
     double cardWidth;
     double cardHeight;
     if (isMobileLandscape) {
-      cardWidth = screenWidth * 0.20; // ~20% of screen width (equivalent to 20.w)
+      cardWidth =
+          screenWidth * 0.20; // ~20% of screen width (equivalent to 20.w)
       cardHeight = double.infinity; // Fill container height
     } else if (isTabletLandscape) {
       cardWidth = screenWidth * 0.15; // Relative to screen
@@ -43,11 +44,12 @@ class AchievementCard extends StatelessWidget {
       cardWidth = screenWidth * 0.45; // ~45% of screen width for portrait
       cardHeight = double.infinity; // Fill container height
     }
-    
+
     // Calculate all sizes as percentages of container height (80% of screen)
     final valueFontSize = containerHeight * 0.12;
     final subtitleFontSize = containerHeight * 0.05;
-    final titleFontSize = containerHeight * 0.045; // Reduced to prevent overflow
+    final titleFontSize =
+        containerHeight * 0.045; // Reduced to prevent overflow
     final imageSize = containerHeight * 0.25;
     final padding = containerHeight * 0.04;
     final gapSize = containerHeight * 0.02;

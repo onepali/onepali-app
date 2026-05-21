@@ -34,28 +34,28 @@ class SongCard extends StatelessWidget {
         }
 
         final isLocked = false;
-        final subtitle =
-            data.youtubeTitleEn.isNotEmpty ? data.youtubeTitleEn : null;
+        final subtitle = data.youtubeTitleEn.isNotEmpty
+            ? data.youtubeTitleEn
+            : null;
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder:
-                (_) => SongVideoPlayerScreen(
-                  youtubeUrl: data.media.youtubeLink,
-                  title: data.titleEn,
-                  subtitle: subtitle,
-                  isLocked: isLocked,
-                  info:
-                      data.titleEn +
-                      (data.categoryName.isNotEmpty
-                          ? '\nCategory: ${data.categoryName}'
-                          : ''),
-                  songId: data.id,
-                  initialPosition: initialPosition,
-                  image: Utility.generateYoutubeThumbnailUrl(
-                    data.media.youtubeLink,
-                  ),
-                  // childId: childId,
-                ),
+            builder: (_) => SongVideoPlayerScreen(
+              youtubeUrl: data.media.youtubeLink,
+              title: data.titleEn,
+              subtitle: subtitle,
+              isLocked: isLocked,
+              info:
+                  data.titleEn +
+                  (data.categoryName.isNotEmpty
+                      ? '\nCategory: ${data.categoryName}'
+                      : ''),
+              songId: data.id,
+              initialPosition: initialPosition,
+              image: Utility.generateYoutubeThumbnailUrl(
+                data.media.youtubeLink,
+              ),
+              // childId: childId,
+            ),
           ),
         );
       },
@@ -69,7 +69,7 @@ class SongCard extends StatelessWidget {
           final cardHeight = constraints.maxHeight.isFinite
               ? constraints.maxHeight
               : AppCardResponsive.getCardHeight(context);
-          
+
           return Stack(
             children: [
               Container(
@@ -84,7 +84,9 @@ class SongCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                      Utility.generateYoutubeThumbnailUrl(data.media.youtubeLink),
+                      Utility.generateYoutubeThumbnailUrl(
+                        data.media.youtubeLink,
+                      ),
                     ),
                     fit: BoxFit.cover,
                     onError: (exception, stackTrace) {
@@ -104,7 +106,9 @@ class SongCard extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: EdgeInsets.only(bottom: isTabletLandscape ? 24 : 12),
+                    margin: EdgeInsets.only(
+                      bottom: isTabletLandscape ? 24 : 12,
+                    ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 8,

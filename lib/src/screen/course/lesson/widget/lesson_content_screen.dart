@@ -77,7 +77,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     // Now rebuild the list maintaining original positions for non-tap_target items
     final result = <LessonContent>[];
     int tapTargetIndex = 0;
-    
+
     for (final content in original) {
       if (content.type == 'tap_target') {
         // Use reordered tap-target
@@ -91,7 +91,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       }
     }
 
-    logger.d('Tap-target questions reordered: ${catTapTargets.length} cat, ${rabbitTapTargets.length} rabbit, ${otherTapTargets.length} other tap-targets');
+    logger.d(
+      'Tap-target questions reordered: ${catTapTargets.length} cat, ${rabbitTapTargets.length} rabbit, ${otherTapTargets.length} other tap-targets',
+    );
     return result;
   }
 
@@ -288,7 +290,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       child: SvgHelper.fromSource(
         path: imagePath,
         type: SvgSourceType.network,
-        fit: BoxFit.cover, // Cover fills screen completely, may crop but no empty space
+        fit: BoxFit
+            .cover, // Cover fills screen completely, may crop but no empty space
         width: double.infinity,
         height: double.infinity,
       ),
@@ -305,9 +308,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final currentContent = idx > 0 && idx <= widget.lesson.lessonContent.length
         ? widget.lesson.lessonContent[idx - 1]
         : null;
-    final isAnimalLesson = currentContent?.type == 'tap_target' ||
+    final isAnimalLesson =
+        currentContent?.type == 'tap_target' ||
         currentContent?.type == 'drag_to_match';
-    
+
     return [
       // Show audio icon for all items in tap-target and drag-to-match, or for last item in other types
       if (widget.hasSound && (isAnimalLesson || contentListLength == idx))
@@ -409,7 +413,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
         final rightArrowWidth = availableWidth * 0.10;
-        
+
         return Stack(
           children: [
             // Content (no background here - it's handled at the parent level)
@@ -420,97 +424,107 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   final screenHeight = MediaQuery.of(context).size.height;
                   final availableHeight = innerConstraints.maxHeight;
                   final availableWidth = innerConstraints.maxWidth;
-                  
+
                   // Calculate fixed sizes as percentages of screen height - total must not exceed 100%
                   // Top padding: 5% of screen height
                   final topPadding = screenHeight * 0.05;
-                  
+
                   // Thumbnail: 50% of screen height
                   final thumbnailSize = screenHeight * 0.5;
-                  
+
                   // Gap 1: 2% of screen height
                   final gap1 = screenHeight * 0.02;
-                  
+
                   // Title font size: 8% of screen height (text will take ~10% with line height)
                   final titleFontSize = screenHeight * 0.08;
-                  final titleHeight = screenHeight * 0.10; // Reserve space for title
-                  
+                  final titleHeight =
+                      screenHeight * 0.10; // Reserve space for title
+
                   // Gap 2: 1.5% of screen height (tablet only)
-                  final gap2 = PlatformUtility.isTablet(context) &&
+                  final gap2 =
+                      PlatformUtility.isTablet(context) &&
                           PlatformUtility.isLandscape(context)
                       ? screenHeight * 0.015
                       : 0.0;
-                  
+
                   // Description font size: 4% of screen height (text will take ~5% with line height)
                   final descFontSize = screenHeight * 0.04;
-                  final descHeight = widget.nameEn.isNotEmpty ? screenHeight * 0.05 : 0.0;
-                  
+                  final descHeight = widget.nameEn.isNotEmpty
+                      ? screenHeight * 0.05
+                      : 0.0;
+
                   // Calculate total used space
-                  final totalUsed = topPadding + thumbnailSize + gap1 + titleHeight + gap2 + descHeight;
-                  
+                  final totalUsed =
+                      topPadding +
+                      thumbnailSize +
+                      gap1 +
+                      titleHeight +
+                      gap2 +
+                      descHeight;
+
                   // Ensure we don't exceed available height - adjust thumbnail if needed
                   final adjustedThumbnailSize = totalUsed > availableHeight
                       ? thumbnailSize - (totalUsed - availableHeight)
                       : thumbnailSize;
-                  
+
                   return SizedBox(
                     height: availableHeight,
                     width: availableWidth,
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: topPadding),
-                          // Lesson thumbnail - fixed size
-                          if (widget.lesson.thumbnail.isNotEmpty)
-                            SizedBox(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: topPadding),
+                        // Lesson thumbnail - fixed size
+                        if (widget.lesson.thumbnail.isNotEmpty)
+                          SizedBox(
+                            width: adjustedThumbnailSize,
+                            height: adjustedThumbnailSize,
+                            child: CustomImage(
+                              widget.lesson.thumbnail,
                               width: adjustedThumbnailSize,
                               height: adjustedThumbnailSize,
-                              child: CustomImage(
-                                widget.lesson.thumbnail,
-                                width: adjustedThumbnailSize,
-                                height: adjustedThumbnailSize,
-                                circular: false,
-                                cover: false,
-                                boxFit: BoxFit.contain,
-                                imageType: CustomImageType.network,
-                              ),
+                              circular: false,
+                              cover: false,
+                              boxFit: BoxFit.contain,
+                              imageType: CustomImageType.network,
                             ),
-                          SizedBox(height: gap1),
-                          // Lesson title - fixed height
+                          ),
+                        SizedBox(height: gap1),
+                        // Lesson title - fixed height
+                        SizedBox(
+                          height: titleHeight,
+                          child: Center(
+                            child: Text(
+                              widget.nameNp,
+                              style: AppStyles.text24PxBold.copyWith(
+                                fontSize: titleFontSize,
+                                fontFamily: AppConstants.kMuktaFont,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        if (PlatformUtility.isTablet(context) &&
+                            PlatformUtility.isLandscape(context))
+                          SizedBox(height: gap2),
+                        // Lesson description - fixed height
+                        if (widget.nameEn.isNotEmpty)
                           SizedBox(
-                            height: titleHeight,
+                            height: descHeight,
                             child: Center(
                               child: Text(
-                                widget.nameNp,
-                                style: AppStyles.text24PxBold.copyWith(
-                                  fontSize: titleFontSize,
-                                  fontFamily: AppConstants.kMuktaFont,
+                                widget.nameEn,
+                                style: AppStyles.text16PxMedium.copyWith(
+                                  color: AppColors.kBlack,
+                                  fontSize: descFontSize,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                          if (PlatformUtility.isTablet(context) &&
-                              PlatformUtility.isLandscape(context))
-                            SizedBox(height: gap2),
-                          // Lesson description - fixed height
-                          if (widget.nameEn.isNotEmpty)
-                            SizedBox(
-                              height: descHeight,
-                              child: Center(
-                                child: Text(
-                                  widget.nameEn,
-                                  style: AppStyles.text16PxMedium.copyWith(
-                                    color: AppColors.kBlack,
-                                    fontSize: descFontSize,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -550,7 +564,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     });
 
     // For individual animal screens, apply fixed percentage-based layout
-    final isRegularContent = !isTapSendType && !isTapTargetType && !isDragToMatchType;
+    final isRegularContent =
+        !isTapSendType && !isTapTargetType && !isDragToMatchType;
     if (isRegularContent && contentIndex >= 0) {
       // Use LayoutBuilder to get available width (accounts for SafeArea)
       return LayoutBuilder(
@@ -562,157 +577,172 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           final animationBoxWidth = availableWidth * 0.40;
           final textAudioWidth = availableWidth * 0.35;
           final rightArrowWidth = availableWidth * 0.10;
-          final padding = availableWidth * (0.05 / 3); // ~1.67% padding between sections to total exactly 100%
-          
+          final padding =
+              availableWidth *
+              (0.05 /
+                  3); // ~1.67% padding between sections to total exactly 100%
+
           return SizedBox(
             width: availableWidth,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-              // Left arrow: fixed 10% width, centered like right arrow
-              SizedBox(
-                width: leftArrowWidth,
-                child: Center(
-                  child: CircularButtonWidget(
-                    type: CircularButtonType.leftArrow,
-                    onPressed: _previousContent,
-                  ),
-                ),
-              ),
-              SizedBox(width: padding),
-              
-              // Animation box: fixed 40% width, with constraints to prevent overflow
-              SizedBox(
-                width: animationBoxWidth,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: animationBoxWidth,
-                  ),
-                  child: LessonContentCard(
-                    content: content,
-                    isPlaying: false,
-                    hasSound: widget.hasSound,
-                    index: contentIndex,
-                    showOnlyAnimation: true,
-                    parentWidth: animationBoxWidth,
-                  ),
-                ),
-              ),
-              SizedBox(width: padding),
-              
-              // Text and audio area: fixed 35% width
-              SizedBox(
-                width: textAudioWidth,
-                child: LayoutBuilder(
-                  builder: (context, textConstraints) {
-                    // Use textConstraints.maxWidth (35% of available width) for relative sizing
-                    final textAreaWidth = textConstraints.maxWidth;
-                    // Maximum font sizes relative to text area width (will scale down if needed)
-                    final maxNepaliFontSize = textAreaWidth * 0.25; // ~25% of text area width (max)
-                    final maxEnglishFontSize = textAreaWidth * 0.10; // ~10% of text area width (max)
-                    final horizontalPadding = textAreaWidth * 0.02; // 2% horizontal padding
-                    final verticalSpacing = textAreaWidth * 0.03; // 3% vertical spacing
-                    
-                    // Check if audio is currently playing
-                    final audioProvider = context.watch<LessonAudioProvider>();
-                    final isPlaying = audioProvider.isPlaying;
-                    
-                    // Ensure text fits within available width with proper constraints
-                    final availableTextWidth = textAreaWidth - (horizontalPadding * 2);
-                    
-                    return Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Nepali text (nameNp) - auto-scales to fit largest text
-                            SizedBox(
-                              width: availableTextWidth,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  (content.nameNp?.isNotEmpty == true)
-                                      ? content.nameNp!
-                                      : 'चरा',
-                                  style: AppStyles.text32PxBold.copyWith(
-                                    color: AppColors.kDrawerBgColor,
-                                    fontSize: maxNepaliFontSize,
-                                    fontFamily: AppConstants.kMuktaFont,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            // English text (nameEn) - auto-scales to fit largest text
-                            SizedBox(height: verticalSpacing),
-                            SizedBox(
-                              width: availableTextWidth,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  (content.nameEn?.isNotEmpty == true)
-                                      ? content.nameEn!
-                                      : 'Bird',
-                                  style: AppStyles.text20PxMedium.copyWith(
-                                    fontSize: maxEnglishFontSize,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            // Audio button
-                            if (widget.hasSound && content.wordAudio?.isNotEmpty == true) ...[
-                              SizedBox(height: verticalSpacing),
-                              CustomAvatarGlow(
-                                glowColor: AppColors.kSecondaryColor,
-                                glowShape: BoxShape.circle,
-                                visible: isPlaying,
-                                glowRadiusFactor: 0.2,
-                                child: CircularButtonWidget(
-                                  type: CircularButtonType.sound,
-                                  onPressed: () async {
-                                    try {
-                                      final audioProvider = context.read<LessonAudioProvider>();
-                                      await audioProvider.playWordAudio(content.wordAudio ?? '');
-                                    } catch (e) {
-                                      logger.e('Error playing word audio: $e');
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(width: padding),
-              
-              // Right arrow: fixed 10% width (or empty space if last item)
-              if (!isLast)
+                // Left arrow: fixed 10% width, centered like right arrow
                 SizedBox(
-                  width: rightArrowWidth,
+                  width: leftArrowWidth,
                   child: Center(
                     child: CircularButtonWidget(
-                      type: CircularButtonType.rightArrow,
-                      onPressed: _nextContent,
+                      type: CircularButtonType.leftArrow,
+                      onPressed: _previousContent,
                     ),
                   ),
-                )
-              else
-                SizedBox(width: rightArrowWidth),
+                ),
+                SizedBox(width: padding),
+
+                // Animation box: fixed 40% width, with constraints to prevent overflow
+                SizedBox(
+                  width: animationBoxWidth,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: animationBoxWidth),
+                    child: LessonContentCard(
+                      content: content,
+                      isPlaying: false,
+                      hasSound: widget.hasSound,
+                      index: contentIndex,
+                      showOnlyAnimation: true,
+                      parentWidth: animationBoxWidth,
+                    ),
+                  ),
+                ),
+                SizedBox(width: padding),
+
+                // Text and audio area: fixed 35% width
+                SizedBox(
+                  width: textAudioWidth,
+                  child: LayoutBuilder(
+                    builder: (context, textConstraints) {
+                      // Use textConstraints.maxWidth (35% of available width) for relative sizing
+                      final textAreaWidth = textConstraints.maxWidth;
+                      // Maximum font sizes relative to text area width (will scale down if needed)
+                      final maxNepaliFontSize =
+                          textAreaWidth * 0.25; // ~25% of text area width (max)
+                      final maxEnglishFontSize =
+                          textAreaWidth * 0.10; // ~10% of text area width (max)
+                      final horizontalPadding =
+                          textAreaWidth * 0.02; // 2% horizontal padding
+                      final verticalSpacing =
+                          textAreaWidth * 0.03; // 3% vertical spacing
+
+                      // Check if audio is currently playing
+                      final audioProvider = context
+                          .watch<LessonAudioProvider>();
+                      final isPlaying = audioProvider.isPlaying;
+
+                      // Ensure text fits within available width with proper constraints
+                      final availableTextWidth =
+                          textAreaWidth - (horizontalPadding * 2);
+
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Nepali text (nameNp) - auto-scales to fit largest text
+                              SizedBox(
+                                width: availableTextWidth,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    (content.nameNp?.isNotEmpty == true)
+                                        ? content.nameNp!
+                                        : 'चरा',
+                                    style: AppStyles.text32PxBold.copyWith(
+                                      color: AppColors.kDrawerBgColor,
+                                      fontSize: maxNepaliFontSize,
+                                      fontFamily: AppConstants.kMuktaFont,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              // English text (nameEn) - auto-scales to fit largest text
+                              SizedBox(height: verticalSpacing),
+                              SizedBox(
+                                width: availableTextWidth,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    (content.nameEn?.isNotEmpty == true)
+                                        ? content.nameEn!
+                                        : 'Bird',
+                                    style: AppStyles.text20PxMedium.copyWith(
+                                      fontSize: maxEnglishFontSize,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              // Audio button
+                              if (widget.hasSound &&
+                                  content.wordAudio?.isNotEmpty == true) ...[
+                                SizedBox(height: verticalSpacing),
+                                CustomAvatarGlow(
+                                  glowColor: AppColors.kSecondaryColor,
+                                  glowShape: BoxShape.circle,
+                                  visible: isPlaying,
+                                  glowRadiusFactor: 0.2,
+                                  child: CircularButtonWidget(
+                                    type: CircularButtonType.sound,
+                                    onPressed: () async {
+                                      try {
+                                        final audioProvider = context
+                                            .read<LessonAudioProvider>();
+                                        await audioProvider.playWordAudio(
+                                          content.wordAudio ?? '',
+                                        );
+                                      } catch (e) {
+                                        logger.e(
+                                          'Error playing word audio: $e',
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: padding),
+
+                // Right arrow: fixed 10% width (or empty space if last item)
+                if (!isLast)
+                  SizedBox(
+                    width: rightArrowWidth,
+                    child: Center(
+                      child: CircularButtonWidget(
+                        type: CircularButtonType.rightArrow,
+                        onPressed: _nextContent,
+                      ),
+                    ),
+                  )
+                else
+                  SizedBox(width: rightArrowWidth),
               ],
             ),
           );
@@ -743,139 +773,139 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           // Main content
           Expanded(
             child: isTapSendType
-                    ? TapSendLessonCard(
-                      content: content,
-                      isPlaying: false,
-                      isLastItem: isLast,
-                      onCorrectAnswer: () {
-                        _nextContent();
-                      },
-                      onLessonComplete: () async {
-                        await _saveProgress(content, contentIndex);
-                        // For tap_send lessons, don't trigger the main lesson completion
-                        // as TapSendLessonCard handles its own animation
-                        // Just save progress and close after a delay
-                        try {
-                          final lessonProvider = context.read<LessonProvider>();
-                          await lessonProvider.incrementTotalLessonsCompleted(
-                            context,
-                            widget.lesson.id,
-                            widget.lesson.lessonName,
-                          );
-
-                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
-                          await MetricsTrackingHelper.trackLessonCompletion(
-                            context: context,
-                            lessonId: widget.lesson.id.toString(),
-                            topicName: widget.lesson.lessonName,
-                          );
-                        } catch (e) {
-                          logger.e('Error completing lesson: $e');
-                        }
-
-                        // Close lesson after TapSendLessonCard animation
-                        Future.delayed(const Duration(seconds: 3), () {
-                          if (mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        });
-                      },
-                      index: contentIndex,
-                    )
-                    : isTapTargetType
-                    ? TapTargetLessonCard(
-                      content: content,
-                      isPlaying: false,
-                      isLastItem: isLast,
-                      onCorrectAnswer: () {
-                        _nextContent();
-                      },
-                      onLessonComplete: () async {
-                        await _saveProgress(content, contentIndex);
-                        // For tap_target lessons, handle completion
-                        try {
-                          final lessonProvider = context.read<LessonProvider>();
-                          await lessonProvider.incrementTotalLessonsCompleted(
-                            context,
-                            widget.lesson.id,
-                            widget.lesson.lessonName,
-                          );
-
-                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
-                          await MetricsTrackingHelper.trackLessonCompletion(
-                            context: context,
-                            lessonId: widget.lesson.id.toString(),
-                            topicName: widget.lesson.lessonName,
-                          );
-                        } catch (e) {
-                          logger.e('Error completing lesson: $e');
-                        }
-
-                        // Close lesson after TapTargetLessonCard animation
-                        Future.delayed(const Duration(seconds: 3), () {
-                          if (mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        });
-                      },
-                      index: contentIndex,
-                    )
-                    : isDragToMatchType
-                    ? DragToMatchLessonCard(
-                      content: content,
-                      isPlaying: false,
-                      isLastItem: isLast,
-                      onCorrectAnswer: () {
-                        _nextContent();
-                      },
-                      onLessonComplete: () async {
-                        logger.d(
-                          'DragToMatchLessonCard onLessonComplete callback started',
+                ? TapSendLessonCard(
+                    content: content,
+                    isPlaying: false,
+                    isLastItem: isLast,
+                    onCorrectAnswer: () {
+                      _nextContent();
+                    },
+                    onLessonComplete: () async {
+                      await _saveProgress(content, contentIndex);
+                      // For tap_send lessons, don't trigger the main lesson completion
+                      // as TapSendLessonCard handles its own animation
+                      // Just save progress and close after a delay
+                      try {
+                        final lessonProvider = context.read<LessonProvider>();
+                        await lessonProvider.incrementTotalLessonsCompleted(
+                          context,
+                          widget.lesson.id,
+                          widget.lesson.lessonName,
                         );
-                        await _saveProgress(content, contentIndex);
-                        // For drag_to_match lessons, handle completion
-                        try {
-                          logger.d(
-                            'Calling incrementTotalLessonsCompleted for lesson: ${widget.lesson.id}',
-                          );
-                          final lessonProvider = context.read<LessonProvider>();
-                          await lessonProvider.incrementTotalLessonsCompleted(
-                            context,
-                            widget.lesson.id,
-                            widget.lesson.lessonName,
-                          );
 
-                          logger.d(
-                            'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
-                          );
-                          // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
-                          await MetricsTrackingHelper.trackLessonCompletion(
-                            context: context,
-                            lessonId: widget.lesson.id.toString(),
-                            topicName: widget.lesson.lessonName,
-                          );
-                          logger.d(
-                            'MetricsTrackingHelper.trackLessonCompletion completed for lesson: ${widget.lesson.id}',
-                          );
-                        } catch (e) {
-                          logger.e('Error completing lesson: $e');
+                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                        await MetricsTrackingHelper.trackLessonCompletion(
+                          context: context,
+                          lessonId: widget.lesson.id.toString(),
+                          topicName: widget.lesson.lessonName,
+                        );
+                      } catch (e) {
+                        logger.e('Error completing lesson: $e');
+                      }
+
+                      // Close lesson after TapSendLessonCard animation
+                      Future.delayed(const Duration(seconds: 3), () {
+                        if (mounted) {
+                          Navigator.of(context).pop();
                         }
+                      });
+                    },
+                    index: contentIndex,
+                  )
+                : isTapTargetType
+                ? TapTargetLessonCard(
+                    content: content,
+                    isPlaying: false,
+                    isLastItem: isLast,
+                    onCorrectAnswer: () {
+                      _nextContent();
+                    },
+                    onLessonComplete: () async {
+                      await _saveProgress(content, contentIndex);
+                      // For tap_target lessons, handle completion
+                      try {
+                        final lessonProvider = context.read<LessonProvider>();
+                        await lessonProvider.incrementTotalLessonsCompleted(
+                          context,
+                          widget.lesson.id,
+                          widget.lesson.lessonName,
+                        );
 
-                        // Close lesson after DragToMatchLessonCard animation
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          if (mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        });
-                      },
-                      index: contentIndex,
-                    )
-                    : LessonContentCard(
-                      content: content,
-                      isPlaying: false,
-                      hasSound: widget.hasSound,
-                      index: contentIndex,
-                    ),
+                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                        await MetricsTrackingHelper.trackLessonCompletion(
+                          context: context,
+                          lessonId: widget.lesson.id.toString(),
+                          topicName: widget.lesson.lessonName,
+                        );
+                      } catch (e) {
+                        logger.e('Error completing lesson: $e');
+                      }
+
+                      // Close lesson after TapTargetLessonCard animation
+                      Future.delayed(const Duration(seconds: 3), () {
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    index: contentIndex,
+                  )
+                : isDragToMatchType
+                ? DragToMatchLessonCard(
+                    content: content,
+                    isPlaying: false,
+                    isLastItem: isLast,
+                    onCorrectAnswer: () {
+                      _nextContent();
+                    },
+                    onLessonComplete: () async {
+                      logger.d(
+                        'DragToMatchLessonCard onLessonComplete callback started',
+                      );
+                      await _saveProgress(content, contentIndex);
+                      // For drag_to_match lessons, handle completion
+                      try {
+                        logger.d(
+                          'Calling incrementTotalLessonsCompleted for lesson: ${widget.lesson.id}',
+                        );
+                        final lessonProvider = context.read<LessonProvider>();
+                        await lessonProvider.incrementTotalLessonsCompleted(
+                          context,
+                          widget.lesson.id,
+                          widget.lesson.lessonName,
+                        );
+
+                        logger.d(
+                          'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
+                        );
+                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                        await MetricsTrackingHelper.trackLessonCompletion(
+                          context: context,
+                          lessonId: widget.lesson.id.toString(),
+                          topicName: widget.lesson.lessonName,
+                        );
+                        logger.d(
+                          'MetricsTrackingHelper.trackLessonCompletion completed for lesson: ${widget.lesson.id}',
+                        );
+                      } catch (e) {
+                        logger.e('Error completing lesson: $e');
+                      }
+
+                      // Close lesson after DragToMatchLessonCard animation
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    index: contentIndex,
+                  )
+                : LessonContentCard(
+                    content: content,
+                    isPlaying: false,
+                    hasSound: widget.hasSound,
+                    index: contentIndex,
+                  ),
           ),
 
           // Next button
@@ -961,7 +991,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       );
     }
 
-    final contentList = _reorderedContent; // Use reordered content (cat before rabbit)
+    final contentList =
+        _reorderedContent; // Use reordered content (cat before rabbit)
     final idx = _currentContentIndex;
 
     logger.d(
@@ -978,18 +1009,18 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       },
       child: Builder(
         builder: (context) {
-          final contentList = _reorderedContent; // Use reordered content (cat before rabbit)
+          final contentList =
+              _reorderedContent; // Use reordered content (cat before rabbit)
           final idx = _currentContentIndex;
-          final hasBackgroundImage =
-              _hasBackgroundImage(idx, contentList);
+          final hasBackgroundImage = _hasBackgroundImage(idx, contentList);
           final backgroundImage = _getBackgroundImage(idx, contentList);
 
           // Build main content widget
           final mainContent = idx == 0
               ? _buildLessonIntro(context)
               : idx > 0 && idx <= contentList.length
-                  ? _buildLessonContent(contentList[idx - 1], idx - 1)
-                  : const SizedBox();
+              ? _buildLessonContent(contentList[idx - 1], idx - 1)
+              : const SizedBox();
 
           // Build action buttons
           final actionButtons = _buildActionButtons(
@@ -999,17 +1030,22 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           );
 
           // Build content with overlay widgets (good remark, etc.)
-          final overlayWidgets = _buildOverlayWidgets(context, idx, contentList);
+          final overlayWidgets = _buildOverlayWidgets(
+            context,
+            idx,
+            contentList,
+          );
 
           // If there's a background image, it should cover the whole screen
           if (hasBackgroundImage && backgroundImage != null) {
             // Check if this is tap-target or drag-to-match (animals need full screen)
-            final currentContent = idx > 0 && idx <= contentList.length 
-                ? contentList[idx - 1] 
+            final currentContent = idx > 0 && idx <= contentList.length
+                ? contentList[idx - 1]
                 : null;
-            final isAnimalLesson = currentContent?.type == 'tap_target' || 
-                                   currentContent?.type == 'drag_to_match';
-            
+            final isAnimalLesson =
+                currentContent?.type == 'tap_target' ||
+                currentContent?.type == 'drag_to_match';
+
             return Scaffold(
               backgroundColor: Colors.transparent,
               body: SizedBox.expand(
@@ -1037,26 +1073,25 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
 
           // For lessons without background image, use Positioned.fill pattern to cover full screen
           // If intro screen, use lessonBgColor; otherwise use white
-          final backgroundColor = idx == 0 ? AppColors.lessonBgColor : AppColors.kWhite;
-          
+          final backgroundColor = idx == 0
+              ? AppColors.lessonBgColor
+              : AppColors.kWhite;
+
           // Check if this is tap-target or drag-to-match (animals need full screen)
-          final currentContent = idx > 0 && idx <= contentList.length 
-              ? contentList[idx - 1] 
+          final currentContent = idx > 0 && idx <= contentList.length
+              ? contentList[idx - 1]
               : null;
-          final isAnimalLesson = currentContent?.type == 'tap_target' || 
-                                 currentContent?.type == 'drag_to_match';
-          
+          final isAnimalLesson =
+              currentContent?.type == 'tap_target' ||
+              currentContent?.type == 'drag_to_match';
+
           return Scaffold(
             backgroundColor: backgroundColor,
             body: SizedBox.expand(
               child: Stack(
                 children: [
                   // Background color extends to full screen (behind SafeArea)
-                  Positioned.fill(
-                    child: Container(
-                      color: backgroundColor,
-                    ),
-                  ),
+                  Positioned.fill(child: Container(color: backgroundColor)),
                   // Animal content (tap-target, drag-to-match) outside SafeArea for full screen
                   if (isAnimalLesson) mainContent,
                   // Content with SafeArea for interactive elements

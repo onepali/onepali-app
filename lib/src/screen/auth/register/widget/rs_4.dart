@@ -30,16 +30,15 @@ class _RS4ScreenState extends State<RS4Screen> {
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
     final double loadingIndicatorSize = isTabletPortrait ? 20.0 : 16.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
-    final TextStyle signInButtonTextStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
+    final TextStyle signInButtonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxRegular
+        : AppStyles.text14PxRegular;
     final authProvider = context.watch<AuthProvider>();
     final gAuthStatus = context.watch<GoogleAuthProvider>().status;
     final aAuthStatus = context.watch<AAuthProvider>().status;
@@ -103,57 +102,57 @@ class _RS4ScreenState extends State<RS4Screen> {
                 Gaps.verticalGapOf(socialButtonGap),
                 gAuthStatus == DataFetchStatus.loading
                     ? Center(
-                      child: SizedBox(
-                        height: loadingIndicatorSize,
-                        width: loadingIndicatorSize,
-                        child: const CircularProgressIndicator.adaptive(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.kButtonGreen,
+                        child: SizedBox(
+                          height: loadingIndicatorSize,
+                          width: loadingIndicatorSize,
+                          child: const CircularProgressIndicator.adaptive(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.kButtonGreen,
+                            ),
+                            strokeWidth: 2,
                           ),
-                          strokeWidth: 2,
                         ),
-                      ),
-                    )
+                      )
                     : ReusableWidget.horizontalIconTitle(
-                      title: 'Continue with Google',
-                      icon: Assets.google,
-                      height: buttonHeight,
-                      textStyle: signInButtonTextStyle,
-                      onTap: () async {
-                        final googleAuthProvider =
-                            context.read<GoogleAuthProvider>();
-                        await googleAuthProvider.signInWithGoogle(
-                          context,
-                          isLogin: false,
-                        );
-                      },
-                    ),
+                        title: 'Continue with Google',
+                        icon: Assets.google,
+                        height: buttonHeight,
+                        textStyle: signInButtonTextStyle,
+                        onTap: () async {
+                          final googleAuthProvider = context
+                              .read<GoogleAuthProvider>();
+                          await googleAuthProvider.signInWithGoogle(
+                            context,
+                            isLogin: false,
+                          );
+                        },
+                      ),
                 Gaps.verticalGapOf(socialButtonGap),
                 aAuthStatus == DataFetchStatus.loading
                     ? Center(
-                      child: SizedBox(
-                        height: loadingIndicatorSize,
-                        width: loadingIndicatorSize,
-                        child: const CircularProgressIndicator.adaptive(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.kButtonGreen,
+                        child: SizedBox(
+                          height: loadingIndicatorSize,
+                          width: loadingIndicatorSize,
+                          child: const CircularProgressIndicator.adaptive(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.kButtonGreen,
+                            ),
+                            strokeWidth: 2,
                           ),
-                          strokeWidth: 2,
                         ),
-                      ),
-                    )
+                      )
                     : ReusableWidget.horizontalIconTitle(
-                      title: 'Continue with Apple',
-                      height: buttonHeight,
-                      textStyle: signInButtonTextStyle,
+                        title: 'Continue with Apple',
+                        height: buttonHeight,
+                        textStyle: signInButtonTextStyle,
 
-                      icon: Assets.apple,
-                      onTap: () async {
-                        final appleAuthProvider =
-                            context.read<AAuthProvider>();
-                        await appleAuthProvider.signInWithApple(context);
-                      },
-                    ),
+                        icon: Assets.apple,
+                        onTap: () async {
+                          final appleAuthProvider = context
+                              .read<AAuthProvider>();
+                          await appleAuthProvider.signInWithApple(context);
+                        },
+                      ),
               ],
             ),
           ),
@@ -173,23 +172,22 @@ class _RS4ScreenState extends State<RS4Screen> {
     return CustomMaterialButton(
       label: 'Next',
       isLoading: isLoading,
-      onTap:
-          isLoading
-              ? null
-              : () async {
-                if (_formKey.currentState!.validate()) {
-                  final authProvider = context.read<AuthProvider>();
-                  await authProvider.register(
-                    context: context,
-                    email: emailController.text.trim(),
-                    password: passwordController.text.trim(),
-                    fullName: context.read<AuthState>().fullName ?? "",
-                    yearOfBirth: context.read<AuthState>().yearOfBirth,
-                    heardAbout: context.read<AuthState>().heardAbout,
-                    learningReason: context.read<AuthState>().learningReason,
-                  );
-                }
-              },
+      onTap: isLoading
+          ? null
+          : () async {
+              if (_formKey.currentState!.validate()) {
+                final authProvider = context.read<AuthProvider>();
+                await authProvider.register(
+                  context: context,
+                  email: emailController.text.trim(),
+                  password: passwordController.text.trim(),
+                  fullName: context.read<AuthState>().fullName ?? "",
+                  yearOfBirth: context.read<AuthState>().yearOfBirth,
+                  heardAbout: context.read<AuthState>().heardAbout,
+                  learningReason: context.read<AuthState>().learningReason,
+                );
+              }
+            },
       backgroundColor: AppColors.kButtonGreen,
       width: double.infinity,
       textStyle: buttonTextStyle,

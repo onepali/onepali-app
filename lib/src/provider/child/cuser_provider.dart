@@ -84,7 +84,12 @@ class ChildUserProvider extends ChangeNotifier {
   }
 
   /// Fetches a specific child by ID to verify it exists (useful after creation)
-  Future<bool> verifyChildExists(String childId, String parentUid, {int maxRetries = 3, int retryDelayMs = 500}) async {
+  Future<bool> verifyChildExists(
+    String childId,
+    String parentUid, {
+    int maxRetries = 3,
+    int retryDelayMs = 500,
+  }) async {
     logger.d('🔍 Verifying child exists: $childId for parent: $parentUid');
     for (int attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -94,19 +99,21 @@ class ChildUserProvider extends ChangeNotifier {
             .collection(AppConstants.childrenCollection)
             .doc(childId)
             .get();
-        
+
         if (childDoc.exists) {
           final data = childDoc.data();
           if (data?['parent_uid'] == parentUid) {
             logger.d('✅ Child verified successfully on attempt $attempt');
             return true;
           } else {
-            logger.w('⚠️ Child exists but parent_uid mismatch on attempt $attempt');
+            logger.w(
+              '⚠️ Child exists but parent_uid mismatch on attempt $attempt',
+            );
           }
         } else {
           logger.d('⏳ Child not found yet (attempt $attempt/$maxRetries)');
         }
-        
+
         if (attempt < maxRetries) {
           await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
         }
@@ -161,7 +168,7 @@ class ChildUserProvider extends ChangeNotifier {
             .doc(parentUid)
             .collection(AppConstants.childrenCollection)
             .get();
-        
+
         final fetchedChildren = querySnapshot.docs
             .map((doc) {
               final data = doc.data();
@@ -177,19 +184,25 @@ class ChildUserProvider extends ChangeNotifier {
             .where((child) => child != null)
             .cast<ChildUserModel>()
             .toList();
-        
+
         _childUser = fetchedChildren;
-        logger.d('✅ Fetched ${_childUser.length} child users (attempt $attempt/$maxRetries)');
-        
+        logger.d(
+          '✅ Fetched ${_childUser.length} child users (attempt $attempt/$maxRetries)',
+        );
+
         // If we're expecting a specific child (just created), verify it's in the list
         if (expectedChildId != null) {
-          final foundChild = _childUser.any((child) => child.uid == expectedChildId);
+          final foundChild = _childUser.any(
+            (child) => child.uid == expectedChildId,
+          );
           if (!foundChild) {
             logger.w(
               '⏳ Expected child $expectedChildId not found yet (attempt $attempt/$maxRetries)',
             );
             if (attempt < maxRetries) {
-              await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+              await Future.delayed(
+                Duration(milliseconds: retryDelayMs * attempt),
+              );
               continue;
             } else {
               logger.w(
@@ -200,16 +213,18 @@ class ChildUserProvider extends ChangeNotifier {
             logger.d('✅ Expected child $expectedChildId found in fetched list');
           }
         }
-        
+
         // Validate we got children (if this is a retry and we have no expected child)
         if (attempt > 1 && _childUser.isEmpty && expectedChildId == null) {
           logger.w('⚠️ No children found on attempt $attempt, will retry...');
           if (attempt < maxRetries) {
-            await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));
+            await Future.delayed(
+              Duration(milliseconds: retryDelayMs * attempt),
+            );
             continue;
           }
         }
-        
+
         if (_childUser.isNotEmpty) {
           _totalChildren = _childUser.length;
           await getCurrentChild();
@@ -219,9 +234,11 @@ class ChildUserProvider extends ChangeNotifier {
         setStatus(DataFetchStatus.success);
         return;
       } catch (e, s) {
-        logger.e('❌ Error fetching child users (attempt $attempt/$maxRetries): $e');
+        logger.e(
+          '❌ Error fetching child users (attempt $attempt/$maxRetries): $e',
+        );
         logger.e('Stack trace: $s');
-        
+
         if (attempt < maxRetries) {
           logger.i('🔄 Retrying in ${retryDelayMs * attempt}ms...');
           await Future.delayed(Duration(milliseconds: retryDelayMs * attempt));

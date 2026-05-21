@@ -27,10 +27,9 @@ class DrawerCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? AppColors.kSecondaryColor.withValues(alpha: 0.1)
-                  : AppColors.kTransparentColor,
+          color: isSelected
+              ? AppColors.kSecondaryColor.withValues(alpha: 0.1)
+              : AppColors.kTransparentColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -43,47 +42,43 @@ class DrawerCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color:
-                        isSelected
-                            ? AppColors.kSecondaryColor
-                            : AppColors.kTransparentColor,
+                    color: isSelected
+                        ? AppColors.kSecondaryColor
+                        : AppColors.kTransparentColor,
                     width: 2,
                   ),
                 ),
-                child:
-                    avatarUrl != null && avatarUrl!.isNotEmpty
-                        ? ClipRRect(
-                          borderRadius: BorderRadius.circular(23),
-                          child: Image.network(
-                            avatarUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return CircleAvatar(
-                                backgroundColor: AppColors.kPrimaryColor
-                                    .withValues(alpha: 0.2),
-                                child: Text(
-                                  title.isNotEmpty
-                                      ? title[0].toUpperCase()
-                                      : "?",
-                                  style: AppStyles.text18PxBold.copyWith(
-                                    color: AppColors.kPrimaryColor,
-                                  ),
+                child: avatarUrl != null && avatarUrl!.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(23),
+                        child: Image.network(
+                          avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return CircleAvatar(
+                              backgroundColor: AppColors.kPrimaryColor
+                                  .withValues(alpha: 0.2),
+                              child: Text(
+                                title.isNotEmpty ? title[0].toUpperCase() : "?",
+                                style: AppStyles.text18PxBold.copyWith(
+                                  color: AppColors.kPrimaryColor,
                                 ),
-                              );
-                            },
-                          ),
-                        )
-                        : CircleAvatar(
-                          backgroundColor: AppColors.kPrimaryColor.withValues(
-                            alpha: 0.2,
-                          ),
-                          child: Text(
-                            title.isNotEmpty ? title[0].toUpperCase() : "?",
-                            style: AppStyles.text18PxBold.copyWith(
-                              color: AppColors.kPrimaryColor,
-                            ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : CircleAvatar(
+                        backgroundColor: AppColors.kPrimaryColor.withValues(
+                          alpha: 0.2,
+                        ),
+                        child: Text(
+                          title.isNotEmpty ? title[0].toUpperCase() : "?",
+                          style: AppStyles.text18PxBold.copyWith(
+                            color: AppColors.kPrimaryColor,
                           ),
                         ),
+                      ),
               )
             else
               SvgHelper.fromSource(
@@ -100,10 +95,9 @@ class DrawerCard extends StatelessWidget {
               child: Text(
                 title,
                 style: AppStyles.text14PxMedium.copyWith(
-                  color:
-                      isSelected
-                          ? AppColors.kSecondaryColor
-                          : AppColors.kPitchBlack,
+                  color: isSelected
+                      ? AppColors.kSecondaryColor
+                      : AppColors.kPitchBlack,
                 ),
               ),
             ),

@@ -11,12 +11,11 @@ void showCustomToaster(
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1,
-    backgroundColor:
-        isNormal
-            ? AppColors.kBlack
-            : isError
-            ? AppColors.errorColor
-            : AppColors.kButtonGreen,
+    backgroundColor: isNormal
+        ? AppColors.kBlack
+        : isError
+        ? AppColors.errorColor
+        : AppColors.kButtonGreen,
     textColor: AppColors.kWhite,
     fontSize: 14.0,
   );

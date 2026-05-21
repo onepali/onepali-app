@@ -36,7 +36,9 @@ class _StoryScreenState extends State<StoryScreen> {
           },
           successBuilder: () {
             final stories = provider.stories;
-            double cardHeight = AppCardResponsive.getDashboardCardHeight(context);
+            double cardHeight = AppCardResponsive.getDashboardCardHeight(
+              context,
+            );
 
             return SizedBox(
               height: cardHeight,

@@ -38,17 +38,19 @@ class DialogManager {
           builder: (context, constraints) {
             // Get screen dimensions for responsive sizing
             final screenHeight = MediaQuery.of(context).size.height;
-            
+
             // Calculate max dialog height as percentage of screen height (leave space for padding)
             final maxDialogHeight = screenHeight * 0.8;
-            
+
             // Calculate image size as percentage of screen height
             final imageSize = isMobileLandScape
-                ? screenHeight * 0.12  // 12% of screen height
+                ? screenHeight *
+                      0.12 // 12% of screen height
                 : isMobilePortrait
-                ? screenHeight * 0.15  // 15% of screen height
-                : screenHeight * 0.18;  // 18% of screen height
-            
+                ? screenHeight *
+                      0.15 // 15% of screen height
+                : screenHeight * 0.18; // 18% of screen height
+
             return Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -69,7 +71,9 @@ class DialogManager {
                               : isMobilePortrait
                               ? AppStyles.text18PxSemiBold
                               : AppStyles.text20PxSemiBold,
-                          textAlign: isCross ? TextAlign.start : TextAlign.center,
+                          textAlign: isCross
+                              ? TextAlign.start
+                              : TextAlign.center,
                           maxLines: 2,
                         ),
                       ),
@@ -125,7 +129,9 @@ class DialogManager {
                           ),
                         if (content.isNotEmpty)
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 0.0,
+                            ),
                             child: Text(
                               content,
                               style: isMobileLandScape
@@ -147,73 +153,73 @@ class DialogManager {
                       ],
                     ),
                   ),
-              actions: [
-                !isMobilePortrait
-                    ? Row(
-                        children: [
-                          if (!hasSingleButton)
-                            Expanded(
-                              child: CustomMaterialButton(
+                  actions: [
+                    !isMobilePortrait
+                        ? Row(
+                            children: [
+                              if (!hasSingleButton)
+                                Expanded(
+                                  child: CustomMaterialButton(
+                                    onTap: () {
+                                      onCancel?.call();
+                                      Navigator.of(context).pop();
+                                    },
+                                    textStyle: AppStyles.text14PxMedium,
+                                    label: 'Cancel',
+                                    backgroundColor: AppColors.kButtonGrey,
+                                    elevation: 0,
+                                    height: 35,
+                                  ),
+                                ),
+                              if (!hasSingleButton) Gaps.horizontalGapOf(15),
+                              Expanded(
+                                child: CustomMaterialButton(
+                                  onTap: () {
+                                    onConfirm();
+                                    // Navigator.of(context).pop();
+                                  },
+                                  textStyle: AppStyles.text14PxMedium,
+                                  label: confirmButtonText,
+                                  height: 35,
+                                  width: double.infinity,
+                                  elevation: 0,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              CustomMaterialButton(
                                 onTap: () {
-                                  onCancel?.call();
+                                  onConfirm();
                                   Navigator.of(context).pop();
                                 },
                                 textStyle: AppStyles.text14PxMedium,
-                                label: 'Cancel',
-                                backgroundColor: AppColors.kButtonGrey,
+                                label: confirmButtonText,
+                                height: 40,
+                                width: double.infinity,
                                 elevation: 0,
-                                height: 35,
                               ),
-                            ),
-                          if (!hasSingleButton) Gaps.horizontalGapOf(15),
-                          Expanded(
-                            child: CustomMaterialButton(
-                              onTap: () {
-                                onConfirm();
-                                // Navigator.of(context).pop();
-                              },
-                              textStyle: AppStyles.text14PxMedium,
-                              label: confirmButtonText,
-                              height: 35,
-                              width: double.infinity,
-                              elevation: 0,
-                            ),
+                              if (!hasSingleButton) Gaps.verticalGapOf(10),
+                              if (!hasSingleButton)
+                                CustomMaterialButton(
+                                  onTap: () {
+                                    onCancel?.call();
+                                    Navigator.of(context).pop();
+                                  },
+                                  textStyle: AppStyles.text14PxMedium,
+                                  label: 'Cancel',
+                                  backgroundColor: AppColors.kButtonGrey,
+                                  elevation: 0,
+                                  height: 40,
+                                ),
+                            ],
                           ),
-                        ],
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          CustomMaterialButton(
-                            onTap: () {
-                              onConfirm();
-                              Navigator.of(context).pop();
-                            },
-                            textStyle: AppStyles.text14PxMedium,
-                            label: confirmButtonText,
-                            height: 40,
-                            width: double.infinity,
-                            elevation: 0,
-                          ),
-                          if (!hasSingleButton) Gaps.verticalGapOf(10),
-                          if (!hasSingleButton)
-                            CustomMaterialButton(
-                              onTap: () {
-                                onCancel?.call();
-                                Navigator.of(context).pop();
-                              },
-                              textStyle: AppStyles.text14PxMedium,
-                              label: 'Cancel',
-                              backgroundColor: AppColors.kButtonGrey,
-                              elevation: 0,
-                              height: 40,
-                            ),
-                        ],
-                      ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
+            );
           },
         );
       },

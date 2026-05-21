@@ -172,9 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Recommended lessons',
           titlePadding: EdgeInsets.only(
             bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape 
-                ? 24 
-                : (isMobileLandscape ? 20 : 16),
+            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
           ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -215,9 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Songs',
       titlePadding: EdgeInsets.only(
         bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape 
-            ? 24 
-            : (isMobileLandscape ? 20 : 16),
+        left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
       ),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(
         color: AppColors.kBlack,
@@ -261,9 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Recommended songs',
           titlePadding: EdgeInsets.only(
             bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape 
-                ? 24 
-                : (isMobileLandscape ? 20 : 16),
+            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
           ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -294,9 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Recommended stories',
           titlePadding: EdgeInsets.only(
             bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape 
-                ? 24 
-                : (isMobileLandscape ? 20 : 16),
+            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
           ),
           titleStyle: AppStyles.text20PxSemiBold.copyWith(
             color: AppColors.kBlack,
@@ -323,9 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Level 1',
       titlePadding: EdgeInsets.only(
         bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape 
-            ? 24 
-            : (isMobileLandscape ? 20 : 16),
+        left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
       ),
       titleStyle: AppStyles.text20PxSemiBold.copyWith(
         color: AppColors.kBlack,

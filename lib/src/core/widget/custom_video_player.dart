@@ -119,13 +119,12 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
               mixWithOthers: true,
               allowBackgroundPlayback: false,
             ),
-            httpHeaders:
-                widget.enableCaching && !uri.scheme.startsWith('file')
-                    ? {
-                      'Cache-Control': 'max-age=604800',
-                      'Connection': 'keep-alive',
-                    }
-                    : {},
+            httpHeaders: widget.enableCaching && !uri.scheme.startsWith('file')
+                ? {
+                    'Cache-Control': 'max-age=604800',
+                    'Connection': 'keep-alive',
+                  }
+                : {},
           );
           break;
       }
@@ -302,20 +301,18 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
   }
 
   Widget _buildVideoPlayer() {
-    final videoWidget =
-        widget.aspectRatio != null
-            ? AspectRatio(
-              aspectRatio: widget.aspectRatio!,
-              child: VideoPlayer(_controller),
-            )
-            : VideoPlayer(_controller);
+    final videoWidget = widget.aspectRatio != null
+        ? AspectRatio(
+            aspectRatio: widget.aspectRatio!,
+            child: VideoPlayer(_controller),
+          )
+        : VideoPlayer(_controller);
 
     return Container(
       color: AppColors.kWhite,
-      child:
-          widget.optimizeForPerformance
-              ? RepaintBoundary(child: _buildVideoStack(videoWidget))
-              : _buildVideoStack(videoWidget),
+      child: widget.optimizeForPerformance
+          ? RepaintBoundary(child: _buildVideoStack(videoWidget))
+          : _buildVideoStack(videoWidget),
     );
   }
 
@@ -354,19 +351,18 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                onPressed:
-                    _isDisposed || _hasCompleted
-                        ? null
-                        : () {
-                          if (_controller.value.isPlaying) {
-                            _controller.pause();
-                          } else {
-                            _controller.play();
-                            if (widget.onVideoStart != null) {
-                              widget.onVideoStart!();
-                            }
+                onPressed: _isDisposed || _hasCompleted
+                    ? null
+                    : () {
+                        if (_controller.value.isPlaying) {
+                          _controller.pause();
+                        } else {
+                          _controller.play();
+                          if (widget.onVideoStart != null) {
+                            widget.onVideoStart!();
                           }
-                        },
+                        }
+                      },
                 icon: Icon(
                   _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                   color: AppColors.kWhite,
@@ -375,13 +371,12 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer>
               ),
               if (widget.loop)
                 IconButton(
-                  onPressed:
-                      _isDisposed || _hasCompleted
-                          ? null
-                          : () {
-                            _controller.seekTo(Duration.zero);
-                            _controller.play();
-                          },
+                  onPressed: _isDisposed || _hasCompleted
+                      ? null
+                      : () {
+                          _controller.seekTo(Duration.zero);
+                          _controller.play();
+                        },
                   icon: Icon(Icons.replay, color: AppColors.kWhite, size: 28),
                 ),
             ],

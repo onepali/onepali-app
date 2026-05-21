@@ -21,10 +21,12 @@ class PzPlanProvider extends ChangeNotifier {
   Future<void> fetchPlans() async {
     setStatus(DataFetchStatus.loading);
     try {
-      final querySnapshot =
-          await _firestore.collection(AppConstants.planCollection).get();
-      final List<Map<String, dynamic>> planList =
-          querySnapshot.docs.map((doc) => doc.data()).toList();
+      final querySnapshot = await _firestore
+          .collection(AppConstants.planCollection)
+          .get();
+      final List<Map<String, dynamic>> planList = querySnapshot.docs
+          .map((doc) => doc.data())
+          .toList();
       _plans = pzPlanModelFromJson(jsonEncode(planList));
       await fetchUserPlan();
       setStatus(DataFetchStatus.success);
@@ -36,40 +38,34 @@ class PzPlanProvider extends ChangeNotifier {
   Future<void> fetchUserPlan() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-    final doc =
-        await _firestore
-            .collection(AppConstants.usersCollection)
-            .doc(user.uid)
-            .get();
+    final doc = await _firestore
+        .collection(AppConstants.usersCollection)
+        .doc(user.uid)
+        .get();
     final data = doc.data() ?? {};
     final planId = data['plan_id'] ?? 'free';
     _currentPlan = _plans.firstWhere(
       (p) => p.id == planId,
-      orElse:
-          () => _plans.firstWhere(
-            (p) => p.id == 'free',
-            orElse:
-                () =>
-                    _plans.isNotEmpty
-                        ? _plans.first
-                        : PzPlanModel(
-                          id: 'free',
-                          name: 'Free Plan',
-                          price: 0,
-                          currency: 'USD',
-                          billingCycle: 'monthly',
-                          description: 'Free forever, no credit card required',
-                        ),
-          ),
+      orElse: () => _plans.firstWhere(
+        (p) => p.id == 'free',
+        orElse: () => _plans.isNotEmpty
+            ? _plans.first
+            : PzPlanModel(
+                id: 'free',
+                name: 'Free Plan',
+                price: 0,
+                currency: 'USD',
+                billingCycle: 'monthly',
+                description: 'Free forever, no credit card required',
+              ),
+      ),
     );
-    _activeDate =
-        data['plan_active_date'] != null
-            ? DateTime.tryParse(data['plan_active_date'])
-            : null;
-    _expiryDate =
-        data['plan_expiry_date'] != null
-            ? DateTime.tryParse(data['plan_expiry_date'])
-            : null;
+    _activeDate = data['plan_active_date'] != null
+        ? DateTime.tryParse(data['plan_active_date'])
+        : null;
+    _expiryDate = data['plan_expiry_date'] != null
+        ? DateTime.tryParse(data['plan_expiry_date'])
+        : null;
     notifyListeners();
   }
 

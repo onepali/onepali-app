@@ -31,13 +31,12 @@ class LessonProvider extends ChangeNotifier {
       return;
     }
     try {
-      final doc =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentId)
-              .collection(AppConstants.childrenCollection)
-              .doc(childId)
-              .get();
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .get();
 
       List<dynamic> completedLessons = [];
       if (doc.exists &&
@@ -104,8 +103,9 @@ class LessonProvider extends ChangeNotifier {
 
     try {
       logger.d('Attempting to fetch courses from Firestore...');
-      final querySnapshot =
-          await _firestore.collection(AppConstants.coursesCollection).get();
+      final querySnapshot = await _firestore
+          .collection(AppConstants.coursesCollection)
+          .get();
       logger.d(
         'Firestore query returned ${querySnapshot.docs.length} course documents',
       );
@@ -126,38 +126,37 @@ class LessonProvider extends ChangeNotifier {
 
         // Defensive: ensure chapters, lessons, lesson_content are always List<Map<String, dynamic>>
         if (data['chapters'] is List) {
-          data['chapters'] =
-              (data['chapters'] as List).map((ch) {
-                if (ch is Map<String, dynamic>) {
-                  if (ch['lessons'] is List) {
-                    ch['lessons'] =
-                        (ch['lessons'] as List).map((ls) {
-                          if (ls is Map<String, dynamic>) {
-                            if (ls['lesson_content'] is List) {
-                              ls['lesson_content'] =
-                                  (ls['lesson_content'] as List).map((lc) {
-                                    if (lc is Map<String, dynamic>) return lc;
-                                    if (lc is Map) {
-                                      return Map<String, dynamic>.from(lc);
-                                    }
-                                    return <String, dynamic>{};
-                                  }).toList();
-                            } else {
-                              ls['lesson_content'] = <Map<String, dynamic>>[];
-                            }
-                            return ls;
+          data['chapters'] = (data['chapters'] as List).map((ch) {
+            if (ch is Map<String, dynamic>) {
+              if (ch['lessons'] is List) {
+                ch['lessons'] = (ch['lessons'] as List).map((ls) {
+                  if (ls is Map<String, dynamic>) {
+                    if (ls['lesson_content'] is List) {
+                      ls['lesson_content'] = (ls['lesson_content'] as List).map(
+                        (lc) {
+                          if (lc is Map<String, dynamic>) return lc;
+                          if (lc is Map) {
+                            return Map<String, dynamic>.from(lc);
                           }
-                          if (ls is Map) return Map<String, dynamic>.from(ls);
                           return <String, dynamic>{};
-                        }).toList();
-                  } else {
-                    ch['lessons'] = <Map<String, dynamic>>[];
+                        },
+                      ).toList();
+                    } else {
+                      ls['lesson_content'] = <Map<String, dynamic>>[];
+                    }
+                    return ls;
                   }
-                  return ch;
-                }
-                if (ch is Map) return Map<String, dynamic>.from(ch);
-                return <String, dynamic>{};
-              }).toList();
+                  if (ls is Map) return Map<String, dynamic>.from(ls);
+                  return <String, dynamic>{};
+                }).toList();
+              } else {
+                ch['lessons'] = <Map<String, dynamic>>[];
+              }
+              return ch;
+            }
+            if (ch is Map) return Map<String, dynamic>.from(ch);
+            return <String, dynamic>{};
+          }).toList();
         } else {
           data['chapters'] = <Map<String, dynamic>>[];
         }
