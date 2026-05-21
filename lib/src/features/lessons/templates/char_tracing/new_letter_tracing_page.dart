@@ -72,6 +72,8 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
               width: size.width,
               height: size.height,
               child: SafeArea(
+                bottom: false,
+                right: false,
                 child: Stack(
                   children: [
                     Column(
