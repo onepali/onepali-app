@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/speaker_icon.dart';
+import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/templates/listen_and_repeat/listen_and_repeat_bloc/listen_and_repeat_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/mic_progress_button.dart';
@@ -103,6 +106,23 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
                       onTap: () => Navigator.of(context).pop(),
                     ),
 
+                    if (state.isRecorded)
+                      CenterLeftAlignedBackButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.previousContent(),
+                          );
+                        },
+                      ),
+                    if (state.isRecorded)
+                      CenterRightAlignedForwardButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
+                      ),
+
                     Positioned(
                       top: isMobile ? 24 : 32,
                       left: 0,
@@ -176,20 +196,20 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
               isCompleted: state.isRecorded,
               onCompletedTap: widget.onCompleted,
             ),
-            if (state.hasError) ...[
-              const SizedBox(height: 8),
-              Text(
-                state.errorMessage ?? 'An error occurred',
-                style: const TextStyle(color: Colors.red, fontSize: 13),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () => context.read<ListenAndRepeatBloc>().add(
-                  const ListenAndRepeatEvent.retryRequested(),
-                ),
-                child: const Text('Retry'),
-              ),
-            ],
+            // if (state.hasError) ...[
+            //   const SizedBox(height: 8),
+            //   Text(
+            //     state.errorMessage ?? 'An error occurred',
+            //     style: const TextStyle(color: Colors.red, fontSize: 13),
+            //   ),
+            //   const SizedBox(height: 8),
+            //   ElevatedButton(
+            //     onPressed: () => context.read<ListenAndRepeatBloc>().add(
+            //       const ListenAndRepeatEvent.retryRequested(),
+            //     ),
+            //     child: const Text('Retry'),
+            //   ),
+            // ],
           ],
         );
       },

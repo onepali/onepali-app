@@ -78,7 +78,7 @@ class ListenAndRepeatBloc
 
   Future<void> _startRecording(Emitter<ListenAndRepeatState> emit) async {
     try {
-      await _audioRecorderService.startRecording();
+      // await _audioRecorderService.startRecording();
 
       emit(
         state.copyWith(
@@ -104,14 +104,16 @@ class ListenAndRepeatBloc
 
   void _stopRecording() async {
     try {
-      final path = await _audioRecorderService.stopRecording();
-      if (path != null) {
-        add(ListenAndRepeatEvent.recordingCompleted(path));
-      } else {
-        add(const ListenAndRepeatEvent.recordingFailed('No audio recorded'));
-      }
+      // final path = await _audioRecorderService.stopRecording();
+      // if (path != null) {
+      //Recording feature is not necessary for now, so we are adding a dummy path. If necessary, just uncomment the code of this bloc.
+      add(ListenAndRepeatEvent.recordingCompleted('test.m4a'));
+      // } else {
+      //   add(const ListenAndRepeatEvent.recordingFailed('No audio recorded'));
+      // }
     } catch (e) {
-      add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      // add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      rethrow;
     }
   }
 
