@@ -200,8 +200,6 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
               isLetterComplete: true,
             ),
           );
-          // play local audio
-          audioPlayerService.playAsset(Assets.goodFeedback);
           return;
         } else {
           emit(

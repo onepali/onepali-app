@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/bottom_right_cat.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/core/widget/shake_widget.dart';
@@ -94,6 +96,14 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                       },
                     ),
                     if (state.repetations >= 3)
+                      CenterLeftAlignedBackButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.previousContent(),
+                          );
+                        },
+                      ),
+                    if (state.repetations >= 3)
                       CenterRightAlignedForwardButton(
                         onTap: () {
                           context.read<LessonBloc>().add(
@@ -102,17 +112,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                         },
                       ),
 
-                    if (state.repetations >= 3)
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Animate(
-                          effects: [ScaleEffect(),ShakeEffect()],
-                          child: Image.asset(
-                            Assets.goodRemark1,
-                            height: size.height * 0.4,
-                          ),
-                        ),
-                      ),
+                    if (state.repetations >= 3) BottomRightCat(),
                   ],
                 ),
               ),
@@ -208,7 +208,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
               duration: const Duration(milliseconds: 300),
               width: 50,
               height: 50,
-          
+
               child: Center(
                 child: Icon(
                   isComplete ? Icons.star : Icons.star_outline,

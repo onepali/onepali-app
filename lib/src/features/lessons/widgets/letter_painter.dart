@@ -182,7 +182,7 @@ class LetterPainter extends CustomPainter {
       ..color = Colors.black
       ..style = PaintingStyle.fill;
 
-    for (int i = 0; i < points.length; i += 15) {
+    for (int i = 0; i < points.length; i += 10) {
       canvas.drawCircle(points[i], isMobile ? 2 : 3, dotPaint);
     }
   }
