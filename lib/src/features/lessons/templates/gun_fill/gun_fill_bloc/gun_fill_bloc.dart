@@ -110,8 +110,8 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
         }
         return part;
       }).toList();
-      final isCompleted = updatedParts.every((part) => part.isFilled);
-      emit(state.copyWith(gunParts: updatedParts, isCompleted: isCompleted));
+
+      emit(state.copyWith(gunParts: updatedParts));
       emit(state.copyWith(status: GunFillStatus.audioPlaying));
       await _audioPlayerService.playAsset(
         Assets.starBlast,
@@ -134,7 +134,10 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
       }
     });
     on<_AudioComplete>((event, emit) {
-      emit(state.copyWith(status: GunFillStatus.ideal));
+      final isCompleted = state.gunParts.every((part) => part.isFilled);
+      emit(
+        state.copyWith(status: GunFillStatus.ideal, isCompleted: isCompleted),
+      );
     });
   }
   @override
