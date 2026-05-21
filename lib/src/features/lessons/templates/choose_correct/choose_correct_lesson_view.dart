@@ -1,10 +1,6 @@
-import 'dart:developer';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
@@ -20,7 +16,7 @@ class ChooseCorrectLessonView extends StatefulWidget {
   const ChooseCorrectLessonView({
     super.key,
     required this.content,
-    this.isLastContent = false,
+    required this.isLastContent,
   });
 
   @override
@@ -29,9 +25,6 @@ class ChooseCorrectLessonView extends StatefulWidget {
 }
 
 class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
-  AudioPlayer? _questionAudioPlayer;
-  AudioPlayer? _correctAudioPlayer;
-
   @override
   void initState() {
     super.initState();
@@ -43,91 +36,23 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
     bloc.add(ChooseCorrectLessonContentEvent.started(widget.content));
   }
 
-  Future<void> _playQuestionAudio(String audioUrl) async {
-    try {
-      await _questionAudioPlayer?.dispose();
-
-      final audioFile = await MediaCacheManager.instance.getSingleFile(
-        audioUrl,
-      );
-      _questionAudioPlayer = AudioPlayer();
-
-      _questionAudioPlayer!.onPlayerComplete.listen((_) {
-        context.read<ChooseCorrectLessonContentBloc>().add(
-          const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
-        );
-      });
-
-      await _questionAudioPlayer!.play(DeviceFileSource(audioFile.path));
-    } catch (e) {
-      log('Error playing question audio: $e');
-      if (!mounted) return;
-      context.read<ChooseCorrectLessonContentBloc>().add(
-        const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
-      );
-    }
-  }
-
-  Future<void> _playCorrectAudio(String audioUrl) async {
-    try {
-      await _correctAudioPlayer?.dispose();
-
-      final audioFile = await MediaCacheManager.instance.getSingleFile(
-        audioUrl,
-      );
-      _correctAudioPlayer = AudioPlayer();
-
-      _correctAudioPlayer!.onPlayerComplete.listen((_) {
-        context.read<ChooseCorrectLessonContentBloc>().add(
-          const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
-        );
-      });
-
-      await _correctAudioPlayer!.play(DeviceFileSource(audioFile.path));
-    } catch (e) {
-      log('Error playing correct audio: $e');
-      if (!mounted) return;
-      context.read<ChooseCorrectLessonContentBloc>().add(
-        const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _questionAudioPlayer?.dispose();
-    _correctAudioPlayer?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-
+    final isMobile = PlatformUtility.isMobile(context);
     return BlocConsumer<
       ChooseCorrectLessonContentBloc,
       ChooseCorrectLessonContentState
     >(
+      listenWhen: (previous, current) =>
+          widget.isLastContent &&
+          current.isCorrect &&
+          previous.status != ChooseCorrectLessonContentStatus.completed &&
+          current.status == ChooseCorrectLessonContentStatus.completed,
       listener: (context, state) {
-        // Play question audio when it starts
-        final question = state.currentQuestion?.question;
-        if (state.isQuestionAudioPlaying &&
-            question != null &&
-            question.isNotEmpty) {
-          _playQuestionAudio(question);
-        }
-
-        // Play correct audio when correct item is tapped
-        if (state.isAudioPlaying && state.selectedItem != null) {
-          final audioItem = state.selectedItem!.audioItem;
-          if (audioItem != null && audioItem.isNotEmpty) {
-            _playCorrectAudio(audioItem);
-          } else {
-            context.read<ChooseCorrectLessonContentBloc>().add(
-              const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
-            );
-          }
-        }
+        context.read<ChooseCorrectLessonContentBloc>().add(
+          const ChooseCorrectLessonContentEvent.confettiFeedback(),
+        );
       },
       builder: (context, state) {
         if (state.errorMessage != null) {
@@ -145,22 +70,14 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 1,
-                      child: CenterLeftAlignedBackButton(
-                        onTap: () {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.previousContent(),
-                          );
-                        },
-                      ),
-                    ),
-                    Expanded(
                       flex: 6,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
-                            height: size.height * 0.6,
+                            height: isMobile
+                                ? size.height * 0.7
+                                : size.height * 0.6,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -179,6 +96,7 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                         index: content.items.indexOf(item),
                                         isSelected: item == state.selectedItem,
                                         onTap: () {
+                                          if (state.isCorrect) return;
                                           context
                                               .read<
                                                 ChooseCorrectLessonContentBloc
@@ -204,6 +122,7 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.04),
+                          // Try again or Correct button
                           Visibility(
                             visible: state.isAnswered,
                             maintainSize: true,
@@ -216,20 +135,10 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                   if (state.isAnswered && state.isCorrect) {
                                     if (widget.isLastContent) {
                                       Navigator.of(context).pop();
-                                    } else {
-                                      context.read<LessonBloc>().add(
-                                        const LessonEvent.nextContent(),
-                                      );
+                                      return;
                                     }
-                                  } else if (state.isAnswered &&
-                                      !state.isCorrect &&
-                                      state
-                                              .currentQuestion
-                                              ?.question
-                                              ?.isNotEmpty ==
-                                          true) {
-                                    _playQuestionAudio(
-                                      state.currentQuestion!.question!,
+                                    context.read<LessonBloc>().add(
+                                      LessonEvent.nextContent(),
                                     );
                                   }
                                 },
@@ -262,21 +171,31 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                         ],
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: widget.isLastContent
-                          ? const SizedBox.shrink()
-                          : CenterRightAlignedForwardButton(
-                              onTap: () {
-                                context.read<LessonBloc>().add(
-                                  const LessonEvent.nextContent(),
-                                );
-                              },
-                            ),
-                    ),
                   ],
                 ),
               ),
+              // Close button
+              TopRightPositionedCloseButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+
+              CenterLeftAlignedBackButton(
+                onTap: () async {
+                  context.read<LessonBloc>().add(
+                    const LessonEvent.previousContent(),
+                  );
+                },
+              ),
+              if (!widget.isLastContent)
+                CenterRightAlignedForwardButton(
+                  onTap: () {
+                    context.read<LessonBloc>().add(
+                      const LessonEvent.nextContent(),
+                    );
+                  },
+                ),
               if (widget.isLastContent && state.isCorrect)
                 Positioned.fill(
                   child: IgnorePointer(
@@ -286,9 +205,6 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                     ),
                   ),
                 ),
-              TopRightPositionedCloseButton(
-                onTap: () => Navigator.pop(context),
-              ),
             ],
           ),
         );
