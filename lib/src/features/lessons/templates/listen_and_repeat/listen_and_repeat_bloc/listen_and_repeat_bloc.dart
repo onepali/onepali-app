@@ -56,11 +56,14 @@ class ListenAndRepeatBloc
       if (state.content == null) {
         throw Exception('No content provided for Listen and Repeat');
       }
-      await _audioPlayerService.play(state.content!.audioWord);
+      await _playerSubscription?.cancel();
       _playerSubscription = _audioPlayerService.onPlayerComplete.listen((_) {
         add(const ListenAndRepeatEvent.audioFinished());
       });
+      await _audioPlayerService.play(state.content!.audioWord);
     } catch (e) {
+      await _playerSubscription?.cancel();
+      _playerSubscription = null;
       add(ListenAndRepeatEvent.recordingFailed(e.toString()));
     }
   }
@@ -73,12 +76,13 @@ class ListenAndRepeatBloc
 
     // Small delay then autostart recording
     await Future.delayed(const Duration(milliseconds: 500));
+    if (isClosed) return;
     await _startRecording(emit);
   }
 
   Future<void> _startRecording(Emitter<ListenAndRepeatState> emit) async {
     try {
-      await _audioRecorderService.startRecording();
+      // await _audioRecorderService.startRecording();
 
       emit(
         state.copyWith(
@@ -104,14 +108,16 @@ class ListenAndRepeatBloc
 
   void _stopRecording() async {
     try {
-      final path = await _audioRecorderService.stopRecording();
-      if (path != null) {
-        add(ListenAndRepeatEvent.recordingCompleted(path));
-      } else {
-        add(const ListenAndRepeatEvent.recordingFailed('No audio recorded'));
-      }
+      // final path = await _audioRecorderService.stopRecording();
+      // if (path != null) {
+      //Recording feature is not necessary for now, so we are adding a dummy path. If necessary, just uncomment the code of this bloc.
+      add(ListenAndRepeatEvent.recordingCompleted('test.m4a'));
+      // } else {
+      //   add(const ListenAndRepeatEvent.recordingFailed('No audio recorded'));
+      // }
     } catch (e) {
-      add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      // add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      rethrow;
     }
   }
 
@@ -148,6 +154,8 @@ class ListenAndRepeatBloc
 
   Future<void> _onRetryRequested(Emitter<ListenAndRepeatState> emit) async {
     _recordingTimer?.cancel();
+    await _playerSubscription?.cancel();
+    _playerSubscription = null;
     await _audioPlayerService.stop();
     final content = state.content;
 
@@ -157,11 +165,12 @@ class ListenAndRepeatBloc
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     _recordingTimer?.cancel();
-    _playerSubscription?.cancel();
-    _audioPlayerService.dispose();
-    _audioRecorderService.dispose();
-    return super.close();
+    await _playerSubscription?.cancel();
+    _playerSubscription = null;
+    await _audioPlayerService.dispose();
+    await _audioRecorderService.dispose();
+    await super.close();
   }
 }
