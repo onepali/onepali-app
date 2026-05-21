@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -226,11 +227,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   ),
                 ),
                 Gaps.horizontalGapOf(24),
-
-                CircularButtonWidget(
-                  onPressed: () => Navigator.pop(context),
-                  type: CircularButtonType.closeGrey,
-                ),
               ],
             ),
           ),
@@ -256,6 +252,11 @@ class _AchievementScreenState extends State<AchievementScreen> {
       // Mobile layout - original unchanged
       return LayoutBuilder(
         builder: (context, constraints) {
+          final availableHeight = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : (isTabletLandScape
+                    ? MediaQuery.of(context).size.height
+                    : MediaQuery.of(context).size.height * 0.8);
           final availableWidth = constraints.maxWidth.isFinite
               ? constraints.maxWidth
               : MediaQuery.of(context).size.width;
@@ -352,18 +353,18 @@ class _AchievementScreenState extends State<AchievementScreen> {
     final bool isTablet = PlatformUtility.isTablet(context);
     return Scaffold(
       backgroundColor: AppColors.kBlack,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Background
-            Positioned.fill(
-              child: Image.asset(Assets.rewardBackground, fit: BoxFit.cover),
-            ),
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: Image.asset(Assets.rewardBackground, fit: BoxFit.cover),
+          ),
 
-            // Content
-            if (isTablet)
-              // Tablet layout - Column structure
-              SingleChildScrollView(
+          // Content
+          if (isTablet)
+            // Tablet layout - Column structure
+            SafeArea(
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
                     // Congratulations section at top
@@ -372,12 +373,17 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     buildAchievementGrid(),
                   ],
                 ),
-              )
-            else
-              // Mobile layout - Row structure
-              LayoutBuilder(
+              ),
+            )
+          else
+            // Mobile layout - Row structure
+            SafeArea(
+              child: LayoutBuilder(
                 builder: (context, constraints) {
                   final screenWidth = MediaQuery.of(context).size.width;
+                  final availableHeight = constraints.maxHeight.isFinite
+                      ? constraints.maxHeight
+                      : MediaQuery.of(context).size.height;
                   // Use 40% of screen width for congratulations section, minimum 180px, maximum 250px
                   final congratsWidth = (screenWidth * 0.4).clamp(180.0, 250.0);
                   return Row(
@@ -392,19 +398,14 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   );
                 },
               ),
+            ),
 
-            // Close button at top-right corner
-            if (!isTablet)
-              Positioned(
-                top: 16,
-                right: Dimensions.kIconMargin(context) - 8,
-                child: CircularButtonWidget(
-                  onPressed: () => Navigator.pop(context),
-                  type: CircularButtonType.closeGrey,
-                ),
-              ),
-          ],
-        ),
+          // Close button at top-right corner
+          TopRightPositionedCloseButton(
+            iconPath: Assets.closeGreyIcon,
+            onTap: () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }

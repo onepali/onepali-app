@@ -89,3 +89,53 @@ class PzHomeMetricsModel {
     );
   }
 }
+
+class PzCompletedContentModel {
+  final String id;
+  final String contentId;
+  final String contentName;
+  final String contentType;
+  final String createdAt;
+  final String updatedAt;
+  final int completedCount;
+  final String parentId;
+  final String childId;
+
+  PzCompletedContentModel({
+    required this.id,
+    required this.contentId,
+    required this.contentName,
+    required this.contentType,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.completedCount,
+    required this.parentId,
+    required this.childId,
+  });
+
+  factory PzCompletedContentModel.fromJson(Map<String, dynamic> map) {
+    return PzCompletedContentModel(
+      id: map['id'] ?? '',
+      contentId: map['content_id'] ?? '',
+      contentName: map['content_name'] ?? '',
+      contentType: map['content_type'] ?? '',
+      createdAt: map['created_at'] ?? '',
+      updatedAt: map['updated_at'] ?? '',
+      completedCount: map['completed_count'] ?? 0,
+      parentId: map['parent_id'] ?? '',
+      childId: map['child_id'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'contentId': contentId,
+      'contentName': contentName,
+      'contentType': contentType,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'completedCount': completedCount,
+    };
+  }
+}

@@ -9,7 +9,7 @@ class PHomeCard extends StatelessWidget {
   final DataFetchStatus metricsStatus;
   final bool isMobilePortrait;
   final String? parentUid;
-
+  final List<PzCompletedContentModel> completedContents;
   const PHomeCard({
     super.key,
     required this.children,
@@ -19,6 +19,7 @@ class PHomeCard extends StatelessWidget {
     required this.metricsStatus,
     required this.isMobilePortrait,
     required this.parentUid,
+    required this.completedContents,
   });
 
   @override
@@ -163,7 +164,7 @@ class PHomeCard extends StatelessWidget {
             )
           else ...[
             PAverageLearningWidget(
-              completedActivities: metrics!.completedActivities,
+              completedActivities: completedContents.length,
               answerSuccessRate: metrics!.answerSuccessRate,
               isMobilePortrait: isMobilePortrait,
             ),
@@ -176,7 +177,7 @@ class PHomeCard extends StatelessWidget {
             Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
             PDashboardMetricsWidget(
               averageDailyLearningTime: metrics!.averageDailyLearningTime,
-              mostPracticedTopics: metrics!.mostPracticedTopics,
+              mostPracticedTopics: completedContents,
               isMobilePortrait: isMobilePortrait,
             ),
             // Gaps.verticalGapOf(24),

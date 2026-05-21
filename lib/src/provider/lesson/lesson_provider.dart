@@ -240,6 +240,51 @@ class LessonProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> trackContentCompletion({
+    required String parentUid,
+    required String childUid,
+    required String contentId,
+    required String contentName,
+    required ActivityType activityType,
+  }) async {
+    try {
+      // How to track the content completion date each time the content is completed
+      final completionDate = DateTime.now().toIso8601String();
+      final type = activityType.name;
+      final data = {
+        'parent_id': parentUid,
+        'child_id': childUid,
+        'content_id': contentId,
+        'content_name': contentName,
+        'content_type': type,
+        'created_at': completionDate,
+        'updated_at': completionDate,
+        'completed_count': 1,
+      };
+      // First check if the content is already completed
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .collection(AppConstants.completedContentCollection)
+          .doc(contentId)
+          .get();
+      if (doc.exists) {
+        // increment the completed count
+        await doc.reference.update({
+          'completed_count': FieldValue.increment(1),
+          'updated_at': completionDate,
+        });
+      } else {
+        // set the data
+        await doc.reference.set({...data, 'id': doc.id});
+      }
+    } catch (e) {
+      logger.e('Error tracking content completion: $e');
+    }
+  }
+
   // Track lesson answer for success rate
   Future<void> trackLessonAnswer({
     required String parentUid,

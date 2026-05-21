@@ -12,11 +12,6 @@ class StoryScreen extends StatefulWidget {
 }
 
 class _StoryScreenState extends State<StoryScreen> {
-  bool _isSvgImage(String imageUrl) {
-    return Uri.tryParse(imageUrl)?.path.toLowerCase().endsWith('.svg') ??
-        imageUrl.toLowerCase().endsWith('.svg');
-  }
-
   @override
   void initState() {
     super.initState();
@@ -25,10 +20,15 @@ class _StoryScreenState extends State<StoryScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>> _getStoriesStream(
     String levelId,
   ) {
-    return FirebaseFirestore.instance
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('stories')
-        .where('level_id', isEqualTo: levelId)
-        .snapshots();
+        .where('level_id', isEqualTo: levelId);
+
+    if (!kDebugMode) {
+      query = query.where('active', isEqualTo: true);
+    }
+
+    return query.snapshots();
   }
 
   @override
@@ -38,6 +38,10 @@ class _StoryScreenState extends State<StoryScreen> {
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
     return SafeArea(
+      right: true,
+      bottom: false,
+      top: false,
+      left: true,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('story_levels')
@@ -49,7 +53,7 @@ class _StoryScreenState extends State<StoryScreen> {
 
             return ListView.builder(
               itemCount: data.length,
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.only(left: 24, right: 24),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
@@ -66,53 +70,62 @@ class _StoryScreenState extends State<StoryScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    SizedBox(
-                      height: isMobile
-                          ? MediaQuery.of(context).size.height * 0.45
-                          : MediaQuery.of(context).size.height * 0.3,
-                      child: StreamBuilder(
-                        stream: _getStoriesStream(data[index]['id']),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final stories = snapshot.data!.docs
-                                .where(
-                                  (story) =>
-                                      kDebugMode ||
-                                      story.data()['active'] != false,
-                                )
-                                .toList();
-                            return ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: stories.length,
-                              separatorBuilder: (_, _) =>
-                                  Gaps.horizontalGapOf(16),
-                              itemBuilder: (context, storyIndex) {
-                                final storyDoc = stories[storyIndex];
-                                final storyData = storyDoc.data();
-                                final story = StoryModel.fromJson(storyData);
-                                return ContentCard(
-                                  nameEn: story.nameEn,
-                                  nameNp: story.nameNp,
-                                  image: story.thumbnail,
-                                  bgImage: storyData['bg_image'] as String?,
-                                  isImageSvg: _isSvgImage(story.thumbnail),
-                                  bgColor: storyData['bg_color'] as String?,
-                                  onTap: () {
-                                    Utility.navigateMaterialRoute(
-                                      context,
-                                      StoryContentScreen(
-                                        story: story,
-                                        isFromRecommended: false,
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final cardWidth = AppConstants.contentCardGridWidth(
+                          constraints.maxWidth,
+                          isMobile: isMobile,
+                        );
+                        return StreamBuilder(
+                          stream: _getStoriesStream(data[index]['id']),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final stories = snapshot.data!.docs;
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    for (final story in stories) ...[
+                                      SizedBox(
+                                        width: cardWidth,
+                                        child: AspectRatio(
+                                          aspectRatio: AppConstants
+                                              .contentCardAspectRatio,
+                                          child: ContentCard(
+                                            nameEn: story['nameEn'],
+                                            nameNp: story['nameNp'],
+                                            image: story['thumbnail'],
+                                            bgImage: story['bg_image'],
+                                            isImageSvg: true,
+                                            bgColor: story['bg_color'],
+                                            onTap: () {
+                                              final storyModel =
+                                                  StoryModel.fromJson(
+                                                story.data(),
+                                              );
+                                              Utility.navigateMaterialRoute(
+                                                context,
+                                                StoryContentScreen(
+                                                  story: storyModel,
+                                                  isFromRecommended: false,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
                                       ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          }
-                          return const CircularProgressIndicator();
-                        },
-                      ),
+                                      Gaps.horizontalGapOf(
+                                        AppConstants.contentCardGridSpacing,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        );
+                      },
                     ),
                     SizedBox(height: 16),
                   ],

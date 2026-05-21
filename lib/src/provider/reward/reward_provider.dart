@@ -10,6 +10,9 @@ class RewardProvider extends ChangeNotifier {
   List<RewardModel> _rewards = [];
   List<RewardModel> get rewards => _rewards;
 
+  List<RewardModel> _claimableRewards = [];
+  List<RewardModel> get claimableRewards => _claimableRewards;
+
   List<RewardModel> _childRewards = [];
   List<RewardModel> get childRewards => _childRewards;
 
@@ -96,6 +99,43 @@ class RewardProvider extends ChangeNotifier {
       _rewards = querySnapshot.docs
           .map((doc) => RewardModel.fromJson(doc.data()))
           .toList();
+      setStatus(DataFetchStatus.success);
+    } catch (e) {
+      setStatus(DataFetchStatus.error);
+      rethrow;
+    }
+  }
+
+  Future<void> fetchClaimableRewards(String childId) async {
+    try {
+      setStatus(DataFetchStatus.loading);
+      // Fetch all rewards
+      final querySnapshot = await _firestore
+          .collection(AppConstants.rewardCollection)
+          .get();
+      final allRewards = querySnapshot.docs
+          .map((doc) => RewardModel.fromJson(doc.data()))
+          .toList();
+      // Fetch child rewards
+      final childRewards = await _firestore
+          .collection(AppConstants.childRewardCollection)
+          .where('childId', isEqualTo: childId)
+          .limit(1)
+          .get();
+      // check if this doc is already exists
+      if (childRewards.docs.isNotEmpty) {
+        final childReward = childRewards.docs.first;
+        final childRewardData = childReward.data();
+        final childRewardRewards = childRewardData['rewards'] as List<dynamic>;
+        final childRewardRewardsIds = childRewardRewards
+            .map((reward) => reward['id'])
+            .toList();
+        _claimableRewards = allRewards
+            .where((reward) => !childRewardRewardsIds.contains(reward.id))
+            .toList();
+      } else {
+        _claimableRewards = allRewards;
+      }
       setStatus(DataFetchStatus.success);
     } catch (e) {
       setStatus(DataFetchStatus.error);

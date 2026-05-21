@@ -288,7 +288,10 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String id,
     required int index,
     @Default('tap_to_fill') String type,
+    String? audioBeforeOptions,
     String? instruction,
+    String? preBgImageMb,
+    String? preBgImageTb,
     String? bgImage, // png Image
     String? bgImageTb, // png Image
     @Default([]) List<Option> options,

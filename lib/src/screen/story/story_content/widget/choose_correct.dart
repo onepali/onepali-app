@@ -81,21 +81,10 @@ class ChooseCorrect extends StatelessWidget {
                                   child: Consumer<StoryProvider>(
                                     builder: (context, provider, _) =>
                                         ElevatedButton(
-                                          onPressed: () {
-                                            if (!storyProvider
-                                                .isCorrectAnswerSelected) {
-                                              storyProvider.clearSelection();
-                                              return;
-                                            }
-                                            if (isLast) {
-                                              Navigator.of(context).pop();
-                                            } else {
-                                              provider.nextContent(context);
-                                            }
-                                          },
+                                          onPressed: null,
                                           style: ElevatedButton.styleFrom(
                                             elevation: 0,
-                                            backgroundColor:
+                                            disabledBackgroundColor:
                                                 storyProvider
                                                     .isCorrectAnswerSelected
                                                 ? AppColors.kButtonGreen
@@ -149,12 +138,11 @@ class ChooseCorrect extends StatelessWidget {
                         ),
                   ),
 
-                  if (!isLast && storyProvider.isCorrectAnswerSelected)
-                    Consumer<StoryProvider>(
-                      builder: (context, provider, _) =>
-                          CenterRightAlignedForwardButton(
-                            onTap: () => provider.nextContent(context),
-                          ),
+                  if (!isLast)
+                    CenterRightAlignedForwardButton(
+                      onTap: () {
+                        // storyProvider.nextContent(context);
+                      },
                     ),
                   Consumer<StoryProvider>(
                     builder: (context, storyProvider, _) {

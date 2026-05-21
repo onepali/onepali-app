@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 
 class MicProgressButton extends StatefulWidget {
   final int recordingDuration;
@@ -7,14 +9,12 @@ class MicProgressButton extends StatefulWidget {
   final bool isActive;
 
   final bool isCompleted;
-  final VoidCallback? onCompletedTap;
 
   const MicProgressButton({
     super.key,
     required this.recordingDuration,
     required this.isActive,
     required this.isCompleted,
-    this.onCompletedTap,
   });
 
   @override
@@ -98,7 +98,12 @@ class _MicProgressButtonState extends State<MicProgressButton>
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     return GestureDetector(
-      onTap: widget.isCompleted ? widget.onCompletedTap : null,
+      // onTap: widget.isCompleted
+      //     ? () {
+      //         context.read<LessonBloc>().add(LessonEvent.nextContent());
+      //       }
+      //     : null,
+      onTap: null,
       child: SizedBox(
         width: isMobile ? 180 : 280,
         height: isMobile ? 50 : 88,

@@ -138,7 +138,7 @@ class OrientationRouteObserver extends NavigatorObserver {
         await SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
-          DeviceOrientation.landscapeLeft,
+          // DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
         await Future.delayed(const Duration(milliseconds: 100));
@@ -147,7 +147,7 @@ class OrientationRouteObserver extends NavigatorObserver {
         await Future.delayed(const Duration(milliseconds: 50));
         // Then allow both landscape orientations
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
+          // DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
         await Future.delayed(const Duration(milliseconds: 50));
@@ -156,7 +156,7 @@ class OrientationRouteObserver extends NavigatorObserver {
         await SystemChrome.setPreferredOrientations([preferredLandscape]);
         await Future.delayed(const Duration(milliseconds: 50));
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
+          // DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
       }
@@ -234,7 +234,7 @@ class OrientationRouteObserver extends NavigatorObserver {
         await SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
-          DeviceOrientation.landscapeLeft,
+          // DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
 
@@ -249,7 +249,7 @@ class OrientationRouteObserver extends NavigatorObserver {
           ]);
         } else {
           await SystemChrome.setPreferredOrientations([
-            DeviceOrientation.landscapeLeft,
+            // DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight,
           ]);
         }
@@ -265,7 +265,7 @@ class OrientationRouteObserver extends NavigatorObserver {
           ]);
         } else {
           await SystemChrome.setPreferredOrientations([
-            DeviceOrientation.landscapeLeft,
+            // DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight,
           ]);
         }
@@ -300,7 +300,7 @@ class OrientationRouteObserver extends NavigatorObserver {
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
-        DeviceOrientation.landscapeLeft,
+        // DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
       await Future.delayed(const Duration(milliseconds: 100));
@@ -321,7 +321,7 @@ class OrientationRouteObserver extends NavigatorObserver {
         ]);
         await Future.delayed(const Duration(milliseconds: 50));
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
+          // DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
       }
@@ -342,7 +342,7 @@ class OrientationRouteObserver extends NavigatorObserver {
         ]);
         await Future.delayed(const Duration(milliseconds: 50));
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
+          // DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
       }

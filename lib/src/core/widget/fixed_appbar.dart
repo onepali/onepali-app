@@ -523,7 +523,11 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               return customInkwell(
                 onTap: () {
-                  Utility.navigate(context, AppRoutes.chooseRewardScreen);
+                  if (totalStars >= 5) {
+                    Utility.navigate(context, AppRoutes.chooseRewardScreen);
+                  } else {
+                    Utility.navigate(context, AppRoutes.rewardCollectionScreen);
+                  }
                 },
                 child: LottieHelper.fromSource(
                   path: Assets.starRewardLottie,
@@ -607,13 +611,13 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return SizedBox(
       width: tabWidth,
-      child: InkWell(
+      child: GestureDetector(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        hoverColor: AppColors.kTransparentColor,
-        splashColor: AppColors.kTransparentColor.withValues(alpha: 0.1),
-        focusColor: AppColors.kTransparentColor,
-        highlightColor: AppColors.kTransparentColor,
+        // borderRadius: BorderRadius.circular(8),
+        // hoverColor: AppColors.kTransparentColor,
+        // splashColor: AppColors.kTransparentColor.withValues(alpha: 0.1),
+        // focusColor: AppColors.kTransparentColor,
+        // highlightColor: AppColors.kTransparentColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

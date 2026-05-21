@@ -136,7 +136,7 @@ class AppInitializer {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
+      // DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
 
@@ -233,9 +233,9 @@ class AppInitializer {
                     context,
                   ).copyWith(textScaler: const TextScaler.linear(1)),
                   child: Material(
-                    child:
-                        widget ??
-                        const Center(child: CircularProgressIndicator()),
+                    child: widget != null
+                        ? widget
+                        : const Center(child: CircularProgressIndicator()),
                   ),
                 );
               },

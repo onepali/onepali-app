@@ -95,9 +95,10 @@ class MetricsTrackingHelper {
         'trackLessonCompletion called for lessonId: $lessonId, topicName: $topicName',
       );
 
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
+      if (!context.mounted) return;
 
+      final userProvider = context.read<UserProvider>();
+      final lessonProvider = context.read<LessonProvider>();
       final parentUid = userProvider.userId;
       final childUid = await ChildLocalStorage.getCurrentChildId();
 
@@ -105,25 +106,13 @@ class MetricsTrackingHelper {
         'trackLessonCompletion - parentUid: $parentUid, childUid: $childUid',
       );
 
-      // final childUid = authState.currentChildId;
-
       if (parentUid != null && childUid != null) {
-        if (!context.mounted) {
-          logger.w('trackLessonCompletion - context not mounted, aborting');
-          return;
-        }
-        logger.d(
-          'trackLessonCompletion - calling LessonProvider.trackLessonCompletion',
-        );
-        await context.read<LessonProvider>().trackLessonCompletion(
+        await lessonProvider.trackContentCompletion(
           parentUid: parentUid,
           childUid: childUid,
-          lessonId: lessonId,
-          topicName: topicName,
-          context: context,
-        );
-        logger.d(
-          'trackLessonCompletion - LessonProvider.trackLessonCompletion completed',
+          contentId: lessonId,
+          contentName: topicName,
+          activityType: ActivityType.lesson,
         );
       } else {
         logger.w('trackLessonCompletion - missing parentUid or childUid');
@@ -138,22 +127,24 @@ class MetricsTrackingHelper {
     required BuildContext context,
     required String storyId,
     required String storyTitle,
+    String? childUid,
   }) async {
     try {
+      if (!context.mounted) return;
+
       final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
-
+      final lessonProvider = context.read<LessonProvider>();
       final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
+      final resolvedChildUid =
+          childUid ?? await ChildLocalStorage.getCurrentChildId();
 
-      if (parentUid != null && childUid != null) {
-        if (!context.mounted) return;
-        await context.read<StoryProvider>().trackStoryCompletion(
+      if (parentUid != null && resolvedChildUid != null) {
+        await lessonProvider.trackContentCompletion(
           parentUid: parentUid,
-          childUid: childUid,
-          storyId: storyId,
-          storyTitle: storyTitle,
-          context: context,
+          childUid: resolvedChildUid,
+          contentId: storyId,
+          contentName: storyTitle,
+          activityType: ActivityType.story,
         );
       }
     } catch (e) {

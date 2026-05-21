@@ -23,7 +23,7 @@ enum AudioSourceType { asset, network }
 enum VideoSourceType { asset, network }
 
 // Network Type
-enum NetworkType { none, wifi, mobile, ethernet, bluetooth, vpn, other }
+enum NetworkType { none, wifi, mobile, ethernet, bluetooth, vpn, other, satellite }
 
 enum DeviceType { mobile, tablet, desktop, watch }
 

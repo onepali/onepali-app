@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
@@ -19,20 +20,23 @@ class LessonCategoryPage extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontFamily: GoogleFonts.poppins().fontFamily,
         fontSize: 36,
-        letterSpacing: 5,
+        letterSpacing: 1,
         fontWeight: FontWeight.bold,
         color: AppColors.kDrawerBgColor,
       ),
     );
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getLessonsStream() {
-    return FirebaseFirestore.instance
+  Stream<QuerySnapshot> getLessonsStream() {
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('lessons')
-        .where('category_id', isEqualTo: categoryId)
-        .snapshots();
+        .where('category_id', isEqualTo: categoryId);
+    if (!kDebugMode) {
+      query = query.where('active', isEqualTo: true);
+    }
+    return query.snapshots();
   }
 
   @override
@@ -82,39 +86,44 @@ class LessonCategoryPage extends StatelessWidget {
               stream: getLessonsStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final data = snapshot.data!.docs
-                      .where((lesson) => lesson.data()['active'] != false)
-                      .toList();
-                  return GridView.builder(
-                    itemCount: data.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3 / 2.0,
-                      mainAxisSpacing: 16.0,
-                      crossAxisSpacing: 16.0,
-                    ),
-                    padding: const EdgeInsets.only(
-                      right: 24,
-                      left: 24,
-                      bottom: 24,
-                    ),
-                    itemBuilder: (context, index) {
-                      final lesson = data[index];
-                      final lessonData = lesson.data();
-                      return ContentCard(
-                        nameEn: lessonData['name'] as String? ?? '',
-                        bgColor: lessonData['bg_color'] as String?,
-                        nameNp: lessonData['name_np'] as String? ?? '',
-                        onTap: () {
-                          Utility.navigateMaterialRoute(
-                            context,
-                            LessonPage(lessonId: lesson.id),
+                  final data = snapshot.data!.docs;
+                  return SafeArea(
+                    right: false,
+                    bottom: false,
+                    top: false,
+                    child: Container(
+                      // color:Colors.green,
+                      child: GridView.builder(
+                        itemCount: data.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 3 / 2.0,
+                          mainAxisSpacing: 16.0,
+                          crossAxisSpacing: 16.0,
+                        ),
+                        padding: EdgeInsets.only(
+                          right: 24,
+                          left: 24,
+                          bottom: 24,
+                        ),
+                        itemBuilder: (context, index) {
+                          final data = snapshot.data!.docs;
+                          return ContentCard(
+                            nameEn: data[index]['name'],
+                            bgColor: data[index]['bg_color'],
+                            nameNp: 'name_np',
+                            onTap: () {
+                              Utility.navigateMaterialRoute(
+                                context,
+                                LessonPage(lessonId: data[index].id),
+                              );
+                            },
+                            image: data[index]['image'],
+                            bgImage: data[index]['bg_image'],
                           );
                         },
-                        image: lessonData['image'] as String?,
-                        bgImage: lessonData['bg_image'] as String?,
-                      );
-                    },
+                      ),
+                    ),
                   );
                 } else {
                   return const Center(child: CircularProgressIndicator());

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/repository/lesson_repository.dart';
@@ -19,9 +21,9 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   }
 
   Future<void> _onStarted(_Started event, Emitter<LessonState> emit) async {
-    emit(
-      state.copyWith(status: LessonStatus.loading, lessonId: event.lessonId),
-    );
+    emit(state.copyWith(
+      status: LessonStatus.loading,
+      lessonId: event.lessonId));
     await emit.forEach(
       LessonRepository().watchLessonWithContents(event.lessonId),
       onData: (lessonDetail) {
@@ -37,7 +39,9 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
       },
       onError: (error, _) {
         log(error.toString());
-        return state.copyWith(status: LessonStatus.failure);
+        return state.copyWith(
+          status: LessonStatus.failure,
+        );
       },
     );
   }
@@ -49,9 +53,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     final nextIndex = state.currentIndex + 1;
     if (nextIndex < lessonDetails.contents.length) {
       final nextContent = lessonDetails.contents[nextIndex];
-      emit(
-        state.copyWith(currentIndex: nextIndex, currentContent: nextContent),
-      );
+      emit(_stateAtContentIndex(nextIndex, nextContent));
     }
   }
 
@@ -62,10 +64,24 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     final prevIndex = state.currentIndex - 1;
     if (prevIndex >= 0) {
       final prevContent = lessonDetails.contents[prevIndex];
-      emit(
-        state.copyWith(currentIndex: prevIndex, currentContent: prevContent),
-      );
+      emit(_stateAtContentIndex(prevIndex, prevContent));
     }
+  }
+
+  /// Updates index/content and marks completion only the first time the user
+  /// lands on the last content index (revisiting the last screen does nothing).
+  /// Approach: sticky one-time flag to track completion.
+  LessonState _stateAtContentIndex(int index, LessonContent content) {
+    final lastIndex = state.lessonDetails!.contents.length - 1;
+    final isFirstTimeOnLast =
+        index == lastIndex && !state.hasCompletedLesson;
+
+    return state.copyWith(
+      currentIndex: index,
+      currentContent: content,
+      hasCompletedLesson:
+          state.hasCompletedLesson || isFirstTimeOnLast,
+    );
   }
 
   @override

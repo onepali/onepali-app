@@ -7,6 +7,9 @@ enum ActivityType { lesson, story, song }
 class PzMetricsProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  List<PzCompletedContentModel> _completedContents = [];
+  List<PzCompletedContentModel> get completedContents => _completedContents;
+
   PzHomeMetricsModel? _metrics;
   DataFetchStatus _status = DataFetchStatus.initial;
 
@@ -19,11 +22,37 @@ class PzMetricsProvider extends ChangeNotifier {
   final Map<String, int> _sessionCorrectAnswers = {};
   final Map<String, int> _sessionTotalAnswers = {};
 
+  Future<void> fetchCompletedContents({
+    required String parentUid,
+    required String childUid,
+  }) async {
+    _status = DataFetchStatus.loading;
+    notifyListeners();
+    try {
+      final doc = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .collection(AppConstants.completedContentCollection)
+          .get();
+      _completedContents = doc.docs
+          .map((doc) => PzCompletedContentModel.fromJson(doc.data()))
+          .toList();
+      _status = DataFetchStatus.success;
+    } catch (e) {
+      _completedContents = [];
+      _status = DataFetchStatus.error;
+    }
+    notifyListeners();
+  }
+
   Future<void> fetchMetrics({
     required String parentUid,
     required String childUid,
   }) async {
     _status = DataFetchStatus.loading;
+    await fetchCompletedContents(parentUid: parentUid, childUid: childUid);
     notifyListeners();
     try {
       final doc = await _firestore
@@ -246,7 +275,13 @@ class PzMetricsProvider extends ChangeNotifier {
     required String topicName, // e.g., "Alphabets", "Animals", "Festival Songs"
     required ActivityType activityType, // lesson, story, song
   }) async {
-    if (_metrics == null) return;
+    if (_metrics == null) {
+      await fetchMetrics(parentUid: parentUid, childUid: childUid);
+      if (_metrics == null) {
+        logger.e('🚨 Failed to fetch metrics: metrics is null');
+        return;
+      }
+    }
 
     // Increment completed activities
     final newCompletedActivities = _metrics!.completedActivities + 1;
