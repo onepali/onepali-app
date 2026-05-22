@@ -2,11 +2,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'lesson.freezed.dart';
 part 'lesson.g.dart';
 
-Object? _readBearTakingTeaTb(Map<dynamic, dynamic> json, String key) =>
-    json[key] ?? json['bear_taking_tea'];
+Object? _readLeopardTakingTeaTb(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['leopard_taking_tea'];
 
-Object? _readBearTakingTeaMb(Map<dynamic, dynamic> json, String key) =>
-    json[key] ?? json['bear_taking_tea'];
+Object? _readLeopardTakingTeaMb(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['leopard_taking_tea'];
 
 @freezed
 abstract class Lesson with _$Lesson {
@@ -154,8 +154,10 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String stoveImage,
     required String abaPaniUmalaSound,
     required String teaReadySound,
-    @JsonKey(readValue: _readBearTakingTeaTb) required String bearTakingTeaTb,
-    @JsonKey(readValue: _readBearTakingTeaMb) required String bearTakingTeaMb,
+    @JsonKey(name: 'leopard_taking_tea_tb', readValue: _readLeopardTakingTeaTb)
+    required String leopardTakingTeaTb,
+    @JsonKey(name: 'leopard_taking_tea_mb', readValue: _readLeopardTakingTeaMb)
+    required String leopardTakingTeaMb,
     @Default([])
     List<Item>
     ingredients, // In this case, imageOutline is the placed image on top of stove

@@ -7,10 +7,10 @@ import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
-import 'package:onepali/src/features/tea_maker/widgets/bear_with_tea.dart';
 import 'package:onepali/src/features/tea_maker/widgets/dragged_item.dart';
 import 'package:onepali/src/features/tea_maker/widgets/huncha_button.dart';
-import 'package:onepali/src/features/tea_maker/widgets/ingridient.dart';
+import 'package:onepali/src/features/tea_maker/widgets/ingredient.dart';
+import 'package:onepali/src/features/tea_maker/widgets/leopard_with_tea.dart';
 
 class KitchenPage extends StatefulWidget {
   const KitchenPage({super.key, required this.content});
@@ -160,8 +160,8 @@ class _KitchenPageState extends State<KitchenPage> {
                                                         ),
                                                   ),
                                               child: SizedBox(
-                                                child: Ingridient(
-                                                  ingridient:
+                                                child: Ingredient(
+                                                  ingredient:
                                                       state.ingredients[index],
                                                   isSelected:
                                                       state.index == index,
@@ -237,10 +237,10 @@ class _KitchenPageState extends State<KitchenPage> {
                             },
                           ),
                         ),
-                      // Bear making announcement
+                      // Leopard making announcement
                       Align(
                         alignment: Alignment.bottomCenter,
-                        child: BearWithTea(),
+                        child: LeopardWithTea(),
                       ),
 
                       // Huncha button in middle
@@ -276,8 +276,8 @@ class _KitchenPageState extends State<KitchenPage> {
                               ),
                               child: SvgPicture.network(
                                 isMobile
-                                    ? state.bearTakingTeaMb ?? ''
-                                    : state.bearTakingTeaTb ?? '',
+                                    ? state.leopardTakingTeaMb ?? ''
+                                    : state.leopardTakingTeaTb ?? '',
                               ),
                             ),
                           ),

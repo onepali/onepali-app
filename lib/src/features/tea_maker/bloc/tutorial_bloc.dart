@@ -16,7 +16,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final player = AudioPlayer();
   final hunxaPlayer = AudioPlayer();
   final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
-  List<String> ingridents = [];
+  List<String> ingredientImages = [];
   List<String> onDraggedItems = [];
   List<String> audioFiles = [];
   List<String> ingredientAudioFiles = [];
@@ -25,8 +25,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   String abaPaniUmalaSound = '';
   String teaReadySound = '';
   String stoveImage = '';
-  String bearTakingTeaTb = '';
-  String bearTakingTeaMb = '';
+  String leopardTakingTeaTb = '';
+  String leopardTakingTeaMb = '';
 
   Map<String, String> _cachedPaths = {};
 
@@ -34,7 +34,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     on<_Started>((event, emit) async {
       final content = event.content;
 
-      ingridents = content.ingredients.map((e) => e.image).toList();
+      ingredientImages = content.ingredients.map((e) => e.image).toList();
       onDraggedItems = content.ingredients
           .map((e) => e.imageOutline ?? '')
           .toList();
@@ -48,18 +48,18 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       abaPaniUmalaSound = content.abaPaniUmalaSound;
       teaReadySound = content.teaReadySound;
       stoveImage = content.stoveImage;
-      bearTakingTeaTb = content.bearTakingTeaTb;
-      bearTakingTeaMb = content.bearTakingTeaMb;
+      leopardTakingTeaTb = content.leopardTakingTeaTb;
+      leopardTakingTeaMb = content.leopardTakingTeaMb;
 
       emit(state.copyWith(showLoading: true));
 
       final allImageUrls = [
-        ...ingridents,
+        ...ingredientImages,
         ...onDraggedItems,
         teapotVapour,
         stoveImage,
-        bearTakingTeaTb,
-        bearTakingTeaMb,
+        leopardTakingTeaTb,
+        leopardTakingTeaMb,
       ].where((e) => e.isNotEmpty).toList();
 
       final allAudioUrls = [
@@ -81,22 +81,22 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       emit(
         state.copyWith(
           showLoading: false,
-          ingredients: ingridents,
+          ingredients: ingredientImages,
           index: 0,
           stoveImage: stoveImage,
-          bearTakingTeaTb: bearTakingTeaTb,
-          bearTakingTeaMb: bearTakingTeaMb,
+          leopardTakingTeaTb: leopardTakingTeaTb,
+          leopardTakingTeaMb: leopardTakingTeaMb,
         ),
       );
 
       final didStartInstructionAudio = await _playAudio(
         event.content.audioInstruction,
       );
-      emit(state.copyWith(showBearWithTea: true));
+      emit(state.copyWith(showLeopardWithTea: true));
       if (didStartInstructionAudio) {
         await player.onPlayerComplete.first;
       }
-      emit(state.copyWith(showBearWithTea: false, showHunchButton: true));
+      emit(state.copyWith(showLeopardWithTea: false, showHunchButton: true));
     });
 
     on<_HunchaButtonPressed>((event, emit) async {
@@ -105,7 +105,12 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       await Future.delayed(const Duration(seconds: 2));
 
       await _playAudioAndWait(kitleyLeyAudio);
-      emit(state.copyWith(showDragIndicator: ingridents.isNotEmpty, index: 0));
+      emit(
+        state.copyWith(
+          showDragIndicator: ingredientImages.isNotEmpty,
+          index: 0,
+        ),
+      );
     });
 
     on<_OnDragAccept>((event, emit) async {
