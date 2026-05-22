@@ -22,6 +22,7 @@ class ChildUserModel {
   final ScreenTimeModel? screenTimeTracking;
   final String uid;
   final CompletedLessons? completedLessons;
+  final int completedLessonsCount;
 
   ChildUserModel({
     required this.avatarUrl,
@@ -36,6 +37,7 @@ class ChildUserModel {
     required this.uid,
     this.screenTimeTracking,
     this.completedLessons,
+    this.completedLessonsCount = 0,
   });
 
   factory ChildUserModel.fromJson(Map<String, dynamic> json) => ChildUserModel(
@@ -53,6 +55,7 @@ class ChildUserModel {
         ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
         : null,
     completedLessons: _parseCompletedLessons(json),
+    completedLessonsCount: json["completedLessonsCount"] ?? 0,
   );
 
   /// Helper method to parse completed lessons from Firestore data
@@ -104,6 +107,7 @@ class ChildUserModel {
       "screenTimeTracking": screenTimeTracking!.toJson(),
     if (completedLessons != null)
       "completedLessons": completedLessons!.toJson(),
+    "completedLessonsCount": completedLessonsCount,
   };
 
   /// Get the current screen time tracking, creating a default one if null

@@ -4,13 +4,13 @@ import 'package:onepali/src/src.dart';
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
   final String profileImage;
-  final int totalStars;
   final Function(String) onTabSelected;
   final List<ChildUserModel> childData;
   final int totalChildCount;
   final AuthProviderType? authType;
   final BuildContext context;
-  final int totalLessonsCompleted;
+  final String? parentUid;
+  final String? childUid;
   final bool isGuest;
   final bool playStarBlastAudio;
   final Color menuColor;
@@ -20,7 +20,6 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.name,
     required this.profileImage,
-    required this.totalStars,
     required this.onTabSelected,
     required this.childData,
     this.authType,
@@ -28,15 +27,11 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.context,
     this.isGuest = false,
     this.playStarBlastAudio = false,
-    this.totalLessonsCompleted = 0,
+    this.parentUid,
+    this.childUid,
     this.menuColor = AppColors.kLessonColor,
     this.elevation = 0.0,
-  }) : assert(totalStars >= 0, 'Total stars must be non-negative'),
-       assert(totalChildCount >= 0, 'Total child count must be non-negative'),
-       assert(
-         totalLessonsCompleted >= 0,
-         'Total lessons completed must be non-negative',
-       );
+  }) : assert(totalChildCount >= 0, 'Total child count must be non-negative');
 
   @override
   Widget build(BuildContext context) {
@@ -321,7 +316,10 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     ],
                                   ),
                                   // Achievements bar below avatar/name, aligned with captions
-                                  if (!isGuest && totalChildCount > 0)
+                                  if (!isGuest &&
+                                      totalChildCount > 0 &&
+                                      parentUid != null &&
+                                      childUid != null)
                                     Padding(
                                       padding: EdgeInsets.only(
                                         top:
@@ -329,10 +327,10 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                             (isMobile ? 0.01 : 0.015),
                                       ), // Same margin as captions
                                       child: SizedBox(
-                                        width:
-                                            achievementsBarWidth, // 80% of left side allocation
-                                        child: buildProgressBar(
-                                          achievementsBarWidth,
+                                        width: achievementsBarWidth,
+                                        child: AppBarProgressBar(
+                                          parentUid: parentUid!,
+                                          childUid: childUid!,
                                         ),
                                       ),
                                     ),
@@ -400,6 +398,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   static int _selectedTabIndex = 0;
+
+  static int get selectedTabIndex => _selectedTabIndex;
   static CustomAudioWidget? _starBlastAudioWidget;
   static bool _isStarBlastPlaying = false;
 
@@ -461,126 +461,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     await _stopStarBlastAudio();
   }
 
-  Widget buildProgressBar(double progressBarWidth) {
-    const totalSteps = 4;
-    final isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-
-    // Calculate responsive sizes based on progressBarWidth (already 80% of left side)
-    final progressBarHeight =
-        progressBarWidth * (isTabletLandscape ? 0.02 : 0.03); // 4% thickness
-    final connectorLength =
-        progressBarWidth *
-        (isTabletLandscape ? 0.08 : 0.10); // 10% / 8% connector width
-    final circleSize =
-        progressBarWidth * (isTabletLandscape ? 0.04 : 0.05); // 5% dot size
-    final rewardSize =
-        progressBarWidth *
-        (isTabletLandscape ? 0.10 : 0.12); // 10% / 12% reward size
-    final starLottieSize =
-        progressBarWidth *
-        (isTabletLandscape ? 0.10 : 0.12); // 10% / 12% star size
-
-    return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween, // Distribute across available width
-      children: [
-        for (int i = 0; i < totalSteps; i++) ...[
-          _buildDottedConnector(
-            isActive: totalLessonsCompleted > i,
-            length: connectorLength,
-            height: progressBarHeight,
-          ),
-
-          // Progress dot
-          _buildProgressDot(
-            isCompleted: totalLessonsCompleted > i,
-            isLastStep: i == totalSteps - 1,
-            circleSize: circleSize,
-          ),
-        ],
-
-        // Final dotted connector after last dot
-        _buildDottedConnector(
-          isActive: totalLessonsCompleted >= totalSteps,
-          length: connectorLength,
-          height: progressBarHeight,
-        ),
-
-        // Reward icon
-        if (
-        // totalLessonsCompleted == 5 &&
-        GlobalConfig.isUserTesting && !isGuest && totalChildCount > 0) ...[
-          Builder(
-            builder: (context) {
-              // Only play audio if playStarBlastAudio is true
-              if (playStarBlastAudio &&
-                  _selectedTabIndex == 0 &&
-                  childData.isNotEmpty) {
-                _playStarBlastAudio();
-              }
-
-              return customInkwell(
-                onTap: () {
-                  if (totalStars >= 5) {
-                    Utility.navigate(context, AppRoutes.chooseRewardScreen);
-                  } else {
-                    Utility.navigate(context, AppRoutes.rewardCollectionScreen);
-                  }
-                },
-                child: LottieHelper.fromSource(
-                  path: Assets.starRewardLottie,
-                  height: starLottieSize,
-                  repeat: false,
-                  width: starLottieSize,
-                ),
-              );
-            },
-          ),
-        ] else ...[
-          if (!isGuest && totalChildCount > 0)
-            SvgHelper.fromSource(
-              path: Assets.reward,
-              height: rewardSize,
-              width: rewardSize,
-            ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildProgressDot({
-    required bool isCompleted,
-    required bool isLastStep,
-    required double circleSize,
-  }) {
-    return Container(
-      width: circleSize,
-      height: circleSize,
-      decoration: BoxDecoration(
-        color: isCompleted ? AppColors.kOrange : Colors.grey.shade300,
-        shape: BoxShape.circle,
-      ),
-      child: isLastStep && isCompleted
-          ? Icon(Icons.star, color: AppColors.kWhite, size: circleSize * 0.6)
-          : null,
-    );
-  }
-
-  Widget _buildDottedConnector({
-    required bool isActive,
-    required double length,
-    required double height,
-  }) {
-    return CustomPaint(
-      size: Size(length, height),
-      painter: DottedLinePainter(
-        color: isActive ? AppColors.sunshineYellow : Colors.grey.shade300,
-        strokeWidth: height,
-      ),
-    );
-  }
+  static void triggerStarBlastAudio() => _playStarBlastAudio();
 
   Widget _buildTab(
     String icon,
@@ -751,35 +632,4 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       tabContentHeight: tabContentHeight,
     );
   }
-}
-
-class DottedLinePainter extends CustomPainter {
-  final Color color;
-  final double strokeWidth;
-
-  DottedLinePainter({required this.color, required this.strokeWidth});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    const dashWidth = 4.0;
-    const dashSpace = 3.0;
-    double startX = 0.0;
-
-    while (startX < size.width) {
-      canvas.drawLine(
-        Offset(startX, size.height / 2),
-        Offset(startX + dashWidth, size.height / 2),
-        paint,
-      );
-      startX += dashWidth + dashSpace;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

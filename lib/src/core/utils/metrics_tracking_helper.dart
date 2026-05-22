@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
@@ -107,6 +108,13 @@ class MetricsTrackingHelper {
       );
 
       if (parentUid != null && childUid != null) {
+        // Increment completed lessons count to collect the reward.
+        await lessonProvider.incrementCompletedLessonsCount(
+          parentUid: parentUid,
+          childUid: childUid,
+          lessonId: lessonId,
+        );
+        // Track the lesson completion.
         await lessonProvider.trackContentCompletion(
           parentUid: parentUid,
           childUid: childUid,
