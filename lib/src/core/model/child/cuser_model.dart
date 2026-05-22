@@ -22,6 +22,7 @@ class ChildUserModel {
   final ScreenTimeModel? screenTimeTracking;
   final String uid;
   final CompletedLessons? completedLessons;
+  final int completedLessonsCount;
 
   ChildUserModel({
     required this.avatarUrl,
@@ -36,6 +37,7 @@ class ChildUserModel {
     required this.uid,
     this.screenTimeTracking,
     this.completedLessons,
+    this.completedLessonsCount = 0,
   });
 
   factory ChildUserModel.fromJson(Map<String, dynamic> json) => ChildUserModel(
@@ -53,15 +55,16 @@ class ChildUserModel {
         ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
         : null,
     completedLessons: _parseCompletedLessons(json),
+    completedLessonsCount: json["completedLessonsCount"] ?? 0,
   );
 
   /// Helper method to parse completed lessons from Firestore data
   static CompletedLessons? _parseCompletedLessons(Map<String, dynamic> json) {
-    final totalLessonsCompleted = json["totalLessonsCompleted"] ?? 0;
     final lessonsData = json["completedLessons"];
 
     if (lessonsData != null) {
       List<CompletedLesson> lessons = [];
+      var totalLessonsCompleted = json["totalLessonsCompleted"] ?? 0;
 
       if (lessonsData is List) {
         lessons = lessonsData.map((lessonData) {
@@ -72,6 +75,8 @@ class ChildUserModel {
         }).toList();
       } else if (lessonsData is Map<String, dynamic> &&
           lessonsData["lessons"] != null) {
+        totalLessonsCompleted =
+            lessonsData["totalLessonsCompleted"] ?? totalLessonsCompleted;
         // Handle object format with lessons array
         lessons = List<CompletedLesson>.from(
           (lessonsData["lessons"] as List).map(
@@ -104,6 +109,7 @@ class ChildUserModel {
       "screenTimeTracking": screenTimeTracking!.toJson(),
     if (completedLessons != null)
       "completedLessons": completedLessons!.toJson(),
+    "completedLessonsCount": completedLessonsCount,
   };
 
   /// Get the current screen time tracking, creating a default one if null
@@ -130,6 +136,7 @@ class ChildUserModel {
       uid: uid,
       screenTimeTracking: newScreenTimeTracking,
       completedLessons: completedLessons,
+      completedLessonsCount: completedLessonsCount,
     );
   }
 }

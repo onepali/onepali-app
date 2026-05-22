@@ -107,6 +107,13 @@ class MetricsTrackingHelper {
       );
 
       if (parentUid != null && childUid != null) {
+        // Increment completed lessons count to collect the reward.
+        await lessonProvider.incrementCompletedLessonsCount(
+          parentUid: parentUid,
+          childUid: childUid,
+          lessonId: lessonId,
+        );
+        // Track the lesson completion.
         await lessonProvider.trackContentCompletion(
           parentUid: parentUid,
           childUid: childUid,

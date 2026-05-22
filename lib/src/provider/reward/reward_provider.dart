@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../src.dart';
@@ -23,6 +24,11 @@ class RewardProvider extends ChangeNotifier {
 
   Future<void> saveRewardForChild(RewardModel reward) async {
     final childId = await ChildLocalStorage.getCurrentChildId();
+    final parentId = FirebaseAuth.instance.currentUser?.uid;
+    if (parentId == null || parentId.isEmpty) {
+      logger.e('Parent ID not found');
+      return;
+    }
     if (childId == null) {
       logger.e('Child ID not found');
       return;
@@ -39,6 +45,14 @@ class RewardProvider extends ChangeNotifier {
     final rewardData = reward.toJson();
 
     try {
+      // Remove 5 rewards from the (users)/(children)/completedLessonsCount field.
+      await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .update({'completedLessonsCount': FieldValue.increment(-5)});
+      // Save the reward to the childRewardCollection
       final querySnapshot = await _firestore
           .collection(AppConstants.childRewardCollection)
           .where('childId', isEqualTo: childId)
