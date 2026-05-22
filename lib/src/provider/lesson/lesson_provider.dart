@@ -336,4 +336,36 @@ class LessonProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> incrementCompletedLessonsCount({
+    required String parentUid,
+    required String childUid,
+    required String lessonId,
+  }) async {
+    try {
+      /// Fetch completed contents from completed_content collection.
+      /// If the any document with same lessonId is present, then we don't count it again, because it
+      /// means the lesson is already completed.We are counting only the unique lessons.
+      final querySnapshot = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .collection(AppConstants.completedContentCollection)
+          .where('content_id', isEqualTo: lessonId) // filter by lessonId
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return;
+      }
+      // Increment completed lessons count
+      await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .update({'completedLessonsCount': FieldValue.increment(1)});
+    } catch (e) {
+      logger.e('Error incrementing completed lessons count: $e');
+    }
+  }
 }

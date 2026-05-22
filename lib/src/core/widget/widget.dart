@@ -23,6 +23,7 @@ export 'custom_lottie.dart';
 export 'gaps.dart';
 
 /// Custom [AppBar]
+export 'appbar_progress_bar.dart';
 export 'fixed_appbar.dart';
 export 'custom_appbar.dart';
 

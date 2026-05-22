@@ -70,7 +70,6 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
             appBar: UserAppBar(
           name: 'Guest',
           profileImage: '',
-          totalStars: 0,
           menuColor: homeServices[_selectedTabIndex].color,
           onTabSelected: (tab) {
             final idx = homeServices.indexWhere((e) => e.name == tab);
