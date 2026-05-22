@@ -12,28 +12,35 @@ abstract class AudioPlayerService {
   Future<void> dispose();
 }
 
+
 class AudioPlayerServiceImpl implements AudioPlayerService {
-  // final String audioSource;
   final AudioPlayer _player = AudioPlayer();
-  late final StreamSubscription<void> _playerCompleteSubscription;
+  StreamSubscription<void>? _completeSubscription;
 
   final StreamController<void> _completeController =
       StreamController<void>.broadcast();
 
-  AudioPlayerServiceImpl() {
-    _playerCompleteSubscription = _player.onPlayerComplete.listen((_) {
-      _completeController.add(null);
+  @override
+  Stream<void> get onPlayerComplete => _completeController.stream;
+
+  void _listenForCompletionOnce() {
+    _completeSubscription?.cancel();
+    _completeSubscription = _player.onPlayerComplete.listen((_) {
+      _completeSubscription?.cancel();
+      _completeSubscription = null;
+      if (!_completeController.isClosed) {
+        _completeController.add(null);
+      }
     });
   }
 
   @override
-  Stream<void> get onPlayerComplete => _completeController.stream;
-
-  @override
   Future<void> play(String audioSource) async {
+    await stop();
     final cachedFile = await MediaCacheManager.instance.getSingleFile(
       audioSource,
     );
+    _listenForCompletionOnce();
     if (cachedFile.existsSync()) {
       await _player.play(DeviceFileSource(cachedFile.path));
     } else {
@@ -46,15 +53,18 @@ class AudioPlayerServiceImpl implements AudioPlayerService {
     await _player.stop();
   }
 
+
   @override
   Future<void> dispose() async {
-    await _playerCompleteSubscription.cancel();
+    await _completeSubscription?.cancel();
     await _player.dispose();
     await _completeController.close();
   }
-
+  
   @override
-  Future<void> playAsset(String url) {
-    return _player.play(AssetSource(url));
+  Future<void> playAsset(String url) async {
+    await stop();
+    _listenForCompletionOnce();
+    await _player.play(AssetSource(url));
   }
 }

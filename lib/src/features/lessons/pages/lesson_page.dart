@@ -34,7 +34,7 @@ import 'package:onepali/src/features/lessons/templates/tap_to_fill/tap_to_fill_v
 import 'package:onepali/src/features/lessons/templates/tap_to_pop/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/unknown_lesson_type.dart';
-import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/pages/kitchen_page.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonPage extends StatefulWidget {
