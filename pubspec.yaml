@@ -49,7 +49,7 @@ dependencies:
   connectivity_plus: ^7.1.1
 
   # Storage & File System
-  shared_preferences: ^2.5.3
+  shared_preferences: ^2.5.5
   permission_handler: ^12.0.1
   path_provider: ^2.1.4
   file_picker: ^11.0.2
