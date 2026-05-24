@@ -120,6 +120,9 @@ class LessonAudioProvider extends ChangeNotifier {
     BuildContext context,
     Lesson lesson,
   ) async {
+    if (isPlaying) return;
+    if (_audioPlayer1.state == PlayerState.playing) return;
+    if (_audioPlayer2.state == PlayerState.playing) return;
     if (_currentIndex < contents.length - 1) {
       _currentIndex++;
       notifyListeners();

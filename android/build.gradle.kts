@@ -25,6 +25,12 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(":app")
 }
+subprojects {
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = rootProject.extra["jvmTarget"] as String
+        targetCompatibility = rootProject.extra["jvmTarget"] as String
+    }
+}
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)

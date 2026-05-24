@@ -14,7 +14,7 @@ enum DataFetchStatus { initial, loading, success, error }
 enum LogLevel { debug, info, warning, error, success }
 
 // Auth Provider
-enum AuthProviderType { google, apple, facebook, email, anonymous }
+enum AuthProviderType { google, apple, email, anonymous }
 
 // Audio Source
 enum AudioSourceType { asset, network }

@@ -82,6 +82,9 @@ class Assets {
   static String unsubscribe = 'unfav'.icon;
   static String email = 'email'.icon;
 
+  ///[ Buttons] assets
+  static String checkButton = "check_btn".buttonSvg;
+
   /// [Miscellaneous]
   static String successSvg = 'success'.svg;
   static String childSuccessSvg = 'child_onboard'.svg;
@@ -164,4 +167,5 @@ extension AssetsExtension on String {
   String get audio => '$this.mp3';
   String get mp4 => 'assets/images/$this.mp4';
   String get json => 'assets/json/$this.json';
+  String get buttonSvg => 'assets/svg/buttons/$this.svg';
 }

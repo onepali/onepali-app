@@ -64,6 +64,9 @@ class CustomMaterialButton extends StatelessWidget {
   /// Icon Sized
   final double? iconSize;
 
+  ///Color or IconData
+  final Color? iconColor;
+
   const CustomMaterialButton({
     super.key,
     this.onTap,
@@ -87,6 +90,7 @@ class CustomMaterialButton extends StatelessWidget {
     this.iconType = 'icon',
     this.textStyle,
     this.iconSize,
+    this.iconColor,
   });
 
   @override
@@ -141,7 +145,9 @@ class CustomMaterialButton extends StatelessWidget {
                       ? SvgHelper.fromSource(path: icon, height: 16, width: 16)
                       : Icon(
                           icon,
-                          color: fillButton ? AppColors.kWhite : color,
+                          color:
+                              iconColor ??
+                              (fillButton ? AppColors.kWhite : color),
                           size: iconSize ?? 16,
                         ),
                 if (icon != null) Gaps.horizontalGapOf(8.0),

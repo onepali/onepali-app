@@ -54,11 +54,6 @@ import UserNotifications
     super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
   }
   
-  // // Handle URL schemes for Facebook authentication and other providers
-  // override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-  //   return super.application(app, open: url, options: options)
-  // }
-  
   // Enable dynamic orientation changes based on Flutter's SystemChrome.setPreferredOrientations
   // This method allows Flutter to control orientation programmatically
   override func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {

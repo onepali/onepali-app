@@ -301,7 +301,6 @@ class _LessonContentCardState extends State<LessonContentCard>
       final imageWidth = actualContainerSize * 0.80; // 80% of container width
       final imageHeight =
           actualContainerHeight * 0.80; // 80% of container height
-
       return Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
