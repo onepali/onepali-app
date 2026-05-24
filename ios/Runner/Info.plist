@@ -34,36 +34,9 @@
 				<string>com.googleusercontent.apps.259206374027-krn41ok7sioklh1obf5q45u2bkosroao</string>
 			</array>
 		</dict>
-		<!-- Facebook Auth URL Scheme - Commented out
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>facebook-auth</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb1817661262126199</string>
-			</array>
-		</dict>
-		-->
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<!-- Facebook App Configuration - Commented out
-	<key>FacebookAppID</key>
-	<string>1817661262126199</string>
-	<key>FacebookClientToken</key>
-	<string>eeda8a79b6812e09032e3df8e9306da8</string>
-	<key>FacebookDisplayName</key>
-	<string>O Nepali</string>
-	-->
-	<!-- Facebook LSApplicationQueriesSchemes - Commented out
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-		<string>fb-messenger-share-api</string>
-		<string>fbauth2</string>
-		<string>fbshareextension</string>
-	</array>
-	-->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

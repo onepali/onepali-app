@@ -127,7 +127,7 @@ jobs:
 
   ios_debug_build:
     name: iOS simulator debug build
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 45
     steps:
       - name: Checkout
@@ -138,6 +138,9 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
+
+      - name: Show Xcode version
+        run: xcodebuild -version
 
       - name: Install dependencies
         run: flutter pub get
