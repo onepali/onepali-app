@@ -58,7 +58,7 @@ dependencies:
   flutter_local_notifications: ^19.3.0
   fluttertoast: ^9.1.0
   timezone: ^0.10.1
-  flutter_timezone: ^5.0.0
+  flutter_timezone: ^5.0.2
 
   # Utils & Platform Integration
   intl: ^0.20.2
