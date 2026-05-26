@@ -300,7 +300,7 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                       ),
                     ],
                   ),
-                  stickerGrid(),
+                  Expanded(child: stickerGrid()),
                 ],
               ),
             );

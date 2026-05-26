@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 
 import '../../../src.dart';
 
@@ -12,67 +16,32 @@ class RewardStickerPopup extends StatefulWidget {
 }
 
 class _RewardStickerPopupState extends State<RewardStickerPopup> {
-  CustomAudioWidget? _audioWidget;
-  bool _isPlayingAudio = false;
+  late AudioPlayerService audioPlayerService;
+  bool _isDisposed = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeAudio();
-  }
-
-  void _initializeAudio() async {
-    if (widget.reward.sAudio.isNotEmpty) {
-      _audioWidget = CustomAudioWidget(
-        audioPath: widget.reward.sAudio,
-        audioSourceType: AudioSourceType.network,
-      );
-
-      _audioWidget!
-          .preload()
-          .then((_) {
-            logger.i('✅ Reward popup audio preloaded successfully');
-          })
-          .catchError((e) {
-            logger.w('⚠️ Failed to preload reward popup audio: $e');
-          });
-
-      _audioWidget!.audioPlayer.onPlayerComplete.listen((_) {
-        if (mounted) {
-          setState(() {
-            _isPlayingAudio = false;
-          });
-        }
-      });
-    }
+    audioPlayerService = AudioPlayerServiceImpl();
+    unawaited(_playAudio());
   }
 
   Future<void> _playAudio() async {
-    if (_audioWidget == null || widget.reward.sAudio.isEmpty) return;
-
-    try {
-      if (_isPlayingAudio) {
-        await _audioWidget!.audioPlayer.stop();
-      }
-
-      setState(() {
-        _isPlayingAudio = true;
-      });
-
-      await _audioWidget!.play();
-    } catch (e) {
-      logger.e('Error playing reward audio: $e');
-      if (mounted) {
-        setState(() {
-          _isPlayingAudio = false;
-        });
+    if (widget.reward.sAudio.isNotEmpty && !_isDisposed) {
+      try {
+        await audioPlayerService.play(widget.reward.sAudio);
+      } catch (e) {
+        if (!_isDisposed) {
+          logger.e('Error playing reward audio: $e');
+        }
       }
     }
   }
 
   @override
   void dispose() {
-    _audioWidget?.dispose();
+    _isDisposed = true;
+    unawaited(audioPlayerService.dispose());
     super.dispose();
   }
 
@@ -131,12 +100,11 @@ class _RewardStickerPopupState extends State<RewardStickerPopup> {
         child: Stack(
           children: [
             // Close button positioned consistently with other reward screens
-            Positioned(
-              top: isMobile ? 16 : 24,
-              right: Dimensions.kIconMargin(context),
-              child: CircularButtonWidget(
-                onPressed: () => Navigator.of(context).pop(),
-                type: CircularButtonType.closeGrey,
+            Align(
+              alignment: Alignment.topRight,
+              child: CustomCloseButton(
+                onTap: () => Navigator.of(context).pop(),
+                iconPath: Assets.closeGreyIcon,
               ),
             ),
             // Content
@@ -188,7 +156,7 @@ class _RewardStickerPopupState extends State<RewardStickerPopup> {
                   Gaps.horizontalGapOf(isMobileLandscape ? 8 : 12),
                   if (widget.reward.sAudio.isNotEmpty)
                     IconButton(
-                      onPressed: () => _playAudio(),
+                      onPressed: () => unawaited(_playAudio()),
                       icon: SvgHelper.fromSource(
                         path: Assets.sound,
                         height: Dimensions.kIconSize(context),
