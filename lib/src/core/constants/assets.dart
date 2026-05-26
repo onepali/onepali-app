@@ -156,6 +156,7 @@ class Assets {
   static String wrongSfx = 'audio/sfx/wrong'.audio;
   static String goodFeedback = 'audio/sfx/good_feedback'.audio;
   static String confettiFeedback = 'audio/sfx/confetti_feedback'.audio;
+  static String storiesComplete = 'audio/sfx/stories_complete'.audio;
   static String starBlast = 'audio/sfx/star_blast.mp3';
   static String cardFlip = 'audio/sfx/card_flip'.audio;
 }

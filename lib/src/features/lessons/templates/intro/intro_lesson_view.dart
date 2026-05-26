@@ -59,6 +59,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
         setState(() {
           _isMessageSoundCompleted = true;
         });
+        _playSuccessFeedbackIfLast();
       });
       await messageSoundProvider.play(widget.content.messageSound!);
     } else {
@@ -66,6 +67,13 @@ class _IntroLessonViewState extends State<IntroLessonView> {
       setState(() {
         _isMessageSoundCompleted = true;
       });
+      _playSuccessFeedbackIfLast();
+    }
+  }
+
+  void _playSuccessFeedbackIfLast() {
+    if (widget.isLast) {
+      audioProvider.playAsset(Assets.confettiFeedback);
     }
   }
 
@@ -98,6 +106,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
     messageSoundProvider.dispose();
     super.dispose();
   }
+
 
   Widget _buildBackgroundImage(bool isMobile) {
     if (isMobile) {

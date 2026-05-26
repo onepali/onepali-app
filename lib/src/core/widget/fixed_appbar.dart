@@ -97,6 +97,16 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     final nameTextStyle = isTabletLandscape
         ? AppStyles.text32PxBold.copyWith(fontSize: nameFontSize)
         : AppStyles.text16PxBold.copyWith(fontSize: nameFontSize);
+    ChildUserModel? activeChild;
+    for (final child in childData) {
+      if (child.uid == childUid) {
+        activeChild = child;
+        break;
+      }
+    }
+    activeChild ??= childData.isNotEmpty ? childData.first : null;
+    final hasRewardReady =
+        activeChild != null && activeChild.completedLessonsCount >= 5;
 
     final guestTopGap = isTabletLandscape ? screenHeight * 0.02 : 0.0;
 
@@ -182,16 +192,23 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       // }
                                       return customInkwell(
                                         onTap: () {
-                                          Utility.navigate(
-                                            context,
-                                            AppRoutes.chooseRewardScreen,
-                                          );
+                                          if (hasRewardReady) {
+                                            Utility.navigate(
+                                              context,
+                                              AppRoutes.chooseRewardScreen,
+                                            );
+                                          } else {
+                                            Utility.navigate(
+                                              context,
+                                              AppRoutes.rewardCollectionScreen,
+                                            );
+                                          }
                                         },
                                         child: LottieHelper.fromSource(
                                           path: Assets.starRewardLottie,
                                           height: starRewardLottieSize,
                                           width: starRewardLottieSize,
-                                          repeat: false,
+                                          repeat: hasRewardReady,
                                         ),
                                       );
                                     },
