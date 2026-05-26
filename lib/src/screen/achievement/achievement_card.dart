@@ -1,147 +1,197 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:onepali/src/src.dart';
 
 class AchievementCard extends StatelessWidget {
   final AchievementModel achievement;
-  final String dynamicValue;
-  final VoidCallback? onTap;
-  final double? fixedHeight;
+  final String value;
 
   const AchievementCard({
     super.key,
     required this.achievement,
-    required this.dynamicValue,
-    this.onTap,
-    this.fixedHeight,
+    required this.value,
   });
 
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
-    final isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
+    return isMobile
+        ? MobileCard(achievement: achievement, value: value)
+        : TabletCard(achievement: achievement, value: value);
+  }
+}
 
-    // Get screen dimensions for calculations
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Container height is 80% of screen height (from achievement_screen.dart)
-    final containerHeight = screenHeight * 0.8;
-    
-    // Responsive values based on screen dimensions (relative sizing)
-    double cardWidth;
-    double cardHeight;
-    if (isMobileLandscape) {
-      cardWidth = screenWidth * 0.20; // ~20% of screen width (equivalent to 20.w)
-      cardHeight = double.infinity; // Fill container height
-    } else if (isTabletLandscape) {
-      cardWidth = screenWidth * 0.15; // Relative to screen
-      cardHeight = double.infinity; // Fill container height
-    } else {
-      cardWidth = screenWidth * 0.45; // ~45% of screen width for portrait
-      cardHeight = double.infinity; // Fill container height
+/// Animates an integer value smoothly from the previous value to the new
+/// one, similar to a flip-clock / odometer effect. Falls back to plain
+/// text rendering when the value is not parseable as an integer.
+class _AnimatedCounter extends StatelessWidget {
+  final String value;
+  final TextStyle? style;
+
+  const _AnimatedCounter({required this.value, this.style});
+
+  @override
+  Widget build(BuildContext context) {
+    final parsed = int.tryParse(value);
+    if (parsed == null) {
+      return Text(value, style: style);
     }
-    
-    // Calculate all sizes as percentages of container height (80% of screen)
-    final valueFontSize = containerHeight * 0.12;
-    final subtitleFontSize = containerHeight * 0.05;
-    final titleFontSize = containerHeight * 0.045; // Reduced to prevent overflow
-    final imageSize = containerHeight * 0.25;
-    final padding = containerHeight * 0.04;
-    final gapSize = containerHeight * 0.02;
-    final marginHorizontal = cardWidth * 0.05;
-    final marginVertical = containerHeight * 0.01;
-    final double borderRadius = cardWidth * 0.06;
+    return TweenAnimationBuilder<int>(
+      tween: IntTween(begin: 0, end: parsed),
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutCubic,
+      builder: (_, animatedValue, __) {
+        return Text(
+          animatedValue.toString(),
+          style: style,
+        ).animate(key: ValueKey('counter_$parsed')).scaleXY(
+              begin: 0.85,
+              end: 1.0,
+              duration: 300.ms,
+              curve: Curves.easeOutBack,
+            );
+      },
+    );
+  }
+}
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: cardWidth,
-        height: cardHeight,
-        margin: EdgeInsets.symmetric(
-          horizontal: marginHorizontal,
-          vertical: marginVertical,
-        ),
-        decoration: BoxDecoration(
-          color: achievement.color ?? AppColors.kPrimaryColor,
-          borderRadius: BorderRadius.circular(borderRadius),
-          boxShadow: [
-            BoxShadow(
-              color:
-                  achievement.color?.withValues(alpha: 0.3) ??
-                  AppColors.kPrimaryColor.withValues(alpha: 0.3),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Top section with value
-              Flexible(
-                child: Text(
-                  dynamicValue,
-                  textAlign: TextAlign.center,
-                  style: AppStyles.text30PxSemiBold.copyWith(
-                    fontSize: valueFontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+class MobileCard extends StatelessWidget {
+  final AchievementModel achievement;
+  final String value;
+  const MobileCard({super.key, required this.achievement, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: achievement.color ?? AppColors.kButtonGreen,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color:
+                achievement.color?.withValues(alpha: 0.5) ??
+                AppColors.kButtonGreen.withValues(alpha: 0.5),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _AnimatedCounter(value: value, style: AppStyles.text40PxMedium),
+          Text(
+            achievement.subtitle,
+            style: AppStyles.text16PxRegular,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Expanded(
+            child: Image.asset(achievement.imageUrl)
+                .animate()
+                .scaleXY(
+                  begin: 0.6,
+                  end: 1.0,
+                  duration: 600.ms,
+                  delay: 200.ms,
+                  curve: Curves.easeOutBack,
+                )
+                .fadeIn(duration: 400.ms, delay: 200.ms),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Text(
+            achievement.title,
+            textAlign: TextAlign.center,
+            style: AppStyles.text18PxMedium,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TabletCard extends StatelessWidget {
+  final AchievementModel achievement;
+  final String value;
+  const TabletCard({super.key, required this.achievement, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: achievement.color ?? AppColors.kButtonGreen,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color:
+                achievement.color?.withValues(alpha: 0.5) ??
+                AppColors.kButtonGreen.withValues(alpha: 0.5),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(right: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Count
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                _AnimatedCounter(
+                  value: achievement.value,
+                  style: AppStyles.text40PxMedium,
                 ),
-              ),
-              SizedBox(height: gapSize),
-              // Subtitle
-              Flexible(
-                child: Text(
+                // Subtitle
+                Text(
                   achievement.subtitle,
-                  textAlign: TextAlign.center,
-                  style: AppStyles.text16PxRegular.copyWith(
-                    fontSize: subtitleFontSize,
-                    fontFamily: AppConstants.kDMSansFont,
-                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                ),
-              ),
-
-              // Middle - Icon (takes remaining space)
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: CustomImage(
-                    achievement.imageUrl,
-                    boxFit: BoxFit.contain,
-                    width: imageSize,
-                    height: imageSize,
-                    imageType: CustomImageType.local,
-                  ),
-                ),
-              ),
-
-              // Bottom section with title
-              SizedBox(height: gapSize),
-              Flexible(
-                child: Text(
-                  achievement.title,
-                  style: AppStyles.text18PxMedium.copyWith(
-                    fontSize: titleFontSize,
-                    height: 1.3,
-                  ),
-                  maxLines: 3,
                   textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
+                  style: AppStyles.text24PxMedium,
                 ),
-              ),
-            ],
+                SizedBox(height: 24),
+              ],
+            ),
           ),
-        ),
+          // Emoji
+          Expanded(
+            flex: 3,
+            child: Image.asset(achievement.imageUrl)
+                .animate()
+                .scaleXY(
+                  begin: 0.6,
+                  end: 1.0,
+                  duration: 600.ms,
+                  delay: 250.ms,
+                  curve: Curves.easeOutBack,
+                )
+                .fadeIn(duration: 400.ms, delay: 250.ms),
+          ),
+          // Label
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                SizedBox(height: 24),
+                // Label
+                Text(
+                  achievement.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: AppStyles.text24PxBold,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
