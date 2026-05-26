@@ -180,7 +180,9 @@ class _KitchenPageState extends State<KitchenPage> {
                           // Top ingredients
                           if (state.status != TutorialStatus.completed)
                             Container(
-                              height: size.height * 0.25,
+                              height: isMobile
+                                  ? size.height * 0.35
+                                  : size.height * 0.25,
                               padding: EdgeInsets.only(
                                 left: size.width * 0.05,
                                 right: size.width * 0.1,

@@ -53,7 +53,7 @@ class _PutInBagViewState extends State<PutInBagView> {
               Column(
                 children: [
                   Container(
-                    height: size.height * 0.25,
+                    height: isMobile ? size.height * 0.35 : size.height * 0.25,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 16,
