@@ -58,11 +58,19 @@ class _IntroLessonViewState extends State<IntroLessonView> {
         setState(() {
           _isMessageSoundCompleted = true;
         });
+        _playSuccessFeedbackIfLast();
       });
     } else {
       setState(() {
         _isMessageSoundCompleted = true;
       });
+      _playSuccessFeedbackIfLast();
+    }
+  }
+
+  void _playSuccessFeedbackIfLast() {
+    if (widget.isLast) {
+      audioProvider.playAsset(Assets.confettiFeedback);
     }
   }
 
@@ -92,6 +100,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
     audioSubscription?.cancel();
     super.dispose();
   }
+
 
   Widget _buildBackgroundImage(bool isMobile) {
     if (isMobile) {

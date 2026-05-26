@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
@@ -27,13 +28,31 @@ class MatchGameScreen extends StatefulWidget {
 }
 
 class _MatchGameScreenState extends State<MatchGameScreen> {
+  late AudioPlayerService audioProvider;
+  @override
+  void initState() {
+    super.initState();
+    audioProvider = AudioPlayerServiceImpl();
+  }
+
+  @override
+  void dispose() {
+    audioProvider.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.sizeOf(context);
     return BlocProvider(
       create: (context) => MatchBloc()..add(MatchEvent.started(widget.content)),
-      child: BlocBuilder<MatchBloc, MatchState>(
+      child: BlocConsumer<MatchBloc, MatchState>(
+        listener: (context, state) {
+          if (state.isAnsweredAll && widget.isLastContent) {
+            audioProvider.playAsset(Assets.confettiFeedback);
+          }
+        },
         builder: (context, state) {
           if (state.content == null) {
             return SizedBox.shrink();
