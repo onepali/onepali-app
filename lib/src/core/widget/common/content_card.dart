@@ -14,6 +14,7 @@ class ContentCard extends StatefulWidget {
   final String? bgColor;
   final String? bgImage;
   final bool showPlay;
+  final bool isCompleted;
 
   const ContentCard({
     super.key,
@@ -25,6 +26,7 @@ class ContentCard extends StatefulWidget {
     this.bgColor,
     this.bgImage,
     this.showPlay = false,
+    this.isCompleted = false,
   });
 
   @override
@@ -35,6 +37,7 @@ class _ContentCardState extends State<ContentCard> {
   final Random randomColor = Random();
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
@@ -134,15 +137,29 @@ class _ContentCardState extends State<ContentCard> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.learningColors[randomColor.nextInt(
-                              AppColors.learningColors.length,
-                            )],
+                            color:
+                                AppColors.learningColors[randomColor.nextInt(
+                                  AppColors.learningColors.length,
+                                )],
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.play_arrow,
                             size: 48,
                             color: AppColors.kWhite,
+                          ),
+                        ),
+                      ),
+                    if (widget.isCompleted)
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8, right: 8),
+                          child: Icon(
+                            Icons.check_circle,
+
+                            color: AppColors.kButtonGreen,
+                            size: isMobile ? 24 : 48,
                           ),
                         ),
                       ),

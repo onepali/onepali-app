@@ -240,7 +240,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         widget.lesson.lessonName,
       );
 
-      // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+      // Track lesson completion and the active learning day.
       await MetricsTrackingHelper.trackLessonCompletion(
         context: context,
         lessonId: widget.lesson.id.toString(),
@@ -793,7 +793,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                           widget.lesson.lessonName,
                         );
 
-                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                        // Track lesson completion and the active learning day.
                         await MetricsTrackingHelper.trackLessonCompletion(
                           context: context,
                           lessonId: widget.lesson.id.toString(),
@@ -831,7 +831,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                           widget.lesson.lessonName,
                         );
 
-                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                        // Track lesson completion and the active learning day.
                         await MetricsTrackingHelper.trackLessonCompletion(
                           context: context,
                           lessonId: widget.lesson.id.toString(),
@@ -878,7 +878,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                         logger.d(
                           'Calling MetricsTrackingHelper.trackLessonCompletion for lesson: ${widget.lesson.id}',
                         );
-                        // Track lesson completion for parent metrics (completedActivities & mostPracticedTopics)
+                        // Track lesson completion and the active learning day.
                         await MetricsTrackingHelper.trackLessonCompletion(
                           context: context,
                           lessonId: widget.lesson.id.toString(),

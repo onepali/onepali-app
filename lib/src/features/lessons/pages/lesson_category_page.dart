@@ -7,7 +7,7 @@ import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 import 'package:onepali/src/src.dart';
 
-class LessonCategoryPage extends StatelessWidget {
+class LessonCategoryPage extends StatefulWidget {
   const LessonCategoryPage({
     super.key,
     required this.categoryId,
@@ -15,6 +15,31 @@ class LessonCategoryPage extends StatelessWidget {
   });
   final String categoryId;
   final String title;
+
+  @override
+  State<LessonCategoryPage> createState() => _LessonCategoryPageState();
+}
+
+class _LessonCategoryPageState extends State<LessonCategoryPage> {
+  List<Map<String, dynamic>> lessons = [];
+
+  @override
+  void initState() {
+    super.initState();
+    Misc.onLayoutRendered(() {
+      getCompletedLessons();
+    });
+  }
+
+  Future<void> getCompletedLessons() async {
+    final completedLessons = await MetricsTrackingHelper.fetchCompletedContent(
+      activityType: ActivityType.lesson,
+    );
+    if (!mounted) return;
+    setState(() {
+      lessons = completedLessons;
+    });
+  }
 
   Widget _buildTitleText(BuildContext context, String text) {
     return Text(
@@ -32,7 +57,7 @@ class LessonCategoryPage extends StatelessWidget {
   Stream<QuerySnapshot> getLessonsStream() {
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('lessons')
-        .where('category_id', isEqualTo: categoryId);
+        .where('category_id', isEqualTo: widget.categoryId);
     if (!kDebugMode) {
       query = query.where('active', isEqualTo: true);
     }
@@ -77,7 +102,7 @@ class LessonCategoryPage extends StatelessWidget {
                 right: 0,
                 top: 0,
                 bottom: 0,
-                child: Center(child: _buildTitleText(context, title)),
+                child: Center(child: _buildTitleText(context, widget.title)),
               ),
             ],
           ),
@@ -102,18 +127,25 @@ class LessonCategoryPage extends StatelessWidget {
                       padding: EdgeInsets.only(right: 24, left: 24, bottom: 24),
                       itemBuilder: (context, index) {
                         final data = snapshot.data!.docs;
+                        final lessonId = data[index].id;
+                        final isCompleted = lessons.any(
+                          (lesson) => lesson['content_id'] == lessonId,
+                        );
                         return ContentCard(
                           nameEn: data[index]['name'],
                           bgColor: data[index]['bg_color'],
                           nameNp: 'name_np',
-                          onTap: () {
-                            Utility.navigateMaterialRoute(
+                          onTap: () async {
+                            await Utility.navigateMaterialRoute(
                               context,
-                              LessonPage(lessonId: data[index].id),
+                              LessonPage(lessonId: lessonId),
                             );
+                            if (!mounted) return;
+                            await getCompletedLessons();
                           },
                           image: data[index]['image'],
                           bgImage: data[index]['bg_image'],
+                          isCompleted: isCompleted,
                         );
                       },
                     ),

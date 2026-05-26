@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class MetricsTrackingHelper {
   // Start a learning session when child starts any activity
@@ -27,7 +29,7 @@ class MetricsTrackingHelper {
           childUid: childUid,
         );
 
-        // Also start provider session for real-time tracking
+        // Reset provider-side answer tracking for the new session.
         if (!context.mounted) return;
         context.read<PzMetricsProvider>().startLearningSession();
         logger.d('Learning session started for child: $childUid');
@@ -53,18 +55,17 @@ class MetricsTrackingHelper {
       await LearningSessionManager().endSession();
       logger.d('Learning session ended via session manager');
 
-      // ALSO call PzMetricsProvider to actually update the metrics
       if (context.mounted) {
         final userProvider = context.read<UserProvider>();
         final parentUid = userProvider.userId;
         final childUid = await ChildLocalStorage.getCurrentChildId();
 
         if (parentUid != null && childUid != null) {
-          await context.read<PzMetricsProvider>().endLearningSession(
+          await context.read<PzMetricsProvider>().fetchMetrics(
             parentUid: parentUid,
             childUid: childUid,
           );
-          logger.d('Learning session metrics updated via PzMetricsProvider');
+          logger.d('Learning session metrics refreshed');
         }
       }
     } catch (e) {
@@ -72,8 +73,8 @@ class MetricsTrackingHelper {
     }
   }
 
-  // Context-free version for dispose() methods - completely safe
-  // This now properly updates metrics via LearningSessionManager
+  // Context-free version for dispose() methods.
+  // Session time is updated via LearningSessionManager.
   static Future<void> endLearningSessionSafe() async {
     try {
       await LearningSessionManager().endSession();
@@ -114,12 +115,18 @@ class MetricsTrackingHelper {
           lessonId: lessonId,
         );
         // Track the lesson completion.
-        await lessonProvider.trackContentCompletion(
+        final didTrackCompletion = await lessonProvider.trackContentCompletion(
           parentUid: parentUid,
           childUid: childUid,
           contentId: lessonId,
           contentName: topicName,
           activityType: ActivityType.lesson,
+        );
+        if (!didTrackCompletion) return;
+        if (!context.mounted) return;
+        await context.read<PzMetricsProvider>().markActiveLearningDay(
+          parentUid: parentUid,
+          childUid: childUid,
         );
       } else {
         logger.w('trackLessonCompletion - missing parentUid or childUid');
@@ -146,12 +153,18 @@ class MetricsTrackingHelper {
           childUid ?? await ChildLocalStorage.getCurrentChildId();
 
       if (parentUid != null && resolvedChildUid != null) {
-        await lessonProvider.trackContentCompletion(
+        final didTrackCompletion = await lessonProvider.trackContentCompletion(
           parentUid: parentUid,
           childUid: resolvedChildUid,
           contentId: storyId,
           contentName: storyTitle,
           activityType: ActivityType.story,
+        );
+        if (!didTrackCompletion) return;
+        if (!context.mounted) return;
+        await context.read<PzMetricsProvider>().markActiveLearningDay(
+          parentUid: parentUid,
+          childUid: resolvedChildUid,
         );
       }
     } catch (e) {
@@ -175,17 +188,53 @@ class MetricsTrackingHelper {
 
       if (parentUid != null && childUid != null) {
         if (!context.mounted) return;
-        await context.read<SongProvider>().trackSongCompletion(
+        final didTrackCompletion = await context
+            .read<LessonProvider>()
+            .trackContentCompletion(
+              contentId: songId,
+              contentName: songTitle,
+              parentUid: parentUid,
+              childUid: childUid,
+              activityType: ActivityType.song,
+            );
+        if (!didTrackCompletion) return;
+        if (!context.mounted) return;
+        await context.read<PzMetricsProvider>().markActiveLearningDay(
           parentUid: parentUid,
           childUid: childUid,
-          songId: songId,
-          songTitle: songTitle,
-          categoryName: categoryName,
-          context: context,
         );
       }
     } catch (e) {
       logger.e('Error tracking song completion: $e');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchCompletedContent({
+    required ActivityType activityType,
+  }) async {
+    try {
+      final parentId = FirebaseAuth.instance.currentUser?.uid;
+      final childId = await ChildLocalStorage.getCurrentChildId();
+      if (parentId == null || childId == null) {
+        return [];
+      }
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .collection(AppConstants.completedContentCollection)
+          .where('content_type', isEqualTo: activityType.name)
+          .get();
+
+      logger.d(
+        'Completed ${activityType.name} content: ${querySnapshot.docs.length}',
+      );
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      logger.e('Error getting completed ${activityType.name} content: $e');
+      return [];
     }
   }
 

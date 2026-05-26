@@ -16,9 +16,6 @@ class PzMetricsProvider extends ChangeNotifier {
   PzHomeMetricsModel? get metrics => _metrics;
   DataFetchStatus get status => _status;
 
-  // Track session start time for learning duration calculation
-  DateTime? _sessionStartTime;
-  final Map<String, int> _sessionTopicDurations = {};
   final Map<String, int> _sessionCorrectAnswers = {};
   final Map<String, int> _sessionTotalAnswers = {};
 
@@ -81,7 +78,18 @@ class PzMetricsProvider extends ChangeNotifier {
       if (doc.exists && doc.data()?['metrics'] != null) {
         // Metrics exist, load them
         logger.i('📊 Loading existing metrics from Firestore');
-        _metrics = PzHomeMetricsModel.fromJson(doc.data()?['metrics']);
+        final fetchedMetrics = PzHomeMetricsModel.fromJson(
+          doc.data()?['metrics'],
+        );
+        final normalizedMetrics = fetchedMetrics.normalizedFor(DateTime.now());
+        if (_metricsChanged(fetchedMetrics, normalizedMetrics)) {
+          await updateMetrics(
+            parentUid: parentUid,
+            childUid: childUid,
+            newMetrics: normalizedMetrics,
+          );
+        }
+        _metrics = normalizedMetrics;
         logger.i(
           '📊 Loaded metrics: weeklyStreak=${_metrics!.weeklyStreak}, dayStreak=${_metrics!.dayStreak}',
         );
@@ -103,7 +111,9 @@ class PzMetricsProvider extends ChangeNotifier {
           // Load what we can and preserve existing data
           final existingData = doc.data() ?? {};
           logger.w('⚠️  Creating minimal metrics without overwriting document');
-          _metrics = PzHomeMetricsModel.fromJson(existingData['metrics']);
+          _metrics = PzHomeMetricsModel.fromJson(
+            existingData['metrics'],
+          ).normalizedFor(DateTime.now());
         }
       }
 
@@ -115,10 +125,33 @@ class PzMetricsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _metricsChanged(
+    PzHomeMetricsModel previous,
+    PzHomeMetricsModel current,
+  ) {
+    if (previous.dayStreak != current.dayStreak ||
+        previous.lastActiveDate != current.lastActiveDate) {
+      return true;
+    }
+
+    if (previous.weeklyStreak.length != current.weeklyStreak.length) {
+      return true;
+    }
+
+    for (var index = 0; index < previous.weeklyStreak.length; index++) {
+      if (previous.weeklyStreak[index] != current.weeklyStreak[index]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   Future<void> updateMetrics({
     required String parentUid,
     required String childUid,
     required PzHomeMetricsModel newMetrics,
+    bool allowClearingWeeklyStreak = false,
   }) async {
     _status = DataFetchStatus.loading;
     notifyListeners();
@@ -131,7 +164,8 @@ class PzMetricsProvider extends ChangeNotifier {
       final newActiveDays = newMetrics.weeklyStreak.where((day) => day).length;
 
       // If current data has progress but new data is empty, this is suspicious
-      if (currentActiveDays > 0 &&
+      if (!allowClearingWeeklyStreak &&
+          currentActiveDays > 0 &&
           newActiveDays == 0 &&
           newMetrics.dayStreak == 0) {
         logger.e(
@@ -167,6 +201,7 @@ class PzMetricsProvider extends ChangeNotifier {
               'answerSuccessRate': newMetrics.answerSuccessRate,
               'dayStreak': newMetrics.dayStreak,
               'weeklyStreak': newMetrics.weeklyStreak,
+              'lastActiveDate': newMetrics.lastActiveDate,
               'averageDailyLearningTime': newMetrics.averageDailyLearningTime,
               'mostPracticedTopics': newMetrics.mostPracticedTopics,
             },
@@ -189,6 +224,7 @@ class PzMetricsProvider extends ChangeNotifier {
                 'answerSuccessRate': newMetrics.answerSuccessRate,
                 'dayStreak': newMetrics.dayStreak,
                 'weeklyStreak': newMetrics.weeklyStreak,
+                'lastActiveDate': newMetrics.lastActiveDate,
                 'averageDailyLearningTime': newMetrics.averageDailyLearningTime,
                 'mostPracticedTopics': newMetrics.mostPracticedTopics,
               },
@@ -204,144 +240,23 @@ class PzMetricsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Start a learning session
   void startLearningSession() {
-    _sessionStartTime = DateTime.now();
-    _sessionTopicDurations.clear();
     _sessionCorrectAnswers.clear();
     _sessionTotalAnswers.clear();
   }
 
-  // End learning session and update metrics
-  Future<void> endLearningSession({
+  Future<void> markActiveLearningDay({
     required String parentUid,
     required String childUid,
-  }) async {
-    if (_sessionStartTime == null || _metrics == null) return;
-
-    final sessionDuration = DateTime.now()
-        .difference(_sessionStartTime!)
-        .inMinutes;
-
-    // Calculate new average daily learning time
-    // Simply add the new session duration to the existing total
-    final currentTime = _metrics!.averageDailyLearningTime;
-    final newAverageTime = currentTime + sessionDuration;
-
-    // Update daily streak for today
-    final today = DateTime.now();
-    final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-    final weekdays = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ];
-    final currentDayName = weekdays[weekday];
-
-    final previousWeeklyStreak = List<bool>.from(_metrics!.weeklyStreak);
-    final newWeeklyStreak = List<bool>.from(_metrics!.weeklyStreak);
-    final wasAlreadyActive = newWeeklyStreak[weekday];
-    newWeeklyStreak[weekday] = true;
-
-    // Calculate day streak (consecutive days this week)
-    final dayStreak = newWeeklyStreak.where((day) => day).length;
-
-    // Log the learning session completion
-    logger.i('📚 Learning Session Completed:');
-    logger.i('📚 Session Duration: $sessionDuration minutes');
-    logger.i('📚 Today: $currentDayName (index: $weekday)');
-    logger.i('📚 Was already active today: ${wasAlreadyActive ? 'Yes' : 'No'}');
-    logger.i('📚 Previous Average Learning Time: $currentTime min');
-    logger.i('📚 New Average Learning Time: $newAverageTime min');
-
-    final previousStreakStatus = previousWeeklyStreak
-        .map((active) => active ? '✅' : '❌')
-        .join(' ');
-    final newStreakStatus = newWeeklyStreak
-        .map((active) => active ? '✅' : '❌')
-        .join(' ');
-    logger.i('📚 Previous Weekly Streak: $previousStreakStatus');
-    logger.i('📚 Updated Weekly Streak:  $newStreakStatus');
-    logger.i('📚 New Day Streak Count: $dayStreak/7');
-
-    final updatedMetrics = _metrics!.copyWith(
-      averageDailyLearningTime: newAverageTime,
-      dayStreak: dayStreak,
-      weeklyStreak: newWeeklyStreak,
-    );
-
-    await updateMetrics(
-      parentUid: parentUid,
-      childUid: childUid,
-      newMetrics: updatedMetrics,
-    );
-
-    _sessionStartTime = null;
-  }
-
-  // Track activity completion (lessons, stories, songs)
-  Future<void> trackActivityCompletion({
-    required String parentUid,
-    required String childUid,
-    required String topicName, // e.g., "Alphabets", "Animals", "Festival Songs"
-    required ActivityType activityType, // lesson, story, song
   }) async {
     if (_metrics == null) {
       await fetchMetrics(parentUid: parentUid, childUid: childUid);
       if (_metrics == null) {
-        logger.e('🚨 Failed to fetch metrics: metrics is null');
+        logger.e('Failed to fetch metrics: metrics is null');
         return;
       }
     }
 
-    // Increment completed activities
-    final newCompletedActivities = _metrics!.completedActivities + 1;
-
-    // Update most practiced topics - add the new topic to the list
-    final updatedTopicsList = List<String>.from(_metrics!.mostPracticedTopics);
-    updatedTopicsList.add(topicName);
-
-    // Count occurrences of each topic
-    final topicCounts = <String, int>{};
-    for (final topic in updatedTopicsList) {
-      topicCounts[topic] = (topicCounts[topic] ?? 0) + 1;
-    }
-
-    // Sort topics by count (descending) and take top 5
-    final sortedTopics = topicCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    final mostPracticedTopics = sortedTopics.take(5).map((e) => e.key).toList();
-
-    final updatedMetrics = _metrics!.copyWith(
-      completedActivities: newCompletedActivities,
-      mostPracticedTopics: mostPracticedTopics,
-    );
-
-    await updateMetrics(
-      parentUid: parentUid,
-      childUid: childUid,
-      newMetrics: updatedMetrics,
-    );
-
-    logger.d(
-      'Activity completed: $topicName ($activityType). Total activities: $newCompletedActivities. Most practiced: $mostPracticedTopics',
-    );
-
-    // 🎯 IMPORTANT: Also mark today as an active learning day
-    // This ensures that completing activities also updates the weekly streak
-    logger.i(
-      '🎯 Activity completion: Ensuring today is marked as active learning day',
-    );
-
-    // 🛡️ CRITICAL FIX: Refresh metrics from Firestore to get latest data
-    // This prevents data loss from concurrent updates or stale local data
-    logger.w(
-      '🔄 Refreshing metrics from Firestore before updating weekly streak',
-    );
     try {
       final doc = await _firestore
           .collection(AppConstants.usersCollection)
@@ -350,119 +265,39 @@ class PzMetricsProvider extends ChangeNotifier {
           .doc(childUid)
           .get();
 
-      if (doc.exists && doc.data()?['metrics'] != null) {
-        final freshMetrics = PzHomeMetricsModel.fromJson(
-          doc.data()?['metrics'],
-        );
-        logger.i('🔄 Fresh metrics loaded from Firestore');
-        logger.i(
-          '🔄 Fresh weekly streak: ${freshMetrics.weeklyStreak.map((active) => active ? '✅' : '❌').join(' ')}',
-        );
-
-        // Use fresh metrics for weekly streak calculation
-        final today = DateTime.now();
-        final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-        final currentWeeklyStreak = List<bool>.from(freshMetrics.weeklyStreak);
-        final wasAlreadyActive = currentWeeklyStreak[weekday];
-
-        if (!wasAlreadyActive) {
-          logger.i(
-            '🎯 Today was not marked as active, updating weekly streak now',
-          );
-          // Mark today as active
-          currentWeeklyStreak[weekday] = true;
-          final newDayStreak = currentWeeklyStreak.where((day) => day).length;
-
-          // Combine the activity updates with the fresh weekly streak
-          final finalUpdatedMetrics = updatedMetrics.copyWith(
-            weeklyStreak: currentWeeklyStreak,
-            dayStreak: newDayStreak,
-          );
-
-          await updateMetrics(
-            parentUid: parentUid,
-            childUid: childUid,
-            newMetrics: finalUpdatedMetrics,
-          );
-
-          final weekdays = [
-            'Sunday',
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-          ];
-          final currentDayName = weekdays[weekday];
-          logger.i(
-            '🎯 ✅ Weekly streak updated: Today ($currentDayName) marked as active',
-          );
-          logger.i('🎯 ✅ New day streak: $newDayStreak/7');
-          logger.i(
-            '🎯 ✅ Final weekly streak: ${currentWeeklyStreak.map((active) => active ? '✅' : '❌').join(' ')}',
-          );
-        } else {
-          logger.i(
-            '🎯 Today was already marked as active, no streak update needed',
-          );
-        }
-      } else {
-        logger.e(
-          '🚨 Failed to refresh metrics - document or metrics field missing',
-        );
-      }
+      final currentMetrics = doc.exists && doc.data()?['metrics'] != null
+          ? PzHomeMetricsModel.fromJson(
+              doc.data()?['metrics'],
+            ).normalizedFor(DateTime.now())
+          : _metrics!;
+      await _markActiveDayFromMetrics(
+        parentUid: parentUid,
+        childUid: childUid,
+        metrics: currentMetrics,
+      );
     } catch (e) {
-      logger.e('🚨 Error refreshing metrics from Firestore: $e');
-      // Fallback to original logic if refresh fails
-      logger.w('🔄 Falling back to local metrics data');
-
-      // Check if today is already marked as active
-      final today = DateTime.now();
-      final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-      final currentWeeklyStreak = List<bool>.from(_metrics!.weeklyStreak);
-      final wasAlreadyActive = currentWeeklyStreak[weekday];
-
-      if (!wasAlreadyActive) {
-        logger.i(
-          '🎯 Today was not marked as active, updating weekly streak now',
-        );
-        // Mark today as active
-        currentWeeklyStreak[weekday] = true;
-        final newDayStreak = currentWeeklyStreak.where((day) => day).length;
-
-        // Update metrics again with the daily streak
-        final finalUpdatedMetrics = updatedMetrics.copyWith(
-          weeklyStreak: currentWeeklyStreak,
-          dayStreak: newDayStreak,
-        );
-
-        await updateMetrics(
-          parentUid: parentUid,
-          childUid: childUid,
-          newMetrics: finalUpdatedMetrics,
-        );
-
-        final weekdays = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-        ];
-        final currentDayName = weekdays[weekday];
-        logger.i(
-          '🎯 ✅ Weekly streak updated: Today ($currentDayName) marked as active',
-        );
-        logger.i('🎯 ✅ New day streak: $newDayStreak/7');
-      } else {
-        logger.i(
-          '🎯 Today was already marked as active, no streak update needed',
-        );
-      }
+      logger.e('Error refreshing metrics before active-day update: $e');
+      await _markActiveDayFromMetrics(
+        parentUid: parentUid,
+        childUid: childUid,
+        metrics: _metrics!,
+      );
     }
+  }
+
+  Future<void> _markActiveDayFromMetrics({
+    required String parentUid,
+    required String childUid,
+    required PzHomeMetricsModel metrics,
+  }) async {
+    final updatedMetrics = metrics.markActiveOn(DateTime.now());
+
+    await updateMetrics(
+      parentUid: parentUid,
+      childUid: childUid,
+      newMetrics: updatedMetrics,
+      allowClearingWeeklyStreak: true,
+    );
   }
 
   // Track answer for success rate calculation
@@ -508,6 +343,7 @@ class PzMetricsProvider extends ChangeNotifier {
       parentUid: parentUid,
       childUid: childUid,
       newMetrics: updatedMetrics,
+      allowClearingWeeklyStreak: true,
     );
 
     logger.d(
@@ -538,7 +374,6 @@ class PzMetricsProvider extends ChangeNotifier {
 
     final updatedMetrics = _metrics!.copyWith(
       weeklyStreak: List.filled(7, false),
-      dayStreak: 0,
     );
 
     await updateMetrics(
@@ -549,7 +384,7 @@ class PzMetricsProvider extends ChangeNotifier {
 
     logger.i('✅ Weekly streak reset completed');
     logger.i('✅ New State: ❌ ❌ ❌ ❌ ❌ ❌ ❌ (All days cleared)');
-    logger.i('✅ New Day Streak: 0');
+    logger.i('✅ Day Streak Preserved: ${updatedMetrics.dayStreak}');
   }
 
   // Get formatted success rate as percentage

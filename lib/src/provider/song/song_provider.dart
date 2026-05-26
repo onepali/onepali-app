@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class SongProvider extends ChangeNotifier {
@@ -52,34 +51,5 @@ class SongProvider extends ChangeNotifier {
   void setStatus(DataFetchStatus status) {
     _status = status;
     notifyListeners();
-  }
-
-  // Track song completion and update parent metrics
-  Future<void> trackSongCompletion({
-    required String parentUid,
-    required String childUid,
-    required String songId,
-    required String songTitle,
-    required String categoryName,
-    required BuildContext context,
-  }) async {
-    try {
-      // Get the metrics provider
-      final metricsProvider = context.read<PzMetricsProvider>();
-
-      // Track the activity completion using category name as topic
-      await metricsProvider.trackActivityCompletion(
-        parentUid: parentUid,
-        childUid: childUid,
-        topicName: categoryName.isNotEmpty ? categoryName : songTitle,
-        activityType: ActivityType.song,
-      );
-
-      logger.d(
-        'Song completion tracked: $songId ($songTitle) in category: $categoryName',
-      );
-    } catch (e) {
-      logger.e('Error tracking song completion: $e');
-    }
   }
 }

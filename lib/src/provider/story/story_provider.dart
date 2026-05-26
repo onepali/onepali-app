@@ -316,32 +316,6 @@ class StoryProvider extends ChangeNotifier {
     await recommendedStoryProvider.fetchRecommendedStories();
   }
 
-  // Track story completion and update parent metrics
-  Future<void> trackStoryCompletion({
-    required String parentUid,
-    required String childUid,
-    required String storyId,
-    required String storyTitle,
-    required BuildContext context,
-  }) async {
-    try {
-      // Get the metrics provider
-      final metricsProvider = context.read<PzMetricsProvider>();
-
-      // Track the activity completion
-      await metricsProvider.trackActivityCompletion(
-        parentUid: parentUid,
-        childUid: childUid,
-        topicName: storyTitle,
-        activityType: ActivityType.story,
-      );
-
-      logger.d('Story completion tracked: $storyId ($storyTitle)');
-    } catch (e) {
-      logger.e('Error tracking story completion: $e');
-    }
-  }
-
   // Track story answer for interactive stories
   Future<void> trackStoryAnswer({
     required String parentUid,

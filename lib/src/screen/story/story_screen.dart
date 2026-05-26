@@ -12,9 +12,24 @@ class StoryScreen extends StatefulWidget {
 }
 
 class _StoryScreenState extends State<StoryScreen> {
+  List<Map<String, dynamic>> completedStories = [];
+
   @override
   void initState() {
     super.initState();
+    Misc.onLayoutRendered(() {
+      getCompletedStories();
+    });
+  }
+
+  Future<void> getCompletedStories() async {
+    final stories = await MetricsTrackingHelper.fetchCompletedContent(
+      activityType: ActivityType.story,
+    );
+    if (!mounted) return;
+    setState(() {
+      completedStories = stories;
+    });
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> _getStoriesStream(
@@ -29,6 +44,13 @@ class _StoryScreenState extends State<StoryScreen> {
     }
 
     return query.snapshots();
+  }
+
+  bool _isSvgImage(String? imageUrl) {
+    if (imageUrl == null || imageUrl.isEmpty) return false;
+    final uri = Uri.tryParse(imageUrl);
+    final path = uri?.path.toLowerCase() ?? imageUrl.toLowerCase();
+    return path.endsWith('.svg');
   }
 
   @override
@@ -91,24 +113,40 @@ class _StoryScreenState extends State<StoryScreen> {
                                         child: AspectRatio(
                                           aspectRatio: AppConstants
                                               .contentCardAspectRatio,
-                                          child: ContentCard(
-                                            nameEn: story['nameEn'],
-                                            nameNp: story['nameNp'],
-                                            image: story['thumbnail'],
-                                            bgImage: story['bg_image'],
-                                            isImageSvg: true,
-                                            bgColor: story['bg_color'],
-                                            onTap: () {
-                                              final storyModel =
-                                                  StoryModel.fromJson(
-                                                story.data(),
-                                              );
-                                              Utility.navigateMaterialRoute(
-                                                context,
-                                                StoryContentScreen(
-                                                  story: storyModel,
-                                                  isFromRecommended: false,
+                                          child: Builder(
+                                            builder: (context) {
+                                              final storyId = story.id;
+                                              final isCompleted =
+                                                  completedStories.any(
+                                                    (completedStory) =>
+                                                        completedStory['content_id'] ==
+                                                        storyId,
+                                                  );
+                                              return ContentCard(
+                                                nameEn: story['nameEn'],
+                                                nameNp: story['nameNp'],
+                                                image: story['thumbnail'],
+                                                bgImage: story['bg_image'],
+                                                isImageSvg: _isSvgImage(
+                                                  story['thumbnail'] as String?,
                                                 ),
+                                                bgColor: story['bg_color'],
+                                                isCompleted: isCompleted,
+                                                onTap: () async {
+                                                  final storyModel =
+                                                      StoryModel.fromJson(
+                                                        story.data(),
+                                                      );
+                                                  await Utility.navigateMaterialRoute(
+                                                    context,
+                                                    StoryContentScreen(
+                                                      story: storyModel,
+                                                      isFromRecommended: false,
+                                                    ),
+                                                  );
+                                                  if (!mounted) return;
+                                                  await getCompletedStories();
+                                                },
                                               );
                                             },
                                           ),

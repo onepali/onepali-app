@@ -208,39 +208,7 @@ class LessonProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Track lesson completion and update parent metrics
-  Future<void> trackLessonCompletion({
-    required String parentUid,
-    required String childUid,
-    required String lessonId,
-    required String topicName,
-    required BuildContext context,
-  }) async {
-    try {
-      logger.d(
-        'LessonProvider.trackLessonCompletion called for lessonId: $lessonId, topicName: $topicName',
-      );
-      // Get the metrics provider
-      final metricsProvider = context.read<PzMetricsProvider>();
-
-      logger.d(
-        'Calling PzMetricsProvider.trackActivityCompletion for lesson: $lessonId',
-      );
-      // Track the activity completion
-      await metricsProvider.trackActivityCompletion(
-        parentUid: parentUid,
-        childUid: childUid,
-        topicName: topicName,
-        activityType: ActivityType.lesson,
-      );
-
-      logger.d('Lesson completion tracked: $lessonId in $topicName');
-    } catch (e) {
-      logger.e('Error tracking lesson completion: $e');
-    }
-  }
-
-  Future<void> trackContentCompletion({
+  Future<bool> trackContentCompletion({
     required String parentUid,
     required String childUid,
     required String contentId,
@@ -281,8 +249,10 @@ class LessonProvider extends ChangeNotifier {
           transaction.set(docRef, {...data, 'id': docRef.id});
         }
       });
+      return true;
     } catch (e) {
       logger.e('Error tracking content completion: $e');
+      return false;
     }
   }
 

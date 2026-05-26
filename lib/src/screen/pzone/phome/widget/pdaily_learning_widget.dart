@@ -16,6 +16,7 @@ class PDailyLearningWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    final activeDaysThisWeek = weeklyStreak.where((active) => active).length;
     double? height = isMobilePortrait ? null : 320;
     return Container(
       width: double.infinity,
@@ -31,7 +32,7 @@ class PDailyLearningWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Days learning',
+            'Day streak',
             style: AppStyles.text16PxMedium.copyWith(
               fontFamily: AppConstants.kDMSansFont,
               fontSize: isMobilePortrait ? 16 : 24,
@@ -39,9 +40,17 @@ class PDailyLearningWidget extends StatelessWidget {
           ),
           Gaps.verticalGapOf(8),
           Text(
-            '$dayStreak/7',
+            '$dayStreak',
             style: AppStyles.text40PxSemiBold.copyWith(
               fontSize: isMobilePortrait ? 40 : 72,
+            ),
+          ),
+          Gaps.verticalGapOf(4),
+          Text(
+            '$activeDaysThisWeek/7 this week',
+            style: AppStyles.text16PxRegular.copyWith(
+              fontFamily: AppConstants.kDMSansFont,
+              fontSize: isMobilePortrait ? 14 : 20,
             ),
           ),
           Gaps.verticalGapOf(8),
