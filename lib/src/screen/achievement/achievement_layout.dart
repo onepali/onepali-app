@@ -64,7 +64,7 @@ class _AchievementLayoutState extends State<AchievementLayout>
     var rewardProvider = context.watch<RewardProvider>();
     var metricsProvider = context.watch<PzMetricsProvider>();
     totalStarBadge = rewardProvider.totalStarBadge;
-    completedActivities = metricsProvider.metrics?.completedActivities ?? 0;
+    completedActivities = metricsProvider.completedContents.length;
     dayStreak = metricsProvider.metrics?.dayStreak ?? 0;
 
     final achievements = [

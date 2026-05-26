@@ -176,13 +176,20 @@ class MetricsTrackingHelper {
 
       if (parentUid != null && childUid != null) {
         if (!context.mounted) return;
-        await context.read<SongProvider>().trackSongCompletion(
+        // await context.read<SongProvider>().trackSongCompletion(
+        //   parentUid: parentUid,
+        //   childUid: childUid,
+        //   songId: songId,
+        //   songTitle: songTitle,
+        //   categoryName: categoryName,
+        //   context: context,
+        // );
+        await context.read<LessonProvider>().trackContentCompletion(
+          contentId: songId,
+          contentName: songTitle,
           parentUid: parentUid,
           childUid: childUid,
-          songId: songId,
-          songTitle: songTitle,
-          categoryName: categoryName,
-          context: context,
+          activityType: ActivityType.song,
         );
       }
     } catch (e) {

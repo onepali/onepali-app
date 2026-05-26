@@ -144,11 +144,6 @@ class PDashboardMetricsWidget extends StatelessWidget {
         if (isMobilePortrait) Gaps.verticalGapOf(16),
         if (isMobilePortrait)
           Container(
-            // constraints: BoxConstraints(
-            //   minHeight: minHeight,
-            //   maxWidth: double.infinity,
-            // ),
-            height: minHeight,
             width: double.infinity,
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
@@ -173,6 +168,7 @@ class PDashboardMetricsWidget extends StatelessWidget {
                       : mostPracticedTopics.length,
                   (i) => Container(
                     margin: const EdgeInsets.only(bottom: 8),
+                    width: double.infinity,
                     padding: const EdgeInsets.symmetric(
                       vertical: 6,
                       horizontal: 12,
@@ -182,14 +178,22 @@ class PDashboardMetricsWidget extends StatelessWidget {
                       // .withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
-                      '${i + 1}. ${mostPracticedTopics[i]}',
-                      style: AppStyles.text14PxMedium.copyWith(
-                        fontFamily: AppConstants.kDMSansFont,
-                      ),
-                      // .copyWith(
-                      //   color: colors[i % colors.length],
-                      // )
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${i + 1}. ${mostPracticedTopics[i].contentName}',
+                          style: AppStyles.text14PxMedium.copyWith(
+                            fontFamily: AppConstants.kDMSansFont,
+                          ),
+
+                          // .copyWith(
+                          //   color: colors[i % colors.length],
+                          // )
+                        ),
+
+                        Text('x${mostPracticedTopics[i].completedCount}'),
+                      ],
                     ),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,8 +7,9 @@ import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
-class LessonCategoryPage extends StatelessWidget {
+class LessonCategoryPage extends StatefulWidget {
   const LessonCategoryPage({
     super.key,
     required this.categoryId,
@@ -15,6 +17,48 @@ class LessonCategoryPage extends StatelessWidget {
   });
   final String categoryId;
   final String title;
+
+  @override
+  State<LessonCategoryPage> createState() => _LessonCategoryPageState();
+}
+
+class _LessonCategoryPageState extends State<LessonCategoryPage> {
+  String? childUid;
+
+  List<Map<String, dynamic>> lessons = [];
+
+  @override
+  void initState() {
+    super.initState();
+    childUid = Provider.of<UserProvider>(context, listen: false).user?.uid;
+    Misc.onLayoutRendered(() {
+      getCompletedLessons();
+    });
+  }
+
+  Future<void> getCompletedLessons() async {
+    try {
+      final parentId = FirebaseAuth.instance.currentUser?.uid;
+      final childId = await ChildLocalStorage.getCurrentChildId();
+      if (parentId == null || childId == null) {
+        return;
+      }
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .collection(AppConstants.completedContentCollection)
+          .where('content_type', isEqualTo: 'lesson')
+          .get();
+      logger.d('Completed lessons: ${querySnapshot.docs.length}');
+      setState(() {
+        lessons = querySnapshot.docs.map((doc) => doc.data()).toList();
+      });
+    } catch (e) {
+      logger.e('Error getting completed lessons: $e');
+    }
+  }
 
   Widget _buildTitleText(BuildContext context, String text) {
     return Text(
@@ -32,7 +76,7 @@ class LessonCategoryPage extends StatelessWidget {
   Stream<QuerySnapshot> getLessonsStream() {
     Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('lessons')
-        .where('category_id', isEqualTo: categoryId);
+        .where('category_id', isEqualTo: widget.categoryId);
     if (!kDebugMode) {
       query = query.where('active', isEqualTo: true);
     }
@@ -77,7 +121,7 @@ class LessonCategoryPage extends StatelessWidget {
                 right: 0,
                 top: 0,
                 bottom: 0,
-                child: Center(child: _buildTitleText(context, title)),
+                child: Center(child: _buildTitleText(context, widget.title)),
               ),
             ],
           ),
@@ -108,6 +152,9 @@ class LessonCategoryPage extends StatelessWidget {
                         ),
                         itemBuilder: (context, index) {
                           final data = snapshot.data!.docs;
+                          final isCompleted = lessons.any(
+                            (lesson) => lesson['id'] == data[index].id,
+                          );
                           return ContentCard(
                             nameEn: data[index]['name'],
                             bgColor: data[index]['bg_color'],
@@ -120,6 +167,7 @@ class LessonCategoryPage extends StatelessWidget {
                             },
                             image: data[index]['image'],
                             bgImage: data[index]['bg_image'],
+                            isCompleted: isCompleted,
                           );
                         },
                       ),
