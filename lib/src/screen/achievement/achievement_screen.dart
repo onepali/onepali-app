@@ -1,11 +1,8 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
-import 'package:onepali/src/screen/achievement/achievement_layout.dart';
 import 'package:onepali/src/src.dart';
-import 'package:provider/provider.dart';
 
 class AchievementScreen extends StatefulWidget {
   final String name;
@@ -30,7 +27,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = PlatformUtility.isTablet(context);
+    PlatformUtility.isTablet(context);
     return Scaffold(
       backgroundColor: AppColors.kBlack,
       body: Stack(
