@@ -182,16 +182,34 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       // }
                                       return customInkwell(
                                         onTap: () {
-                                          Utility.navigate(
-                                            context,
-                                            AppRoutes.chooseRewardScreen,
-                                          );
+                                          if (childData.isNotEmpty &&
+                                              childData
+                                                      .first
+                                                      .completedLessonsCount >=
+                                                  5) {
+                                            Utility.navigate(
+                                              context,
+                                              AppRoutes.chooseRewardScreen,
+                                            );
+                                          } else {
+                                            Utility.navigate(
+                                              context,
+                                              AppRoutes.rewardCollectionScreen,
+                                            );
+                                          }
                                         },
                                         child: LottieHelper.fromSource(
                                           path: Assets.starRewardLottie,
                                           height: starRewardLottieSize,
                                           width: starRewardLottieSize,
-                                          repeat: false,
+                                          repeat:
+                                              childData.isNotEmpty &&
+                                                  childData
+                                                          .first
+                                                          .completedLessonsCount >=
+                                                      5
+                                              ? true
+                                              : false,
                                         ),
                                       );
                                     },
