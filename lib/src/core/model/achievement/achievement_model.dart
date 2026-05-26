@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/src.dart';
 
 class AchievementModel {
   final String id;
@@ -29,30 +28,3 @@ class AchievementModel {
     );
   }
 }
-
-List<AchievementModel> achievementList = [
-  AchievementModel(
-    id: "1",
-    title: "Practice Hero Trophy",
-    subtitle: "days streak",
-    value: "0",
-    imageUrl: Assets.trophyAv,
-    color: AppColors.kPureSkyBlue,
-  ),
-  AchievementModel(
-    id: "2",
-    title: "Learning Champion Medal",
-    subtitle: "Completed activities",
-    value: "0",
-    imageUrl: Assets.medalAv,
-    color: AppColors.kButtonRed,
-  ),
-  AchievementModel(
-    id: "3",
-    title: "Star Collector Badge",
-    subtitle: "Total stars collected",
-    value: "0",
-    imageUrl: Assets.starAv,
-    color: AppColors.kButtonGreen,
-  ),
-];
