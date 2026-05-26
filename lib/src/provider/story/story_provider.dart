@@ -329,10 +329,17 @@ class StoryProvider extends ChangeNotifier {
       final metricsProvider = context.read<PzMetricsProvider>();
 
       // Track the activity completion
-      await metricsProvider.trackActivityCompletion(
+      // await metricsProvider.trackActivityCompletion(
+      //   parentUid: parentUid,
+      //   childUid: childUid,
+      //   topicName: storyTitle,
+      //   activityType: ActivityType.story,
+      // );
+      await context.read<LessonProvider>().trackContentCompletion(
+        contentId: storyId,
+        contentName: storyTitle,
         parentUid: parentUid,
         childUid: childUid,
-        topicName: storyTitle,
         activityType: ActivityType.story,
       );
 

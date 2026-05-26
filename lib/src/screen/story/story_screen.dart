@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
@@ -12,9 +13,40 @@ class StoryScreen extends StatefulWidget {
 }
 
 class _StoryScreenState extends State<StoryScreen> {
+  String? childUid;
+
+  List<Map<String, dynamic>> completedStories = [];
+
   @override
   void initState() {
     super.initState();
+    Misc.onLayoutRendered(() {
+      getCompletedStories();
+    });
+  }
+
+  Future<void> getCompletedStories() async {
+    try {
+      final parentId = FirebaseAuth.instance.currentUser?.uid;
+      final childId = await ChildLocalStorage.getCurrentChildId();
+      if (parentId == null || childId == null) {
+        return;
+      }
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .collection(AppConstants.completedContentCollection)
+          .where('content_type', isEqualTo: 'story')
+          .get();
+      logger.d('Completed stories: ${querySnapshot.docs.length}');
+      setState(() {
+        completedStories = querySnapshot.docs.map((doc) => doc.data()).toList();
+      });
+    } catch (e) {
+      logger.e('Error getting completed stories: $e');
+    }
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> _getStoriesStream(
@@ -91,24 +123,35 @@ class _StoryScreenState extends State<StoryScreen> {
                                         child: AspectRatio(
                                           aspectRatio: AppConstants
                                               .contentCardAspectRatio,
-                                          child: ContentCard(
-                                            nameEn: story['nameEn'],
-                                            nameNp: story['nameNp'],
-                                            image: story['thumbnail'],
-                                            bgImage: story['bg_image'],
-                                            isImageSvg: true,
-                                            bgColor: story['bg_color'],
-                                            onTap: () {
-                                              final storyModel =
-                                                  StoryModel.fromJson(
-                                                story.data(),
-                                              );
-                                              Utility.navigateMaterialRoute(
-                                                context,
-                                                StoryContentScreen(
-                                                  story: storyModel,
-                                                  isFromRecommended: false,
-                                                ),
+                                          child: Builder(
+                                            builder: (context) {
+                                              final isCompleted =
+                                                  completedStories.any(
+                                                    (story) =>
+                                                        story['id'] ==
+                                                        story['content_id'],
+                                                  );
+                                              return ContentCard(
+                                                nameEn: story['nameEn'],
+                                                nameNp: story['nameNp'],
+                                                image: story['thumbnail'],
+                                                bgImage: story['bg_image'],
+                                                isImageSvg: true,
+                                                bgColor: story['bg_color'],
+                                                isCompleted: isCompleted,
+                                                onTap: () {
+                                                  final storyModel =
+                                                      StoryModel.fromJson(
+                                                        story.data(),
+                                                      );
+                                                  Utility.navigateMaterialRoute(
+                                                    context,
+                                                    StoryContentScreen(
+                                                      story: storyModel,
+                                                      isFromRecommended: false,
+                                                    ),
+                                                  );
+                                                },
                                               );
                                             },
                                           ),
