@@ -166,6 +166,8 @@ class _KitchenPageState extends State<KitchenPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final isMobile = PlatformUtility.isMobile(context);
+    final topIngredientHeight = size.height * (isMobile ? 0.35 : 0.25);
+    final dropTargetHeight = size.height * (isMobile ? 0.40 : 0.50);
     return BlocProvider(
       create: (context) =>
           TutorialBloc()..add(TutorialEvent.started(widget.content)),
@@ -183,7 +185,7 @@ class _KitchenPageState extends State<KitchenPage> {
                           // Top ingredients
                           if (state.status != TutorialStatus.completed)
                             Container(
-                              height: size.height * 0.25,
+                              height: topIngredientHeight,
                               padding: EdgeInsets.only(
                                 left: size.width * 0.05,
                                 right: size.width * 0.1,
@@ -290,7 +292,7 @@ class _KitchenPageState extends State<KitchenPage> {
                           left: 0,
                           right: 0,
                           child: SizedBox(
-                            height: size.height * 0.50,
+                            height: dropTargetHeight,
                             width: size.width,
                             child: Stack(
                               alignment: Alignment.bottomCenter,
@@ -332,7 +334,7 @@ class _KitchenPageState extends State<KitchenPage> {
                                     builder:
                                         (context, candidateData, rejectedData) {
                                           return SizedBox(
-                                            height: size.height * 0.50,
+                                            height: dropTargetHeight,
                                             width: size.width,
                                           );
                                         },
