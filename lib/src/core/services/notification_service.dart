@@ -28,7 +28,7 @@ class NotificationService {
           iOS: initializationSettingsIOS,
         );
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Handle notification tap when app is in foreground/background
         // You can use response.payload for navigation or logic
@@ -133,10 +133,10 @@ class NotificationService {
       iOS: iosPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      platformChannelSpecifics,
+      id: 0,
+      title: title,
+      body: body,
+      notificationDetails: platformChannelSpecifics,
       payload: payload,
     );
   }
@@ -188,11 +188,11 @@ class NotificationService {
       iOS: iosDetails,
     );
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      1,
-      title,
-      body,
-      tzScheduledDate,
-      details,
+      id: 1,
+      title: title,
+      body: body,
+      scheduledDate: tzScheduledDate,
+      notificationDetails: details,
       matchDateTimeComponents: DateTimeComponents.time,
       payload: payload,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
