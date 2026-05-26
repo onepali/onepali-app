@@ -156,11 +156,11 @@ class _TabletLayout extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomImage(
-                      profileImage,
-                      width: 150,
-                      height: 150,
-                      circular: true,
-                    )
+                          profileImage,
+                          width: 150,
+                          height: 150,
+                          circular: true,
+                        )
                         .animate()
                         .scaleXY(
                           begin: 0.7,
@@ -170,11 +170,11 @@ class _TabletLayout extends StatelessWidget {
                         )
                         .fadeIn(duration: 400.ms),
                     Text(
-                      name,
-                      style: AppStyles.text40PxBold.copyWith(
-                        color: AppColors.kWhite,
-                      ),
-                    )
+                          name,
+                          style: AppStyles.text40PxBold.copyWith(
+                            color: AppColors.kWhite,
+                          ),
+                        )
                         .animate()
                         .fadeIn(delay: 200.ms, duration: 400.ms)
                         .slideY(
@@ -216,22 +216,20 @@ class _TabletLayout extends StatelessWidget {
               children: [
                 for (int i = 0; i < achievements.length; i++)
                   Expanded(
-                    child: AchievementCard(
-                      achievement: achievements[i],
-                      value: achievements[i].value,
-                    )
-                        .animate()
-                        .fadeIn(
-                          delay: (400 + i * 150).ms,
-                          duration: 450.ms,
-                        )
-                        .slideY(
-                          begin: -0.4,
-                          end: 0,
-                          delay: (400 + i * 150).ms,
-                          duration: 550.ms,
-                          curve: Curves.easeOutCubic,
-                        ),
+                    child:
+                        AchievementCard(
+                              achievement: achievements[i],
+                              value: achievements[i].value,
+                            )
+                            .animate()
+                            .fadeIn(delay: (400 + i * 150).ms, duration: 450.ms)
+                            .slideY(
+                              begin: -0.4,
+                              end: 0,
+                              delay: (400 + i * 150).ms,
+                              duration: 550.ms,
+                              curve: Curves.easeOutCubic,
+                            ),
                   ),
               ],
             ),
@@ -266,11 +264,11 @@ class _MobileLayout extends StatelessWidget {
               Row(
                 children: [
                   CustomImage(
-                    profileImage,
-                    width: 80,
-                    height: 80,
-                    circular: true,
-                  )
+                        profileImage,
+                        width: 80,
+                        height: 80,
+                        circular: true,
+                      )
                       .animate()
                       .scaleXY(
                         begin: 0.7,
@@ -281,11 +279,11 @@ class _MobileLayout extends StatelessWidget {
                       .fadeIn(duration: 400.ms),
                   const SizedBox(width: 8),
                   Text(
-                    name,
-                    style: AppStyles.text24PxSemiBold.copyWith(
-                      color: AppColors.kWhite,
-                    ),
-                  )
+                        name,
+                        style: AppStyles.text24PxSemiBold.copyWith(
+                          color: AppColors.kWhite,
+                        ),
+                      )
                       .animate()
                       .fadeIn(delay: 150.ms, duration: 400.ms)
                       .slideX(
@@ -299,54 +297,51 @@ class _MobileLayout extends StatelessWidget {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Expanded(
-                child: Container(
-                  constraints: BoxConstraints(maxWidth: 170, minWidth: 150),
-                  decoration: BoxDecoration(
-                    color: AppColors.sunshineYellow,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 12,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Spacer(),
-                      Text(
-                        'Your Nepali is\nimproving!',
-                        textAlign: TextAlign.center,
-                        style: AppStyles.text18PxSemiBold,
-                      ),
-                      const SizedBox(height: 8),
-                      Spacer(),
-                      Image.asset(
-                        Assets.achievement,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) =>
-                            const SizedBox(height: 60),
-                      )
-                          .animate()
-                          .scaleXY(
-                            begin: 0.7,
-                            end: 1.0,
-                            delay: 300.ms,
-                            duration: 500.ms,
-                            curve: Curves.easeOutBack,
-                          )
-                          .fadeIn(delay: 300.ms, duration: 400.ms),
-                    ],
-                  ),
-                )
-                    .animate()
-                    .fadeIn(delay: 200.ms, duration: 500.ms)
-                    .slideY(
-                      begin: 0.15,
-                      end: 0,
-                      delay: 200.ms,
-                      duration: 500.ms,
-                      curve: Curves.easeOutCubic,
-                    ),
+                child:
+                    Container(
+                          constraints: BoxConstraints(
+                            maxWidth: 170,
+                            minWidth: 150,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.sunshineYellow,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Your Nepali is\nimproving!',
+                                textAlign: TextAlign.center,
+                                style: AppStyles.text18PxSemiBold,
+                              ),
+                              const SizedBox(height: 8),
+
+                              // Fill the container
+                              Expanded(
+                                child: Image.asset(
+                                  Assets.achievement,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) =>
+                                      const SizedBox(height: 60),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        .animate()
+                        .fadeIn(delay: 200.ms, duration: 500.ms)
+                        .slideY(
+                          begin: 0.15,
+                          end: 0,
+                          delay: 200.ms,
+                          duration: 500.ms,
+                          curve: Curves.easeOutCubic,
+                        ),
               ),
             ],
           ),
@@ -358,22 +353,20 @@ class _MobileLayout extends StatelessWidget {
               children: [
                 for (int i = 0; i < achievements.length; i++)
                   Expanded(
-                    child: AchievementCard(
-                      achievement: achievements[i],
-                      value: achievements[i].value,
-                    )
-                        .animate()
-                        .fadeIn(
-                          delay: (350 + i * 130).ms,
-                          duration: 450.ms,
-                        )
-                        .slideY(
-                          begin: -0.4,
-                          end: 0,
-                          delay: (350 + i * 130).ms,
-                          duration: 550.ms,
-                          curve: Curves.easeOutCubic,
-                        ),
+                    child:
+                        AchievementCard(
+                              achievement: achievements[i],
+                              value: achievements[i].value,
+                            )
+                            .animate()
+                            .fadeIn(delay: (350 + i * 130).ms, duration: 450.ms)
+                            .slideY(
+                              begin: -0.4,
+                              end: 0,
+                              delay: (350 + i * 130).ms,
+                              duration: 550.ms,
+                              curve: Curves.easeOutCubic,
+                            ),
                   ),
               ],
             ),
