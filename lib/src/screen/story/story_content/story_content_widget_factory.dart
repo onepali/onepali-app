@@ -26,7 +26,11 @@ Widget buildStoryContentWidget({
         playAudio: playAudio,
       );
     case "button_tap2":
-      return ButtonTapContent2(content: content, playAudio: playAudio);
+      return ButtonTapContent2(
+        content: content,
+        playAudio: playAudio,
+        isLast: isLast,
+      );
     case 'choose_correct':
       return ChooseCorrect(content: content, isLast: isLast);
     default:

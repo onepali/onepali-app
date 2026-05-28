@@ -1,5 +1,8 @@
 // Drag & Drop UI
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import '../../../../src.dart';
 
 class DragDropContent extends StatefulWidget {
@@ -20,15 +23,56 @@ class DragDropContentState extends State<DragDropContent> {
   late List<int?> droppedOn;
   bool finished = false;
   int? tryAgainIdx;
+  bool _hasPlayedLastCorrectAudio = false;
+  bool _hasScheduledFinishedFlow = false;
+  late AudioPlayerService _audioPlayerService;
 
   @override
   void initState() {
     super.initState();
+    _audioPlayerService = AudioPlayerServiceImpl();
     final n = widget.content.conversation.length;
     dropped = List.generate(n, (_) => false);
     correct = List.generate(n, (_) => false);
     droppedOn = List.generate(n, (_) => null);
     tryAgainIdx = null;
+  }
+
+  @override
+  void dispose() {
+    unawaited(_audioPlayerService.dispose());
+    super.dispose();
+  }
+
+  Future<void> _playCompletionAudioOnce() async {
+    if (_hasPlayedLastCorrectAudio) return;
+    _hasPlayedLastCorrectAudio = true;
+    try {
+      await _audioPlayerService.playAsset(Assets.storiesComplete);
+    } catch (e) {
+      logger.e('Error playing story completion audio: $e');
+    }
+  }
+
+  void _scheduleFinishedFlow() {
+    if (_hasScheduledFinishedFlow) return;
+    _hasScheduledFinishedFlow = true;
+    unawaited(_playCompletionAudioOnce());
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        bool isGuest = GuestUtil.isGuestUser();
+        if (isGuest) {
+          Navigator.pop(context);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.dashboardScreen,
+            (route) => false,
+          );
+          UserAppBar.setTabIndex(0);
+        }
+      }
+    });
   }
 
   @override
@@ -38,24 +82,6 @@ class DragDropContentState extends State<DragDropContent> {
     final char1 = charList.isNotEmpty ? charList[0] : null;
     final char2 = charList.length > 1 ? charList[1] : null;
     final bgColor = AppColors.kLightGreenBackgroundColor;
-
-    if (finished) {
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          bool isGuest = GuestUtil.isGuestUser();
-          if (isGuest) {
-            Navigator.pop(context);
-          } else {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AppRoutes.dashboardScreen,
-              (route) => false,
-            );
-            UserAppBar.setTabIndex(0);
-          }
-        }
-      });
-    }
 
     return Stack(
       children: [
@@ -103,13 +129,17 @@ class DragDropContentState extends State<DragDropContent> {
                     onWillAcceptWithDetails: (data) => !correct[i],
                     onAcceptWithDetails: (details) {
                       final isCorrect = conv[details.data].id == conv[i].id;
+                      var completed = false;
                       setState(() {
                         if (isCorrect) {
                           dropped[details.data] = true;
                           droppedOn[details.data] = i;
                           correct[i] = true;
                           tryAgainIdx = null;
-                          if (correct.every((c) => c)) finished = true;
+                          if (correct.every((c) => c)) {
+                            finished = true;
+                            completed = true;
+                          }
                         } else {
                           tryAgainIdx = details.data;
                           // Optionally, show a SnackBar or similar feedback
@@ -118,6 +148,9 @@ class DragDropContentState extends State<DragDropContent> {
                           // );
                         }
                       });
+                      if (completed) {
+                        _scheduleFinishedFlow();
+                      }
                     },
                     builder: (context, candidate, rejected) {
                       final isMatched = droppedOn.contains(i) && correct[i];

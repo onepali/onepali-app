@@ -372,6 +372,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                   return ButtonTapContent2(
                     content: contentList[idx - 1],
                     playAudio: true,
+                    isLast: idx == contentList.length,
                   );
                 }
                 return Stack(

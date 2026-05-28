@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
@@ -7,17 +10,47 @@ import 'package:onepali/src/features/lessons/widgets/choose_correct_item.dart';
 import 'package:onepali/src/provider/story/choose_correct_story_provider.dart';
 import 'package:provider/provider.dart';
 
-class ChooseCorrect extends StatelessWidget {
+class ChooseCorrect extends StatefulWidget {
   const ChooseCorrect({super.key, required this.content, this.isLast = false});
   final Content content;
   final bool isLast;
+
+  @override
+  State<ChooseCorrect> createState() => _ChooseCorrectState();
+}
+
+class _ChooseCorrectState extends State<ChooseCorrect> {
+  late AudioPlayerService _audioPlayerService;
+  bool _hasPlayedLastCorrectAudio = false;
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayerService = AudioPlayerServiceImpl();
+  }
+
+  @override
+  void dispose() {
+    unawaited(_audioPlayerService.dispose());
+    super.dispose();
+  }
+
+  Future<void> _playLastCorrectAudioOnce() async {
+    if (_hasPlayedLastCorrectAudio) return;
+    _hasPlayedLastCorrectAudio = true;
+    try {
+      await _audioPlayerService.playAsset(Assets.storiesComplete);
+    } catch (e) {
+      logger.e('Error playing story completion audio: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.of(context).size;
     return ChangeNotifierProvider<ChooseCorrectStoryProvider>(
-      create: (context) => ChooseCorrectStoryProvider()..setContent(content),
+      create: (context) =>
+          ChooseCorrectStoryProvider()..setContent(widget.content),
       child: Builder(
         builder: (context) {
           return Consumer<ChooseCorrectStoryProvider>(
@@ -40,7 +73,8 @@ class ChooseCorrect extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    for (final item in content.conversation)
+                                    for (final item
+                                        in widget.content.conversation)
                                       ItemCard(
                                         bgImage: item.icon,
                                         nameEn: item.messageEn,
@@ -48,10 +82,10 @@ class ChooseCorrect extends StatelessWidget {
                                         bgColor: '#FFFFFF',
                                         isCorrect: item.correct,
                                         size: size,
-                                        itemCount: content.conversation.length,
-                                        index: content.conversation.indexOf(
-                                          item,
-                                        ),
+                                        itemCount:
+                                            widget.content.conversation.length,
+                                        index: widget.content.conversation
+                                            .indexOf(item),
                                         isSelected:
                                             storyProvider
                                                 .userSelectedConversation ==
@@ -62,6 +96,13 @@ class ChooseCorrect extends StatelessWidget {
                                             return;
                                           }
                                           storyProvider.onTappedItem(item);
+                                          if (widget.isLast &&
+                                              storyProvider
+                                                  .isCorrectAnswerSelected) {
+                                            unawaited(
+                                              _playLastCorrectAudioOnce(),
+                                            );
+                                          }
                                         },
                                       ),
                                   ],
@@ -127,7 +168,7 @@ class ChooseCorrect extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (isLast && storyProvider.isCorrectAnswerSelected)
+                  if (widget.isLast && storyProvider.isCorrectAnswerSelected)
                     Positioned.fill(
                       child: IgnorePointer(
                         child: LottieHelper.fromSource(
@@ -147,7 +188,7 @@ class ChooseCorrect extends StatelessWidget {
                         ),
                   ),
 
-                  if (!isLast && storyProvider.isCorrectAnswerSelected)
+                  if (!widget.isLast && storyProvider.isCorrectAnswerSelected)
                     CenterRightAlignedForwardButton(
                       onTap: () {
                         context.read<StoryProvider>().nextContent(context);
