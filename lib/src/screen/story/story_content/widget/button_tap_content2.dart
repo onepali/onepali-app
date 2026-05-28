@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:provider/provider.dart';
@@ -8,10 +10,12 @@ import '../../../../src.dart';
 class ButtonTapContent2 extends StatefulWidget {
   final Content content;
   final bool playAudio;
+  final bool isLast;
   const ButtonTapContent2({
     super.key,
     required this.content,
     this.playAudio = true,
+    this.isLast = false,
   });
   @override
   State<ButtonTapContent2> createState() => ButtonTapContent2State();
@@ -21,6 +25,13 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   int? selectedIdx;
   bool? isCorrect;
   bool showTryAgain = false;
+  late AudioPlayerService _audioPlayerService;
+
+  @override
+  void dispose() {
+    _audioPlayerService.dispose();
+    super.dispose();
+  }
 
   void _handleTap(int i, StoryProvider storyProvider) async {
     final opt = widget.content.conversation[i];
@@ -53,6 +64,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   @override
   void initState() {
     super.initState();
+    _audioPlayerService = AudioPlayerServiceImpl();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.playAudio) {
         Provider.of<StoryProvider>(
@@ -111,6 +123,9 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     if (storyProvider.isStoryFinished) {
       // Navigator.of(context).pop();
+      if (isCorrect==true) {
+        _audioPlayerService.playAsset(Assets.storiesComplete);
+      }
     }
     return Stack(
       children: [
@@ -159,7 +174,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
                       : 16,
                 );
                 if (isSelected) {
-                  if (isCorrect == true && correct) {
+                  if (isCorrect ?? false) {
                     bgColor = AppColors.kButtonGreen;
                     icon = Assets.check;
                     iconType = 'svg';
@@ -173,7 +188,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
                           ? 28
                           : 16,
                     );
-                  } else if (isCorrect == false && !correct) {
+                  } else if (!correct) {
                     bgColor = AppColors.kButtonRed;
                     label = 'Try Again';
                     textColor = AppColors.kDrawerBgColor;
@@ -242,15 +257,21 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
             ),
           ),
         ),
+
+        CenterLeftAlignedBackButton(
+          onTap: () => storyProvider.previousContent(),
+        ),
         TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
         if (isCorrect == true && widget.content.confetti.isNotEmpty)
-          LottieHelper.fromSource(
-            path: widget.content.confetti,
-            fit: BoxFit.cover,
-            repeat: true,
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height,
-            type: LottieSourceType.network,
+          IgnorePointer(
+            child: LottieHelper.fromSource(
+              path: widget.content.confetti,
+              fit: BoxFit.cover,
+              repeat: true,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height,
+              type: LottieSourceType.network,
+            ),
           ),
       ],
     );

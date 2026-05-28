@@ -1,5 +1,6 @@
 // Drag & Drop UI
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import '../../../../src.dart';
 
 class DragDropContent extends StatefulWidget {
@@ -20,15 +21,23 @@ class DragDropContentState extends State<DragDropContent> {
   late List<int?> droppedOn;
   bool finished = false;
   int? tryAgainIdx;
+  bool _hasPlayedLastCorrectAudio = false;
+  late AudioPlayerService _audioPlayerService;
 
   @override
   void initState() {
     super.initState();
+    _audioPlayerService = AudioPlayerServiceImpl();
     final n = widget.content.conversation.length;
     dropped = List.generate(n, (_) => false);
     correct = List.generate(n, (_) => false);
     droppedOn = List.generate(n, (_) => null);
     tryAgainIdx = null;
+  }
+  @override
+  void dispose() {
+    _audioPlayerService.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,7 +49,11 @@ class DragDropContentState extends State<DragDropContent> {
     final bgColor = AppColors.kLightGreenBackgroundColor;
 
     if (finished) {
-      Future.delayed(const Duration(seconds: 3), () {
+      if (!_hasPlayedLastCorrectAudio) {
+        _hasPlayedLastCorrectAudio = true;
+        _audioPlayerService.playAsset(Assets.storiesComplete);
+      }
+      Future.delayed(const Duration(seconds: 5), () {
         if (mounted) {
           bool isGuest = GuestUtil.isGuestUser();
           if (isGuest) {
