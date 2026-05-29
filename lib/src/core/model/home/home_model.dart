@@ -35,7 +35,7 @@ List<HomeServiceModel> homeServices = [
     name: 'Videos',
     icon: Assets.video,
     tooltip: 'Videos',
-    color: AppColors.kVideoColor,
+    color: AppColors.kPurple,
     route: AppRoutes.comingSoon,
   ),
   HomeServiceModel(
