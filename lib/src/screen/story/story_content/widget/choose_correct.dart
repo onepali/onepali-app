@@ -96,6 +96,12 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                                             return;
                                           }
                                           storyProvider.onTappedItem(item);
+                                          context
+                                              .read<PzMetricsProvider>()
+                                              .trackAnswerAttempt(
+                                                isCorrect: storyProvider
+                                                    .isCorrectAnswerSelected,
+                                              );
                                           if (widget.isLast &&
                                               storyProvider
                                                   .isCorrectAnswerSelected) {

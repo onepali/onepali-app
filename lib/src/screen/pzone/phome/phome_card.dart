@@ -149,7 +149,7 @@ class PHomeCard extends StatelessWidget {
                 ),
               ),
             )
-          else if (metrics == null)
+          else if (metrics == null || parentUid == null)
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
@@ -164,6 +164,8 @@ class PHomeCard extends StatelessWidget {
             )
           else ...[
             PAverageLearningWidget(
+              parentUid: parentUid!,
+              childUid: selectedChildUid!,
               completedActivities: completedContents.length,
               answerSuccessRate: metrics!.answerSuccessRate,
               isMobilePortrait: isMobilePortrait,
@@ -180,26 +182,6 @@ class PHomeCard extends StatelessWidget {
               mostPracticedTopics: completedContents,
               isMobilePortrait: isMobilePortrait,
             ),
-            // Gaps.verticalGapOf(24),
-            // ElevatedButton(
-            //   onPressed:
-            //       parentUid != null && selectedChildUid != null
-            //           ? () async {
-            //             await Provider.of<PzMetricsProvider>(
-            //               context,
-            //               listen: false,
-            //             ).updateMetrics(
-            //               parentUid: parentUid!,
-            //               childUid: selectedChildUid!,
-            //               newMetrics: metrics!.copyWith(
-            //                 completedActivities:
-            //                     metrics!.completedActivities + 1,
-            //               ),
-            //             );
-            //           }
-            //           : null,
-            //   child: const Text('Update Metrics (Demo)'),
-            // ),
           ],
         ],
       ),

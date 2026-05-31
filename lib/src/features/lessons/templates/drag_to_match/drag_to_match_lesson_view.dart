@@ -54,9 +54,23 @@ class _DragToMatchViewState extends State<_DragToMatchView> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: BlocConsumer<DragToMatchBloc, DragToMatchState>(
+        listenWhen: (previous, current) =>
+            (previous.dragStatus != current.dragStatus &&
+                (current.dragStatus == DragStatus.correctMatch ||
+                    current.dragStatus == DragStatus.wrongMatch)) ||
+            (!previous.showCat && current.showCat),
         listener: (context, state) {
           if (state.showCat) {
             _audioPlayerService.playAsset(Assets.confettiFeedback);
+          }
+          if (state.dragStatus == DragStatus.correctMatch) {
+            context.read<PzMetricsProvider>().trackAnswerAttempt(
+              isCorrect: true,
+            );
+          } else if (state.dragStatus == DragStatus.wrongMatch) {
+            context.read<PzMetricsProvider>().trackAnswerAttempt(
+              isCorrect: false,
+            );
           }
         },
         builder: (context, state) {

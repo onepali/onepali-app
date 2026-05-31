@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../src.dart';
 
@@ -240,6 +241,29 @@ class PzMetricsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> trackAnswerAttempt({required bool isCorrect}) async {
+    try {
+      final parentId = FirebaseAuth.instance.currentUser?.uid;
+      final childId = await ChildLocalStorage.getCurrentChildId();
+      if (parentId == null || childId == null) {
+        return;
+      }
+
+      final counterField = isCorrect
+          ? 'right_answers_count'
+          : 'wrong_answers_count';
+      await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .update({counterField: FieldValue.increment(1)});
+    } catch (e) {
+      logger.e('Error updating success: $e');
+    }
+  }
+
+  // Start a learning session
   void startLearningSession() {
     _sessionCorrectAnswers.clear();
     _sessionTotalAnswers.clear();
