@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -6,7 +8,6 @@ import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/templates/drag_to_match/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class DragToMatchScreen extends StatelessWidget {
@@ -55,9 +56,19 @@ class _DragToMatchViewState extends State<_DragToMatchView> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: BlocConsumer<DragToMatchBloc, DragToMatchState>(
+        listenWhen: (previous, current) =>
+            (previous.dragStatus != current.dragStatus &&
+                (current.dragStatus == DragStatus.correctMatch ||
+                    current.dragStatus == DragStatus.wrongMatch)) ||
+            (!previous.showCat && current.showCat),
         listener: (context, state) {
           if (state.showCat) {
             _audioPlayerService.playAsset(Assets.confettiFeedback);
+          }
+          if (state.dragStatus == DragStatus.correctMatch) {
+            context.read<PzMetricsProvider>().trackAnswer1(isCorrect: true);
+          } else if (state.dragStatus == DragStatus.wrongMatch) {
+            context.read<PzMetricsProvider>().trackAnswer1(isCorrect: false);
           }
         },
         builder: (context, state) {
@@ -330,6 +341,7 @@ class _OutlineTarget extends StatelessWidget {
         return !isMatched;
       },
       onAcceptWithDetails: (details) {
+        log("Can accept: ${details.data} for target ${position.itemId}");
         bloc.add(
           DragToMatchEvent.endDrag(
             itemId: details.data,

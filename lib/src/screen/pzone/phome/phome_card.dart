@@ -148,59 +148,26 @@ class PHomeCard extends StatelessWidget {
                   ),
                 ),
               ),
-            )
-          else if (metrics == null)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Text(
-                  'No metrics data found for this child',
-                  style: AppStyles.text16PxRegular.copyWith(
-                    fontFamily: AppConstants.kDMSansFont,
-                    fontSize: isMobilePortrait ? 16 : 24,
-                  ),
-                ),
-              ),
-            )
-          else ...[
-            PAverageLearningWidget(
-              completedActivities: completedContents.length,
-              answerSuccessRate: metrics!.answerSuccessRate,
-              isMobilePortrait: isMobilePortrait,
             ),
-            Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
-            PDailyLearningWidget(
-              dayStreak: metrics!.dayStreak,
-              weeklyStreak: metrics!.weeklyStreak,
-              isMobilePortrait: isMobilePortrait,
-            ),
-            Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
-            PDashboardMetricsWidget(
-              averageDailyLearningTime: metrics!.averageDailyLearningTime,
-              mostPracticedTopics: completedContents,
-              isMobilePortrait: isMobilePortrait,
-            ),
-            // Gaps.verticalGapOf(24),
-            // ElevatedButton(
-            //   onPressed:
-            //       parentUid != null && selectedChildUid != null
-            //           ? () async {
-            //             await Provider.of<PzMetricsProvider>(
-            //               context,
-            //               listen: false,
-            //             ).updateMetrics(
-            //               parentUid: parentUid!,
-            //               childUid: selectedChildUid!,
-            //               newMetrics: metrics!.copyWith(
-            //                 completedActivities:
-            //                     metrics!.completedActivities + 1,
-            //               ),
-            //             );
-            //           }
-            //           : null,
-            //   child: const Text('Update Metrics (Demo)'),
-            // ),
-          ],
+          PAverageLearningWidget(
+            parentUid: parentUid!,
+            childUid: selectedChildUid!,
+            completedActivities: completedContents.length,
+            answerSuccessRate: metrics!.answerSuccessRate,
+            isMobilePortrait: isMobilePortrait,
+          ),
+          Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
+          PDailyLearningWidget(
+            dayStreak: metrics!.dayStreak,
+            weeklyStreak: metrics!.weeklyStreak,
+            isMobilePortrait: isMobilePortrait,
+          ),
+          Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
+          PDashboardMetricsWidget(
+            averageDailyLearningTime: metrics!.averageDailyLearningTime,
+            mostPracticedTopics: completedContents,
+            isMobilePortrait: isMobilePortrait,
+          ),
         ],
       ),
     );

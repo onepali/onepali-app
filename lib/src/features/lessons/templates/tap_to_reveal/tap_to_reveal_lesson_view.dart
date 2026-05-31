@@ -27,7 +27,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   AudioPlayer? _questionAudioPlayer;
   AudioPlayer? _itemAudioPlayer;
   AudioPlayer? _wrongSfxPlayer;
-  Timer? _hintTimer; 
+  Timer? _hintTimer;
   String? _hintQuestionKey;
   bool _showHintPulse = false;
 
@@ -237,6 +237,14 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                     isWrong: isTapped && !state.isCorrect,
                     showHintPulse: showHintPulse,
                     onTap: () async {
+                      final isCorrect =
+                          item.nameEn == state.currentQuestion?.nameEn &&
+                          item.nameNp == state.currentQuestion?.nameNp;
+                      // Track the answer using PzMetricsProvider
+                      context.read<PzMetricsProvider>().trackAnswer1(
+                        isCorrect: isCorrect,
+                      );
+                      // Update the state based on the tapped item
                       context.read<TapToRevealLessonContentBloc>().add(
                         TapToRevealLessonContentEvent.itemTapped(item),
                       );

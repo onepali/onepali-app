@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -35,33 +36,6 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
           if (state.content == null) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          if (state.status == GunFillStatus.failed) {
-            return Stack(
-              children: [
-                Positioned.fill(
-                  child: ColoredBox(color: AppColors.kDrawerBgColor),
-                ),
-                const Center(
-                  child: Text(
-                    'Unable to load this lesson.',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                CenterLeftAlignedBackButton(
-                  onTap: () => context.read<LessonBloc>().add(
-                    LessonEvent.previousContent(),
-                  ),
-                ),
-                CenterRightAlignedForwardButton(
-                  onTap: () =>
-                      context.read<LessonBloc>().add(LessonEvent.nextContent()),
-                ),
-                TopRightPositionedCloseButton(),
-              ],
-            );
-          }
-
           final gunParts = state.gunParts;
           return Stack(
             children: [
@@ -175,6 +149,8 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                                         part.id;
                                                   },
                                               onAcceptWithDetails: (details) {
+                                                final isCorrect = details.data == part.id;
+                                                context.read<PzMetricsProvider>().trackAnswer1(isCorrect: isCorrect);
                                                 context.read<GunFillBloc>().add(
                                                   GunFillEvent.colorFilled(
                                                     part.id,
@@ -200,15 +176,14 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                       clipper: PartClipper(labelPath.path),
                                       child: DragTarget(
                                         onWillAcceptWithDetails: (details) {
-                                          final gunPartId = labelPath.gunPartId;
-                                          if (gunPartId == null) return false;
-                                          return details.data == gunPartId;
+                                          return details.data ==
+                                              labelPath.gunPartId;
                                         },
                                         onAcceptWithDetails: (details) {
-                                          final gunPartId = labelPath.gunPartId;
-                                          if (gunPartId == null) return;
                                           context.read<GunFillBloc>().add(
-                                            GunFillEvent.colorFilled(gunPartId),
+                                            GunFillEvent.colorFilled(
+                                              labelPath.gunPartId!,
+                                            ),
                                           );
                                         },
                                         builder:
@@ -265,6 +240,25 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
   }
 }
 
+// class PartClipper extends CustomClipper<Path> {
+//   final String pathData;
+//   final String? fillColor;
+
+//   PartClipper(this.pathData, {this.fillColor});
+
+//   @override
+//   Path getClip(Size size) {
+//     // Parse the SVG path data
+//     final path = parseSvgPathData(pathData);
+//     return path;
+//   }
+
+//   @override
+//   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+//     return false;
+//   }
+// }
+
 class PartClipper extends CustomClipper<Path> {
   final String pathData;
 
@@ -272,16 +266,19 @@ class PartClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    try {
-      return parseSvgPathData(pathData);
-    } catch (error, stackTrace) {
-      log(
-        'Failed to parse gun fill SVG path',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      return Path();
-    }
+    Path path = parseSvgPathData(pathData);
+
+    // Scale the path to fit the actual widget size
+    Rect boundingBox = path.getBounds();
+    Matrix4 matrix = Matrix4.identity();
+
+    // This scales the path coordinates to the current container size
+    double scaleX = size.width / boundingBox.width;
+    double scaleY = size.height / boundingBox.height;
+
+    // Note: You may need more complex transformation logic depending
+    // on how your SVG data is exported (viewBox vs absolute)
+    return path.transform(Float64List.fromList(matrix.storage));
   }
 
   @override
