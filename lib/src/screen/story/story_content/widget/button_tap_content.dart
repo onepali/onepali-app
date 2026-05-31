@@ -29,17 +29,8 @@ class ButtonTapContentState extends State<ButtonTapContent> {
       showTryAgain = !correct;
     });
 
-    // Track the answer for parent metrics
-    if (storyProvider.currentStory != null) {
-      await MetricsTrackingHelper.trackStoryAnswer(
-        context: context,
-        isCorrect: correct,
-        storyTitle:
-            storyProvider.currentStory!.nameNp.isNotEmpty
-                ? storyProvider.currentStory!.nameNp
-                : storyProvider.currentStory!.nameEn,
-      );
-    }
+    // Track the answer using PzMetricsProvider
+    context.read<PzMetricsProvider>().trackAnswer1(isCorrect: correct);
 
     if (correct) {
       await Future.delayed(const Duration(milliseconds: 800));

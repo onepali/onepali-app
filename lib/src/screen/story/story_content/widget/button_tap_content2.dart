@@ -42,16 +42,8 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
       showTryAgain = !correct;
     });
 
-    // Track the answer for parent metrics
-    if (storyProvider.currentStory != null) {
-      await MetricsTrackingHelper.trackStoryAnswer(
-        context: context,
-        isCorrect: correct,
-        storyTitle: storyProvider.currentStory!.nameNp.isNotEmpty
-            ? storyProvider.currentStory!.nameNp
-            : storyProvider.currentStory!.nameEn,
-      );
-    }
+    // Track the answer using PzMetricsProvider
+    context.read<PzMetricsProvider>().trackAnswer1(isCorrect: correct);
 
     if (correct) {
       await Future.delayed(const Duration(seconds: 5));
@@ -124,6 +116,8 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     if (storyProvider.isStoryFinished) {
       // Navigator.of(context).pop();
       if (isCorrect==true) {
+        // Track the answer using PzMetricsProvider
+        context.read<PzMetricsProvider>().trackAnswer1(isCorrect: isCorrect ?? false);
         _audioPlayerService.playAsset(Assets.storiesComplete);
       }
     }

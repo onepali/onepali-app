@@ -1,22 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/core.dart';
 
 import '../../../../src.dart';
 
-class PAverageLearningWidget extends StatelessWidget {
+class PAverageLearningWidget extends StatefulWidget {
   final int completedActivities;
   final double answerSuccessRate;
   final bool isMobilePortrait;
+  final String parentUid;
+  final String childUid;
 
   const PAverageLearningWidget({
     super.key,
     required this.completedActivities,
     required this.answerSuccessRate,
     required this.isMobilePortrait,
+    required this.parentUid,
+    required this.childUid,
   });
 
   @override
+  State<PAverageLearningWidget> createState() => _PAverageLearningWidgetState();
+}
+
+class _PAverageLearningWidgetState extends State<PAverageLearningWidget> {
+
+  @override
   Widget build(BuildContext context) {
-    final minHeight = isMobilePortrait ? 140.0 : 290.0;
+    final minHeight = widget.isMobilePortrait ? 140.0 : 290.0;
+
     return IntrinsicHeight(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -34,9 +48,9 @@ class PAverageLearningWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    completedActivities.toString(),
+                    widget.completedActivities.toString(),
                     style: AppStyles.text40PxSemiBold.copyWith(
-                      fontSize: isMobilePortrait ? 40 : 72,
+                      fontSize: widget.isMobilePortrait ? 40 : 72,
                     ),
                   ),
                   Gaps.verticalGapOf(8),
@@ -45,14 +59,14 @@ class PAverageLearningWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppStyles.text16PxMedium.copyWith(
                       fontFamily: AppConstants.kDMSansFont,
-                      fontSize: isMobilePortrait ? 16 : 24,
+                      fontSize: widget.isMobilePortrait ? 16 : 24,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          Gaps.horizontalGapOf(isMobilePortrait ? 16 : 32),
+          Gaps.horizontalGapOf(widget.isMobilePortrait ? 16 : 32),
           Expanded(
             child: Container(
               constraints: BoxConstraints(minHeight: minHeight),
@@ -68,17 +82,40 @@ class PAverageLearningWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        '${(answerSuccessRate * 100).toInt()}',
-                        style: AppStyles.text40PxSemiBold.copyWith(
-                          fontSize: isMobilePortrait ? 40 : 72,
-                        ),
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection(AppConstants.usersCollection)
+                            .doc(widget.parentUid)
+                            .collection(AppConstants.childrenCollection)
+                            .doc(widget.childUid)
+                            .snapshots(),
+                        builder: (context, shapshot) {
+                          final data = shapshot.data?.data();
+                          if (data == null) {
+                            return const SizedBox.shrink();
+                          }
+                          final rightAnswersCount =
+                              data['right_answers_count'] ?? 0;
+                          final wrongAnswersCount =
+                              data['wrong_answers_count'] ?? 0;
+                          final totalAnswers = rightAnswersCount + wrongAnswersCount;
+                          final answerSuccessRate =
+                              totalAnswers > 0
+                                  ? rightAnswersCount / totalAnswers
+                                  : 0.0;
+                          return Text(
+                            '${(answerSuccessRate * 100).toStringAsFixed(0)}',
+                            style: AppStyles.text40PxSemiBold.copyWith(
+                              fontSize: widget.isMobilePortrait ? 40 : 72,
+                            ),
+                          );
+                        },
                       ),
                       Gaps.horizontalGapOf(4),
                       Text(
                         '%',
                         style: AppStyles.text16PxSemiBold.copyWith(
-                          fontSize: isMobilePortrait ? 16 : 24,
+                          fontSize: widget.isMobilePortrait ? 16 : 24,
                         ),
                       ),
                     ],
@@ -89,7 +126,7 @@ class PAverageLearningWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppStyles.text16PxMedium.copyWith(
                       fontFamily: AppConstants.kDMSansFont,
-                      fontSize: isMobilePortrait ? 16 : 24,
+                      fontSize: widget.isMobilePortrait ? 16 : 24,
                     ),
                   ),
                 ],

@@ -64,6 +64,9 @@ class _TapToFillViewState extends State<TapToFillView> {
                     children: state.content!.options.map((item) {
                       return GestureDetector(
                         onTap: () {
+                          context.read<PzMetricsProvider>().trackAnswer1(
+                            isCorrect: item.isCorrect,
+                          );
                           context.read<TapToFillBloc>().add(
                             TapToFillEvent.optionTapped(item),
                           );

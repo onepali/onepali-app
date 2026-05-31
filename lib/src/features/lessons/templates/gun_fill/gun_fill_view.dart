@@ -149,6 +149,8 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                                         part.id;
                                                   },
                                               onAcceptWithDetails: (details) {
+                                                final isCorrect = details.data == part.id;
+                                                context.read<PzMetricsProvider>().trackAnswer1(isCorrect: isCorrect);
                                                 context.read<GunFillBloc>().add(
                                                   GunFillEvent.colorFilled(
                                                     part.id,
@@ -174,7 +176,6 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                       clipper: PartClipper(labelPath.path),
                                       child: DragTarget(
                                         onWillAcceptWithDetails: (details) {
-                                          log('Details: $details');
                                           return details.data ==
                                               labelPath.gunPartId;
                                         },

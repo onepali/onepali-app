@@ -92,6 +92,13 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                                               .isCorrectAnswerSelected) {
                                             return;
                                           }
+                                          // Track the answer using PzMetricsProvider
+                                          context
+                                              .read<PzMetricsProvider>()
+                                              .trackAnswer1(
+                                                isCorrect: item.correct,
+                                              );
+                                          // Update the state based on the selected item
                                           storyProvider.onTappedItem(item);
                                         },
                                       ),

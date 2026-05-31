@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../src.dart';
 
@@ -187,6 +188,30 @@ class PzMetricsProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  Future<void> trackAnswer1({required bool isCorrect}) async {
+    try {
+      // Update right_answers_count or wrong_answers_count inside children doc based on isCorrect
+      final parentId = FirebaseAuth.instance.currentUser?.uid;
+      final childId = await ChildLocalStorage.getCurrentChildId();
+      if (parentId == null || childId == null) return;
+      await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentId)
+          .collection(AppConstants.childrenCollection)
+          .doc(childId)
+          .update({
+            'right_answers_count': isCorrect
+                ? FieldValue.increment(1)
+                : FieldValue.increment(0),
+            'wrong_answers_count': isCorrect
+                ? FieldValue.increment(0)
+                : FieldValue.increment(1),
+          });
+    } catch (e) {
+      logger.e('Error updating success: $e');
+    }
   }
 
   // Start a learning session

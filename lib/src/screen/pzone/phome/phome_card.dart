@@ -26,13 +26,15 @@ class PHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isMobile = PlatformUtility.isMobile(context);
     bool isMobilePortrait = isMobile && PlatformUtility.isPortrait(context);
-    
+
     // Filter out invalid children (empty name or uid)
-    final filteredChildren = children.where(
-      (child) => child.fullName.isNotEmpty && child.uid.isNotEmpty,
-    ).toList();
-    
-    logger.d('📋 PHomeCard - Total children: ${children.length}, Filtered: ${filteredChildren.length}');
+    final filteredChildren = children
+        .where((child) => child.fullName.isNotEmpty && child.uid.isNotEmpty)
+        .toList();
+
+    logger.d(
+      '📋 PHomeCard - Total children: ${children.length}, Filtered: ${filteredChildren.length}',
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -71,44 +73,44 @@ class PHomeCard extends StatelessWidget {
                           fontSize: isMobilePortrait ? 16 : 24,
                         ),
                       ),
-                      items: filteredChildren
-                          .map((child) {
-                            return DropdownMenuItem<String>(
-                              value: child.uid,
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Row(
-                                  children: [
-                                    CustomImage(
-                                      child.avatarUrl.isNotEmpty
-                                          ? child.avatarUrl
-                                          : "",
-                                      imageType: child.avatarUrl.isNotEmpty
-                                          ? CustomImageType.network
-                                          : CustomImageType.local,
-                                      circular: true,
-                                      height: Dimensions.kSettingAvatarSize(context),
-                                      width: Dimensions.kSettingAvatarSize(context),
-                                      cover: false,
-                                    ),
-                                    Gaps.horizontalGapOf(12),
-                                    Text(
-                                      child.fullName,
-                                      style: AppStyles.text16PxRegular.copyWith(
-                                        fontFamily: AppConstants.kDMSansFont,
-                                        fontSize: isMobilePortrait ? 16 : 24,
-                                        fontWeight: isMobilePortrait
-                                            ? FontWeight.w500
-                                            : FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
+                      items: filteredChildren.map((child) {
+                        return DropdownMenuItem<String>(
+                          value: child.uid,
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              children: [
+                                CustomImage(
+                                  child.avatarUrl.isNotEmpty
+                                      ? child.avatarUrl
+                                      : "",
+                                  imageType: child.avatarUrl.isNotEmpty
+                                      ? CustomImageType.network
+                                      : CustomImageType.local,
+                                  circular: true,
+                                  height: Dimensions.kSettingAvatarSize(
+                                    context,
+                                  ),
+                                  width: Dimensions.kSettingAvatarSize(context),
+                                  cover: false,
                                 ),
-                              ),
-                            );
-                          })
-                          .toList(),
+                                Gaps.horizontalGapOf(12),
+                                Text(
+                                  child.fullName,
+                                  style: AppStyles.text16PxRegular.copyWith(
+                                    fontFamily: AppConstants.kDMSansFont,
+                                    fontSize: isMobilePortrait ? 16 : 24,
+                                    fontWeight: isMobilePortrait
+                                        ? FontWeight.w500
+                                        : FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
                       onChanged: (value) {
                         if (value != null) {
                           onChildSelected(value);
@@ -133,10 +135,7 @@ class PHomeCard extends StatelessWidget {
               ),
             )
           else if (metricsStatus == DataFetchStatus.loading)
-            const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: CustomLoader(),
-            )
+            const Padding(padding: EdgeInsets.all(32.0), child: CustomLoader())
           else if (metricsStatus == DataFetchStatus.error)
             Center(
               child: Padding(
@@ -149,59 +148,26 @@ class PHomeCard extends StatelessWidget {
                   ),
                 ),
               ),
-            )
-          else if (metrics == null)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Text(
-                  'No metrics data found for this child',
-                  style: AppStyles.text16PxRegular.copyWith(
-                    fontFamily: AppConstants.kDMSansFont,
-                    fontSize: isMobilePortrait ? 16 : 24,
-                  ),
-                ),
-              ),
-            )
-          else ...[
-            PAverageLearningWidget(
-              completedActivities: completedContents.length,
-              answerSuccessRate: metrics!.answerSuccessRate,
-              isMobilePortrait: isMobilePortrait,
             ),
-            Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
-            PDailyLearningWidget(
-              dayStreak: metrics!.dayStreak,
-              weeklyStreak: metrics!.weeklyStreak,
-              isMobilePortrait: isMobilePortrait,
-            ),
-            Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
-            PDashboardMetricsWidget(
-              averageDailyLearningTime: metrics!.averageDailyLearningTime,
-              mostPracticedTopics: completedContents,
-              isMobilePortrait: isMobilePortrait,
-            ),
-            // Gaps.verticalGapOf(24),
-            // ElevatedButton(
-            //   onPressed:
-            //       parentUid != null && selectedChildUid != null
-            //           ? () async {
-            //             await Provider.of<PzMetricsProvider>(
-            //               context,
-            //               listen: false,
-            //             ).updateMetrics(
-            //               parentUid: parentUid!,
-            //               childUid: selectedChildUid!,
-            //               newMetrics: metrics!.copyWith(
-            //                 completedActivities:
-            //                     metrics!.completedActivities + 1,
-            //               ),
-            //             );
-            //           }
-            //           : null,
-            //   child: const Text('Update Metrics (Demo)'),
-            // ),
-          ],
+          PAverageLearningWidget(
+            parentUid: parentUid!,
+            childUid: selectedChildUid!,
+            completedActivities: completedContents.length,
+            answerSuccessRate: metrics!.answerSuccessRate,
+            isMobilePortrait: isMobilePortrait,
+          ),
+          Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
+          PDailyLearningWidget(
+            dayStreak: metrics!.dayStreak,
+            weeklyStreak: metrics!.weeklyStreak,
+            isMobilePortrait: isMobilePortrait,
+          ),
+          Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
+          PDashboardMetricsWidget(
+            averageDailyLearningTime: metrics!.averageDailyLearningTime,
+            mostPracticedTopics: completedContents,
+            isMobilePortrait: isMobilePortrait,
+          ),
         ],
       ),
     );
