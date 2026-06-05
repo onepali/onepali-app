@@ -127,7 +127,7 @@ class Assets {
   static String getDrawerIcon(BuildContext context, String baseName) {
     final isTablet = PlatformUtility.isTablet(context);
     return isTablet
-        ? 'assets/svg/icons/${baseName}_tablet.svg'
+        ? 'assets/svg/icons/$baseName.svg'
         : 'assets/svg/icons/$baseName.svg';
   }
 
@@ -135,7 +135,7 @@ class Assets {
   static String homeIcon(BuildContext context) =>
       getDrawerIcon(context, 'home');
   static String familyIcon(BuildContext context) =>
-      getDrawerIcon(context, 'family');
+      getDrawerIcon(context, 'family_icon');
   static String logoutIcon(BuildContext context) =>
       getDrawerIcon(context, 'logout');
   static String downloadIcon(BuildContext context) =>

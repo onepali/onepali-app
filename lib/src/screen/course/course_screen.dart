@@ -72,7 +72,7 @@ class CourseScreenState extends State<CourseScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 24),
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final cardWidth = AppConstants.contentCardGridWidth(
