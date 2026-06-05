@@ -171,7 +171,7 @@ class AppConstants {
     int crossAxisCount = contentCardGridCrossAxisCount,
     double crossAxisSpacing = contentCardGridSpacing,
   }) {
-    final horizontalPadding = isMobile ? 24.0 : 48.0;
+    final horizontalPadding = isMobile ? 0.0 : 48.0;
     return (availableWidth -
             horizontalPadding -
             crossAxisSpacing * (crossAxisCount - 1)) /

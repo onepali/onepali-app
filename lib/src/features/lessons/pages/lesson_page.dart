@@ -141,6 +141,8 @@ class _LessonPageState extends State<LessonPage> {
                   ),
                   TeaMakingLessonContent() => KitchenPage(
                     content: lessonContent,
+                    lessonName: state.lessonDetails?.lesson.name ?? '',
+                    lessonId: widget.lessonId,
                   ),
                   BallSlideLessonContent() => BallSlideView(
                     key: ValueKey('ball_slide_${state.currentIndex}'),

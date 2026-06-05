@@ -86,6 +86,7 @@ class MobileCard extends StatelessWidget {
             achievement.subtitle,
             style: AppStyles.text16PxRegular,
             maxLines: 2,
+            textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.1),
