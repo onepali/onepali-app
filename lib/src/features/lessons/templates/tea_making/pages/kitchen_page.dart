@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +15,15 @@ import 'package:onepali/src/features/lessons/templates/tea_making/widgets/huncha
 import 'package:onepali/src/features/lessons/templates/tea_making/widgets/ingridient.dart';
 
 class KitchenPage extends StatefulWidget {
-  const KitchenPage({super.key, required this.content});
+  const KitchenPage({
+    super.key,
+    required this.content,
+    required this.lessonName,
+    required this.lessonId,
+  });
   final TeaMakingLessonContent content;
+  final String lessonName;
+  final String lessonId;
 
   @override
   State<KitchenPage> createState() => _KitchenPageState();
@@ -166,7 +172,22 @@ class _KitchenPageState extends State<KitchenPage> {
     return BlocProvider(
       create: (context) =>
           TutorialBloc()..add(TutorialEvent.started(widget.content)),
-      child: BlocBuilder<TutorialBloc, TutorialState>(
+      child: BlocConsumer<TutorialBloc, TutorialState>(
+        listener: (context, state) async {
+          if (state.status == TutorialStatus.completed) {
+            final parentUid = context.read<UserProvider>().userId;
+            final childUid = await ChildLocalStorage.getCurrentChildId();
+            if (parentUid != null && childUid != null) {
+              context.read<LessonProvider>().trackContentCompletion(
+                parentUid: parentUid,
+                childUid: childUid,
+                contentId: widget.lessonId,
+                contentName: widget.lessonName,
+                activityType: ActivityType.lesson,
+              );
+            }
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.kBlue,

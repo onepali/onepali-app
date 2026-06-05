@@ -149,22 +149,25 @@ class PHomeCard extends StatelessWidget {
                 ),
               ),
             ),
-          PAverageLearningWidget(
-            parentUid: parentUid!,
-            childUid: selectedChildUid!,
-            completedActivities: completedContents.length,
-            answerSuccessRate: metrics!.answerSuccessRate,
-            isMobilePortrait: isMobilePortrait,
-          ),
+          if (parentUid != null && selectedChildUid != null)
+            PAverageLearningWidget(
+              parentUid: parentUid!,
+              childUid: selectedChildUid!,
+              completedActivities: completedContents.length,
+              answerSuccessRate: metrics?.answerSuccessRate ?? 0.0,
+              isMobilePortrait: isMobilePortrait,
+            )
+          else
+            const SizedBox.shrink(),
           Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
           PDailyLearningWidget(
-            dayStreak: metrics!.dayStreak,
-            weeklyStreak: metrics!.weeklyStreak,
+            dayStreak: metrics?.dayStreak ?? 0,
+            weeklyStreak: metrics?.weeklyStreak ?? [],
             isMobilePortrait: isMobilePortrait,
           ),
           Gaps.verticalGapOf(isMobilePortrait ? 16 : 32),
           PDashboardMetricsWidget(
-            averageDailyLearningTime: metrics!.averageDailyLearningTime,
+            averageDailyLearningTime: metrics?.averageDailyLearningTime ?? 0,
             mostPracticedTopics: completedContents,
             isMobilePortrait: isMobilePortrait,
           ),

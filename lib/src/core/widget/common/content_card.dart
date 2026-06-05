@@ -121,9 +121,11 @@ class _ContentCardState extends State<ContentCard> {
                               ),
                               child: Text(
                                 widget.nameEn,
-                                maxLines: 1,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                                 style: AppStyles.text16PxMedium.copyWith(
-                                  fontSize: isTabletLandscape ? 24 : 16,
+                                  fontSize: isTabletLandscape ? 22 : 13,
                                 ),
                               ),
                             ),

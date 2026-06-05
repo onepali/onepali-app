@@ -101,7 +101,7 @@ class _StoryScreenState extends State<StoryScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 24),
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final cardWidth = AppConstants.contentCardGridWidth(
@@ -170,7 +170,7 @@ class _StoryScreenState extends State<StoryScreen> {
                         );
                       },
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 24),
                   ],
                 );
               },
