@@ -22,6 +22,7 @@ class Assets {
 
   /// [Image] assets
   static String splashImage = 'splash'.gif;
+  static String splashVideo = 'splash'.mp4;
   static String mbSplashImage = 'mb_splash'.mp4;
   static String tbSplashImage = 'tb_splash'.mp4;
 
