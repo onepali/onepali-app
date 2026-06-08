@@ -87,11 +87,11 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                           children: List.generate(4, (index) {
                             final isUnlocked = index < unlockedStickers.length;
                             final colors = [
-                              Colors.orange,
-                              Colors.purple,
+                              AppColors.kOrange,
+                              AppColors.kPurple,
                               AppColors.kRed,
-                              Colors.teal,
-                              Colors.blue,
+                              AppColors.kTeal,
+                              AppColors.kBlue,
                             ];
                             final shapes = [
                               BoxShape.circle,

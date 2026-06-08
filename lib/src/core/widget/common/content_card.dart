@@ -157,11 +157,11 @@ class _ContentCardState extends State<ContentCard> {
                         alignment: Alignment.topRight,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8, right: 8),
-                          child: Icon(
-                            Icons.check_circle,
-
-                            color: AppColors.kButtonGreen,
-                            size: isMobile ? 24 : 48,
+                          child: SvgHelper.fromSource(
+                            path: Assets.tick,
+                            height: isMobile ? 32 : 40,
+                            width: isMobile ? 32 : 40,
+                            type: SvgSourceType.asset,
                           ),
                         ),
                       ),

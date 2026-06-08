@@ -627,7 +627,8 @@ as String,
 /// @nodoc
 mixin _$Conversation {
 
-@JsonKey(fromJson: _idFromJson) String get id; String get messageEn; String get messageNp; String get icon; bool get correct; String? get question;
+@JsonKey(fromJson: _idFromJson) String get id; String get messageEn; String get messageNp; String get icon; bool get correct; String? get question;// Audio question
+ String? get audioItem;
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -640,16 +641,16 @@ $ConversationCopyWith<Conversation> get copyWith => _$ConversationCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct)&&(identical(other.question, question) || other.question == question));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct,question);
+int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct,question,audioItem);
 
 @override
 String toString() {
-  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct, question: $question)';
+  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct, question: $question, audioItem: $audioItem)';
 }
 
 
@@ -660,7 +661,7 @@ abstract mixin class $ConversationCopyWith<$Res>  {
   factory $ConversationCopyWith(Conversation value, $Res Function(Conversation) _then) = _$ConversationCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct, String? question
+@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct, String? question, String? audioItem
 });
 
 
@@ -677,7 +678,7 @@ class _$ConversationCopyWithImpl<$Res>
 
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,Object? question = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,Object? question = freezed,Object? audioItem = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,messageEn: null == messageEn ? _self.messageEn : messageEn // ignore: cast_nullable_to_non_nullable
@@ -685,6 +686,7 @@ as String,messageNp: null == messageNp ? _self.messageNp : messageNp // ignore: 
 as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,correct: null == correct ? _self.correct : correct // ignore: cast_nullable_to_non_nullable
 as bool,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String?,audioItem: freezed == audioItem ? _self.audioItem : audioItem // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -770,10 +772,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question,  String? audioItem)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Conversation() when $default != null:
-return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question);case _:
+return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question,_that.audioItem);case _:
   return orElse();
 
 }
@@ -791,10 +793,10 @@ return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correc
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question,  String? audioItem)  $default,) {final _that = this;
 switch (_that) {
 case _Conversation():
-return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question);case _:
+return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question,_that.audioItem);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -811,10 +813,10 @@ return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correc
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _idFromJson)  String id,  String messageEn,  String messageNp,  String icon,  bool correct,  String? question,  String? audioItem)?  $default,) {final _that = this;
 switch (_that) {
 case _Conversation() when $default != null:
-return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question);case _:
+return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correct,_that.question,_that.audioItem);case _:
   return null;
 
 }
@@ -826,7 +828,7 @@ return $default(_that.id,_that.messageEn,_that.messageNp,_that.icon,_that.correc
 
 @JsonSerializable(explicitToJson: true)
 class _Conversation implements Conversation {
-  const _Conversation({@JsonKey(fromJson: _idFromJson) this.id = '', this.messageEn = '', this.messageNp = '', this.icon = '', this.correct = false, this.question});
+  const _Conversation({@JsonKey(fromJson: _idFromJson) this.id = '', this.messageEn = '', this.messageNp = '', this.icon = '', this.correct = false, this.question, this.audioItem});
   factory _Conversation.fromJson(Map<String, dynamic> json) => _$ConversationFromJson(json);
 
 @override@JsonKey(fromJson: _idFromJson) final  String id;
@@ -835,6 +837,8 @@ class _Conversation implements Conversation {
 @override@JsonKey() final  String icon;
 @override@JsonKey() final  bool correct;
 @override final  String? question;
+// Audio question
+@override final  String? audioItem;
 
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
@@ -849,16 +853,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct)&&(identical(other.question, question) || other.question == question));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Conversation&&(identical(other.id, id) || other.id == id)&&(identical(other.messageEn, messageEn) || other.messageEn == messageEn)&&(identical(other.messageNp, messageNp) || other.messageNp == messageNp)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.correct, correct) || other.correct == correct)&&(identical(other.question, question) || other.question == question)&&(identical(other.audioItem, audioItem) || other.audioItem == audioItem));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct,question);
+int get hashCode => Object.hash(runtimeType,id,messageEn,messageNp,icon,correct,question,audioItem);
 
 @override
 String toString() {
-  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct, question: $question)';
+  return 'Conversation(id: $id, messageEn: $messageEn, messageNp: $messageNp, icon: $icon, correct: $correct, question: $question, audioItem: $audioItem)';
 }
 
 
@@ -869,7 +873,7 @@ abstract mixin class _$ConversationCopyWith<$Res> implements $ConversationCopyWi
   factory _$ConversationCopyWith(_Conversation value, $Res Function(_Conversation) _then) = __$ConversationCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct, String? question
+@JsonKey(fromJson: _idFromJson) String id, String messageEn, String messageNp, String icon, bool correct, String? question, String? audioItem
 });
 
 
@@ -886,7 +890,7 @@ class __$ConversationCopyWithImpl<$Res>
 
 /// Create a copy of Conversation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,Object? question = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? messageEn = null,Object? messageNp = null,Object? icon = null,Object? correct = null,Object? question = freezed,Object? audioItem = freezed,}) {
   return _then(_Conversation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,messageEn: null == messageEn ? _self.messageEn : messageEn // ignore: cast_nullable_to_non_nullable
@@ -894,6 +898,7 @@ as String,messageNp: null == messageNp ? _self.messageNp : messageNp // ignore: 
 as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,correct: null == correct ? _self.correct : correct // ignore: cast_nullable_to_non_nullable
 as bool,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String?,audioItem: freezed == audioItem ? _self.audioItem : audioItem // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
