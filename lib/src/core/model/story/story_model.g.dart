@@ -81,6 +81,7 @@ _Conversation _$ConversationFromJson(Map<String, dynamic> json) =>
       icon: json['icon'] as String? ?? '',
       correct: json['correct'] as bool? ?? false,
       question: json['question'] as String?,
+      audioItem: json['audioItem'] as String?,
     );
 
 Map<String, dynamic> _$ConversationToJson(_Conversation instance) =>
@@ -91,4 +92,5 @@ Map<String, dynamic> _$ConversationToJson(_Conversation instance) =>
       'icon': instance.icon,
       'correct': instance.correct,
       'question': instance.question,
+      'audioItem': instance.audioItem,
     };

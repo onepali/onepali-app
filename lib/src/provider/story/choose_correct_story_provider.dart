@@ -46,13 +46,18 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onTappedItem(Conversation conversation) {
+  void onTappedItem(Conversation conversation) async {
     _userSelectedConversation = conversation;
     notifyListeners();
     // check if user selected the correct answer
     if (conversation == _currentConversation) {
       _isCorrectAnswerSelected = true;
-      _audioPlayerService.playAsset(Assets.starBlast);
+      await _audioPlayerService.playAsset(Assets.starBlast);
+      if (conversation.audioItem != null &&
+          conversation.audioItem!.isNotEmpty) {
+        await Future.delayed(const Duration(seconds: 1));
+        _audioPlayerService.play(conversation.audioItem!);
+      }
     } else {
       _audioPlayerService.playAsset(Assets.wrongSfx);
       _isCorrectAnswerSelected = false;
