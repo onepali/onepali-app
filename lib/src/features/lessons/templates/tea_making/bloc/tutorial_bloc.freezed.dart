@@ -668,12 +668,7 @@ String toString() {
 /// @nodoc
 mixin _$TutorialState {
 
- TutorialStatus get status; TeaMakingLessonContent? get content; Item? get lastDroppedItem; Item? get currentItem; int get currentIndex; Set<int> get completedIngredientIndices;// @Default(false) bool showLoading,
-// @Default(-1) int index,
-// @Default(0) int draggedIndex,
-// @Default([]) List<String> ingredients,
-// @Default(false) bool showBearWithTea,
- bool get showHunchButton;
+ TutorialStatus get status; TeaMakingLessonContent? get content; Item? get lastDroppedItem; Item? get currentItem; int get currentIndex; Set<int> get completedIngredientIndices; bool get showHunchButton;
 /// Create a copy of TutorialState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -910,11 +905,6 @@ class _TutorialState extends TutorialState {
   return EqualUnmodifiableSetView(_completedIngredientIndices);
 }
 
-// @Default(false) bool showLoading,
-// @Default(-1) int index,
-// @Default(0) int draggedIndex,
-// @Default([]) List<String> ingredients,
-// @Default(false) bool showBearWithTea,
 @override@JsonKey() final  bool showHunchButton;
 
 /// Create a copy of TutorialState
