@@ -71,7 +71,7 @@ class _AchievementLayoutState extends State<AchievementLayout>
       AchievementModel(
         id: "1",
         title: "Practice Hero Trophy",
-        subtitle: "days streak",
+        subtitle: "Days streak",
         value: dayStreak.toString(),
         imageUrl: Assets.trophyAv,
         color: AppColors.kPureSkyBlue,

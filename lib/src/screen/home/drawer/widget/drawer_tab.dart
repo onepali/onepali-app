@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
@@ -184,22 +185,24 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 ),
               ),
               Gaps.verticalGapOf(16),
-              customInkwell(
-                onTap: () {
-                  final targetChild = widget.data[index];
-                  Utility.navigateMaterialRoute(
-                    context,
-                    AchievementScreen(
-                      name: targetChild.fullName,
-                      profileImage: targetChild.avatarUrl,
-                      childId: targetChild.uid,
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.local_police,
-                  size: 64,
-                  color: AppColors.kYellow,
+              Flexible(
+                child: customInkwell(
+                  onTap: () {
+                    final targetChild = widget.data[index];
+                    Utility.navigateMaterialRoute(
+                      context,
+                      AchievementScreen(
+                        name: targetChild.fullName,
+                        profileImage: targetChild.avatarUrl,
+                        childId: targetChild.uid,
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.local_police,
+                    size: 64,
+                    color: AppColors.kYellow,
+                  ),
                 ),
               ),
             ],

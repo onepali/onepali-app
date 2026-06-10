@@ -190,6 +190,27 @@ class PzMetricsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Future<void> updateActiveDayStreak({
+  //   required String childUid,
+  // }) async {
+  //   final parentUid = FirebaseAuth.instance.currentUser?.uid;
+  //   if (parentUid == null) return;
+  //   // find the current day (if sunday )
+  //   final today = DateTime.now();
+  //   final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
+  //   if (weekday == 0) {
+  //     // Sunday
+  //     await _firestore
+  //         .collection(AppConstants.usersCollection)
+  //         .doc(parentUid)
+  //         .collection(AppConstants.childrenCollection)
+  //   await _firestore
+  //       .collection(AppConstants.usersCollection)
+  //       .doc(parentUid)
+  //       .collection(AppConstants.childrenCollection)
+  //       .doc(childUid);
+  // }
+
   Future<void> trackAnswer1({required bool isCorrect}) async {
     try {
       // Update right_answers_count or wrong_answers_count inside children doc based on isCorrect
