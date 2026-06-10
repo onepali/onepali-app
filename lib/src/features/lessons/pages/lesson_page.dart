@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,6 +51,28 @@ class _LessonPageState extends State<LessonPage> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    _startLearningSession();
+  }
+
+  void _startLearningSession() async {
+    final parentUid = FirebaseAuth.instance.currentUser?.uid;
+    final childUid = await ChildLocalStorage.getCurrentChildId();
+    if (parentUid != null && childUid != null) {
+      LearningSessionManager().startSession(
+        parentUid: parentUid,
+        childUid: childUid,
+      );
+    } else {
+      logger.e(
+        'Error starting learning session: parentUid or childUid is null',
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    LearningSessionManager().endSession();
+    super.dispose();
   }
 
   @override

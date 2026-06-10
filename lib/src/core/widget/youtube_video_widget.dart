@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +41,7 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
       'YoutubeVideoWidget initialized with URL: \\${widget.youtubeUrl} \\${widget.title}',
     );
     super.initState();
+    _startLearningSession();
     _isLocked = widget.isLocked;
     _controller = YoutubePlayerController(
       initialVideoId: YoutubePlayer.convertUrlToId(widget.youtubeUrl) ?? '',
@@ -58,6 +60,17 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setLandscape();
     });
+  }
+
+  _startLearningSession() async {
+    final parentUid = FirebaseAuth.instance.currentUser?.uid;
+    final childUid = await ChildLocalStorage.getCurrentChildId();
+    if (parentUid != null && childUid != null) {
+      LearningSessionManager().startSession(
+        parentUid: parentUid,
+        childUid: childUid,
+      );
+    }
   }
 
   void _seekListener() {
@@ -108,13 +121,15 @@ class _YoutubeVideoWidgetState extends State<YoutubeVideoWidget> {
 
   void _setLandscape() {
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight, // Notch/camera on left, content flows right
+      DeviceOrientation
+          .landscapeRight, // Notch/camera on left, content flows right
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   @override
   void dispose() {
+    LearningSessionManager().endSession();
     _controller.removeListener(_listener);
     if (widget.initialPosition != null && widget.initialPosition! > 0) {
       _controller.removeListener(_seekListener);
