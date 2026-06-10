@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -123,7 +124,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
 
   @override
   Future<void> close() {
-    print('dispose player');
+    log('dispose player');
     player.dispose();
     hunxaPlayer.dispose();
     return super.close();

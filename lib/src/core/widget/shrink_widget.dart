@@ -26,14 +26,12 @@ class _ShrinkOnTapState extends State<ShrinkOnTap>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
 
-    _scale = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInBack),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInBack));
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -66,10 +64,7 @@ class _ShrinkOnTapState extends State<ShrinkOnTap>
       child: AnimatedBuilder(
         animation: _scale,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _scale.value,
-            child: child,
-          );
+          return Transform.scale(scale: _scale.value, child: child);
         },
         child: widget.child,
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
-import 'package:onepali/src/screen/course/lesson/widget/recommended_lessons_list.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -94,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
             //   Gaps.verticalGapOf(10),
             // ],
             // _buildLessons(context),
-            CourseScreen()
+            CourseScreen(),
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
             if (!isGuest) ...[
@@ -155,40 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
       isDataError: false,
     );
   }
-
-  Consumer<RecommendedLessonProvider> _buildRecommendedLessonCard(
-    BuildContext context,
-  ) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return Consumer<RecommendedLessonProvider>(
-      builder: (context, provider, child) {
-        if (!(provider.hasData)) return const SizedBox();
-        return TitleActionChild(
-          title: 'Recommended lessons',
-          titlePadding: EdgeInsets.only(
-            bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-          ),
-          titleStyle: AppStyles.text20PxSemiBold.copyWith(
-            color: AppColors.kBlack,
-            fontSize: isTabletLandscape ? 24 : 20,
-            fontWeight: FontWeight.bold,
-          ),
-
-          child: SizedBox(
-            height: _getCardHeight(context),
-            child: RecommendedLessonsList(),
-          ),
-        );
-      },
-    );
-  }
-
 
   Widget _buildSongCard(BuildContext context) {
     bool isTabletLandscape =

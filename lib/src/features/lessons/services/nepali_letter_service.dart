@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
@@ -24,7 +25,7 @@ class LetterService {
           .toList();
       return _cachedLetters!;
     } catch (e) {
-      print('Error loading letters: $e');
+      log('Error loading letters: $e');
       return [];
     }
   }

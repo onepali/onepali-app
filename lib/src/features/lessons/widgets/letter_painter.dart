@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 
@@ -89,7 +88,7 @@ class LetterPainter extends CustomPainter {
           ..strokeJoin = StrokeJoin.round;
       } else {
         strokePaint = Paint()
-          ..color = Colors.black.withOpacity(0.3)
+          ..color = Colors.black.withValues(alpha: 0.3)
           ..style = PaintingStyle.stroke
           ..strokeWidth = strokeWidth
           ..strokeCap = StrokeCap.round;
@@ -106,8 +105,8 @@ class LetterPainter extends CustomPainter {
     if (userStrokes.isNotEmpty) {
       final userPaint = Paint()
         ..color = isTracingOutsideBounds
-            ? Colors.red.withOpacity(0.6)
-            : Colors.orange.withOpacity(0.8)
+            ? Colors.red.withValues(alpha: 0.6)
+            : Colors.orange.withValues(alpha: 0.8)
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth * 0.8
         ..strokeCap = StrokeCap.round
@@ -188,7 +187,7 @@ class LetterPainter extends CustomPainter {
 
   void _drawProgressIndicator(Canvas canvas, Path path, double progress) {
     final progressPaint = Paint()
-      ..color = Colors.green.withOpacity(0.5)
+      ..color = Colors.green.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth * 1.2
       ..strokeCap = StrokeCap.round;
@@ -216,7 +215,7 @@ class LetterPainter extends CustomPainter {
     final angle = atan2(dy, dx);
 
     final arrowPaint = Paint()
-      ..color = Colors.blue.withOpacity(0.6)
+      ..color = Colors.blue.withValues(alpha: 0.6)
       ..style = PaintingStyle.fill;
 
     final arrowPath = Path();

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,31 +11,33 @@ part 'lesson_state.dart';
 part 'lesson_bloc.freezed.dart';
 
 class LessonBloc extends Bloc<LessonEvent, LessonState> {
-  LessonBloc() : super(const LessonState()) {
+  StreamSubscription? _subscription;
+  LessonBloc() : super(LessonState()) {
     on<_Started>(_onStarted);
     on<_NextContent>(_onNextContent);
     on<_PreviousContent>(_onPreviousContent);
   }
 
   Future<void> _onStarted(_Started event, Emitter<LessonState> emit) async {
-    emit(state.copyWith(lessonId: event.lessonId));
-
+    emit(
+      state.copyWith(status: LessonStatus.loading, lessonId: event.lessonId),
+    );
     await emit.forEach(
       LessonRepository().watchLessonWithContents(event.lessonId),
       onData: (lessonDetail) {
         lessonDetail.contents.sort((a, b) => a.index.compareTo(b.index));
         return state.copyWith(
           lessonDetails: lessonDetail,
-          errorMessage: null,
           currentIndex: 0,
           currentContent: lessonDetail.contents.isNotEmpty
-              ? lessonDetail.contents.first
+              ? lessonDetail.contents[0]
               : null,
+          status: LessonStatus.success,
         );
       },
       onError: (error, _) {
         log(error.toString());
-        return state.copyWith(errorMessage: error.toString());
+        return state.copyWith(status: LessonStatus.failure);
       },
     );
   }
@@ -45,11 +48,9 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
 
     final nextIndex = state.currentIndex + 1;
     if (nextIndex < lessonDetails.contents.length) {
+      final nextContent = lessonDetails.contents[nextIndex];
       emit(
-        state.copyWith(
-          currentIndex: nextIndex,
-          currentContent: lessonDetails.contents[nextIndex],
-        ),
+        state.copyWith(currentIndex: nextIndex, currentContent: nextContent),
       );
     }
   }
@@ -58,14 +59,18 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     final lessonDetails = state.lessonDetails;
     if (lessonDetails == null) return;
 
-    final previousIndex = state.currentIndex - 1;
-    if (previousIndex >= 0) {
+    final prevIndex = state.currentIndex - 1;
+    if (prevIndex >= 0) {
+      final prevContent = lessonDetails.contents[prevIndex];
       emit(
-        state.copyWith(
-          currentIndex: previousIndex,
-          currentContent: lessonDetails.contents[previousIndex],
-        ),
+        state.copyWith(currentIndex: prevIndex, currentContent: prevContent),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+    return super.close();
   }
 }

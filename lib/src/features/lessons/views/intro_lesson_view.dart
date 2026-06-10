@@ -11,7 +11,6 @@ class IntroLessonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Stack(
       children: [
         Positioned.fill(child: Container(color: colorFromHex(content.bgColor))),

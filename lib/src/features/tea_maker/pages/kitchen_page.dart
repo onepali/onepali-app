@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/core/widget/custom_svg.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
 import 'package:onepali/src/features/tea_maker/widgets/bear_with_tea.dart';
@@ -29,8 +28,6 @@ class _KitchenPageState extends State<KitchenPage> {
     // Global positions
     final taeOffset = taeBox.localToGlobal(Offset.zero);
     final stoveOffset = stoveBox.localToGlobal(Offset.zero);
-    print('Global positions: tae: $taeOffset, stove: $stoveOffset');
-
     // Stove top-center
     final stoveTopCenter = Offset(
       stoveOffset.dx + stoveBox.size.width / 2,
@@ -114,10 +111,8 @@ class _KitchenPageState extends State<KitchenPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: List.generate(
                             state.ingredients.length,
-                            (index) => Container(
-                              // color: Colors.pink,
+                            (index) => SizedBox(
                               key: index == 0 ? _taePotKey : null,
-
                               width: isMobile
                                   ? size.height * 0.3
                                   : size.height * 0.2,
