@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -27,7 +29,7 @@ class TapToPopBloc extends Bloc<TapToPopEvent, TapToPopState> {
         // Play incorrect sound
         _audioPlayer.play(AssetSource('audio/sfx/wrong.mp3'));
       }
-      print('correctItems: $correctItems');
+      log('correctItems: $correctItems');
       emit(
         state.copyWith(
           content: state.content,

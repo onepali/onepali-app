@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:math' hide log;
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
-
 part 'drag_to_match_state.dart';
 part 'drag_to_match_event.dart';
 part 'drag_to_match_bloc.freezed.dart';
@@ -29,6 +28,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
     on<_AudioPlaybackComplete>(_onAudioPlaybackComplete);
     on<_ResetGame>(_onResetGame);
 
+    // Listen to audio player completion
     _audioPlayer.onPlayerComplete.listen((_) {
       if (isClosed) return;
       add(const DragToMatchEvent.audioPlaybackComplete());
@@ -41,20 +41,22 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
   ) async {
     _items = event.items;
 
+    // Shuffle items for random placement
     final shuffledItems = List<Item>.from(_items)..shuffle();
     final shuffledOutlines = List<Item>.from(_items)..shuffle();
 
+    // Generate random positions for items (left side)
     final itemPositions = shuffledItems.asMap().entries.map((entry) {
       return ItemPosition(
         id: 'item_${entry.key}',
-        itemId: entry.value.nameEn,
-        x: 0.1 + (Random().nextDouble() * 0.2),
+
+        itemId: entry.value.nameEn, // Using nameEn as unique identifier
+        x: 0.1 + (Random().nextDouble() * 0.2), // 10-30% from left
         y: 0.1 + (entry.key * 0.2) + (Random().nextDouble() * 0.1),
         isMatched: false,
         nameNp: entry.value.nameNp,
       );
     }).toList();
-
     final outlinePositions = shuffledOutlines.asMap().entries.map((entry) {
       return ItemPosition(
         id: 'outline_${entry.key}',
@@ -65,7 +67,6 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         nameNp: entry.value.nameNp,
       );
     }).toList();
-
     emit(
       state.copyWith(
         itemPositions: itemPositions,
@@ -74,7 +75,6 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         currentHintIndex: 0,
       ),
     );
-
     await _audioPlayer.play(AssetSource('audio/sounds/match_instruction.mp3'));
     await Future.delayed(const Duration(seconds: 4));
     if (emit.isDone) return;
@@ -95,19 +95,23 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
     _PlayNextHint event,
     Emitter<DragToMatchState> emit,
   ) async {
-    var nextIndex = state.currentHintIndex;
+    // Find next unmatched item
+    int nextIndex = state.currentHintIndex;
     while (nextIndex < _items.length &&
         state.matchedItemIds.contains(_items[nextIndex].nameEn)) {
       nextIndex++;
     }
 
+    // All items matched - game complete!
     if (nextIndex >= _items.length) {
       emit(state.copyWith(isPlayingHint: false, currentTargetItemId: null));
-      log('All items matched');
+      log('🎉 All items matched! Game complete!');
       return;
     }
 
     final currentItem = _items[nextIndex];
+
+    // Set this item as the current target
     emit(
       state.copyWith(
         currentHintIndex: nextIndex,
@@ -115,8 +119,8 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       ),
     );
 
-    final audioBg = currentItem.audioBg;
-    if (audioBg != null && audioBg.isNotEmpty) {
+    // Play background audio hint
+    if (currentItem.audioBg != null) {
       emit(
         state.copyWith(
           isPlayingAudio: true,
@@ -125,8 +129,10 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       );
 
       try {
+        // await _bgAudioPlayer.play(AssetSource(currentItem.audioBg!));
+
         final audioFile = await MediaCacheManager.instance.getSingleFile(
-          audioBg,
+          currentItem.audioBg ?? '',
         );
         await _bgAudioPlayer.play(DeviceFileSource(audioFile.path));
         await _bgAudioPlayer.onPlayerComplete.first;
@@ -146,6 +152,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
   }
 
   void _onStartDrag(_StartDrag event, Emitter<DragToMatchState> emit) {
+    // Cancel hint sequence when user starts dragging
     _hintTimer?.cancel();
     emit(
       state.copyWith(
@@ -174,20 +181,25 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
     _EndDrag event,
     Emitter<DragToMatchState> emit,
   ) async {
-    final targetOutlineId = event.targetOutlineId;
-    if (targetOutlineId == null) {
+    if (event.targetOutlineId == null) {
+      // No target, return to original position or reset
       emit(state.copyWith(dragStatus: DragStatus.idle, draggedItemId: null));
       return;
     }
 
+    // Find the outline position
     final outlinePosition = state.outlinePositions.firstWhere(
-      (pos) => pos.id == targetOutlineId,
+      (pos) => pos.id == event.targetOutlineId,
     );
 
+    // Check if it's the correct outline for this item
     final isCorrectOutline = outlinePosition.itemId == event.itemId;
+
+    // Check if this is the current target item (the one that was hinted)
     final isCurrentTarget = event.itemId == state.currentTargetItemId;
 
     if (isCorrectOutline && isCurrentTarget) {
+      // ✅ Correct match for the current target!
       emit(
         state.copyWith(
           showNepaliword: true,
@@ -196,8 +208,16 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         ),
       );
 
+      // Play star blast
+      // await _audioPlayer.play(AssetSource('audio/sfx/star_blast.mp3'));
+      // await Future.delayed(const Duration(seconds: 1));
+
+      // Find and play the item's audio
       final item = _items.firstWhere((i) => i.nameEn == event.itemId);
+
       try {
+        // await _audioPlayer.play(AssetSource(item.audioItem));
+
         final audioFile = await MediaCacheManager.instance.getSingleFile(
           item.audioItem,
         );
@@ -206,6 +226,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         log('Error playing item audio: $e');
       }
 
+      // Update positions to show matched state
       final updatedItemPositions = state.itemPositions.map((pos) {
         if (pos.itemId == event.itemId) {
           return pos.copyWith(isMatched: true);
@@ -227,6 +248,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         ),
       );
 
+      // Reset drag status after a short delay
       await Future.delayed(const Duration(seconds: 2));
       if (emit.isDone) return;
       emit(
@@ -237,40 +259,52 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         ),
       );
 
+      // Check if all items are matched
       if (state.matchedItemIds.length == _items.length) {
-        log('All items matched');
+        // Game complete!
+        log('🎉 All items matched! Game complete!');
+        await Future.delayed(const Duration(seconds: 2));
+        emit(state.copyWith(showCat: true));
+        _audioPlayer.play(AssetSource(Assets.goodFeedback));
       } else {
+        // Play next hint after successful match
         await Future.delayed(const Duration(seconds: 2));
         if (emit.isDone) return;
         add(const DragToMatchEvent.playNextHint());
       }
     } else if (!isCurrentTarget) {
+      // ❌ Wrong item - not the current target
+      // Don't allow matching items that haven't been hinted yet
       emit(state.copyWith(dragStatus: DragStatus.wrongMatch));
 
       try {
         await _audioPlayer.play(AssetSource('audio/sfx/wrong.mp3'));
       } catch (e) {
-        log('Error playing wrong match sound: $e');
+        log('Error playing try again sound: $e');
       }
 
-      log('Not the current target. Expected: ${state.currentTargetItemId}');
+      log(
+        '⚠️ Not the current target! Please match: ${state.currentTargetItemId}',
+      );
 
       await Future.delayed(const Duration(milliseconds: 500));
       if (emit.isDone) return;
       emit(state.copyWith(dragStatus: DragStatus.idle, draggedItemId: null));
 
+      // Replay the current hint to remind the kid
       if (state.currentTargetItemId != null) {
         await Future.delayed(const Duration(milliseconds: 500));
         if (emit.isDone) return;
         add(const DragToMatchEvent.playNextHint());
       }
     } else {
+      // ❌ Wrong outline - correct item but wrong position
       emit(state.copyWith(dragStatus: DragStatus.wrongMatch));
 
       try {
         await _audioPlayer.play(AssetSource('audio/sfx/wrong.mp3'));
       } catch (e) {
-        log('Error playing wrong match sound: $e');
+        log('Error playing try again sound: $e');
       }
 
       await Future.delayed(const Duration(milliseconds: 500));
@@ -284,9 +318,8 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
     Emitter<DragToMatchState> emit,
   ) async {
     final item = _items.firstWhere((i) => i.nameEn == event.itemId);
-    final audioBg = item.audioBg;
 
-    if (audioBg != null && audioBg.isNotEmpty) {
+    if (item.audioBg != null) {
       emit(
         state.copyWith(
           isPlayingAudio: true,
@@ -295,10 +328,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       );
 
       try {
-        final audioFile = await MediaCacheManager.instance.getSingleFile(
-          audioBg,
-        );
-        await _audioPlayer.play(DeviceFileSource(audioFile.path));
+        await _audioPlayer.play(AssetSource(item.audioBg!));
       } catch (e) {
         log('Error playing audio: $e');
         if (emit.isDone) return;
@@ -325,10 +355,10 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
   }
 
   @override
-  Future<void> close() async {
+  Future<void> close() {
     _hintTimer?.cancel();
-    await _audioPlayer.dispose();
-    await _bgAudioPlayer.dispose();
+    _audioPlayer.dispose();
+    _bgAudioPlayer.dispose();
     return super.close();
   }
 }

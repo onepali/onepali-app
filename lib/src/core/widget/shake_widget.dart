@@ -27,10 +27,7 @@ class _ShakeWidgetState extends State<ShakeWidget>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
 
     _animation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0, end: -1), weight: 1),
@@ -38,9 +35,7 @@ class _ShakeWidgetState extends State<ShakeWidget>
       TweenSequenceItem(tween: Tween(begin: 1, end: -1), weight: 2),
       TweenSequenceItem(tween: Tween(begin: -1, end: 1), weight: 2),
       TweenSequenceItem(tween: Tween(begin: 1, end: 0), weight: 1),
-    ]).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   void shake() {

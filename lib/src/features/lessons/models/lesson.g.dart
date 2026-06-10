@@ -18,6 +18,26 @@ Map<String, dynamic> _$LessonToJson(_Lesson instance) => <String, dynamic>{
   'image': instance.image,
 };
 
+IntroLessonContent _$IntroLessonContentFromJson(Map<String, dynamic> json) =>
+    IntroLessonContent(
+      id: json['id'] as String,
+      index: (json['index'] as num).toInt(),
+      type: json['type'] as String? ?? 'intro',
+      bgColor: json['bg_color'] as String?,
+      image: json['image'] as String?,
+      audio: json['audio'] as String?,
+    );
+
+Map<String, dynamic> _$IntroLessonContentToJson(IntroLessonContent instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'index': instance.index,
+      'type': instance.type,
+      'bg_color': instance.bgColor,
+      'image': instance.image,
+      'audio': instance.audio,
+    };
+
 InfoLessonContent _$InfoLessonContentFromJson(Map<String, dynamic> json) =>
     InfoLessonContent(
       id: json['id'] as String,
@@ -194,6 +214,8 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   audioBg: json['audio_bg'] as String?,
   dxRatio: json['dx_ratio'] as num?,
   dyRatio: json['dy_ratio'] as num?,
+  dxRatioMobile: json['dx_ratio_mobile'] as num?,
+  dyRatioMobile: json['dy_ratio_mobile'] as num?,
   isCorrect: json['is_correct'] as bool? ?? false,
   bgColor: json['bg_color'] as String?,
 );
@@ -208,6 +230,8 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'audio_bg': instance.audioBg,
   'dx_ratio': instance.dxRatio,
   'dy_ratio': instance.dyRatio,
+  'dx_ratio_mobile': instance.dxRatioMobile,
+  'dy_ratio_mobile': instance.dyRatioMobile,
   'is_correct': instance.isCorrect,
   'bg_color': instance.bgColor,
 };

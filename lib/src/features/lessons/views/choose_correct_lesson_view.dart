@@ -245,7 +245,9 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                 const LessonEvent.nextContent(),
                               );
                             },
-                            child: SvgHelper.fromSource(path: Assets.rightArrow),
+                            child: SvgHelper.fromSource(
+                              path: Assets.rightArrow,
+                            ),
                           ),
                         ),
                       ),
@@ -331,7 +333,7 @@ class ItemCard extends StatelessWidget {
         margin: const EdgeInsets.all(8.0),
         padding: EdgeInsets.only(bottom: 8, top: 8),
         decoration: BoxDecoration(
-          color: colorFromHex(item.bgColor)??Colors.white,
+          color: colorFromHex(item.bgColor) ?? Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: isSelected
               ? Border.all(color: Colors.yellowAccent, width: 2)
@@ -352,9 +354,7 @@ class ItemCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.nameNp,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -378,9 +378,7 @@ class ItemCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.nameEn,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

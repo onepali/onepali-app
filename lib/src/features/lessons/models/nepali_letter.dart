@@ -54,7 +54,7 @@ class NepaliLetter {
       tags: json['tags'] != null
           ? List<String>.from(json['tags'] as List)
           : null,
-        outlinePath: json['outlinePath'] as String?,
+      outlinePath: json['outlinePath'] as String?,
     );
   }
 

@@ -80,14 +80,14 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
                     SizedBox(height: size.height * 0.05),
 
                     // Reset button
-                    if(state.isLetterComplete)
-                    Visibility(
-                      visible: true,
-                      maintainState: true,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      child: _buildResetButton(context),
-                    ),
+                    if (state.isLetterComplete)
+                      Visibility(
+                        visible: true,
+                        maintainState: true,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        child: _buildResetButton(context),
+                      ),
 
                     SizedBox(height: size.height * 0.03),
                   ],
@@ -106,10 +106,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
     Size size,
   ) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 16,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -243,7 +240,7 @@ class BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.05)
+      ..color = Colors.grey.withValues(alpha: 0.05)
       ..strokeWidth = 1;
 
     // Draw subtle grid

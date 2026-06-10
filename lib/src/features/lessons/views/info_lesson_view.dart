@@ -50,7 +50,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('InfoLessonView didChangeDependencies');
+    log('InfoLessonView didChangeDependencies');
   }
 
   Future<void> _initializeMedia() async {
@@ -151,7 +151,6 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final isMobile = PlatformUtility.isMobile(context);
 
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
       builder: (context, state) {

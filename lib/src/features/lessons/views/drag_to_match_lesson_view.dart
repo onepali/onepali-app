@@ -8,8 +8,7 @@ import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dar
 class DragToMatchScreen extends StatelessWidget {
   final DragToMatchLessonContent lessonContent;
 
-  const DragToMatchScreen({Key? key, required this.lessonContent})
-    : super(key: key);
+  const DragToMatchScreen({super.key, required this.lessonContent});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +25,7 @@ class DragToMatchScreen extends StatelessWidget {
 class DragToMatchScreenDirect extends StatelessWidget {
   final List<Item> items;
 
-  const DragToMatchScreenDirect({Key? key, required this.items})
-    : super(key: key);
+  const DragToMatchScreenDirect({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -148,15 +146,16 @@ class _DragToMatchView extends StatelessWidget {
                   child: SvgHelper.fromSource(path: Assets.wrong),
                 ),
               ),
-           if(state.showCat)   Align(
-                alignment: Alignment.bottomRight,
-                child: Image.asset(
-                  Assets.goodRemark1,
-                  height: size.height * 0.5,
-                  width: size.height * 0.5,
-                  fit: BoxFit.cover,
+              if (state.showCat)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Image.asset(
+                    Assets.goodRemark1,
+                    height: size.height * 0.5,
+                    width: size.height * 0.5,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
             ],
           );
         },
