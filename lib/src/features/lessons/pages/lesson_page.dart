@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key, required this.lessonId});
@@ -38,26 +43,34 @@ class _LessonPageState extends State<LessonPage> {
             if (state.errorMessage != null) {
               return Center(child: Text(state.errorMessage!));
             }
-            if (state.lessonDetails == null) {
+            if (state.lessonDetails == null || state.currentContent == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            final contents = state.lessonDetails!.contents;
-            if (contents.isEmpty) {
-              return const Center(child: Text('No lesson content available'));
-            }
 
-            final index = state.currentIndex.clamp(0, contents.length - 1);
-            final lessonContent = contents[index];
+            final lessonContent = state.currentContent!;
             switch (lessonContent) {
               case InfoLessonContent():
-                return InfoLessonView(
-                  key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
-                  lessonInformation: lessonContent,
+                return BlocProvider(
+                  key: ValueKey('info_${state.currentIndex}'),
+                  create: (context) => InfoLessonContentBloc(),
+                  child: InfoLessonView(content: lessonContent),
                 );
               case ChooseCorrectLessonContent():
-                return ChooseCorrectLessonView(
-                  key: ValueKey('${lessonContent.id}-${lessonContent.index}'),
-                  lessonInformation: lessonContent,
+                return BlocProvider(
+                  key: ValueKey('choose_${state.currentIndex}'),
+                  create: (context) => ChooseCorrectLessonContentBloc(),
+                  child: ChooseCorrectLessonView(content: lessonContent),
+                );
+              case TapToRevealLessonContent():
+                return BlocProvider(
+                  key: ValueKey('tap_${state.currentIndex}'),
+                  create: (context) => TapToRevealLessonContentBloc(),
+                  child: TapToRevealLessonView(content: lessonContent),
+                );
+              case DragToMatchLessonContent():
+                return DragToMatchScreen(
+                  key: ValueKey('drag_${state.currentIndex}'),
+                  lessonContent: lessonContent,
                 );
               default:
                 return const Center(child: Text('Unknown content type'));

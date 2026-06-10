@@ -64,6 +64,7 @@ class Assets {
   static String check = 'check'.icon;
   static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;
+  static String sound1 = 'sound1'.icon;
   static String play = 'play'.icon;
   static String redo = 'redo'.icon;
   static String meta = 'meta'.icon;
@@ -72,6 +73,7 @@ class Assets {
   static String google = 'google'.icon;
   static String blog = 'blog'.icon;
   static String apple = 'apple'.icon;
+  static String facebook = 'facebook'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
   static String family = 'family'.icon;

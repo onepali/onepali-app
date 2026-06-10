@@ -16,39 +16,6 @@ class Lesson with _$Lesson {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-// @Freezed(unionKey: "type")
-// class LessonContent with _$LessonContent {
-//   @FreezedUnionValue('info')
-//   @JsonSerializable(fieldRename: FieldRename.snake)
-//   const factory LessonContent.info({
-//     required String id,
-//     required int index,
-//     required String nameEn,
-//     required String nameNp,
-//     required String audioWord,
-//     required String audioBg,
-//     required String image,
-//     required String video,
-//   }) = InfoLessonContent;
-
-//   @FreezedUnionValue('choose_correct')
-//   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
-//   const factory LessonContent.chooseCorrect({
-//     required String id,
-//     required int index,
-//     required String type,
-//     List<Item>? items,
-//   }) = ChooseCorrectLessonContent;
-
-//   const factory LessonContent.unknown() = UnknownLessonContent;
-
-//   factory LessonContent.fromJson(Map<String, dynamic> json) =>
-//       _$LessonContentFromJson(json);
-
-//   @override
-//   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-// }
-
 abstract class LessonContentBase {
   String get id;
   int get index;
@@ -68,9 +35,9 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required String nameEn,
     required String nameNp,
     required String audioWord,
-    required String audioBg,
+    String? audioBg,
     required String image,
-    required String video,
+    String? video,
     String? bgImageColor,
   }) = InfoLessonContent;
 
@@ -84,6 +51,25 @@ class LessonContent with _$LessonContent implements LessonContentBase {
 
     @Default([]) List<Item> items,
   }) = ChooseCorrectLessonContent;
+
+  @FreezedUnionValue("tap_to_reveal")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapToReveal({
+    required String id,
+    required int index,
+    String? bgImage,
+    @Default('tap_to_reveal') String type,
+    @Default([]) List<Item> items,
+  }) = TapToRevealLessonContent;
+
+  @FreezedUnionValue("drag_to_match")
+  const factory LessonContent.dragToMatch({
+    required String id,
+    required int index,
+    @Default('drag_to_match') String type,
+    @Default([]) List<Item> items,
+  }) = DragToMatchLessonContent;
 
   const factory LessonContent.unknown({
     @Default('') String id,
@@ -106,8 +92,12 @@ class Item with _$Item {
     required String nameEn,
     required String nameNp,
     required String image,
-    required String question,
-    required String audioItem,
+    String? imageOutline,
+    String? question, // eg where is the cat
+    required String audioItem, // Cat pronunciation
+    String? audioBg, // eg cat sound meww, dog sound barking
+    num? dxRatio,
+    num? dyRatio,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
