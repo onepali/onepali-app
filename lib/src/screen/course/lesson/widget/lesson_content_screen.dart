@@ -162,6 +162,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     _audioProvider?.stopAudio();
 
     MetricsTrackingHelper.endLearningSessionSafe();
+    LearningSessionManager().endSession();
     super.dispose();
   }
 
