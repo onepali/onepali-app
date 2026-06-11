@@ -59,27 +59,36 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   Future<void> _initializeMedia() async {
     try {
       // If video is present, cache and initialize it
-      if (widget.content.video != null) {
+      final videoUrl = widget.content.video;
+      if (videoUrl?.isNotEmpty == true) {
         final videoFile = await MediaCacheManager.instance.getSingleFile(
-          widget.content.video!,
+          videoUrl!,
         );
 
-        _videoController = VideoPlayerController.file(videoFile);
-        await _videoController!.initialize();
+        if (!mounted) return;
 
-        if (mounted) {
-          _videoController?.play();
+        final videoController = VideoPlayerController.file(videoFile);
+        await videoController.initialize();
+
+        if (!mounted) {
+          await videoController.dispose();
+          return;
         }
-        setState(() {});
-        // Listen for video completion
+
+        _videoController = videoController;
         _videoController!.addListener(_videoListener);
+
+        setState(() {});
+        await _videoController!.play();
       } else {
         // No video, mark as initialized and play audio immediately
-        if (mounted) {}
         await _playAudio();
       }
     } catch (e) {
       log('Error initializing media: $e');
+      if (mounted) {
+        await _playAudio();
+      }
     }
   }
 
@@ -113,10 +122,13 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         widget.content.audioWord,
       );
 
-      _audioPlayer = AudioPlayer();
+      if (!mounted) return;
+
+      final audioPlayer = AudioPlayer();
+      _audioPlayer = audioPlayer;
       bloc.add(const InfoLessonContentEvent.audioStarted());
 
-      await _audioPlayer!.play(DeviceFileSource(audioFile.path));
+      await audioPlayer.play(DeviceFileSource(audioFile.path));
     } catch (e) {
       log('Error playing audio: $e');
     }
@@ -222,7 +234,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         }
 
         final showVideo =
-            widget.content.video != null && !state.isVideoCompleted;
+            widget.content.video?.isNotEmpty == true && !state.isVideoCompleted;
         final content = state.lessonContent!;
 
         return Center(

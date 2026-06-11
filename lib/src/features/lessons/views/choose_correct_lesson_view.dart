@@ -199,6 +199,16 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                     context.read<LessonBloc>().add(
                                       LessonEvent.nextContent(),
                                     );
+                                  } else if (state.isAnswered &&
+                                      !state.isCorrect &&
+                                      state
+                                              .currentQuestion
+                                              ?.question
+                                              ?.isNotEmpty ==
+                                          true) {
+                                    _playQuestionAudio(
+                                      state.currentQuestion!.question!,
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
