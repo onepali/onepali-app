@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../src.dart';
@@ -110,38 +113,33 @@ class SlideContentState extends State<SlideContent> {
             ),
           ),
         ),
-        Positioned(
-          top: 16,
-          right: Dimensions.kIconMargin(context),
-          child: CircularButtonWidget(
-            type: CircularButtonType.close,
-            onPressed: () {
-              storyProvider.stopAudioAndResetIndex();
-            },
-          ),
+
+        TopRightPositionedCloseButton(
+          onTap: () {
+            storyProvider.stopAudioAndResetIndex();
+            Navigator.of(context).pop();
+          },
         ),
-        Positioned(
-          left: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.leftArrow,
-              onPressed: () => storyProvider.previousContent(),
-            ),
-          ),
+
+        CenterLeftAlignedBackButton(
+          onTap: () {
+            storyProvider.previousContent();
+          },
         ),
         // Right arrow (center vertically)
-        Positioned(
-          right: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.rightArrow,
-              onPressed: () => storyProvider.nextContent(context),
-            ),
-          ),
+        // Positioned(
+        //   right: Dimensions.kIconMargin(context),
+        //   top: 0,
+        //   bottom: 0,
+        //   child: Center(
+        //     child: CircularButtonWidget(
+        //       type: CircularButtonType.rightArrow,
+        //       onPressed: () => storyProvider.nextContent(context),
+        //     ),
+        //   ),
+        // ),
+        CenterRightAlignedForwardButton(
+          onTap: () => storyProvider.nextContent(context),
         ),
         Positioned(
           left: 32,
@@ -174,7 +172,7 @@ class SlideContentState extends State<SlideContent> {
                   Positioned(
                     left: 12 + _position,
                     child: SvgHelper.fromSource(
-                      path: Assets.scrollRightArrow,
+                      path: Assets.rightArrow,
                       height:
                           PlatformUtility.isTablet(context) &&
                               PlatformUtility.isLandscape(context)

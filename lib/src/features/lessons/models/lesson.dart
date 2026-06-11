@@ -49,6 +49,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required String audioWord,
     String? audioBg,
     required String image,
+    @Default(false) bool isImageSvg,
     String? video,
     String? bgImageColor,
   }) = InfoLessonContent;
@@ -64,7 +65,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = ChooseCorrectLessonContent;
 
-  @FreezedUnionValue("tap_to_reveal")
+  @FreezedUnionValue('tap_to_reveal')
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory LessonContent.tapToReveal({
@@ -75,7 +76,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = TapToRevealLessonContent;
 
-  @FreezedUnionValue("drag_to_match")
+  @FreezedUnionValue('drag_to_match')
   const factory LessonContent.dragToMatch({
     required String id,
     required int index,
@@ -83,7 +84,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = DragToMatchLessonContent;
 
-  @FreezedUnionValue("tap_to_pop")
+  @FreezedUnionValue('tap_to_pop')
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory LessonContent.tapToPop({
@@ -95,12 +96,12 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = TapToPopLessonContent;
 
-  @FreezedUnionValue("char_tracing")
+  @FreezedUnionValue('char_tracing')
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory LessonContent.charTracing({
-    @Default("") String nameEn,
-    @Default("") String nameNp,
+    @Default('') String nameEn,
+    @Default('') String nameNp,
     required String id,
     required int index,
     String? bgImage,
@@ -131,16 +132,19 @@ class Item with _$Item {
     required String nameEn,
     required String nameNp,
     required String image,
+    @Default(false) bool isImageSvg,
+    String? bgColor,
     String? imageOutline,
-    String? question, // eg where is the cat
-    required String audioItem, // Cat pronunciation
-    String? audioBg, // eg cat sound meww, dog sound barking
+    @Default(false) bool isImageOutlineSvg,
+    String? outlineBgColor,
+    String? question,
+    required String audioItem,
+    String? audioBg,
     num? dxRatio,
     num? dyRatio,
     num? dxRatioMobile,
     num? dyRatioMobile,
     @Default(false) bool isCorrect,
-    String? bgColor,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

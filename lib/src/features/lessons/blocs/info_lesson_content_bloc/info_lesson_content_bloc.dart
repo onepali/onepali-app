@@ -21,7 +21,7 @@ class InfoLessonContentBloc
       emit(
         state.copyWith(
           lessonContent: content,
-          isVideoCompleted: content.video == null,
+          isVideoCompleted: content.video?.isNotEmpty != true,
         ),
       );
     });
