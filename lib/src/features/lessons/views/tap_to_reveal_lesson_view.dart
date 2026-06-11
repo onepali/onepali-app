@@ -11,9 +11,9 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 
 class TapToRevealLessonView extends StatefulWidget {
-  const TapToRevealLessonView({super.key, required this.content});
-
   final TapToRevealLessonContent content;
+
+  const TapToRevealLessonView({super.key, required this.content});
 
   @override
   State<TapToRevealLessonView> createState() => _TapToRevealLessonViewState();
@@ -23,15 +23,17 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   AudioPlayer? _questionAudioPlayer;
   AudioPlayer? _itemAudioPlayer;
   AudioPlayer? _wrongSfxPlayer;
-  bool _advancedAfterCompletion = false;
 
   @override
   void initState() {
     super.initState();
+    _initializeLesson();
     _wrongSfxPlayer = AudioPlayer();
-    context.read<TapToRevealLessonContentBloc>().add(
-      TapToRevealLessonContentEvent.started(widget.content),
-    );
+  }
+
+  Future<void> _initializeLesson() async {
+    final bloc = context.read<TapToRevealLessonContentBloc>();
+    bloc.add(TapToRevealLessonContentEvent.started(widget.content));
   }
 
   Future<void> _playQuestionAudio(String audioUrl) async {
@@ -44,10 +46,11 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
       _questionAudioPlayer = AudioPlayer();
 
       _questionAudioPlayer!.onPlayerComplete.listen((_) {
-        if (!mounted) return;
-        context.read<TapToRevealLessonContentBloc>().add(
-          const TapToRevealLessonContentEvent.questionAudioCompleted(),
-        );
+        if (mounted) {
+          context.read<TapToRevealLessonContentBloc>().add(
+            const TapToRevealLessonContentEvent.questionAudioCompleted(),
+          );
+        }
       });
 
       await _questionAudioPlayer!.play(DeviceFileSource(audioFile.path));
@@ -70,10 +73,11 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
       _itemAudioPlayer = AudioPlayer();
 
       _itemAudioPlayer!.onPlayerComplete.listen((_) {
-        if (!mounted) return;
-        context.read<TapToRevealLessonContentBloc>().add(
-          const TapToRevealLessonContentEvent.correctAudioCompleted(),
-        );
+        if (mounted) {
+          context.read<TapToRevealLessonContentBloc>().add(
+            const TapToRevealLessonContentEvent.correctAudioCompleted(),
+          );
+        }
       });
 
       await _itemAudioPlayer!.play(DeviceFileSource(audioFile.path));
@@ -97,6 +101,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isMobile = PlatformUtility.isMobile(context);
 
     return BlocConsumer<
       TapToRevealLessonContentBloc,
@@ -109,12 +114,8 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
             state.tappedItem != null) {
           await _wrongSfxPlayer?.play(AssetSource('audio/sfx/wrong.mp3'));
         }
-
-        final question = state.currentQuestion?.question;
-        if (state.isQuestionAudioPlaying &&
-            question != null &&
-            question.isNotEmpty) {
-          _playQuestionAudio(question);
+        if (state.isQuestionAudioPlaying && state.currentQuestion != null) {
+          _playQuestionAudio(state.currentQuestion!.question!);
         }
 
         if (state.isCorrectAudioPlaying && state.tappedItem != null) {
@@ -130,37 +131,43 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state.allQuestionsCompleted && !_advancedAfterCompletion) {
-          _advancedAfterCompletion = true;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            context.read<LessonBloc>().add(const LessonEvent.nextContent());
-          });
-        }
-
+        final bgImage = state.content!.bgImage;
         final content = state.content!;
-        final bgImage = content.bgImage;
+
+        if (state.allQuestionsCompleted) {
+          context.read<LessonBloc>().add(LessonEvent.nextContent());
+        }
 
         return Stack(
           children: [
             Positioned.fill(
-              child: bgImage == null || bgImage.isEmpty
-                  ? Container(color: Colors.grey[100])
-                  : SvgPicture.network(bgImage, fit: BoxFit.cover),
+              child: SvgPicture.network(bgImage ?? '', fit: BoxFit.cover),
             ),
+
             ...content.items.asMap().entries.map((entry) {
               final index = entry.key;
               final item = entry.value;
               final isTapped = state.tappedItem == item;
-              final itemSize = size.width * 0.15;
 
+              final itemSize = size.width * 0.15;
+              final dx = isMobile
+                  ? item.dxRatioMobile != null
+                        ? item.dxRatioMobile!.toDouble()
+                        : 0.5
+                  : item.dxRatio != null
+                  ? item.dxRatio!.toDouble()
+                  : 0.5;
+              final dy = isMobile
+                  ? item.dyRatioMobile != null
+                        ? item.dyRatioMobile!.toDouble()
+                        : 0.5
+                  : item.dyRatio != null
+                  ? item.dyRatio!.toDouble()
+                  : 0.5;
+              log('dx: $dx, dy: $dy');
               return Positioned(
-                left: item.dxRatio != null
-                    ? item.dxRatio!.toDouble() * size.width
-                    : size.width * 0.5,
-                top: item.dyRatio != null
-                    ? item.dyRatio!.toDouble() * size.height
-                    : size.height * 0.5,
+                left: dx * size.width,
+                top: dy * size.height,
                 child: _PositionedItemCard(
                   item: item,
                   itemSize: itemSize,
@@ -168,7 +175,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                   isSelected: isTapped,
                   isCorrect: isTapped && state.isCorrect,
                   isWrong: isTapped && !state.isCorrect,
-                  onTap: () {
+                  onTap: () async {
                     context.read<TapToRevealLessonContentBloc>().add(
                       TapToRevealLessonContentEvent.itemTapped(item),
                     );
@@ -176,24 +183,28 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 ),
               );
             }),
+
             if (state.currentQuestion != null)
               Positioned(
-                top: size.height * 0.05,
-                left: size.width * 0.5 - 40,
+                top: 16,
+                left: 0,
+                right: 0,
                 child: GestureDetector(
                   onTap:
                       state.isQuestionAudioPlaying ||
                           state.isCorrectAudioPlaying
                       ? null
                       : () {
-                          final question = state.currentQuestion?.question;
-                          if (question != null && question.isNotEmpty) {
-                            _playQuestionAudio(question);
+                          if (state.currentQuestion != null) {
+                            _playQuestionAudio(
+                              state.currentQuestion!.question!,
+                            );
                           }
                         },
                   child: SvgHelper.fromSource(path: Assets.sound),
                 ),
               ),
+
             if (state.showCorrectName && state.tappedItem != null)
               Positioned(
                 top: size.height * 0.05 + 50,
@@ -204,11 +215,14 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                   nameEn: state.tappedItem!.nameEn,
                 ),
               ),
+
             Positioned(
-              top: size.height * 0.05,
-              right: size.width * 0.05,
+              top: 16,
+              right: 16,
               child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
                 child: SvgHelper.fromSource(path: Assets.wrong),
               ),
             ),
@@ -245,14 +259,14 @@ class _LessonContentError extends StatelessWidget {
 }
 
 class CorrectNameDisplay extends StatefulWidget {
+  final String nameNp;
+  final String nameEn;
+
   const CorrectNameDisplay({
     super.key,
     required this.nameNp,
     required this.nameEn,
   });
-
-  final String nameNp;
-  final String nameEn;
 
   @override
   State<CorrectNameDisplay> createState() => _CorrectNameDisplayState();
@@ -331,6 +345,14 @@ class _CorrectNameDisplayState extends State<CorrectNameDisplay>
 }
 
 class _PositionedItemCard extends StatefulWidget {
+  final Item item;
+  final double itemSize;
+  final int index;
+  final bool isSelected;
+  final bool isCorrect;
+  final bool isWrong;
+  final VoidCallback onTap;
+
   const _PositionedItemCard({
     required this.item,
     required this.itemSize,
@@ -340,14 +362,6 @@ class _PositionedItemCard extends StatefulWidget {
     required this.isWrong,
     required this.onTap,
   });
-
-  final Item item;
-  final double itemSize;
-  final int index;
-  final bool isSelected;
-  final bool isCorrect;
-  final bool isWrong;
-  final VoidCallback onTap;
 
   @override
   State<_PositionedItemCard> createState() => _PositionedItemCardState();
@@ -426,8 +440,12 @@ class _PositionedItemCardState extends State<_PositionedItemCard>
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
-          final shakeValue = widget.isWrong ? _shakeAnimation.value : 0.0;
-          final scaleValue = widget.isCorrect ? _scaleAnimation.value : 1.0;
+          final double shakeValue = widget.isWrong
+              ? _shakeAnimation.value
+              : 0.0;
+          final double scaleValue = widget.isCorrect
+              ? _scaleAnimation.value
+              : 1.0;
 
           return Transform.translate(
             offset: Offset(shakeValue, 0),
@@ -441,6 +459,7 @@ class _PositionedItemCardState extends State<_PositionedItemCard>
             path: widget.item.image,
             width: widget.itemSize,
             height: widget.itemSize,
+
             fit: BoxFit.contain,
             type: SvgSourceType.network,
           ),

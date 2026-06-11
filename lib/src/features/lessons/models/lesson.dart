@@ -24,6 +24,18 @@ abstract class LessonContentBase {
 
 @Freezed(unionKey: "type")
 class LessonContent with _$LessonContent implements LessonContentBase {
+  @FreezedUnionValue('intro')
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LessonContent.intro({
+    required String id,
+    required int index,
+    @Default('intro') String type,
+    String? bgColor,
+    String? image,
+    String? audio,
+  }) = IntroLessonContent;
+
   @FreezedUnionValue('info')
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
@@ -71,6 +83,33 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = DragToMatchLessonContent;
 
+  @FreezedUnionValue("tap_to_pop")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapToPop({
+    required String id,
+    required int index,
+    String? bgImage,
+    String? bgColor,
+    @Default('tap_to_pop') String type,
+    @Default([]) List<Item> items,
+  }) = TapToPopLessonContent;
+
+  @FreezedUnionValue("char_tracing")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.charTracing({
+    @Default("") String nameEn,
+    @Default("") String nameNp,
+    required String id,
+    required int index,
+    String? bgImage,
+    String? bgColor,
+    String? audioBg,
+    String? audioItem,
+    @Default('char_tracing') String type,
+  }) = CharTracingLessonContent;
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
@@ -98,6 +137,10 @@ class Item with _$Item {
     String? audioBg, // eg cat sound meww, dog sound barking
     num? dxRatio,
     num? dyRatio,
+    num? dxRatioMobile,
+    num? dyRatioMobile,
+    @Default(false) bool isCorrect,
+    String? bgColor,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

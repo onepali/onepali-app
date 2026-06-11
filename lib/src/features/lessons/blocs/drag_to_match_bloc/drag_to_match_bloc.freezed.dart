@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DragToMatchState {
 
- List<ItemPosition> get itemPositions; List<ItemPosition> get outlinePositions; List<String> get matchedItemIds; int get currentHintIndex; bool get isPlayingHint; bool get isPlayingAudio; bool get showNepaliword; String? get currentPlayingAudioId; DragStatus get dragStatus; String? get draggedItemId; String? get targetOutlineId; String? get currentTargetItemId;
+ List<ItemPosition> get itemPositions; List<ItemPosition> get outlinePositions; List<String> get matchedItemIds; int get currentHintIndex; bool get isPlayingHint; bool get isPlayingAudio; bool get showNepaliword; bool get showCat; String? get currentPlayingAudioId; DragStatus get dragStatus; String? get draggedItemId; String? get targetOutlineId; String? get currentTargetItemId;
 /// Create a copy of DragToMatchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $DragToMatchStateCopyWith<DragToMatchState> get copyWith => _$DragToMatchStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DragToMatchState&&const DeepCollectionEquality().equals(other.itemPositions, itemPositions)&&const DeepCollectionEquality().equals(other.outlinePositions, outlinePositions)&&const DeepCollectionEquality().equals(other.matchedItemIds, matchedItemIds)&&(identical(other.currentHintIndex, currentHintIndex) || other.currentHintIndex == currentHintIndex)&&(identical(other.isPlayingHint, isPlayingHint) || other.isPlayingHint == isPlayingHint)&&(identical(other.isPlayingAudio, isPlayingAudio) || other.isPlayingAudio == isPlayingAudio)&&(identical(other.showNepaliword, showNepaliword) || other.showNepaliword == showNepaliword)&&(identical(other.currentPlayingAudioId, currentPlayingAudioId) || other.currentPlayingAudioId == currentPlayingAudioId)&&(identical(other.dragStatus, dragStatus) || other.dragStatus == dragStatus)&&(identical(other.draggedItemId, draggedItemId) || other.draggedItemId == draggedItemId)&&(identical(other.targetOutlineId, targetOutlineId) || other.targetOutlineId == targetOutlineId)&&(identical(other.currentTargetItemId, currentTargetItemId) || other.currentTargetItemId == currentTargetItemId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DragToMatchState&&const DeepCollectionEquality().equals(other.itemPositions, itemPositions)&&const DeepCollectionEquality().equals(other.outlinePositions, outlinePositions)&&const DeepCollectionEquality().equals(other.matchedItemIds, matchedItemIds)&&(identical(other.currentHintIndex, currentHintIndex) || other.currentHintIndex == currentHintIndex)&&(identical(other.isPlayingHint, isPlayingHint) || other.isPlayingHint == isPlayingHint)&&(identical(other.isPlayingAudio, isPlayingAudio) || other.isPlayingAudio == isPlayingAudio)&&(identical(other.showNepaliword, showNepaliword) || other.showNepaliword == showNepaliword)&&(identical(other.showCat, showCat) || other.showCat == showCat)&&(identical(other.currentPlayingAudioId, currentPlayingAudioId) || other.currentPlayingAudioId == currentPlayingAudioId)&&(identical(other.dragStatus, dragStatus) || other.dragStatus == dragStatus)&&(identical(other.draggedItemId, draggedItemId) || other.draggedItemId == draggedItemId)&&(identical(other.targetOutlineId, targetOutlineId) || other.targetOutlineId == targetOutlineId)&&(identical(other.currentTargetItemId, currentTargetItemId) || other.currentTargetItemId == currentTargetItemId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(itemPositions),const DeepCollectionEquality().hash(outlinePositions),const DeepCollectionEquality().hash(matchedItemIds),currentHintIndex,isPlayingHint,isPlayingAudio,showNepaliword,currentPlayingAudioId,dragStatus,draggedItemId,targetOutlineId,currentTargetItemId);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(itemPositions),const DeepCollectionEquality().hash(outlinePositions),const DeepCollectionEquality().hash(matchedItemIds),currentHintIndex,isPlayingHint,isPlayingAudio,showNepaliword,showCat,currentPlayingAudioId,dragStatus,draggedItemId,targetOutlineId,currentTargetItemId);
 
 @override
 String toString() {
-  return 'DragToMatchState(itemPositions: $itemPositions, outlinePositions: $outlinePositions, matchedItemIds: $matchedItemIds, currentHintIndex: $currentHintIndex, isPlayingHint: $isPlayingHint, isPlayingAudio: $isPlayingAudio, showNepaliword: $showNepaliword, currentPlayingAudioId: $currentPlayingAudioId, dragStatus: $dragStatus, draggedItemId: $draggedItemId, targetOutlineId: $targetOutlineId, currentTargetItemId: $currentTargetItemId)';
+  return 'DragToMatchState(itemPositions: $itemPositions, outlinePositions: $outlinePositions, matchedItemIds: $matchedItemIds, currentHintIndex: $currentHintIndex, isPlayingHint: $isPlayingHint, isPlayingAudio: $isPlayingAudio, showNepaliword: $showNepaliword, showCat: $showCat, currentPlayingAudioId: $currentPlayingAudioId, dragStatus: $dragStatus, draggedItemId: $draggedItemId, targetOutlineId: $targetOutlineId, currentTargetItemId: $currentTargetItemId)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $DragToMatchStateCopyWith<$Res>  {
   factory $DragToMatchStateCopyWith(DragToMatchState value, $Res Function(DragToMatchState) _then) = _$DragToMatchStateCopyWithImpl;
 @useResult
 $Res call({
- List<ItemPosition> itemPositions, List<ItemPosition> outlinePositions, List<String> matchedItemIds, int currentHintIndex, bool isPlayingHint, bool isPlayingAudio, bool showNepaliword, String? currentPlayingAudioId, DragStatus dragStatus, String? draggedItemId, String? targetOutlineId, String? currentTargetItemId
+ List<ItemPosition> itemPositions, List<ItemPosition> outlinePositions, List<String> matchedItemIds, int currentHintIndex, bool isPlayingHint, bool isPlayingAudio, bool showNepaliword, bool showCat, String? currentPlayingAudioId, DragStatus dragStatus, String? draggedItemId, String? targetOutlineId, String? currentTargetItemId
 });
 
 
@@ -62,7 +62,7 @@ class _$DragToMatchStateCopyWithImpl<$Res>
 
 /// Create a copy of DragToMatchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? itemPositions = null,Object? outlinePositions = null,Object? matchedItemIds = null,Object? currentHintIndex = null,Object? isPlayingHint = null,Object? isPlayingAudio = null,Object? showNepaliword = null,Object? currentPlayingAudioId = freezed,Object? dragStatus = null,Object? draggedItemId = freezed,Object? targetOutlineId = freezed,Object? currentTargetItemId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? itemPositions = null,Object? outlinePositions = null,Object? matchedItemIds = null,Object? currentHintIndex = null,Object? isPlayingHint = null,Object? isPlayingAudio = null,Object? showNepaliword = null,Object? showCat = null,Object? currentPlayingAudioId = freezed,Object? dragStatus = null,Object? draggedItemId = freezed,Object? targetOutlineId = freezed,Object? currentTargetItemId = freezed,}) {
   return _then(_self.copyWith(
 itemPositions: null == itemPositions ? _self.itemPositions : itemPositions // ignore: cast_nullable_to_non_nullable
 as List<ItemPosition>,outlinePositions: null == outlinePositions ? _self.outlinePositions : outlinePositions // ignore: cast_nullable_to_non_nullable
@@ -71,6 +71,7 @@ as List<String>,currentHintIndex: null == currentHintIndex ? _self.currentHintIn
 as int,isPlayingHint: null == isPlayingHint ? _self.isPlayingHint : isPlayingHint // ignore: cast_nullable_to_non_nullable
 as bool,isPlayingAudio: null == isPlayingAudio ? _self.isPlayingAudio : isPlayingAudio // ignore: cast_nullable_to_non_nullable
 as bool,showNepaliword: null == showNepaliword ? _self.showNepaliword : showNepaliword // ignore: cast_nullable_to_non_nullable
+as bool,showCat: null == showCat ? _self.showCat : showCat // ignore: cast_nullable_to_non_nullable
 as bool,currentPlayingAudioId: freezed == currentPlayingAudioId ? _self.currentPlayingAudioId : currentPlayingAudioId // ignore: cast_nullable_to_non_nullable
 as String?,dragStatus: null == dragStatus ? _self.dragStatus : dragStatus // ignore: cast_nullable_to_non_nullable
 as DragStatus,draggedItemId: freezed == draggedItemId ? _self.draggedItemId : draggedItemId // ignore: cast_nullable_to_non_nullable
@@ -161,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ItemPosition> itemPositions,  List<ItemPosition> outlinePositions,  List<String> matchedItemIds,  int currentHintIndex,  bool isPlayingHint,  bool isPlayingAudio,  bool showNepaliword,  String? currentPlayingAudioId,  DragStatus dragStatus,  String? draggedItemId,  String? targetOutlineId,  String? currentTargetItemId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ItemPosition> itemPositions,  List<ItemPosition> outlinePositions,  List<String> matchedItemIds,  int currentHintIndex,  bool isPlayingHint,  bool isPlayingAudio,  bool showNepaliword,  bool showCat,  String? currentPlayingAudioId,  DragStatus dragStatus,  String? draggedItemId,  String? targetOutlineId,  String? currentTargetItemId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DragToMatchState() when $default != null:
-return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,_that.currentHintIndex,_that.isPlayingHint,_that.isPlayingAudio,_that.showNepaliword,_that.currentPlayingAudioId,_that.dragStatus,_that.draggedItemId,_that.targetOutlineId,_that.currentTargetItemId);case _:
+return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,_that.currentHintIndex,_that.isPlayingHint,_that.isPlayingAudio,_that.showNepaliword,_that.showCat,_that.currentPlayingAudioId,_that.dragStatus,_that.draggedItemId,_that.targetOutlineId,_that.currentTargetItemId);case _:
   return orElse();
 
 }
@@ -182,10 +183,10 @@ return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ItemPosition> itemPositions,  List<ItemPosition> outlinePositions,  List<String> matchedItemIds,  int currentHintIndex,  bool isPlayingHint,  bool isPlayingAudio,  bool showNepaliword,  String? currentPlayingAudioId,  DragStatus dragStatus,  String? draggedItemId,  String? targetOutlineId,  String? currentTargetItemId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ItemPosition> itemPositions,  List<ItemPosition> outlinePositions,  List<String> matchedItemIds,  int currentHintIndex,  bool isPlayingHint,  bool isPlayingAudio,  bool showNepaliword,  bool showCat,  String? currentPlayingAudioId,  DragStatus dragStatus,  String? draggedItemId,  String? targetOutlineId,  String? currentTargetItemId)  $default,) {final _that = this;
 switch (_that) {
 case _DragToMatchState():
-return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,_that.currentHintIndex,_that.isPlayingHint,_that.isPlayingAudio,_that.showNepaliword,_that.currentPlayingAudioId,_that.dragStatus,_that.draggedItemId,_that.targetOutlineId,_that.currentTargetItemId);case _:
+return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,_that.currentHintIndex,_that.isPlayingHint,_that.isPlayingAudio,_that.showNepaliword,_that.showCat,_that.currentPlayingAudioId,_that.dragStatus,_that.draggedItemId,_that.targetOutlineId,_that.currentTargetItemId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +203,10 @@ return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ItemPosition> itemPositions,  List<ItemPosition> outlinePositions,  List<String> matchedItemIds,  int currentHintIndex,  bool isPlayingHint,  bool isPlayingAudio,  bool showNepaliword,  String? currentPlayingAudioId,  DragStatus dragStatus,  String? draggedItemId,  String? targetOutlineId,  String? currentTargetItemId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ItemPosition> itemPositions,  List<ItemPosition> outlinePositions,  List<String> matchedItemIds,  int currentHintIndex,  bool isPlayingHint,  bool isPlayingAudio,  bool showNepaliword,  bool showCat,  String? currentPlayingAudioId,  DragStatus dragStatus,  String? draggedItemId,  String? targetOutlineId,  String? currentTargetItemId)?  $default,) {final _that = this;
 switch (_that) {
 case _DragToMatchState() when $default != null:
-return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,_that.currentHintIndex,_that.isPlayingHint,_that.isPlayingAudio,_that.showNepaliword,_that.currentPlayingAudioId,_that.dragStatus,_that.draggedItemId,_that.targetOutlineId,_that.currentTargetItemId);case _:
+return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,_that.currentHintIndex,_that.isPlayingHint,_that.isPlayingAudio,_that.showNepaliword,_that.showCat,_that.currentPlayingAudioId,_that.dragStatus,_that.draggedItemId,_that.targetOutlineId,_that.currentTargetItemId);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.itemPositions,_that.outlinePositions,_that.matchedItemIds,
 
 
 class _DragToMatchState implements DragToMatchState {
-  const _DragToMatchState({final  List<ItemPosition> itemPositions = const [], final  List<ItemPosition> outlinePositions = const [], final  List<String> matchedItemIds = const [], this.currentHintIndex = 0, this.isPlayingHint = false, this.isPlayingAudio = false, this.showNepaliword = false, this.currentPlayingAudioId, this.dragStatus = DragStatus.idle, this.draggedItemId, this.targetOutlineId, this.currentTargetItemId}): _itemPositions = itemPositions,_outlinePositions = outlinePositions,_matchedItemIds = matchedItemIds;
+  const _DragToMatchState({final  List<ItemPosition> itemPositions = const [], final  List<ItemPosition> outlinePositions = const [], final  List<String> matchedItemIds = const [], this.currentHintIndex = 0, this.isPlayingHint = false, this.isPlayingAudio = false, this.showNepaliword = false, this.showCat = false, this.currentPlayingAudioId, this.dragStatus = DragStatus.idle, this.draggedItemId, this.targetOutlineId, this.currentTargetItemId}): _itemPositions = itemPositions,_outlinePositions = outlinePositions,_matchedItemIds = matchedItemIds;
   
 
  final  List<ItemPosition> _itemPositions;
@@ -245,6 +246,7 @@ class _DragToMatchState implements DragToMatchState {
 @override@JsonKey() final  bool isPlayingHint;
 @override@JsonKey() final  bool isPlayingAudio;
 @override@JsonKey() final  bool showNepaliword;
+@override@JsonKey() final  bool showCat;
 @override final  String? currentPlayingAudioId;
 @override@JsonKey() final  DragStatus dragStatus;
 @override final  String? draggedItemId;
@@ -261,16 +263,16 @@ _$DragToMatchStateCopyWith<_DragToMatchState> get copyWith => __$DragToMatchStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DragToMatchState&&const DeepCollectionEquality().equals(other._itemPositions, _itemPositions)&&const DeepCollectionEquality().equals(other._outlinePositions, _outlinePositions)&&const DeepCollectionEquality().equals(other._matchedItemIds, _matchedItemIds)&&(identical(other.currentHintIndex, currentHintIndex) || other.currentHintIndex == currentHintIndex)&&(identical(other.isPlayingHint, isPlayingHint) || other.isPlayingHint == isPlayingHint)&&(identical(other.isPlayingAudio, isPlayingAudio) || other.isPlayingAudio == isPlayingAudio)&&(identical(other.showNepaliword, showNepaliword) || other.showNepaliword == showNepaliword)&&(identical(other.currentPlayingAudioId, currentPlayingAudioId) || other.currentPlayingAudioId == currentPlayingAudioId)&&(identical(other.dragStatus, dragStatus) || other.dragStatus == dragStatus)&&(identical(other.draggedItemId, draggedItemId) || other.draggedItemId == draggedItemId)&&(identical(other.targetOutlineId, targetOutlineId) || other.targetOutlineId == targetOutlineId)&&(identical(other.currentTargetItemId, currentTargetItemId) || other.currentTargetItemId == currentTargetItemId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DragToMatchState&&const DeepCollectionEquality().equals(other._itemPositions, _itemPositions)&&const DeepCollectionEquality().equals(other._outlinePositions, _outlinePositions)&&const DeepCollectionEquality().equals(other._matchedItemIds, _matchedItemIds)&&(identical(other.currentHintIndex, currentHintIndex) || other.currentHintIndex == currentHintIndex)&&(identical(other.isPlayingHint, isPlayingHint) || other.isPlayingHint == isPlayingHint)&&(identical(other.isPlayingAudio, isPlayingAudio) || other.isPlayingAudio == isPlayingAudio)&&(identical(other.showNepaliword, showNepaliword) || other.showNepaliword == showNepaliword)&&(identical(other.showCat, showCat) || other.showCat == showCat)&&(identical(other.currentPlayingAudioId, currentPlayingAudioId) || other.currentPlayingAudioId == currentPlayingAudioId)&&(identical(other.dragStatus, dragStatus) || other.dragStatus == dragStatus)&&(identical(other.draggedItemId, draggedItemId) || other.draggedItemId == draggedItemId)&&(identical(other.targetOutlineId, targetOutlineId) || other.targetOutlineId == targetOutlineId)&&(identical(other.currentTargetItemId, currentTargetItemId) || other.currentTargetItemId == currentTargetItemId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_itemPositions),const DeepCollectionEquality().hash(_outlinePositions),const DeepCollectionEquality().hash(_matchedItemIds),currentHintIndex,isPlayingHint,isPlayingAudio,showNepaliword,currentPlayingAudioId,dragStatus,draggedItemId,targetOutlineId,currentTargetItemId);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_itemPositions),const DeepCollectionEquality().hash(_outlinePositions),const DeepCollectionEquality().hash(_matchedItemIds),currentHintIndex,isPlayingHint,isPlayingAudio,showNepaliword,showCat,currentPlayingAudioId,dragStatus,draggedItemId,targetOutlineId,currentTargetItemId);
 
 @override
 String toString() {
-  return 'DragToMatchState(itemPositions: $itemPositions, outlinePositions: $outlinePositions, matchedItemIds: $matchedItemIds, currentHintIndex: $currentHintIndex, isPlayingHint: $isPlayingHint, isPlayingAudio: $isPlayingAudio, showNepaliword: $showNepaliword, currentPlayingAudioId: $currentPlayingAudioId, dragStatus: $dragStatus, draggedItemId: $draggedItemId, targetOutlineId: $targetOutlineId, currentTargetItemId: $currentTargetItemId)';
+  return 'DragToMatchState(itemPositions: $itemPositions, outlinePositions: $outlinePositions, matchedItemIds: $matchedItemIds, currentHintIndex: $currentHintIndex, isPlayingHint: $isPlayingHint, isPlayingAudio: $isPlayingAudio, showNepaliword: $showNepaliword, showCat: $showCat, currentPlayingAudioId: $currentPlayingAudioId, dragStatus: $dragStatus, draggedItemId: $draggedItemId, targetOutlineId: $targetOutlineId, currentTargetItemId: $currentTargetItemId)';
 }
 
 
@@ -281,7 +283,7 @@ abstract mixin class _$DragToMatchStateCopyWith<$Res> implements $DragToMatchSta
   factory _$DragToMatchStateCopyWith(_DragToMatchState value, $Res Function(_DragToMatchState) _then) = __$DragToMatchStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ItemPosition> itemPositions, List<ItemPosition> outlinePositions, List<String> matchedItemIds, int currentHintIndex, bool isPlayingHint, bool isPlayingAudio, bool showNepaliword, String? currentPlayingAudioId, DragStatus dragStatus, String? draggedItemId, String? targetOutlineId, String? currentTargetItemId
+ List<ItemPosition> itemPositions, List<ItemPosition> outlinePositions, List<String> matchedItemIds, int currentHintIndex, bool isPlayingHint, bool isPlayingAudio, bool showNepaliword, bool showCat, String? currentPlayingAudioId, DragStatus dragStatus, String? draggedItemId, String? targetOutlineId, String? currentTargetItemId
 });
 
 
@@ -298,7 +300,7 @@ class __$DragToMatchStateCopyWithImpl<$Res>
 
 /// Create a copy of DragToMatchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? itemPositions = null,Object? outlinePositions = null,Object? matchedItemIds = null,Object? currentHintIndex = null,Object? isPlayingHint = null,Object? isPlayingAudio = null,Object? showNepaliword = null,Object? currentPlayingAudioId = freezed,Object? dragStatus = null,Object? draggedItemId = freezed,Object? targetOutlineId = freezed,Object? currentTargetItemId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? itemPositions = null,Object? outlinePositions = null,Object? matchedItemIds = null,Object? currentHintIndex = null,Object? isPlayingHint = null,Object? isPlayingAudio = null,Object? showNepaliword = null,Object? showCat = null,Object? currentPlayingAudioId = freezed,Object? dragStatus = null,Object? draggedItemId = freezed,Object? targetOutlineId = freezed,Object? currentTargetItemId = freezed,}) {
   return _then(_DragToMatchState(
 itemPositions: null == itemPositions ? _self._itemPositions : itemPositions // ignore: cast_nullable_to_non_nullable
 as List<ItemPosition>,outlinePositions: null == outlinePositions ? _self._outlinePositions : outlinePositions // ignore: cast_nullable_to_non_nullable
@@ -307,6 +309,7 @@ as List<String>,currentHintIndex: null == currentHintIndex ? _self.currentHintIn
 as int,isPlayingHint: null == isPlayingHint ? _self.isPlayingHint : isPlayingHint // ignore: cast_nullable_to_non_nullable
 as bool,isPlayingAudio: null == isPlayingAudio ? _self.isPlayingAudio : isPlayingAudio // ignore: cast_nullable_to_non_nullable
 as bool,showNepaliword: null == showNepaliword ? _self.showNepaliword : showNepaliword // ignore: cast_nullable_to_non_nullable
+as bool,showCat: null == showCat ? _self.showCat : showCat // ignore: cast_nullable_to_non_nullable
 as bool,currentPlayingAudioId: freezed == currentPlayingAudioId ? _self.currentPlayingAudioId : currentPlayingAudioId // ignore: cast_nullable_to_non_nullable
 as String?,dragStatus: null == dragStatus ? _self.dragStatus : dragStatus // ignore: cast_nullable_to_non_nullable
 as DragStatus,draggedItemId: freezed == draggedItemId ? _self.draggedItemId : draggedItemId // ignore: cast_nullable_to_non_nullable

@@ -45,6 +45,7 @@ class Assets {
   static String logoLottie = 'onepali'.lottie;
   static String leoCharacterLottie = 'leo_character'.lottie;
   static String successLottie = 'success'.lottie;
+  static String successLottie1 = 'success1'.lottie;
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
   static String starRewardLottie = 'rewards_star'.lottie;
@@ -104,6 +105,7 @@ class Assets {
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
+  static String goodRemark1 = 'good_cat1'.remark;
 
   /// [Home] Menu
   static String games = 'game'.icon;

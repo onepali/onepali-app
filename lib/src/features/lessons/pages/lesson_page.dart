@@ -4,11 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
 
 class LessonPage extends StatefulWidget {
@@ -27,12 +31,6 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   @override
-  void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
@@ -40,15 +38,18 @@ class _LessonPageState extends State<LessonPage> {
       child: Scaffold(
         body: BlocBuilder<LessonBloc, LessonState>(
           builder: (context, state) {
-            if (state.errorMessage != null) {
-              return Center(child: Text(state.errorMessage!));
+            if (state.lessonDetails == null) {
+              return Center(child: CircularProgressIndicator());
             }
-            if (state.lessonDetails == null || state.currentContent == null) {
-              return const Center(child: CircularProgressIndicator());
+            if (state.currentContent == null) {
+              return Center(child: Text('No content found'));
             }
-
             final lessonContent = state.currentContent!;
+
             switch (lessonContent) {
+              case IntroLessonContent():
+                return IntroLessonView(content: lessonContent);
+              // return LetterSelectionScreen();
               case InfoLessonContent():
                 return BlocProvider(
                   key: ValueKey('info_${state.currentIndex}'),
@@ -57,23 +58,26 @@ class _LessonPageState extends State<LessonPage> {
                 );
               case ChooseCorrectLessonContent():
                 return BlocProvider(
-                  key: ValueKey('choose_${state.currentIndex}'),
                   create: (context) => ChooseCorrectLessonContentBloc(),
                   child: ChooseCorrectLessonView(content: lessonContent),
                 );
               case TapToRevealLessonContent():
                 return BlocProvider(
-                  key: ValueKey('tap_${state.currentIndex}'),
                   create: (context) => TapToRevealLessonContentBloc(),
                   child: TapToRevealLessonView(content: lessonContent),
                 );
               case DragToMatchLessonContent():
-                return DragToMatchScreen(
-                  key: ValueKey('drag_${state.currentIndex}'),
-                  lessonContent: lessonContent,
+                return DragToMatchScreen(lessonContent: lessonContent);
+              case TapToPopLessonContent():
+                return BlocProvider(
+                  create: (context) =>
+                      TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
+                  child: TapToPopLessonView(content: lessonContent),
                 );
+              case CharTracingLessonContent():
+                return NewLetterTracingPage(content: lessonContent);
               default:
-                return const Center(child: Text('Unknown content type'));
+                return Center(child: Text('Unknown content type'));
             }
           },
         ),

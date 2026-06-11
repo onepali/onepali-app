@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
@@ -11,9 +12,9 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 
 class ChooseCorrectLessonView extends StatefulWidget {
-  const ChooseCorrectLessonView({super.key, required this.content});
-
   final ChooseCorrectLessonContent content;
+
+  const ChooseCorrectLessonView({super.key, required this.content});
 
   @override
   State<ChooseCorrectLessonView> createState() =>
@@ -27,9 +28,12 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
   @override
   void initState() {
     super.initState();
-    context.read<ChooseCorrectLessonContentBloc>().add(
-      ChooseCorrectLessonContentEvent.started(widget.content),
-    );
+    _initializeLesson();
+  }
+
+  Future<void> _initializeLesson() async {
+    final bloc = context.read<ChooseCorrectLessonContentBloc>();
+    bloc.add(ChooseCorrectLessonContentEvent.started(widget.content));
   }
 
   Future<void> _playQuestionAudio(String audioUrl) async {
@@ -42,7 +46,6 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
       _questionAudioPlayer = AudioPlayer();
 
       _questionAudioPlayer!.onPlayerComplete.listen((_) {
-        if (!mounted) return;
         context.read<ChooseCorrectLessonContentBloc>().add(
           const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
         );
@@ -68,7 +71,6 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
       _correctAudioPlayer = AudioPlayer();
 
       _correctAudioPlayer!.onPlayerComplete.listen((_) {
-        if (!mounted) return;
         context.read<ChooseCorrectLessonContentBloc>().add(
           const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
         );
@@ -100,13 +102,12 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
       ChooseCorrectLessonContentState
     >(
       listener: (context, state) {
-        final question = state.currentQuestion?.question;
-        if (state.isQuestionAudioPlaying &&
-            question != null &&
-            question.isNotEmpty) {
-          _playQuestionAudio(question);
+        // Play question audio when it starts
+        if (state.isQuestionAudioPlaying && state.currentQuestion != null) {
+          _playQuestionAudio(state.currentQuestion!.question!);
         }
 
+        // Play correct audio when correct item is tapped
         if (state.isAudioPlaying && state.selectedItem != null) {
           _playCorrectAudio(state.selectedItem!.audioItem);
         }
@@ -119,7 +120,6 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
         if (state.lessonContent == null || state.currentQuestion == null) {
           return const Center(child: CircularProgressIndicator());
         }
-
         final content = state.lessonContent!;
         return Center(
           child: Stack(
@@ -129,13 +129,19 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: InkWell(
-                        onTap: () {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.previousContent(),
-                          );
-                        },
-                        child: SvgHelper.fromSource(path: Assets.leftArrow),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: GestureDetector(
+                            onTap: () async {
+                              context.read<LessonBloc>().add(
+                                const LessonEvent.previousContent(),
+                              );
+                            },
+                            child: SvgHelper.fromSource(path: Assets.leftArrow),
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -149,23 +155,35 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 for (final item in content.items)
-                                  ItemCard(
-                                    item: item,
-                                    size: size,
-                                    itemCount: content.items.length,
-                                    index: content.items.indexOf(item),
-                                    isSelected: item == state.selectedItem,
-                                    onTap: () {
-                                      context
-                                          .read<
-                                            ChooseCorrectLessonContentBloc
-                                          >()
-                                          .add(
-                                            ChooseCorrectLessonContentEvent.itemTapped(
-                                              item,
-                                            ),
-                                          );
-                                    },
+                                  Stack(
+                                    children: [
+                                      ItemCard(
+                                        item: item,
+                                        size: size,
+                                        itemCount: content.items.length,
+                                        index: content.items.indexOf(item),
+                                        isSelected: item == state.selectedItem,
+                                        onTap: () {
+                                          context
+                                              .read<
+                                                ChooseCorrectLessonContentBloc
+                                              >()
+                                              .add(
+                                                ChooseCorrectLessonContentEvent.itemTapped(
+                                                  item,
+                                                ),
+                                              );
+                                        },
+                                      ),
+                                      // Positioned(
+                                      //   bottom: -20,
+                                      //   left: 0,
+                                      //   right: 0,
+                                      //   child: SvgHelper.fromSource(
+                                      //     path: Assets.sound1,
+                                      //   ),
+                                      // ),
+                                    ],
                                   ),
                               ],
                             ),
@@ -182,7 +200,7 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                 onPressed: () {
                                   if (state.isAnswered && state.isCorrect) {
                                     context.read<LessonBloc>().add(
-                                      const LessonEvent.nextContent(),
+                                      LessonEvent.nextContent(),
                                     );
                                   }
                                 },
@@ -197,7 +215,7 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                 ),
                                 child: state.isAnswered && !state.isCorrect
                                     ? Text(
-                                        'Try again',
+                                        "Try again",
                                         style: AppStyles.text20PxBold.copyWith(
                                           color: AppColors.kBlack,
                                         ),
@@ -208,7 +226,7 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                         size: 32,
                                         color: AppColors.kBlack,
                                       )
-                                    : const SizedBox(),
+                                    : SizedBox(),
                               ),
                             ),
                           ),
@@ -217,23 +235,35 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: InkWell(
-                        onTap: () {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.nextContent(),
-                          );
-                        },
-                        child: SvgHelper.fromSource(path: Assets.rightArrow),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: GestureDetector(
+                            onTap: () {
+                              context.read<LessonBloc>().add(
+                                const LessonEvent.nextContent(),
+                              );
+                            },
+                            child: SvgHelper.fromSource(
+                              path: Assets.rightArrow,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+
               Positioned(
-                top: size.height * 0.05,
-                right: size.width * 0.05,
+                top: 16,
+                right: 16,
                 child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    //pop
+                    Navigator.pop(context);
+                  },
                   child: SvgHelper.fromSource(path: Assets.wrong),
                 ),
               ),
@@ -279,26 +309,16 @@ class ItemCard extends StatelessWidget {
     required this.index,
     this.isSelected = false,
     this.onTap,
+    this.isCorrect = false,
   });
 
   final Item item;
+  final bool isCorrect;
   final Size size;
   final int itemCount;
   final int index;
   final bool isSelected;
-  final VoidCallback? onTap;
-
-  Color _getCardColor() {
-    final colors = [
-      Colors.orange.shade300,
-      Colors.green.shade700,
-      Colors.blue.shade400,
-      Colors.purple.shade400,
-      Colors.red.shade400,
-      Colors.teal.shade400,
-    ];
-    return colors[index % colors.length];
-  }
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -310,18 +330,17 @@ class ItemCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: size.height * 0.50,
-        width: finalCardWidth,
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.only(bottom: 8, top: 8),
+        margin: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.only(bottom: 8, top: 8),
         decoration: BoxDecoration(
-          color: _getCardColor(),
+          color: colorFromHex(item.bgColor) ?? Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: isSelected
               ? Border.all(color: Colors.yellowAccent, width: 2)
               : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
+              color: Colors.black.withAlpha(30),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -330,18 +349,19 @@ class ItemCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            // Nepali name at top
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.nameNp,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineLarge?.copyWith(color: AppColors.kWhite),
+                style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+
+            // Image in the middle
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -352,13 +372,13 @@ class ItemCard extends StatelessWidget {
                 ),
               ),
             ),
+
+            // English name at bottom
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.nameEn,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineSmall?.copyWith(color: AppColors.kWhite),
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
