@@ -23,6 +23,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   AudioPlayer? _questionAudioPlayer;
   AudioPlayer? _itemAudioPlayer;
   AudioPlayer? _wrongSfxPlayer;
+  bool _advancedAfterCompletion = false;
 
   @override
   void initState() {
@@ -114,8 +115,11 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
             state.tappedItem != null) {
           await _wrongSfxPlayer?.play(AssetSource('audio/sfx/wrong.mp3'));
         }
-        if (state.isQuestionAudioPlaying && state.currentQuestion != null) {
-          _playQuestionAudio(state.currentQuestion!.question!);
+        final question = state.currentQuestion?.question;
+        if (state.isQuestionAudioPlaying &&
+            question != null &&
+            question.isNotEmpty) {
+          _playQuestionAudio(question);
         }
 
         if (state.isCorrectAudioPlaying && state.tappedItem != null) {
@@ -127,21 +131,38 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
           return _LessonContentError(message: state.errorMessage!);
         }
 
-        if (state.content == null || state.selectedItems.isEmpty) {
+        if (state.content == null) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final bgImage = state.content!.bgImage;
-        final content = state.content!;
-
-        if (state.allQuestionsCompleted) {
-          context.read<LessonBloc>().add(LessonEvent.nextContent());
+        if (state.selectedItems.isEmpty) {
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                context.read<LessonBloc>().add(const LessonEvent.nextContent());
+              },
+              child: const Text('Next'),
+            ),
+          );
         }
+
+        if (state.allQuestionsCompleted && !_advancedAfterCompletion) {
+          _advancedAfterCompletion = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            context.read<LessonBloc>().add(const LessonEvent.nextContent());
+          });
+        }
+
+        final content = state.content!;
+        final bgImage = content.bgImage;
 
         return Stack(
           children: [
             Positioned.fill(
-              child: SvgPicture.network(bgImage ?? '', fit: BoxFit.cover),
+              child: bgImage == null || bgImage.isEmpty
+                  ? Container(color: Colors.grey[100])
+                  : SvgPicture.network(bgImage, fit: BoxFit.cover),
             ),
 
             ...content.items.asMap().entries.map((entry) {
@@ -164,7 +185,6 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                   : item.dyRatio != null
                   ? item.dyRatio!.toDouble()
                   : 0.5;
-              log('dx: $dx, dy: $dy');
               return Positioned(
                 left: dx * size.width,
                 top: dy * size.height,
@@ -195,10 +215,9 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                           state.isCorrectAudioPlaying
                       ? null
                       : () {
-                          if (state.currentQuestion != null) {
-                            _playQuestionAudio(
-                              state.currentQuestion!.question!,
-                            );
+                          final question = state.currentQuestion?.question;
+                          if (question != null && question.isNotEmpty) {
+                            _playQuestionAudio(question);
                           }
                         },
                   child: SvgHelper.fromSource(path: Assets.sound),
