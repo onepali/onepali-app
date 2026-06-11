@@ -47,6 +47,9 @@ class AppColors {
   static const Color thumbColor = Color(0xFFFFD200);
   static const Color heartColor = Color(0xFFDC143C);
 
+  // Other colors
+  static const Color kStoneGrey = Color(0xFFCDCDCD);
+
   static const List<Color> learningColors = [
     Color(0xFFFF6B6B), // learningRed
     Color(0xFFFFA45B), // learningOrange

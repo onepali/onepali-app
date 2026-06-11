@@ -3,9 +3,13 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -129,19 +133,12 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16),
-                          child: GestureDetector(
-                            onTap: () async {
-                              context.read<LessonBloc>().add(
-                                const LessonEvent.previousContent(),
-                              );
-                            },
-                            child: SvgHelper.fromSource(path: Assets.leftArrow),
-                          ),
-                        ),
+                      child: CenterLeftAlignedBackButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.previousContent(),
+                          );
+                        },
                       ),
                     ),
                     Expanded(
@@ -202,6 +199,16 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                     context.read<LessonBloc>().add(
                                       LessonEvent.nextContent(),
                                     );
+                                  } else if (state.isAnswered &&
+                                      !state.isCorrect &&
+                                      state
+                                              .currentQuestion
+                                              ?.question
+                                              ?.isNotEmpty ==
+                                          true) {
+                                    _playQuestionAudio(
+                                      state.currentQuestion!.question!,
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -235,37 +242,20 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16),
-                          child: GestureDetector(
-                            onTap: () {
-                              context.read<LessonBloc>().add(
-                                const LessonEvent.nextContent(),
-                              );
-                            },
-                            child: SvgHelper.fromSource(
-                              path: Assets.rightArrow,
-                            ),
-                          ),
-                        ),
+                      child: CenterRightAlignedForwardButton(
+                        onTap: () {
+                          context.read<LessonBloc>().add(
+                            const LessonEvent.nextContent(),
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
 
-              Positioned(
-                top: 16,
-                right: 16,
-                child: GestureDetector(
-                  onTap: () {
-                    //pop
-                    Navigator.pop(context);
-                  },
-                  child: SvgHelper.fromSource(path: Assets.wrong),
-                ),
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.pop(context),
               ),
             ],
           ),
@@ -322,6 +312,7 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     final cardWidth = (size.width * 0.75) / itemCount;
     final maxCardWidth = size.width * 0.25;
     final finalCardWidth = cardWidth > maxCardWidth ? maxCardWidth : cardWidth;
@@ -329,15 +320,16 @@ class ItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: size.height * 0.50,
+        height: isMobile ? size.height * 0.65 : size.height * 0.50,
         margin: const EdgeInsets.all(8.0),
-        padding: EdgeInsets.only(bottom: 8, top: 8),
+        padding: const EdgeInsets.only(bottom: 8, top: 8),
         decoration: BoxDecoration(
           color: colorFromHex(item.bgColor) ?? Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: isSelected
-              ? Border.all(color: Colors.yellowAccent, width: 2)
-              : null,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? AppColors.kButtonGreen : Colors.transparent,
+            width: 4,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(30),
@@ -365,11 +357,17 @@ class ItemCard extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CustomCachedImage(
-                  imageUrl: item.image,
-                  width: finalCardWidth * 0.7,
-                  fit: BoxFit.contain,
-                ),
+                child: item.isImageSvg
+                    ? SvgPicture.network(
+                        item.image,
+                        width: finalCardWidth * 0.7,
+                        fit: BoxFit.contain,
+                      )
+                    : CustomCachedImage(
+                        imageUrl: item.image,
+                        width: finalCardWidth * 0.7,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
 

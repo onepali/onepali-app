@@ -48,6 +48,7 @@ InfoLessonContent _$InfoLessonContentFromJson(Map<String, dynamic> json) =>
       audioWord: json['audio_word'] as String,
       audioBg: json['audio_bg'] as String?,
       image: json['image'] as String,
+      isImageSvg: json['is_image_svg'] as bool? ?? false,
       video: json['video'] as String?,
       bgImageColor: json['bg_image_color'] as String?,
     );
@@ -62,6 +63,7 @@ Map<String, dynamic> _$InfoLessonContentToJson(InfoLessonContent instance) =>
       'audio_word': instance.audioWord,
       'audio_bg': instance.audioBg,
       'image': instance.image,
+      'is_image_svg': instance.isImageSvg,
       'video': instance.video,
       'bg_image_color': instance.bgImageColor,
     };
@@ -163,8 +165,8 @@ Map<String, dynamic> _$TapToPopLessonContentToJson(
 CharTracingLessonContent _$CharTracingLessonContentFromJson(
   Map<String, dynamic> json,
 ) => CharTracingLessonContent(
-  nameEn: json['name_en'] as String? ?? "",
-  nameNp: json['name_np'] as String? ?? "",
+  nameEn: json['name_en'] as String? ?? '',
+  nameNp: json['name_np'] as String? ?? '',
   id: json['id'] as String,
   index: (json['index'] as num).toInt(),
   bgImage: json['bg_image'] as String?,
@@ -208,7 +210,11 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   nameEn: json['name_en'] as String,
   nameNp: json['name_np'] as String,
   image: json['image'] as String,
+  isImageSvg: json['is_image_svg'] as bool? ?? false,
+  bgColor: json['bg_color'] as String?,
   imageOutline: json['image_outline'] as String?,
+  isImageOutlineSvg: json['is_image_outline_svg'] as bool? ?? false,
+  outlineBgColor: json['outline_bg_color'] as String?,
   question: json['question'] as String?,
   audioItem: json['audio_item'] as String,
   audioBg: json['audio_bg'] as String?,
@@ -217,14 +223,17 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   dxRatioMobile: json['dx_ratio_mobile'] as num?,
   dyRatioMobile: json['dy_ratio_mobile'] as num?,
   isCorrect: json['is_correct'] as bool? ?? false,
-  bgColor: json['bg_color'] as String?,
 );
 
 Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'name_en': instance.nameEn,
   'name_np': instance.nameNp,
   'image': instance.image,
+  'is_image_svg': instance.isImageSvg,
+  'bg_color': instance.bgColor,
   'image_outline': instance.imageOutline,
+  'is_image_outline_svg': instance.isImageOutlineSvg,
+  'outline_bg_color': instance.outlineBgColor,
   'question': instance.question,
   'audio_item': instance.audioItem,
   'audio_bg': instance.audioBg,
@@ -233,5 +242,4 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'dx_ratio_mobile': instance.dxRatioMobile,
   'dy_ratio_mobile': instance.dyRatioMobile,
   'is_correct': instance.isCorrect,
-  'bg_color': instance.bgColor,
 };
