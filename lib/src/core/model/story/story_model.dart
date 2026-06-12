@@ -56,6 +56,8 @@ class StoryModel {
 
 class Content {
   final String image;
+  final String? imageTb; // for tablet
+  final String? imageSuccess;
   final List<String> audio;
   final String lottie;
   final String type;
@@ -65,6 +67,8 @@ class Content {
 
   Content({
     required this.image,
+    this.imageTb,
+    this.imageSuccess,
     required this.audio,
     required this.lottie,
     required this.type,
@@ -75,6 +79,8 @@ class Content {
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
     image: json["image"] ?? "",
+    imageTb: json["image_tb"],
+    imageSuccess: json["image_success"],
     audio: json["audio"] == null
         ? []
         : List<String>.from(json["audio"].map((x) => x.toString())),
@@ -93,6 +99,8 @@ class Content {
 
   Map<String, dynamic> toJson() => {
     "image": image,
+    "image_tb": imageTb,
+    "image_success": imageSuccess,
     "audio": List<dynamic>.from(audio.map((x) => x.toString())),
     "lottie": lottie,
     "type": type,

@@ -111,6 +111,24 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default('char_tracing') String type,
   }) = CharTracingLessonContent;
 
+  @FreezedUnionValue('tea_making')
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.teaMaking({
+    required String id,
+    required int index,
+    @Default('tea_making') String type,
+    required String audioInstruction,
+    required String teapotVapour,
+    required String stoveImage,
+    required String abaPaniUmalaSound,
+    required String teaReadySound,
+    required String bearTakingTea,
+    @Default([])
+    List<Item>
+    ingredients, // In this case, imageOutline is the placed image on top of stove
+  }) = TeaMakingLessonContent;
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
@@ -129,6 +147,7 @@ class Item with _$Item {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Item({
+    int? order,
     required String nameEn,
     required String nameNp,
     required String image,

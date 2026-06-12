@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/screen/story/story_content/widget/button_tap_content2.dart';
 import 'package:onepali/src/src.dart';
 
 Widget buildStoryContentWidget({
@@ -23,6 +24,9 @@ Widget buildStoryContentWidget({
         isLast: isLast,
         playAudio: playAudio,
       );
+    case "button_tap2":
+      return ButtonTapContent2(content: content, playAudio: playAudio);
+
     default:
       return const SizedBox();
   }
