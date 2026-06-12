@@ -61,6 +61,11 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
     } else {
       _audioPlayerService.playAsset(Assets.wrongSfx);
       _isCorrectAnswerSelected = false;
+      if (conversation.audioItem != null &&
+          conversation.audioItem!.isNotEmpty) {
+        await Future.delayed(const Duration(seconds: 1));
+        _audioPlayerService.play(conversation.audioItem!);
+      }
     }
     notifyListeners();
   }
