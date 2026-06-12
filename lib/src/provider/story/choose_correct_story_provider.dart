@@ -98,6 +98,12 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
       unawaited(
         _audioPlayerService.playAsset(Assets.wrongSfx).catchError((_) {}),
       );
+      final audioItem = conversation.audioItem;
+      if (audioItem != null && audioItem.isNotEmpty) {
+        await Future.delayed(const Duration(seconds: 1));
+        if (_disposed) return;
+        unawaited(_audioPlayerService.play(audioItem).catchError((_) {}));
+      }
     }
   }
 

@@ -94,10 +94,15 @@ class _StoryScreenState extends State<StoryScreen> {
                     SizedBox(height: 24),
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final cardWidth = AppConstants.contentCardGridWidth(
+                        final baseCardWidth = AppConstants.contentCardGridWidth(
                           constraints.maxWidth,
                           isMobile: isMobile,
                         );
+                        final cardWidth = baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardHeight =
+                            baseCardWidth /
+                            AppConstants.contentCardAspectRatio *
+                            (isMobile ? 1.05 : 1.0);
                         return StreamBuilder(
                           stream: _getStoriesStream(data[index]['id']),
                           builder: (context, snapshot) {
@@ -110,10 +115,8 @@ class _StoryScreenState extends State<StoryScreen> {
                                     for (final story in stories) ...[
                                       SizedBox(
                                         width: cardWidth,
-                                        child: AspectRatio(
-                                          aspectRatio: AppConstants
-                                              .contentCardAspectRatio,
-                                          child: Builder(
+                                        height: cardHeight,
+                                        child: Builder(
                                             builder: (context) {
                                               final storyId = story.id;
                                               final isCompleted =
@@ -150,7 +153,6 @@ class _StoryScreenState extends State<StoryScreen> {
                                               );
                                             },
                                           ),
-                                        ),
                                       ),
                                       Gaps.horizontalGapOf(
                                         AppConstants.contentCardGridSpacing,

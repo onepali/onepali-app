@@ -75,10 +75,15 @@ class CourseScreenState extends State<CourseScreen> {
                     SizedBox(height: 24),
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final cardWidth = AppConstants.contentCardGridWidth(
+                        final baseCardWidth = AppConstants.contentCardGridWidth(
                           constraints.maxWidth,
                           isMobile: isMobile,
                         );
+                        final cardWidth = baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardHeight =
+                            baseCardWidth /
+                            AppConstants.contentCardAspectRatio *
+                            (isMobile ? 1.05 : 1.0);
                         return StreamBuilder(
                           stream: _getLessonsStream(data[index]['id']),
                           builder: (context, snapshot) {
@@ -91,10 +96,8 @@ class CourseScreenState extends State<CourseScreen> {
                                     for (final lesson in lessons) ...[
                                       SizedBox(
                                         width: cardWidth,
-                                        child: AspectRatio(
-                                          aspectRatio: AppConstants
-                                              .contentCardAspectRatio,
-                                          child: ContentCard(
+                                        height: cardHeight,
+                                        child: ContentCard(
                                             nameEn: lesson['name'],
                                             nameNp: lesson['name'],
                                             image: lesson['image'],
@@ -102,7 +105,6 @@ class CourseScreenState extends State<CourseScreen> {
                                             bgColor: lesson['bg_color'],
                                             onTap: () => _onTapLesson(lesson),
                                           ),
-                                        ),
                                       ),
                                       Gaps.horizontalGapOf(
                                         AppConstants.contentCardGridSpacing,
