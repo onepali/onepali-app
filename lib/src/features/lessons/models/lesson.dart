@@ -91,10 +91,31 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required String id,
     required int index,
     String? bgImage,
+    String? successImage,
     String? bgColor,
+    String? audioWord,
+    String? instructionAudio,
     @Default('tap_to_pop') String type,
     @Default([]) List<Item> items,
   }) = TapToPopLessonContent;
+
+  @FreezedUnionValue('listen_and_repeat')
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.listenAndRepeat({
+    required String id,
+    required int index,
+    @Default('listen_and_repeat') String type,
+    required String nameEn,
+    required String nameNp,
+    String? bgImage,
+    String? bgColor,
+    required String audioWord,
+    String? audioBg,
+    String? image,
+    String? charImage,
+    @Default(false) bool isImageSvg,
+  }) = ListenAndRepeatLessonContent;
 
   @FreezedUnionValue('char_tracing')
   // ignore: invalid_annotation_target

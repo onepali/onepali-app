@@ -45,6 +45,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.4.1
   path_drawing: ^1.0.1
+  record: ^6.2.0
 
   # Networking & HTTP
   http: ^1.6.0

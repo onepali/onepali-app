@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/core/services/audio_record_service.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
+import 'package:onepali/src/features/lessons/blocs/listen_and_repeat_bloc/listen_and_repeat_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -11,6 +14,7 @@ import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.da
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
 import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
@@ -45,6 +49,8 @@ class _LessonPageState extends State<LessonPage> {
               return Center(child: Text('No content found'));
             }
             final lessonContent = state.currentContent!;
+            final contents = state.lessonDetails!.contents;
+            final isLastContent = state.currentIndex >= contents.length - 1;
 
             switch (lessonContent) {
               case IntroLessonContent():
@@ -59,7 +65,10 @@ class _LessonPageState extends State<LessonPage> {
               case ChooseCorrectLessonContent():
                 return BlocProvider(
                   create: (context) => ChooseCorrectLessonContentBloc(),
-                  child: ChooseCorrectLessonView(content: lessonContent),
+                  child: ChooseCorrectLessonView(
+                    content: lessonContent,
+                    isLastContent: isLastContent,
+                  ),
                 );
               case TapToRevealLessonContent():
                 return BlocProvider(
@@ -73,6 +82,25 @@ class _LessonPageState extends State<LessonPage> {
                   create: (context) =>
                       TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
                   child: TapToPopLessonView(content: lessonContent),
+                );
+              case ListenAndRepeatLessonContent():
+                return BlocProvider(
+                  create: (context) => ListenAndRepeatBloc(
+                    audioPlayerService: AudioPlayerServiceImpl(),
+                    audioRecorderService: AudioRecorderServiceImpl(),
+                  ),
+                  child: ListenAndRepeatView(
+                    content: lessonContent,
+                    onCompleted: () {
+                      if (isLastContent) {
+                        Navigator.of(context).pop();
+                      } else {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.nextContent(),
+                        );
+                      }
+                    },
+                  ),
                 );
               case CharTracingLessonContent():
                 return NewLetterTracingPage(content: lessonContent);

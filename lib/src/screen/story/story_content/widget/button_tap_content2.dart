@@ -53,6 +53,14 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.playAudio) {
+        Provider.of<StoryProvider>(
+          context,
+          listen: false,
+        ).playAudio(widget.content.audio);
+      }
+    });
   }
 
   @override

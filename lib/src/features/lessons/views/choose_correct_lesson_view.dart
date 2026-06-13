@@ -17,8 +17,13 @@ import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 
 class ChooseCorrectLessonView extends StatefulWidget {
   final ChooseCorrectLessonContent content;
+  final bool isLastContent;
 
-  const ChooseCorrectLessonView({super.key, required this.content});
+  const ChooseCorrectLessonView({
+    super.key,
+    required this.content,
+    this.isLastContent = false,
+  });
 
   @override
   State<ChooseCorrectLessonView> createState() =>
@@ -199,9 +204,13 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (state.isAnswered && state.isCorrect) {
-                                    context.read<LessonBloc>().add(
-                                      LessonEvent.nextContent(),
-                                    );
+                                    if (widget.isLastContent) {
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      context.read<LessonBloc>().add(
+                                        const LessonEvent.nextContent(),
+                                      );
+                                    }
                                   } else if (state.isAnswered &&
                                       !state.isCorrect &&
                                       state
@@ -245,18 +254,23 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: CenterRightAlignedForwardButton(
-                        onTap: () {
-                          context.read<LessonBloc>().add(
-                            const LessonEvent.nextContent(),
-                          );
-                        },
-                      ),
+                      child: widget.isLastContent
+                          ? const SizedBox.shrink()
+                          : CenterRightAlignedForwardButton(
+                              onTap: () {
+                                context.read<LessonBloc>().add(
+                                  const LessonEvent.nextContent(),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
               ),
-
+              if (widget.isLastContent && state.isCorrect)
+                Positioned.fill(
+                  child: LottieHelper.fromSource(path: Assets.confetti1),
+                ),
               TopRightPositionedCloseButton(
                 onTap: () => Navigator.pop(context),
               ),
