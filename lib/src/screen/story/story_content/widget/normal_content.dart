@@ -92,7 +92,7 @@ class _NormalContentState extends State<NormalContent> {
             onTap: () => storyProvider.previousContent(),
           ),
         // Right arrow (center vertically)
-        // if (storyProvider.isAudioCompleted)
+        if (storyProvider.isAudioCompleted)
           CenterRightAlignedForwardButton(
             onTap: () => storyProvider.nextContent(context),
           ),

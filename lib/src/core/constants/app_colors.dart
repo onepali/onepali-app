@@ -81,7 +81,7 @@ class AppColors {
   ];
 
   static const List<Color> rewardCollectionColors = [
-    kOrange,
+    thumbColor,
     kPurple,
     kRed,
     kTeal,
