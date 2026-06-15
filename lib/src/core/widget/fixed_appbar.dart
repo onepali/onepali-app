@@ -300,10 +300,12 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                                   routeName:
                                                       AppRoutes.tabDrawerRoutes,
                                                 );
+                                              } else {
+                                                Utility.navigate(
+                                                  context,
+                                                  AppRoutes.onboardingScreen,
+                                                );
                                               }
-                                              //  else {
-                                              //   Utility.navigate(context, AppRoutes.systemScreen);
-                                              // }
                                             },
                                             icon: CustomImage(
                                               isGuest
@@ -316,6 +318,26 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                               imageType: isGuest
                                                   ? CustomImageType.local
                                                   : CustomImageType.network,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => GestureDetector(
+                                                    onTap: () {
+                                                      Utility.navigate(
+                                                        context,
+                                                        AppRoutes
+                                                            .onboardingScreen,
+                                                      );
+                                                    },
+                                                    child: Image.asset(
+                                                      Assets.blueUserAvatar,
+                                                      height: avatarSize,
+                                                      width: avatarSize,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
                                             ),
                                           ),
                                         ),
