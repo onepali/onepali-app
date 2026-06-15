@@ -34,6 +34,8 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgColor,
     String? image,
     String? audio,
+    String? bgImageMobile,
+    String? bgImageTablet,
   }) = IntroLessonContent;
 
   @FreezedUnionValue('info')
@@ -112,8 +114,8 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgColor,
     required String audioWord,
     String? audioBg,
-    String? image,
-    String? charImage,
+    String? image, // This is image of the word, eg a man doing namaste
+    String? charImage, // This is the character image, eg 'न'
     @Default(false) bool isImageSvg,
   }) = ListenAndRepeatLessonContent;
 
@@ -150,6 +152,45 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     ingredients, // In this case, imageOutline is the placed image on top of stove
   }) = TeaMakingLessonContent;
 
+  //--------------------Football lesson contents----------------
+  @FreezedUnionValue('ball_slide') // football_slide_forward
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LessonContent.ballSlide({
+    required String id,
+    required int index,
+    @Default('ball_slide') String type,
+    String? bgImageMobile, // png
+    String? bgImageTablet, // png
+    String? player1, //png
+    String? player2, //png
+    String? ballImage, //png
+    @Default('ltr')
+    String
+    direction, // ltr, rtl, ltr_heading, rtl_heading, none(only play conversation audios)
+    @Default([]) List<String> conversation, // List of audio urls
+    @Default(0) num angle,
+    @Default(1) num sliderLengthMb,
+    @Default(1) num sliderLengthTb,
+    @Default(0) int pDyMb,
+    @Default(0) int pDyTb,
+    String? goalLeftImageMb, //png
+    String? goalLeftImageTb, //png
+    String? goalRightImageMb, //png
+    String? goalRightImageTb, //png
+  }) = BallSlideLessonContent;
+
+  @FreezedUnionValue("flip_card")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.flipCard({
+    required String id,
+    required int index,
+    @Default('flip_card') String type,
+    String? bgImage,
+    @Default([]) List<Item> items,
+  }) = FlipCardLessonContent;
+
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
@@ -177,9 +218,9 @@ class Item with _$Item {
     String? imageOutline,
     @Default(false) bool isImageOutlineSvg,
     String? outlineBgColor,
-    String? question,
-    required String audioItem,
-    String? audioBg,
+    String? question, // eg where is the cat
+    String? audioItem, // Cat pronunciation
+    String? audioBg, // eg cat sound meww, dog sound barking
     num? dxRatio,
     num? dyRatio,
     num? dxRatioMobile,
