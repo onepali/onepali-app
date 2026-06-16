@@ -18,6 +18,7 @@ abstract class PutInBagState with _$PutInBagState {
   bool get isAudioPlaying => status == PutInBagStatus.audioPlaying;
   bool get isIdle => status == PutInBagStatus.idle;
   bool get isCompleted => status == PutInBagStatus.completed;
+  @override
   bool get showActionButton {
     if (content == null) return true;
     if (content!.onlyOneChoice) {

@@ -12,7 +12,6 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/templates/conversation/conversation_view.dart';
 import 'package:onepali/src/features/lessons/templates/ball_slide/heading_view.dart';
 import 'package:onepali/src/features/lessons/templates/ball_slide/penalty_slide_view.dart';
-import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 

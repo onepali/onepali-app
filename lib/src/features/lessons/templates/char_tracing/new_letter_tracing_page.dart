@@ -229,7 +229,7 @@ class BackgroundPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.05)
+      ..color = Colors.grey.withValues(alpha: 0.05)
       ..strokeWidth = 1;
 
     // Draw subtle grid

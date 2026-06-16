@@ -1,6 +1,5 @@
 // ignore_for_file: invalid_annotation_target
 
-import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'story_model.freezed.dart';
@@ -10,6 +9,7 @@ part 'story_model.g.dart';
 abstract class StoryModel with _$StoryModel {
   @JsonSerializable(explicitToJson: true)
   const factory StoryModel({
+    @JsonKey(name: 'id') @Default('') String id,
     @JsonKey(name: 'level_id') @Default('') String levelId,
     @Default('') String nameEn,
     @Default('') String nameNp,

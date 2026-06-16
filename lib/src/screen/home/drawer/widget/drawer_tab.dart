@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';

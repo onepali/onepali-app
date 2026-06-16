@@ -6,7 +6,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/templates/info/info_lesson_view.dart';
 part 'drag_to_match_state.dart';
 part 'drag_to_match_event.dart';
 part 'drag_to_match_bloc.freezed.dart';

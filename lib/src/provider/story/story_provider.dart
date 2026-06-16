@@ -106,7 +106,7 @@ class StoryProvider extends ChangeNotifier {
         if (isStoryComplete && context.mounted) {
           await MetricsTrackingHelper.trackStoryCompletion(
             context: context,
-            storyId: _currentStory!.nameEn,
+            storyId: _currentStory!.id,
             storyTitle: _currentStory!.nameNp.isNotEmpty
                 ? _currentStory!.nameNp
                 : _currentStory!.nameEn,

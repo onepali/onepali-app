@@ -4,7 +4,7 @@ import 'package:onepali/src/core/core.dart';
 /// Yellow banner with message text + celebration image (tablet top row)
 class YellowBanner extends StatelessWidget {
   final double height;
-  const YellowBanner({required this.height});
+  const YellowBanner({super.key, required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class YellowBanner extends StatelessWidget {
                   Assets.achievementTab,
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomCenter,
-                  errorBuilder: (_, __, ___) => const Center(
+                  errorBuilder: (_, _, _) => const Center(
                     child: Text('🎉', style: TextStyle(fontSize: 60)),
                   ),
                 ),

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:onepali/src/core/model/model.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/src.dart';
 

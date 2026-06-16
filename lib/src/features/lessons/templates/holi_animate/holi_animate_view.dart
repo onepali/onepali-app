@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';

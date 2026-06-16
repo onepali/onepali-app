@@ -124,7 +124,7 @@ class _PutInBagViewState extends State<PutInBagView> {
                             PutInBagEvent.itemDropped(details.data),
                           );
                         },
-                        builder: (context, _, __) => CustomCachedImage(
+                        builder: (context, _, _) => CustomCachedImage(
                           imageUrl:
                               state.currentBagItemImage ??
                               widget.content.bagImage!,

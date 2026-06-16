@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/penalty_slider.dart';
 

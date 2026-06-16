@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 import 'package:onepali/src/src.dart';
 
 class LessonScreen extends StatelessWidget {

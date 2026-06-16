@@ -99,7 +99,7 @@ class _HeadingViewState extends State<HeadingView> {
                               ? widget.content.pDyMb.toDouble()
                               : height * 0.1,
                           left: startX,
-                          child: Container(
+                          child: SizedBox(
                             // color: Colors.pink,
                             width: isMobile
                                 ? width * widget.content.sliderLengthMb
