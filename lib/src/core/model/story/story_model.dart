@@ -7,6 +7,7 @@ String storyModelToJson(List<StoryModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class StoryModel {
+  final String levelId;
   final String nameEn;
   final String nameNp;
   final String thumbnail;
@@ -15,8 +16,10 @@ class StoryModel {
   final String tooltip;
   final String description;
   final List<Content> content;
+  final String? bgColor;
 
   StoryModel({
+    required this.levelId,
     required this.nameEn,
     required this.nameNp,
     required this.thumbnail,
@@ -25,9 +28,11 @@ class StoryModel {
     required this.tooltip,
     required this.description,
     required this.content,
+    this.bgColor,
   });
 
   factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
+    levelId: json["level_id"] ?? "",
     nameEn: json["nameEn"] ?? "",
     nameNp: json["nameNp"] ?? "",
     thumbnail: json["thumbnail"] ?? "",
@@ -40,9 +45,11 @@ class StoryModel {
     content: json["content"] == null
         ? []
         : List<Content>.from(json["content"].map((x) => Content.fromJson(x))),
+    bgColor: json['bg_color'] != null ? json["bg_color"] : null,
   );
 
   Map<String, dynamic> toJson() => {
+    "level_id": levelId,
     "nameEn": nameEn,
     "nameNp": nameNp,
     "thumbnail": thumbnail,
@@ -51,6 +58,7 @@ class StoryModel {
     "tooltip": tooltip,
     "description": description,
     "content": List<dynamic>.from(content.map((x) => x.toJson())),
+    "bg_color": bgColor,
   };
 }
 

@@ -258,11 +258,11 @@ class _ItemWidget extends StatelessWidget {
         color: AppColors.kStoryColor.withAlpha(100),
         borderRadius: BorderRadius.circular(12),
 
-        border: isCurrentTarget
-            ? Border.all(color: AppColors.kGreen, width: 2)
-            : isPlayingAudio
-            ? Border.all(color: Colors.orange, width: 3)
-            : null,
+        // border: isCurrentTarget
+        //     ? Border.all(color: AppColors.kGreen, width: 2)
+        //     : isPlayingAudio
+        //     ? Border.all(color: Colors.orange, width: 3)
+        //     : null,
       ),
       child: Center(
         child: ClipRRect(

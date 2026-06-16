@@ -32,7 +32,7 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     required int index,
     @Default('intro') String type,
     String? bgColor,
-    String? image,
+    String? image, // svg
     String? audio,
     String? bgImageMobile,
     String? bgImageTablet,
@@ -179,6 +179,17 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? goalRightImageMb, //png
     String? goalRightImageTb, //png
   }) = BallSlideLessonContent;
+
+  @FreezedUnionValue('slide_up_to_match')
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory LessonContent.slideUpToMatch({
+    required String id,
+    required int index,
+    @Default('slide_up_to_match') String type,
+    String? bgImage,
+    @Default([]) List<Item> items,
+  }) = SlideUpToMatchLessonContent;
 
   @FreezedUnionValue("flip_card")
   // ignore: invalid_annotation_target

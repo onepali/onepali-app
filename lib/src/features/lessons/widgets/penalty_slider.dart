@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
@@ -31,6 +32,8 @@ class _PenaltySliderState extends State<PenaltySlider>
   /// Negative = left path, positive = right path, 0 = resting centre
   double _ballProgress = 0.0;
 
+  final _audioPlayerService = AudioPlayerServiceImpl();
+
   late AnimationController _snapCtrl;
   late Animation<double> _snapAnim;
   double _snapFrom = 0.0;
@@ -51,10 +54,17 @@ class _PenaltySliderState extends State<PenaltySlider>
         _ballProgress = _lerp(_snapFrom, _snapTarget, _snapAnim.value);
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      for (final audio in widget.content.conversation) {
+        _audioPlayerService.play(audio);
+        await _audioPlayerService.onPlayerComplete.first;
+      }
+    });
   }
 
   @override
   void dispose() {
+    _audioPlayerService.dispose();
     _snapCtrl.dispose();
     super.dispose();
   }

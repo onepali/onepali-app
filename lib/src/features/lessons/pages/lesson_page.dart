@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
+import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/features/lessons/blocs/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/info_lesson_content_bloc/info_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lession_bloc/lesson_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:onepali/src/features/lessons/blocs/listen_and_repeat_bloc/listen
 import 'package:onepali/src/features/lessons/blocs/tap_to_pop_bloc/tap_to_pop_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/views/ball_match_view.dart';
 import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
@@ -43,7 +45,18 @@ class _LessonPageState extends State<LessonPage> {
       create: (context) =>
           LessonBloc()..add(LessonEvent.started(widget.lessonId)),
       child: Scaffold(
-        body: BlocBuilder<LessonBloc, LessonState>(
+        body: BlocConsumer<LessonBloc, LessonState>(
+          listenWhen: (previous, current) =>
+              current.status == LessonStatus.success &&
+              previous.lessonDetails != current.lessonDetails,
+          listener: (context, state) {
+            if (state.lessonDetails != null) {
+              MediaCacheManager().cacheLessonImages(
+                state.lessonDetails!.contents,
+                context,
+              );
+            }
+          },
           builder: (context, state) {
             if (state.lessonDetails == null) {
               return Center(child: CircularProgressIndicator());
@@ -115,7 +128,14 @@ class _LessonPageState extends State<LessonPage> {
                 onNext: handleNext,
               ),
               FlipCardLessonContent() => FlipCardView(
+                key: ValueKey('flip_card_${state.currentIndex}'),
                 content: lessonContent,
+                onNext: handleNext,
+              ),
+              SlideUpToMatchLessonContent() => MatchGameScreen(
+                key: ValueKey('slide_up_to_match_${state.currentIndex}'),
+                content: lessonContent,
+                isLastContent: isLastContent,
                 onNext: handleNext,
               ),
               _ => Center(child: Text('Unknown content type')),
