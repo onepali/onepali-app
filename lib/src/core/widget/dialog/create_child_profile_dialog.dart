@@ -12,8 +12,11 @@ Future<bool?> showCreateChildProfileDialog(BuildContext context) async {
         content: Stack(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 48, vertical: 48),
-              width: isMobile ? double.infinity : 600,
+              padding: EdgeInsets.symmetric(
+                horizontal: 48,
+                vertical: isMobile ? 24 : 48,
+              ),
+              width: isMobile ? 400 : 600,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -27,16 +30,18 @@ Future<bool?> showCreateChildProfileDialog(BuildContext context) async {
                         : AppStyles.text32PxMedium,
                   ),
                   Gaps.verticalGapOf(isMobile ? 20 : 40),
-                  SvgHelper.fromSource(
-                    path: Assets.rocket,
-                    height: isMobile ? 150 : 300,
-                    width: isMobile ? 150 : 300,
-                    fit: BoxFit.contain,
+                  Expanded(
+                    child: SvgHelper.fromSource(
+                      path: Assets.rocket,
+                      fit: BoxFit.fill,
+                    ),
                   ),
                   Gaps.verticalGapOf(isMobile ? 20 : 40),
                   CustomMaterialButton(
                     height: isMobile ? 40 : 60,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pop(true);
+                    },
                     label: "Create child's Profile",
                     textStyle: isMobile
                         ? AppStyles.text16PxMedium
@@ -50,7 +55,7 @@ Future<bool?> showCreateChildProfileDialog(BuildContext context) async {
               right: isMobile ? 12 : 16,
               child: CustomCloseButton(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(false);
                 },
                 iconPath: Assets.closeGreyIcon,
               ),
