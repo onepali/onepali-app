@@ -175,17 +175,11 @@ class _KitchenPageState extends State<KitchenPage> {
       child: BlocConsumer<TutorialBloc, TutorialState>(
         listener: (context, state) async {
           if (state.status == TutorialStatus.completed) {
-            final parentUid = context.read<UserProvider>().userId;
-            final childUid = await ChildLocalStorage.getCurrentChildId();
-            if (parentUid != null && childUid != null) {
-              context.read<LessonProvider>().trackContentCompletion(
-                parentUid: parentUid,
-                childUid: childUid,
-                contentId: widget.lessonId,
-                contentName: widget.lessonName,
-                activityType: ActivityType.lesson,
-              );
-            }
+            MetricsTrackingHelper.trackLessonCompletion(
+              context: context,
+              lessonId: widget.lessonId,
+              topicName: widget.lessonName,
+            );
           }
         },
         builder: (context, state) {
@@ -235,7 +229,7 @@ class _KitchenPageState extends State<KitchenPage> {
                                     if (ingredientHasImage(
                                       state.content!.ingredients[index],
                                     ))
-                                      Container(
+                                      SizedBox(
                                         key:
                                             index ==
                                                 _firstVisibleIngredientIndex(

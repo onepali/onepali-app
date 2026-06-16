@@ -40,7 +40,7 @@ class _AnimatedCounter extends StatelessWidget {
       tween: IntTween(begin: 0, end: parsed),
       duration: const Duration(milliseconds: 900),
       curve: Curves.easeOutCubic,
-      builder: (_, animatedValue, __) {
+      builder: (_, animatedValue, _) {
         return Text(
           animatedValue.toString(),
           style: style,

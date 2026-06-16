@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
@@ -20,7 +21,7 @@ void main() async {
 
   try {
     WidgetsFlutterBinding.ensureInitialized();
-
+    
     // Initialize SharedPreferences - critical for app state
     try {
       await SharedPreferencesService.init();
@@ -31,7 +32,7 @@ void main() async {
     }
 
     // await dotenv.load(fileName: AppConstants.dotEnvFileName);
-
+    
     // Initialize app - this now has internal error handling
     await AppInitializer().initializeApp();
 
@@ -41,9 +42,7 @@ void main() async {
     try {
       logged = await AppInitializer.checkUserAuthentication();
       isParentLogged = await AppInitializer.isParentLogged();
-      logger.d(
-        'Authentication check: logged=$logged, isParentLogged=$isParentLogged',
-      );
+      logger.d('Authentication check: logged=$logged, isParentLogged=$isParentLogged');
     } catch (e) {
       logger.w('⚠️ Authentication check failed, defaulting to logged out: $e');
       // Default to logged out state if check fails
@@ -58,7 +57,7 @@ void main() async {
   } catch (e, stackTrace) {
     logger.e('❌ Critical error in main(): $e');
     logger.e('Stack trace: $stackTrace');
-
+    
     // Even if everything fails, try to show an error screen instead of white screen
     runApp(
       MaterialApp(

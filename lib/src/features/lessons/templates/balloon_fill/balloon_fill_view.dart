@@ -11,7 +11,6 @@ import 'package:onepali/src/features/lessons/templates/balloon_fill/balloon_fill
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
-import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class BalloonFillView extends StatefulWidget {
   final BalloonFillLessonContent content;

@@ -100,7 +100,7 @@ class _AchievementLayoutState extends State<AchievementLayout>
           child: Image.asset(
             Assets.rewardBackground,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
+            errorBuilder: (_, _, _) =>
                 Container(color: const Color(0xFF1A1A2E)),
           ),
         ),
@@ -326,7 +326,7 @@ class _MobileLayout extends StatelessWidget {
                                 child: Image.asset(
                                   Assets.achievement,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) =>
+                                  errorBuilder: (_, _, _) =>
                                       const SizedBox(height: 60),
                                 ),
                               ),
