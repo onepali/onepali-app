@@ -143,23 +143,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      if (!isGuest) {
-                                        Utility.navigateMaterialRoute(
-                                          context,
-                                          DrawerScreen(
-                                            data: childData,
-                                            totalChildCount: totalChildCount,
-                                          ),
-                                          routeName: AppRoutes.drawerRoutes,
-                                        );
-                                      }
-                                      // } else {
-                                      //   Utility.navigate(
-                                      //     context,
-                                      //     AppRoutes.systemScreen,
-                                      //   );
-                                      // }
+                                    onPressed: () async {
+                                      await _handleAvatarTap(context);
                                     },
                                     icon: CustomImage(
                                       isGuest
@@ -289,30 +274,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: IconButton(
                                             padding: EdgeInsets.zero,
                                             constraints: const BoxConstraints(),
-                                            onPressed: () {
-                                              if (!isGuest) {
-                                                if (childData.isEmpty) {
-                                                  showCreateChildProfileDialog(
-                                                    context,
-                                                  );
-                                                  return;
-                                                }
-                                                Utility.navigateMaterialRoute(
-                                                  context,
-                                                  TabDrawerScreen(
-                                                    data: childData,
-                                                    totalChildCount:
-                                                        totalChildCount,
-                                                  ),
-                                                  routeName:
-                                                      AppRoutes.tabDrawerRoutes,
-                                                );
-                                              } else {
-                                                Utility.navigate(
-                                                  context,
-                                                  AppRoutes.onboardingScreen,
-                                                );
-                                              }
+                                            onPressed: () async {
+                                              await _handleAvatarTap(context);
                                             },
                                             icon: CustomImage(
                                               isGuest
@@ -331,17 +294,9 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                                     error,
                                                     stackTrace,
                                                   ) => GestureDetector(
-                                                    onTap: () {
-                                                      if (childData.isEmpty) {
-                                                        showCreateChildProfileDialog(
-                                                          context,
-                                                        );
-                                                        return;
-                                                      }
-                                                      Utility.navigate(
+                                                    onTap: () async {
+                                                      await _handleAvatarTap(
                                                         context,
-                                                        AppRoutes
-                                                            .onboardingScreen,
                                                       );
                                                     },
                                                     child: Image.asset(
@@ -514,6 +469,40 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   static void triggerStarBlastAudio() => _playStarBlastAudio();
+
+  Future<void> _handleAvatarTap(BuildContext context) async {
+    if (isGuest) {
+      Utility.navigate(context, AppRoutes.onboardingScreen);
+      return;
+    }
+
+    final hasNoChild = childData.isEmpty || totalChildCount <= 0;
+    if (hasNoChild) {
+      final shouldCreateChild = await showCreateChildProfileDialog(context);
+      if (shouldCreateChild == true) {
+        Utility.navigate(context, AppRoutes.childRegisterScreen);
+      }
+      return;
+    }
+
+    final isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
+    if (isMobileLandscape) {
+      Utility.navigateMaterialRoute(
+        context,
+        DrawerScreen(data: childData, totalChildCount: totalChildCount),
+        routeName: AppRoutes.drawerRoutes,
+      );
+      return;
+    }
+
+    Utility.navigateMaterialRoute(
+      context,
+      TabDrawerScreen(data: childData, totalChildCount: totalChildCount),
+      routeName: AppRoutes.tabDrawerRoutes,
+    );
+  }
 
   Widget _buildTab(
     String icon,

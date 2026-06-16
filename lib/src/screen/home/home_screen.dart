@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/dialog/create_child_profile_dialog.dart';
 import 'package:onepali/src/screen/song/songs_category_grid.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late int _selectedTabIndex;
   final ConnectivityService _connectivityService = ConnectivityService();
   bool _isConnected = true;
+  bool _hasHandledInitialNoChildDialog = false;
 
   @override
   void initState() {
@@ -60,6 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // Check if user is guest
     bool isGuest = GuestUtil.isGuestUser();
+    if (!isGuest) {
+      _maybeShowInitialCreateChildDialog();
+    }
 
     // If offline, show single error screen for the current module
     if (!_isConnected) {
@@ -82,29 +87,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
-            // Only show recommended card for non-guest users
-            // if (!isGuest) ...[
-            //   _buildRecommendedLessonCard(context),
-            //   Gaps.verticalGapOf(10),
-            // ],
-            // _buildLessons(context),
             CourseScreen(),
           ] else if (_selectedTabIndex == 1) ...[
-            // Only show recommended card for non-guest users
-            // if (!isGuest) ...[
-            //   _buildRecommendedSongCard(context),
-            //   Gaps.verticalGapOf(10),
-            // ],
-            // _buildSongCard(context),
             SongsCategoryGrid(),
           ] else if (_selectedTabIndex == 2) ...[
-            // Only show recommended card for non-guest users
-            // if (!isGuest) ...[
-            //   _buildRecommendedStoryCard(context),
-            //   Gaps.verticalGapOf(10),
-            // ],
             StoryScreen(),
           ],
         ],
@@ -151,5 +138,28 @@ class _HomeScreenState extends State<HomeScreen> {
       isInternetError: true,
       isDataError: false,
     );
+  }
+
+  void _maybeShowInitialCreateChildDialog() {
+    if (_hasHandledInitialNoChildDialog || !mounted) return;
+
+    final childProvider = context.read<ChildUserProvider>();
+    if (childProvider.status == DataFetchStatus.loading ||
+        childProvider.status == DataFetchStatus.initial) {
+      return;
+    }
+
+    _hasHandledInitialNoChildDialog = true;
+    final hasNoChild = childProvider.totalChildren <= 0;
+    if (!hasNoChild) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final shouldCreateChild = await showCreateChildProfileDialog(context);
+      if (!mounted) return;
+      if (shouldCreateChild == true) {
+        Utility.navigate(context, AppRoutes.childRegisterScreen);
+      }
+    });
   }
 }
