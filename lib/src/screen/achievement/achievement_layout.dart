@@ -321,22 +321,27 @@ class _MobileLayout extends StatelessWidget {
                                 style: AppStyles.text18PxSemiBold,
                               ),
                               const SizedBox(height: 8),
-                              Spacer(),
-                              Image.asset(
-                                    Assets.achievement,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (_, _, _) =>
-                                        const SizedBox(height: 60),
-                                  )
-                                  .animate()
-                                  .scaleXY(
-                                    begin: 0.7,
-                                    end: 1.0,
-                                    delay: 300.ms,
-                                    duration: 500.ms,
-                                    curve: Curves.easeOutBack,
-                                  )
-                                  .fadeIn(delay: 300.ms, duration: 400.ms),
+                              Expanded(
+                                child:
+                                    Image.asset(
+                                          Assets.achievement,
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (_, _, _) =>
+                                              const SizedBox(height: 60),
+                                        )
+                                        .animate()
+                                        .scaleXY(
+                                          begin: 0.7,
+                                          end: 1.0,
+                                          delay: 300.ms,
+                                          duration: 500.ms,
+                                          curve: Curves.easeOutBack,
+                                        )
+                                        .fadeIn(
+                                          delay: 300.ms,
+                                          duration: 400.ms,
+                                        ),
+                              ),
                             ],
                           ),
                         )

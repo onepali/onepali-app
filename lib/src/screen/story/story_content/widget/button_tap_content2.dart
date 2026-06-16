@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
-import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:provider/provider.dart';
@@ -88,13 +87,16 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   String _backgroundImageUrl(bool isCorrect, bool isMobile) {
     if (!isCorrect) {
       return isMobile
-          ? widget.content.image
-          : _nonEmptyOr(widget.content.imageTb, widget.content.image);
+          ? _nonEmptyOr(widget.content.image, '')
+          : _nonEmptyOr(
+              widget.content.imageTb,
+              _nonEmptyOr(widget.content.image, ''),
+            );
     }
 
     final mobileSuccess = _nonEmptyOr(
       widget.content.imageSuccess,
-      widget.content.image,
+      _nonEmptyOr(widget.content.image, ''),
     );
     return isMobile
         ? mobileSuccess
@@ -241,10 +243,6 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
               },
             ),
           ),
-        ),
-
-        CenterLeftAlignedBackButton(
-          onTap: () => storyProvider.previousContent(),
         ),
         TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
         if (isCorrect == true && widget.content.confetti.isNotEmpty)

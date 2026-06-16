@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/dialog/create_child_profile_dialog.dart';
 import 'package:onepali/src/src.dart';
 
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -290,6 +291,12 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                             constraints: const BoxConstraints(),
                                             onPressed: () {
                                               if (!isGuest) {
+                                                if (childData.isEmpty) {
+                                                  showCreateChildProfileDialog(
+                                                    context,
+                                                  );
+                                                  return;
+                                                }
                                                 Utility.navigateMaterialRoute(
                                                   context,
                                                   TabDrawerScreen(
@@ -325,6 +332,12 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                                     stackTrace,
                                                   ) => GestureDetector(
                                                     onTap: () {
+                                                      if (childData.isEmpty) {
+                                                        showCreateChildProfileDialog(
+                                                          context,
+                                                        );
+                                                        return;
+                                                      }
                                                       Utility.navigate(
                                                         context,
                                                         AppRoutes

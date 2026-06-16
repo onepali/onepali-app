@@ -190,7 +190,6 @@ class _LessonPageState extends State<LessonPage> {
                     key: ValueKey('slide_up_to_match_${state.currentIndex}'),
                     content: lessonContent,
                     isLastContent: isLastContent,
-                    onNext: onNext,
                   ),
                   BalloonFillLessonContent() => BalloonFillView(
                     content: lessonContent,

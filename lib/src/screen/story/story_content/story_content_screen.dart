@@ -116,7 +116,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   bool _hasBackgroundImage(int idx, List<Content> contentList) {
     if (idx > 0 && idx <= contentList.length) {
       final currentContent = contentList[idx - 1];
-      return currentContent.image.isNotEmpty;
+      return currentContent.image?.isNotEmpty ?? false;
     }
     return false;
   }

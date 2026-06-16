@@ -7,6 +7,7 @@ part of 'story_model.dart';
 // **************************************************************************
 
 _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
+  id: json['id'] as String? ?? '',
   levelId: json['level_id'] as String? ?? '',
   nameEn: json['nameEn'] as String? ?? '',
   nameNp: json['nameNp'] as String? ?? '',
@@ -27,6 +28,7 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
 
 Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'level_id': instance.levelId,
       'nameEn': instance.nameEn,
       'nameNp': instance.nameNp,
@@ -40,7 +42,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     };
 
 _Content _$ContentFromJson(Map<String, dynamic> json) => _Content(
-  image: json['image'] as String? ?? '',
+  image: json['image'] as String?,
   imageTb: json['image_tb'] as String?,
   imageSuccess: json['image_success'] as String?,
   imageSuccessTb: json['image_success_tb'] as String?,

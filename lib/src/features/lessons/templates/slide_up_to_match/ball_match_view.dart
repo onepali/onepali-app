@@ -1,3 +1,4 @@
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,12 +16,9 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 class MatchGameScreen extends StatefulWidget {
   final SlideUpToMatchLessonContent content;
   final bool isLastContent;
-  final VoidCallback onNext;
-
   const MatchGameScreen({
     super.key,
     required this.content,
-    required this.onNext,
     this.isLastContent = false,
   });
 
@@ -88,7 +86,7 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
                   SizedBox(height: isMobile ? 60 : size.height * 0.15),
                 ],
               ),
-              if (state.isAnsweredAll && widget.isLastContent)
+              if (state.isAnsweredAll & widget.isLastContent)
                 Positioned.fill(
                   child: LottieHelper.fromSource(
                     path: Assets.confetti1,
@@ -100,8 +98,12 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
                   context.read<LessonBloc>().add(LessonEvent.previousContent());
                 },
               ),
-              if (state.isAnsweredAll)
-                CenterRightAlignedForwardButton(onTap: widget.onNext),
+              if (!widget.isLastContent)
+                CenterRightAlignedForwardButton(
+                  onTap: () {
+                    context.read<LessonBloc>().add(LessonEvent.nextContent());
+                  },
+                ),
 
               TopRightPositionedCloseButton(
                 onTap: () {

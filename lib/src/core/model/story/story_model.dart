@@ -1,37 +1,21 @@
 // ignore_for_file: invalid_annotation_target
 
-import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'story_model.freezed.dart';
 part 'story_model.g.dart';
 
-List<StoryModel> storyModelFromJson(String str) => List<StoryModel>.from(
-  (json.decode(str) as List<dynamic>).map(
-    (x) => StoryModel.fromJson(x as Map<String, dynamic>),
-  ),
-);
-
-String storyModelToJson(List<StoryModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-List<String> _stringListFromJson(Object? value) => value == null
-    ? const <String>[]
-    : List<String>.from((value as Iterable<dynamic>).map((x) => x.toString()));
-
 @freezed
 abstract class StoryModel with _$StoryModel {
   @JsonSerializable(explicitToJson: true)
   const factory StoryModel({
+    @JsonKey(name: 'id') @Default('') String id,
     @JsonKey(name: 'level_id') @Default('') String levelId,
     @Default('') String nameEn,
     @Default('') String nameNp,
     @Default('') String thumbnail,
     @Default('') String lottie,
-    @JsonKey(fromJson: _stringListFromJson)
-    @Default(<String>[])
-    List<String> audio,
+    @JsonKey(fromJson: _stringListFromJson) @Default(<String>[]) List<String> audio,
     @Default('') String tooltip,
     @Default('') String description,
     @Default(<Content>[]) List<Content> content,
@@ -46,13 +30,11 @@ abstract class StoryModel with _$StoryModel {
 abstract class Content with _$Content {
   @JsonSerializable(explicitToJson: true)
   const factory Content({
-    @Default('') String image,
+    String? image,
     @JsonKey(name: 'image_tb') String? imageTb, // for tablet
     @JsonKey(name: 'image_success') String? imageSuccess,
     @JsonKey(name: 'image_success_tb') String? imageSuccessTb,
-    @JsonKey(fromJson: _stringListFromJson)
-    @Default(<String>[])
-    List<String> audio,
+    @JsonKey(fromJson: _stringListFromJson) @Default(<String>[]) List<String> audio,
     @Default('') String lottie,
     @Default('') String type,
     @Default(<Conversation>[]) List<Conversation> conversation,
@@ -67,6 +49,10 @@ abstract class Content with _$Content {
 }
 
 String _idFromJson(Object? value) => value?.toString() ?? '';
+
+List<String> _stringListFromJson(Object? value) => value == null
+    ? const <String>[]
+    : List<String>.from((value as Iterable<dynamic>).map((x) => x.toString()));
 
 @freezed
 abstract class Conversation with _$Conversation {

@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/constants/assets.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
