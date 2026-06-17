@@ -94,7 +94,6 @@ class _HeadingViewState extends State<HeadingView> {
                             width: isMobile
                                 ? width * widget.content.sliderLengthMb
                                 : width * widget.content.sliderLengthTb,
-
                             child: CurvedBallSlider(
                               height: isMobile ? 150 : 300,
                               isRTL: widget.content.direction == 'rtl_heading',
