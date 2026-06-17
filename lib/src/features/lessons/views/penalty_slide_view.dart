@@ -30,10 +30,7 @@ class GameSliderConfig {
 }
 
 class PenaltySlideView extends StatelessWidget {
-  const PenaltySlideView({
-    super.key,
-    required this.content,
-  });
+  const PenaltySlideView({super.key, required this.content});
   final BallSlideLessonContent content;
 
   @override
