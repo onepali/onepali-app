@@ -68,7 +68,11 @@ class CourseScreenState extends State<CourseScreen> {
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          final data = snapshot.data!.docs;
+                          final data = snapshot.data!.docs
+                              .where(
+                                (lesson) => lesson.data()['active'] != false,
+                              )
+                              .toList();
                           return Row(
                             children: [
                               for (final lesson in data) ...[
@@ -76,6 +80,7 @@ class CourseScreenState extends State<CourseScreen> {
                                   nameEn: lesson['name'],
                                   nameNp: lesson['name'],
                                   image: lesson['image'],
+                                  bgImage: lesson.data()['bg_image'] as String?,
                                   bgColor: lesson['bg_color'],
                                   onTap: () => _onTapLesson(lesson),
                                 ),
