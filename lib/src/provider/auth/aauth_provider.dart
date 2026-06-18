@@ -150,7 +150,7 @@ class AAuthProvider with ChangeNotifier {
       notifyListeners();
 
       if (!context.mounted) return;
-      onNavigate(context);
+      onNavigate(context, firebaseUser?.uid ?? '');
       showCustomToaster('Login Successful');
       return;
     } on SignInWithAppleAuthorizationException catch (e) {
@@ -218,8 +218,18 @@ class AAuthProvider with ChangeNotifier {
     }
   }
 
-  void onNavigate(context) {
-    Utility.navigate(context, AppRoutes.dashboardScreen);
+  void onNavigate(context, String userId) async {
+    // Check if the parent have any child
+    final snpashot = await FirebaseFirestore.instance
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection(AppConstants.childrenCollection)
+        .get();
+    if (snpashot.docs.isEmpty) {
+      Utility.navigate(context, AppRoutes.childRegisterScreen);
+    } else {
+      Utility.navigate(context, AppRoutes.dashboardScreen);
+    }
   }
 
   void _handlePlatformException(BuildContext context, PlatformException e) {
