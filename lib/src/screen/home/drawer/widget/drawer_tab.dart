@@ -93,7 +93,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: 11,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -113,7 +113,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
               ),
               // Settings section
               Expanded(
-                flex: 1,
+                flex: 9,
                 child: _buildSettingsSection(),
               ),
             ],

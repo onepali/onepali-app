@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../src.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -107,8 +106,8 @@ class AuthProvider with ChangeNotifier {
       // Save UserModel to Firestore
       if (_user != null) {
         final userDocRef = FirebaseFirestore.instance
-          .collection(AppConstants.usersCollection)
-          .doc(_user!.uid);
+            .collection(AppConstants.usersCollection)
+            .doc(_user!.uid);
 
         final userModel = UserModel(
           uid: _user!.uid,
@@ -238,7 +237,19 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       if (!context.mounted) return;
       showCustomToaster("Login successful!");
-      Utility.navigate(context, AppRoutes.dashboardScreen);
+      // Check if the parent have any child
+      final snpashot = await FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(_user!.uid)
+          .collection(AppConstants.childrenCollection)
+          .get();
+      if (snpashot.docs.isEmpty) {
+        // If the parent have no child, redirect to child register screen
+        Utility.navigate(context, AppRoutes.childRegisterScreen);
+      } else {
+        // If the parent have child, redirect to dashboard screen
+        Utility.navigate(context, AppRoutes.dashboardScreen);
+      }
     } on FirebaseAuthException catch (e) {
       logger.e("FirebaseAuthException: ${e.code}");
       setStatus(DataFetchStatus.initial);

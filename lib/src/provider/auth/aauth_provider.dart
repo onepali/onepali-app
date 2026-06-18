@@ -33,26 +33,27 @@ class AAuthProvider with ChangeNotifier {
 
       // Create OAuth credential from Apple ID token
       // For Firebase, we only need the idToken (not authorizationCode)
-      final oauthCredential = firebase_auth.OAuthProvider("apple.com").credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
-      );
+      final oauthCredential = firebase_auth.OAuthProvider("apple.com")
+          .credential(
+            idToken: appleCredential.identityToken,
+            accessToken: appleCredential.authorizationCode,
+          );
 
       // Sign in to Firebase with Apple credential
-      final userCredential = await firebase_auth.FirebaseAuth.instance.signInWithCredential(
-        oauthCredential,
-      );
+      final userCredential = await firebase_auth.FirebaseAuth.instance
+          .signInWithCredential(oauthCredential);
 
       final firebaseUser = userCredential.user;
 
       // Prepare user info map
-      final String fullName = appleCredential.givenName != null &&
+      final String fullName =
+          appleCredential.givenName != null &&
               appleCredential.familyName != null
           ? '${appleCredential.givenName} ${appleCredential.familyName}'
           : appleCredential.givenName ??
-              appleCredential.familyName ??
-              firebaseUser?.displayName ??
-              '';
+                appleCredential.familyName ??
+                firebaseUser?.displayName ??
+                '';
 
       final Map<String, dynamic> userInfo = {
         'full_name': fullName,
@@ -149,24 +150,31 @@ class AAuthProvider with ChangeNotifier {
       notifyListeners();
 
       if (!context.mounted) return;
-      onNavigate(context);
+      onNavigate(context, firebaseUser?.uid ?? '');
       showCustomToaster('Login Successful');
       return;
     } on SignInWithAppleAuthorizationException catch (e) {
       if (!context.mounted) return;
-      logger.e('Apple Sign In AuthorizationException: code=${e.code}, message=${e.message}');
-      
+      logger.e(
+        'Apple Sign In AuthorizationException: code=${e.code}, message=${e.message}',
+      );
+
       if (e.code == AuthorizationErrorCode.canceled) {
         handleError("Apple Sign In cancelled.", context);
       } else if (e.code == AuthorizationErrorCode.unknown) {
         // Error 1000 - Unknown error
-        logger.e('Apple Sign In Error 1000 (Unknown). Common causes: missing capability, provisioning profile, or 2FA not enabled.');
+        logger.e(
+          'Apple Sign In Error 1000 (Unknown). Common causes: missing capability, provisioning profile, or 2FA not enabled.',
+        );
         handleError(
           "Apple Sign In failed. Please ensure Sign in with Apple is properly configured. Error: ${e.message ?? 'Unknown error (1000)'}",
           context,
         );
       } else {
-        handleError("Apple Sign In failed: ${e.message ?? 'Unknown error'} (Code: ${e.code})", context);
+        handleError(
+          "Apple Sign In failed: ${e.message ?? 'Unknown error'} (Code: ${e.code})",
+          context,
+        );
       }
     } on PlatformException catch (e) {
       _handlePlatformException(context, e);
@@ -210,8 +218,18 @@ class AAuthProvider with ChangeNotifier {
     }
   }
 
-  void onNavigate(context) {
-    Utility.navigate(context, AppRoutes.dashboardScreen);
+  void onNavigate(context, String userId) async {
+    // Check if the parent have any child
+    final snpashot = await FirebaseFirestore.instance
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection(AppConstants.childrenCollection)
+        .get();
+    if (snpashot.docs.isEmpty) {
+      Utility.navigate(context, AppRoutes.childRegisterScreen);
+    } else {
+      Utility.navigate(context, AppRoutes.dashboardScreen);
+    }
   }
 
   void _handlePlatformException(BuildContext context, PlatformException e) {
@@ -228,4 +246,3 @@ class AAuthProvider with ChangeNotifier {
     return showCustomToaster(msg, isError: true);
   }
 }
-
