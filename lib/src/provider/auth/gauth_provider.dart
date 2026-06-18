@@ -190,8 +190,18 @@ class GoogleAuthProvider with ChangeNotifier {
     }
   }
 
-  void onNavigate(BuildContext context) {
-    Utility.navigate(context, AppRoutes.dashboardScreen);
+  void onNavigate(BuildContext context, String userId) async {
+    // Check if the parent have any child
+    final snpashot = await FirebaseFirestore.instance
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection(AppConstants.childrenCollection)
+        .get();
+    if (snpashot.docs.isEmpty) {
+      Utility.navigate(context, AppRoutes.childRegisterScreen);
+    } else {
+      Utility.navigate(context, AppRoutes.dashboardScreen);
+    }
   }
 
   Future<GoogleSignInAccount?> _signInWithGoogle(BuildContext context) async {
