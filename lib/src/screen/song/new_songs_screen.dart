@@ -14,30 +14,19 @@ class NewSongsScreen extends StatelessWidget {
     required this.title,
   });
 
-  Widget _buildRainbowText(BuildContext context, String text) {
-    final rainbowColors = [
-      AppColors.kRed,
-      AppColors.lessonBgColor,
-      AppColors.kSongColor,
-      AppColors.kGreen,
-      AppColors.kBlue,
-      AppColors.kButtonGreen,
-      AppColors.kPurple,
-    ];
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(text.length, (index) {
-        return Text(
-          text[index],
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            fontFamily: GoogleFonts.lemon().fontFamily,
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            color: rainbowColors[index % rainbowColors.length],
-          ),
-        );
-      }),
+  Widget _buildTitleText(BuildContext context, String text) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontSize: 36,
+        letterSpacing: 2,
+        fontWeight: FontWeight.bold,
+        color: AppColors.kDrawerBgColor,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
     );
   }
 
@@ -48,29 +37,46 @@ class NewSongsScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Stack(
             children: [
-              const SizedBox.shrink(),
-              _buildRainbowText(context, title),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: isMobile
-                      ? closeBtnPositionMobile
-                      : closeBtnPositionTablet,
-                  bottom: isMobile
-                      ? closeBtnPositionMobile
-                      : closeBtnPositionTablet,
-                  right: isMobile
-                      ? closeBtnPositionMobile
-                      : closeBtnPositionTablet,
+              Positioned.fill(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: isMobile
+                        ? closeBtnPositionMobile
+                        : closeBtnPositionTablet,
+                    right:
+                        (isMobile
+                            ? closeBtnPositionMobile
+                            : closeBtnPositionTablet) +
+                        56,
+                  ),
+                  child: Center(child: _buildTitleText(context, title)),
                 ),
-                child: TopRightPositionedCloseButton(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: isMobile
+                          ? closeBtnPositionMobile
+                          : closeBtnPositionTablet,
+                      bottom: isMobile
+                          ? closeBtnPositionMobile
+                          : closeBtnPositionTablet,
+                      right: isMobile
+                          ? closeBtnPositionMobile
+                          : closeBtnPositionTablet,
+                    ),
+                    child: CustomCloseButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -91,18 +97,18 @@ class NewSongsScreen extends StatelessWidget {
                       mainAxisSpacing: 16.0,
                       crossAxisSpacing: 16.0,
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.only(
+                      right: 24,
+                      left: 24,
+                      bottom: 24,
+                    ),
                     itemBuilder: (context, index) {
                       final data = snapshot.data!.docs;
                       return ContentCard(
+                        showPlay: true,
                         nameEn: data[index]['title_en'],
                         nameNp: 'nameNp',
                         onTap: () {
-                          if (GuestUtil.isGuestUser()) {
-                            GuestUtil.showGuestAccountPrompt(context);
-                            return;
-                          }
-
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => SongVideoPlayerScreen(

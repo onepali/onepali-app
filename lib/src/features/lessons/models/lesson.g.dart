@@ -283,6 +283,9 @@ BallSlideLessonContent _$BallSlideLessonContentFromJson(
   player1: json['player1'] as String?,
   player2: json['player2'] as String?,
   ballImage: json['ball_image'] as String?,
+  sliderColor: json['slider_color'] as String?,
+  rotateBall: json['rotate_ball'] as bool? ?? true,
+  ballImageEnd: json['ball_image_end'] as String?,
   direction: json['direction'] as String? ?? 'ltr',
   conversation:
       (json['conversation'] as List<dynamic>?)
@@ -311,6 +314,9 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'player1': instance.player1,
   'player2': instance.player2,
   'ball_image': instance.ballImage,
+  'slider_color': instance.sliderColor,
+  'rotate_ball': instance.rotateBall,
+  'ball_image_end': instance.ballImageEnd,
   'direction': instance.direction,
   'conversation': instance.conversation,
   'angle': instance.angle,
@@ -369,6 +375,92 @@ Map<String, dynamic> _$FlipCardLessonContentToJson(
   'index': instance.index,
   'type': instance.type,
   'bg_image': instance.bgImage,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
+BalloonFillLessonContent _$BalloonFillLessonContentFromJson(
+  Map<String, dynamic> json,
+) => BalloonFillLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'balloon_fill',
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$BalloonFillLessonContentToJson(
+  BalloonFillLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
+GunFillLessonContent _$GunFillLessonContentFromJson(
+  Map<String, dynamic> json,
+) => GunFillLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'gun_fill',
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$GunFillLessonContentToJson(
+  GunFillLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
+HoliAnimateLessonContent _$HoliAnimateLessonContentFromJson(
+  Map<String, dynamic> json,
+) => HoliAnimateLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'holi_animate',
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  image: json['image'] as String,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$HoliAnimateLessonContentToJson(
+  HoliAnimateLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'image': instance.image,
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 

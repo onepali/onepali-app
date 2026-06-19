@@ -13,9 +13,12 @@ import 'package:onepali/src/features/lessons/blocs/tap_to_reveal_lesson_content_
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/views/ball_match_view.dart';
 import 'package:onepali/src/features/lessons/views/ball_slide_view.dart';
+import 'package:onepali/src/features/lessons/views/balloon_fill_view.dart';
 import 'package:onepali/src/features/lessons/views/choose_correct_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/drag_to_match_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/flip_card_view.dart';
+import 'package:onepali/src/features/lessons/views/gun_fill_view.dart';
+import 'package:onepali/src/features/lessons/views/holi_animate_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
@@ -137,6 +140,15 @@ class _LessonPageState extends State<LessonPage> {
                 content: lessonContent,
                 isLastContent: isLastContent,
                 onNext: handleNext,
+              ),
+              BalloonFillLessonContent() => BalloonFillView(
+                content: lessonContent,
+              ),
+              GunFillLessonContent() => GunFillLessonView(
+                content: lessonContent,
+              ),
+              HoliAnimateLessonContent() => HoliAnimateView(
+                content: lessonContent,
               ),
               _ => Center(child: Text('Unknown content type')),
             };

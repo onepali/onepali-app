@@ -20,6 +20,9 @@ class BallHeadingBloc extends Bloc<BallHeadingEvent, BallHeadingState> {
           _audioPlayerService.play(audio);
           await _audioPlayerService.onPlayerComplete.first;
         }
+        emit(state.copyWith(isAllAudioCompleted: true));
+      } else {
+        emit(state.copyWith(isAllAudioCompleted: true));
       }
     });
   }

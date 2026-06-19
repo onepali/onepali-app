@@ -167,6 +167,11 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? player1, //png
     String? player2, //png
     String? ballImage, //png
+    String? sliderColor, // Hex color
+    @Default(true) bool rotateBall,
+
+    /// This image[PNG] replaces the ball image when the ball reaches the end
+    String? ballImageEnd,
     @Default('ltr')
     String
     direction, // ltr, rtl, ltr_heading, rtl_heading, none(only play conversation audios)
@@ -203,6 +208,47 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? bgImage,
     @Default([]) List<Item> items,
   }) = FlipCardLessonContent;
+
+  //--------------------Holi lesson contents----------------
+  @FreezedUnionValue("balloon_fill")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.balloonFill({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('balloon_fill') String type,
+    String? bgImage,
+    String? bgImageTb,
+    @Default([]) List<Item> items,
+  }) = BalloonFillLessonContent;
+
+  @FreezedUnionValue("gun_fill")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.gunFill({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('gun_fill') String type,
+    String? bgImage, // Svg Image
+    String? bgImageTb, // Svg Image
+    @Default([]) List<Item> items,
+  }) = GunFillLessonContent;
+
+  @FreezedUnionValue("holi_animate")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.holiAnimate({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('holi_animate') String type,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    required String image, // Image to animate
+    @Default([]) List<Item> items,
+  }) = HoliAnimateLessonContent;
 
   const factory LessonContent.unknown({
     @Default('') String id,

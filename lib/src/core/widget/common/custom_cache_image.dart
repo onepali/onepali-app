@@ -8,6 +8,7 @@ class CustomCachedImage extends StatelessWidget {
   final BoxFit? fit;
   final Alignment? alignment;
   final Widget? errorWidget;
+  final Color? color;
 
   const CustomCachedImage({
     super.key,
@@ -17,6 +18,7 @@ class CustomCachedImage extends StatelessWidget {
     this.fit,
     this.alignment,
     this.errorWidget,
+    this.color,
   });
 
   @override
@@ -24,6 +26,7 @@ class CustomCachedImage extends StatelessWidget {
     return CachedNetworkImage(
       height: height,
       width: width,
+      color: color,
       fit: fit,
       imageUrl: imageUrl,
       alignment: alignment ?? Alignment.center,
