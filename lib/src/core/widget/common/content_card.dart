@@ -85,7 +85,7 @@ class _ContentCardState extends State<ContentCard> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    if (widget.image != null)
+                    if (widget.image != null && widget.bgImage == null)
                       Expanded(
                         child: widget.isImageSvg
                             ? SvgPicture.network(

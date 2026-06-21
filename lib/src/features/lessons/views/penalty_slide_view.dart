@@ -70,11 +70,9 @@ class PenaltySlideView extends StatelessWidget {
       ),
     );
 
-    return Scaffold(
-      body: PenaltySlider(
-        config: isMobile ? mobileConfig : tabletConfig,
-        content: content,
-      ),
+    return PenaltySlider(
+      config: isMobile ? mobileConfig : tabletConfig,
+      content: content,
     );
   }
 }

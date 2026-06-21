@@ -21,10 +21,17 @@ import 'package:onepali/src/features/lessons/views/gun_fill_view.dart';
 import 'package:onepali/src/features/lessons/views/holi_animate_view.dart';
 import 'package:onepali/src/features/lessons/views/info_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/intro_lesson_view.dart';
+import 'package:onepali/src/features/lessons/views/lesson_recommendation_view.dart';
 import 'package:onepali/src/features/lessons/views/listen_and_repeat_view.dart';
 import 'package:onepali/src/features/lessons/views/new_letter_tracing_page.dart';
+import 'package:onepali/src/features/lessons/views/option_selection_view.dart';
+import 'package:onepali/src/features/lessons/views/put_in_bag_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_the_button_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_change_view.dart';
+import 'package:onepali/src/features/lessons/views/tap_to_fill_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_pop_lesson_view.dart';
 import 'package:onepali/src/features/lessons/views/tap_to_reveal_lesson_view.dart';
+import 'package:onepali/src/features/lessons/widgets/unknown_lesson_type.dart';
 import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
 
 class LessonPage extends StatefulWidget {
@@ -100,6 +107,7 @@ class _LessonPageState extends State<LessonPage> {
                 ),
               ),
               TapToRevealLessonContent() => BlocProvider(
+                key: ValueKey('tap_to_reveal_${state.currentIndex}'),
                 create: (context) => TapToRevealLessonContentBloc(),
                 child: TapToRevealLessonView(content: lessonContent),
               ),
@@ -150,7 +158,36 @@ class _LessonPageState extends State<LessonPage> {
               HoliAnimateLessonContent() => HoliAnimateView(
                 content: lessonContent,
               ),
-              _ => Center(child: Text('Unknown content type')),
+              TapToChangeLessonContent() => TapToChangeView(
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              TapToFillLessonContent() => TapToFillView(
+                key: ValueKey('tap_to_fill_${state.currentIndex}'),
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              OptionSelectionLessonContent() => OptionSelectionView(
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              PutInBagLessonContent() => PutInBagView(
+                key: ValueKey('put_in_bag_${state.currentIndex}'),
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              TapTheButtonLessonContent() => TapTheButtonView(
+                key: ValueKey('tap_the_button_${state.currentIndex}'),
+                content: lessonContent,
+                onNext: handleNext,
+              ),
+              LessonRecommendationLessonContent() => LessonRecommendationView(
+                content: lessonContent,
+              ),
+              _ => UnknownLessonType(
+                isFirst: isFirstContent,
+                isLast: isLastContent,
+              ),
             };
           },
         ),

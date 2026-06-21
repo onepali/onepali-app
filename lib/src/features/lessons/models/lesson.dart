@@ -3,7 +3,7 @@ part 'lesson.freezed.dart';
 part 'lesson.g.dart';
 
 @freezed
-class Lesson with _$Lesson {
+abstract class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String name,
@@ -13,9 +13,6 @@ class Lesson with _$Lesson {
   }) = _Lesson;
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 abstract class LessonContentBase {
@@ -24,8 +21,8 @@ abstract class LessonContentBase {
   String get type;
 }
 
-@Freezed(unionKey: "type")
-class LessonContent with _$LessonContent implements LessonContentBase {
+@Freezed(unionKey: "type", fallbackUnion: "unknown")
+abstract class LessonContent with _$LessonContent implements LessonContentBase {
   @FreezedUnionValue('intro')
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
@@ -75,7 +72,8 @@ class LessonContent with _$LessonContent implements LessonContentBase {
   const factory LessonContent.tapToReveal({
     required String id,
     required int index,
-    String? bgImage,
+    String? bgImage, // Svg Image
+    String? bgImageTb, // Svg Image
     @Default('tap_to_reveal') String type,
     @Default([]) List<Item> items,
   }) = TapToRevealLessonContent;
@@ -170,6 +168,9 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     String? sliderColor, // Hex color
     @Default(true) bool rotateBall,
 
+    /// This message is for display when the action is done.
+    String? message,
+
     /// This image[PNG] replaces the ball image when the ball reaches the end
     String? ballImageEnd,
     @Default('ltr')
@@ -250,6 +251,100 @@ class LessonContent with _$LessonContent implements LessonContentBase {
     @Default([]) List<Item> items,
   }) = HoliAnimateLessonContent;
 
+  @FreezedUnionValue("tap_to_change")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapToChange({
+    required String id,
+    required int index,
+    String? audio,
+    @Default('tap_to_change') String type,
+    required String bgImage, // png Image
+    required String afterBgImage,
+    required String bgImageTb, // png Image
+    required String afterBgImageTb,
+    String? tapGesture, // Png image
+    String? splashImage,
+    @Default([]) List<Item> items,
+  }) = TapToChangeLessonContent;
+
+  ///--------------------Daily Conversation Lesson Content----------------
+  @FreezedUnionValue("tap_to_fill")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapToFill({
+    required String id,
+    required int index,
+    @Default('tap_to_fill') String type,
+    String? instruction,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    @Default([]) List<Option> options,
+  }) = TapToFillLessonContent;
+
+  @FreezedUnionValue("option_selection")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.optionSelection({
+    required String id,
+    required int index,
+    @Default('option_selection') String type,
+    required String? image, // png Image
+    String? instruction,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    @Default([]) List<Option> options,
+  }) = OptionSelectionLessonContent;
+
+  @FreezedUnionValue("put_in_bag")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.putInBag({
+    required String id,
+    required int index,
+    @Default('put_in_bag') String type,
+
+    /// If true, only one choice is allowed
+    @Default(false) bool onlyOneChoice,
+    String? instructionAudio,
+
+    /// Bag in the background
+    String? bagImage,
+    String? bgColor,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    @Default([]) List<Item> items,
+    // 0 to 1. This is used to add gap between top items and the bag. 0 means no gap, 1 means full height of the screen.
+    @Default(0.0) num topBagPaddingRatio,
+  }) = PutInBagLessonContent;
+
+  @FreezedUnionValue("tap_the_button")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.tapTheButton({
+    required String id,
+    required int index,
+    @Default('tap_the_button') String type,
+    String? instruction,
+    String? bgImage, // png Image
+    String? bgImageTb, // png Image
+    String? buttonImage, // png Image
+    String? tapAudio, // Played when the button is tapped
+  }) = TapTheButtonLessonContent;
+
+  @FreezedUnionValue("lesson_recommendation")
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory LessonContent.lessonRecommendation({
+    required String id,
+    required int index,
+    @Default('lesson_recommendation') String type,
+    String? bgColor,
+    @Default([])
+    List<Map<String, dynamic>> lessons, // id and image of recommended lessons
+  }) = LessonRecommendationLessonContent;
+
+  @FreezedUnionValue("unknown")
   const factory LessonContent.unknown({
     @Default('') String id,
     @Default(-1) int index,
@@ -258,13 +353,10 @@ class LessonContent with _$LessonContent implements LessonContentBase {
 
   factory LessonContent.fromJson(Map<String, dynamic> json) =>
       _$LessonContentFromJson(json);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 @freezed
-class Item with _$Item {
+abstract class Item with _$Item {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Item({
@@ -285,12 +377,28 @@ class Item with _$Item {
     num? dxRatioMobile,
     num? dyRatioMobile,
     @Default(false) bool isCorrect,
+    // Size of mb. This is used to scale the image in mb.
+    @Default(1.0) num sizeMb,
+    // Size of tb. This is used to scale the image in tb.
+    @Default(1.0) num sizeTb,
   }) = _Item;
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+}
 
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+@freezed
+abstract class Option with _$Option {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory Option({
+    int? order,
+    required String nameEn,
+    required String nameNp,
+    String? audio,
+    @Default(false) bool isCorrect,
+  }) = _Option;
+
+  factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 }
 
 class LessonDetail {

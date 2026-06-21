@@ -77,6 +77,26 @@ class MediaCacheManager {
         if (content is GunFillLessonContent) {
           _precacheGunFillLessonContent(content, context);
         }
+        //15. Tap to change
+        if (content is TapToChangeLessonContent) {
+          _precacheTapToChangeLessonContent(content, context);
+        }
+        //16. Tap to fill
+        if (content is TapToFillLessonContent) {
+          _precacheTapToFillLessonContent(content, context);
+        }
+        //17. Option selection
+        if (content is OptionSelectionLessonContent) {
+          _precacheOptionSelectionLessonContent(content, context);
+        }
+        //18. Put in bag
+        if (content is PutInBagLessonContent) {
+          _precachePutInBagLessonContent(content, context);
+        }
+        //19. Tap the button
+        if (content is TapTheButtonLessonContent) {
+          _precacheTapTheButtonLessonContent(content, context);
+        }
       }
     } catch (e) {
       log('Error pre caching medias: $e');
@@ -371,6 +391,111 @@ class MediaCacheManager {
 
     for (var item in content.items) {
       _precacheItemMedia(item, context);
+    }
+  }
+
+  // 15. Tap to change
+  _precacheTapToChangeLessonContent(
+    TapToChangeLessonContent content,
+    BuildContext context,
+  ) {
+    precacheImage(CachedNetworkImageProvider(content.bgImage), context);
+    precacheImage(CachedNetworkImageProvider(content.afterBgImage), context);
+
+    precacheImage(CachedNetworkImageProvider(content.bgImageTb), context);
+    precacheImage(CachedNetworkImageProvider(content.afterBgImageTb), context);
+    for (var item in content.items) {
+      _precacheItemMedia(item, context);
+    }
+    if (content.audio != null) {
+      _precacheMedia(content.audio!);
+    }
+    if (content.tapGesture != null) {
+      precacheImage(CachedNetworkImageProvider(content.tapGesture!), context);
+    }
+    if (content.splashImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.splashImage!), context);
+    }
+  }
+
+  //16. Tap to fill
+  _precacheTapToFillLessonContent(
+    TapToFillLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.instruction != null) {
+      _precacheMedia(content.instruction!);
+    }
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+    }
+  }
+
+  //17. Option selection
+  _precacheOptionSelectionLessonContent(
+    OptionSelectionLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.instruction != null) {
+      _precacheMedia(content.instruction!);
+    }
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+    }
+    if (content.image != null) {
+      precacheImage(CachedNetworkImageProvider(content.image!), context);
+    }
+  }
+
+  //18. Put in bag
+  _precachePutInBagLessonContent(
+    PutInBagLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.instructionAudio != null) {
+      _precacheMedia(content.instructionAudio!);
+    }
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+    }
+    if (content.bagImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bagImage!), context);
+    }
+    for (var item in content.items) {
+      _precacheItemMedia(item, context);
+    }
+  }
+
+  //19. Tap the button
+  _precacheTapTheButtonLessonContent(
+    TapTheButtonLessonContent content,
+    BuildContext context,
+  ) {
+    if (content.bgImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+    }
+
+    if (content.bgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+    }
+    if (content.buttonImage != null) {
+      precacheImage(CachedNetworkImageProvider(content.buttonImage!), context);
+    }
+    if (content.tapAudio != null) {
+      _precacheMedia(content.tapAudio!);
+    }
+    if (content.instruction != null) {
+      _precacheMedia(content.instruction!);
     }
   }
 

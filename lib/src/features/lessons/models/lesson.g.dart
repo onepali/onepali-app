@@ -104,6 +104,7 @@ TapToRevealLessonContent _$TapToRevealLessonContentFromJson(
   id: json['id'] as String,
   index: (json['index'] as num).toInt(),
   bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
   type: json['type'] as String? ?? 'tap_to_reveal',
   items:
       (json['items'] as List<dynamic>?)
@@ -118,6 +119,7 @@ Map<String, dynamic> _$TapToRevealLessonContentToJson(
   'id': instance.id,
   'index': instance.index,
   'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
   'type': instance.type,
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
@@ -285,6 +287,7 @@ BallSlideLessonContent _$BallSlideLessonContentFromJson(
   ballImage: json['ball_image'] as String?,
   sliderColor: json['slider_color'] as String?,
   rotateBall: json['rotate_ball'] as bool? ?? true,
+  message: json['message'] as String?,
   ballImageEnd: json['ball_image_end'] as String?,
   direction: json['direction'] as String? ?? 'ltr',
   conversation:
@@ -316,6 +319,7 @@ Map<String, dynamic> _$BallSlideLessonContentToJson(
   'ball_image': instance.ballImage,
   'slider_color': instance.sliderColor,
   'rotate_ball': instance.rotateBall,
+  'message': instance.message,
   'ball_image_end': instance.ballImageEnd,
   'direction': instance.direction,
   'conversation': instance.conversation,
@@ -464,6 +468,186 @@ Map<String, dynamic> _$HoliAnimateLessonContentToJson(
   'items': instance.items.map((e) => e.toJson()).toList(),
 };
 
+TapToChangeLessonContent _$TapToChangeLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TapToChangeLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  audio: json['audio'] as String?,
+  type: json['type'] as String? ?? 'tap_to_change',
+  bgImage: json['bg_image'] as String,
+  afterBgImage: json['after_bg_image'] as String,
+  bgImageTb: json['bg_image_tb'] as String,
+  afterBgImageTb: json['after_bg_image_tb'] as String,
+  tapGesture: json['tap_gesture'] as String?,
+  splashImage: json['splash_image'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TapToChangeLessonContentToJson(
+  TapToChangeLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'audio': instance.audio,
+  'type': instance.type,
+  'bg_image': instance.bgImage,
+  'after_bg_image': instance.afterBgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'after_bg_image_tb': instance.afterBgImageTb,
+  'tap_gesture': instance.tapGesture,
+  'splash_image': instance.splashImage,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+};
+
+TapToFillLessonContent _$TapToFillLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TapToFillLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'tap_to_fill',
+  instruction: json['instruction'] as String?,
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  options:
+      (json['options'] as List<dynamic>?)
+          ?.map((e) => Option.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$TapToFillLessonContentToJson(
+  TapToFillLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'instruction': instance.instruction,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'options': instance.options.map((e) => e.toJson()).toList(),
+};
+
+OptionSelectionLessonContent _$OptionSelectionLessonContentFromJson(
+  Map<String, dynamic> json,
+) => OptionSelectionLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'option_selection',
+  image: json['image'] as String?,
+  instruction: json['instruction'] as String?,
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  options:
+      (json['options'] as List<dynamic>?)
+          ?.map((e) => Option.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$OptionSelectionLessonContentToJson(
+  OptionSelectionLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'image': instance.image,
+  'instruction': instance.instruction,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'options': instance.options.map((e) => e.toJson()).toList(),
+};
+
+PutInBagLessonContent _$PutInBagLessonContentFromJson(
+  Map<String, dynamic> json,
+) => PutInBagLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'put_in_bag',
+  onlyOneChoice: json['only_one_choice'] as bool? ?? false,
+  instructionAudio: json['instruction_audio'] as String?,
+  bagImage: json['bag_image'] as String?,
+  bgColor: json['bg_color'] as String?,
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  topBagPaddingRatio: json['top_bag_padding_ratio'] as num? ?? 0.0,
+);
+
+Map<String, dynamic> _$PutInBagLessonContentToJson(
+  PutInBagLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'only_one_choice': instance.onlyOneChoice,
+  'instruction_audio': instance.instructionAudio,
+  'bag_image': instance.bagImage,
+  'bg_color': instance.bgColor,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'items': instance.items.map((e) => e.toJson()).toList(),
+  'top_bag_padding_ratio': instance.topBagPaddingRatio,
+};
+
+TapTheButtonLessonContent _$TapTheButtonLessonContentFromJson(
+  Map<String, dynamic> json,
+) => TapTheButtonLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'tap_the_button',
+  instruction: json['instruction'] as String?,
+  bgImage: json['bg_image'] as String?,
+  bgImageTb: json['bg_image_tb'] as String?,
+  buttonImage: json['button_image'] as String?,
+  tapAudio: json['tap_audio'] as String?,
+);
+
+Map<String, dynamic> _$TapTheButtonLessonContentToJson(
+  TapTheButtonLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'instruction': instance.instruction,
+  'bg_image': instance.bgImage,
+  'bg_image_tb': instance.bgImageTb,
+  'button_image': instance.buttonImage,
+  'tap_audio': instance.tapAudio,
+};
+
+LessonRecommendationLessonContent _$LessonRecommendationLessonContentFromJson(
+  Map<String, dynamic> json,
+) => LessonRecommendationLessonContent(
+  id: json['id'] as String,
+  index: (json['index'] as num).toInt(),
+  type: json['type'] as String? ?? 'lesson_recommendation',
+  bgColor: json['bg_color'] as String?,
+  lessons:
+      (json['lessons'] as List<dynamic>?)
+          ?.map((e) => e as Map<String, dynamic>)
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$LessonRecommendationLessonContentToJson(
+  LessonRecommendationLessonContent instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'index': instance.index,
+  'type': instance.type,
+  'bg_color': instance.bgColor,
+  'lessons': instance.lessons,
+};
+
 UnknownLessonContent _$UnknownLessonContentFromJson(
   Map<String, dynamic> json,
 ) => UnknownLessonContent(
@@ -498,6 +682,8 @@ _Item _$ItemFromJson(Map<String, dynamic> json) => _Item(
   dxRatioMobile: json['dx_ratio_mobile'] as num?,
   dyRatioMobile: json['dy_ratio_mobile'] as num?,
   isCorrect: json['is_correct'] as bool? ?? false,
+  sizeMb: json['size_mb'] as num? ?? 1.0,
+  sizeTb: json['size_tb'] as num? ?? 1.0,
 );
 
 Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
@@ -517,5 +703,23 @@ Map<String, dynamic> _$ItemToJson(_Item instance) => <String, dynamic>{
   'dy_ratio': instance.dyRatio,
   'dx_ratio_mobile': instance.dxRatioMobile,
   'dy_ratio_mobile': instance.dyRatioMobile,
+  'is_correct': instance.isCorrect,
+  'size_mb': instance.sizeMb,
+  'size_tb': instance.sizeTb,
+};
+
+_Option _$OptionFromJson(Map<String, dynamic> json) => _Option(
+  order: (json['order'] as num?)?.toInt(),
+  nameEn: json['name_en'] as String,
+  nameNp: json['name_np'] as String,
+  audio: json['audio'] as String?,
+  isCorrect: json['is_correct'] as bool? ?? false,
+);
+
+Map<String, dynamic> _$OptionToJson(_Option instance) => <String, dynamic>{
+  'order': instance.order,
+  'name_en': instance.nameEn,
+  'name_np': instance.nameNp,
+  'audio': instance.audio,
   'is_correct': instance.isCorrect,
 };

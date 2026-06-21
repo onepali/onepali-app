@@ -13,6 +13,7 @@ import 'package:onepali/src/features/lessons/views/conversation_view.dart';
 import 'package:onepali/src/features/lessons/views/heading_view.dart';
 import 'package:onepali/src/features/lessons/views/penalty_slide_view.dart';
 import 'package:onepali/src/features/lessons/widgets/ball_slider.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class BallSlideView extends StatelessWidget {
   const BallSlideView({super.key, required this.content, required this.onNext});
@@ -160,39 +161,23 @@ class _SliderViewState extends State<_SliderView> {
             ),
 
             // Goal message
-            // BlocBuilder<BallSliderBloc, BallSliderState>(
-            //   buildWhen: (p, c) => p.isComplete != c.isComplete,
-            //   builder: (context, state) => AnimatedPositioned(
-            //     duration: const Duration(milliseconds: 300),
-            //     bottom: state.isComplete ? 60 : 20,
-            //     left: 0,
-            //     right: 0,
-            //     child: AnimatedOpacity(
-            //       opacity: state.isComplete ? 1.0 : 0.0,
-            //       duration: const Duration(milliseconds: 300),
-            //       child: Center(
-            //         child: Container(
-            //           padding: const EdgeInsets.symmetric(
-            //             horizontal: 24,
-            //             vertical: 12,
-            //           ),
-            //           decoration: BoxDecoration(
-            //             color: AppColors.kYellow,
-            //             borderRadius: BorderRadius.circular(30),
-            //           ),
-            //           child: const Text(
-            //             'Goal!',
-            //             style: TextStyle(
-            //               fontSize: 22,
-            //               fontWeight: FontWeight.bold,
-            //               color: Colors.black87,
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            BlocBuilder<BallSliderBloc, BallSliderState>(
+              buildWhen: (p, c) => p.isComplete != c.isComplete,
+              builder: (context, state) {
+                if (state.isComplete && state.content?.message != null) {
+                  return Positioned(
+                    top: size.height * 0.1,
+                    left: 0,
+                    right: 0,
+                    child: LabelDisplay(
+                      nameNp: state.content?.message ?? '',
+                      nameEn: '',
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
           ],
         );
       },
