@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
@@ -11,8 +12,14 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
 
 class TapTheButtonView extends StatelessWidget {
-  const TapTheButtonView({super.key, required this.content});
+  const TapTheButtonView({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
+
   final TapTheButtonLessonContent content;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,7 @@ class TapTheButtonView extends StatelessWidget {
       child: BlocBuilder<TapTheButtonBloc, TapTheButtonState>(
         builder: (context, state) {
           if (state.content == null) {
-            return const SizedBox.shrink();
+            return const Center(child: Text('No content found'));
           }
           return Stack(
             children: [
@@ -34,7 +41,10 @@ class TapTheButtonView extends StatelessWidget {
                   bgImageTb: content.bgImageTb,
                 ),
               ),
-              if (state.isIdle)
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.of(context).pop(),
+              ),
+              if (!state.isTapped && !state.isCompleted)
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -73,11 +83,7 @@ class TapTheButtonView extends StatelessWidget {
                   },
                 ),
               if (state.isCompleted || state.isTapped)
-                CenterRightAlignedForwardButton(
-                  onTap: () {
-                    context.read<LessonBloc>().add(LessonEvent.nextContent());
-                  },
-                ),
+                CenterRightAlignedForwardButton(onTap: onNext),
             ],
           );
         },

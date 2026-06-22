@@ -7,8 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
-import 'package:onepali/src/core/widget/common/close_button.dart';
-import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -27,6 +25,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
   AudioPlayer? _questionAudioPlayer;
   AudioPlayer? _itemAudioPlayer;
   AudioPlayer? _wrongSfxPlayer;
+  bool _advancedAfterCompletion = false;
   Timer? _hintTimer;
   String? _hintQuestionKey;
   bool _showHintPulse = false;
@@ -62,7 +61,11 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
 
       await _questionAudioPlayer!.play(DeviceFileSource(audioFile.path));
     } catch (e) {
-      print('Error playing question audio: $e');
+      log('Error playing question audio: $e');
+      if (!mounted) return;
+      context.read<TapToRevealLessonContentBloc>().add(
+        const TapToRevealLessonContentEvent.questionAudioCompleted(),
+      );
     }
   }
 
@@ -85,7 +88,11 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
 
       await _itemAudioPlayer!.play(DeviceFileSource(audioFile.path));
     } catch (e) {
-      print('Error playing item audio: $e');
+      log('Error playing item audio: $e');
+      if (!mounted) return;
+      context.read<TapToRevealLessonContentBloc>().add(
+        const TapToRevealLessonContentEvent.correctAudioCompleted(),
+      );
     }
   }
 
@@ -118,7 +125,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
 
     _cancelHintPulse();
     _hintQuestionKey = nextQuestionKey;
-    _hintTimer = Timer(const Duration(seconds: 7), () {
+    _hintTimer = Timer(const Duration(seconds: 4), () {
       if (!mounted) return;
       final latestState = context.read<TapToRevealLessonContentBloc>().state;
       final latestQuestionKey = _questionKey(latestState.currentQuestion);
@@ -164,34 +171,63 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
             state.tappedItem != null) {
           await _wrongSfxPlayer?.play(AssetSource('audio/sfx/wrong.mp3'));
         }
-        if (state.isQuestionAudioPlaying && state.currentQuestion != null) {
-          _playQuestionAudio(state.currentQuestion!.question!);
+        final question = state.currentQuestion?.question;
+        if (state.isQuestionAudioPlaying &&
+            question != null &&
+            question.isNotEmpty) {
+          _playQuestionAudio(question);
         }
 
         if (state.isCorrectAudioPlaying && state.tappedItem != null) {
-          _playItemAudio(state.tappedItem!.audioItem!);
+          final audioItem = state.tappedItem!.audioItem;
+          if (audioItem != null && audioItem.isNotEmpty) {
+            _playItemAudio(audioItem);
+          } else {
+            context.read<TapToRevealLessonContentBloc>().add(
+              const TapToRevealLessonContentEvent.correctAudioCompleted(),
+            );
+          }
         }
       },
       builder: (context, state) {
-        if (state.content == null || state.selectedItems.isEmpty) {
+        if (state.errorMessage != null) {
+          return _LessonContentError(message: state.errorMessage!);
+        }
+
+        if (state.content == null) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final content = state.content!;
-
-        if (state.allQuestionsCompleted) {
-          context.read<LessonBloc>().add(LessonEvent.nextContent());
+        if (state.selectedItems.isEmpty) {
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                context.read<LessonBloc>().add(const LessonEvent.nextContent());
+              },
+              child: const Text('Next'),
+            ),
+          );
         }
+
+        if (state.allQuestionsCompleted && !_advancedAfterCompletion) {
+          _advancedAfterCompletion = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            context.read<LessonBloc>().add(const LessonEvent.nextContent());
+          });
+        }
+
+        final content = state.content!;
+        final selectedBgImage = isMobile
+            ? content.bgImage ?? content.bgImageTb
+            : content.bgImageTb ?? content.bgImage;
 
         return Stack(
           children: [
             Positioned.fill(
-              child: SvgPicture.network(
-                isMobile
-                    ? content.bgImage ?? content.bgImageTb ?? ''
-                    : content.bgImageTb ?? content.bgImage ?? '',
-                fit: BoxFit.cover,
-              ),
+              child: selectedBgImage == null || selectedBgImage.isEmpty
+                  ? Container(color: Colors.grey[100])
+                  : SvgPicture.network(selectedBgImage, fit: BoxFit.cover),
             ),
 
             ...content.items.asMap().entries.map((entry) {
@@ -220,7 +256,6 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                   : item.dyRatio != null
                   ? item.dyRatio!.toDouble()
                   : 0.5;
-              log('dx: $dx, dy: $dy');
               return Positioned(
                 left: dx * size.width,
                 top: dy * size.height,
@@ -237,14 +272,6 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                     isWrong: isTapped && !state.isCorrect,
                     showHintPulse: showHintPulse,
                     onTap: () async {
-                      final isCorrect =
-                          item.nameEn == state.currentQuestion?.nameEn &&
-                          item.nameNp == state.currentQuestion?.nameNp;
-                      // Track the answer using PzMetricsProvider
-                      context.read<PzMetricsProvider>().trackAnswer1(
-                        isCorrect: isCorrect,
-                      );
-                      // Update the state based on the tapped item
                       context.read<TapToRevealLessonContentBloc>().add(
                         TapToRevealLessonContentEvent.itemTapped(item),
                       );
@@ -256,21 +283,21 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
 
             if (state.currentQuestion != null)
               Positioned(
-                top: isMobile ? 24 : 32,
+                top: 16,
                 left: 0,
                 right: 0,
-                child: SpeakerIcon(
+                child: GestureDetector(
                   onTap:
                       state.isQuestionAudioPlaying ||
                           state.isCorrectAudioPlaying
                       ? null
                       : () {
-                          if (state.currentQuestion != null) {
-                            _playQuestionAudio(
-                              state.currentQuestion!.question!,
-                            );
+                          final question = state.currentQuestion?.question;
+                          if (question != null && question.isNotEmpty) {
+                            _playQuestionAudio(question);
                           }
                         },
+                  child: SvgHelper.fromSource(path: Assets.sound),
                 ),
               ),
 
@@ -285,14 +312,44 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 ),
               ),
 
-            TopRightPositionedCloseButton(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
+            Positioned(
+              top: 16,
+              right: 16,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: SvgHelper.fromSource(path: Assets.wrong),
+              ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _LessonContentError extends StatelessWidget {
+  const _LessonContentError({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, style: AppStyles.text20PxMedium),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              context.read<LessonBloc>().add(const LessonEvent.nextContent());
+            },
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
     );
   }
 }

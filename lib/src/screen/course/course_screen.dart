@@ -79,7 +79,8 @@ class CourseScreenState extends State<CourseScreen> {
                           constraints.maxWidth,
                           isMobile: isMobile,
                         );
-                        final cardWidth = baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardWidth =
+                            baseCardWidth * (isMobile ? 1.12 : 1.0);
                         final cardHeight =
                             baseCardWidth /
                             AppConstants.contentCardAspectRatio *
@@ -98,13 +99,13 @@ class CourseScreenState extends State<CourseScreen> {
                                         width: cardWidth,
                                         height: cardHeight,
                                         child: ContentCard(
-                                            nameEn: lesson['name'],
-                                            nameNp: lesson['name'],
-                                            image: lesson['image'],
-                                            bgImage: lesson['bg_image'],
-                                            bgColor: lesson['bg_color'],
-                                            onTap: () => _onTapLesson(lesson),
-                                          ),
+                                          nameEn: lesson['name'],
+                                          nameNp: lesson['name'],
+                                          image: lesson['image'],
+                                          bgImage: lesson['bg_image'],
+                                          bgColor: lesson['bg_color'],
+                                          onTap: () => _onTapLesson(lesson),
+                                        ),
                                       ),
                                       Gaps.horizontalGapOf(
                                         AppConstants.contentCardGridSpacing,

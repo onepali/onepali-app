@@ -41,10 +41,9 @@ class _AnimatedCounter extends StatelessWidget {
       duration: const Duration(milliseconds: 900),
       curve: Curves.easeOutCubic,
       builder: (_, animatedValue, _) {
-        return Text(
-          animatedValue.toString(),
-          style: style,
-        ).animate(key: ValueKey('counter_$parsed')).scaleXY(
+        return Text(animatedValue.toString(), style: style)
+            .animate(key: ValueKey('counter_$parsed'))
+            .scaleXY(
               begin: 0.85,
               end: 1.0,
               duration: 300.ms,

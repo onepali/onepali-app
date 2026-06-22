@@ -1,9 +1,7 @@
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
@@ -16,9 +14,12 @@ import 'package:onepali/src/features/lessons/models/lesson.dart';
 class MatchGameScreen extends StatefulWidget {
   final SlideUpToMatchLessonContent content;
   final bool isLastContent;
+  final VoidCallback onNext;
+
   const MatchGameScreen({
     super.key,
     required this.content,
+    required this.onNext,
     this.isLastContent = false,
   });
 
@@ -27,31 +28,13 @@ class MatchGameScreen extends StatefulWidget {
 }
 
 class _MatchGameScreenState extends State<MatchGameScreen> {
-  late AudioPlayerService audioProvider;
-  @override
-  void initState() {
-    super.initState();
-    audioProvider = AudioPlayerServiceImpl();
-  }
-
-  @override
-  void dispose() {
-    audioProvider.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.sizeOf(context);
     return BlocProvider(
       create: (context) => MatchBloc()..add(MatchEvent.started(widget.content)),
-      child: BlocConsumer<MatchBloc, MatchState>(
-        listener: (context, state) {
-          if (state.isAnsweredAll && widget.isLastContent) {
-            audioProvider.playAsset(Assets.confettiFeedback);
-          }
-        },
+      child: BlocBuilder<MatchBloc, MatchState>(
         builder: (context, state) {
           if (state.content == null) {
             return SizedBox.shrink();
@@ -86,7 +69,7 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
                   SizedBox(height: isMobile ? 60 : size.height * 0.15),
                 ],
               ),
-              if (state.isAnsweredAll & widget.isLastContent)
+              if (state.isAnsweredAll && widget.isLastContent)
                 Positioned.fill(
                   child: LottieHelper.fromSource(
                     path: Assets.confetti1,
@@ -98,12 +81,8 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
                   context.read<LessonBloc>().add(LessonEvent.previousContent());
                 },
               ),
-              if (!widget.isLastContent)
-                CenterRightAlignedForwardButton(
-                  onTap: () {
-                    context.read<LessonBloc>().add(LessonEvent.nextContent());
-                  },
-                ),
+              if (state.isAnsweredAll)
+                CenterRightAlignedForwardButton(onTap: widget.onNext),
 
               TopRightPositionedCloseButton(
                 onTap: () {
@@ -202,11 +181,7 @@ class TopItems extends StatelessWidget {
     final isMobile = PlatformUtility.isMobile(context);
     return DragTarget(
       onAcceptWithDetails: (details) {
-        final isCorrect = details.data == labelNp;
-        // Track the answer using PzMetricsProvider
-        context.read<PzMetricsProvider>().trackAnswer1(isCorrect: isCorrect);
-        if (isCorrect) {
-          // Update the state based on the accepted item
+        if (details.data == labelNp) {
           context.read<MatchBloc>().add(MatchEvent.onAccept(labelNp));
         }
       },

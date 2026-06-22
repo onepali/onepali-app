@@ -40,33 +40,42 @@ class _InfoLessonViewState extends State<InfoLessonView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('InfoLessonView didChangeDependencies');
+    log('InfoLessonView didChangeDependencies');
   }
 
   Future<void> _initializeMedia() async {
     try {
       // If video is present, cache and initialize it
-      if (widget.content.video != null) {
+      final videoUrl = widget.content.video;
+      if (videoUrl?.isNotEmpty == true) {
         final videoFile = await MediaCacheManager.instance.getSingleFile(
-          widget.content.video!,
+          videoUrl!,
         );
 
-        _videoController = VideoPlayerController.file(videoFile);
-        await _videoController!.initialize();
+        if (!mounted) return;
 
-        if (mounted) {
-          _videoController?.play();
+        final videoController = VideoPlayerController.file(videoFile);
+        await videoController.initialize();
+
+        if (!mounted) {
+          await videoController.dispose();
+          return;
         }
-        setState(() {});
-        // Listen for video completion
+
+        _videoController = videoController;
         _videoController!.addListener(_videoListener);
+
+        setState(() {});
+        await _videoController!.play();
       } else {
         // No video, mark as initialized and play audio immediately
-        if (mounted) {}
         await _playAudio();
       }
     } catch (e) {
       log('Error initializing media: $e');
+      if (mounted) {
+        await _playAudio();
+      }
     }
   }
 
@@ -100,10 +109,13 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         widget.content.audioWord,
       );
 
-      _audioPlayer = AudioPlayer();
+      if (!mounted) return;
+
+      final audioPlayer = AudioPlayer();
+      _audioPlayer = audioPlayer;
       bloc.add(const InfoLessonContentEvent.audioStarted());
 
-      await _audioPlayer!.play(DeviceFileSource(audioFile.path));
+      await audioPlayer.play(DeviceFileSource(audioFile.path));
     } catch (e) {
       log('Error playing audio: $e');
     }
@@ -138,10 +150,68 @@ class _InfoLessonViewState extends State<InfoLessonView> {
     super.dispose();
   }
 
+  Widget _buildMediaContent(InfoLessonContent content, bool showVideo) {
+    final hasVideo = content.video != null && content.video!.isNotEmpty;
+
+    if (hasVideo) {
+      final showVideoWidget =
+          showVideo &&
+          _videoController != null &&
+          _videoController!.value.isInitialized;
+
+      return Stack(
+        children: [
+          if (!showVideoWidget)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: GestureDetector(
+                  onTap: _replayVideo,
+                  child: content.isImageSvg
+                      ? SvgHelper.fromSource(
+                          path: content.image,
+                          type: SvgSourceType.network,
+                          fit: BoxFit.cover,
+                        )
+                      : CustomCachedImage(
+                          imageUrl: content.image,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [if (showVideoWidget) VideoPlayer(_videoController!)],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: content.isImageSvg
+            ? SvgHelper.fromSource(
+                path: content.image,
+                type: SvgSourceType.network,
+                fit: BoxFit.contain,
+              )
+            : CustomCachedImage(imageUrl: content.image, fit: BoxFit.contain),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
     return BlocBuilder<InfoLessonContentBloc, InfoLessonContentState>(
       builder: (context, state) {
         if (state.lessonContent == null) {
@@ -149,131 +219,75 @@ class _InfoLessonViewState extends State<InfoLessonView> {
         }
 
         final showVideo =
-            widget.content.video != null && !state.isVideoCompleted;
+            widget.content.video?.isNotEmpty == true && !state.isVideoCompleted;
         final content = state.lessonContent!;
 
-        return Stack(
-          children: [
-            Row(
-              children: [
-                Expanded(flex: 1, child: SizedBox.shrink()),
-                // 👇 VIDEO OR IMAGE
-                Expanded(
-                  flex: 4,
-                  child: widget.content.video != null
-                      ? LayoutBuilder(
-                          builder: (context, constraints) {
-                            final showVideoWidget =
-                                showVideo &&
-                                _videoController != null &&
-                                _videoController!.value.isInitialized;
-                            return Stack(
-                              children: [
-                                if (!showVideoWidget)
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: AspectRatio(
-                                      aspectRatio: 16 / 9,
-                                      child: GestureDetector(
-                                        onTap: _replayVideo,
-                                        child: content.isImageSvg
-                                            ? SvgHelper.fromSource(
-                                                path: content.image,
-                                                type: SvgSourceType.network,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : CustomCachedImage(
-                                                imageUrl: content.image,
-                                                fit: BoxFit.cover,
-                                              ),
-                                      ),
-                                    ),
-                                  ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        // 2️⃣ Video player on top if playing
-                                        if (showVideoWidget)
-                                          VideoPlayer(_videoController!),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: content.isImageSvg
-                                ? SvgHelper.fromSource(
-                                    path: content.image,
-                                    type: SvgSourceType.network,
-                                    fit: BoxFit.contain,
-                                  )
-                                : CustomCachedImage(
-                                    imageUrl: content.image,
-                                    fit: BoxFit.contain,
-                                  ),
+        return Center(
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: CenterLeftAlignedBackButton(
+                      onTap: () {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.previousContent(),
+                        );
+                      },
+                    ),
+                  ),
+
+                  Expanded(
+                    flex: 4,
+                    child: _buildMediaContent(content, showVideo),
+                  ),
+
+                  // Information Section
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          content.nameNp,
+                          style: AppStyles.text32PxBold.copyWith(
+                            color: AppColors.kDrawerBgColor,
+                            fontFamily: AppConstants.kMuktaFont,
+                            fontSize: 64,
                           ),
                         ),
-                ),
-        
-                // Information Section
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        content.nameNp,
-                        style: AppStyles.text32PxBold.copyWith(
-                          color: AppColors.kDrawerBgColor,
-                          fontFamily: AppConstants.kMuktaFont,
-                          fontSize: 64,
+                        const SizedBox(height: 20),
+                        Text(
+                          content.nameEn,
+                          style: AppStyles.text20PxMedium.copyWith(
+                            fontSize: 32,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        content.nameEn,
-                        style: AppStyles.text20PxMedium.copyWith(
-                          fontSize: 32,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SpeakerIcon(onTap: _replayAudio),
-                    ],
+                        const SizedBox(height: 20),
+                        SpeakerIcon(onTap: _replayAudio),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(flex: 1, child: SizedBox.shrink()),
-              ],
-            ),
-            // Close button
-            TopRightPositionedCloseButton(
-              onTap: () => Navigator.pop(context),
-            ),
-        
-            //  LEFT ARROW
-            CenterLeftAlignedBackButton(
-              onTap: () {
-                context.read<LessonBloc>().add(
-                  const LessonEvent.previousContent(),
-                );
-              },
-            ),
-            // Forward button
-            CenterRightAlignedForwardButton(
-              onTap: () {
-                context.read<LessonBloc>().add(LessonEvent.nextContent());
-              },
-            ),
-          ],
+
+                  Expanded(
+                    flex: 1,
+                    child: CenterRightAlignedForwardButton(
+                      onTap: () {
+                        context.read<LessonBloc>().add(
+                          const LessonEvent.nextContent(),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
         );
       },
     );

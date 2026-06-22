@@ -106,7 +106,7 @@ class _HeadingViewState extends State<HeadingView> {
                             child: CurvedBallSlider(
                               height: isMobile ? 150 : 300,
                               isRTL: widget.content.direction == 'rtl_heading',
-                              value: isComplete? 1.0: 0.0,
+                              value: isComplete ? 1.0 : 0.0,
                               sliderColor: widget.content.sliderColor,
                               onChanged: (v) {
                                 if (v == 1.0) {

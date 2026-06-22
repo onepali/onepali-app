@@ -13,9 +13,9 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
   nameNp: json['nameNp'] as String? ?? '',
   thumbnail: json['thumbnail'] as String? ?? '',
   lottie: json['lottie'] as String? ?? '',
-  audio: json['audio'] == null
-      ? const <String>[]
-      : _stringListFromJson(json['audio']),
+  audio:
+      (json['audio'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
   tooltip: json['tooltip'] as String? ?? '',
   description: json['description'] as String? ?? '',
   content:
@@ -42,13 +42,13 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     };
 
 _Content _$ContentFromJson(Map<String, dynamic> json) => _Content(
-  image: json['image'] as String? ?? '',
+  image: json['image'] as String?,
   imageTb: json['image_tb'] as String?,
   imageSuccess: json['image_success'] as String?,
   imageSuccessTb: json['image_success_tb'] as String?,
-  audio: json['audio'] == null
-      ? const <String>[]
-      : _stringListFromJson(json['audio']),
+  audio:
+      (json['audio'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
   lottie: json['lottie'] as String? ?? '',
   type: json['type'] as String? ?? '',
   conversation:
@@ -56,9 +56,9 @@ _Content _$ContentFromJson(Map<String, dynamic> json) => _Content(
           ?.map((e) => Conversation.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const <Conversation>[],
-  characters: json['character'] == null
-      ? const <String>[]
-      : _stringListFromJson(json['character']),
+  characters:
+      (json['character'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
   confetti: json['confetti'] as String? ?? '',
 );
 

@@ -1,4 +1,6 @@
 // Tests for story_model.dart
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onepali/src/core/model/story/story_model.dart';
 
@@ -64,14 +66,6 @@ void main() {
       expect(model.description, '');
       expect(model.content, []);
     });
-
-    test('should coerce audio values to strings', () {
-      final model = StoryModel.fromJson({
-        'audio': [1, 'audio2.mp3'],
-      });
-
-      expect(model.audio, ['1', 'audio2.mp3']);
-    });
   });
 
   group('Content', () {
@@ -116,16 +110,6 @@ void main() {
       expect(content.conversation, []);
       expect(content.characters, []);
       expect(content.audio, []);
-    });
-
-    test('should coerce audio and character values to strings', () {
-      final content = Content.fromJson({
-        'audio': [1, 'audio2.mp3'],
-        'character': [2, 'character2'],
-      });
-
-      expect(content.audio, ['1', 'audio2.mp3']);
-      expect(content.characters, ['2', 'character2']);
     });
   });
 
@@ -182,7 +166,10 @@ void main() {
       ]
       ''';
 
-      final stories = storyModelFromJson(jsonString);
+      final list = jsonDecode(jsonString) as List<dynamic>;
+      final stories = list
+          .map((e) => StoryModel.fromJson(e as Map<String, dynamic>))
+          .toList();
       expect(stories.length, 1);
       expect(stories.first.nameEn, 'Story 1');
       expect(stories.first.nameNp, 'कथा १');
@@ -203,7 +190,7 @@ void main() {
         ),
       ];
 
-      final jsonString = storyModelToJson(stories);
+      final jsonString = jsonEncode(stories.first.toJson());
       expect(jsonString, isA<String>());
       expect(jsonString, contains('Story 1'));
       expect(jsonString, contains('कथा १'));

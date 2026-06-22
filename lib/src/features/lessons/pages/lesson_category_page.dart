@@ -135,42 +135,35 @@ class _LessonCategoryPageState extends State<LessonCategoryPage> {
                     right: false,
                     bottom: false,
                     top: false,
-                    child: Container(
-                      // color:Colors.green,
-                      child: GridView.builder(
-                        itemCount: data.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 3 / 2.0,
-                          mainAxisSpacing: 16.0,
-                          crossAxisSpacing: 16.0,
-                        ),
-                        padding: EdgeInsets.only(
-                          right: 24,
-                          left: 24,
-                          bottom: 24,
-                        ),
-                        itemBuilder: (context, index) {
-                          final data = snapshot.data!.docs;
-                          final isCompleted = lessons.any(
-                            (lesson) => lesson['id'] == data[index].id,
-                          );
-                          return ContentCard(
-                            nameEn: data[index]['name'],
-                            bgColor: data[index]['bg_color'],
-                            nameNp: 'name_np',
-                            onTap: () {
-                              Utility.navigateMaterialRoute(
-                                context,
-                                LessonPage(lessonId: data[index].id),
-                              );
-                            },
-                            image: data[index]['image'],
-                            bgImage: data[index]['bg_image'],
-                            isCompleted: isCompleted,
-                          );
-                        },
+                    child: GridView.builder(
+                      itemCount: data.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 3 / 2.0,
+                        mainAxisSpacing: 16.0,
+                        crossAxisSpacing: 16.0,
                       ),
+                      padding: EdgeInsets.only(right: 24, left: 24, bottom: 24),
+                      itemBuilder: (context, index) {
+                        final data = snapshot.data!.docs;
+                        final isCompleted = lessons.any(
+                          (lesson) => lesson['id'] == data[index].id,
+                        );
+                        return ContentCard(
+                          nameEn: data[index]['name'],
+                          bgColor: data[index]['bg_color'],
+                          nameNp: 'name_np',
+                          onTap: () {
+                            Utility.navigateMaterialRoute(
+                              context,
+                              LessonPage(lessonId: data[index].id),
+                            );
+                          },
+                          image: data[index]['image'],
+                          bgImage: data[index]['bg_image'],
+                          isCompleted: isCompleted,
+                        );
+                      },
                     ),
                   );
                 } else {

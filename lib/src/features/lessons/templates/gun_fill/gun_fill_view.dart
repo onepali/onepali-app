@@ -149,8 +149,13 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                                         part.id;
                                                   },
                                               onAcceptWithDetails: (details) {
-                                                final isCorrect = details.data == part.id;
-                                                context.read<PzMetricsProvider>().trackAnswer1(isCorrect: isCorrect);
+                                                final isCorrect =
+                                                    details.data == part.id;
+                                                context
+                                                    .read<PzMetricsProvider>()
+                                                    .trackAnswer1(
+                                                      isCorrect: isCorrect,
+                                                    );
                                                 context.read<GunFillBloc>().add(
                                                   GunFillEvent.colorFilled(
                                                     part.id,
@@ -216,7 +221,7 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                   ),
                 ],
               ),
-             if (state.isCompleted)  BottomRightCat(),
+              if (state.isCompleted) BottomRightCat(),
               // Navigation buttons
               if (state.isCompleted)
                 CenterLeftAlignedBackButton(
@@ -269,12 +274,7 @@ class PartClipper extends CustomClipper<Path> {
     Path path = parseSvgPathData(pathData);
 
     // Scale the path to fit the actual widget size
-    Rect boundingBox = path.getBounds();
     Matrix4 matrix = Matrix4.identity();
-
-    // This scales the path coordinates to the current container size
-    double scaleX = size.width / boundingBox.width;
-    double scaleY = size.height / boundingBox.height;
 
     // Note: You may need more complex transformation logic depending
     // on how your SVG data is exported (viewBox vs absolute)

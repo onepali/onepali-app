@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';

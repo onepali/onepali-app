@@ -55,15 +55,14 @@ extension ChooseCorrectLessonContentEventPatterns on ChooseCorrectLessonContentE
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _QuestionAudioCompleted value)?  questionAudioCompleted,TResult Function( _ItemTapped value)?  itemTapped,TResult Function( _ItemAudioCompleted value)?  itemAudioCompleted,TResult Function( _ConfettiFeedback value)?  confettiFeedback,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _QuestionAudioCompleted value)?  questionAudioCompleted,TResult Function( _ItemTapped value)?  itemTapped,TResult Function( _CorrectAudioCompleted value)?  correctAudioCompleted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _QuestionAudioCompleted() when questionAudioCompleted != null:
 return questionAudioCompleted(_that);case _ItemTapped() when itemTapped != null:
-return itemTapped(_that);case _ItemAudioCompleted() when itemAudioCompleted != null:
-return itemAudioCompleted(_that);case _ConfettiFeedback() when confettiFeedback != null:
-return confettiFeedback(_that);case _:
+return itemTapped(_that);case _CorrectAudioCompleted() when correctAudioCompleted != null:
+return correctAudioCompleted(_that);case _:
   return orElse();
 
 }
@@ -81,15 +80,14 @@ return confettiFeedback(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _QuestionAudioCompleted value)  questionAudioCompleted,required TResult Function( _ItemTapped value)  itemTapped,required TResult Function( _ItemAudioCompleted value)  itemAudioCompleted,required TResult Function( _ConfettiFeedback value)  confettiFeedback,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _QuestionAudioCompleted value)  questionAudioCompleted,required TResult Function( _ItemTapped value)  itemTapped,required TResult Function( _CorrectAudioCompleted value)  correctAudioCompleted,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _QuestionAudioCompleted():
 return questionAudioCompleted(_that);case _ItemTapped():
-return itemTapped(_that);case _ItemAudioCompleted():
-return itemAudioCompleted(_that);case _ConfettiFeedback():
-return confettiFeedback(_that);case _:
+return itemTapped(_that);case _CorrectAudioCompleted():
+return correctAudioCompleted(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -106,15 +104,14 @@ return confettiFeedback(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _QuestionAudioCompleted value)?  questionAudioCompleted,TResult? Function( _ItemTapped value)?  itemTapped,TResult? Function( _ItemAudioCompleted value)?  itemAudioCompleted,TResult? Function( _ConfettiFeedback value)?  confettiFeedback,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _QuestionAudioCompleted value)?  questionAudioCompleted,TResult? Function( _ItemTapped value)?  itemTapped,TResult? Function( _CorrectAudioCompleted value)?  correctAudioCompleted,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _QuestionAudioCompleted() when questionAudioCompleted != null:
 return questionAudioCompleted(_that);case _ItemTapped() when itemTapped != null:
-return itemTapped(_that);case _ItemAudioCompleted() when itemAudioCompleted != null:
-return itemAudioCompleted(_that);case _ConfettiFeedback() when confettiFeedback != null:
-return confettiFeedback(_that);case _:
+return itemTapped(_that);case _CorrectAudioCompleted() when correctAudioCompleted != null:
+return correctAudioCompleted(_that);case _:
   return null;
 
 }
@@ -131,14 +128,13 @@ return confettiFeedback(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ChooseCorrectLessonContent lessonContent)?  started,TResult Function()?  questionAudioCompleted,TResult Function( Item tappedItem)?  itemTapped,TResult Function()?  itemAudioCompleted,TResult Function()?  confettiFeedback,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ChooseCorrectLessonContent lessonContent)?  started,TResult Function()?  questionAudioCompleted,TResult Function( Item tappedItem)?  itemTapped,TResult Function()?  correctAudioCompleted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.lessonContent);case _QuestionAudioCompleted() when questionAudioCompleted != null:
 return questionAudioCompleted();case _ItemTapped() when itemTapped != null:
-return itemTapped(_that.tappedItem);case _ItemAudioCompleted() when itemAudioCompleted != null:
-return itemAudioCompleted();case _ConfettiFeedback() when confettiFeedback != null:
-return confettiFeedback();case _:
+return itemTapped(_that.tappedItem);case _CorrectAudioCompleted() when correctAudioCompleted != null:
+return correctAudioCompleted();case _:
   return orElse();
 
 }
@@ -156,14 +152,13 @@ return confettiFeedback();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ChooseCorrectLessonContent lessonContent)  started,required TResult Function()  questionAudioCompleted,required TResult Function( Item tappedItem)  itemTapped,required TResult Function()  itemAudioCompleted,required TResult Function()  confettiFeedback,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ChooseCorrectLessonContent lessonContent)  started,required TResult Function()  questionAudioCompleted,required TResult Function( Item tappedItem)  itemTapped,required TResult Function()  correctAudioCompleted,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started(_that.lessonContent);case _QuestionAudioCompleted():
 return questionAudioCompleted();case _ItemTapped():
-return itemTapped(_that.tappedItem);case _ItemAudioCompleted():
-return itemAudioCompleted();case _ConfettiFeedback():
-return confettiFeedback();case _:
+return itemTapped(_that.tappedItem);case _CorrectAudioCompleted():
+return correctAudioCompleted();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +175,13 @@ return confettiFeedback();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ChooseCorrectLessonContent lessonContent)?  started,TResult? Function()?  questionAudioCompleted,TResult? Function( Item tappedItem)?  itemTapped,TResult? Function()?  itemAudioCompleted,TResult? Function()?  confettiFeedback,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ChooseCorrectLessonContent lessonContent)?  started,TResult? Function()?  questionAudioCompleted,TResult? Function( Item tappedItem)?  itemTapped,TResult? Function()?  correctAudioCompleted,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.lessonContent);case _QuestionAudioCompleted() when questionAudioCompleted != null:
 return questionAudioCompleted();case _ItemTapped() when itemTapped != null:
-return itemTapped(_that.tappedItem);case _ItemAudioCompleted() when itemAudioCompleted != null:
-return itemAudioCompleted();case _ConfettiFeedback() when confettiFeedback != null:
-return confettiFeedback();case _:
+return itemTapped(_that.tappedItem);case _CorrectAudioCompleted() when correctAudioCompleted != null:
+return correctAudioCompleted();case _:
   return null;
 
 }
@@ -371,8 +365,8 @@ $ItemCopyWith<$Res> get tappedItem {
 /// @nodoc
 
 
-class _ItemAudioCompleted implements ChooseCorrectLessonContentEvent {
-  const _ItemAudioCompleted();
+class _CorrectAudioCompleted implements ChooseCorrectLessonContentEvent {
+  const _CorrectAudioCompleted();
   
 
 
@@ -382,7 +376,7 @@ class _ItemAudioCompleted implements ChooseCorrectLessonContentEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ItemAudioCompleted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CorrectAudioCompleted);
 }
 
 
@@ -391,39 +385,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ChooseCorrectLessonContentEvent.itemAudioCompleted()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _ConfettiFeedback implements ChooseCorrectLessonContentEvent {
-  const _ConfettiFeedback();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfettiFeedback);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'ChooseCorrectLessonContentEvent.confettiFeedback()';
+  return 'ChooseCorrectLessonContentEvent.correctAudioCompleted()';
 }
 
 
@@ -435,7 +397,7 @@ String toString() {
 /// @nodoc
 mixin _$ChooseCorrectLessonContentState {
 
- ChooseCorrectLessonContent? get lessonContent; ChooseCorrectLessonContentStatus get status; Item? get currentQuestion; Item? get selectedItem; bool get isCorrect; bool get isAnswered;
+ ChooseCorrectLessonContent? get lessonContent; Item? get currentQuestion; bool get isQuestionAudioPlaying; bool get isQuestionAudioCompleted; Item? get selectedItem; bool get isCorrect; bool get isAnswered; bool get isAudioPlaying; String? get errorMessage;
 /// Create a copy of ChooseCorrectLessonContentState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -446,16 +408,16 @@ $ChooseCorrectLessonContentStateCopyWith<ChooseCorrectLessonContentState> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChooseCorrectLessonContentState&&const DeepCollectionEquality().equals(other.lessonContent, lessonContent)&&(identical(other.status, status) || other.status == status)&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChooseCorrectLessonContentState&&const DeepCollectionEquality().equals(other.lessonContent, lessonContent)&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.isQuestionAudioPlaying, isQuestionAudioPlaying) || other.isQuestionAudioPlaying == isQuestionAudioPlaying)&&(identical(other.isQuestionAudioCompleted, isQuestionAudioCompleted) || other.isQuestionAudioCompleted == isQuestionAudioCompleted)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered)&&(identical(other.isAudioPlaying, isAudioPlaying) || other.isAudioPlaying == isAudioPlaying)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(lessonContent),status,currentQuestion,selectedItem,isCorrect,isAnswered);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(lessonContent),currentQuestion,isQuestionAudioPlaying,isQuestionAudioCompleted,selectedItem,isCorrect,isAnswered,isAudioPlaying,errorMessage);
 
 @override
 String toString() {
-  return 'ChooseCorrectLessonContentState(lessonContent: $lessonContent, status: $status, currentQuestion: $currentQuestion, selectedItem: $selectedItem, isCorrect: $isCorrect, isAnswered: $isAnswered)';
+  return 'ChooseCorrectLessonContentState(lessonContent: $lessonContent, currentQuestion: $currentQuestion, isQuestionAudioPlaying: $isQuestionAudioPlaying, isQuestionAudioCompleted: $isQuestionAudioCompleted, selectedItem: $selectedItem, isCorrect: $isCorrect, isAnswered: $isAnswered, isAudioPlaying: $isAudioPlaying, errorMessage: $errorMessage)';
 }
 
 
@@ -466,7 +428,7 @@ abstract mixin class $ChooseCorrectLessonContentStateCopyWith<$Res>  {
   factory $ChooseCorrectLessonContentStateCopyWith(ChooseCorrectLessonContentState value, $Res Function(ChooseCorrectLessonContentState) _then) = _$ChooseCorrectLessonContentStateCopyWithImpl;
 @useResult
 $Res call({
- ChooseCorrectLessonContent? lessonContent, ChooseCorrectLessonContentStatus status, Item? currentQuestion, Item? selectedItem, bool isCorrect, bool isAnswered
+ ChooseCorrectLessonContent? lessonContent, Item? currentQuestion, bool isQuestionAudioPlaying, bool isQuestionAudioCompleted, Item? selectedItem, bool isCorrect, bool isAnswered, bool isAudioPlaying, String? errorMessage
 });
 
 
@@ -483,15 +445,18 @@ class _$ChooseCorrectLessonContentStateCopyWithImpl<$Res>
 
 /// Create a copy of ChooseCorrectLessonContentState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lessonContent = freezed,Object? status = null,Object? currentQuestion = freezed,Object? selectedItem = freezed,Object? isCorrect = null,Object? isAnswered = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lessonContent = freezed,Object? currentQuestion = freezed,Object? isQuestionAudioPlaying = null,Object? isQuestionAudioCompleted = null,Object? selectedItem = freezed,Object? isCorrect = null,Object? isAnswered = null,Object? isAudioPlaying = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 lessonContent: freezed == lessonContent ? _self.lessonContent : lessonContent // ignore: cast_nullable_to_non_nullable
-as ChooseCorrectLessonContent?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as ChooseCorrectLessonContentStatus,currentQuestion: freezed == currentQuestion ? _self.currentQuestion : currentQuestion // ignore: cast_nullable_to_non_nullable
-as Item?,selectedItem: freezed == selectedItem ? _self.selectedItem : selectedItem // ignore: cast_nullable_to_non_nullable
+as ChooseCorrectLessonContent?,currentQuestion: freezed == currentQuestion ? _self.currentQuestion : currentQuestion // ignore: cast_nullable_to_non_nullable
+as Item?,isQuestionAudioPlaying: null == isQuestionAudioPlaying ? _self.isQuestionAudioPlaying : isQuestionAudioPlaying // ignore: cast_nullable_to_non_nullable
+as bool,isQuestionAudioCompleted: null == isQuestionAudioCompleted ? _self.isQuestionAudioCompleted : isQuestionAudioCompleted // ignore: cast_nullable_to_non_nullable
+as bool,selectedItem: freezed == selectedItem ? _self.selectedItem : selectedItem // ignore: cast_nullable_to_non_nullable
 as Item?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
 as bool,isAnswered: null == isAnswered ? _self.isAnswered : isAnswered // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,isAudioPlaying: null == isAudioPlaying ? _self.isAudioPlaying : isAudioPlaying // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of ChooseCorrectLessonContentState
@@ -600,10 +565,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ChooseCorrectLessonContent? lessonContent,  ChooseCorrectLessonContentStatus status,  Item? currentQuestion,  Item? selectedItem,  bool isCorrect,  bool isAnswered)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ChooseCorrectLessonContent? lessonContent,  Item? currentQuestion,  bool isQuestionAudioPlaying,  bool isQuestionAudioCompleted,  Item? selectedItem,  bool isCorrect,  bool isAnswered,  bool isAudioPlaying,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChooseCorrectLessonContentState() when $default != null:
-return $default(_that.lessonContent,_that.status,_that.currentQuestion,_that.selectedItem,_that.isCorrect,_that.isAnswered);case _:
+return $default(_that.lessonContent,_that.currentQuestion,_that.isQuestionAudioPlaying,_that.isQuestionAudioCompleted,_that.selectedItem,_that.isCorrect,_that.isAnswered,_that.isAudioPlaying,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -621,10 +586,10 @@ return $default(_that.lessonContent,_that.status,_that.currentQuestion,_that.sel
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ChooseCorrectLessonContent? lessonContent,  ChooseCorrectLessonContentStatus status,  Item? currentQuestion,  Item? selectedItem,  bool isCorrect,  bool isAnswered)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ChooseCorrectLessonContent? lessonContent,  Item? currentQuestion,  bool isQuestionAudioPlaying,  bool isQuestionAudioCompleted,  Item? selectedItem,  bool isCorrect,  bool isAnswered,  bool isAudioPlaying,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _ChooseCorrectLessonContentState():
-return $default(_that.lessonContent,_that.status,_that.currentQuestion,_that.selectedItem,_that.isCorrect,_that.isAnswered);case _:
+return $default(_that.lessonContent,_that.currentQuestion,_that.isQuestionAudioPlaying,_that.isQuestionAudioCompleted,_that.selectedItem,_that.isCorrect,_that.isAnswered,_that.isAudioPlaying,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -641,10 +606,10 @@ return $default(_that.lessonContent,_that.status,_that.currentQuestion,_that.sel
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ChooseCorrectLessonContent? lessonContent,  ChooseCorrectLessonContentStatus status,  Item? currentQuestion,  Item? selectedItem,  bool isCorrect,  bool isAnswered)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ChooseCorrectLessonContent? lessonContent,  Item? currentQuestion,  bool isQuestionAudioPlaying,  bool isQuestionAudioCompleted,  Item? selectedItem,  bool isCorrect,  bool isAnswered,  bool isAudioPlaying,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _ChooseCorrectLessonContentState() when $default != null:
-return $default(_that.lessonContent,_that.status,_that.currentQuestion,_that.selectedItem,_that.isCorrect,_that.isAnswered);case _:
+return $default(_that.lessonContent,_that.currentQuestion,_that.isQuestionAudioPlaying,_that.isQuestionAudioCompleted,_that.selectedItem,_that.isCorrect,_that.isAnswered,_that.isAudioPlaying,_that.errorMessage);case _:
   return null;
 
 }
@@ -656,15 +621,18 @@ return $default(_that.lessonContent,_that.status,_that.currentQuestion,_that.sel
 
 
 class _ChooseCorrectLessonContentState implements ChooseCorrectLessonContentState {
-  const _ChooseCorrectLessonContentState({this.lessonContent, this.status = ChooseCorrectLessonContentStatus.initial, this.currentQuestion, this.selectedItem, this.isCorrect = false, this.isAnswered = false});
+  const _ChooseCorrectLessonContentState({this.lessonContent, this.currentQuestion, this.isQuestionAudioPlaying = false, this.isQuestionAudioCompleted = false, this.selectedItem, this.isCorrect = false, this.isAnswered = false, this.isAudioPlaying = false, this.errorMessage});
   
 
 @override final  ChooseCorrectLessonContent? lessonContent;
-@override@JsonKey() final  ChooseCorrectLessonContentStatus status;
 @override final  Item? currentQuestion;
+@override@JsonKey() final  bool isQuestionAudioPlaying;
+@override@JsonKey() final  bool isQuestionAudioCompleted;
 @override final  Item? selectedItem;
 @override@JsonKey() final  bool isCorrect;
 @override@JsonKey() final  bool isAnswered;
+@override@JsonKey() final  bool isAudioPlaying;
+@override final  String? errorMessage;
 
 /// Create a copy of ChooseCorrectLessonContentState
 /// with the given fields replaced by the non-null parameter values.
@@ -676,16 +644,16 @@ _$ChooseCorrectLessonContentStateCopyWith<_ChooseCorrectLessonContentState> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChooseCorrectLessonContentState&&const DeepCollectionEquality().equals(other.lessonContent, lessonContent)&&(identical(other.status, status) || other.status == status)&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChooseCorrectLessonContentState&&const DeepCollectionEquality().equals(other.lessonContent, lessonContent)&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.isQuestionAudioPlaying, isQuestionAudioPlaying) || other.isQuestionAudioPlaying == isQuestionAudioPlaying)&&(identical(other.isQuestionAudioCompleted, isQuestionAudioCompleted) || other.isQuestionAudioCompleted == isQuestionAudioCompleted)&&(identical(other.selectedItem, selectedItem) || other.selectedItem == selectedItem)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered)&&(identical(other.isAudioPlaying, isAudioPlaying) || other.isAudioPlaying == isAudioPlaying)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(lessonContent),status,currentQuestion,selectedItem,isCorrect,isAnswered);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(lessonContent),currentQuestion,isQuestionAudioPlaying,isQuestionAudioCompleted,selectedItem,isCorrect,isAnswered,isAudioPlaying,errorMessage);
 
 @override
 String toString() {
-  return 'ChooseCorrectLessonContentState(lessonContent: $lessonContent, status: $status, currentQuestion: $currentQuestion, selectedItem: $selectedItem, isCorrect: $isCorrect, isAnswered: $isAnswered)';
+  return 'ChooseCorrectLessonContentState(lessonContent: $lessonContent, currentQuestion: $currentQuestion, isQuestionAudioPlaying: $isQuestionAudioPlaying, isQuestionAudioCompleted: $isQuestionAudioCompleted, selectedItem: $selectedItem, isCorrect: $isCorrect, isAnswered: $isAnswered, isAudioPlaying: $isAudioPlaying, errorMessage: $errorMessage)';
 }
 
 
@@ -696,7 +664,7 @@ abstract mixin class _$ChooseCorrectLessonContentStateCopyWith<$Res> implements 
   factory _$ChooseCorrectLessonContentStateCopyWith(_ChooseCorrectLessonContentState value, $Res Function(_ChooseCorrectLessonContentState) _then) = __$ChooseCorrectLessonContentStateCopyWithImpl;
 @override @useResult
 $Res call({
- ChooseCorrectLessonContent? lessonContent, ChooseCorrectLessonContentStatus status, Item? currentQuestion, Item? selectedItem, bool isCorrect, bool isAnswered
+ ChooseCorrectLessonContent? lessonContent, Item? currentQuestion, bool isQuestionAudioPlaying, bool isQuestionAudioCompleted, Item? selectedItem, bool isCorrect, bool isAnswered, bool isAudioPlaying, String? errorMessage
 });
 
 
@@ -713,15 +681,18 @@ class __$ChooseCorrectLessonContentStateCopyWithImpl<$Res>
 
 /// Create a copy of ChooseCorrectLessonContentState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lessonContent = freezed,Object? status = null,Object? currentQuestion = freezed,Object? selectedItem = freezed,Object? isCorrect = null,Object? isAnswered = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lessonContent = freezed,Object? currentQuestion = freezed,Object? isQuestionAudioPlaying = null,Object? isQuestionAudioCompleted = null,Object? selectedItem = freezed,Object? isCorrect = null,Object? isAnswered = null,Object? isAudioPlaying = null,Object? errorMessage = freezed,}) {
   return _then(_ChooseCorrectLessonContentState(
 lessonContent: freezed == lessonContent ? _self.lessonContent : lessonContent // ignore: cast_nullable_to_non_nullable
-as ChooseCorrectLessonContent?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as ChooseCorrectLessonContentStatus,currentQuestion: freezed == currentQuestion ? _self.currentQuestion : currentQuestion // ignore: cast_nullable_to_non_nullable
-as Item?,selectedItem: freezed == selectedItem ? _self.selectedItem : selectedItem // ignore: cast_nullable_to_non_nullable
+as ChooseCorrectLessonContent?,currentQuestion: freezed == currentQuestion ? _self.currentQuestion : currentQuestion // ignore: cast_nullable_to_non_nullable
+as Item?,isQuestionAudioPlaying: null == isQuestionAudioPlaying ? _self.isQuestionAudioPlaying : isQuestionAudioPlaying // ignore: cast_nullable_to_non_nullable
+as bool,isQuestionAudioCompleted: null == isQuestionAudioCompleted ? _self.isQuestionAudioCompleted : isQuestionAudioCompleted // ignore: cast_nullable_to_non_nullable
+as bool,selectedItem: freezed == selectedItem ? _self.selectedItem : selectedItem // ignore: cast_nullable_to_non_nullable
 as Item?,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
 as bool,isAnswered: null == isAnswered ? _self.isAnswered : isAnswered // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,isAudioPlaying: null == isAudioPlaying ? _self.isAudioPlaying : isAudioPlaying // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

@@ -8,7 +8,6 @@ abstract class LessonState with _$LessonState {
     LessonDetail? lessonDetails,
     @Default(0) int currentIndex,
     LessonContent? currentContent,
-    @Default(false) bool hasCompletedLesson,
   }) = _LessonState;
 }
 

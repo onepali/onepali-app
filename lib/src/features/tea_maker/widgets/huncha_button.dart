@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:onepali/src/features/lessons/templates/tea_making/bloc/tutorial_bloc.dart';
+import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
 
 class HunchaButton extends StatefulWidget {
   const HunchaButton({super.key});
@@ -39,10 +39,7 @@ class _HunchaButtonState extends State<HunchaButton>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return BlocBuilder<TutorialBloc, TutorialState>(
-      buildWhen: (previous, current) =>
-          previous.showHunchButton != current.showHunchButton,
       builder: (context, state) {
         if (!state.showHunchButton) {
           _controller.stop();
@@ -60,11 +57,7 @@ class _HunchaButtonState extends State<HunchaButton>
           },
           child: ScaleTransition(
             scale: _animation,
-            child: SvgPicture.asset(
-              'assets/tea_maker/svg/huncha.svg',
-              height: size.height * 0.2,
-              width: size.height * 0.2,
-            ),
+            child: SvgPicture.asset('assets/tea_maker/svg/huncha.svg'),
           ),
         );
       },

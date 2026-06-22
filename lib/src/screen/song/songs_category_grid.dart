@@ -19,7 +19,6 @@ class _SongsCategoryGridState extends State<SongsCategoryGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
     return SafeArea(
       right: true,
       bottom: false,
@@ -43,7 +42,7 @@ class _SongsCategoryGridState extends State<SongsCategoryGrid> {
               mainAxisSpacing: 24.0,
               crossAxisSpacing: 24.0,
             ),
-            padding: EdgeInsets.fromLTRB( 24, 16, 24, 16),
+            padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {

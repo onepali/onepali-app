@@ -7,12 +7,14 @@ class MicProgressButton extends StatefulWidget {
   final bool isActive;
 
   final bool isCompleted;
+  final VoidCallback? onCompletedTap;
 
   const MicProgressButton({
     super.key,
     required this.recordingDuration,
     required this.isActive,
     required this.isCompleted,
+    this.onCompletedTap,
   });
 
   @override
@@ -96,12 +98,7 @@ class _MicProgressButtonState extends State<MicProgressButton>
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     return GestureDetector(
-      // onTap: widget.isCompleted
-      //     ? () {
-      //         context.read<LessonBloc>().add(LessonEvent.nextContent());
-      //       }
-      //     : null,
-      onTap: null,
+      onTap: widget.isCompleted ? widget.onCompletedTap : null,
       child: SizedBox(
         width: isMobile ? 180 : 280,
         height: isMobile ? 50 : 88,

@@ -108,7 +108,8 @@ class _StoryScreenState extends State<StoryScreen> {
                           constraints.maxWidth,
                           isMobile: isMobile,
                         );
-                        final cardWidth = baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardWidth =
+                            baseCardWidth * (isMobile ? 1.12 : 1.0);
                         final cardHeight =
                             baseCardWidth /
                             AppConstants.contentCardAspectRatio *
@@ -127,37 +128,37 @@ class _StoryScreenState extends State<StoryScreen> {
                                         width: cardWidth,
                                         height: cardHeight,
                                         child: Builder(
-                                            builder: (context) {
-                                              final isCompleted =
-                                                  completedStories.any(
-                                                    (s) =>
-                                                        story['id'] ==
-                                                        s['content_id'],
-                                                  );
-                                              return ContentCard(
-                                                nameEn: story['nameEn'],
-                                                nameNp: story['nameNp'],
-                                                image: story['thumbnail'],
-                                                bgImage: story['bg_image'],
-                                                isImageSvg: true,
-                                                bgColor: story['bg_color'],
-                                                isCompleted: isCompleted,
-                                                onTap: () {
-                                                  final storyModel =
-                                                      StoryModel.fromJson(
-                                                        story.data(),
-                                                      );
-                                                  Utility.navigateMaterialRoute(
-                                                    context,
-                                                    StoryContentScreen(
-                                                      story: storyModel,
-                                                      isFromRecommended: false,
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          ),
+                                          builder: (context) {
+                                            final isCompleted = completedStories
+                                                .any(
+                                                  (s) =>
+                                                      story['id'] ==
+                                                      s['content_id'],
+                                                );
+                                            return ContentCard(
+                                              nameEn: story['nameEn'],
+                                              nameNp: story['nameNp'],
+                                              image: story['thumbnail'],
+                                              bgImage: story['bg_image'],
+                                              isImageSvg: true,
+                                              bgColor: story['bg_color'],
+                                              isCompleted: isCompleted,
+                                              onTap: () {
+                                                final storyModel =
+                                                    StoryModel.fromJson(
+                                                      story.data(),
+                                                    );
+                                                Utility.navigateMaterialRoute(
+                                                  context,
+                                                  StoryContentScreen(
+                                                    story: storyModel,
+                                                    isFromRecommended: false,
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                       Gaps.horizontalGapOf(
                                         AppConstants.contentCardGridSpacing,

@@ -89,7 +89,6 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
-    final size = MediaQuery.of(context).size;
 
     // Responsive values
     final double titleFontSize = isMobileLandscape ? 40 : 64;

@@ -16,7 +16,6 @@ class LetterPainter extends CustomPainter {
   final bool showGuideDots;
   final bool showStrokeDirection;
   final List<Rect> strokeBoundingBoxes;
-  final bool isMobile;
 
   LetterPainter({
     required this.strokeWidth,
@@ -33,7 +32,6 @@ class LetterPainter extends CustomPainter {
     this.showGuideDots = true,
     this.showStrokeDirection = true,
     required this.strokeBoundingBoxes,
-    required this.isMobile,
   });
 
   @override
@@ -45,7 +43,7 @@ class LetterPainter extends CustomPainter {
         Paint()
           ..color = AppColors.kBlack
           ..style = PaintingStyle.stroke
-          ..strokeWidth = isMobile ? 4 : 8
+          ..strokeWidth = 4
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round,
       );
@@ -107,8 +105,8 @@ class LetterPainter extends CustomPainter {
     if (userStrokes.isNotEmpty) {
       final userPaint = Paint()
         ..color = isTracingOutsideBounds
-            ? AppColors.kPrimaryColor
-            : AppColors.kOrange
+            ? Colors.red.withValues(alpha: 0.6)
+            : Colors.orange.withValues(alpha: 0.8)
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth * 0.8
         ..strokeCap = StrokeCap.round
@@ -145,7 +143,7 @@ class LetterPainter extends CustomPainter {
 
     // Inner solid circle
     final innerCirclePaint = Paint()
-      ..color = AppColors.kOrange
+      ..color = Colors.orange
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(position, strokeWidth * 0.6, innerCirclePaint);
@@ -182,14 +180,14 @@ class LetterPainter extends CustomPainter {
       ..color = Colors.black
       ..style = PaintingStyle.fill;
 
-    for (int i = 0; i < points.length; i += 10) {
-      canvas.drawCircle(points[i], isMobile ? 2 : 3, dotPaint);
+    for (int i = 0; i < points.length; i += 15) {
+      canvas.drawCircle(points[i], 3, dotPaint);
     }
   }
 
   void _drawProgressIndicator(Canvas canvas, Path path, double progress) {
     final progressPaint = Paint()
-      ..color = AppColors.kButtonGreen.withValues(alpha: 0.5)
+      ..color = Colors.green.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth * 1.2
       ..strokeCap = StrokeCap.round;

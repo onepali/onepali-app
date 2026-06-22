@@ -44,7 +44,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
     // Responsive values
     final double stickerSize = isMobileLandscape ? 140 : 215;
     final double stickerMargin = isMobileLandscape ? 24 : 34;
-    final double titleFontSize = isMobileLandscape ? 48 : 64;
     final double stickerContainerMargin = isMobileLandscape ? 45 : 60;
 
     return Consumer<RewardProvider>(

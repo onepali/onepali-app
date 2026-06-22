@@ -325,9 +325,6 @@ class StoryProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     try {
-      // Get the metrics provider
-      final metricsProvider = context.read<PzMetricsProvider>();
-
       // Track the activity completion
       // await metricsProvider.trackActivityCompletion(
       //   parentUid: parentUid,

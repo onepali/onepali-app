@@ -48,8 +48,8 @@ class _TapToFillViewState extends State<TapToFillView> {
             children: [
               Positioned.fill(
                 child: BackgroundImage(
-                  bgImageMb: state.bgImageMb,
-                  bgImageTb: state.bgImageTb,
+                  bgImageMb: state.content!.bgImage,
+                  bgImageTb: state.content!.bgImageTb,
                 ),
               ),
               TopRightPositionedCloseButton(
@@ -65,9 +65,6 @@ class _TapToFillViewState extends State<TapToFillView> {
                     children: state.content!.options.map((item) {
                       return GestureDetector(
                         onTap: () {
-                          context.read<PzMetricsProvider>().trackAnswer1(
-                            isCorrect: item.isCorrect,
-                          );
                           context.read<TapToFillBloc>().add(
                             TapToFillEvent.optionTapped(item),
                           );

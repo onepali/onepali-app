@@ -18,39 +18,11 @@ class TapToFillBloc extends Bloc<TapToFillEvent, TapToFillState> {
       emit(
         state.copyWith(
           content: event.content,
-          bgImageMb: event.content.preBgImageMb ?? event.content.bgImage,
-          bgImageTb: event.content.preBgImageTb ?? event.content.bgImageTb,
-          status: event.content.audioBeforeOptions != null
-              ? TapToFillStatus.audioBeforeOptionsPlaying
-              : TapToFillStatus.audioPlaying,
+          status: TapToFillStatus.audioPlaying,
         ),
       );
-      if (event.content.audioBeforeOptions != null) {
-        await audioPlayerService.play(event.content.audioBeforeOptions!);
-        _audioSub?.cancel();
-        _audioSub = audioPlayerService.onPlayerComplete.listen((_) {
-          add(const TapToFillEvent.audioBeforeOptionsCompleted());
-        });
-      } else if (event.content.instruction != null) {
+      if (event.content.instruction != null) {
         await audioPlayerService.play(event.content.instruction!);
-        _audioSub?.cancel();
-        _audioSub = audioPlayerService.onPlayerComplete.listen((_) {
-          add(const TapToFillEvent.audioCompleted());
-        });
-      } else {
-        add(const TapToFillEvent.audioCompleted());
-      }
-    });
-    on<_AudioBeforeOptionsCompleted>((event, emit) async {
-      emit(
-        state.copyWith(
-          status: TapToFillStatus.audioBeforeOptionsCompleted,
-          bgImageMb: state.content?.bgImage,
-          bgImageTb: state.content?.bgImageTb,
-        ),
-      );
-      if (state.content?.instruction != null) {
-        await audioPlayerService.play(state.content!.instruction!);
         _audioSub?.cancel();
         _audioSub = audioPlayerService.onPlayerComplete.listen((_) {
           add(const TapToFillEvent.audioCompleted());
