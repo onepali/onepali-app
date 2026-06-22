@@ -3,17 +3,15 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
-import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
-import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/templates/choose_correct/choose_correct_lesson_content_bloc/choose_correct_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/widgets/choose_correct_item.dart';
 
 class ChooseCorrectLessonView extends StatefulWidget {
   final ChooseCorrectLessonContent content;
@@ -170,7 +168,12 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                   Stack(
                                     children: [
                                       ItemCard(
-                                        item: item,
+                                        nameEn: item.nameEn,
+                                        nameNp: item.nameNp,
+                                        image: item.image,
+                                        isImageSvg: item.isImageSvg,
+                                        bgColor: item.bgColor,
+                                        isCorrect: item.isCorrect,
                                         size: size,
                                         itemCount: content.items.length,
                                         index: content.items.indexOf(item),
@@ -314,105 +317,6 @@ class _LessonContentError extends StatelessWidget {
             child: const Text('Continue'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ItemCard extends StatelessWidget {
-  const ItemCard({
-    super.key,
-    required this.item,
-    required this.size,
-    required this.itemCount,
-    required this.index,
-    this.isSelected = false,
-    this.onTap,
-    this.isCorrect = false,
-  });
-
-  final Item item;
-  final bool isCorrect;
-  final Size size;
-  final int itemCount;
-  final int index;
-  final bool isSelected;
-  final Function()? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
-    final cardWidth = (size.width * 0.75) / itemCount;
-    final maxCardWidth = size.width * 0.25;
-    final finalCardWidth = cardWidth > maxCardWidth ? maxCardWidth : cardWidth;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: isMobile ? size.height * 0.65 : size.height * 0.50,
-        margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.only(bottom: 8, top: 8),
-        decoration: BoxDecoration(
-          color: colorFromHex(item.bgColor) ?? Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? AppColors.kButtonGreen : Colors.transparent,
-            width: 4,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(30),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // Nepali name at top
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                item.nameNp,
-                style: Theme.of(context).textTheme.headlineLarge,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-
-            // Image in the middle
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: item.isImageSvg
-                    ? SvgPicture.network(
-                        item.image,
-                        width: finalCardWidth * 0.7,
-                        fit: BoxFit.contain,
-                      )
-                    : CustomCachedImage(
-                        imageUrl: item.image,
-                        width: finalCardWidth * 0.7,
-                        fit: BoxFit.contain,
-                      ),
-              ),
-            ),
-
-            // English name at bottom
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                item.nameEn,
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -34,7 +34,7 @@ class DragDropContentState extends State<DragDropContent> {
   @override
   Widget build(BuildContext context) {
     final conv = widget.content.conversation;
-    final charList = widget.content.characters ?? [];
+    final charList = widget.content.characters;
     final char1 = charList.isNotEmpty ? charList[0] : null;
     final char2 = charList.length > 1 ? charList[1] : null;
     final bgColor = AppColors.kLightGreenBackgroundColor;

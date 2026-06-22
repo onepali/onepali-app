@@ -312,7 +312,7 @@ as String,
 /// @nodoc
 mixin _$MatchState {
 
- SlideUpToMatchLessonContent? get content; List<String> get nepaliWords; bool get isAnsweredAll;
+ SlideUpToMatchLessonContent? get content; List<NepaliWord> get nepaliWords; bool get isAnsweredAll;
 /// Create a copy of MatchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -343,7 +343,7 @@ abstract mixin class $MatchStateCopyWith<$Res>  {
   factory $MatchStateCopyWith(MatchState value, $Res Function(MatchState) _then) = _$MatchStateCopyWithImpl;
 @useResult
 $Res call({
- SlideUpToMatchLessonContent? content, List<String> nepaliWords, bool isAnsweredAll
+ SlideUpToMatchLessonContent? content, List<NepaliWord> nepaliWords, bool isAnsweredAll
 });
 
 
@@ -364,7 +364,7 @@ class _$MatchStateCopyWithImpl<$Res>
   return _then(_self.copyWith(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as SlideUpToMatchLessonContent?,nepaliWords: null == nepaliWords ? _self.nepaliWords : nepaliWords // ignore: cast_nullable_to_non_nullable
-as List<String>,isAnsweredAll: null == isAnsweredAll ? _self.isAnsweredAll : isAnsweredAll // ignore: cast_nullable_to_non_nullable
+as List<NepaliWord>,isAnsweredAll: null == isAnsweredAll ? _self.isAnsweredAll : isAnsweredAll // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -450,7 +450,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<String> nepaliWords,  bool isAnsweredAll)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MatchState() when $default != null:
 return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
@@ -471,7 +471,7 @@ return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<String> nepaliWords,  bool isAnsweredAll)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll)  $default,) {final _that = this;
 switch (_that) {
 case _MatchState():
 return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
@@ -491,7 +491,7 @@ return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SlideUpToMatchLessonContent? content,  List<String> nepaliWords,  bool isAnsweredAll)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll)?  $default,) {final _that = this;
 switch (_that) {
 case _MatchState() when $default != null:
 return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
@@ -506,12 +506,12 @@ return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
 
 
 class _MatchState implements MatchState {
-  const _MatchState({this.content, final  List<String> nepaliWords = const [], this.isAnsweredAll = false}): _nepaliWords = nepaliWords;
+  const _MatchState({this.content, final  List<NepaliWord> nepaliWords = const [], this.isAnsweredAll = false}): _nepaliWords = nepaliWords;
   
 
 @override final  SlideUpToMatchLessonContent? content;
- final  List<String> _nepaliWords;
-@override@JsonKey() List<String> get nepaliWords {
+ final  List<NepaliWord> _nepaliWords;
+@override@JsonKey() List<NepaliWord> get nepaliWords {
   if (_nepaliWords is EqualUnmodifiableListView) return _nepaliWords;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_nepaliWords);
@@ -549,7 +549,7 @@ abstract mixin class _$MatchStateCopyWith<$Res> implements $MatchStateCopyWith<$
   factory _$MatchStateCopyWith(_MatchState value, $Res Function(_MatchState) _then) = __$MatchStateCopyWithImpl;
 @override @useResult
 $Res call({
- SlideUpToMatchLessonContent? content, List<String> nepaliWords, bool isAnsweredAll
+ SlideUpToMatchLessonContent? content, List<NepaliWord> nepaliWords, bool isAnsweredAll
 });
 
 
@@ -570,7 +570,273 @@ class __$MatchStateCopyWithImpl<$Res>
   return _then(_MatchState(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as SlideUpToMatchLessonContent?,nepaliWords: null == nepaliWords ? _self._nepaliWords : nepaliWords // ignore: cast_nullable_to_non_nullable
-as List<String>,isAnsweredAll: null == isAnsweredAll ? _self.isAnsweredAll : isAnsweredAll // ignore: cast_nullable_to_non_nullable
+as List<NepaliWord>,isAnsweredAll: null == isAnsweredAll ? _self.isAnsweredAll : isAnsweredAll // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$NepaliWord {
+
+ String get word; bool get isMatched;
+/// Create a copy of NepaliWord
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NepaliWordCopyWith<NepaliWord> get copyWith => _$NepaliWordCopyWithImpl<NepaliWord>(this as NepaliWord, _$identity);
+
+  /// Serializes this NepaliWord to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NepaliWord&&(identical(other.word, word) || other.word == word)&&(identical(other.isMatched, isMatched) || other.isMatched == isMatched));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,word,isMatched);
+
+@override
+String toString() {
+  return 'NepaliWord(word: $word, isMatched: $isMatched)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $NepaliWordCopyWith<$Res>  {
+  factory $NepaliWordCopyWith(NepaliWord value, $Res Function(NepaliWord) _then) = _$NepaliWordCopyWithImpl;
+@useResult
+$Res call({
+ String word, bool isMatched
+});
+
+
+
+
+}
+/// @nodoc
+class _$NepaliWordCopyWithImpl<$Res>
+    implements $NepaliWordCopyWith<$Res> {
+  _$NepaliWordCopyWithImpl(this._self, this._then);
+
+  final NepaliWord _self;
+  final $Res Function(NepaliWord) _then;
+
+/// Create a copy of NepaliWord
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? word = null,Object? isMatched = null,}) {
+  return _then(_self.copyWith(
+word: null == word ? _self.word : word // ignore: cast_nullable_to_non_nullable
+as String,isMatched: null == isMatched ? _self.isMatched : isMatched // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [NepaliWord].
+extension NepaliWordPatterns on NepaliWord {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _NepaliWord value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _NepaliWord() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _NepaliWord value)  $default,){
+final _that = this;
+switch (_that) {
+case _NepaliWord():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _NepaliWord value)?  $default,){
+final _that = this;
+switch (_that) {
+case _NepaliWord() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String word,  bool isMatched)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _NepaliWord() when $default != null:
+return $default(_that.word,_that.isMatched);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String word,  bool isMatched)  $default,) {final _that = this;
+switch (_that) {
+case _NepaliWord():
+return $default(_that.word,_that.isMatched);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String word,  bool isMatched)?  $default,) {final _that = this;
+switch (_that) {
+case _NepaliWord() when $default != null:
+return $default(_that.word,_that.isMatched);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _NepaliWord implements NepaliWord {
+  const _NepaliWord({required this.word, this.isMatched = false});
+  factory _NepaliWord.fromJson(Map<String, dynamic> json) => _$NepaliWordFromJson(json);
+
+@override final  String word;
+@override@JsonKey() final  bool isMatched;
+
+/// Create a copy of NepaliWord
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NepaliWordCopyWith<_NepaliWord> get copyWith => __$NepaliWordCopyWithImpl<_NepaliWord>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$NepaliWordToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NepaliWord&&(identical(other.word, word) || other.word == word)&&(identical(other.isMatched, isMatched) || other.isMatched == isMatched));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,word,isMatched);
+
+@override
+String toString() {
+  return 'NepaliWord(word: $word, isMatched: $isMatched)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$NepaliWordCopyWith<$Res> implements $NepaliWordCopyWith<$Res> {
+  factory _$NepaliWordCopyWith(_NepaliWord value, $Res Function(_NepaliWord) _then) = __$NepaliWordCopyWithImpl;
+@override @useResult
+$Res call({
+ String word, bool isMatched
+});
+
+
+
+
+}
+/// @nodoc
+class __$NepaliWordCopyWithImpl<$Res>
+    implements _$NepaliWordCopyWith<$Res> {
+  __$NepaliWordCopyWithImpl(this._self, this._then);
+
+  final _NepaliWord _self;
+  final $Res Function(_NepaliWord) _then;
+
+/// Create a copy of NepaliWord
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? word = null,Object? isMatched = null,}) {
+  return _then(_NepaliWord(
+word: null == word ? _self.word : word // ignore: cast_nullable_to_non_nullable
+as String,isMatched: null == isMatched ? _self.isMatched : isMatched // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

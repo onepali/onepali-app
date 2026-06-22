@@ -132,7 +132,7 @@ class _LessonPageState extends State<LessonPage> {
               CharTracingLessonContent() => NewLetterTracingPage(
                 content: lessonContent,
               ),
-              TeaMakingLessonContent() => const KitchenPage(),
+              TeaMakingLessonContent() => KitchenPage(content: lessonContent),
               BallSlideLessonContent() => BallSlideView(
                 key: ValueKey('ball_slide_${state.currentIndex}'),
                 content: lessonContent,

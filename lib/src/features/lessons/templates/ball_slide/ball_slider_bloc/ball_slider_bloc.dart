@@ -167,7 +167,11 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     final clamped = raw.clamp(0.0, 1.0);
     final isComplete = clamped >= completionThreshold;
     if (isComplete && !state.isComplete) {
-      _audioPlayerService.playAsset(Assets.starBlast);
+      if (state.content?.messageSound != null) {
+        _audioPlayerService.play(state.content!.messageSound!);
+      } else {
+        _audioPlayerService.playAsset(Assets.starBlast);
+      }
     }
     return state.copyWith(
       value: clamped,

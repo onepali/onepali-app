@@ -3,7 +3,10 @@ import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/features/lessons/models/lesson.dart';
 
 part 'tutorial_event.dart';
 part 'tutorial_state.dart';
@@ -12,109 +15,179 @@ part 'tutorial_bloc.freezed.dart';
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final player = AudioPlayer();
   final hunxaPlayer = AudioPlayer();
-  List<String> ingridents = [
-    'assets/tea_maker/svg/teapot.svg',
-    'assets/tea_maker/svg/water_glass.svg',
-    'assets/tea_maker/svg/milk.svg',
-    'assets/tea_maker/svg/ginger.svg',
-    'assets/tea_maker/svg/tea.svg',
-    'assets/tea_maker/svg/spoon.svg',
-  ];
-  List<String> onDraggedItems = [
-    'assets/tea_maker/svg/teapot1.svg',
-    'assets/tea_maker/svg/teapot_water.svg',
-    'assets/tea_maker/svg/teapot_milk.svg',
-    'assets/tea_maker/svg/teapot_ginger.svg',
-    'assets/tea_maker/svg/teapot_tea.svg',
-    'assets/tea_maker/svg/teapot_spoon.svg',
-  ];
-  List<String> audioFiles = [
-    'tea_maker/music/making-tea-3.mp3', // paani hala
-    'tea_maker/music/making-tea-4.mp3', // dudh hala
+  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
+  List<String> ingridents = [];
+  List<String> onDraggedItems = [];
+  List<String> audioFiles = [];
+  List<String> ingredientAudioFiles = [];
+  String kitleyLeyAudio = '';
+  String teapotVapour = '';
+  String abaPaniUmalaSound = '';
+  String teaReadySound = '';
+  String stoveImage = '';
+  String bearTakingTeaTb = '';
+  String bearTakingTeaMb = '';
 
-    'tea_maker/music/making-tea-6.mp3', // aduwa hala
-    'tea_maker/music/making-tea-7.mp3', // chiya patti rakha
-    'tea_maker/music/making-tea-8.mp3', // chamcha le chalau
-  ];
-  // 'music/making-tea-5.mp3',// aba umala
+  Map<String, String> _cachedPaths = {};
+
   TutorialBloc() : super(TutorialState()) {
-    //1: Started
     on<_Started>((event, emit) async {
-      emit(state.copyWith(ingredients: ingridents, index: 0));
+      final content = event.content;
 
-      await player.play(AssetSource('tea_maker/music/making-tea-1.mp3'));
+      ingridents = content.ingredients.map((e) => e.image).toList();
+      onDraggedItems = content.ingredients
+          .map((e) => e.imageOutline ?? '')
+          .toList();
+      audioFiles = content.ingredients.map((e) => e.question ?? '').toList();
+      ingredientAudioFiles = content.ingredients
+          .map((e) => e.audioItem != null ? e.audioItem! : '')
+          .toList();
+      kitleyLeyAudio = audioFiles.isNotEmpty ? audioFiles.first : '';
+      audioFiles = audioFiles.length > 1 ? audioFiles.sublist(1) : [];
+      teapotVapour = content.teapotVapour;
+      abaPaniUmalaSound = content.abaPaniUmalaSound;
+      teaReadySound = content.teaReadySound;
+      stoveImage = content.stoveImage;
+      bearTakingTeaTb = content.bearTakingTeaTb;
+      bearTakingTeaMb = content.bearTakingTeaMb;
+
+      emit(state.copyWith(showLoading: true));
+
+      final allImageUrls = [
+        ...ingridents,
+        ...onDraggedItems,
+        teapotVapour,
+        stoveImage,
+        bearTakingTeaTb,
+        bearTakingTeaMb,
+      ].where((e) => e.isNotEmpty).toList();
+
+      final allAudioUrls = [
+        event.content.audioInstruction,
+        kitleyLeyAudio,
+        ...audioFiles,
+        ...ingredientAudioFiles,
+        abaPaniUmalaSound,
+        teaReadySound,
+      ].where((e) => e.isNotEmpty).toList();
+
+      _cachedPaths = await AssetCacheService.cacheAll(
+        imageUrls: allImageUrls,
+        audioUrls: allAudioUrls,
+      );
+
+      log('Cached ${_cachedPaths.length} assets');
+
+      emit(
+        state.copyWith(
+          showLoading: false,
+          ingredients: ingridents,
+          index: 0,
+          stoveImage: stoveImage,
+          bearTakingTeaTb: bearTakingTeaTb,
+          bearTakingTeaMb: bearTakingTeaMb,
+        ),
+      );
+
+      final didStartInstructionAudio = await _playAudio(
+        event.content.audioInstruction,
+      );
       emit(state.copyWith(showBearWithTea: true));
-      // after player is completed hide the bear and show the huncha
-      await player.onPlayerComplete.first;
+      if (didStartInstructionAudio) {
+        await player.onPlayerComplete.first;
+      }
       emit(state.copyWith(showBearWithTea: false, showHunchButton: true));
     });
+
     on<_HunchaButtonPressed>((event, emit) async {
       emit(state.copyWith(showHunchButton: false));
       await hunxaPlayer.play(AssetSource('tea_maker/music/making-tea-ok.mp3'));
       await Future.delayed(const Duration(seconds: 2));
 
-      emit(state.copyWith(showDragIndicator: true));
-      await player.play(AssetSource('tea_maker/music/making-tea-2.mp3'));
-      await player.onPlayerComplete.first;
-      emit(state.copyWith(index: 0));
+      await _playAudioAndWait(kitleyLeyAudio);
+      emit(state.copyWith(showDragIndicator: ingridents.isNotEmpty, index: 0));
     });
+
     on<_OnDragAccept>((event, emit) async {
       if (event.index != state.index) return;
-      // also if player is playing don't do anything
+      if (event.index < 0 || event.index >= onDraggedItems.length) return;
       if (player.state == PlayerState.playing) return;
+
       droppedItemText(event.index, emit);
-      unawaited(player.play(AssetSource('tea_maker/music/correct.mp3')));
+
       emit(
         state.copyWith(
           index: state.index + 1,
           draggedItemPath: onDraggedItems[event.index],
+
           showDragIndicator: false,
         ),
       );
+
       if (event.index == 2) {
-        // aba paani umala
         await Future.delayed(const Duration(seconds: 2));
-        await player.play(AssetSource('tea_maker/music/making-tea-5.mp3'));
-        await player.onPlayerComplete.first;
+        await _playAudioAndWait(abaPaniUmalaSound);
         emit(
-          state.copyWith(
-            draggedItemPath: 'assets/tea_maker/svg/teapot_vapour.svg',
-            droppedItem: 'उमाल',
-          ),
+          state.copyWith(draggedItemPath: teapotVapour, droppedItem: 'उमाल'),
         );
         await Future.delayed(const Duration(seconds: 2));
-        await playNextAudio(event.index, audioFiles[event.index]);
+        await playNextAudio(event.index);
       } else if (event.index == 5) {
         await Future.delayed(const Duration(seconds: 2));
         emit(state.copyWith(teaReady: true));
-        await player.play(AssetSource('tea_maker/music/making-tea-9.mp3'));
-        await player.onPlayerComplete.first;
+
+        await _playAudioAndWait(teaReadySound);
       } else {
-        await playNextAudio(event.index, audioFiles[event.index]);
+        await playNextAudio(event.index);
       }
     });
   }
-  Future<void> playNextAudio(int index, audioFile) async {
+
+  Future<bool> _playAudio(String url) async {
+    if (url.isEmpty) return false;
+    final cachedPath = _cachedPaths[url];
+    if (cachedPath != null) {
+      await player.play(DeviceFileSource(cachedPath));
+    } else {
+      await player.play(UrlSource(url));
+    }
+    return true;
+  }
+
+  Future<void> _playAudioAndWait(String url) async {
+    final didStartAudio = await _playAudio(url);
+    if (didStartAudio) {
+      await player.onPlayerComplete.first;
+    }
+  }
+
+  Future<void> playNextAudio(int index) async {
     await Future.delayed(const Duration(seconds: 2));
-    await player.play(AssetSource(audioFiles[index]));
-    await player.onPlayerComplete.first;
+    if (index < 0 || index >= audioFiles.length) return;
+    await _playAudioAndWait(audioFiles[index]);
   }
 
   Future<void> droppedItemText(int index, Emitter<TutorialState> emit) async {
     switch (index) {
       case 0:
         emit(state.copyWith(droppedItem: 'कित्ली'));
+        await _playIngredientAudio(0);
         break;
       case 1:
         emit(state.copyWith(droppedItem: 'पानी'));
+        await _playIngredientAudio(1);
         break;
       case 2:
         emit(state.copyWith(droppedItem: 'दुध'));
+        await _playIngredientAudio(2);
+        break;
       case 3:
         emit(state.copyWith(droppedItem: 'अदुवा'));
+        await _playIngredientAudio(3);
         break;
       case 4:
         emit(state.copyWith(droppedItem: 'चियापति'));
+        await _playIngredientAudio(4);
         break;
       case 5:
         emit(state.copyWith(droppedItem: 'चम्चा'));
@@ -122,11 +195,79 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     }
   }
 
+  Future<void> _playIngredientAudio(int index) async {
+    if (index < 0 || index >= ingredientAudioFiles.length) return;
+    final audio = ingredientAudioFiles[index];
+    if (audio.isEmpty) return;
+    await _audioPlayerService.play(audio);
+  }
+
   @override
   Future<void> close() {
-    log('dispose player');
+    _audioPlayerService.dispose();
+    player.stop();
     player.dispose();
+    hunxaPlayer.stop();
     hunxaPlayer.dispose();
     return super.close();
+  }
+}
+
+class AssetCacheService {
+  static final _imageCacheManager = CacheManager(
+    Config(
+      'tutorial_images',
+      stalePeriod: const Duration(days: 7),
+      maxNrOfCacheObjects: 50,
+    ),
+  );
+
+  static final _audioCacheManager = CacheManager(
+    Config(
+      'tutorial_audios',
+      stalePeriod: const Duration(days: 7),
+      maxNrOfCacheObjects: 50,
+    ),
+  );
+
+  static Future<Map<String, String>> cacheAll({
+    required List<String> imageUrls,
+    required List<String> audioUrls,
+  }) async {
+    final Map<String, String> cachedPaths = {};
+
+    final futures = [
+      ...imageUrls.map(
+        (url) => _cacheFile(url, _imageCacheManager, cachedPaths),
+      ),
+      ...audioUrls.map(
+        (url) => _cacheFile(url, _audioCacheManager, cachedPaths),
+      ),
+    ];
+
+    await Future.wait(futures, eagerError: false);
+    return cachedPaths;
+  }
+
+  static Future<void> _cacheFile(
+    String url,
+    CacheManager manager,
+    Map<String, String> pathMap,
+  ) async {
+    try {
+      final file = await manager.getSingleFile(url);
+      pathMap[url] = file.path;
+    } catch (e) {
+      log('Failed to cache: $url, error: $e');
+    }
+  }
+
+  static Future<String?> getCachedPath(
+    String url, {
+    bool isAudio = false,
+  }) async {
+    final manager = isAudio ? _audioCacheManager : _imageCacheManager;
+    final info = await manager.getFileFromCache(url);
+    return info?.file.path;
   }
 }

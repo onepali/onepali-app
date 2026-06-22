@@ -64,6 +64,14 @@ void main() {
       expect(model.description, '');
       expect(model.content, []);
     });
+
+    test('should coerce audio values to strings', () {
+      final model = StoryModel.fromJson({
+        'audio': [1, 'audio2.mp3'],
+      });
+
+      expect(model.audio, ['1', 'audio2.mp3']);
+    });
   });
 
   group('Content', () {
@@ -108,6 +116,16 @@ void main() {
       expect(content.conversation, []);
       expect(content.characters, []);
       expect(content.audio, []);
+    });
+
+    test('should coerce audio and character values to strings', () {
+      final content = Content.fromJson({
+        'audio': [1, 'audio2.mp3'],
+        'character': [2, 'character2'],
+      });
+
+      expect(content.audio, ['1', 'audio2.mp3']);
+      expect(content.characters, ['2', 'character2']);
     });
   });
 
