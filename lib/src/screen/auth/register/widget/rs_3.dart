@@ -139,7 +139,6 @@ class _RS3ScreenState extends State<RS3Screen> {
       label: 'Next',
       onTap: () {
         if (_formKey.currentState!.validate()) {
-          
           // Save fullName and yearOfBirth to AuthState
           final authState = context.read<AuthState>();
           authState.setFullName(nameController.text.trim());

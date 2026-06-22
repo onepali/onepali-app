@@ -185,7 +185,6 @@ class _RS4ScreenState extends State<RS4Screen> {
           ? null
           : () async {
               if (_formKey.currentState!.validate()) {
-                
                 final authProvider = context.read<AuthProvider>();
                 await authProvider.register(
                   context: context,

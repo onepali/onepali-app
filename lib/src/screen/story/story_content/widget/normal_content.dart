@@ -38,7 +38,7 @@ class _NormalContentState extends State<NormalContent> {
         // to fill the entire screen (appears once)
         // Top center sound icon
         Positioned(
-          top: isMobile? 24:32,
+          top: isMobile ? 24 : 32,
           left: 0,
           right: 0,
           child: Center(

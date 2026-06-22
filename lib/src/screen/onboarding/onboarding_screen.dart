@@ -82,8 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                       CustomMaterialButton(
                         label: context.tr('login'),
-                        onTap: ()async {
-                         
+                        onTap: () async {
                           Utility.navigate(context, AppRoutes.loginScreen);
                         },
                         elevation: 0,
@@ -97,8 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Gaps.verticalGapOf(buttonGap),
                       CustomMaterialButton(
                         label: context.tr('create_account'),
-                        onTap: ()async {
-                          
+                        onTap: () async {
                           Utility.navigate(context, AppRoutes.registerScreen);
                         },
                         elevation: 0,
@@ -113,8 +111,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                       CustomMaterialButton(
                         label: context.tr('try_lesson_guest'),
-                        onTap: () async{
-                          
+                        onTap: () async {
                           UserAppBar.setTabIndex(0);
                           Utility.navigate(
                             context,
@@ -301,7 +298,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 //                             colors: [theme.colorScheme.secondary, theme.colorScheme.secondary],
 //                           ),
 //                           onTap: () {
-//                             
+//
 //                             Utility.navigate(context, AppRoutes.loginScreen);
 //                           },
 //                           height: buttonHeight,

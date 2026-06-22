@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
-import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/core/widget/pop_scale_widget.dart';
 import 'package:onepali/src/core/widget/shake_widget.dart';
@@ -62,14 +61,20 @@ class TapToPopLessonView extends StatelessWidget {
                 ),
                 Center(
                   child: LottieBuilder.asset(
-                    Assets.starWinnerLottie,
-                    repeat: true,
+                    Assets.successLottie1,
+                    repeat: false,
                   ),
                 ),
-                TopRightPositionedCloseButton(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                })
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: SvgHelper.fromSource(path: Assets.wrong),
+                  ),
+                ),
               ],
             ),
           );
@@ -110,10 +115,15 @@ class TapToPopLessonView extends StatelessWidget {
                       ),
               ),
 
-            TopRightPositionedCloseButton(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
+            Positioned(
+              top: 16,
+              right: 16,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: SvgHelper.fromSource(path: Assets.wrong),
+              ),
             ),
           ],
         );

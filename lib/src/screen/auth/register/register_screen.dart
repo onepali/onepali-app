@@ -17,10 +17,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _player.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
-    
 
     // Responsive sizing and styling
     final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
@@ -141,7 +141,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             builder: (context) => CustomMaterialButton(
               label: 'Continue',
               onTap: () {
-                
                 Utility.navigate(context, AppRoutes.rs1Screen);
               },
               elevation: 0,
