@@ -80,6 +80,9 @@ class _OptionSelectionViewState extends State<OptionSelectionView> {
                           if (state.status == OptionSelectionStatus.completed) {
                             return;
                           }
+                          context.read<PzMetricsProvider>().trackAnswerAttempt(
+                            isCorrect: item.isCorrect,
+                          );
                           context.read<OptionSlectionBloc>().add(
                             OptionSlectionEvent.optionTapped(item),
                           );

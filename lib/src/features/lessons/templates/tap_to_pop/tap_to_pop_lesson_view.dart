@@ -83,39 +83,47 @@ class TapToPopLessonView extends StatelessWidget {
                 ),
               ),
             for (final item in items)
-              Positioned(
-                top: (item.dyRatio ?? 0.5) * size.height,
-                left: (item.dxRatio ?? 0.5) * size.width,
-                child: item.isCorrect
-                    ? Transform.scale(
-                        scale: isMobile
-                            ? item.sizeMb.toDouble()
-                            : item.sizeTb.toDouble(),
-                        child: PopScaleOnTap(
-                          key: ValueKey(item.order.toString()),
-                          onTap: () {
-                            context.read<TapToPopBloc>().add(
-                              TapToPopEvent.tapItem(item),
-                            );
-                          },
-                          child: SvgPicture.network(item.image),
+              if (!item.isCorrect ||
+                  (state.correctItems?.contains(item) ?? false))
+                Positioned(
+                  top: (item.dyRatio ?? 0.5) * size.height,
+                  left: (item.dxRatio ?? 0.5) * size.width,
+                  child: item.isCorrect
+                      ? Transform.scale(
+                          scale: isMobile
+                              ? item.sizeMb.toDouble()
+                              : item.sizeTb.toDouble(),
+                          child: PopScaleOnTap(
+                            key: ValueKey(item.order.toString()),
+                            onTap: () {
+                              context
+                                  .read<PzMetricsProvider>()
+                                  .trackAnswerAttempt(isCorrect: true);
+                              context.read<TapToPopBloc>().add(
+                                TapToPopEvent.tapItem(item),
+                              );
+                            },
+                            child: SvgPicture.network(item.image),
+                          ),
+                        )
+                      : Transform.scale(
+                          scale: isMobile
+                              ? item.sizeMb.toDouble()
+                              : item.sizeTb.toDouble(),
+                          child: ShakeWidget(
+                            key: ValueKey(item.order.toString()),
+                            onTap: () {
+                              context
+                                  .read<PzMetricsProvider>()
+                                  .trackAnswerAttempt(isCorrect: false);
+                              context.read<TapToPopBloc>().add(
+                                TapToPopEvent.tapItem(item),
+                              );
+                            },
+                            child: SvgPicture.network(item.image),
+                          ),
                         ),
-                      )
-                    : Transform.scale(
-                        scale: isMobile
-                            ? item.sizeMb.toDouble()
-                            : item.sizeTb.toDouble(),
-                        child: ShakeWidget(
-                          key: ValueKey(item.order.toString()),
-                          onTap: () {
-                            context.read<TapToPopBloc>().add(
-                              TapToPopEvent.tapItem(item),
-                            );
-                          },
-                          child: SvgPicture.network(item.image),
-                        ),
-                      ),
-              ),
+                ),
 
             TopRightPositionedCloseButton(
               onTap: () {
