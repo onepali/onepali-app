@@ -34,6 +34,7 @@ class DragDropContentState extends State<DragDropContent> {
     droppedOn = List.generate(n, (_) => null);
     tryAgainIdx = null;
   }
+
   @override
   void dispose() {
     _audioPlayerService.dispose();

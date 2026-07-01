@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 
@@ -6,11 +5,7 @@ class LabelDisplay extends StatefulWidget {
   final String nameNp;
   final String nameEn;
 
-  const LabelDisplay({
-    super.key,
-    required this.nameNp,
-    required this.nameEn,
-  });
+  const LabelDisplay({super.key, required this.nameNp, required this.nameEn});
 
   @override
   State<LabelDisplay> createState() => _LabelDisplayState();
@@ -54,7 +49,7 @@ class _LabelDisplayState extends State<LabelDisplay>
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
-    if(widget.nameNp.isEmpty) return const SizedBox.shrink();
+    if (widget.nameNp.isEmpty) return const SizedBox.shrink();
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

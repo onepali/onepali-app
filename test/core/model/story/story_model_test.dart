@@ -184,7 +184,7 @@ void main() {
         ),
       ];
 
-      final jsonString = jsonEncode(stories.first.toJson()  );
+      final jsonString = jsonEncode(stories.first.toJson());
       expect(jsonString, isA<String>());
       expect(jsonString, contains('Story 1'));
       expect(jsonString, contains('कथा १'));

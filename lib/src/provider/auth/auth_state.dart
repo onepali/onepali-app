@@ -11,7 +11,7 @@ class AuthState with ChangeNotifier {
   String? childAvatar;
   double? childScreenTime;
   String? currentChildId;
-  
+
   void setHeardAbout(String value) {
     heardAbout = value;
     notifyListeners();

@@ -43,19 +43,16 @@ class SongModel {
     youtubeTitleNe: json["youtube_title_ne"] ?? '',
     ageGroup: json["age_group"] ?? '',
     type: json["type"] ?? '',
-    language:
-        json["language"] != null
-            ? List<String>.from(json["language"].map((x) => x ?? ''))
-            : <String>[],
-    media:
-        json["media"] != null
-            ? Media.fromJson(json["media"])
-            : Media(youtubeLink: ''),
+    language: json["language"] != null
+        ? List<String>.from(json["language"].map((x) => x ?? ''))
+        : <String>[],
+    media: json["media"] != null
+        ? Media.fromJson(json["media"])
+        : Media(youtubeLink: ''),
     rank: json["rank"] ?? 0,
-    tags:
-        json["tags"] != null
-            ? List<String>.from(json["tags"].map((x) => x ?? ''))
-            : <String>[],
+    tags: json["tags"] != null
+        ? List<String>.from(json["tags"].map((x) => x ?? ''))
+        : <String>[],
     categoryName: json["categoryName"] ?? '',
   );
 

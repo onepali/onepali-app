@@ -25,7 +25,6 @@ class PAverageLearningWidget extends StatefulWidget {
 }
 
 class _PAverageLearningWidgetState extends State<PAverageLearningWidget> {
-
   @override
   Widget build(BuildContext context) {
     final minHeight = widget.isMobilePortrait ? 140.0 : 290.0;
@@ -97,11 +96,11 @@ class _PAverageLearningWidgetState extends State<PAverageLearningWidget> {
                               data['right_answers_count'] ?? 0;
                           final wrongAnswersCount =
                               data['wrong_answers_count'] ?? 0;
-                          final totalAnswers = rightAnswersCount + wrongAnswersCount;
-                          final answerSuccessRate =
-                              totalAnswers > 0
-                                  ? rightAnswersCount / totalAnswers
-                                  : 0.0;
+                          final totalAnswers =
+                              rightAnswersCount + wrongAnswersCount;
+                          final answerSuccessRate = totalAnswers > 0
+                              ? rightAnswersCount / totalAnswers
+                              : 0.0;
                           return Text(
                             '${(answerSuccessRate * 100).toStringAsFixed(0)}',
                             style: AppStyles.text40PxSemiBold.copyWith(

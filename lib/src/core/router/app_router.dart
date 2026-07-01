@@ -83,19 +83,17 @@ class AppRoutes {
   static const String parentPlansScreen = '/parent/plans';
 
   ///[NewRoutes]
-  static const String lessonPage="/lessonPage/{lessonId}";
+  static const String lessonPage = "/lessonPage/{lessonId}";
 
   /// A map of the application's routes.
   static Map<String, WidgetBuilder> routes = {
     systemScreen: (context) => const SystemScreen(),
     aboutUsScreen: (context) => const AboutUsScreen(),
     contactScreen: (context) => const ContactScreen(),
-    faqsScreen:
-        (context) => FaqsScreen(
-          faqsData:
-              ModalRoute.of(context)?.settings.arguments as List<FaqModel>? ??
-              [],
-        ),
+    faqsScreen: (context) => FaqsScreen(
+      faqsData:
+          ModalRoute.of(context)?.settings.arguments as List<FaqModel>? ?? [],
+    ),
 
     splashScreen: (context) => const SplashScreen(),
     onboardingScreen: (context) => const OnboardingScreen(),
@@ -158,10 +156,9 @@ class AppRoutes {
     chooseRewardScreen: (context) => ChooseRewardWidget(),
     languageScreen: (context) => const LanguageScreen(),
 
-    childProfileScreen:
-        (context) => CUserScreen(
-          child: ModalRoute.of(context)?.settings.arguments as ChildUserModel,
-        ),
+    childProfileScreen: (context) => CUserScreen(
+      child: ModalRoute.of(context)?.settings.arguments as ChildUserModel,
+    ),
     parentProfileScreen: (context) => const UserScreen(),
     printableScreen: (context) => const PrintablesScreen(),
 
@@ -182,10 +179,9 @@ class AppRoutes {
     parentHomeScreen: (context) => const PHomeScreen(),
     parentBlogScreen: (context) => const ParentBlogScreen(),
     parentSettingScreen: (context) => const ParentSettingScreen(),
-    blogDetailScreen:
-        (context) => PBlogDetailScreen(
-          data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,
-        ),
+    blogDetailScreen: (context) => PBlogDetailScreen(
+      data: ModalRoute.of(context)?.settings.arguments as PzBlogModel?,
+    ),
 
     parentReviewScreen: (context) => const PreviewScreen(),
     parentNotificationScreen: (context) => const NotificationScreen(),

@@ -67,7 +67,7 @@ class SlideContentState extends State<SlideContent> {
           right: sliderPadding + char2Width, // Position char2 at the right side
           bottom: 55,
           child: SvgHelper.fromSource(
-            path: char2??'',
+            path: char2 ?? '',
             height: 30.h(context),
             width: char2Width,
             type: SvgSourceType.network,
@@ -82,7 +82,7 @@ class SlideContentState extends State<SlideContent> {
               handleDrag(details.delta.dx);
             },
             child: SvgHelper.fromSource(
-              path: char1??'',
+              path: char1 ?? '',
               height: 25.h(context),
               width: char1Width,
               type: SvgSourceType.network,
@@ -113,7 +113,7 @@ class SlideContentState extends State<SlideContent> {
             ),
           ),
         ),
-       
+
         TopRightPositionedCloseButton(
           onTap: () {
             storyProvider.stopAudioAndResetIndex();
@@ -139,7 +139,7 @@ class SlideContentState extends State<SlideContent> {
         //   ),
         // ),
         CenterRightAlignedForwardButton(
-          onTap:()=> storyProvider.nextContent(context),
+          onTap: () => storyProvider.nextContent(context),
         ),
         Positioned(
           left: 32,

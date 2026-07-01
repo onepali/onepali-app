@@ -65,7 +65,7 @@ class _PBlogDetailScreenState extends State<PBlogDetailScreen> {
         : AppStyles.text18PxRegular.copyWith(
             height: 1.6,
             fontFamily: AppConstants.kDMSansFont,
-          ); 
+          );
     var blog = widget.data;
     if (blog == null) {
       return const Scaffold(body: Center(child: Text('Blog data is loading')));

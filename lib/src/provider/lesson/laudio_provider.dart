@@ -120,9 +120,9 @@ class LessonAudioProvider extends ChangeNotifier {
     BuildContext context,
     Lesson lesson,
   ) async {
-    if(isPlaying) return;
-    if(_audioPlayer1.state == PlayerState.playing) return;
-    if(_audioPlayer2.state == PlayerState.playing) return;
+    if (isPlaying) return;
+    if (_audioPlayer1.state == PlayerState.playing) return;
+    if (_audioPlayer2.state == PlayerState.playing) return;
     if (_currentIndex < contents.length - 1) {
       _currentIndex++;
       notifyListeners();
@@ -131,8 +131,8 @@ class LessonAudioProvider extends ChangeNotifier {
       final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
       if (childId.isNotEmpty) {
         if (!context.mounted) return;
-        final recommendedLessonProvider =
-            context.read<RecommendedLessonProvider>();
+        final recommendedLessonProvider = context
+            .read<RecommendedLessonProvider>();
         await recommendedLessonProvider.saveOrUpdateLessonProgress(
           childId: childId,
           lessonId: lesson.id.toString(),
@@ -167,8 +167,8 @@ class LessonAudioProvider extends ChangeNotifier {
       final childId = await prefs.getStringPref(AppConstants.childIdKey) ?? '';
       if (!context.mounted) return;
       if (childId.isNotEmpty) {
-        final recommendedLessonProvider =
-            context.read<RecommendedLessonProvider>();
+        final recommendedLessonProvider = context
+            .read<RecommendedLessonProvider>();
         await recommendedLessonProvider.saveOrUpdateLessonProgress(
           childId: childId,
           lessonId: lesson.id.toString(),
@@ -201,7 +201,6 @@ class LessonAudioProvider extends ChangeNotifier {
       final file = await DefaultCacheManager().getSingleFile(audioPath);
       String sourcePath = audioPath;
       AudioSourceType sourceType = AudioSourceType.network;
-      
 
       if (file.existsSync()) {
         sourcePath = file.path;

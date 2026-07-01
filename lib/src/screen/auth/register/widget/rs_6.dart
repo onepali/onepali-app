@@ -50,18 +50,17 @@ class _RS6ScreenState extends State<RS6Screen>
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text24PxSemiBold
-            : AppStyles.text20PxSemiBold;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text24PxSemiBold
+        : AppStyles.text20PxSemiBold;
 
-    final TextStyle descriptionStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle descriptionStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 6),

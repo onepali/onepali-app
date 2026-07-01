@@ -13,61 +13,59 @@ class ContactScreen extends StatelessWidget {
         isMobile && PlatformUtility.isPortrait(context);
 
     // Responsive sizing - mobile stays same, tablet gets enhanced
-    final double containerPadding =
-        isMobile ? (isMobilePortrait ? 16.0 : 32.0) : 40.0;
+    final double containerPadding = isMobile
+        ? (isMobilePortrait ? 16.0 : 32.0)
+        : 40.0;
     final double verticalGap = isMobile ? (isMobilePortrait ? 16 : 24) : 32;
 
-    final TextStyle noDataStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxRegular.copyWith(
+    final TextStyle noDataStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxRegular.copyWith(
                   color: Colors.grey,
                   fontFamily: AppConstants.kDMSansFont,
                 )
-                : AppStyles.text20PxRegular.copyWith(
+              : AppStyles.text20PxRegular.copyWith(
                   color: Colors.grey,
                   fontFamily: AppConstants.kDMSansFont,
                 ))
-            : AppStyles.text24PxRegular.copyWith(
-              color: Colors.grey,
-              fontFamily: AppConstants.kDMSansFont,
-            );
+        : AppStyles.text24PxRegular.copyWith(
+            color: Colors.grey,
+            fontFamily: AppConstants.kDMSansFont,
+          );
 
-    final TextStyle titleStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxSemiBold.copyWith(
+    final TextStyle titleStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxSemiBold.copyWith(
                   height: 1.6,
                   fontFamily: AppConstants.kDMSansFont,
                   color: AppColors.kDrawerBgColor,
                 )
-                : AppStyles.text20PxBold.copyWith(
+              : AppStyles.text20PxBold.copyWith(
                   fontFamily: AppConstants.kDMSansFont,
                   color: AppColors.kDrawerBgColor,
                 ))
-            : AppStyles.text24PxBold.copyWith(
-              fontFamily: AppConstants.kDMSansFont,
-              color: AppColors.kDrawerBgColor,
-            );
+        : AppStyles.text24PxBold.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+            color: AppColors.kDrawerBgColor,
+          );
 
-    final TextStyle infoStyle =
-        isMobile
-            ? (isMobilePortrait
-                ? AppStyles.text16PxRegular.copyWith(
+    final TextStyle infoStyle = isMobile
+        ? (isMobilePortrait
+              ? AppStyles.text16PxRegular.copyWith(
                   height: 1.6,
                   fontFamily: AppConstants.kDMSansFont,
                   color: AppColors.kDrawerBgColor,
                 )
-                : AppStyles.text20PxRegular.copyWith(
+              : AppStyles.text20PxRegular.copyWith(
                   height: 1.6,
                   fontFamily: AppConstants.kDMSansFont,
                   color: AppColors.kDrawerBgColor,
                 ))
-            : AppStyles.text22PxRegular.copyWith(
-              height: 1.7,
-              fontFamily: AppConstants.kDMSansFont,
-              color: AppColors.kDrawerBgColor,
-            );
+        : AppStyles.text22PxRegular.copyWith(
+            height: 1.7,
+            fontFamily: AppConstants.kDMSansFont,
+            color: AppColors.kDrawerBgColor,
+          );
 
     if (contactData == null) {
       return Center(

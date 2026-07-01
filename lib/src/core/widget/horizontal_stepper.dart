@@ -20,8 +20,9 @@ class HorizontalStepper extends StatelessWidget {
     final isTablet = PlatformUtility.isTablet(context);
 
     // Responsive sizing for tablet
-    final double responsiveStepHeight =
-        isTablet ? stepIndicatorHeight + 1.0 : stepIndicatorHeight;
+    final double responsiveStepHeight = isTablet
+        ? stepIndicatorHeight + 1.0
+        : stepIndicatorHeight;
     final double responsiveSpacing = isTablet ? spacing + 2.0 : spacing;
 
     return Row(

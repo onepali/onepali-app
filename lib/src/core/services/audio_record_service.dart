@@ -1,4 +1,3 @@
-
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
@@ -23,24 +22,26 @@ class AudioRecorderServiceImpl implements AudioRecorderService {
   @override
   Future<void> startRecording() async {
     final dir = await getTemporaryDirectory();
-    _outputPath = '${dir.path}/listen_repeat_${DateTime.now().millisecondsSinceEpoch}.m4a';
-    
+    _outputPath =
+        '${dir.path}/listen_repeat_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
     if (!await _recorder.hasPermission()) {
       throw Exception('Microphone permission denied');
     }
-    
+
     await _recorder.start(
-      const RecordConfig(encoder: AudioEncoder.aacLc, bitRate: 128000, sampleRate: 44100),
+      const RecordConfig(
+        encoder: AudioEncoder.aacLc,
+        bitRate: 128000,
+        sampleRate: 44100,
+      ),
       path: _outputPath!,
     );
-
-  
   }
 
   @override
   Future<String?> stopRecording() async {
-    return await _recorder.stop(); 
-  
+    return await _recorder.stop();
   }
 
   @override

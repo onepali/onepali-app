@@ -170,8 +170,9 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
               isAdd: true,
               onTap: () async {
                 // Check if parent has verified passcode
-                final isParentLogged = await ParentLocalStorage.isParentLogged();
-                
+                final isParentLogged =
+                    await ParentLocalStorage.isParentLogged();
+
                 if (!isParentLogged) {
                   // Navigate to parent PIN screen for passcode verification
                   Utility.navigate(
@@ -181,7 +182,7 @@ class _ParentSettingScreenState extends State<ParentSettingScreen> {
                   );
                   return;
                 }
-                
+
                 final validChildrenCount = children
                     .where(
                       (child) =>

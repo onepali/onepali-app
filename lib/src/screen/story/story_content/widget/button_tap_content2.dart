@@ -114,9 +114,11 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     if (storyProvider.isStoryFinished) {
       // Navigator.of(context).pop();
-      if (isCorrect==true) {
+      if (isCorrect == true) {
         // Track the answer using PzMetricsProvider
-        context.read<PzMetricsProvider>().trackAnswer1(isCorrect: isCorrect ?? false);
+        context.read<PzMetricsProvider>().trackAnswer1(
+          isCorrect: isCorrect ?? false,
+        );
         _audioPlayerService.playAsset(Assets.storiesComplete);
       }
     }

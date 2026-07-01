@@ -12,7 +12,6 @@ abstract class AudioPlayerService {
   Future<void> dispose();
 }
 
-
 class AudioPlayerServiceImpl implements AudioPlayerService {
   final AudioPlayer _player = AudioPlayer();
   StreamSubscription<void>? _completeSubscription;
@@ -53,14 +52,13 @@ class AudioPlayerServiceImpl implements AudioPlayerService {
     await _player.stop();
   }
 
-
   @override
   Future<void> dispose() async {
     await _completeSubscription?.cancel();
     await _player.dispose();
     await _completeController.close();
   }
-  
+
   @override
   Future<void> playAsset(String url) async {
     await stop();

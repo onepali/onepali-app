@@ -35,16 +35,14 @@ class RecommendedStoryProvider extends ChangeNotifier {
     }
 
     try {
-      final query =
-          await _firestore
-              .collection(AppConstants.recomStoryCollection)
-              .where('childId', isEqualTo: childId)
-              .orderBy('lastWatched', descending: true)
-              .get();
-      _recommendedStories =
-          query.docs
-              .map((doc) => RecommendedStoryModel.fromJson(doc.data()))
-              .toList();
+      final query = await _firestore
+          .collection(AppConstants.recomStoryCollection)
+          .where('childId', isEqualTo: childId)
+          .orderBy('lastWatched', descending: true)
+          .get();
+      _recommendedStories = query.docs
+          .map((doc) => RecommendedStoryModel.fromJson(doc.data()))
+          .toList();
       _hasData = _recommendedStories.isNotEmpty;
       logger.d(
         'Fetched \\${_recommendedStories.length} recommended stories for childId: $childId',

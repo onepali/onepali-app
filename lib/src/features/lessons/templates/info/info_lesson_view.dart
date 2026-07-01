@@ -224,7 +224,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                           ),
                         ),
                 ),
-        
+
                 // Information Section
                 Expanded(
                   flex: 2,
@@ -242,9 +242,7 @@ class _InfoLessonViewState extends State<InfoLessonView> {
                       const SizedBox(height: 20),
                       Text(
                         content.nameEn,
-                        style: AppStyles.text20PxMedium.copyWith(
-                          fontSize: 32,
-                        ),
+                        style: AppStyles.text20PxMedium.copyWith(fontSize: 32),
                       ),
                       const SizedBox(height: 20),
                       SpeakerIcon(onTap: _replayAudio),
@@ -255,10 +253,8 @@ class _InfoLessonViewState extends State<InfoLessonView> {
               ],
             ),
             // Close button
-            TopRightPositionedCloseButton(
-              onTap: () => Navigator.pop(context),
-            ),
-        
+            TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
+
             //  LEFT ARROW
             CenterLeftAlignedBackButton(
               onTap: () {

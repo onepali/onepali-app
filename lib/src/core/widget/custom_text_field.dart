@@ -60,8 +60,9 @@ class CustomTextField extends StatelessWidget {
     bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing and styling
-    final double responsiveBorderRadius =
-        isTabletPortrait ? 12.0 : borderRadius;
+    final double responsiveBorderRadius = isTabletPortrait
+        ? 12.0
+        : borderRadius;
     final double responsivePaddingHorizontal =
         paddingHorizontal ?? (isTabletPortrait ? 16.0 : 0.0);
     final double responsivePaddingVertical =
@@ -70,18 +71,19 @@ class CustomTextField extends StatelessWidget {
     final double iconWidth = isTabletPortrait ? 48.0 : 40.0;
     final double focusedBorderWidth = isTabletPortrait ? 2.5 : 2.0;
 
-    final TextStyle textStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular
-            : AppStyles.text14PxRegular;
-    final TextStyle hintStyle = (isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular)
-        .copyWith(color: AppColors.kGrey);
-    final TextStyle errorStyle = (isTabletPortrait
-            ? AppStyles.text14PxRegular
-            : AppStyles.text12PxRegular)
-        .copyWith(color: AppColors.kRed);
+    final TextStyle textStyle = isTabletPortrait
+        ? AppStyles.text18PxRegular
+        : AppStyles.text14PxRegular;
+    final TextStyle hintStyle =
+        (isTabletPortrait
+                ? AppStyles.text16PxRegular
+                : AppStyles.text14PxRegular)
+            .copyWith(color: AppColors.kGrey);
+    final TextStyle errorStyle =
+        (isTabletPortrait
+                ? AppStyles.text14PxRegular
+                : AppStyles.text12PxRegular)
+            .copyWith(color: AppColors.kRed);
     return TextFormField(
       controller: controller,
       keyboardType:
@@ -101,18 +103,18 @@ class CustomTextField extends StatelessWidget {
       autofillHints: isPasswordField
           ? [AutofillHints.password]
           : (keyboardType == TextInputType.name
-              ? [AutofillHints.name]
-              : keyboardType == TextInputType.emailAddress
-              ? [AutofillHints.email]
-              : keyboardType == TextInputType.phone
-              ? [AutofillHints.telephoneNumber]
-              : keyboardType == TextInputType.streetAddress
-              ? [AutofillHints.fullStreetAddress]
-              : keyboardType == TextInputType.url
-              ? [AutofillHints.url]
-              : keyboardType == TextInputType.visiblePassword
-              ? [AutofillHints.password]
-              : null),
+                ? [AutofillHints.name]
+                : keyboardType == TextInputType.emailAddress
+                ? [AutofillHints.email]
+                : keyboardType == TextInputType.phone
+                ? [AutofillHints.telephoneNumber]
+                : keyboardType == TextInputType.streetAddress
+                ? [AutofillHints.fullStreetAddress]
+                : keyboardType == TextInputType.url
+                ? [AutofillHints.url]
+                : keyboardType == TextInputType.visiblePassword
+                ? [AutofillHints.password]
+                : null),
       autofocus: false,
       textInputAction: textInputAction,
       obscureText: isPasswordField,
@@ -128,20 +130,20 @@ class CustomTextField extends StatelessWidget {
             prefixIcon ??
             (icon != null
                 ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: iconHeight,
-                      width: iconWidth,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(icon!),
-                          fit: BoxFit.fitHeight,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: iconHeight,
+                        width: iconWidth,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(icon!),
+                            fit: BoxFit.fitHeight,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
+                    ],
+                  )
                 : null),
         suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
@@ -170,13 +172,12 @@ class CustomTextField extends StatelessWidget {
           ),
         ),
         hintText: hintText,
-        contentPadding:
-            contentPadding
-                ? EdgeInsets.symmetric(
-                  horizontal: responsivePaddingHorizontal,
-                  vertical: responsivePaddingVertical,
-                )
-                : EdgeInsets.all(isTabletPortrait ? 16.0 : 12.0),
+        contentPadding: contentPadding
+            ? EdgeInsets.symmetric(
+                horizontal: responsivePaddingHorizontal,
+                vertical: responsivePaddingVertical,
+              )
+            : EdgeInsets.all(isTabletPortrait ? 16.0 : 12.0),
       ),
     );
   }

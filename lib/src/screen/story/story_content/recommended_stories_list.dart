@@ -14,12 +14,12 @@ class RecommendedStoriesList extends StatelessWidget {
       builder: (context, recommendedProvider, storyProvider, _) {
         final allStories = storyProvider.stories;
         final recommendedStories = recommendedProvider.recommendedStories;
-        final recommendedStoryIds =
-            recommendedStories.map((r) => r.storyId).toSet();
-        final List<StoryModel> recommendedStoryModels =
-            allStories
-                .where((s) => recommendedStoryIds.contains(s.nameEn))
-                .toList();
+        final recommendedStoryIds = recommendedStories
+            .map((r) => r.storyId)
+            .toSet();
+        final List<StoryModel> recommendedStoryModels = allStories
+            .where((s) => recommendedStoryIds.contains(s.nameEn))
+            .toList();
         return StatusHandler(
           status: recommendedProvider.status,
           hasData: recommendedStoryModels.isNotEmpty,
@@ -31,7 +31,9 @@ class RecommendedStoriesList extends StatelessWidget {
           },
           successBuilder: () {
             // Use the same height calculation as regular cards
-            final cardHeight = AppCardResponsive.getDashboardCardHeight(context);
+            final cardHeight = AppCardResponsive.getDashboardCardHeight(
+              context,
+            );
 
             return SizedBox(
               height: cardHeight,
@@ -44,12 +46,12 @@ class RecommendedStoriesList extends StatelessWidget {
                   final story = recommendedStoryModels[i];
                   final rec =
                       recommendedStories
-                              .where((r) => r.storyId == story.nameEn)
-                              .isNotEmpty
-                          ? recommendedStories.firstWhere(
-                            (r) => r.storyId == story.nameEn,
-                          )
-                          : null;
+                          .where((r) => r.storyId == story.nameEn)
+                          .isNotEmpty
+                      ? recommendedStories.firstWhere(
+                          (r) => r.storyId == story.nameEn,
+                        )
+                      : null;
                   double? progressPercent;
                   if (rec != null && story.content.isNotEmpty) {
                     progressPercent = rec.progress / story.content.length;

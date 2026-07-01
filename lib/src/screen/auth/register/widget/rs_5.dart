@@ -46,28 +46,25 @@ class RS5Screen extends StatelessWidget {
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
 
-    final TextStyle titleStyle =
-        isTabletPortrait
-            ? AppStyles.text28PxSemiBold
-            : AppStyles.text24PxSemiBold;
+    final TextStyle titleStyle = isTabletPortrait
+        ? AppStyles.text28PxSemiBold
+        : AppStyles.text24PxSemiBold;
 
-    final TextStyle descriptionStyle =
-        isTabletPortrait
-            ? AppStyles.text16PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle descriptionStyle = isTabletPortrait
+        ? AppStyles.text16PxRegular
+        : AppStyles.text14PxRegular;
 
-    final TextStyle spamTextStyle =
-        isTabletPortrait
-            ? AppStyles.text14PxRegular
-            : AppStyles.text12PxRegular;
+    final TextStyle spamTextStyle = isTabletPortrait
+        ? AppStyles.text14PxRegular
+        : AppStyles.text12PxRegular;
 
-    final TextStyle buttonTextStyle =
-        isTabletPortrait ? AppStyles.text20PxMedium : AppStyles.text16PxMedium;
+    final TextStyle buttonTextStyle = isTabletPortrait
+        ? AppStyles.text20PxMedium
+        : AppStyles.text16PxMedium;
 
-    final TextStyle resendButtonTextStyle =
-        isTabletPortrait
-            ? AppStyles.text18PxRegular
-            : AppStyles.text14PxRegular;
+    final TextStyle resendButtonTextStyle = isTabletPortrait
+        ? AppStyles.text18PxRegular
+        : AppStyles.text14PxRegular;
 
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 5),

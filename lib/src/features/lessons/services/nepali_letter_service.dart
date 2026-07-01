@@ -189,7 +189,9 @@ class LetterService {
 
   /// Validate all letters
   /// Returns list of invalid letters with reasons
-  static Future<Map<String, List<String>>> validateAllLetters(bool isMobile) async {
+  static Future<Map<String, List<String>>> validateAllLetters(
+    bool isMobile,
+  ) async {
     final letters = await loadLetters();
     final errors = <String, List<String>>{};
 

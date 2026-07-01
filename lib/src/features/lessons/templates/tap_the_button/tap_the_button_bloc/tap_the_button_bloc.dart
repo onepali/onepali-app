@@ -64,7 +64,6 @@ class TapTheButtonBloc extends Bloc<TapTheButtonEvent, TapTheButtonState> {
     _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
       add(const TapTheButtonEvent.audioCompleted(true));
     });
-   
   }
 
   @override

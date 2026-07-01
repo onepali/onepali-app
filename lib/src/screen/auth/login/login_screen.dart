@@ -225,7 +225,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ? null
           : () async {
               if (_formKey.currentState!.validate()) {
-                
                 GuestUtil.setGuestUser(false);
                 final authProvider = context.read<AuthProvider>();
                 await authProvider.signIn(

@@ -57,10 +57,9 @@ class PzBlogModel {
     isFeatured: json["isFeatured"] ?? false,
     viewCount: json["viewCount"] ?? 0,
     likesCount: json["likesCount"] ?? 0,
-    tags:
-        json["tags"] != null
-            ? List<String>.from(json["tags"].map((x) => x ?? ""))
-            : <String>[],
+    tags: json["tags"] != null
+        ? List<String>.from(json["tags"].map((x) => x ?? ""))
+        : <String>[],
     createdAt: json["createdAt"] ?? "",
     updatedAt: json["updatedAt"] ?? "",
     publishedAt: json["publishedAt"] ?? "",

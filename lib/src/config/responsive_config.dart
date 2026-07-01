@@ -122,9 +122,10 @@ class ResponsiveConfig {
     } else {
       // In landscape, use reduced multipliers to fit content
       // More aggressive reduction for mobile landscape to prevent overflow
-      final isMobileLandscape = currentDeviceType == DeviceType.mobile && !isPortrait;
+      final isMobileLandscape =
+          currentDeviceType == DeviceType.mobile && !isPortrait;
       final reductionFactor = isMobileLandscape ? 0.6 : 0.8;
-      
+
       textMultiplier = blockHeight * reductionFactor;
       imageSizeMultiplier = blockWidth * reductionFactor;
       heightMultiplier = blockHeight * (isMobileLandscape ? 0.7 : 0.9);

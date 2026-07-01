@@ -32,8 +32,9 @@ class SvgHelper {
       height: height,
       width: width,
       fit: fit ?? BoxFit.contain,
-      colorFilter:
-          color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter: color == null
+          ? null
+          : ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
 
@@ -49,8 +50,9 @@ class SvgHelper {
       height: height,
       width: width,
       fit: fit ?? BoxFit.contain,
-      colorFilter:
-          color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter: color == null
+          ? null
+          : ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
 }

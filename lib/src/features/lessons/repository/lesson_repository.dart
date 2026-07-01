@@ -26,10 +26,7 @@ class LessonRepository {
     return Rx.combineLatest2<Lesson, List<LessonContent>, LessonDetail>(
       lessonStream,
       contentsStream,
-      (lesson, contents) => LessonDetail(
-        lesson: lesson,
-        contents: contents,
-      ),
+      (lesson, contents) => LessonDetail(lesson: lesson, contents: contents),
     );
   }
 }

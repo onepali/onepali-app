@@ -393,15 +393,12 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                       activeColor: AppColors.kWhite,
                       inactiveColor: AppColors.kWhite.withValues(alpha: 0.3),
                       errorColor: AppColors.kRed,
-                      validator: (val) => _isError
-                          ? (_errorMessage ?? 'Invalid input')
-                          : null,
+                      validator: (val) =>
+                          _isError ? (_errorMessage ?? 'Invalid input') : null,
                     ),
                     Gaps.verticalGapOf(32),
                     if (_isLoading)
-                      const CircularProgressIndicator(
-                        color: AppColors.kWhite,
-                      ),
+                      const CircularProgressIndicator(color: AppColors.kWhite),
                     if (_screenState == PasscodeScreenState.enterPasscode &&
                         !_isLoading)
                       TextButton(
@@ -434,9 +431,7 @@ class _ParentZoneScreenState extends State<ParentZoneScreen> {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => DashboardScreen(),
-                      settings: RouteSettings(
-                        name: AppRoutes.dashboardScreen,
-                      ),
+                      settings: RouteSettings(name: AppRoutes.dashboardScreen),
                     ),
                   );
                 } else {

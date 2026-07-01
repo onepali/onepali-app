@@ -22,8 +22,7 @@ abstract class ListenAndRepeatState with _$ListenAndRepeatState {
 
   const ListenAndRepeatState._();
 
-  double get recordingProgress =>
-      recordingElapsed / recordingDuration;
+  double get recordingProgress => recordingElapsed / recordingDuration;
 
   bool get isPlaying => phase == ListenAndRepeatPhase.playing;
   bool get isRecording => phase == ListenAndRepeatPhase.recording;

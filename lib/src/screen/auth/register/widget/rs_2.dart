@@ -146,7 +146,7 @@ class _RS2ScreenState extends State<RS2Screen> {
           return;
         }
         // Save learningReason to AuthState
-        
+
         final authState = context.read<AuthState>();
         authState.setLearningReason(
           AppConstants.whyLearningNepali[selectedIndex!],

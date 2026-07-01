@@ -754,7 +754,7 @@ mixin _$GunPart {
 
 /// This is the id of the part. It is also used as the color code eg: #ff0000
  String get id;/// Path of the part in svg image
- String get path;/// This is the fill color of the part in svg image. 
+ String get path;/// This is the fill color of the part in svg image.
  String? get color;/// To track the part is filled or not with color
  bool get isFilled; Item? get item;
 /// Create a copy of GunPart
@@ -971,7 +971,7 @@ class _GunPart implements GunPart {
 @override final  String id;
 /// Path of the part in svg image
 @override final  String path;
-/// This is the fill color of the part in svg image. 
+/// This is the fill color of the part in svg image.
 @override final  String? color;
 /// To track the part is filled or not with color
 @override@JsonKey() final  bool isFilled;

@@ -163,7 +163,7 @@ class _SliderViewState extends State<_SliderView> {
             BlocBuilder<BallSliderBloc, BallSliderState>(
               buildWhen: (p, c) => p.isComplete != c.isComplete,
               builder: (context, state) {
-                if (state.isComplete&& state.content?.message != null) {
+                if (state.isComplete && state.content?.message != null) {
                   return Positioned(
                     top: size.height * 0.1,
                     left: 0,

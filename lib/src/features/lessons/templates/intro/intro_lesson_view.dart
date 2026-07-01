@@ -101,7 +101,6 @@ class _IntroLessonViewState extends State<IntroLessonView> {
     super.dispose();
   }
 
-
   Widget _buildBackgroundImage(bool isMobile) {
     if (isMobile) {
       return widget.content.bgImageMobile == null

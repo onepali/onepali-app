@@ -18,10 +18,13 @@ abstract class GunPart with _$GunPart {
   const factory GunPart({
     /// This is the id of the part. It is also used as the color code eg: #ff0000
     required String id,
+
     /// Path of the part in svg image
     required String path,
-    /// This is the fill color of the part in svg image. 
+
+    /// This is the fill color of the part in svg image.
     String? color,
+
     /// To track the part is filled or not with color
     @Default(false) bool isFilled,
     Item? item,

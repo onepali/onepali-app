@@ -7,19 +7,19 @@ class GridPositionHelper {
 
   /// Calculate pixel position from grid coordinates
   /// Returns absolute pixel positions for bottom-left alignment
-  /// 
+  ///
   /// [screenWidth] - Full screen width in pixels
   /// [screenHeight] - Full screen height in pixels
   /// [gridX] - Column number (0-15)
   /// [gridY] - Row number (0-9)
-  /// 
+  ///
   /// Returns a map with 'left' and 'bottom' keys (absolute pixels):
   /// - 'left': pixels from screen left edge (absolute from left)
   /// - 'bottom': pixels from screen bottom edge (absolute from bottom)
-  /// 
+  ///
   /// The image's bottom-left will align with the grid cell's bottom-left.
   /// Using 'bottom' in Positioned widget is simpler - no need to know image height.
-  /// 
+  ///
   /// Note: Uses exact calculations to avoid rounding errors:
   /// - Column 0 always gives left = 0
   /// - Column 15 always gives left = (15/16) * screenWidth
@@ -34,25 +34,24 @@ class GridPositionHelper {
     // Clamp grid coordinates to valid range
     gridX = gridX.clamp(0, gridColumns - 1);
     gridY = gridY.clamp(0, gridRows - 1);
-    
+
     // Calculate absolute pixel positions
     // Left: (gridX / gridColumns) * screenWidth (pixels from left edge)
     // Bottom: screenHeight - ((gridY + 1) / gridRows) * screenHeight (pixels from bottom edge)
-    // 
+    //
     // Verification examples:
     // - Column 0: left = (0/16) * screenWidth = 0 ✓
     // - Column 15: left = (15/16) * screenWidth = 0.9375 * screenWidth ✓
     // - Row 9: bottom = screenHeight - (10/10) * screenHeight = 0 ✓
     // - Row 0: bottom = screenHeight - (1/10) * screenHeight = 0.9 * screenHeight ✓
     final double left = (gridX / gridColumns) * screenWidth;
-    final double bottom = screenHeight - (((gridY + 1) / gridRows) * screenHeight);
-    print("Grid to Pixel - gridX: $gridX, gridY: $gridY => left: $left, bottom: $bottom");
-    return {
-      'left': left,
-      'bottom': bottom,
-    };
+    final double bottom =
+        screenHeight - (((gridY + 1) / gridRows) * screenHeight);
+    print(
+      "Grid to Pixel - gridX: $gridX, gridY: $gridY => left: $left, bottom: $bottom",
+    );
+    return {'left': left, 'bottom': bottom};
   }
-
 
   /// Get image size based on fixed base sizes from main branch
   /// Mobile base: 60.0, Tablet base: 110.0
@@ -88,7 +87,7 @@ class GridPositionHelper {
       default:
         finalSize = baseSize;
     }
-    
+
     return finalSize;
   }
 
@@ -119,17 +118,23 @@ class GridPositionHelper {
     final deviceType = isMobile ? 'mobile' : 'tablet';
     final positionsMap = <String, Map<String, double>>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
-    
+
     for (final animalId in animalOrder) {
-      final gridPos = AnimalGridPositions.tapTargetPositions[animalId]?[deviceType];
+      final gridPos =
+          AnimalGridPositions.tapTargetPositions[animalId]?[deviceType];
       if (gridPos != null && gridPos.length >= 2) {
         final gridX = gridPos[0];
         final gridY = gridPos[1];
-        
+
         // Calculate position relative to full screen (grid spans full screen)
         // Animals are now outside SafeArea, so positions are already in screen coordinates
-        final basePosition = gridToPixelPosition(screenWidth, screenHeight, gridX, gridY);
-        
+        final basePosition = gridToPixelPosition(
+          screenWidth,
+          screenHeight,
+          gridX,
+          gridY,
+        );
+
         positionsMap[animalId] = {
           'left': basePosition['left']! - 10.0,
           'bottom': basePosition['bottom']! + 15.0,
@@ -157,16 +162,22 @@ class GridPositionHelper {
     final deviceType = isMobile ? 'mobile' : 'tablet';
     final positionsMap = <String, Map<String, double>>{};
     final animalOrder = ['rabbit', 'dog', 'cat', 'fish', 'bird', 'tortoise'];
-    
+
     for (final animalId in animalOrder) {
-      final gridPos = AnimalGridPositions.dragDraggablePositions[animalId]?[deviceType];
+      final gridPos =
+          AnimalGridPositions.dragDraggablePositions[animalId]?[deviceType];
       if (gridPos != null && gridPos.length >= 2) {
         final gridX = gridPos[0];
         final gridY = gridPos[1];
-        
+
         // Calculate position relative to full screen (grid spans full screen)
         // Animals are now outside SafeArea, so positions are already in screen coordinates
-        positionsMap[animalId] = gridToPixelPosition(screenWidth, screenHeight, gridX, gridY);
+        positionsMap[animalId] = gridToPixelPosition(
+          screenWidth,
+          screenHeight,
+          gridX,
+          gridY,
+        );
       }
     }
 
@@ -231,4 +242,3 @@ class AnimalGridPositions {
     },
   };
 }
-

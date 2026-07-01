@@ -30,17 +30,13 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         children: [
           // Background color extends to full screen
-          Positioned.fill(
-        child: Container(
-              color: AppColors.kWhite,
-            ),
-          ),
+          Positioned.fill(child: Container(color: AppColors.kWhite)),
           // Video player covering full screen
           Positioned.fill(
             child: isMobilePortrait
-                  ? _buildMobilePortraitSplash()
-                  : _buildTabletSplash(),
-        ),
+                ? _buildMobilePortraitSplash()
+                : _buildTabletSplash(),
+          ),
         ],
       ),
     );

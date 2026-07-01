@@ -19,9 +19,9 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   }
 
   Future<void> _onStarted(_Started event, Emitter<LessonState> emit) async {
-    emit(state.copyWith(
-      status: LessonStatus.loading,
-      lessonId: event.lessonId));
+    emit(
+      state.copyWith(status: LessonStatus.loading, lessonId: event.lessonId),
+    );
     await emit.forEach(
       LessonRepository().watchLessonWithContents(event.lessonId),
       onData: (lessonDetail) {
@@ -37,9 +37,7 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
       },
       onError: (error, _) {
         log(error.toString());
-        return state.copyWith(
-          status: LessonStatus.failure,
-        );
+        return state.copyWith(status: LessonStatus.failure);
       },
     );
   }
@@ -71,14 +69,12 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
   /// Approach: sticky one-time flag to track completion.
   LessonState _stateAtContentIndex(int index, LessonContent content) {
     final lastIndex = state.lessonDetails!.contents.length - 1;
-    final isFirstTimeOnLast =
-        index == lastIndex && !state.hasCompletedLesson;
+    final isFirstTimeOnLast = index == lastIndex && !state.hasCompletedLesson;
 
     return state.copyWith(
       currentIndex: index,
       currentContent: content,
-      hasCompletedLesson:
-          state.hasCompletedLesson || isFirstTimeOnLast,
+      hasCompletedLesson: state.hasCompletedLesson || isFirstTimeOnLast,
     );
   }
 

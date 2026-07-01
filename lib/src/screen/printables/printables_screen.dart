@@ -46,23 +46,21 @@ class _PrintablesScreenState extends State<PrintablesScreen> {
     final double searchMargin = isMobile ? 16.0 : 24.0;
     final double listPadding = isMobile ? 16.0 : 24.0;
     final double itemSpacing = isMobile ? 16.0 : 20.0;
-    final int crossAxisCount =
-        isMobile ? 1 : 2; // Mobile: ListView, Tablet: GridView
+    final int crossAxisCount = isMobile
+        ? 1
+        : 2; // Mobile: ListView, Tablet: GridView
 
-    final TextStyle hintStyle =
-        isMobile
-            ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
-            : AppStyles.text16PxRegular.copyWith(color: AppColors.kGrey);
+    final TextStyle hintStyle = isMobile
+        ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
+        : AppStyles.text16PxRegular.copyWith(color: AppColors.kGrey);
 
-    final TextStyle noResultsTitleStyle =
-        isMobile
-            ? AppStyles.text16PxRegular.copyWith(color: AppColors.kGrey)
-            : AppStyles.text18PxRegular.copyWith(color: AppColors.kGrey);
+    final TextStyle noResultsTitleStyle = isMobile
+        ? AppStyles.text16PxRegular.copyWith(color: AppColors.kGrey)
+        : AppStyles.text18PxRegular.copyWith(color: AppColors.kGrey);
 
-    final TextStyle noResultsSubStyle =
-        isMobile
-            ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
-            : AppStyles.text16PxRegular.copyWith(color: AppColors.kGrey);
+    final TextStyle noResultsSubStyle = isMobile
+        ? AppStyles.text14PxRegular.copyWith(color: AppColors.kGrey)
+        : AppStyles.text16PxRegular.copyWith(color: AppColors.kGrey);
     return Consumer<PrintablesProvider>(
       builder: (context, printablesProvider, child) {
         return StatusHandler(
@@ -134,16 +132,15 @@ class _PrintablesScreenState extends State<PrintablesScreen> {
           hintText: 'Search printables...',
           hintStyle: hintStyle,
           prefixIcon: const Icon(Icons.search, color: AppColors.kGrey),
-          suffixIcon:
-              _searchController.text.isNotEmpty
-                  ? IconButton(
-                    icon: const Icon(Icons.clear, color: AppColors.kGrey),
-                    onPressed: () {
-                      _searchController.clear();
-                      provider.updateSearchQuery('');
-                    },
-                  )
-                  : null,
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, color: AppColors.kGrey),
+                  onPressed: () {
+                    _searchController.clear();
+                    provider.updateSearchQuery('');
+                  },
+                )
+              : null,
           filled: true,
           fillColor: AppColors.kBackgroundColor,
           border: OutlineInputBorder(

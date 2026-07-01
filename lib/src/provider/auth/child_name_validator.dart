@@ -10,13 +10,12 @@ class ChildNameValidator {
     String? excludeChildId,
   }) async {
     try {
-      final querySnapshot =
-          await _firestore
-              .collection(AppConstants.usersCollection)
-              .doc(parentUid)
-              .collection(AppConstants.childrenCollection)
-              .where('full_name', isEqualTo: childName.trim())
-              .get();
+      final querySnapshot = await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .where('full_name', isEqualTo: childName.trim())
+          .get();
 
       if (excludeChildId != null) {
         return querySnapshot.docs.any((doc) => doc.id != excludeChildId);

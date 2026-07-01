@@ -64,11 +64,13 @@ class PrintablesProvider extends ChangeNotifier {
     }
 
     try {
-      final querySnapshot =
-          await _firestore.collection(AppConstants.printableCollection).get();
+      final querySnapshot = await _firestore
+          .collection(AppConstants.printableCollection)
+          .get();
 
-      final List<Map<String, dynamic>> printablesList =
-          querySnapshot.docs.map((doc) => doc.data()).toList();
+      final List<Map<String, dynamic>> printablesList = querySnapshot.docs
+          .map((doc) => doc.data())
+          .toList();
 
       _printables.clear();
       _printables.addAll(printableModelFromJson(jsonEncode(printablesList)));
@@ -174,7 +176,7 @@ class PrintablesProvider extends ChangeNotifier {
       logger.d('Checking folder access...');
       final hasAccess = await StorageService.hasFolderAccess();
       logger.d('Has folder access: $hasAccess');
-      
+
       if (hasAccess) {
         return true;
       }
@@ -184,9 +186,12 @@ class PrintablesProvider extends ChangeNotifier {
       try {
         final granted = await StorageService.requestFolderAccess();
         logger.d('Folder access granted: $granted');
-        
+
         if (granted) {
-          showCustomToaster('Folder selected! You can now download worksheets.', isError: false);
+          showCustomToaster(
+            'Folder selected! You can now download worksheets.',
+            isError: false,
+          );
           return true;
         } else {
           // Folder picker was cancelled or failed
@@ -218,10 +223,9 @@ class PrintablesProvider extends ChangeNotifier {
     try {
       // Check storage permission
       if (!await _checkStoragePermission()) {
-        final errorMessage =
-            Platform.isAndroid
-                ? 'Storage permission required to download files'
-                : 'Unable to access file storage';
+        final errorMessage = Platform.isAndroid
+            ? 'Storage permission required to download files'
+            : 'Unable to access file storage';
         showCustomToaster(errorMessage, isError: true);
         return false;
       }
@@ -244,7 +248,7 @@ class PrintablesProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         bool success = false;
-        
+
         if (Platform.isAndroid) {
           // Use SAF to save file
           logger.d('Attempting to save file: $filename');
@@ -254,20 +258,26 @@ class PrintablesProvider extends ChangeNotifier {
           );
           logger.d('File save result: $success');
           if (!success) {
-            logger.e('Failed to save file to folder. Check if folder was selected.');
-            throw Exception('Failed to save file. Please ensure a folder is selected.');
+            logger.e(
+              'Failed to save file to folder. Check if folder was selected.',
+            );
+            throw Exception(
+              'Failed to save file. Please ensure a folder is selected.',
+            );
           }
         } else if (Platform.isIOS) {
           // iOS: Use app documents folder
           final Directory appDocDir = await getApplicationDocumentsDirectory();
-          final Directory oNepaliFolder = Directory('${appDocDir.path}/O Nepali');
+          final Directory oNepaliFolder = Directory(
+            '${appDocDir.path}/O Nepali',
+          );
           if (!await oNepaliFolder.exists()) {
             await oNepaliFolder.create(recursive: true);
           }
           final File file = File('${oNepaliFolder.path}/$filename');
           await file.writeAsBytes(response.bodyBytes);
           success = true;
-          
+
           // Share on iOS
           await _shareFileOnIOS(file.path, filename);
         } else {
@@ -306,7 +316,7 @@ class PrintablesProvider extends ChangeNotifier {
 
       logger.e('Error downloading worksheet: $e');
       logger.e('Stack trace: $stackTrace');
-      
+
       // Show more specific error message
       String errorMessage = 'Failed to download worksheet';
       if (e.toString().contains('folder')) {
@@ -314,7 +324,7 @@ class PrintablesProvider extends ChangeNotifier {
       } else if (e.toString().contains('save')) {
         errorMessage = 'Failed to save file. Please try again.';
       }
-      
+
       showCustomToaster(errorMessage, isError: true);
       return false;
     }
@@ -324,10 +334,9 @@ class PrintablesProvider extends ChangeNotifier {
   Future<void> downloadAllWorksheets(PrintableModel printable) async {
     try {
       if (!await _checkStoragePermission()) {
-        final errorMessage =
-            Platform.isAndroid
-                ? 'Storage permission required to download files'
-                : 'Unable to access file storage';
+        final errorMessage = Platform.isAndroid
+            ? 'Storage permission required to download files'
+            : 'Unable to access file storage';
         showCustomToaster(errorMessage, isError: true);
         return;
       }

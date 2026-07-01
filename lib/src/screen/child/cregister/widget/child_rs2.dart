@@ -147,23 +147,29 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         final parentUser = FirebaseAuth.instance.currentUser;
         logger.d('👤 Parent user: ${parentUser?.uid}, ${parentUser?.email}');
         if (parentUser == null) {
-          showCustomToaster('No parent user found. Please log in again.', isError: true);
+          showCustomToaster(
+            'No parent user found. Please log in again.',
+            isError: true,
+          );
           logger.e('❌ No parent user found');
           return;
         }
-        
+
         // Verify user is still authenticated before proceeding
         final currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser == null || currentUser.uid != parentUser.uid) {
-          showCustomToaster('Authentication error. Please log in again.', isError: true);
+          showCustomToaster(
+            'Authentication error. Please log in again.',
+            isError: true,
+          );
           logger.e('❌ Authentication state changed during child creation');
           return;
         }
-        
+
         logger.d('Selected screen time: $selectedRange');
         // Save screen time to state
         authState.setChildScreenTime(selectedRange);
-        
+
         try {
           // Save child to Firestore and get the child ID
           final childId = await childProvider.createChildUser(
@@ -175,30 +181,36 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
             parentUid: parentUser.uid,
             parentEmail: parentUser.email ?? '',
           );
-          
+
           if (childId == null) {
             throw Exception('Child creation returned null ID');
           }
-          
-          logger.d('👶 Created child with ID: $childId, now fetching children...');
-          
+
+          logger.d(
+            '👶 Created child with ID: $childId, now fetching children...',
+          );
+
           // Fetch children with retry logic, specifically waiting for the newly created child
           await childUserProvider.fetchChildUser(
             maxRetries: 5, // More retries for newly created children
             retryDelayMs: 600, // Slightly longer delay
             expectedChildId: childId, // Wait for this specific child
           );
-          
+
           // Verify the child is in the list
           final children = childUserProvider.childUser;
           final foundChild = children.any((child) => child.uid == childId);
           if (!foundChild) {
-            logger.w('⚠️ Created child $childId not found in fetched list, but continuing...');
+            logger.w(
+              '⚠️ Created child $childId not found in fetched list, but continuing...',
+            );
             // Don't throw error - child might appear later, and we don't want to block the user
           } else {
-            logger.d('✅ Created child $childId successfully found in fetched list');
+            logger.d(
+              '✅ Created child $childId successfully found in fetched list',
+            );
           }
-          
+
           if (context.mounted) {
             showCustomToaster('Child account created successfully');
             Utility.navigateMaterialRoute(
@@ -241,7 +253,10 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         final parentUser = FirebaseAuth.instance.currentUser;
 
         if (parentUser == null) {
-          showCustomToaster('No parent user found. Please log in again.', isError: true);
+          showCustomToaster(
+            'No parent user found. Please log in again.',
+            isError: true,
+          );
           logger.e('❌ No parent user found');
           return;
         }
@@ -249,7 +264,10 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
         // Verify user is still authenticated before proceeding
         final currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser == null || currentUser.uid != parentUser.uid) {
-          showCustomToaster('Authentication error. Please log in again.', isError: true);
+          showCustomToaster(
+            'Authentication error. Please log in again.',
+            isError: true,
+          );
           logger.e('❌ Authentication state changed during child creation');
           return;
         }
@@ -268,28 +286,34 @@ class _ChildRS2ScreenState extends State<ChildRS2Screen> {
             parentUid: parentUser.uid,
             parentEmail: parentUser.email ?? '',
           );
-          
+
           if (childId == null) {
             throw Exception('Child creation returned null ID');
           }
-          
-          logger.d('👶 Created child with ID: $childId, now fetching children...');
-          
+
+          logger.d(
+            '👶 Created child with ID: $childId, now fetching children...',
+          );
+
           // Fetch children with retry logic, specifically waiting for the newly created child
           await childUserProvider.fetchChildUser(
             maxRetries: 5, // More retries for newly created children
             retryDelayMs: 600, // Slightly longer delay
             expectedChildId: childId, // Wait for this specific child
           );
-          
+
           // Verify the child is in the list
           final children = childUserProvider.childUser;
           final foundChild = children.any((child) => child.uid == childId);
           if (!foundChild) {
-            logger.w('⚠️ Created child $childId not found in fetched list, but continuing...');
+            logger.w(
+              '⚠️ Created child $childId not found in fetched list, but continuing...',
+            );
             // Don't throw error - child might appear later, and we don't want to block the user
           } else {
-            logger.d('✅ Created child $childId successfully found in fetched list');
+            logger.d(
+              '✅ Created child $childId successfully found in fetched list',
+            );
           }
 
           if (context.mounted) {

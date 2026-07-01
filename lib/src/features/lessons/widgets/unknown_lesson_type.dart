@@ -19,14 +19,12 @@ class UnknownLessonType extends StatelessWidget {
     return Stack(
       children: [
         TopRightPositionedCloseButton(onTap: () => Navigator.of(context).pop()),
-        Center(
-          child: Text('Unknown Lesson Type'),
-        ),
-        if (!isLast) CenterRightAlignedForwardButton(
-          onTap: () => context.read<LessonBloc>().add(
-            const LessonEvent.nextContent(),
+        Center(child: Text('Unknown Lesson Type')),
+        if (!isLast)
+          CenterRightAlignedForwardButton(
+            onTap: () =>
+                context.read<LessonBloc>().add(const LessonEvent.nextContent()),
           ),
-        ),
         if (!isFirst)
           CenterLeftAlignedBackButton(
             onTap: () => context.read<LessonBloc>().add(

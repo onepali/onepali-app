@@ -41,7 +41,8 @@ class PutInBagBloc extends Bloc<PutInBagEvent, PutInBagState> {
           if (state.content == null) return;
           final content = state.content;
           final isCompleted =
-              !content!.onlyOneChoice && state.status == PutInBagStatus.completed;
+              !content!.onlyOneChoice &&
+              state.status == PutInBagStatus.completed;
           if (itemIndex < 0 ||
               itemIndex >= content.items.length ||
               state.droppedItemIndexes.contains(itemIndex) ||

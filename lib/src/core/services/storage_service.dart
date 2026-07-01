@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:onepali/src/src.dart';
 
 class StorageService {
-  static const MethodChannel _channel = MethodChannel('fun.onepali.app/storage');
+  static const MethodChannel _channel = MethodChannel(
+    'fun.onepali.app/storage',
+  );
   static const String _folderUriKey = 'selected_folder_uri';
 
   /// Request folder access using SAF (Storage Access Framework)
@@ -17,9 +19,10 @@ class StorageService {
     try {
       logger.d('Calling native pickFolder method...');
       logger.d('This should open the folder picker. Please select a folder.');
-      
+
       // Add a timeout to prevent hanging forever
-      final String? folderUri = await _channel.invokeMethod('pickFolder')
+      final String? folderUri = await _channel
+          .invokeMethod('pickFolder')
           .timeout(
             const Duration(seconds: 60),
             onTimeout: () {
@@ -27,20 +30,26 @@ class StorageService {
               return null;
             },
           );
-      
-      logger.d('pickFolder returned: ${folderUri != null ? "URI received: $folderUri" : "null (cancelled or timeout)"}');
-      
+
+      logger.d(
+        'pickFolder returned: ${folderUri != null ? "URI received: $folderUri" : "null (cancelled or timeout)"}',
+      );
+
       if (folderUri != null && folderUri.isNotEmpty) {
         logger.d('Saving folder URI: $folderUri');
         await _saveFolderUri(folderUri);
         logger.d('Folder URI saved successfully');
         return true;
       } else {
-        logger.w('Folder URI is null or empty - user may have cancelled or picker failed');
+        logger.w(
+          'Folder URI is null or empty - user may have cancelled or picker failed',
+        );
         return false;
       }
     } on PlatformException catch (e) {
-      logger.e('PlatformException requesting folder access: ${e.code} - ${e.message}');
+      logger.e(
+        'PlatformException requesting folder access: ${e.code} - ${e.message}',
+      );
       if (e.code == 'NO_ACTIVITY') {
         logger.e('No file manager found on device to handle folder selection');
       } else if (e.code == 'FOLDER_PICKER_ERROR') {
@@ -76,7 +85,9 @@ class StorageService {
     // Verify the URI is still valid
     try {
       if (Platform.isAndroid) {
-        final bool isValid = await _channel.invokeMethod('verifyFolderUri', {'uri': uri});
+        final bool isValid = await _channel.invokeMethod('verifyFolderUri', {
+          'uri': uri,
+        });
         return isValid ?? false;
       }
     } catch (e) {
@@ -88,7 +99,10 @@ class StorageService {
   }
 
   /// Save file to the selected folder using SAF
-  static Future<bool> saveFileToFolder(String filename, List<int> fileBytes) async {
+  static Future<bool> saveFileToFolder(
+    String filename,
+    List<int> fileBytes,
+  ) async {
     if (!Platform.isAndroid) {
       logger.e('saveFileToFolder called on non-Android platform');
       return false;
@@ -123,4 +137,3 @@ class StorageService {
     await prefs.deleteSharedPref(_folderUriKey);
   }
 }
-

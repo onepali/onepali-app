@@ -54,8 +54,8 @@ class LottieHelper {
       repeat: repeat,
       fit: fit,
       reverse: reverse,
-      errorBuilder:
-          (context, error, stackTrace) => Container(color: AppColors.kWhite),
+      errorBuilder: (context, error, stackTrace) =>
+          Container(color: AppColors.kWhite),
       animate: animate,
       alignment: Alignment.center,
     );
@@ -78,8 +78,8 @@ class LottieHelper {
       reverse: reverse,
       animate: animate,
       fit: fit,
-      errorBuilder:
-          (context, error, stackTrace) => Container(color: AppColors.kWhite),
+      errorBuilder: (context, error, stackTrace) =>
+          Container(color: AppColors.kWhite),
     );
   }
 }
