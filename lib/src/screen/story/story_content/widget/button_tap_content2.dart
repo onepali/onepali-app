@@ -206,7 +206,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
                       ? 220
                       : 120,
                   onTap: () {
-                    if (isCorrect == true && correct) {
+                    if (isCorrect == true) {
                       return;
                     }
                     _handleTap(i, storyProvider);
