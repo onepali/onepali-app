@@ -31,12 +31,12 @@ dependencies:
   rxdart: ^0.28.0
 
   # Firebase Services
-  firebase_core: ^4.7.0
-  firebase_auth: ^6.5.1
+  firebase_core: ^4.10.0
+  firebase_auth: ^6.5.2
   cloud_firestore: ^6.5.0
   firebase_app_check: ^0.4.3
   firebase_storage: ^13.0.3
-  firebase_messaging: ^16.2.0
+  firebase_messaging: ^16.3.0
 
   # Authentication
   google_sign_in: ^7.1.0
@@ -60,19 +60,19 @@ dependencies:
   shared_preferences: ^2.5.5
   permission_handler: ^12.0.1
   path_provider: ^2.1.4
-  file_picker: ^11.0.2
+  file_picker: ^12.0.0-beta.1
 
   # Notifications & Device Features
   flutter_local_notifications: ^21.0.0
   fluttertoast: ^9.1.0
   timezone: ^0.11.0
-  flutter_timezone: ^5.0.2
+  flutter_timezone: ^5.1.0
 
   # Utils & Platform Integration
   intl: ^0.20.2
   flutter_dotenv: ^6.0.1
   url_launcher: ^6.3.1
-  share_plus: ^12.0.2
+  share_plus: ^13.1.0
   in_app_review: ^2.0.12
   app_settings: ^7.0.0
   responsive_builder: ^0.7.1
