@@ -68,25 +68,24 @@ class _GuestDashboardScreenState extends State<GuestDashboardScreen> {
             backgroundColor: AppColors.kWhite,
             key: _scaffoldKey,
             appBar: UserAppBar(
-          name: 'Guest',
-          profileImage: '',
-          menuColor: homeServices[_selectedTabIndex].color,
-          onTabSelected: (tab) {
-            final idx = homeServices.indexWhere((e) => e.name == tab);
-            if (idx != -1) {
-              setState(() {
-                _selectedTabIndex = idx;
-              });
-              UserAppBar.setTabIndex(idx);
-            }
-          },
-          childData: [],
-          context: context,
-          isGuest: true,
-          playStarBlastAudio: false,
-        ),
-        body:
-            _isLoading
+              name: 'Guest',
+              profileImage: '',
+              menuColor: homeServices[_selectedTabIndex].color,
+              onTabSelected: (tab) {
+                final idx = homeServices.indexWhere((e) => e.name == tab);
+                if (idx != -1) {
+                  setState(() {
+                    _selectedTabIndex = idx;
+                  });
+                  UserAppBar.setTabIndex(idx);
+                }
+              },
+              childData: [],
+              context: context,
+              isGuest: true,
+              playStarBlastAudio: false,
+            ),
+            body: _isLoading
                 ? CustomLoader()
                 : HomeScreen(selectedTabIndex: _selectedTabIndex),
           ),

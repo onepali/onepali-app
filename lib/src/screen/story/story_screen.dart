@@ -98,7 +98,8 @@ class _StoryScreenState extends State<StoryScreen> {
                           constraints.maxWidth,
                           isMobile: isMobile,
                         );
-                        final cardWidth = baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardWidth =
+                            baseCardWidth * (isMobile ? 1.12 : 1.0);
                         final cardHeight =
                             baseCardWidth /
                             AppConstants.contentCardAspectRatio *
@@ -117,42 +118,42 @@ class _StoryScreenState extends State<StoryScreen> {
                                         width: cardWidth,
                                         height: cardHeight,
                                         child: Builder(
-                                            builder: (context) {
-                                              final storyId = story.id;
-                                              final isCompleted =
-                                                  completedStories.any(
-                                                    (completedStory) =>
-                                                        completedStory['content_id'] ==
-                                                        storyId,
-                                                  );
-                                              return ContentCard(
-                                                nameEn: story['nameEn'],
-                                                nameNp: story['nameNp'],
-                                                image: story['thumbnail'],
-                                                bgImage: story['bg_image'],
-                                                isImageSvg: _isSvgImage(
-                                                  story['thumbnail'] as String?,
-                                                ),
-                                                bgColor: story['bg_color'],
-                                                isCompleted: isCompleted,
-                                                onTap: () async {
-                                                  final storyModel =
-                                                      StoryModel.fromJson(
-                                                        story.data(),
-                                                      );
-                                                  await Utility.navigateMaterialRoute(
-                                                    context,
-                                                    StoryContentScreen(
-                                                      story: storyModel,
-                                                      isFromRecommended: false,
-                                                    ),
-                                                  );
-                                                  if (!mounted) return;
-                                                  await getCompletedStories();
-                                                },
-                                              );
-                                            },
-                                          ),
+                                          builder: (context) {
+                                            final storyId = story.id;
+                                            final isCompleted = completedStories
+                                                .any(
+                                                  (completedStory) =>
+                                                      completedStory['content_id'] ==
+                                                      storyId,
+                                                );
+                                            return ContentCard(
+                                              nameEn: story['nameEn'],
+                                              nameNp: story['nameNp'],
+                                              image: story['thumbnail'],
+                                              bgImage: story['bg_image'],
+                                              isImageSvg: _isSvgImage(
+                                                story['thumbnail'] as String?,
+                                              ),
+                                              bgColor: story['bg_color'],
+                                              isCompleted: isCompleted,
+                                              onTap: () async {
+                                                final storyModel =
+                                                    StoryModel.fromJson(
+                                                      story.data(),
+                                                    );
+                                                await Utility.navigateMaterialRoute(
+                                                  context,
+                                                  StoryContentScreen(
+                                                    story: storyModel,
+                                                    isFromRecommended: false,
+                                                  ),
+                                                );
+                                                if (!mounted) return;
+                                                await getCompletedStories();
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                       Gaps.horizontalGapOf(
                                         AppConstants.contentCardGridSpacing,

@@ -15,7 +15,9 @@ abstract class StoryModel with _$StoryModel {
     @Default('') String nameNp,
     @Default('') String thumbnail,
     @Default('') String lottie,
-    @JsonKey(fromJson: _stringListFromJson) @Default(<String>[]) List<String> audio,
+    @JsonKey(fromJson: _stringListFromJson)
+    @Default(<String>[])
+    List<String> audio,
     @Default('') String tooltip,
     @Default('') String description,
     @Default(<Content>[]) List<Content> content,
@@ -34,7 +36,9 @@ abstract class Content with _$Content {
     @JsonKey(name: 'image_tb') String? imageTb, // for tablet
     @JsonKey(name: 'image_success') String? imageSuccess,
     @JsonKey(name: 'image_success_tb') String? imageSuccessTb,
-    @JsonKey(fromJson: _stringListFromJson) @Default(<String>[]) List<String> audio,
+    @JsonKey(fromJson: _stringListFromJson)
+    @Default(<String>[])
+    List<String> audio,
     @Default('') String lottie,
     @Default('') String type,
     @Default(<Conversation>[]) List<Conversation> conversation,

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StoryModel {
 
-@JsonKey(name: 'id') String get id;@JsonKey(name: 'level_id') String get levelId; String get nameEn; String get nameNp; String get thumbnail; String get lottie; List<String> get audio; String get tooltip; String get description; List<Content> get content;@JsonKey(name: 'bg_color') String? get bgColor;
+@JsonKey(name: 'id') String get id;@JsonKey(name: 'level_id') String get levelId; String get nameEn; String get nameNp; String get thumbnail; String get lottie;@JsonKey(fromJson: _stringListFromJson) List<String> get audio; String get tooltip; String get description; List<Content> get content;@JsonKey(name: 'bg_color') String? get bgColor;
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $StoryModelCopyWith<$Res>  {
   factory $StoryModelCopyWith(StoryModel value, $Res Function(StoryModel) _then) = _$StoryModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String id,@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail, String lottie, List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
+@JsonKey(name: 'id') String id,@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail, String lottie,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
 });
 
 
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie,  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
 return $default(_that.id,_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
@@ -184,7 +184,7 @@ return $default(_that.id,_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie,  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel():
 return $default(_that.id,_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
@@ -204,7 +204,7 @@ return $default(_that.id,_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie,  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
 return $default(_that.id,_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
@@ -219,7 +219,7 @@ return $default(_that.id,_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail
 
 @JsonSerializable(explicitToJson: true)
 class _StoryModel implements StoryModel {
-  const _StoryModel({@JsonKey(name: 'id') this.id = '', @JsonKey(name: 'level_id') this.levelId = '', this.nameEn = '', this.nameNp = '', this.thumbnail = '', this.lottie = '', final  List<String> audio = const <String>[], this.tooltip = '', this.description = '', final  List<Content> content = const <Content>[], @JsonKey(name: 'bg_color') this.bgColor}): _audio = audio,_content = content;
+  const _StoryModel({@JsonKey(name: 'id') this.id = '', @JsonKey(name: 'level_id') this.levelId = '', this.nameEn = '', this.nameNp = '', this.thumbnail = '', this.lottie = '', @JsonKey(fromJson: _stringListFromJson) final  List<String> audio = const <String>[], this.tooltip = '', this.description = '', final  List<Content> content = const <Content>[], @JsonKey(name: 'bg_color') this.bgColor}): _audio = audio,_content = content;
   factory _StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
 
 @override@JsonKey(name: 'id') final  String id;
@@ -229,7 +229,7 @@ class _StoryModel implements StoryModel {
 @override@JsonKey() final  String thumbnail;
 @override@JsonKey() final  String lottie;
  final  List<String> _audio;
-@override@JsonKey() List<String> get audio {
+@override@JsonKey(fromJson: _stringListFromJson) List<String> get audio {
   if (_audio is EqualUnmodifiableListView) return _audio;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_audio);
@@ -279,7 +279,7 @@ abstract mixin class _$StoryModelCopyWith<$Res> implements $StoryModelCopyWith<$
   factory _$StoryModelCopyWith(_StoryModel value, $Res Function(_StoryModel) _then) = __$StoryModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String id,@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail, String lottie, List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
+@JsonKey(name: 'id') String id,@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail, String lottie,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
 });
 
 
@@ -321,7 +321,7 @@ as String?,
 mixin _$Content {
 
  String? get image;@JsonKey(name: 'image_tb') String? get imageTb;// for tablet
-@JsonKey(name: 'image_success') String? get imageSuccess;@JsonKey(name: 'image_success_tb') String? get imageSuccessTb; List<String> get audio; String get lottie; String get type; List<Conversation> get conversation;@JsonKey(name: 'character') List<String> get characters; String get confetti;
+@JsonKey(name: 'image_success') String? get imageSuccess;@JsonKey(name: 'image_success_tb') String? get imageSuccessTb;@JsonKey(fromJson: _stringListFromJson) List<String> get audio; String get lottie; String get type; List<Conversation> get conversation;@JsonKey(name: 'character', fromJson: _stringListFromJson) List<String> get characters; String get confetti;
 /// Create a copy of Content
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -354,7 +354,7 @@ abstract mixin class $ContentCopyWith<$Res>  {
   factory $ContentCopyWith(Content value, $Res Function(Content) _then) = _$ContentCopyWithImpl;
 @useResult
 $Res call({
- String? image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb, List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character') List<String> characters, String confetti
+ String? image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character', fromJson: _stringListFromJson) List<String> characters, String confetti
 });
 
 
@@ -468,7 +468,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character', fromJson: _stringListFromJson)  List<String> characters,  String confetti)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Content() when $default != null:
 return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessTb,_that.audio,_that.lottie,_that.type,_that.conversation,_that.characters,_that.confetti);case _:
@@ -489,7 +489,7 @@ return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessT
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character', fromJson: _stringListFromJson)  List<String> characters,  String confetti)  $default,) {final _that = this;
 switch (_that) {
 case _Content():
 return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessTb,_that.audio,_that.lottie,_that.type,_that.conversation,_that.characters,_that.confetti);case _:
@@ -509,7 +509,7 @@ return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessT
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb,  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character')  List<String> characters,  String confetti)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? image, @JsonKey(name: 'image_tb')  String? imageTb, @JsonKey(name: 'image_success')  String? imageSuccess, @JsonKey(name: 'image_success_tb')  String? imageSuccessTb, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String lottie,  String type,  List<Conversation> conversation, @JsonKey(name: 'character', fromJson: _stringListFromJson)  List<String> characters,  String confetti)?  $default,) {final _that = this;
 switch (_that) {
 case _Content() when $default != null:
 return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessTb,_that.audio,_that.lottie,_that.type,_that.conversation,_that.characters,_that.confetti);case _:
@@ -524,7 +524,7 @@ return $default(_that.image,_that.imageTb,_that.imageSuccess,_that.imageSuccessT
 
 @JsonSerializable(explicitToJson: true)
 class _Content implements Content {
-  const _Content({this.image, @JsonKey(name: 'image_tb') this.imageTb, @JsonKey(name: 'image_success') this.imageSuccess, @JsonKey(name: 'image_success_tb') this.imageSuccessTb, final  List<String> audio = const <String>[], this.lottie = '', this.type = '', final  List<Conversation> conversation = const <Conversation>[], @JsonKey(name: 'character') final  List<String> characters = const <String>[], this.confetti = ''}): _audio = audio,_conversation = conversation,_characters = characters;
+  const _Content({this.image, @JsonKey(name: 'image_tb') this.imageTb, @JsonKey(name: 'image_success') this.imageSuccess, @JsonKey(name: 'image_success_tb') this.imageSuccessTb, @JsonKey(fromJson: _stringListFromJson) final  List<String> audio = const <String>[], this.lottie = '', this.type = '', final  List<Conversation> conversation = const <Conversation>[], @JsonKey(name: 'character', fromJson: _stringListFromJson) final  List<String> characters = const <String>[], this.confetti = ''}): _audio = audio,_conversation = conversation,_characters = characters;
   factory _Content.fromJson(Map<String, dynamic> json) => _$ContentFromJson(json);
 
 @override final  String? image;
@@ -533,7 +533,7 @@ class _Content implements Content {
 @override@JsonKey(name: 'image_success') final  String? imageSuccess;
 @override@JsonKey(name: 'image_success_tb') final  String? imageSuccessTb;
  final  List<String> _audio;
-@override@JsonKey() List<String> get audio {
+@override@JsonKey(fromJson: _stringListFromJson) List<String> get audio {
   if (_audio is EqualUnmodifiableListView) return _audio;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_audio);
@@ -549,7 +549,7 @@ class _Content implements Content {
 }
 
  final  List<String> _characters;
-@override@JsonKey(name: 'character') List<String> get characters {
+@override@JsonKey(name: 'character', fromJson: _stringListFromJson) List<String> get characters {
   if (_characters is EqualUnmodifiableListView) return _characters;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_characters);
@@ -590,7 +590,7 @@ abstract mixin class _$ContentCopyWith<$Res> implements $ContentCopyWith<$Res> {
   factory _$ContentCopyWith(_Content value, $Res Function(_Content) _then) = __$ContentCopyWithImpl;
 @override @useResult
 $Res call({
- String? image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb, List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character') List<String> characters, String confetti
+ String? image,@JsonKey(name: 'image_tb') String? imageTb,@JsonKey(name: 'image_success') String? imageSuccess,@JsonKey(name: 'image_success_tb') String? imageSuccessTb,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String lottie, String type, List<Conversation> conversation,@JsonKey(name: 'character', fromJson: _stringListFromJson) List<String> characters, String confetti
 });
 
 
