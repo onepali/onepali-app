@@ -137,9 +137,10 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       ),
     );
     emit(state.copyWith(status: TutorialStatus.hunchaAudioPlaying));
-    await _playAudioAwait(
-      () => _audioPlayerService.playAsset('tea_maker/music/making-tea-ok.mp3'),
-    );
+    final hunchaAudio = state.content?.abaPaniUmalaSound.trim() ?? '';
+    if (hunchaAudio.isNotEmpty) {
+      await _playAudioAwait(() => _audioPlayerService.play(hunchaAudio));
+    }
     if (!emit.isDone) {
       await _onHunchaAudioCompleted(emit);
     }

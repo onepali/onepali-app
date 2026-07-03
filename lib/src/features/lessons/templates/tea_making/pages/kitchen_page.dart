@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,9 +67,10 @@ class _KitchenPageState extends State<KitchenPage> {
       width: width,
       height: height,
       child: IgnorePointer(
-        child: SvgPicture.asset(
-          'assets/tea_maker/svg/drag_indicator.svg',
-          fit: BoxFit.fill,
+        child: CustomPaint(
+          painter: _DragIndicatorPainter(
+            color: AppColors.kWhite.withValues(alpha: 0.9),
+          ),
         ),
       ),
     );
@@ -268,8 +270,10 @@ class _KitchenPageState extends State<KitchenPage> {
                                                   ),
                                                   child: Transform.scale(
                                                     scale: isMobile ? 0.7 : 1,
-                                                    child: SvgPicture.asset(
-                                                      'assets/tea_maker/svg/check.svg',
+                                                    child: Icon(
+                                                      Icons.check_circle,
+                                                      color: AppColors.kGreen,
+                                                      size: size.height * 0.12,
                                                     ),
                                                   ),
                                                 ),
@@ -427,5 +431,57 @@ class _KitchenPageState extends State<KitchenPage> {
         },
       ),
     );
+  }
+}
+
+class _DragIndicatorPainter extends CustomPainter {
+  const _DragIndicatorPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.width <= 0 || size.height <= 0) return;
+
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final path = Path()
+      ..moveTo(0, 0)
+      ..quadraticBezierTo(
+        size.width * 0.45,
+        size.height * 0.15,
+        size.width,
+        size.height,
+      );
+    canvas.drawPath(path, paint);
+
+    final angle = math.atan2(size.height, size.width);
+    final arrowSize = math.min(size.width, size.height) * 0.12;
+    final end = Offset(size.width, size.height);
+    final arrowPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final arrow = Path()
+      ..moveTo(end.dx, end.dy)
+      ..lineTo(
+        end.dx - arrowSize * math.cos(angle - math.pi / 6),
+        end.dy - arrowSize * math.sin(angle - math.pi / 6),
+      )
+      ..lineTo(
+        end.dx - arrowSize * math.cos(angle + math.pi / 6),
+        end.dy - arrowSize * math.sin(angle + math.pi / 6),
+      )
+      ..close();
+    canvas.drawPath(arrow, arrowPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _DragIndicatorPainter oldDelegate) {
+    return oldDelegate.color != color;
   }
 }

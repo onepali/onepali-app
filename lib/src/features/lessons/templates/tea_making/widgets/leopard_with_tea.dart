@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:onepali/src/src.dart';
 import 'package:onepali/src/features/lessons/templates/tea_making/bloc/tutorial_bloc.dart';
 
 class LeopardWithTea extends StatelessWidget {
@@ -11,12 +12,15 @@ class LeopardWithTea extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     return BlocBuilder<TutorialBloc, TutorialState>(
       builder: (context, state) {
-        return state.status == TutorialStatus.instructionPlaying
-            ? SvgPicture.asset(
-                'assets/tea_maker/svg/leopard_with_tea.svg',
-                height: size.height * 0.5,
-              )
-            : SizedBox.shrink();
+        final image = PlatformUtility.isMobile(context)
+            ? state.content?.leopardTakingTeaMb
+            : state.content?.leopardTakingTeaTb;
+        if (state.status != TutorialStatus.instructionPlaying ||
+            image == null ||
+            image.isEmpty) {
+          return SizedBox.shrink();
+        }
+        return SvgPicture.network(image, height: size.height * 0.5);
       },
     );
   }

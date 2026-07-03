@@ -39,7 +39,7 @@ All sequencing and audio timing live in `TutorialBloc`. `KitchenPage` is a thin 
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
 │              AudioPlayerServiceImpl                          │
-│  Cached network audio, asset audio, onPlayerComplete stream  │
+│  Cached network audio and onPlayerComplete stream            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -61,7 +61,7 @@ JSON uses snake_case (`fieldRename: FieldRename.snake`).
 | `audioInstruction` | `audio_instruction` | Opening narration |
 | `teapotVapour` | `teapot_vapour` | Fallback image on stove when item has no outline |
 | `stoveImage` | `stove_image` | Stove SVG at bottom |
-| `abaPaniUmalaSound` | `aba_pani_umala_sound` | Reserved in model (not wired in current bloc flow) |
+| `abaPaniUmalaSound` | `aba_pani_umala_sound` | Huncha confirmation audio |
 | `teaReadySound` | `tea_ready_sound` | Plays when lesson completes |
 | `leopardTakingTeaTb` | `leopard_taking_tea_tb` | Completion leopard (tablet) |
 | `leopardTakingTeaMb` | `leopard_taking_tea_mb` | Completion leopard (mobile) |
@@ -143,7 +143,7 @@ initial
 
 **Event:** `TutorialEvent.hunchaButtonPressed`
 
-- Hide button, play asset `tea_maker/music/making-tea-ok.mp3`.
+- Hide button, play `abaPaniUmalaSound` when present.
 - Then `_playGuideForCurrentItem` for `currentIndex == 0`.
 
 ### 3. Guide (question) audio
@@ -211,7 +211,7 @@ Hidden when `guidePlaying` starts (next question). Stays through pronunciation a
 
 ### Drag indicator
 
-SVG arrow from first visible ingredient to stove, only on first draggable step in `ideal`.
+Code-drawn arrow from first visible ingredient to stove, only on first draggable step in `ideal`.
 
 ### Completion
 
@@ -232,7 +232,7 @@ When `status == completed`:
 
 ### `AudioPlayerServiceImpl`
 
-- Stops previous playback before each `play` / `playAsset`.
+- Stops previous playback before each `play`.
 - Caches network files with `MediaCacheManager`.
 - Exposes a **broadcast** `onPlayerComplete` stream with one native listener per play.
 
@@ -290,10 +290,6 @@ lib/src/features/lessons/
 lib/src/core/services/
 ├── audio_player_service.dart
 └── media_cache_manager.dart
-
-assets/tea_maker/
-├── svg/                        ← huncha, check, drag_indicator
-└── music/making-tea-ok.mp3
 ```
 
 ---

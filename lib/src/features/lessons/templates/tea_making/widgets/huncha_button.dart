@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:onepali/src/src.dart';
 import 'package:onepali/src/features/lessons/templates/tea_making/bloc/tutorial_bloc.dart';
 
 class HunchaButton extends StatefulWidget {
@@ -60,10 +60,29 @@ class _HunchaButtonState extends State<HunchaButton>
           },
           child: ScaleTransition(
             scale: _animation,
-            child: SvgPicture.asset(
-              'assets/tea_maker/svg/huncha.svg',
-              height: size.height * 0.2,
-              width: size.height * 0.2,
+            child: Container(
+              height: size.height * 0.18,
+              width: size.height * 0.18,
+              decoration: BoxDecoration(
+                color: AppColors.kWhite,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.kOrange, width: 6),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.kBlack.withValues(alpha: 0.18),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                'हुन्छ',
+                style: AppStyles.text24PxBold.copyWith(
+                  color: AppColors.kOrange,
+                  fontSize: size.height * 0.045,
+                ),
+              ),
             ),
           ),
         );

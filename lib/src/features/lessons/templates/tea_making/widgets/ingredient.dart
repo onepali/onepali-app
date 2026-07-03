@@ -12,6 +12,6 @@ class Ingredient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(ingredient);
+    return SvgPicture.network(ingredient);
   }
 }
