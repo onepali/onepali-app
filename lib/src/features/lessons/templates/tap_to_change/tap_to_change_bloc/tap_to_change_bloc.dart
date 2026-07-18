@@ -16,7 +16,7 @@ class TapToChangeBloc extends Bloc<TapToChangeEvent, TapToChangeState> {
   StreamSubscription<void>? _audioSub;
   TapToChangeBloc() : super(_Initial()) {
     on<TapToChangeEvent>((event, emit) async {
-      event.map(
+      await event.map<Future<void>>(
         started: (e) => _onStarted(e, emit),
         audioCompleted: (e) => _onAudioCompleted(emit),
         tapped: (e) => _onTapped(e, emit),
@@ -33,24 +33,33 @@ class TapToChangeBloc extends Bloc<TapToChangeEvent, TapToChangeState> {
     );
     if (event.content.audio != null) {
       emit(state.copyWith(status: TapToChangeStatus.audioPlaying));
-      await _audioPlayerService.play(event.content.audio!);
+      await _audioSub?.cancel();
       _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
         add(const TapToChangeEvent.audioCompleted());
       });
+      try {
+        await _audioPlayerService.play(event.content.audio!);
+      } catch (error, stackTrace) {
+        logger.e('Error playing tap-to-change audio: $error\n$stackTrace');
+        add(const TapToChangeEvent.audioCompleted());
+      }
     } else {
-      // No audio — go straight to idle
       emit(state.copyWith(status: TapToChangeStatus.idle));
     }
   }
 
-  void _onAudioCompleted(Emitter<TapToChangeState> emit) {
-    _audioSub?.cancel();
+  Future<void> _onAudioCompleted(Emitter<TapToChangeState> emit) async {
+    await _audioSub?.cancel();
     _audioSub = null;
     emit(state.copyWith(status: TapToChangeStatus.idle));
   }
 
-  void _onTapped(_Tapped event, Emitter<TapToChangeState> emit) {
-    _audioPlayerService.playAsset(Assets.starBlast);
+  Future<void> _onTapped(_Tapped event, Emitter<TapToChangeState> emit) async {
+    try {
+      await _audioPlayerService.playAsset(Assets.starBlast);
+    } catch (error, stackTrace) {
+      logger.e('Error playing tap-to-change star SFX: $error\n$stackTrace');
+    }
     emit(
       state.copyWith(
         status: TapToChangeStatus.tapped,
@@ -60,9 +69,10 @@ class TapToChangeBloc extends Bloc<TapToChangeEvent, TapToChangeState> {
   }
 
   @override
-  Future<void> close() {
-    _audioSub?.cancel();
-    _audioPlayerService.dispose();
+  Future<void> close() async {
+    await _audioSub?.cancel();
+    _audioSub = null;
+    await _audioPlayerService.dispose();
     return super.close();
   }
 }
