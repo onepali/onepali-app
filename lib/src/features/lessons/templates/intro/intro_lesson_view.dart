@@ -59,6 +59,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
         setState(() {
           _isMessageSoundCompleted = true;
         });
+        _playSuccessFeedbackIfLast();
       });
       await messageSoundProvider.play(widget.content.messageSound!);
     } else {
@@ -66,14 +67,19 @@ class _IntroLessonViewState extends State<IntroLessonView> {
       setState(() {
         _isMessageSoundCompleted = true;
       });
+      _playSuccessFeedbackIfLast();
+    }
+  }
+
+  void _playSuccessFeedbackIfLast() {
+    if (widget.isLast) {
+      audioProvider.playAsset(Assets.confettiFeedback);
     }
   }
 
   void _playAudio() async {
     if (widget.content.audio != null && widget.content.audio!.isNotEmpty) {
-      await audioProvider.play(widget.content.audio!);
       audioSubscription = audioProvider.onPlayerComplete.listen((event) async {
-        // context.read<LessonBloc>().add(LessonEvent.nextContent());
         await _playMessageSound();
         log('audio completed');
         if (!mounted) return;
@@ -81,6 +87,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
           _isAudioCompleted = true;
         });
       });
+      await audioProvider.play(widget.content.audio!);
     } else {
       _playMessageSound();
       if (!mounted) return;

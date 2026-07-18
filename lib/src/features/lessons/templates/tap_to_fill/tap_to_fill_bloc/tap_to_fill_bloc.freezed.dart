@@ -55,11 +55,12 @@ extension TapToFillEventPatterns on TapToFillEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _AudioCompleted value)?  audioCompleted,TResult Function( _OptionTapped value)?  optionTapped,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _AudioBeforeOptionsCompleted value)?  audioBeforeOptionsCompleted,TResult Function( _AudioCompleted value)?  audioCompleted,TResult Function( _OptionTapped value)?  optionTapped,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that);case _AudioCompleted() when audioCompleted != null:
+return started(_that);case _AudioBeforeOptionsCompleted() when audioBeforeOptionsCompleted != null:
+return audioBeforeOptionsCompleted(_that);case _AudioCompleted() when audioCompleted != null:
 return audioCompleted(_that);case _OptionTapped() when optionTapped != null:
 return optionTapped(_that);case _:
   return orElse();
@@ -79,11 +80,12 @@ return optionTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _AudioCompleted value)  audioCompleted,required TResult Function( _OptionTapped value)  optionTapped,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _AudioBeforeOptionsCompleted value)  audioBeforeOptionsCompleted,required TResult Function( _AudioCompleted value)  audioCompleted,required TResult Function( _OptionTapped value)  optionTapped,}){
 final _that = this;
 switch (_that) {
 case _Started():
-return started(_that);case _AudioCompleted():
+return started(_that);case _AudioBeforeOptionsCompleted():
+return audioBeforeOptionsCompleted(_that);case _AudioCompleted():
 return audioCompleted(_that);case _OptionTapped():
 return optionTapped(_that);case _:
   throw StateError('Unexpected subclass');
@@ -102,11 +104,12 @@ return optionTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _AudioCompleted value)?  audioCompleted,TResult? Function( _OptionTapped value)?  optionTapped,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _AudioBeforeOptionsCompleted value)?  audioBeforeOptionsCompleted,TResult? Function( _AudioCompleted value)?  audioCompleted,TResult? Function( _OptionTapped value)?  optionTapped,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that);case _AudioCompleted() when audioCompleted != null:
+return started(_that);case _AudioBeforeOptionsCompleted() when audioBeforeOptionsCompleted != null:
+return audioBeforeOptionsCompleted(_that);case _AudioCompleted() when audioCompleted != null:
 return audioCompleted(_that);case _OptionTapped() when optionTapped != null:
 return optionTapped(_that);case _:
   return null;
@@ -125,10 +128,11 @@ return optionTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( TapToFillLessonContent content)?  started,TResult Function()?  audioCompleted,TResult Function( Option option)?  optionTapped,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( TapToFillLessonContent content)?  started,TResult Function()?  audioBeforeOptionsCompleted,TResult Function()?  audioCompleted,TResult Function( Option option)?  optionTapped,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that.content);case _AudioCompleted() when audioCompleted != null:
+return started(_that.content);case _AudioBeforeOptionsCompleted() when audioBeforeOptionsCompleted != null:
+return audioBeforeOptionsCompleted();case _AudioCompleted() when audioCompleted != null:
 return audioCompleted();case _OptionTapped() when optionTapped != null:
 return optionTapped(_that.option);case _:
   return orElse();
@@ -148,10 +152,11 @@ return optionTapped(_that.option);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( TapToFillLessonContent content)  started,required TResult Function()  audioCompleted,required TResult Function( Option option)  optionTapped,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( TapToFillLessonContent content)  started,required TResult Function()  audioBeforeOptionsCompleted,required TResult Function()  audioCompleted,required TResult Function( Option option)  optionTapped,}) {final _that = this;
 switch (_that) {
 case _Started():
-return started(_that.content);case _AudioCompleted():
+return started(_that.content);case _AudioBeforeOptionsCompleted():
+return audioBeforeOptionsCompleted();case _AudioCompleted():
 return audioCompleted();case _OptionTapped():
 return optionTapped(_that.option);case _:
   throw StateError('Unexpected subclass');
@@ -170,10 +175,11 @@ return optionTapped(_that.option);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( TapToFillLessonContent content)?  started,TResult? Function()?  audioCompleted,TResult? Function( Option option)?  optionTapped,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( TapToFillLessonContent content)?  started,TResult? Function()?  audioBeforeOptionsCompleted,TResult? Function()?  audioCompleted,TResult? Function( Option option)?  optionTapped,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that.content);case _AudioCompleted() when audioCompleted != null:
+return started(_that.content);case _AudioBeforeOptionsCompleted() when audioBeforeOptionsCompleted != null:
+return audioBeforeOptionsCompleted();case _AudioCompleted() when audioCompleted != null:
 return audioCompleted();case _OptionTapped() when optionTapped != null:
 return optionTapped(_that.option);case _:
   return null;
@@ -248,6 +254,38 @@ as TapToFillLessonContent,
 
 
 }
+
+/// @nodoc
+
+
+class _AudioBeforeOptionsCompleted implements TapToFillEvent {
+  const _AudioBeforeOptionsCompleted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AudioBeforeOptionsCompleted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TapToFillEvent.audioBeforeOptionsCompleted()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 
@@ -359,7 +397,7 @@ $OptionCopyWith<$Res> get option {
 /// @nodoc
 mixin _$TapToFillState {
 
- TapToFillStatus get status; TapToFillLessonContent? get content;
+ TapToFillStatus get status; TapToFillLessonContent? get content; String? get bgImageMb; String? get bgImageTb;
 /// Create a copy of TapToFillState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -370,16 +408,16 @@ $TapToFillStateCopyWith<TapToFillState> get copyWith => _$TapToFillStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapToFillState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.content, content));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TapToFillState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.bgImageMb, bgImageMb) || other.bgImageMb == bgImageMb)&&(identical(other.bgImageTb, bgImageTb) || other.bgImageTb == bgImageTb));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(content));
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(content),bgImageMb,bgImageTb);
 
 @override
 String toString() {
-  return 'TapToFillState(status: $status, content: $content)';
+  return 'TapToFillState(status: $status, content: $content, bgImageMb: $bgImageMb, bgImageTb: $bgImageTb)';
 }
 
 
@@ -390,7 +428,7 @@ abstract mixin class $TapToFillStateCopyWith<$Res>  {
   factory $TapToFillStateCopyWith(TapToFillState value, $Res Function(TapToFillState) _then) = _$TapToFillStateCopyWithImpl;
 @useResult
 $Res call({
- TapToFillStatus status, TapToFillLessonContent? content
+ TapToFillStatus status, TapToFillLessonContent? content, String? bgImageMb, String? bgImageTb
 });
 
 
@@ -407,11 +445,13 @@ class _$TapToFillStateCopyWithImpl<$Res>
 
 /// Create a copy of TapToFillState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? content = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? content = freezed,Object? bgImageMb = freezed,Object? bgImageTb = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TapToFillStatus,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as TapToFillLessonContent?,
+as TapToFillLessonContent?,bgImageMb: freezed == bgImageMb ? _self.bgImageMb : bgImageMb // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTb: freezed == bgImageTb ? _self.bgImageTb : bgImageTb // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -496,10 +536,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TapToFillStatus status,  TapToFillLessonContent? content)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TapToFillStatus status,  TapToFillLessonContent? content,  String? bgImageMb,  String? bgImageTb)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TapToFillState() when $default != null:
-return $default(_that.status,_that.content);case _:
+return $default(_that.status,_that.content,_that.bgImageMb,_that.bgImageTb);case _:
   return orElse();
 
 }
@@ -517,10 +557,10 @@ return $default(_that.status,_that.content);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TapToFillStatus status,  TapToFillLessonContent? content)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TapToFillStatus status,  TapToFillLessonContent? content,  String? bgImageMb,  String? bgImageTb)  $default,) {final _that = this;
 switch (_that) {
 case _TapToFillState():
-return $default(_that.status,_that.content);case _:
+return $default(_that.status,_that.content,_that.bgImageMb,_that.bgImageTb);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -537,10 +577,10 @@ return $default(_that.status,_that.content);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TapToFillStatus status,  TapToFillLessonContent? content)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TapToFillStatus status,  TapToFillLessonContent? content,  String? bgImageMb,  String? bgImageTb)?  $default,) {final _that = this;
 switch (_that) {
 case _TapToFillState() when $default != null:
-return $default(_that.status,_that.content);case _:
+return $default(_that.status,_that.content,_that.bgImageMb,_that.bgImageTb);case _:
   return null;
 
 }
@@ -552,11 +592,13 @@ return $default(_that.status,_that.content);case _:
 
 
 class _TapToFillState implements TapToFillState {
-  const _TapToFillState({this.status = TapToFillStatus.initial, this.content});
+  const _TapToFillState({this.status = TapToFillStatus.initial, this.content, this.bgImageMb, this.bgImageTb});
   
 
 @override@JsonKey() final  TapToFillStatus status;
 @override final  TapToFillLessonContent? content;
+@override final  String? bgImageMb;
+@override final  String? bgImageTb;
 
 /// Create a copy of TapToFillState
 /// with the given fields replaced by the non-null parameter values.
@@ -568,16 +610,16 @@ _$TapToFillStateCopyWith<_TapToFillState> get copyWith => __$TapToFillStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TapToFillState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.content, content));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TapToFillState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.bgImageMb, bgImageMb) || other.bgImageMb == bgImageMb)&&(identical(other.bgImageTb, bgImageTb) || other.bgImageTb == bgImageTb));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(content));
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(content),bgImageMb,bgImageTb);
 
 @override
 String toString() {
-  return 'TapToFillState(status: $status, content: $content)';
+  return 'TapToFillState(status: $status, content: $content, bgImageMb: $bgImageMb, bgImageTb: $bgImageTb)';
 }
 
 
@@ -588,7 +630,7 @@ abstract mixin class _$TapToFillStateCopyWith<$Res> implements $TapToFillStateCo
   factory _$TapToFillStateCopyWith(_TapToFillState value, $Res Function(_TapToFillState) _then) = __$TapToFillStateCopyWithImpl;
 @override @useResult
 $Res call({
- TapToFillStatus status, TapToFillLessonContent? content
+ TapToFillStatus status, TapToFillLessonContent? content, String? bgImageMb, String? bgImageTb
 });
 
 
@@ -605,11 +647,13 @@ class __$TapToFillStateCopyWithImpl<$Res>
 
 /// Create a copy of TapToFillState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? content = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? content = freezed,Object? bgImageMb = freezed,Object? bgImageTb = freezed,}) {
   return _then(_TapToFillState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TapToFillStatus,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as TapToFillLessonContent?,
+as TapToFillLessonContent?,bgImageMb: freezed == bgImageMb ? _self.bgImageMb : bgImageMb // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTb: freezed == bgImageTb ? _self.bgImageTb : bgImageTb // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

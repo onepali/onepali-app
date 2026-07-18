@@ -1,10 +1,6 @@
-import 'dart:developer';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
-import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
@@ -29,9 +25,6 @@ class ChooseCorrectLessonView extends StatefulWidget {
 }
 
 class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
-  AudioPlayer? _questionAudioPlayer;
-  AudioPlayer? _correctAudioPlayer;
-
   @override
   void initState() {
     super.initState();
@@ -43,63 +36,6 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
     bloc.add(ChooseCorrectLessonContentEvent.started(widget.content));
   }
 
-  Future<void> _playQuestionAudio(String audioUrl) async {
-    try {
-      await _questionAudioPlayer?.dispose();
-
-      final audioFile = await MediaCacheManager.instance.getSingleFile(
-        audioUrl,
-      );
-      _questionAudioPlayer = AudioPlayer();
-
-      _questionAudioPlayer!.onPlayerComplete.listen((_) {
-        context.read<ChooseCorrectLessonContentBloc>().add(
-          const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
-        );
-      });
-
-      await _questionAudioPlayer!.play(DeviceFileSource(audioFile.path));
-    } catch (e) {
-      log('Error playing question audio: $e');
-      if (!mounted) return;
-      context.read<ChooseCorrectLessonContentBloc>().add(
-        const ChooseCorrectLessonContentEvent.questionAudioCompleted(),
-      );
-    }
-  }
-
-  Future<void> _playCorrectAudio(String audioUrl) async {
-    try {
-      await _correctAudioPlayer?.dispose();
-
-      final audioFile = await MediaCacheManager.instance.getSingleFile(
-        audioUrl,
-      );
-      _correctAudioPlayer = AudioPlayer();
-
-      _correctAudioPlayer!.onPlayerComplete.listen((_) {
-        context.read<ChooseCorrectLessonContentBloc>().add(
-          const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
-        );
-      });
-
-      await _correctAudioPlayer!.play(DeviceFileSource(audioFile.path));
-    } catch (e) {
-      log('Error playing correct audio: $e');
-      if (!mounted) return;
-      context.read<ChooseCorrectLessonContentBloc>().add(
-        const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _questionAudioPlayer?.dispose();
-    _correctAudioPlayer?.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -108,26 +44,15 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
       ChooseCorrectLessonContentBloc,
       ChooseCorrectLessonContentState
     >(
+      listenWhen: (previous, current) =>
+          widget.isLastContent &&
+          current.isCorrect &&
+          previous.status != ChooseCorrectLessonContentStatus.completed &&
+          current.status == ChooseCorrectLessonContentStatus.completed,
       listener: (context, state) {
-        // Play question audio when it starts
-        final question = state.currentQuestion?.question;
-        if (state.isQuestionAudioPlaying &&
-            question != null &&
-            question.isNotEmpty) {
-          _playQuestionAudio(question);
-        }
-
-        // Play correct audio when correct item is tapped
-        if (state.isAudioPlaying && state.selectedItem != null) {
-          final audioItem = state.selectedItem!.audioItem;
-          if (audioItem != null && audioItem.isNotEmpty) {
-            _playCorrectAudio(audioItem);
-          } else {
-            context.read<ChooseCorrectLessonContentBloc>().add(
-              const ChooseCorrectLessonContentEvent.correctAudioCompleted(),
-            );
-          }
-        }
+        context.read<ChooseCorrectLessonContentBloc>().add(
+          const ChooseCorrectLessonContentEvent.confettiFeedback(),
+        );
       },
       builder: (context, state) {
         if (state.errorMessage != null) {
@@ -190,14 +115,6 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                               );
                                         },
                                       ),
-                                      // Positioned(
-                                      //   bottom: -20,
-                                      //   left: 0,
-                                      //   right: 0,
-                                      //   child: SvgHelper.fromSource(
-                                      //     path: Assets.sound1,
-                                      //   ),
-                                      // ),
                                     ],
                                   ),
                               ],
@@ -228,9 +145,11 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                               ?.question
                                               ?.isNotEmpty ==
                                           true) {
-                                    _playQuestionAudio(
-                                      state.currentQuestion!.question!,
-                                    );
+                                    context
+                                        .read<ChooseCorrectLessonContentBloc>()
+                                        .add(
+                                          const ChooseCorrectLessonContentEvent.questionAudioRequested(),
+                                        );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

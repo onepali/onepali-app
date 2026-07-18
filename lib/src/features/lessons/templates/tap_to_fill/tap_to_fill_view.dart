@@ -48,8 +48,8 @@ class _TapToFillViewState extends State<TapToFillView> {
             children: [
               Positioned.fill(
                 child: BackgroundImage(
-                  bgImageMb: state.content!.bgImage,
-                  bgImageTb: state.content!.bgImageTb,
+                  bgImageMb: state.bgImageMb,
+                  bgImageTb: state.bgImageTb,
                 ),
               ),
               TopRightPositionedCloseButton(
