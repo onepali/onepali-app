@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class Ingridient extends StatelessWidget {
-  const Ingridient({
+class Ingredient extends StatelessWidget {
+  const Ingredient({
     super.key,
     required this.isSelected,
-    required this.ingridient,
+    required this.ingredient,
   });
-  final String ingridient;
+  final String ingredient;
   final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(ingridient);
+    return SvgPicture.network(ingredient);
   }
 }

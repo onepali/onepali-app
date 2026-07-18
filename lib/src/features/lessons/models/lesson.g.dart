@@ -255,8 +255,14 @@ TeaMakingLessonContent _$TeaMakingLessonContentFromJson(
   stoveImage: json['stove_image'] as String,
   abaPaniUmalaSound: json['aba_pani_umala_sound'] as String,
   teaReadySound: json['tea_ready_sound'] as String,
-  bearTakingTeaTb: _readBearTakingTeaTb(json, 'bear_taking_tea_tb') as String,
-  bearTakingTeaMb: _readBearTakingTeaMb(json, 'bear_taking_tea_mb') as String,
+  dragIndicator: json['drag_indicator'] as String,
+  hunchaButton: json['huncha_button'] as String,
+  hunchaButtonAudio: json['huncha_button_audio'] as String,
+  checkIcon: json['check_icon'] as String,
+  leopardTakingTeaTb:
+      _readLeopardTakingTeaTb(json, 'leopard_taking_tea_tb') as String,
+  leopardTakingTeaMb:
+      _readLeopardTakingTeaMb(json, 'leopard_taking_tea_mb') as String,
   ingredients:
       (json['ingredients'] as List<dynamic>?)
           ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
@@ -275,8 +281,12 @@ Map<String, dynamic> _$TeaMakingLessonContentToJson(
   'stove_image': instance.stoveImage,
   'aba_pani_umala_sound': instance.abaPaniUmalaSound,
   'tea_ready_sound': instance.teaReadySound,
-  'bear_taking_tea_tb': instance.bearTakingTeaTb,
-  'bear_taking_tea_mb': instance.bearTakingTeaMb,
+  'drag_indicator': instance.dragIndicator,
+  'huncha_button': instance.hunchaButton,
+  'huncha_button_audio': instance.hunchaButtonAudio,
+  'check_icon': instance.checkIcon,
+  'leopard_taking_tea_tb': instance.leopardTakingTeaTb,
+  'leopard_taking_tea_mb': instance.leopardTakingTeaMb,
   'ingredients': instance.ingredients.map((e) => e.toJson()).toList(),
 };
 

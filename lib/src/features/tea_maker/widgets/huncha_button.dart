@@ -45,6 +45,10 @@ class _HunchaButtonState extends State<HunchaButton>
           _controller.stop();
           return const SizedBox.shrink();
         }
+        if (state.hunchaButton?.isNotEmpty != true) {
+          _controller.stop();
+          return const SizedBox.shrink();
+        }
         if (!_controller.isAnimating) {
           _controller.repeat(reverse: true);
         }
@@ -57,7 +61,12 @@ class _HunchaButtonState extends State<HunchaButton>
           },
           child: ScaleTransition(
             scale: _animation,
-            child: SvgPicture.asset('assets/tea_maker/svg/huncha.svg'),
+            child: Center(
+              child: SizedBox.square(
+                dimension: 172,
+                child: SvgPicture.network(state.hunchaButton!),
+              ),
+            ),
           ),
         );
       },

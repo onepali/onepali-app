@@ -16,7 +16,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   final player = AudioPlayer();
   final hunxaPlayer = AudioPlayer();
   final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
-  List<String> ingridents = [];
+  List<String> ingredients = [];
+  List<String> ingredientNames = [];
   List<String> onDraggedItems = [];
   List<String> audioFiles = [];
   List<String> ingredientAudioFiles = [];
@@ -25,41 +26,62 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   String abaPaniUmalaSound = '';
   String teaReadySound = '';
   String stoveImage = '';
-  String bearTakingTeaTb = '';
-  String bearTakingTeaMb = '';
+  String dragIndicator = '';
+  String hunchaButton = '';
+  String hunchaButtonAudio = '';
+  String checkIcon = '';
+  String boilStepName = '';
+  int boilStepAfterIndex = -1;
+  String leopardTakingTeaTb = '';
+  String leopardTakingTeaMb = '';
 
   Map<String, String> _cachedPaths = {};
 
   TutorialBloc() : super(TutorialState()) {
     on<_Started>((event, emit) async {
       final content = event.content;
+      final ingredientItems = _orderedIngredientItems(content.ingredients);
+      final data = _buildIngredientData(ingredientItems);
+      final draggableIngredientItems = data.draggableItems;
 
-      ingridents = content.ingredients.map((e) => e.image).toList();
-      onDraggedItems = content.ingredients
+      ingredients = draggableIngredientItems.map((e) => e.image).toList();
+      ingredientNames = draggableIngredientItems.map((e) => e.nameNp).toList();
+      onDraggedItems = draggableIngredientItems
           .map((e) => e.imageOutline ?? '')
           .toList();
-      audioFiles = content.ingredients.map((e) => e.question ?? '').toList();
-      ingredientAudioFiles = content.ingredients
+      audioFiles = draggableIngredientItems
+          .map((e) => e.question ?? '')
+          .toList();
+      ingredientAudioFiles = draggableIngredientItems
           .map((e) => e.audioItem != null ? e.audioItem! : '')
           .toList();
+      boilStepName = data.boilStepName;
+      boilStepAfterIndex = data.boilStepAfterIndex;
       kitleyLeyAudio = audioFiles.isNotEmpty ? audioFiles.first : '';
       audioFiles = audioFiles.length > 1 ? audioFiles.sublist(1) : [];
       teapotVapour = content.teapotVapour;
       abaPaniUmalaSound = content.abaPaniUmalaSound;
       teaReadySound = content.teaReadySound;
       stoveImage = content.stoveImage;
-      bearTakingTeaTb = content.bearTakingTeaTb;
-      bearTakingTeaMb = content.bearTakingTeaMb;
+      dragIndicator = content.dragIndicator;
+      hunchaButton = content.hunchaButton;
+      hunchaButtonAudio = content.hunchaButtonAudio;
+      checkIcon = content.checkIcon;
+      leopardTakingTeaTb = content.leopardTakingTeaTb;
+      leopardTakingTeaMb = content.leopardTakingTeaMb;
 
       emit(state.copyWith(showLoading: true));
 
       final allImageUrls = [
-        ...ingridents,
+        ...ingredients,
         ...onDraggedItems,
         teapotVapour,
         stoveImage,
-        bearTakingTeaTb,
-        bearTakingTeaMb,
+        dragIndicator,
+        hunchaButton,
+        checkIcon,
+        leopardTakingTeaTb,
+        leopardTakingTeaMb,
       ].where((e) => e.isNotEmpty).toList();
 
       final allAudioUrls = [
@@ -69,6 +91,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         ...ingredientAudioFiles,
         abaPaniUmalaSound,
         teaReadySound,
+        hunchaButtonAudio,
       ].where((e) => e.isNotEmpty).toList();
 
       _cachedPaths = await AssetCacheService.cacheAll(
@@ -81,31 +104,41 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       emit(
         state.copyWith(
           showLoading: false,
-          ingredients: ingridents,
+          ingredients: ingredients,
           index: 0,
           stoveImage: stoveImage,
-          bearTakingTeaTb: bearTakingTeaTb,
-          bearTakingTeaMb: bearTakingTeaMb,
+          dragIndicator: dragIndicator,
+          hunchaButton: hunchaButton,
+          checkIcon: checkIcon,
+          leopardTakingTeaTb: leopardTakingTeaTb,
+          leopardTakingTeaMb: leopardTakingTeaMb,
         ),
       );
 
+      final instructionCompletion = event.content.audioInstruction.isEmpty
+          ? null
+          : player.onPlayerComplete.first;
       final didStartInstructionAudio = await _playAudio(
         event.content.audioInstruction,
       );
-      emit(state.copyWith(showBearWithTea: true));
-      if (didStartInstructionAudio) {
-        await player.onPlayerComplete.first;
+      emit(state.copyWith(showLeopardWithTea: true));
+      if (didStartInstructionAudio && instructionCompletion != null) {
+        await instructionCompletion;
       }
-      emit(state.copyWith(showBearWithTea: false, showHunchButton: true));
+      emit(state.copyWith(showLeopardWithTea: false, showHunchButton: true));
     });
 
     on<_HunchaButtonPressed>((event, emit) async {
       emit(state.copyWith(showHunchButton: false));
-      await hunxaPlayer.play(AssetSource('tea_maker/music/making-tea-ok.mp3'));
+      try {
+        await _playHunchaButtonAudio();
+      } catch (e) {
+        log('Failed to play huncha button audio: $e');
+      }
       await Future.delayed(const Duration(seconds: 2));
 
       await _playAudioAndWait(kitleyLeyAudio);
-      emit(state.copyWith(showDragIndicator: ingridents.isNotEmpty, index: 0));
+      emit(state.copyWith(showDragIndicator: ingredients.isNotEmpty, index: 0));
     });
 
     on<_OnDragAccept>((event, emit) async {
@@ -124,15 +157,18 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         ),
       );
 
-      if (event.index == 2) {
+      if (event.index == boilStepAfterIndex) {
         await Future.delayed(const Duration(seconds: 2));
         await _playAudioAndWait(abaPaniUmalaSound);
         emit(
-          state.copyWith(draggedItemPath: teapotVapour, droppedItem: 'उमाल'),
+          state.copyWith(
+            draggedItemPath: teapotVapour,
+            droppedItem: boilStepName,
+          ),
         );
         await Future.delayed(const Duration(seconds: 2));
         await playNextAudio(event.index);
-      } else if (event.index == 5) {
+      } else if (event.index == ingredients.length - 1) {
         await Future.delayed(const Duration(seconds: 2));
         emit(state.copyWith(teaReady: true));
 
@@ -155,9 +191,20 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   }
 
   Future<void> _playAudioAndWait(String url) async {
+    final completion = url.isEmpty ? null : player.onPlayerComplete.first;
     final didStartAudio = await _playAudio(url);
-    if (didStartAudio) {
-      await player.onPlayerComplete.first;
+    if (didStartAudio && completion != null) {
+      await completion;
+    }
+  }
+
+  Future<void> _playHunchaButtonAudio() async {
+    if (hunchaButtonAudio.isEmpty) return;
+    final cachedPath = _cachedPaths[hunchaButtonAudio];
+    if (cachedPath != null) {
+      await hunxaPlayer.play(DeviceFileSource(cachedPath));
+    } else {
+      await hunxaPlayer.play(UrlSource(hunchaButtonAudio));
     }
   }
 
@@ -168,31 +215,9 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   }
 
   Future<void> droppedItemText(int index, Emitter<TutorialState> emit) async {
-    switch (index) {
-      case 0:
-        emit(state.copyWith(droppedItem: 'कित्ली'));
-        await _playIngredientAudio(0);
-        break;
-      case 1:
-        emit(state.copyWith(droppedItem: 'पानी'));
-        await _playIngredientAudio(1);
-        break;
-      case 2:
-        emit(state.copyWith(droppedItem: 'दुध'));
-        await _playIngredientAudio(2);
-        break;
-      case 3:
-        emit(state.copyWith(droppedItem: 'अदुवा'));
-        await _playIngredientAudio(3);
-        break;
-      case 4:
-        emit(state.copyWith(droppedItem: 'चियापति'));
-        await _playIngredientAudio(4);
-        break;
-      case 5:
-        emit(state.copyWith(droppedItem: 'चम्चा'));
-        break;
-    }
+    if (index < 0 || index >= ingredientNames.length) return;
+    emit(state.copyWith(droppedItem: ingredientNames[index]));
+    await _playIngredientAudio(index);
   }
 
   Future<void> _playIngredientAudio(int index) async {
@@ -211,6 +236,61 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     hunxaPlayer.dispose();
     return super.close();
   }
+}
+
+List<Item> _orderedIngredientItems(List<Item> items) {
+  final entries = items.asMap().entries.toList()
+    ..sort((a, b) {
+      final aOrder = a.value.order;
+      final bOrder = b.value.order;
+      if (aOrder == null && bOrder == null) return a.key.compareTo(b.key);
+      if (aOrder == null) return 1;
+      if (bOrder == null) return -1;
+
+      final orderCompare = aOrder.compareTo(bOrder);
+      return orderCompare == 0 ? a.key.compareTo(b.key) : orderCompare;
+    });
+
+  return entries.map((entry) => entry.value).toList();
+}
+
+_IngredientData _buildIngredientData(List<Item> items) {
+  final draggableItems = <Item>[];
+  var boilStepName = '';
+  var boilStepAfterIndex = -1;
+
+  for (final item in items) {
+    if (_isDraggableIngredient(item)) {
+      draggableItems.add(item);
+      continue;
+    }
+
+    if (boilStepAfterIndex == -1) {
+      boilStepName = item.nameNp;
+      boilStepAfterIndex = draggableItems.length - 1;
+    }
+  }
+
+  return _IngredientData(
+    draggableItems: draggableItems,
+    boilStepName: boilStepName,
+    boilStepAfterIndex: boilStepAfterIndex,
+  );
+}
+
+bool _isDraggableIngredient(Item item) =>
+    item.image.isNotEmpty && item.imageOutline?.isNotEmpty == true;
+
+class _IngredientData {
+  const _IngredientData({
+    required this.draggableItems,
+    required this.boilStepName,
+    required this.boilStepAfterIndex,
+  });
+
+  final List<Item> draggableItems;
+  final String boilStepName;
+  final int boilStepAfterIndex;
 }
 
 class AssetCacheService {
