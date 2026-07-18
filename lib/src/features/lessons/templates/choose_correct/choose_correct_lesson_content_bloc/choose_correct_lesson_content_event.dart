@@ -9,9 +9,15 @@ class ChooseCorrectLessonContentEvent with _$ChooseCorrectLessonContentEvent {
   const factory ChooseCorrectLessonContentEvent.questionAudioCompleted() =
       _QuestionAudioCompleted;
 
+  const factory ChooseCorrectLessonContentEvent.questionAudioRequested() =
+      _QuestionAudioRequested;
+
   const factory ChooseCorrectLessonContentEvent.itemTapped(Item tappedItem) =
       _ItemTapped;
 
-  const factory ChooseCorrectLessonContentEvent.correctAudioCompleted() =
-      _CorrectAudioCompleted;
+  const factory ChooseCorrectLessonContentEvent.itemAudioCompleted() =
+      _ItemAudioCompleted;
+
+  const factory ChooseCorrectLessonContentEvent.confettiFeedback() =
+      _ConfettiFeedback;
 }

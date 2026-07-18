@@ -430,6 +430,15 @@ class MediaCacheManager {
     if (content.instruction != null) {
       _precacheMedia(content.instruction!);
     }
+    if (content.audioBeforeOptions != null) {
+      _precacheMedia(content.audioBeforeOptions!);
+    }
+    if (content.preBgImageMb != null) {
+      precacheImage(CachedNetworkImageProvider(content.preBgImageMb!), context);
+    }
+    if (content.preBgImageTb != null) {
+      precacheImage(CachedNetworkImageProvider(content.preBgImageTb!), context);
+    }
     if (content.bgImage != null) {
       precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
     }

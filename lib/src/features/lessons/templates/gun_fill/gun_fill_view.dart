@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/bottom_right_cat.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/features/lessons/templates/gun_fill/gun_fill_bloc/gun_fill_bloc.dart';
@@ -240,6 +241,7 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                   ),
                 ],
               ),
+              if (state.isCompleted) const BottomRightCat(),
               // Navigation buttons
               if (state.isCompleted)
                 CenterLeftAlignedBackButton(
