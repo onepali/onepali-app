@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/core/widget/pop_scale_widget.dart';
 import 'package:onepali/src/core/widget/shake_widget.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
@@ -16,15 +19,8 @@ class TapToPopLessonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocConsumer<TapToPopBloc, TapToPopState>(
-      listener: (context, state) async {
-        if (state.completed) {
-          // show snackbar
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Completed')));
-        }
-      },
+    final isMobile = PlatformUtility.isMobile(context);
+    return BlocBuilder<TapToPopBloc, TapToPopState>(
       builder: (context, state) {
         if (state.content == null) {
           return const Center(child: Text('No content found'));
@@ -35,48 +31,50 @@ class TapToPopLessonView extends StatelessWidget {
             orElse: () => state.content!.items.first,
           );
 
-          return GestureDetector(
-            onTap: () async {
-              context.read<LessonBloc>().add(LessonEvent.nextContent());
-            },
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: ColoredBox(
-                    color: colorFromHex(content.bgColor) ?? Colors.green,
-                  ),
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: ColoredBox(
+                  color: colorFromHex(content.bgColor) ?? Colors.green,
                 ),
-                Center(
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    duration: const Duration(seconds: 2),
-                    curve: Curves.elasticOut,
-                    builder: (context, scale, child) {
-                      return Transform.scale(
-                        scale: scale * 4,
-                        child: CustomCachedImage(imageUrl: correctItem.image),
-                      );
-                    },
-                  ),
+              ),
+              Center(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.8, end: 1.0),
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.elasticOut,
+                  builder: (context, scale, child) {
+                    return Transform.scale(
+                      scale: scale,
+                      child: _buildMedia(
+                        content.successImage ?? correctItem.image,
+                        height: size.height * 0.4,
+                        width: size.height * 0.4,
+                      ),
+                    );
+                  },
                 ),
-                Center(
+              ),
+              Center(
+                child: SizedBox.square(
+                  dimension: size.shortestSide * 0.65,
                   child: LottieBuilder.asset(
                     Assets.successLottie1,
                     repeat: false,
                   ),
                 ),
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: SvgHelper.fromSource(path: Assets.wrong),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              TopRightPositionedCloseButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CenterRightAlignedForwardButton(
+                onTap: () async {
+                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                },
+              ),
+            ],
           );
         }
         final items = state.content!.items;
@@ -89,45 +87,82 @@ class TapToPopLessonView extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-            for (final item in items)
-              Positioned(
-                top: (item.dxRatio ?? 0.5) * size.height,
-                left: (item.dyRatio ?? 0.5) * size.width,
-                child: state.correctItems!.contains(item)
-                    ? Transform.scale(
-                        scale: 1.1,
-                        child: PopScaleOnTap(
-                          onTap: () {
-                            context.read<TapToPopBloc>().add(
-                              TapToPopEvent.tapItem(item),
-                            );
-                          },
-                          child: CustomCachedImage(imageUrl: item.image),
-                        ),
-                      )
-                    : ShakeWidget(
-                        onTap: () {
-                          context.read<TapToPopBloc>().add(
-                            TapToPopEvent.tapItem(item),
-                          );
-                        },
-                        child: CustomCachedImage(imageUrl: item.image),
-                      ),
-              ),
+            for (var index = 0; index < items.length; index++)
+              if (!items[index].isCorrect ||
+                  _containsIdenticalItem(state.correctItems!, items[index]))
+                _buildPositionedItem(
+                  context: context,
+                  item: items[index],
+                  itemKey: ValueKey('tap_to_pop_${content.id}_$index'),
+                  size: size,
+                  isMobile: isMobile,
+                ),
 
-            Positioned(
-              top: 16,
-              right: 16,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: SvgHelper.fromSource(path: Assets.wrong),
-              ),
+            TopRightPositionedCloseButton(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
             ),
           ],
         );
       },
     );
   }
+
+  Widget _buildPositionedItem({
+    required BuildContext context,
+    required Item item,
+    required Key itemKey,
+    required Size size,
+    required bool isMobile,
+  }) {
+    return Positioned(
+      key: itemKey,
+      top: (item.dyRatio ?? 0.5) * size.height,
+      left: (item.dxRatio ?? 0.5) * size.width,
+      child: item.isCorrect
+          ? Transform.scale(
+              scale: isMobile ? item.sizeMb.toDouble() : item.sizeTb.toDouble(),
+              child: PopScaleOnTap(
+                onTap: () {
+                  context.read<TapToPopBloc>().add(TapToPopEvent.tapItem(item));
+                },
+                child: _buildItemImage(item),
+              ),
+            )
+          : Transform.scale(
+              scale: isMobile ? item.sizeMb.toDouble() : item.sizeTb.toDouble(),
+              child: ShakeWidget(
+                onTap: () {
+                  context.read<TapToPopBloc>().add(TapToPopEvent.tapItem(item));
+                },
+                child: _buildItemImage(item),
+              ),
+            ),
+    );
+  }
+
+  Widget _buildItemImage(Item item) =>
+      _buildMedia(item.image, isSvg: item.isImageSvg);
+
+  Widget _buildMedia(
+    String imageUrl, {
+    bool isSvg = false,
+    double? height,
+    double? width,
+  }) {
+    if (isSvg || _isSvgUrl(imageUrl)) {
+      return SvgPicture.network(imageUrl, height: height, width: width);
+    }
+
+    return CustomCachedImage(imageUrl: imageUrl, height: height, width: width);
+  }
+
+  bool _isSvgUrl(String url) {
+    final path = Uri.tryParse(url)?.path.toLowerCase() ?? url.toLowerCase();
+    return path.endsWith('.svg');
+  }
+
+  bool _containsIdenticalItem(List<Item> items, Item target) =>
+      items.any((item) => identical(item, target));
 }
