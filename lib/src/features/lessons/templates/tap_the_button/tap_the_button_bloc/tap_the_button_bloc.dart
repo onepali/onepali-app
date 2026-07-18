@@ -13,8 +13,8 @@ class TapTheButtonBloc extends Bloc<TapTheButtonEvent, TapTheButtonState> {
   final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
   StreamSubscription<void>? _audioSub;
   TapTheButtonBloc() : super(const TapTheButtonState()) {
-    on<TapTheButtonEvent>((event, emit) {
-      event.map(
+    on<TapTheButtonEvent>((event, emit) async {
+      await event.map<Future<void>>(
         started: (e) => _onStarted(e, emit),
         audioCompleted: (e) => _onAudioCompleted(emit, e.isCompleted),
         tapped: (e) => _onTapped(e, emit),
@@ -33,18 +33,20 @@ class TapTheButtonBloc extends Bloc<TapTheButtonEvent, TapTheButtonState> {
     );
     if (event.content.instruction != null) {
       emit(state.copyWith(status: TapTheButtonStatus.audioPlaying));
-      await _audioPlayerService.play(event.content.instruction!);
-      _audioSub?.cancel();
-      _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
-        add(const TapTheButtonEvent.audioCompleted(false));
-      });
+      await _playAudio(
+        event.content.instruction!,
+        completedEvent: const TapTheButtonEvent.audioCompleted(false),
+      );
     } else {
       add(const TapTheButtonEvent.audioCompleted(false));
     }
   }
 
-  void _onAudioCompleted(Emitter<TapTheButtonState> emit, bool isCompleted) {
-    _audioSub?.cancel();
+  Future<void> _onAudioCompleted(
+    Emitter<TapTheButtonState> emit,
+    bool isCompleted,
+  ) async {
+    await _audioSub?.cancel();
     _audioSub = null;
     emit(
       state.copyWith(
@@ -57,19 +59,38 @@ class TapTheButtonBloc extends Bloc<TapTheButtonEvent, TapTheButtonState> {
 
   Future<void> _onTapped(_Tapped event, Emitter<TapTheButtonState> emit) async {
     emit(state.copyWith(status: TapTheButtonStatus.tapped));
-    if (state.content?.tapAudio == null) return;
-    await _audioPlayerService.stop();
-    await _audioPlayerService.play(state.content!.tapAudio!);
-    _audioSub?.cancel();
-    _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
+    final tapAudio = state.content?.tapAudio;
+    if (tapAudio == null || tapAudio.isEmpty) {
       add(const TapTheButtonEvent.audioCompleted(true));
+      return;
+    }
+    await _playAudio(
+      tapAudio,
+      completedEvent: const TapTheButtonEvent.audioCompleted(true),
+    );
+  }
+
+  Future<void> _playAudio(
+    String audioPath, {
+    required TapTheButtonEvent completedEvent,
+  }) async {
+    await _audioSub?.cancel();
+    _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
+      add(completedEvent);
     });
+    try {
+      await _audioPlayerService.stop();
+      await _audioPlayerService.play(audioPath);
+    } catch (_) {
+      add(completedEvent);
+    }
   }
 
   @override
   Future<void> close() async {
     await _audioSub?.cancel();
-    _audioPlayerService.dispose();
-    super.close();
+    _audioSub = null;
+    await _audioPlayerService.dispose();
+    await super.close();
   }
 }
