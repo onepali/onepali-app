@@ -14,7 +14,7 @@ class PutInBagBloc extends Bloc<PutInBagEvent, PutInBagState> {
   StreamSubscription<void>? _audioSub;
   PutInBagBloc() : super(PutInBagState()) {
     on<PutInBagEvent>((event, emit) async {
-      event.when(
+      await event.when<Future<void>>(
         started: (content) async {
           emit(
             state.copyWith(
@@ -28,11 +28,7 @@ class PutInBagBloc extends Bloc<PutInBagEvent, PutInBagState> {
           if (content.instructionAudio != null &&
               content.instructionAudio!.isNotEmpty) {
             emit(state.copyWith(status: PutInBagStatus.audioPlaying));
-            await _audioPlayerService.play(content.instructionAudio!);
-            _audioSub?.cancel();
-            _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
-              add(const PutInBagEvent.audioCompleted(false));
-            });
+            await _playAudio(content.instructionAudio!);
           } else {
             emit(state.copyWith(status: PutInBagStatus.idle));
           }
@@ -69,80 +65,54 @@ class PutInBagBloc extends Bloc<PutInBagEvent, PutInBagState> {
           );
 
           if (item.audioItem != null && item.audioItem!.isNotEmpty) {
-            await _audioPlayerService.play(item.audioItem!);
-            _audioSub?.cancel();
-            _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
-              add(const PutInBagEvent.audioCompleted(false));
-            });
+            await _playAudio(item.audioItem!);
           } else {
-            // onlyOneChoice: complete when any one item is dropped
-            if (content.onlyOneChoice) {
-              emit(
-                state.copyWith(
-                  status: PutInBagStatus.completed,
-                  currentPlayingItemIndex: null,
-                ),
-              );
-            } else {
-              final isCompleted = updatedDropped.length == content.items.length;
-              if (isCompleted) {
-                emit(
-                  state.copyWith(
-                    status: PutInBagStatus.completed,
-                    currentPlayingItemIndex: null,
-                  ),
-                );
-              } else {
-                emit(
-                  state.copyWith(
-                    status: PutInBagStatus.idle,
-                    currentPlayingItemIndex: null,
-                  ),
-                );
-              }
-            }
+            _emitDropCompletion(emit);
           }
         },
-        audioCompleted: (isCompleted) {
-          _audioSub?.cancel();
+        audioCompleted: (isCompleted) async {
+          await _audioSub?.cancel();
           _audioSub = null;
-          if (state.content == null) return;
-          final droppedItemCount = state.droppedItemIndexes.length;
-          if (state.content!.onlyOneChoice && droppedItemCount > 0) {
-            emit(
-              state.copyWith(
-                status: PutInBagStatus.completed,
-                currentPlayingItemIndex: null,
-              ),
-            );
-          } else {
-            final isCompleted =
-                state.droppedItemIndexes.length == state.content!.items.length;
-            if (isCompleted) {
-              emit(
-                state.copyWith(
-                  status: PutInBagStatus.completed,
-                  currentPlayingItemIndex: null,
-                ),
-              );
-            } else {
-              emit(
-                state.copyWith(
-                  status: PutInBagStatus.idle,
-                  currentPlayingItemIndex: null,
-                ),
-              );
-            }
-          }
+          _emitDropCompletion(emit);
         },
       );
     });
   }
 
+  Future<void> _playAudio(String audioPath) async {
+    await _audioSub?.cancel();
+    _audioSub = _audioPlayerService.onPlayerComplete.listen((_) {
+      add(const PutInBagEvent.audioCompleted(false));
+    });
+    try {
+      await _audioPlayerService.play(audioPath);
+    } catch (_) {
+      add(const PutInBagEvent.audioCompleted(false));
+    }
+  }
+
+  void _emitDropCompletion(Emitter<PutInBagState> emit) {
+    final content = state.content;
+    if (content == null) return;
+
+    final droppedItemCount = state.droppedItemIndexes.length;
+    final isCompleted =
+        content.onlyOneChoice && droppedItemCount > 0 ||
+        droppedItemCount == content.items.length;
+
+    emit(
+      state.copyWith(
+        status: isCompleted ? PutInBagStatus.completed : PutInBagStatus.idle,
+        currentPlayingItemIndex: null,
+      ),
+    );
+  }
+
   @override
   Future<void> close() async {
     await _audioSub?.cancel();
-    _audioPlayerService.dispose();
-    super.close();
+    _audioSub = null;
+    await _audioPlayerService.dispose();
+    await super.close();
   }
 }

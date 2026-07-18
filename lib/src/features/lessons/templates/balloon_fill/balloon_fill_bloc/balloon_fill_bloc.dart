@@ -32,26 +32,34 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
       state.copyWith(content: event.content, status: BalloonFillStatus.initial),
     );
 
-    if (event.content.audio != null) {
+    final audio = event.content.audio;
+    if (audio != null && audio.isNotEmpty) {
       emit(state.copyWith(status: BalloonFillStatus.audioPlaying));
-      await _audioPlayer.play(event.content.audio!);
-
-      // Cancel any previous subscription before creating a new one
       await _audioSub?.cancel();
       _audioSub = _audioPlayer.onPlayerComplete.listen((_) {
         add(const BalloonFillEvent.audioCompleted());
       });
+      try {
+        await _audioPlayer.play(audio);
+      } catch (error, stackTrace) {
+        log(
+          'Failed to play balloon fill instruction audio',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        add(const BalloonFillEvent.audioCompleted());
+      }
     } else {
       // No audio — go straight to idle
       emit(state.copyWith(status: BalloonFillStatus.idle));
     }
   }
 
-  void _onAudioCompleted(
+  Future<void> _onAudioCompleted(
     _AudioCompleted event,
     Emitter<BalloonFillState> emit,
-  ) {
-    _audioSub?.cancel();
+  ) async {
+    await _audioSub?.cancel();
     _audioSub = null;
     emit(state.copyWith(status: BalloonFillStatus.idle));
   }
@@ -111,7 +119,7 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
     emit(state.copyWith(status: BalloonFillStatus.idle, colorLabelNp: null));
   }
 
-  void _onFilledBalloonTapped(
+  Future<void> _onFilledBalloonTapped(
     _FilledBalloonTapped event,
     Emitter<BalloonFillState> emit,
   ) async {
@@ -148,7 +156,8 @@ class BalloonFillBloc extends Bloc<BalloonFillEvent, BalloonFillState> {
   @override
   Future<void> close() async {
     await _audioSub?.cancel();
-    _audioPlayer.dispose();
+    _audioSub = null;
+    await _audioPlayer.dispose();
     return super.close();
   }
 }

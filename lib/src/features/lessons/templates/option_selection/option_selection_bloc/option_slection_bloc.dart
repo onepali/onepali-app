@@ -23,16 +23,14 @@ class OptionSlectionBloc
         ),
       );
       if (event.content.instruction != null) {
-        await audioPlayerService.play(event.content.instruction!);
-        _audioSub?.cancel();
-        _audioSub = audioPlayerService.onPlayerComplete.listen((_) {
-          add(const OptionSlectionEvent.audioCompleted());
-        });
+        await _playAudio(event.content.instruction!);
       } else {
         add(const OptionSlectionEvent.audioCompleted());
       }
     });
-    on<_AudioCompleted>((event, emit) {
+    on<_AudioCompleted>((event, emit) async {
+      await _audioSub?.cancel();
+      _audioSub = null;
       emit(state.copyWith(status: OptionSelectionStatus.ideal));
     });
     on<_OptionTapped>((event, emit) async {
@@ -41,13 +39,35 @@ class OptionSlectionBloc
       if (event.option.isCorrect) {
         emit(state.copyWith(status: OptionSelectionStatus.completed));
       } else {
-        await audioPlayerService.playAsset(Assets.wrongSfx);
+        try {
+          await audioPlayerService.playAsset(Assets.wrongSfx);
+        } catch (error, stackTrace) {
+          logger.e(
+            'Error playing option-selection wrong SFX: $error\n$stackTrace',
+          );
+        }
       }
     });
   }
+
+  Future<void> _playAudio(String audioPath) async {
+    await _audioSub?.cancel();
+    _audioSub = audioPlayerService.onPlayerComplete.listen((_) {
+      add(const OptionSlectionEvent.audioCompleted());
+    });
+    try {
+      await audioPlayerService.play(audioPath);
+    } catch (error, stackTrace) {
+      logger.e('Error playing option-selection audio: $error\n$stackTrace');
+      add(const OptionSlectionEvent.audioCompleted());
+    }
+  }
+
   @override
-  Future<void> close() {
-    audioPlayerService.dispose();
+  Future<void> close() async {
+    await _audioSub?.cancel();
+    _audioSub = null;
+    await audioPlayerService.dispose();
     return super.close();
   }
 }

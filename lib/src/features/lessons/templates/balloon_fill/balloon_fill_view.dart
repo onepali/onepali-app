@@ -11,7 +11,6 @@ import 'package:onepali/src/features/lessons/templates/balloon_fill/balloon_fill
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
-import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class BalloonFillView extends StatefulWidget {
   final BalloonFillLessonContent content;
@@ -85,7 +84,6 @@ class _BalloonFillViewState extends State<BalloonFillView> {
                     },
                   ),
           ),
-          ColorLabel(size: size),
           Positioned.fill(
             child: IgnorePointer(
               child: BackgroundImage(
@@ -122,47 +120,6 @@ class _BalloonFillViewState extends State<BalloonFillView> {
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ColorLabel extends StatelessWidget {
-  const ColorLabel({super.key, required this.size});
-
-  final Size size;
-
-  @override
-  Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
-    return Positioned(
-      top: isMobile ? size.height * 0.1 : 32,
-      left: 0,
-      right: 0,
-      child: BlocBuilder<BalloonFillBloc, BalloonFillState>(
-        builder: (context, state) {
-          final isVisible = state.colorLabelNp != null;
-
-          return IgnorePointer(
-            child: Center(
-              child: AnimatedOpacity(
-                opacity: isVisible ? 1.0 : 0.0,
-                duration: 300.ms,
-                child: AnimatedScale(
-                  scale: isVisible ? 1.0 : 1.3,
-                  duration: 300.ms,
-                  curve: Curves.easeIn,
-                  child: state.colorLabelNp != null
-                      ? LabelDisplay(
-                          nameNp: state.colorLabelNp ?? '',
-                          nameEn: '',
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ),
-            ),
-          );
-        },
       ),
     );
   }
