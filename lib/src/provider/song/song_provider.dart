@@ -9,7 +9,10 @@ class SongProvider extends ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  SongProvider({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final List<SongModel> _songs = [];
   List<SongModel> get songs => _songs;
@@ -73,6 +76,8 @@ class SongProvider extends ChangeNotifier {
         childUid: childUid,
         topicName: categoryName.isNotEmpty ? categoryName : songTitle,
         activityType: ActivityType.song,
+        contentId: songId,
+        contentName: songTitle,
       );
 
       logger.d(

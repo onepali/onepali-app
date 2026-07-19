@@ -48,7 +48,17 @@ class _DragToMatchView extends StatelessWidget {
     final Size padding = Size(size.width * 0.05, size.height * 0.05);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: BlocBuilder<DragToMatchBloc, DragToMatchState>(
+      body: BlocConsumer<DragToMatchBloc, DragToMatchState>(
+        listenWhen: (previous, current) =>
+            previous.dragStatus != current.dragStatus &&
+            (current.dragStatus == DragStatus.correctMatch ||
+                current.dragStatus == DragStatus.wrongMatch),
+        listener: (context, state) {
+          MetricsTrackingHelper.trackAnswerAttempt(
+            context: context,
+            isCorrect: state.dragStatus == DragStatus.correctMatch,
+          );
+        },
         builder: (context, state) {
           final allMatched =
               state.matchedItemIds.length == state.itemPositions.length;

@@ -62,6 +62,10 @@ class ChooseCorrect extends StatelessWidget {
                                             return;
                                           }
                                           storyProvider.onTappedItem(item);
+                                          MetricsTrackingHelper.trackAnswerAttempt(
+                                            context: context,
+                                            isCorrect: item.correct,
+                                          );
                                         },
                                       ),
                                   ],

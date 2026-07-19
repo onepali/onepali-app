@@ -57,11 +57,11 @@ class ChildUserModel {
 
   /// Helper method to parse completed lessons from Firestore data
   static CompletedLessons? _parseCompletedLessons(Map<String, dynamic> json) {
-    final totalLessonsCompleted = json["totalLessonsCompleted"] ?? 0;
     final lessonsData = json["completedLessons"];
 
     if (lessonsData != null) {
       List<CompletedLesson> lessons = [];
+      var totalLessonsCompleted = json["totalLessonsCompleted"] ?? 0;
 
       if (lessonsData is List) {
         lessons = lessonsData.map((lessonData) {
@@ -72,6 +72,8 @@ class ChildUserModel {
         }).toList();
       } else if (lessonsData is Map<String, dynamic> &&
           lessonsData["lessons"] != null) {
+        totalLessonsCompleted =
+            lessonsData["totalLessonsCompleted"] ?? totalLessonsCompleted;
         // Handle object format with lessons array
         lessons = List<CompletedLesson>.from(
           (lessonsData["lessons"] as List).map(

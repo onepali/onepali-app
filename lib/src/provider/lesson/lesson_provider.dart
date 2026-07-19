@@ -10,7 +10,10 @@ class LessonProvider extends ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  LessonProvider({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final List<CourseModel> _courses = [];
   List<CourseModel> get courses => _courses;
@@ -232,6 +235,8 @@ class LessonProvider extends ChangeNotifier {
         childUid: childUid,
         topicName: topicName,
         activityType: ActivityType.lesson,
+        contentId: lessonId,
+        contentName: topicName,
       );
 
       logger.d('Lesson completion tracked: $lessonId in $topicName');

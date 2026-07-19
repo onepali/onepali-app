@@ -59,24 +59,12 @@ class LearningSessionManager {
         final currentTime = currentMetrics.averageDailyLearningTime;
         final newAverageTime = currentTime + sessionDuration;
 
-        // Update daily streak for today
-        final today = DateTime.now();
-        final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-        final newWeeklyStreak = List<bool>.from(currentMetrics.weeklyStreak);
-        newWeeklyStreak[weekday] = true;
-
-        // Calculate day streak (consecutive days this week)
-        final dayStreak = newWeeklyStreak.where((day) => day).length;
-
         logger.i('📚 Previous Average Learning Time: $currentTime min');
         logger.i('📚 New Average Learning Time: $newAverageTime min');
-        logger.i('📚 Day Streak: $dayStreak/7');
 
         // Update metrics in Firestore
         await docRef.update({
           'metrics.averageDailyLearningTime': newAverageTime,
-          'metrics.dayStreak': dayStreak,
-          'metrics.weeklyStreak': newWeeklyStreak,
         });
 
         logger.i(
