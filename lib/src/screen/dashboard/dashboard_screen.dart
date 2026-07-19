@@ -13,7 +13,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedTabIndex = 0;
   String childProfileImage = '';
-  int totalLessonsCompleted = 0;
   double _appBarElevation = 0.0;
 
   // Moved to provider
@@ -51,8 +50,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final currentChild = await childProvider.getCurrentChild();
       setState(() {
         childProfileImage = currentChild?.avatarUrl ?? Assets.avatar1;
-        totalLessonsCompleted =
-            currentChild?.completedLessons?.totalLessonsCompleted ?? 0;
       });
     });
   }
@@ -174,8 +171,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Get the selected/current child (if any)
     String selectedChildName = 'User';
+    ChildUserModel? currentChild;
     if (childProvider.childUser.isNotEmpty) {
-      final currentChild = childProvider.childUser.firstWhere(
+      currentChild = childProvider.childUser.firstWhere(
         (c) => c.avatarUrl == childProfileImage,
         orElse: () => childProvider.childUser.first,
       );
@@ -203,7 +201,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               name: selectedChildName,
               profileImage: childProfileImage,
               totalStars: 0,
-              totalLessonsCompleted: totalLessonsCompleted,
+              parentUid: userProvider.userId ?? currentChild?.parentUid,
+              childUid: currentChild?.uid,
               totalChildCount: childCount > 0 ? childCount : 0,
               playStarBlastAudio: true,
               menuColor: homeServices[_selectedTabIndex].color,

@@ -53,7 +53,18 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
 
   Future<void> _updateReward() async {
     final provider = context.read<RewardProvider>();
-    await provider.saveRewardForChild(widget.data);
+    final parentUid = context.read<UserProvider>().userId;
+    final childUid = await ChildLocalStorage.getCurrentChildId();
+    if (parentUid == null || parentUid.isEmpty || childUid == null) {
+      logger.e('Parent ID or Child ID not found');
+      return;
+    }
+
+    await provider.saveRewardForChild(
+      widget.data,
+      parentUid: parentUid,
+      childId: childUid,
+    );
   }
 
   Future<void> _playAudio() async {
