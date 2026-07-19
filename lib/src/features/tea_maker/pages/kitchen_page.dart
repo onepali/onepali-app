@@ -7,10 +7,10 @@ import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
-import 'package:onepali/src/features/tea_maker/widgets/bear_with_tea.dart';
+import 'package:onepali/src/features/tea_maker/widgets/leopard_with_tea.dart';
 import 'package:onepali/src/features/tea_maker/widgets/dragged_item.dart';
 import 'package:onepali/src/features/tea_maker/widgets/huncha_button.dart';
-import 'package:onepali/src/features/tea_maker/widgets/ingridient.dart';
+import 'package:onepali/src/features/tea_maker/widgets/ingredient.dart';
 
 class KitchenPage extends StatefulWidget {
   const KitchenPage({super.key, required this.content});
@@ -24,10 +24,12 @@ class _KitchenPageState extends State<KitchenPage> {
   final GlobalKey _taePotKey = GlobalKey();
   final GlobalKey _stoveKey = GlobalKey();
 
-  Widget buildIndicator(Size size) {
+  Widget buildIndicator(Size size, String? dragIndicator) {
     final taeContext = _taePotKey.currentContext;
     final stoveContext = _stoveKey.currentContext;
-    if (taeContext == null || stoveContext == null) {
+    if (taeContext == null ||
+        stoveContext == null ||
+        dragIndicator?.isNotEmpty != true) {
       return const SizedBox.shrink();
     }
 
@@ -57,10 +59,7 @@ class _KitchenPageState extends State<KitchenPage> {
       width: width,
       height: height,
       child: IgnorePointer(
-        child: SvgPicture.asset(
-          'assets/tea_maker/svg/drag_indicator.svg',
-          fit: BoxFit.fill,
-        ),
+        child: SvgPicture.network(dragIndicator!, fit: BoxFit.fill),
       ),
     );
   }
@@ -160,8 +159,8 @@ class _KitchenPageState extends State<KitchenPage> {
                                                         ),
                                                   ),
                                               child: SizedBox(
-                                                child: Ingridient(
-                                                  ingridient:
+                                                child: Ingredient(
+                                                  ingredient:
                                                       state.ingredients[index],
                                                   isSelected:
                                                       state.index == index,
@@ -171,14 +170,15 @@ class _KitchenPageState extends State<KitchenPage> {
                                           ),
                                         ),
 
-                                        if (state.index > index)
+                                        if (state.index > index &&
+                                            state.checkIcon?.isNotEmpty == true)
                                           Positioned.fill(
                                             child: Padding(
                                               padding: const EdgeInsets.all(
                                                 8.0,
                                               ),
-                                              child: SvgPicture.asset(
-                                                'assets/tea_maker/svg/check.svg',
+                                              child: SvgPicture.network(
+                                                state.checkIcon!,
                                               ),
                                             ),
                                           ),
@@ -237,10 +237,16 @@ class _KitchenPageState extends State<KitchenPage> {
                             },
                           ),
                         ),
-                      // Bear making announcement
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: BearWithTea(),
+                      // Leopard making announcement
+                      Positioned.fill(
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.only(
+                            top: 100,
+                            right: 100,
+                            left: 100,
+                          ),
+                          child: LeopardWithTea(),
+                        ),
                       ),
 
                       // Huncha button in middle
@@ -251,7 +257,8 @@ class _KitchenPageState extends State<KitchenPage> {
                         child: HunchaButton(),
                       ),
                       // Drag indicator
-                      if (state.showDragIndicator) buildIndicator(size),
+                      if (state.showDragIndicator)
+                        buildIndicator(size, state.dragIndicator),
                       // Ingredient Text
                       if (state.droppedItem != null && !state.teaReady)
                         Positioned(
@@ -276,8 +283,8 @@ class _KitchenPageState extends State<KitchenPage> {
                               ),
                               child: SvgPicture.network(
                                 isMobile
-                                    ? state.bearTakingTeaMb ?? ''
-                                    : state.bearTakingTeaTb ?? '',
+                                    ? state.leopardTakingTeaMb ?? ''
+                                    : state.leopardTakingTeaTb ?? '',
                               ),
                             ),
                           ),

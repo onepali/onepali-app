@@ -9,8 +9,15 @@
 - `audioInstruction`
 - `teapotVapour`, `stoveImage`
 - `abaPaniUmalaSound`, `teaReadySound`
-- `bearTakingTeaTb`, `bearTakingTeaMb`
+- `dragIndicator`
+- `hunchaButton`
+- `hunchaButtonAudio`
+- `checkIcon`
+- `leopardTakingTeaTb`, `leopardTakingTeaMb`
 - `ingredients` (`List<Item>`)
+  - Items are sorted by `order`.
+  - Items with `image` and `image_outline` are draggable.
+  - The first ordered item without draggable media provides the boil-step label.
 
 ## UI
 - Simulates a step-based tea making activity.
