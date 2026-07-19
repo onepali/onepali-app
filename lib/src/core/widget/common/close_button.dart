@@ -8,8 +8,9 @@ final double closeBtnPositionMobile = 24.0; // padding:24(top,right)
 final double closeBtnPositionTablet = 32.0; // padding:32(top,right)
 
 class CustomCloseButton extends StatelessWidget {
-  const CustomCloseButton({super.key, this.onTap});
+  const CustomCloseButton({super.key, this.onTap, this.iconPath});
   final VoidCallback? onTap;
+  final String? iconPath;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class CustomCloseButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SvgHelper.fromSource(
-        path: Assets.wrong,
+        path: iconPath ?? Assets.wrong,
         height: isMobile ? closeBtnIconSizeMobile : closeBtnIconSizeTablet,
         width: isMobile ? closeBtnIconSizeMobile : closeBtnIconSizeTablet,
       ),
@@ -27,8 +28,9 @@ class CustomCloseButton extends StatelessWidget {
 
 /// Use this widget as a child of [Stack] widget
 class TopRightPositionedCloseButton extends StatelessWidget {
-  const TopRightPositionedCloseButton({super.key, this.onTap});
+  const TopRightPositionedCloseButton({super.key, this.onTap, this.iconPath});
   final VoidCallback? onTap;
+  final String? iconPath;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class TopRightPositionedCloseButton extends StatelessWidget {
     return Positioned(
       top: isMobile ? closeBtnPositionMobile : closeBtnPositionTablet,
       right: isMobile ? closeBtnPositionMobile : closeBtnPositionTablet,
-      child: CustomCloseButton(onTap: onTap),
+      child: CustomCloseButton(onTap: onTap, iconPath: iconPath),
     );
   }
 }

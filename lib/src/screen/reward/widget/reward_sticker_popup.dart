@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 
 import '../../../src.dart';
 
@@ -130,13 +131,11 @@ class _RewardStickerPopupState extends State<RewardStickerPopup> {
         ),
         child: Stack(
           children: [
-            // Close button positioned consistently with other reward screens
-            Positioned(
-              top: isMobile ? 16 : 24,
-              right: Dimensions.kIconMargin(context),
-              child: CircularButtonWidget(
-                onPressed: () => Navigator.of(context).pop(),
-                type: CircularButtonType.closeGrey,
+            Align(
+              alignment: Alignment.topRight,
+              child: CustomCloseButton(
+                onTap: () => Navigator.of(context).pop(),
+                iconPath: Assets.closeGreyIcon,
               ),
             ),
             // Content
