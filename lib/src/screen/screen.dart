@@ -101,7 +101,8 @@ export 'reward/reward_card.dart';
 /// [Achievement] Screen
 export 'achievement/achievement_screen.dart';
 export 'achievement/achievement_card.dart';
-export 'achievement/achievement_tab_card.dart';
+export 'achievement/achievement_layout.dart';
+export 'achievement/yellow_banner.dart';
 
 /// [Reward] --> [Widget]
 export 'reward/widget/reward_collection_widget.dart';
