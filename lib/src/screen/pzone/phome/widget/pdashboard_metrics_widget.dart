@@ -4,7 +4,7 @@ import '../../../../src.dart';
 
 class PDashboardMetricsWidget extends StatelessWidget {
   final int averageDailyLearningTime;
-  final List<String> mostPracticedTopics;
+  final List<PzCompletedContentModel> mostPracticedTopics;
   final bool isMobilePortrait;
 
   const PDashboardMetricsWidget({
@@ -18,6 +18,8 @@ class PDashboardMetricsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = [AppColors.kPink, AppColors.kYellow, AppColors.kPurple];
     final minHeight = isMobilePortrait ? 140.0 : 290.0;
+    final sortedTopics = List<PzCompletedContentModel>.from(mostPracticedTopics)
+      ..sort((a, b) => b.completedCount.compareTo(a.completedCount));
 
     return Column(
       children: [
@@ -80,59 +82,19 @@ class PDashboardMetricsWidget extends StatelessWidget {
                       color: AppColors.kWhite,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Most practiced topics',
-                          style: AppStyles.text16PxMedium.copyWith(
-                            fontFamily: AppConstants.kDMSansFont,
-                            fontSize: isMobilePortrait ? 16 : 24,
-                          ),
-                        ),
-                        Gaps.verticalGapOf(8),
-                        ...List.generate(
-                          mostPracticedTopics.length > 3
-                              ? 3
-                              : mostPracticedTopics.length,
-                          (i) => Container(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 6,
-                              horizontal: 12,
-                            ),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: colors[i % colors.length], // .withValues(
-                              //   alpha: 0.3,
-                              // ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              '${i + 1}. ${mostPracticedTopics[i]}',
-                              style: AppStyles.text16PxMedium.copyWith(
-                                // color: colors[i % colors.length],
-                                fontFamily: AppConstants.kDMSansFont,
-                                fontSize: isMobilePortrait ? 16 : 24,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: _MostPracticedTopicsList(
+                      topics: sortedTopics,
+                      colors: colors,
+                      isMobilePortrait: isMobilePortrait,
                     ),
                   ),
                 ),
             ],
           ),
         ),
-
         if (isMobilePortrait) Gaps.verticalGapOf(16),
         if (isMobilePortrait)
           Container(
-            // constraints: BoxConstraints(
-            //   minHeight: minHeight,
-            //   maxWidth: double.infinity,
-            // ),
             height: minHeight,
             width: double.infinity,
             padding: const EdgeInsets.all(18),
@@ -140,47 +102,73 @@ class PDashboardMetricsWidget extends StatelessWidget {
               color: AppColors.kWhite,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    'Most practiced topics',
-                    style: AppStyles.text14PxMedium.copyWith(
-                      fontFamily: AppConstants.kDMSansFont,
-                    ),
-                  ),
-                ),
-                Gaps.verticalGapOf(8),
-                ...List.generate(
-                  mostPracticedTopics.length > 3
-                      ? 3
-                      : mostPracticedTopics.length,
-                  (i) => Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 6,
-                      horizontal: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colors[i % colors.length],
-                      // .withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      '${i + 1}. ${mostPracticedTopics[i]}',
-                      style: AppStyles.text14PxMedium.copyWith(
-                        fontFamily: AppConstants.kDMSansFont,
-                      ),
-                      // .copyWith(
-                      //   color: colors[i % colors.length],
-                      // )
-                    ),
-                  ),
-                ),
-              ],
+            child: _MostPracticedTopicsList(
+              topics: sortedTopics,
+              colors: colors,
+              isMobilePortrait: isMobilePortrait,
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _MostPracticedTopicsList extends StatelessWidget {
+  const _MostPracticedTopicsList({
+    required this.topics,
+    required this.colors,
+    required this.isMobilePortrait,
+  });
+
+  final List<PzCompletedContentModel> topics;
+  final List<Color> colors;
+  final bool isMobilePortrait;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = isMobilePortrait
+        ? AppStyles.text14PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+          )
+        : AppStyles.text16PxMedium.copyWith(
+            fontFamily: AppConstants.kDMSansFont,
+            fontSize: 24,
+          );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (isMobilePortrait)
+          Center(child: Text('Most practiced topics', style: textStyle))
+        else
+          Text('Most practiced topics', style: textStyle),
+        Gaps.verticalGapOf(8),
+        ...List.generate(topics.length > 3 ? 3 : topics.length, (index) {
+          final topic = topics[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: colors[index % colors.length],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${index + 1}. ${topic.contentName}',
+                    style: textStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Gaps.horizontalGapOf(8),
+                Text('x${topic.completedCount}', style: textStyle),
+              ],
+            ),
+          );
+        }),
       ],
     );
   }

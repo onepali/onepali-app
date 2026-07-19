@@ -125,6 +125,10 @@ class TapToPopLessonView extends StatelessWidget {
               scale: isMobile ? item.sizeMb.toDouble() : item.sizeTb.toDouble(),
               child: PopScaleOnTap(
                 onTap: () {
+                  MetricsTrackingHelper.trackAnswerAttempt(
+                    context: context,
+                    isCorrect: true,
+                  );
                   context.read<TapToPopBloc>().add(TapToPopEvent.tapItem(item));
                 },
                 child: _buildItemImage(item),
@@ -134,6 +138,10 @@ class TapToPopLessonView extends StatelessWidget {
               scale: isMobile ? item.sizeMb.toDouble() : item.sizeTb.toDouble(),
               child: ShakeWidget(
                 onTap: () {
+                  MetricsTrackingHelper.trackAnswerAttempt(
+                    context: context,
+                    isCorrect: false,
+                  );
                   context.read<TapToPopBloc>().add(TapToPopEvent.tapItem(item));
                 },
                 child: _buildItemImage(item),

@@ -8,7 +8,10 @@ class StoryProvider extends ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
   DataFetchStatus get status => _status;
 
-  final StoryRepo _repo = StoryRepo();
+  final StoryRepo _repo;
+
+  StoryProvider({StoryRepo? repo}) : _repo = repo ?? StoryRepo();
+
   final List<StoryModel> _stories = [];
   List<StoryModel> get stories => _stories;
 
@@ -98,6 +101,19 @@ class StoryProvider extends ChangeNotifier {
           context,
           listen: false,
         );
+        final isStoryComplete =
+            _currentContentIndex == _currentStory!.content.length;
+        if (isStoryComplete && context.mounted) {
+          await MetricsTrackingHelper.trackStoryCompletion(
+            context: context,
+            storyId: _currentStory!.nameEn,
+            storyTitle: _currentStory!.nameNp.isNotEmpty
+                ? _currentStory!.nameNp
+                : _currentStory!.nameEn,
+            childUid: childId,
+          );
+        }
+
         logger.d(
           '[StoryProvider] Updating recommended story progress for childId: $childId, storyId: ${_currentStory!.nameEn}, progress: $_currentContentIndex',
         );
@@ -108,18 +124,6 @@ class StoryProvider extends ChangeNotifier {
           title: _currentStory!.nameEn,
           image: _currentStory!.thumbnail,
         );
-
-        // If this is the last content, mark story as completed for parent metrics
-        if (_currentContentIndex == _currentStory!.content.length) {
-          if (!context.mounted) return;
-          await MetricsTrackingHelper.trackStoryCompletion(
-            context: context,
-            storyId: _currentStory!.nameEn,
-            storyTitle: _currentStory!.nameNp.isNotEmpty
-                ? _currentStory!.nameNp
-                : _currentStory!.nameEn,
-          );
-        }
       } else {
         logger.d(
           '[StoryProvider] No childId found, not updating recommended story progress.',
@@ -330,6 +334,8 @@ class StoryProvider extends ChangeNotifier {
         childUid: childUid,
         topicName: storyTitle,
         activityType: ActivityType.story,
+        contentId: storyId,
+        contentName: storyTitle,
       );
 
       logger.d('Story completion tracked: $storyId ($storyTitle)');

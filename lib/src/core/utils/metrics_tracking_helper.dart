@@ -3,34 +3,42 @@ import 'package:provider/provider.dart';
 import 'package:onepali/src/src.dart';
 
 class MetricsTrackingHelper {
+  static Future<PzMetricsScope?> _resolveMetricsScope(
+    BuildContext context, {
+    String? childUid,
+  }) async {
+    final parentUid = context.read<UserProvider>().userId;
+    final resolvedChildUid =
+        childUid ?? await ChildLocalStorage.getCurrentChildId();
+
+    if (parentUid == null || resolvedChildUid == null) {
+      return null;
+    }
+
+    return PzMetricsScope(parentUid: parentUid, childUid: resolvedChildUid);
+  }
+
   // Start a learning session when child starts any activity
   static void startLearningSession(BuildContext context) async {
     try {
-      // Check if context is mounted before proceeding
       if (!context.mounted) {
         logger.w('Context not mounted, skipping learning session start');
         return;
       }
 
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
-
-      final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
+      final scope = await _resolveMetricsScope(context);
       logger.d(
-        'Starting learning session with parentUid: $parentUid, childUid: $childUid',
+        'Starting learning session with parentUid: ${scope?.parentUid}, childUid: ${scope?.childUid}',
       );
-      if (parentUid != null && childUid != null) {
-        // Use session manager for robust session tracking
+      if (scope != null) {
         LearningSessionManager().startSession(
-          parentUid: parentUid,
-          childUid: childUid,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
         );
 
-        // Also start provider session for real-time tracking
         if (!context.mounted) return;
         context.read<PzMetricsProvider>().startLearningSession();
-        logger.d('Learning session started for child: $childUid');
+        logger.d('Learning session started for child: ${scope.childUid}');
       } else {
         logger.w('Missing parentUid or childUid, cannot start session');
       }
@@ -53,18 +61,15 @@ class MetricsTrackingHelper {
       await LearningSessionManager().endSession();
       logger.d('Learning session ended via session manager');
 
-      // ALSO call PzMetricsProvider to actually update the metrics
       if (context.mounted) {
-        final userProvider = context.read<UserProvider>();
-        final parentUid = userProvider.userId;
-        final childUid = await ChildLocalStorage.getCurrentChildId();
-
-        if (parentUid != null && childUid != null) {
-          await context.read<PzMetricsProvider>().endLearningSession(
-            parentUid: parentUid,
-            childUid: childUid,
+        final scope = await _resolveMetricsScope(context);
+        if (scope != null) {
+          if (!context.mounted) return;
+          await context.read<PzMetricsProvider>().fetchMetrics(
+            parentUid: scope.parentUid,
+            childUid: scope.childUid,
           );
-          logger.d('Learning session metrics updated via PzMetricsProvider');
+          logger.d('Learning session metrics refreshed');
         }
       }
     } catch (e) {
@@ -72,8 +77,8 @@ class MetricsTrackingHelper {
     }
   }
 
-  // Context-free version for dispose() methods - completely safe
-  // This now properly updates metrics via LearningSessionManager
+  // Context-free version for dispose() methods.
+  // Session time is updated via LearningSessionManager.
   static Future<void> endLearningSessionSafe() async {
     try {
       await LearningSessionManager().endSession();
@@ -95,19 +100,12 @@ class MetricsTrackingHelper {
         'trackLessonCompletion called for lessonId: $lessonId, topicName: $topicName',
       );
 
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
-
-      final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
-
+      final scope = await _resolveMetricsScope(context);
       logger.d(
-        'trackLessonCompletion - parentUid: $parentUid, childUid: $childUid',
+        'trackLessonCompletion - parentUid: ${scope?.parentUid}, childUid: ${scope?.childUid}',
       );
 
-      // final childUid = authState.currentChildId;
-
-      if (parentUid != null && childUid != null) {
+      if (scope != null) {
         if (!context.mounted) {
           logger.w('trackLessonCompletion - context not mounted, aborting');
           return;
@@ -116,8 +114,8 @@ class MetricsTrackingHelper {
           'trackLessonCompletion - calling LessonProvider.trackLessonCompletion',
         );
         await context.read<LessonProvider>().trackLessonCompletion(
-          parentUid: parentUid,
-          childUid: childUid,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
           lessonId: lessonId,
           topicName: topicName,
           context: context,
@@ -138,19 +136,16 @@ class MetricsTrackingHelper {
     required BuildContext context,
     required String storyId,
     required String storyTitle,
+    String? childUid,
   }) async {
     try {
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
+      final scope = await _resolveMetricsScope(context, childUid: childUid);
 
-      final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
-
-      if (parentUid != null && childUid != null) {
+      if (scope != null) {
         if (!context.mounted) return;
         await context.read<StoryProvider>().trackStoryCompletion(
-          parentUid: parentUid,
-          childUid: childUid,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
           storyId: storyId,
           storyTitle: storyTitle,
           context: context,
@@ -169,17 +164,13 @@ class MetricsTrackingHelper {
     required String categoryName,
   }) async {
     try {
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
+      final scope = await _resolveMetricsScope(context);
 
-      final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
-
-      if (parentUid != null && childUid != null) {
+      if (scope != null) {
         if (!context.mounted) return;
         await context.read<SongProvider>().trackSongCompletion(
-          parentUid: parentUid,
-          childUid: childUid,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
           songId: songId,
           songTitle: songTitle,
           categoryName: categoryName,
@@ -192,23 +183,40 @@ class MetricsTrackingHelper {
   }
 
   // Track lesson answer
+  static Future<void> trackAnswerAttempt({
+    required BuildContext context,
+    required bool isCorrect,
+  }) async {
+    try {
+      final scope = await _resolveMetricsScope(context);
+
+      if (scope != null) {
+        if (!context.mounted) return;
+        await context.read<PzMetricsProvider>().trackAnswerAttempt(
+          isCorrect: isCorrect,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
+        );
+      }
+    } catch (e) {
+      logger.e('Error tracking answer attempt: $e');
+    }
+  }
+
+  // Track lesson answer
   static Future<void> trackLessonAnswer({
     required BuildContext context,
     required bool isCorrect,
     required String topicName,
   }) async {
     try {
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
+      final scope = await _resolveMetricsScope(context);
 
-      final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
-
-      if (parentUid != null && childUid != null) {
+      if (scope != null) {
         if (!context.mounted) return;
         await context.read<LessonProvider>().trackLessonAnswer(
-          parentUid: parentUid,
-          childUid: childUid,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
           isCorrect: isCorrect,
           topicName: topicName,
           context: context,
@@ -226,17 +234,13 @@ class MetricsTrackingHelper {
     required String storyTitle,
   }) async {
     try {
-      final userProvider = context.read<UserProvider>();
-      // final authState = context.read<AuthState>();
+      final scope = await _resolveMetricsScope(context);
 
-      final parentUid = userProvider.userId;
-      final childUid = await ChildLocalStorage.getCurrentChildId();
-
-      if (parentUid != null && childUid != null) {
+      if (scope != null) {
         if (!context.mounted) return;
         await context.read<StoryProvider>().trackStoryAnswer(
-          parentUid: parentUid,
-          childUid: childUid,
+          parentUid: scope.parentUid,
+          childUid: scope.childUid,
           isCorrect: isCorrect,
           storyTitle: storyTitle,
           context: context,

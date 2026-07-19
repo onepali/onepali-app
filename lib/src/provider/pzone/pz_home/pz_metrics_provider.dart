@@ -4,69 +4,137 @@ import '../../../src.dart';
 
 enum ActivityType { lesson, story, song }
 
+@immutable
+class PzMetricsScope {
+  final String parentUid;
+  final String childUid;
+
+  const PzMetricsScope({required this.parentUid, required this.childUid});
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PzMetricsScope &&
+            other.parentUid == parentUid &&
+            other.childUid == childUid;
+  }
+
+  @override
+  int get hashCode => Object.hash(parentUid, childUid);
+}
+
 class PzMetricsProvider extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+  final DateTime Function() _now;
+
+  PzMetricsProvider({FirebaseFirestore? firestore, DateTime Function()? now})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _now = now ?? DateTime.now;
 
   PzHomeMetricsModel? _metrics;
+  PzMetricsScope? _currentScope;
   DataFetchStatus _status = DataFetchStatus.initial;
+  final List<PzCompletedContentModel> _completedContents = [];
 
   PzHomeMetricsModel? get metrics => _metrics;
+  PzMetricsScope? get currentScope => _currentScope;
   DataFetchStatus get status => _status;
+  List<PzCompletedContentModel> get completedContents =>
+      List.unmodifiable(_completedContents);
 
-  // Track session start time for learning duration calculation
-  DateTime? _sessionStartTime;
-  final Map<String, int> _sessionTopicDurations = {};
-  final Map<String, int> _sessionCorrectAnswers = {};
-  final Map<String, int> _sessionTotalAnswers = {};
+  Future<void> fetchCompletedContents({
+    required String parentUid,
+    required String childUid,
+  }) async {
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
+    _status = DataFetchStatus.loading;
+    _currentScope = scope;
+    _completedContents.clear();
+    notifyListeners();
+    try {
+      _completedContents.addAll(
+        await _loadCompletedContents(parentUid: parentUid, childUid: childUid),
+      );
+      _status = DataFetchStatus.success;
+    } catch (e) {
+      _completedContents.clear();
+      _status = DataFetchStatus.error;
+      logger.e('Error fetching completed contents: $e');
+    }
+    notifyListeners();
+  }
 
   Future<void> fetchMetrics({
     required String parentUid,
     required String childUid,
   }) async {
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
     _status = DataFetchStatus.loading;
+    _currentScope = scope;
+    _metrics = null;
+    _completedContents.clear();
     notifyListeners();
     try {
-      final doc = await _firestore
-          .collection(AppConstants.usersCollection)
-          .doc(parentUid)
-          .collection(AppConstants.childrenCollection)
-          .doc(childUid)
-          .get();
+      _completedContents.addAll(
+        await _loadCompletedContents(parentUid: parentUid, childUid: childUid),
+      );
+      final doc = await _childDoc(parentUid, childUid).get();
 
       if (doc.exists && doc.data()?['metrics'] != null) {
-        // Metrics exist, load them
-        logger.i('📊 Loading existing metrics from Firestore');
-        _metrics = PzHomeMetricsModel.fromJson(doc.data()?['metrics']);
-        logger.i(
-          '📊 Loaded metrics: weeklyStreak=${_metrics!.weeklyStreak}, dayStreak=${_metrics!.dayStreak}',
+        final fetchedMetrics = PzHomeMetricsModel.fromJson(
+          doc.data()?['metrics'],
         );
-      } else {
-        // CRITICAL: Only create default metrics if document truly doesn't exist
-        if (!doc.exists) {
-          logger.w('⚠️  Child document does not exist. Creating new metrics.');
-          final defaultMetrics = PzHomeMetricsModel.fromJson(null);
+        final normalizedMetrics = _withCompletedContentSummary(
+          fetchedMetrics
+              .normalizedFor(_now())
+              .copyWith(
+                answerSuccessRate: _answerSuccessRateFromData(
+                  doc.data(),
+                  fallback: fetchedMetrics.answerSuccessRate,
+                ),
+              ),
+          _completedContents,
+        );
+        if (_metricsChanged(fetchedMetrics, normalizedMetrics)) {
           await updateMetrics(
             parentUid: parentUid,
             childUid: childUid,
-            newMetrics: defaultMetrics,
+            newMetrics: normalizedMetrics,
+            allowClearingWeeklyStreak: true,
           );
         } else {
-          logger.e(
-            '🚨 CRITICAL: Document exists but metrics field is null/missing!',
-          );
-          logger.e('🚨 Document data: ${doc.data()}');
-          // Load what we can and preserve existing data
-          final existingData = doc.data() ?? {};
-          logger.w('⚠️  Creating minimal metrics without overwriting document');
-          _metrics = PzHomeMetricsModel.fromJson(existingData['metrics']);
+          _metrics = normalizedMetrics;
         }
-        return;
+      } else if (!doc.exists) {
+        final defaultMetrics = _withCompletedContentSummary(
+          PzHomeMetricsModel.fromJson(null),
+          _completedContents,
+        );
+        await updateMetrics(
+          parentUid: parentUid,
+          childUid: childUid,
+          newMetrics: defaultMetrics,
+          allowClearingWeeklyStreak: true,
+        );
+      } else {
+        final defaultMetrics = _withCompletedContentSummary(
+          PzHomeMetricsModel.fromJson(null),
+          _completedContents,
+        );
+        await updateMetrics(
+          parentUid: parentUid,
+          childUid: childUid,
+          newMetrics: defaultMetrics,
+          allowClearingWeeklyStreak: true,
+        );
       }
 
       _status = DataFetchStatus.success;
     } catch (e) {
       _metrics = null;
+      _completedContents.clear();
       _status = DataFetchStatus.error;
+      logger.e('Error fetching metrics: $e');
     }
     notifyListeners();
   }
@@ -75,573 +143,278 @@ class PzMetricsProvider extends ChangeNotifier {
     required String parentUid,
     required String childUid,
     required PzHomeMetricsModel newMetrics,
+    bool allowClearingWeeklyStreak = false,
   }) async {
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
     _status = DataFetchStatus.loading;
     notifyListeners();
 
-    // 🛡️ SAFETY CHECK: Prevent overwriting valid data with empty data
-    if (_metrics != null) {
-      final currentActiveDays = _metrics!.weeklyStreak
-          .where((day) => day)
-          .length;
-      final newActiveDays = newMetrics.weeklyStreak.where((day) => day).length;
-
-      // If current data has progress but new data is empty, this is suspicious
-      if (currentActiveDays > 0 &&
-          newActiveDays == 0 &&
-          newMetrics.dayStreak == 0) {
-        logger.e(
-          '🚨 PREVENTED DATA LOSS: Attempted to overwrite active streak with empty data!',
-        );
-        logger.e(
-          '🚨 Current active days: $currentActiveDays, New active days: $newActiveDays',
-        );
-        logger.e(
-          '🚨 Current day streak: ${_metrics!.dayStreak}, New day streak: ${newMetrics.dayStreak}',
-        );
-        _status = DataFetchStatus.error;
-        notifyListeners();
-        return;
-      }
+    if (!allowClearingWeeklyStreak &&
+        _isCurrentScope(scope) &&
+        _wouldClearExistingStreak(newMetrics)) {
+      _status = DataFetchStatus.error;
+      notifyListeners();
+      return;
     }
 
-    // Log the update for debugging
-    final activeDays = newMetrics.weeklyStreak.where((day) => day).length;
-    logger.i(
-      '💾 Updating metrics: activeDays=$activeDays, dayStreak=${newMetrics.dayStreak}',
-    );
-
     try {
-      await _firestore
-          .collection(AppConstants.usersCollection)
-          .doc(parentUid)
-          .collection(AppConstants.childrenCollection)
-          .doc(childUid)
-          .update({
-            'metrics': {
-              'completedActivities': newMetrics.completedActivities,
-              'answerSuccessRate': newMetrics.answerSuccessRate,
-              'dayStreak': newMetrics.dayStreak,
-              'weeklyStreak': newMetrics.weeklyStreak,
-              'averageDailyLearningTime': newMetrics.averageDailyLearningTime,
-              'mostPracticedTopics': newMetrics.mostPracticedTopics,
-            },
-          });
+      await _childDoc(
+        parentUid,
+        childUid,
+      ).update({'metrics': newMetrics.toJson()});
+      _currentScope = scope;
       _metrics = newMetrics;
       _status = DataFetchStatus.success;
-      logger.i('✅ Metrics updated successfully in Firestore');
     } catch (e) {
-      logger.w('⚠️  Update failed, trying set with merge: $e');
-      // If update fails (document or metrics field doesn't exist), create it with set
       try {
-        await _firestore
-            .collection(AppConstants.usersCollection)
-            .doc(parentUid)
-            .collection(AppConstants.childrenCollection)
-            .doc(childUid)
-            .set({
-              'metrics': {
-                'completedActivities': newMetrics.completedActivities,
-                'answerSuccessRate': newMetrics.answerSuccessRate,
-                'dayStreak': newMetrics.dayStreak,
-                'weeklyStreak': newMetrics.weeklyStreak,
-                'averageDailyLearningTime': newMetrics.averageDailyLearningTime,
-                'mostPracticedTopics': newMetrics.mostPracticedTopics,
-              },
-            }, SetOptions(merge: true));
+        await _childDoc(
+          parentUid,
+          childUid,
+        ).set({'metrics': newMetrics.toJson()}, SetOptions(merge: true));
+        _currentScope = scope;
         _metrics = newMetrics;
         _status = DataFetchStatus.success;
-        logger.i('✅ Metrics created successfully in Firestore');
       } catch (setError) {
-        logger.e('❌ Failed to save metrics: $setError');
         _status = DataFetchStatus.error;
+        logger.e('Failed to save metrics: $setError');
       }
     }
     notifyListeners();
   }
 
-  // Start a learning session
   void startLearningSession() {
-    _sessionStartTime = DateTime.now();
-    _sessionTopicDurations.clear();
-    _sessionCorrectAnswers.clear();
-    _sessionTotalAnswers.clear();
+    // Session duration is tracked by LearningSessionManager. Answer metrics are
+    // cumulative per child and do not need per-session state here.
   }
 
-  // End learning session and update metrics
   Future<void> endLearningSession({
     required String parentUid,
     required String childUid,
   }) async {
-    if (_sessionStartTime == null || _metrics == null) return;
-
-    final sessionDuration = DateTime.now()
-        .difference(_sessionStartTime!)
-        .inMinutes;
-
-    // Calculate new average daily learning time
-    // Simply add the new session duration to the existing total
-    final currentTime = _metrics!.averageDailyLearningTime;
-    final newAverageTime = currentTime + sessionDuration;
-
-    // Update daily streak for today
-    final today = DateTime.now();
-    final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-    final weekdays = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ];
-    final currentDayName = weekdays[weekday];
-
-    final previousWeeklyStreak = List<bool>.from(_metrics!.weeklyStreak);
-    final newWeeklyStreak = List<bool>.from(_metrics!.weeklyStreak);
-    final wasAlreadyActive = newWeeklyStreak[weekday];
-    newWeeklyStreak[weekday] = true;
-
-    // Calculate day streak (consecutive days this week)
-    final dayStreak = newWeeklyStreak.where((day) => day).length;
-
-    // Log the learning session completion
-    logger.i('📚 Learning Session Completed:');
-    logger.i('📚 Session Duration: $sessionDuration minutes');
-    logger.i('📚 Today: $currentDayName (index: $weekday)');
-    logger.i('📚 Was already active today: ${wasAlreadyActive ? 'Yes' : 'No'}');
-    logger.i('📚 Previous Average Learning Time: $currentTime min');
-    logger.i('📚 New Average Learning Time: $newAverageTime min');
-
-    final previousStreakStatus = previousWeeklyStreak
-        .map((active) => active ? '✅' : '❌')
-        .join(' ');
-    final newStreakStatus = newWeeklyStreak
-        .map((active) => active ? '✅' : '❌')
-        .join(' ');
-    logger.i('📚 Previous Weekly Streak: $previousStreakStatus');
-    logger.i('📚 Updated Weekly Streak:  $newStreakStatus');
-    logger.i('📚 New Day Streak Count: $dayStreak/7');
-
-    final updatedMetrics = _metrics!.copyWith(
-      averageDailyLearningTime: newAverageTime,
-      dayStreak: dayStreak,
-      weeklyStreak: newWeeklyStreak,
-    );
-
-    await updateMetrics(
-      parentUid: parentUid,
-      childUid: childUid,
-      newMetrics: updatedMetrics,
-    );
-
-    _sessionStartTime = null;
+    await fetchMetrics(parentUid: parentUid, childUid: childUid);
   }
 
-  // Track activity completion (lessons, stories, songs)
   Future<void> trackActivityCompletion({
     required String parentUid,
     required String childUid,
-    required String topicName, // e.g., "Alphabets", "Animals", "Festival Songs"
-    required ActivityType activityType, // lesson, story, song
+    required String topicName,
+    required ActivityType activityType,
+    String? contentId,
+    String? contentName,
   }) async {
-    if (_metrics == null) return;
+    final resolvedContentId = contentId ?? topicName;
+    final resolvedContentName = contentName ?? topicName;
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
 
-    // Increment completed activities
-    final newCompletedActivities = _metrics!.completedActivities + 1;
-
-    // Update most practiced topics - add the new topic to the list
-    final updatedTopicsList = List<String>.from(_metrics!.mostPracticedTopics);
-    updatedTopicsList.add(topicName);
-
-    // Count occurrences of each topic
-    final topicCounts = <String, int>{};
-    for (final topic in updatedTopicsList) {
-      topicCounts[topic] = (topicCounts[topic] ?? 0) + 1;
+    if (!await _ensureMetricsLoaded(scope: scope, action: 'track completion')) {
+      return;
     }
 
-    // Sort topics by count (descending) and take top 5
-    final sortedTopics = topicCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    final mostPracticedTopics = sortedTopics.take(5).map((e) => e.key).toList();
-
-    final updatedMetrics = _metrics!.copyWith(
-      completedActivities: newCompletedActivities,
-      mostPracticedTopics: mostPracticedTopics,
-    );
-
-    await updateMetrics(
-      parentUid: parentUid,
-      childUid: childUid,
-      newMetrics: updatedMetrics,
-    );
-
-    logger.d(
-      'Activity completed: $topicName ($activityType). Total activities: $newCompletedActivities. Most practiced: $mostPracticedTopics',
-    );
-
-    // 🎯 IMPORTANT: Also mark today as an active learning day
-    // This ensures that completing activities also updates the weekly streak
-    logger.i(
-      '🎯 Activity completion: Ensuring today is marked as active learning day',
-    );
-
-    // 🛡️ CRITICAL FIX: Refresh metrics from Firestore to get latest data
-    // This prevents data loss from concurrent updates or stale local data
-    logger.w(
-      '🔄 Refreshing metrics from Firestore before updating weekly streak',
-    );
     try {
-      final doc = await _firestore
-          .collection(AppConstants.usersCollection)
-          .doc(parentUid)
-          .collection(AppConstants.childrenCollection)
-          .doc(childUid)
-          .get();
+      final completedContents = await _recordContentCompletion(
+        parentUid: parentUid,
+        childUid: childUid,
+        contentId: resolvedContentId,
+        contentName: resolvedContentName,
+        activityType: activityType,
+      );
+      _completedContents
+        ..clear()
+        ..addAll(completedContents);
 
-      if (doc.exists && doc.data()?['metrics'] != null) {
-        final freshMetrics = PzHomeMetricsModel.fromJson(
-          doc.data()?['metrics'],
-        );
-        logger.i('🔄 Fresh metrics loaded from Firestore');
-        logger.i(
-          '🔄 Fresh weekly streak: ${freshMetrics.weeklyStreak.map((active) => active ? '✅' : '❌').join(' ')}',
-        );
+      final now = _now();
+      final metricsWithCompletion = _withCompletedContentSummary(
+        _metrics!.normalizedFor(now),
+        _completedContents,
+      );
+      final updatedMetrics = metricsWithCompletion.markActiveOn(now);
 
-        // Use fresh metrics for weekly streak calculation
-        final today = DateTime.now();
-        final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-        final currentWeeklyStreak = List<bool>.from(freshMetrics.weeklyStreak);
-        final wasAlreadyActive = currentWeeklyStreak[weekday];
+      await updateMetrics(
+        parentUid: parentUid,
+        childUid: childUid,
+        newMetrics: updatedMetrics,
+        allowClearingWeeklyStreak: true,
+      );
 
-        if (!wasAlreadyActive) {
-          logger.i(
-            '🎯 Today was not marked as active, updating weekly streak now',
-          );
-          // Mark today as active
-          currentWeeklyStreak[weekday] = true;
-          final newDayStreak = currentWeeklyStreak.where((day) => day).length;
-
-          // Combine the activity updates with the fresh weekly streak
-          final finalUpdatedMetrics = updatedMetrics.copyWith(
-            weeklyStreak: currentWeeklyStreak,
-            dayStreak: newDayStreak,
-          );
-
-          await updateMetrics(
-            parentUid: parentUid,
-            childUid: childUid,
-            newMetrics: finalUpdatedMetrics,
-          );
-
-          final weekdays = [
-            'Sunday',
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-          ];
-          final currentDayName = weekdays[weekday];
-          logger.i(
-            '🎯 ✅ Weekly streak updated: Today ($currentDayName) marked as active',
-          );
-          logger.i('🎯 ✅ New day streak: $newDayStreak/7');
-          logger.i(
-            '🎯 ✅ Final weekly streak: ${currentWeeklyStreak.map((active) => active ? '✅' : '❌').join(' ')}',
-          );
-        } else {
-          logger.i(
-            '🎯 Today was already marked as active, no streak update needed',
-          );
-        }
-      } else {
-        logger.e(
-          '🚨 Failed to refresh metrics - document or metrics field missing',
-        );
-      }
+      logger.d(
+        'Activity completed: $resolvedContentName ($activityType). '
+        'Total activities: ${updatedMetrics.completedActivities}. '
+        'Most practiced: ${updatedMetrics.mostPracticedTopics}',
+      );
     } catch (e) {
-      logger.e('🚨 Error refreshing metrics from Firestore: $e');
-      // Fallback to original logic if refresh fails
-      logger.w('🔄 Falling back to local metrics data');
-
-      // Check if today is already marked as active
-      final today = DateTime.now();
-      final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-      final currentWeeklyStreak = List<bool>.from(_metrics!.weeklyStreak);
-      final wasAlreadyActive = currentWeeklyStreak[weekday];
-
-      if (!wasAlreadyActive) {
-        logger.i(
-          '🎯 Today was not marked as active, updating weekly streak now',
-        );
-        // Mark today as active
-        currentWeeklyStreak[weekday] = true;
-        final newDayStreak = currentWeeklyStreak.where((day) => day).length;
-
-        // Update metrics again with the daily streak
-        final finalUpdatedMetrics = updatedMetrics.copyWith(
-          weeklyStreak: currentWeeklyStreak,
-          dayStreak: newDayStreak,
-        );
-
-        await updateMetrics(
-          parentUid: parentUid,
-          childUid: childUid,
-          newMetrics: finalUpdatedMetrics,
-        );
-
-        final weekdays = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-        ];
-        final currentDayName = weekdays[weekday];
-        logger.i(
-          '🎯 ✅ Weekly streak updated: Today ($currentDayName) marked as active',
-        );
-        logger.i('🎯 ✅ New day streak: $newDayStreak/7');
-      } else {
-        logger.i(
-          '🎯 Today was already marked as active, no streak update needed',
-        );
-      }
+      logger.e('Error tracking activity completion: $e');
     }
   }
 
-  // Track answer for success rate calculation
+  Future<void> markActiveLearningDay({
+    required String parentUid,
+    required String childUid,
+  }) async {
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
+    if (!await _ensureMetricsLoaded(scope: scope, action: 'mark active day')) {
+      return;
+    }
+
+    try {
+      final doc = await _childDoc(parentUid, childUid).get();
+      final completedContents = _completedContents.isNotEmpty
+          ? List<PzCompletedContentModel>.from(_completedContents)
+          : await _loadCompletedContents(
+              parentUid: parentUid,
+              childUid: childUid,
+            );
+      final currentMetrics = doc.exists && doc.data()?['metrics'] != null
+          ? _withCompletedContentSummary(
+              PzHomeMetricsModel.fromJson(
+                doc.data()?['metrics'],
+              ).normalizedFor(_now()),
+              completedContents,
+            )
+          : _withCompletedContentSummary(_metrics!, completedContents);
+      final updatedMetrics = currentMetrics.markActiveOn(_now());
+
+      await updateMetrics(
+        parentUid: parentUid,
+        childUid: childUid,
+        newMetrics: updatedMetrics,
+        allowClearingWeeklyStreak: true,
+      );
+    } catch (e) {
+      logger.e('Error marking active learning day: $e');
+    }
+  }
+
   Future<void> trackAnswer({
     required String parentUid,
     required String childUid,
     required bool isCorrect,
     required String topicName,
   }) async {
-    if (_metrics == null) return;
-
-    // Update session tracking
-    _sessionCorrectAnswers[topicName] =
-        (_sessionCorrectAnswers[topicName] ?? 0) + (isCorrect ? 1 : 0);
-    _sessionTotalAnswers[topicName] =
-        (_sessionTotalAnswers[topicName] ?? 0) + 1;
-
-    // Calculate new success rate (weighted average with previous rate)
-    final currentRate = _metrics!.answerSuccessRate;
-    final sessionTotalAnswers = _sessionTotalAnswers.values.fold(
-      0,
-      (total, answerCount) => total + answerCount,
-    );
-    final sessionCorrectAnswers = _sessionCorrectAnswers.values.fold(
-      0,
-      (total, answerCount) => total + answerCount,
-    );
-
-    // Use exponential moving average for smoother rate calculation
-    final sessionSuccessRate = sessionTotalAnswers > 0
-        ? sessionCorrectAnswers / sessionTotalAnswers
-        : 0.0;
-    final alpha = 0.1; // Smoothing factor
-    final newSuccessRate = currentRate == 0.0
-        ? sessionSuccessRate
-        : (alpha * sessionSuccessRate + (1 - alpha) * currentRate);
-
-    final updatedMetrics = _metrics!.copyWith(
-      answerSuccessRate: newSuccessRate,
-    );
-
-    await updateMetrics(
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
+    if (_metrics == null || !_isCurrentScope(scope)) {
+      await fetchMetrics(parentUid: parentUid, childUid: childUid);
+    }
+    final newSuccessRate = await _recordAnswerAttempt(
       parentUid: parentUid,
       childUid: childUid,
-      newMetrics: updatedMetrics,
+      isCorrect: isCorrect,
     );
+    if (newSuccessRate == null) return;
+
+    if (_metrics != null && _isCurrentScope(scope)) {
+      _metrics = _metrics!.copyWith(answerSuccessRate: newSuccessRate);
+      notifyListeners();
+    }
 
     logger.d(
-      'Answer tracked: ${isCorrect ? 'Correct' : 'Incorrect'}. New success rate: ${(newSuccessRate * 100).toStringAsFixed(1)}%',
+      'Answer tracked: ${isCorrect ? 'Correct' : 'Incorrect'}. '
+      'Topic: $topicName. '
+      'New success rate: ${(newSuccessRate * 100).toStringAsFixed(1)}%',
     );
   }
 
-  // Reset weekly streak (call this at the start of each week)
+  Future<void> trackAnswerAttempt({
+    required bool isCorrect,
+    required String parentUid,
+    required String childUid,
+  }) async {
+    try {
+      final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
+      final newSuccessRate = await _recordAnswerAttempt(
+        parentUid: parentUid,
+        childUid: childUid,
+        isCorrect: isCorrect,
+      );
+      if (newSuccessRate == null ||
+          _metrics == null ||
+          !_isCurrentScope(scope)) {
+        return;
+      }
+
+      _metrics = _metrics!.copyWith(answerSuccessRate: newSuccessRate);
+      notifyListeners();
+    } catch (e) {
+      logger.e('Error tracking answer attempt: $e');
+    }
+  }
+
   Future<void> resetWeeklyStreak({
     required String parentUid,
     required String childUid,
   }) async {
-    if (_metrics == null) {
-      logger.w('⚠️  Cannot reset weekly streak: metrics is null');
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
+    if (!await _ensureMetricsLoaded(
+      scope: scope,
+      action: 'reset weekly streak',
+    )) {
+      logger.w('Cannot reset weekly streak: metrics is null');
       return;
     }
 
-    // Log current state before reset
-    final currentStreakStatus = _metrics!.weeklyStreak
-        .map((active) => active ? '✅' : '❌')
-        .join(' ');
-    final currentActiveDays = _metrics!.weeklyStreak.where((day) => day).length;
-
-    logger.w('🔄 RESETTING WEEKLY STREAK:');
-    logger.w('🔄 Previous State: $currentStreakStatus');
-    logger.w('🔄 Previous Active Days: $currentActiveDays/7');
-    logger.w('🔄 Previous Day Streak: ${_metrics!.dayStreak}');
-
     final updatedMetrics = _metrics!.copyWith(
       weeklyStreak: List.filled(7, false),
-      dayStreak: 0,
     );
 
     await updateMetrics(
       parentUid: parentUid,
       childUid: childUid,
       newMetrics: updatedMetrics,
+      allowClearingWeeklyStreak: true,
     );
-
-    logger.i('✅ Weekly streak reset completed');
-    logger.i('✅ New State: ❌ ❌ ❌ ❌ ❌ ❌ ❌ (All days cleared)');
-    logger.i('✅ New Day Streak: 0');
   }
 
-  // Get formatted success rate as percentage
   String getFormattedSuccessRate() {
     if (_metrics == null) return '0%';
     return '${(_metrics!.answerSuccessRate * 100).toStringAsFixed(1)}%';
   }
 
-  // Get formatted average learning time
   String getFormattedAverageLearningTime() {
     if (_metrics == null) return '0 min';
     final minutes = _metrics!.averageDailyLearningTime;
     if (minutes < 60) {
       return '$minutes min';
-    } else {
-      final hours = minutes ~/ 60;
-      final remainingMinutes = minutes % 60;
-      return remainingMinutes > 0
-          ? '${hours}h ${remainingMinutes}m'
-          : '${hours}h';
     }
+    final hours = minutes ~/ 60;
+    final remainingMinutes = minutes % 60;
+    return remainingMinutes > 0
+        ? '${hours}h ${remainingMinutes}m'
+        : '${hours}h';
   }
 
-  // Check if we need to reset weekly streak
   Future<void> checkAndResetWeeklyStreak({
     required String parentUid,
     required String childUid,
   }) async {
-    final SharedPreferencesService prefs = SharedPreferencesService();
-    final lastResetWeek =
-        await prefs.getStringPref('lastWeekReset_$childUid') ?? '';
-    final currentWeek = _getCurrentWeekString();
-
-    // Get current date and week info for logging
-    final now = DateTime.now();
-    final currentWeekday = now.weekday % 7; // 0 = Sunday, 6 = Saturday
-    final weekdays = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ];
-    final currentDayName = weekdays[currentWeekday];
-
-    // Calculate days until next Sunday (week reset day)
-    final daysUntilReset = currentWeekday == 0 ? 7 : 7 - currentWeekday;
-
-    // Calculate start and end of current week
-    final startOfWeek = now.subtract(Duration(days: currentWeekday));
-    final endOfWeek = startOfWeek.add(Duration(days: 6));
-
-    logger.i('📅 Weekly Streak Check for Child: $childUid');
-    logger.i(
-      '📅 Current Date: ${now.toString().split(' ')[0]} ($currentDayName)',
-    );
-    logger.i('📅 Current Week: $currentWeek');
-    logger.i(
-      '📅 Last Reset Week: ${lastResetWeek.isEmpty ? 'Never' : lastResetWeek}',
-    );
-    logger.i(
-      '📅 Current Week Range: ${startOfWeek.toString().split(' ')[0]} to ${endOfWeek.toString().split(' ')[0]}',
-    );
-    logger.i('📅 Days until next reset (Sunday): $daysUntilReset days');
-
-    if (_metrics != null) {
-      final activeDays = _metrics!.weeklyStreak.where((day) => day).length;
-      final streakStatus = _metrics!.weeklyStreak
-          .map((active) => active ? '✅' : '❌')
-          .join(' ');
-      logger.i('📅 Current Weekly Streak: $streakStatus');
-      logger.i('📅 Active Learning Days: $activeDays/7');
-      logger.i('📅 Day Streak Count: ${_metrics!.dayStreak}');
+    final scope = PzMetricsScope(parentUid: parentUid, childUid: childUid);
+    if (!await _ensureMetricsLoaded(
+      scope: scope,
+      action: 'check weekly streak',
+    )) {
+      return;
     }
-
-    if (lastResetWeek != currentWeek) {
-      logger.w('🔄 NEW WEEK DETECTED! Resetting weekly streak...');
-      logger.w('🔄 Previous Week: $lastResetWeek → Current Week: $currentWeek');
-      await resetWeeklyStreak(parentUid: parentUid, childUid: childUid);
-      await prefs.setStringPref('lastWeekReset_$childUid', currentWeek);
-      logger.i('✅ Weekly streak reset completed and saved to preferences');
-    } else {
-      logger.i('✅ Same week detected. No reset needed.');
+    final normalizedMetrics = _metrics!.normalizedFor(_now());
+    if (_metricsChanged(_metrics!, normalizedMetrics)) {
+      await updateMetrics(
+        parentUid: parentUid,
+        childUid: childUid,
+        newMetrics: normalizedMetrics,
+        allowClearingWeeklyStreak: true,
+      );
     }
   }
 
-  String _getCurrentWeekString() {
-    final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday % 7));
-    final weekNumber = _getWeekNumber(startOfWeek);
-    final weekString = '${startOfWeek.year}-W$weekNumber';
-
-    logger.d('🗓️  Week Calculation Details:');
-    logger.d('🗓️  Current Date: ${now.toString()}');
-    logger.d('🗓️  Current Weekday: ${now.weekday} (1=Monday, 7=Sunday)');
-    logger.d(
-      '🗓️  Adjusted Weekday: ${now.weekday % 7} (0=Sunday, 6=Saturday)',
-    );
-    logger.d('🗓️  Days to subtract: ${now.weekday % 7}');
-    logger.d('🗓️  Start of Week: ${startOfWeek.toString()}');
-    logger.d('🗓️  Week Number: $weekNumber');
-    logger.d('🗓️  Generated Week String: $weekString');
-
-    return weekString;
-  }
-
-  int _getWeekNumber(DateTime date) {
-    final startOfYear = DateTime(date.year, 1, 1);
-    final days = date.difference(startOfYear).inDays;
-    return (days / 7).ceil();
-  }
-
-  // Debug method to check what's actually in Firestore
   Future<void> debugFirestoreData(String parentUid, String childUid) async {
     try {
-      final doc = await _firestore
-          .collection(AppConstants.usersCollection)
-          .doc(parentUid)
-          .collection(AppConstants.childrenCollection)
-          .doc(childUid)
-          .get();
-
-      logger.i('🔍 FIRESTORE DEBUG:');
-      logger.i('🔍 Document exists: ${doc.exists}');
-      if (doc.exists) {
-        final data = doc.data();
-        logger.i('🔍 Document data keys: ${data?.keys.toList()}');
-        logger.i('🔍 Has metrics field: ${data?.containsKey('metrics')}');
-        if (data?.containsKey('metrics') == true) {
-          logger.i('🔍 Metrics data: ${data!['metrics']}');
-        }
-      }
+      final doc = await _childDoc(parentUid, childUid).get();
+      logger.i('Document exists: ${doc.exists}');
+      logger.i('Has metrics field: ${doc.data()?.containsKey('metrics')}');
     } catch (e) {
-      logger.e('🔍 Error checking Firestore: $e');
+      logger.e('Error checking Firestore: $e');
     }
   }
 
-  // Debug method to log current week state (for testing purposes)
   void logCurrentWeekState(String childUid) {
-    final now = DateTime.now();
+    final now = _now();
     final currentWeekday = now.weekday % 7;
     final weekdays = [
       'Sunday',
@@ -653,25 +426,239 @@ class PzMetricsProvider extends ChangeNotifier {
       'Saturday',
     ];
     final currentDayName = weekdays[currentWeekday];
-    final currentWeek = _getCurrentWeekString();
-    final daysUntilReset = currentWeekday == 0 ? 7 : 7 - currentWeekday;
 
-    logger.i('🔍 CURRENT WEEK STATE DEBUG:');
-    logger.i('🔍 Child ID: $childUid');
-    logger.i('🔍 Today: ${now.toString().split(' ')[0]} ($currentDayName)');
-    logger.i('🔍 Current Week: $currentWeek');
-    logger.i('🔍 Days until next reset: $daysUntilReset');
-
+    logger.i('Current week state for child: $childUid');
+    logger.i('Today: ${_dateKey(now)} ($currentDayName)');
     if (_metrics != null) {
-      final activeDays = _metrics!.weeklyStreak.where((day) => day).length;
-      final streakStatus = _metrics!.weeklyStreak
-          .map((active) => active ? '✅' : '❌')
-          .join(' ');
-      logger.i('🔍 Weekly Streak: $streakStatus');
-      logger.i('🔍 Active Days: $activeDays/7');
-      logger.i('🔍 Day Streak: ${_metrics!.dayStreak}');
-    } else {
-      logger.w('🔍 No metrics available');
+      logger.i('Weekly streak: ${_metrics!.weeklyStreak}');
+      logger.i('Day streak: ${_metrics!.dayStreak}');
+      logger.i('Last active date: ${_metrics!.lastActiveDate}');
     }
+  }
+
+  Future<List<PzCompletedContentModel>> _recordContentCompletion({
+    required String parentUid,
+    required String childUid,
+    required String contentId,
+    required String contentName,
+    required ActivityType activityType,
+  }) async {
+    final completionDate = _now().toIso8601String();
+    final type = activityType.name;
+    final docRef = _childDoc(parentUid, childUid)
+        .collection(AppConstants.completedContentCollection)
+        .doc('${type}_$contentId');
+
+    await _firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(docRef);
+      if (doc.exists) {
+        transaction.update(docRef, {
+          'completed_count': FieldValue.increment(1),
+          'content_name': contentName,
+          'updated_at': completionDate,
+        });
+      } else {
+        transaction.set(docRef, {
+          'id': docRef.id,
+          'parent_id': parentUid,
+          'child_id': childUid,
+          'content_id': contentId,
+          'content_name': contentName,
+          'content_type': type,
+          'created_at': completionDate,
+          'updated_at': completionDate,
+          'completed_count': 1,
+        });
+      }
+    });
+
+    return _loadCompletedContents(parentUid: parentUid, childUid: childUid);
+  }
+
+  Future<double?> _recordAnswerAttempt({
+    required String parentUid,
+    required String childUid,
+    required bool isCorrect,
+  }) async {
+    final docRef = _childDoc(parentUid, childUid);
+    final counterField = isCorrect
+        ? 'right_answers_count'
+        : 'wrong_answers_count';
+
+    try {
+      return await _firestore.runTransaction<double>((transaction) async {
+        final doc = await transaction.get(docRef);
+        final data = doc.data();
+        final currentRight =
+            (data?['right_answers_count'] as num?)?.toInt() ?? 0;
+        final currentWrong =
+            (data?['wrong_answers_count'] as num?)?.toInt() ?? 0;
+        final nextRight = currentRight + (isCorrect ? 1 : 0);
+        final nextWrong = currentWrong + (isCorrect ? 0 : 1);
+        final totalAnswers = nextRight + nextWrong;
+        final successRate = totalAnswers > 0 ? nextRight / totalAnswers : 0.0;
+
+        if (doc.exists) {
+          transaction.update(docRef, {
+            counterField: FieldValue.increment(1),
+            'metrics.answerSuccessRate': successRate,
+          });
+        } else {
+          transaction.set(docRef, {
+            'right_answers_count': nextRight,
+            'wrong_answers_count': nextWrong,
+            'metrics': {'answerSuccessRate': successRate},
+          }, SetOptions(merge: true));
+        }
+
+        return successRate;
+      });
+    } catch (e) {
+      logger.e('Error updating answer success rate: $e');
+      return null;
+    }
+  }
+
+  Future<List<PzCompletedContentModel>> _loadCompletedContents({
+    required String parentUid,
+    required String childUid,
+  }) async {
+    final snapshot = await _childDoc(
+      parentUid,
+      childUid,
+    ).collection(AppConstants.completedContentCollection).get();
+    return snapshot.docs
+        .map((doc) => PzCompletedContentModel.fromJson(doc.data()))
+        .toList();
+  }
+
+  PzHomeMetricsModel _withCompletedContentSummary(
+    PzHomeMetricsModel metrics,
+    List<PzCompletedContentModel> completedContents,
+  ) {
+    final sortedContents = List<PzCompletedContentModel>.from(completedContents)
+      ..sort((a, b) => b.completedCount.compareTo(a.completedCount));
+    final topicCounts = {
+      for (final content in completedContents)
+        content.contentName: content.completedCount,
+    };
+
+    return metrics.copyWith(
+      completedActivities: completedContents.length,
+      mostPracticedTopics: sortedContents
+          .take(5)
+          .map((content) => content.contentName)
+          .toList(),
+      topicCounts: topicCounts,
+    );
+  }
+
+  double _answerSuccessRateFromData(
+    Map<String, dynamic>? data, {
+    required double fallback,
+  }) {
+    final rightAnswers = (data?['right_answers_count'] as num?)?.toInt() ?? 0;
+    final wrongAnswers = (data?['wrong_answers_count'] as num?)?.toInt() ?? 0;
+    final totalAnswers = rightAnswers + wrongAnswers;
+    if (totalAnswers == 0) {
+      return fallback;
+    }
+    return rightAnswers / totalAnswers;
+  }
+
+  bool _metricsChanged(
+    PzHomeMetricsModel previous,
+    PzHomeMetricsModel current,
+  ) {
+    if (previous.completedActivities != current.completedActivities ||
+        previous.answerSuccessRate != current.answerSuccessRate ||
+        previous.dayStreak != current.dayStreak ||
+        previous.lastActiveDate != current.lastActiveDate ||
+        previous.averageDailyLearningTime != current.averageDailyLearningTime) {
+      return true;
+    }
+    if (!_sameBoolList(previous.weeklyStreak, current.weeklyStreak)) {
+      return true;
+    }
+    if (!_sameStringList(
+      previous.mostPracticedTopics,
+      current.mostPracticedTopics,
+    )) {
+      return true;
+    }
+    if (!_sameIntMap(previous.topicCounts, current.topicCounts)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _wouldClearExistingStreak(PzHomeMetricsModel newMetrics) {
+    if (_metrics == null) return false;
+    final currentActiveDays = _metrics!.weeklyStreak.where((day) => day).length;
+    final newActiveDays = newMetrics.weeklyStreak.where((day) => day).length;
+    return currentActiveDays > 0 &&
+        newActiveDays == 0 &&
+        newMetrics.dayStreak == 0;
+  }
+
+  bool _sameBoolList(List<bool> first, List<bool> second) {
+    if (first.length != second.length) return false;
+    for (var index = 0; index < first.length; index++) {
+      if (first[index] != second[index]) return false;
+    }
+    return true;
+  }
+
+  bool _sameStringList(List<String> first, List<String> second) {
+    if (first.length != second.length) return false;
+    for (var index = 0; index < first.length; index++) {
+      if (first[index] != second[index]) return false;
+    }
+    return true;
+  }
+
+  bool _sameIntMap(Map<String, int> first, Map<String, int> second) {
+    if (first.length != second.length) return false;
+    for (final entry in first.entries) {
+      if (second[entry.key] != entry.value) return false;
+    }
+    return true;
+  }
+
+  bool _isCurrentScope(PzMetricsScope scope) {
+    return _currentScope == scope;
+  }
+
+  Future<bool> _ensureMetricsLoaded({
+    required PzMetricsScope scope,
+    required String action,
+  }) async {
+    if (_metrics == null || !_isCurrentScope(scope)) {
+      await fetchMetrics(parentUid: scope.parentUid, childUid: scope.childUid);
+    }
+    if (_metrics == null || !_isCurrentScope(scope)) {
+      logger.e('Failed to $action: metrics is null');
+      return false;
+    }
+    return true;
+  }
+
+  DocumentReference<Map<String, dynamic>> _childDoc(
+    String parentUid,
+    String childUid,
+  ) {
+    return _firestore
+        .collection(AppConstants.usersCollection)
+        .doc(parentUid)
+        .collection(AppConstants.childrenCollection)
+        .doc(childUid);
+  }
+
+  String _dateKey(DateTime date) {
+    final localDate = DateTime(date.year, date.month, date.day);
+    final year = localDate.year.toString().padLeft(4, '0');
+    final month = localDate.month.toString().padLeft(2, '0');
+    final day = localDate.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
   }
 }

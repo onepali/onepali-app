@@ -86,6 +86,7 @@ class _PHomeScreenState extends State<PHomeScreen> {
         final parentUid = userProvider.userId;
         final children = childProvider.childUser;
         final metrics = metricsProvider.metrics;
+        final completedContents = metricsProvider.completedContents;
         final metricsStatus = metricsProvider.status;
         final childStatus = childProvider.status;
 
@@ -111,6 +112,7 @@ class _PHomeScreenState extends State<PHomeScreen> {
                       metricsStatus: metricsStatus,
                       isMobilePortrait: isMobilePortrait,
                       parentUid: parentUid,
+                      completedContents: completedContents,
                     );
                   },
                 ),
