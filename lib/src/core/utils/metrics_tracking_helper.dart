@@ -7,6 +7,10 @@ class MetricsTrackingHelper {
     BuildContext context, {
     String? childUid,
   }) async {
+    if (GuestUtil.isGuestUser()) {
+      return null;
+    }
+
     final parentUid = context.read<UserProvider>().userId;
     final resolvedChildUid =
         childUid ?? await ChildLocalStorage.getCurrentChildId();
@@ -179,6 +183,27 @@ class MetricsTrackingHelper {
       }
     } catch (e) {
       logger.e('Error tracking song completion: $e');
+    }
+  }
+
+  static Future<Set<String>> fetchCompletedContentIds({
+    required BuildContext context,
+    required ActivityType activityType,
+    String? childUid,
+  }) async {
+    try {
+      final scope = await _resolveMetricsScope(context, childUid: childUid);
+      if (scope == null) return <String>{};
+      if (!context.mounted) return <String>{};
+
+      return context.read<PzMetricsProvider>().fetchCompletedContentIds(
+        parentUid: scope.parentUid,
+        childUid: scope.childUid,
+        activityType: activityType,
+      );
+    } catch (e) {
+      logger.e('Error fetching completed content ids: $e');
+      return <String>{};
     }
   }
 
