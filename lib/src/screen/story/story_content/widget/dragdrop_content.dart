@@ -1,5 +1,8 @@
 // Drag & Drop UI
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import '../../../../src.dart';
 
 class DragDropContent extends StatefulWidget {
@@ -20,15 +23,37 @@ class DragDropContentState extends State<DragDropContent> {
   late List<int?> droppedOn;
   bool finished = false;
   int? tryAgainIdx;
+  late final AudioPlayerService _completionAudioService;
+  bool _hasPlayedCompletionAudio = false;
+  bool _hasScheduledCompletionNavigation = false;
 
   @override
   void initState() {
     super.initState();
+    _completionAudioService = AudioPlayerServiceImpl();
     final n = widget.content.conversation.length;
     dropped = List.generate(n, (_) => false);
     correct = List.generate(n, (_) => false);
     droppedOn = List.generate(n, (_) => null);
     tryAgainIdx = null;
+  }
+
+  @override
+  void dispose() {
+    unawaited(_completionAudioService.dispose());
+    super.dispose();
+  }
+
+  void _playCompletionAudioOnce() {
+    if (_hasPlayedCompletionAudio) return;
+    _hasPlayedCompletionAudio = true;
+    unawaited(
+      _completionAudioService.playAsset(Assets.storiesComplete).catchError((
+        error,
+      ) {
+        logger.e('Error playing story completion audio: $error');
+      }),
+    );
   }
 
   @override
@@ -40,21 +65,25 @@ class DragDropContentState extends State<DragDropContent> {
     final bgColor = AppColors.kLightGreenBackgroundColor;
 
     if (finished) {
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          bool isGuest = GuestUtil.isGuestUser();
-          if (isGuest) {
-            Navigator.pop(context);
-          } else {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AppRoutes.dashboardScreen,
-              (route) => false,
-            );
-            UserAppBar.setTabIndex(0);
+      _playCompletionAudioOnce();
+      if (!_hasScheduledCompletionNavigation) {
+        _hasScheduledCompletionNavigation = true;
+        Future.delayed(const Duration(seconds: 5), () {
+          if (mounted) {
+            bool isGuest = GuestUtil.isGuestUser();
+            if (isGuest) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.dashboardScreen,
+                (route) => false,
+              );
+              UserAppBar.setTabIndex(0);
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     return Stack(
