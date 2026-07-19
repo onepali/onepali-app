@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +24,40 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   int? selectedIdx;
   bool? isCorrect;
   bool showTryAgain = false;
+  late final AudioPlayerService _completionAudioService;
+  bool _hasPlayedCompletionAudio = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _completionAudioService = AudioPlayerServiceImpl();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.playAudio) {
+        Provider.of<StoryProvider>(
+          context,
+          listen: false,
+        ).playAudio(widget.content.audio);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    unawaited(_completionAudioService.dispose());
+    super.dispose();
+  }
+
+  void _playCompletionAudioOnce() {
+    if (_hasPlayedCompletionAudio) return;
+    _hasPlayedCompletionAudio = true;
+    unawaited(
+      _completionAudioService.playAsset(Assets.storiesComplete).catchError((
+        error,
+      ) {
+        logger.e('Error playing story completion audio: $error');
+      }),
+    );
+  }
 
   void _handleTap(int i, StoryProvider storyProvider) async {
     final opt = widget.content.conversation[i];
@@ -48,19 +85,6 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
         storyProvider.nextContent(context);
       }
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.playAudio) {
-        Provider.of<StoryProvider>(
-          context,
-          listen: false,
-        ).playAudio(widget.content.audio);
-      }
-    });
   }
 
   String _nonEmptyOr(String? value, String fallback) =>
@@ -95,6 +119,9 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
     if (storyProvider.isStoryFinished) {
       // Navigator.of(context).pop();
+      if (isCorrect == true) {
+        _playCompletionAudioOnce();
+      }
     }
     return Stack(
       children: [
