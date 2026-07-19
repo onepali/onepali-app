@@ -6,6 +6,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../src.dart';
+import 'auth_navigation_helper.dart';
 
 class AAuthProvider with ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
@@ -150,7 +151,7 @@ class AAuthProvider with ChangeNotifier {
       notifyListeners();
 
       if (!context.mounted) return;
-      onNavigate(context);
+      await onNavigate(context, firebaseUser?.uid);
       showCustomToaster('Login Successful');
       return;
     } on SignInWithAppleAuthorizationException catch (e) {
@@ -218,8 +219,8 @@ class AAuthProvider with ChangeNotifier {
     }
   }
 
-  void onNavigate(context) {
-    Utility.navigate(context, AppRoutes.dashboardScreen);
+  Future<void> onNavigate(BuildContext context, String? userId) {
+    return navigateAfterParentLogin(context, userId);
   }
 
   void _handlePlatformException(BuildContext context, PlatformException e) {
