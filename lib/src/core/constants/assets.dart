@@ -66,6 +66,7 @@ class Assets {
   static String wrong = 'wrong'.icon;
   static String closeGreyIcon = 'close_grey_btn'.icon;
   static String check = 'check'.icon;
+  static String tick = 'tick'.icon;
   static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;
   static String sound1 = 'sound1'.icon;
