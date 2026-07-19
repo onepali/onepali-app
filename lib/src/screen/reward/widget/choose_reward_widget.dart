@@ -23,7 +23,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
 
   Future<void> _fetchRewards() async {
     final rewardProvider = context.read<RewardProvider>();
-    await rewardProvider.fetchRewardCollection();
+    await rewardProvider.fetchClaimableRewards();
   }
 
   Widget stickerGrid(List<RewardModel> rewards) {
@@ -82,7 +82,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
   @override
   Widget build(BuildContext context) {
     final rewardProvider = Provider.of<RewardProvider>(context);
-    final rewards = rewardProvider.rewards;
+    final rewards = rewardProvider.claimableRewards;
     // final stickers = AppConstants.rewardOutlinedStickers;
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
