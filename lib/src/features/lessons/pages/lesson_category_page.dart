@@ -19,9 +19,9 @@ class LessonCategoryPage extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontFamily: GoogleFonts.poppins().fontFamily,
         fontSize: 36,
-        letterSpacing: 5,
+        letterSpacing: 1,
         fontWeight: FontWeight.bold,
         color: AppColors.kDrawerBgColor,
       ),

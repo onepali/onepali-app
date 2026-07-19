@@ -155,4 +155,24 @@ class AppConstants {
 
   static const String kAppLink =
       'https://play.google.com/store/apps/details?id=$applicationId';
+
+  /// Width / height for [ContentCard] in grids and horizontal lists.
+  static const double contentCardAspectRatio = 3 / 2;
+
+  static const int contentCardGridCrossAxisCount = 3;
+  static const double contentCardGridSpacing = 24;
+
+  /// Matches one column of [SongsCategoryGrid] (3 columns, 24px gaps, same padding).
+  static double contentCardGridWidth(
+    double availableWidth, {
+    required bool isMobile,
+    int crossAxisCount = contentCardGridCrossAxisCount,
+    double crossAxisSpacing = contentCardGridSpacing,
+  }) {
+    final horizontalPadding = isMobile ? 0.0 : 48.0;
+    return (availableWidth -
+            horizontalPadding -
+            crossAxisSpacing * (crossAxisCount - 1)) /
+        crossAxisCount;
+  }
 }
