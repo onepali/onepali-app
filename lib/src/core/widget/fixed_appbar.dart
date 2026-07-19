@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/dialog/create_child_profile_dialog.dart';
 import 'package:onepali/src/src.dart';
 
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -137,23 +138,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      if (!isGuest) {
-                                        Utility.navigateMaterialRoute(
-                                          context,
-                                          DrawerScreen(
-                                            data: childData,
-                                            totalChildCount: totalChildCount,
-                                          ),
-                                          routeName: AppRoutes.drawerRoutes,
-                                        );
-                                      }
-                                      // } else {
-                                      //   Utility.navigate(
-                                      //     context,
-                                      //     AppRoutes.systemScreen,
-                                      //   );
-                                      // }
+                                    onPressed: () async {
+                                      await _handleAvatarTap(context);
                                     },
                                     icon: CustomImage(
                                       isGuest
@@ -276,22 +262,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: IconButton(
                                             padding: EdgeInsets.zero,
                                             constraints: const BoxConstraints(),
-                                            onPressed: () {
-                                              if (!isGuest) {
-                                                Utility.navigateMaterialRoute(
-                                                  context,
-                                                  TabDrawerScreen(
-                                                    data: childData,
-                                                    totalChildCount:
-                                                        totalChildCount,
-                                                  ),
-                                                  routeName:
-                                                      AppRoutes.tabDrawerRoutes,
-                                                );
-                                              }
-                                              //  else {
-                                              //   Utility.navigate(context, AppRoutes.systemScreen);
-                                              // }
+                                            onPressed: () async {
+                                              await _handleAvatarTap(context);
                                             },
                                             icon: CustomImage(
                                               isGuest
@@ -304,6 +276,24 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                               imageType: isGuest
                                                   ? CustomImageType.local
                                                   : CustomImageType.network,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => GestureDetector(
+                                                    onTap: () async {
+                                                      await _handleAvatarTap(
+                                                        context,
+                                                      );
+                                                    },
+                                                    child: Image.asset(
+                                                      Assets.blueUserAvatar,
+                                                      height: avatarSize,
+                                                      width: avatarSize,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -459,6 +449,40 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   // Public method to reset audio from outside
   static Future<void> resetStarBlastAudio() async {
     await _stopStarBlastAudio();
+  }
+
+  Future<void> _handleAvatarTap(BuildContext context) async {
+    if (isGuest) {
+      Utility.navigate(context, AppRoutes.onboardingScreen);
+      return;
+    }
+
+    final hasNoChild = childData.isEmpty || totalChildCount <= 0;
+    if (hasNoChild) {
+      final shouldCreateChild = await showCreateChildProfileDialog(context);
+      if (shouldCreateChild == true) {
+        Utility.navigate(context, AppRoutes.childRegisterScreen);
+      }
+      return;
+    }
+
+    final isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
+    if (isMobileLandscape) {
+      Utility.navigateMaterialRoute(
+        context,
+        DrawerScreen(data: childData, totalChildCount: totalChildCount),
+        routeName: AppRoutes.drawerRoutes,
+      );
+      return;
+    }
+
+    Utility.navigateMaterialRoute(
+      context,
+      TabDrawerScreen(data: childData, totalChildCount: totalChildCount),
+      routeName: AppRoutes.tabDrawerRoutes,
+    );
   }
 
   Widget buildProgressBar(double progressBarWidth) {
