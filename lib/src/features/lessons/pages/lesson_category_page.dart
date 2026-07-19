@@ -6,7 +6,7 @@ import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 import 'package:onepali/src/src.dart';
 
-class LessonCategoryPage extends StatelessWidget {
+class LessonCategoryPage extends StatefulWidget {
   const LessonCategoryPage({
     super.key,
     required this.categoryId,
@@ -14,6 +14,31 @@ class LessonCategoryPage extends StatelessWidget {
   });
   final String categoryId;
   final String title;
+
+  @override
+  State<LessonCategoryPage> createState() => _LessonCategoryPageState();
+}
+
+class _LessonCategoryPageState extends State<LessonCategoryPage> {
+  Set<String> _completedLessonIds = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    Misc.onLayoutRendered(_loadCompletedLessonIds);
+  }
+
+  Future<void> _loadCompletedLessonIds() async {
+    final completedLessonIds =
+        await MetricsTrackingHelper.fetchCompletedContentIds(
+          context: context,
+          activityType: ActivityType.lesson,
+        );
+    if (!mounted) return;
+    setState(() {
+      _completedLessonIds = completedLessonIds;
+    });
+  }
 
   Widget _buildTitleText(BuildContext context, String text) {
     return Text(
@@ -31,7 +56,7 @@ class LessonCategoryPage extends StatelessWidget {
   Stream<QuerySnapshot<Map<String, dynamic>>> getLessonsStream() {
     return FirebaseFirestore.instance
         .collection('lessons')
-        .where('category_id', isEqualTo: categoryId)
+        .where('category_id', isEqualTo: widget.categoryId)
         .snapshots();
   }
 
@@ -73,7 +98,7 @@ class LessonCategoryPage extends StatelessWidget {
                 right: 0,
                 top: 0,
                 bottom: 0,
-                child: Center(child: _buildTitleText(context, title)),
+                child: Center(child: _buildTitleText(context, widget.title)),
               ),
             ],
           ),
@@ -105,14 +130,17 @@ class LessonCategoryPage extends StatelessWidget {
                         nameEn: lessonData['name'] as String? ?? '',
                         bgColor: lessonData['bg_color'] as String?,
                         nameNp: lessonData['name_np'] as String? ?? '',
-                        onTap: () {
-                          Utility.navigateMaterialRoute(
+                        onTap: () async {
+                          await Utility.navigateMaterialRoute(
                             context,
                             LessonPage(lessonId: lesson.id),
                           );
+                          if (!context.mounted) return;
+                          await _loadCompletedLessonIds();
                         },
                         image: lessonData['image'] as String?,
                         bgImage: lessonData['bg_image'] as String?,
+                        isCompleted: _completedLessonIds.contains(lesson.id),
                       );
                     },
                   );
