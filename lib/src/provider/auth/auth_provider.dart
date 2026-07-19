@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../src.dart';
+import 'auth_navigation_helper.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -238,7 +239,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       if (!context.mounted) return;
       showCustomToaster("Login successful!");
-      Utility.navigate(context, AppRoutes.dashboardScreen);
+      await navigateAfterParentLogin(context, _user?.uid);
     } on FirebaseAuthException catch (e) {
       logger.e("FirebaseAuthException: ${e.code}");
       setStatus(DataFetchStatus.initial);
