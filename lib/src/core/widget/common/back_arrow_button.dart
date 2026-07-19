@@ -33,7 +33,13 @@ class CenterLeftAlignedBackButton extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.only(left: isMobile ? 24 : 32),
-        child: BackArrowButton(onTap: onTap),
+        child: SafeArea(
+          right: true,
+          bottom: false,
+          top: false,
+          left: true,
+          child: BackArrowButton(onTap: onTap),
+        ),
       ),
     );
   }

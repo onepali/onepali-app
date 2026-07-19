@@ -115,11 +115,13 @@ class _LessonPageState extends State<LessonPage> {
                 lessonContent: lessonContent,
               ),
               TapToPopLessonContent() => BlocProvider(
+                key: ValueKey('tap_to_pop_${state.currentIndex}'),
                 create: (context) =>
                     TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
                 child: TapToPopLessonView(content: lessonContent),
               ),
               ListenAndRepeatLessonContent() => BlocProvider(
+                key: ValueKey('listen_and_repeat_${state.currentIndex}'),
                 create: (context) => ListenAndRepeatBloc(
                   audioPlayerService: AudioPlayerServiceImpl(),
                   audioRecorderService: AudioRecorderServiceImpl(),
@@ -131,6 +133,8 @@ class _LessonPageState extends State<LessonPage> {
               ),
               CharTracingLessonContent() => NewLetterTracingPage(
                 content: lessonContent,
+                isLastContent: isLastContent,
+                onNext: handleNext,
               ),
               TeaMakingLessonContent() => KitchenPage(content: lessonContent),
               BallSlideLessonContent() => BallSlideView(

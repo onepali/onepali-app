@@ -22,22 +22,25 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
 
   void _onStarted(_Started event, Emitter<LetterTracingState> emit) async {
     Path? outlinePath;
+    final isMobile = event.isMobile;
     final content = event.content;
     final char = content.nameNp;
     final letters = await LetterService.loadLetters();
     final letter = letters.firstWhere((letter) => letter.letter == char);
-    final size = letter.getSize();
-    final letterPaths = letter.strokes
+    final size = letter.getSize(isMobile: isMobile);
+    final strokes = letter.strokesFor(isMobile: isMobile);
+    final letterPaths = strokes
         .map((stroke) => parseSvgPathData(stroke.path))
         .toList();
     final pathsPoints = letterPaths
         .map((path) => getPointsFromPath(path))
         .toList();
-    if (letter.outlinePath != null) {
-      outlinePath = parseSvgPathData(letter.outlinePath!);
+    final selectedOutlinePath = letter.outlinePathFor(isMobile: isMobile);
+    if (selectedOutlinePath != null) {
+      outlinePath = parseSvgPathData(selectedOutlinePath);
     }
-    final strokeWidth = letter.strokes.isNotEmpty
-        ? letter.strokes.first.strokeWidth ?? 20.0
+    final strokeWidth = strokes.isNotEmpty
+        ? strokes.first.strokeWidth ?? 20.0
         : 20.0;
 
     // Calculate bounding boxes for each stroke
@@ -48,7 +51,7 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
         strokeWidth: strokeWidth.toDouble(),
         letter: letter,
         letterSize: size,
-        numberOfStrokes: letter.strokes.length,
+        numberOfStrokes: strokes.length,
         outlinePath: outlinePath,
         pathsPoints: pathsPoints,
         letterPaths: letterPaths,
@@ -170,9 +173,31 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
       final completedPaths = List<Path>.from(state.completedPaths);
       completedPaths.add(state.letterPaths[state.currentStrokeIndex]);
       final nextIndex = state.currentStrokeIndex + 1;
-
-      // Check if all strokes are completed
       final isLetterComplete = nextIndex >= state.numberOfStrokes;
+      if (isLetterComplete) {
+        final repetitions = state.repetitions + 1;
+        final hasCompletedPractice = repetitions >= 3;
+
+        emit(
+          state.copyWith(
+            currentStrokeIndex: hasCompletedPractice ? nextIndex : 0,
+            userStrokes: [],
+            completedPaths: hasCompletedPractice ? completedPaths : [],
+            currentStrokeProgress: 0.0,
+            feedbackMessage: hasCompletedPractice
+                ? 'Great job! 👍'
+                : "Great job! Let's do it again.",
+            showPointer: !hasCompletedPractice,
+            pointerPosition:
+                !hasCompletedPractice && state.pathsPoints.isNotEmpty
+                ? state.pathsPoints.first.first
+                : null,
+            isLetterComplete: hasCompletedPractice,
+            repetitions: repetitions,
+          ),
+        );
+        return;
+      }
 
       emit(
         state.copyWith(
@@ -220,6 +245,7 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
             ? state.pathsPoints[0].first
             : null,
         isLetterComplete: false,
+        repetitions: 0,
       ),
     );
   }

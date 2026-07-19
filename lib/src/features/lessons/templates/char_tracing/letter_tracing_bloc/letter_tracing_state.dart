@@ -25,5 +25,6 @@ abstract class LetterTracingState with _$LetterTracingState {
     @Default(false) bool isLetterComplete,
     @Default(true) bool showGuideDots,
     @Default(false) bool showStrokeDirection,
+    @Default(0) int repetitions,
   }) = _LetterTracingState;
 }
