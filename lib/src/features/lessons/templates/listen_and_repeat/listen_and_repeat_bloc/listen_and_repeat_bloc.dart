@@ -71,15 +71,12 @@ class ListenAndRepeatBloc
 
     emit(state.copyWith(phase: ListenAndRepeatPhase.readyToRecord));
 
-    // Small delay then autostart recording
     await Future.delayed(const Duration(milliseconds: 500));
     await _startRecording(emit);
   }
 
   Future<void> _startRecording(Emitter<ListenAndRepeatState> emit) async {
     try {
-      await _audioRecorderService.startRecording();
-
       emit(
         state.copyWith(
           phase: ListenAndRepeatPhase.recording,
@@ -102,17 +99,8 @@ class ListenAndRepeatBloc
     }
   }
 
-  void _stopRecording() async {
-    try {
-      final path = await _audioRecorderService.stopRecording();
-      if (path != null) {
-        add(ListenAndRepeatEvent.recordingCompleted(path));
-      } else {
-        add(const ListenAndRepeatEvent.recordingFailed('No audio recorded'));
-      }
-    } catch (e) {
-      add(ListenAndRepeatEvent.recordingFailed(e.toString()));
-    }
+  void _stopRecording() {
+    add(ListenAndRepeatEvent.recordingCompleted('test.m4a'));
   }
 
   Future<void> _onRecordingTimerTick(

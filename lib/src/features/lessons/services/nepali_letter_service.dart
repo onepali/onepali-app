@@ -17,7 +17,7 @@ class LetterService {
 
     try {
       final String jsonString = await rootBundle.loadString(
-        'assets/nepali_letters.json',
+        'assets/json/nepali_letters.json',
       );
       final List<dynamic> jsonList = json.decode(jsonString);
       _cachedLetters = jsonList

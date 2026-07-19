@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/templates/listen_and_repeat/listen_and_repeat_bloc/listen_and_repeat_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -42,7 +43,6 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _entryController, curve: Curves.easeOut));
 
-    // Start audio playback automatically
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ListenAndRepeatBloc>().add(
         ListenAndRepeatEvent.started(widget.content),
@@ -60,12 +60,7 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.sizeOf(context);
-    return BlocConsumer<ListenAndRepeatBloc, ListenAndRepeatState>(
-      listener: (context, state) {
-        if (state.isRecorded && state.recordedAudioPath != null) {
-          //widget.onRecordingComplete?.call(state.recordedAudioPath!);
-        }
-      },
+    return BlocBuilder<ListenAndRepeatBloc, ListenAndRepeatState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -89,19 +84,18 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
                         ),
                         Spacer(),
                         _buildMicSection(),
-                        // Text(state.recordedAudioPath ?? ''),
-                        // FilledButton(
-                        //   onPressed: () async {},
-                        //   child: Text("Play Recorded Audio"),
-                        // ),
                         Gaps.verticalGapOf(size.height * 0.1),
                       ],
                     ),
 
-                    // ── Close button
                     TopRightPositionedCloseButton(
                       onTap: () => Navigator.of(context).pop(),
                     ),
+
+                    if (state.isRecorded)
+                      CenterRightAlignedForwardButton(
+                        onTap: widget.onCompleted,
+                      ),
 
                     Positioned(
                       top: isMobile ? 24 : 32,
