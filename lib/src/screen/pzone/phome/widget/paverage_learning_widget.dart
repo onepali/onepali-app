@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../src.dart';
@@ -6,12 +7,16 @@ class PAverageLearningWidget extends StatelessWidget {
   final int completedActivities;
   final double answerSuccessRate;
   final bool isMobilePortrait;
+  final String? parentUid;
+  final String? childUid;
 
   const PAverageLearningWidget({
     super.key,
     required this.completedActivities,
     required this.answerSuccessRate,
     required this.isMobilePortrait,
+    this.parentUid,
+    this.childUid,
   });
 
   @override
@@ -68,11 +73,11 @@ class PAverageLearningWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        '${(answerSuccessRate * 100).toInt()}',
-                        style: AppStyles.text40PxSemiBold.copyWith(
-                          fontSize: isMobilePortrait ? 40 : 72,
-                        ),
+                      _AnswerSuccessRateText(
+                        parentUid: parentUid,
+                        childUid: childUid,
+                        fallbackRate: answerSuccessRate,
+                        isMobilePortrait: isMobilePortrait,
                       ),
                       Gaps.horizontalGapOf(4),
                       Text(
@@ -97,6 +102,58 @@ class PAverageLearningWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AnswerSuccessRateText extends StatelessWidget {
+  const _AnswerSuccessRateText({
+    required this.parentUid,
+    required this.childUid,
+    required this.fallbackRate,
+    required this.isMobilePortrait,
+  });
+
+  final String? parentUid;
+  final String? childUid;
+  final double fallbackRate;
+  final bool isMobilePortrait;
+
+  @override
+  Widget build(BuildContext context) {
+    if (parentUid == null || childUid == null) {
+      return _buildText(fallbackRate);
+    }
+
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(parentUid)
+          .collection(AppConstants.childrenCollection)
+          .doc(childUid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final data = snapshot.data?.data();
+        final rightAnswers = (data?['right_answers_count'] as num?) ?? 0;
+        final wrongAnswers = (data?['wrong_answers_count'] as num?) ?? 0;
+        final totalAnswers = rightAnswers + wrongAnswers;
+        final rate = data == null
+            ? fallbackRate
+            : totalAnswers > 0
+            ? rightAnswers / totalAnswers
+            : 0.0;
+
+        return _buildText(rate);
+      },
+    );
+  }
+
+  Widget _buildText(double rate) {
+    return Text(
+      (rate * 100).toStringAsFixed(0),
+      style: AppStyles.text40PxSemiBold.copyWith(
+        fontSize: isMobilePortrait ? 40 : 72,
       ),
     );
   }

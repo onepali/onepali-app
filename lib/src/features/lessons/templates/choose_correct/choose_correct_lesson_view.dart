@@ -104,6 +104,18 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                                         index: content.items.indexOf(item),
                                         isSelected: item == state.selectedItem,
                                         onTap: () {
+                                          if (state.isCorrect) return;
+                                          final isCorrect =
+                                              item.nameEn ==
+                                                  state
+                                                      .currentQuestion
+                                                      ?.nameEn &&
+                                              item.nameNp ==
+                                                  state.currentQuestion?.nameNp;
+                                          MetricsTrackingHelper.trackAnswerAttempt(
+                                            context: context,
+                                            isCorrect: isCorrect,
+                                          );
                                           context
                                               .read<
                                                 ChooseCorrectLessonContentBloc

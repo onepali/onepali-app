@@ -181,7 +181,12 @@ class TopItems extends StatelessWidget {
     final isMobile = PlatformUtility.isMobile(context);
     return DragTarget(
       onAcceptWithDetails: (details) {
-        if (details.data == labelNp) {
+        final isCorrect = details.data == labelNp;
+        MetricsTrackingHelper.trackAnswerAttempt(
+          context: context,
+          isCorrect: isCorrect,
+        );
+        if (isCorrect) {
           context.read<MatchBloc>().add(MatchEvent.onAccept(labelNp));
         }
       },

@@ -272,6 +272,13 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                     isWrong: isTapped && !state.isCorrect,
                     showHintPulse: showHintPulse,
                     onTap: () async {
+                      final isCorrect =
+                          item.nameEn == state.currentQuestion?.nameEn &&
+                          item.nameNp == state.currentQuestion?.nameNp;
+                      MetricsTrackingHelper.trackAnswerAttempt(
+                        context: context,
+                        isCorrect: isCorrect,
+                      );
                       context.read<TapToRevealLessonContentBloc>().add(
                         TapToRevealLessonContentEvent.itemTapped(item),
                       );
