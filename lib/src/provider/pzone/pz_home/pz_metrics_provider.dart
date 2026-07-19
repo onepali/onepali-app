@@ -64,6 +64,27 @@ class PzMetricsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<Set<String>> fetchCompletedContentIds({
+    required String parentUid,
+    required String childUid,
+    required ActivityType activityType,
+  }) async {
+    try {
+      final completedContents = await _loadCompletedContents(
+        parentUid: parentUid,
+        childUid: childUid,
+      );
+      return completedContents
+          .where((content) => content.contentType == activityType.name)
+          .map((content) => content.contentId)
+          .where((contentId) => contentId.isNotEmpty)
+          .toSet();
+    } catch (e) {
+      logger.e('Error fetching completed content ids: $e');
+      return <String>{};
+    }
+  }
+
   Future<void> fetchMetrics({
     required String parentUid,
     required String childUid,

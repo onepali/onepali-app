@@ -6,6 +6,7 @@ import 'package:onepali/src/core/constants/app_constants.dart';
 import 'package:onepali/src/core/model/pzone/pz_home/pz_home_metrics_model.dart';
 import 'package:onepali/src/core/services/child_local_storage.dart';
 import 'package:onepali/src/core/services/shared_pref_service.dart';
+import 'package:onepali/src/core/utils/guest_util.dart';
 import 'package:onepali/src/core/utils/metrics_tracking_helper.dart';
 import 'package:onepali/src/provider/lesson/lesson_provider.dart';
 import 'package:onepali/src/provider/pzone/pz_home/pz_metrics_provider.dart';
@@ -330,7 +331,7 @@ void main() {
       );
       await MetricsTrackingHelper.trackStoryCompletion(
         context: context,
-        storyId: 'story-1',
+        storyId: 'Ant and the Bird',
         storyTitle: 'Story One',
       );
 
@@ -346,7 +347,7 @@ void main() {
       expect(completionData.keys, {
         'lesson_lesson-1',
         'song_song-1',
-        'story_story-1',
+        'story_Ant and the Bird',
       });
       expect(completionData['lesson_lesson-1']?['content_type'], 'lesson');
       expect(
@@ -355,9 +356,90 @@ void main() {
       );
       expect(completionData['song_song-1']?['content_type'], 'song');
       expect(completionData['song_song-1']?['content_name'], 'Song One');
-      expect(completionData['story_story-1']?['content_type'], 'story');
-      expect(completionData['story_story-1']?['content_name'], 'Story One');
+      expect(
+        completionData['story_Ant and the Bird']?['content_type'],
+        'story',
+      );
+      expect(
+        completionData['story_Ant and the Bird']?['content_name'],
+        'Story One',
+      );
       expect(provider.metrics?.completedActivities, 3);
+    });
+
+    testWidgets('helper skips metrics and completed state for guest users', (
+      tester,
+    ) async {
+      BuildContext? testContext;
+      SharedPreferences.setMockInitialValues({});
+      await SharedPreferencesService.init();
+      await ChildLocalStorage.saveCurrentChildId(childUid);
+      await GuestUtil.setGuestUser(true);
+      addTearDown(() async {
+        await GuestUtil.setGuestUser(false);
+      });
+
+      await _childDoc(firestore, parentUid, childUid)
+          .collection(AppConstants.completedContentCollection)
+          .doc('lesson_lesson-1')
+          .set({
+            'id': 'lesson_lesson-1',
+            'parent_id': parentUid,
+            'child_id': childUid,
+            'content_id': 'lesson-1',
+            'content_name': 'Find Na',
+            'content_type': ActivityType.lesson.name,
+            'created_at': '2026-01-01T00:00:00.000',
+            'updated_at': '2026-01-01T00:00:00.000',
+            'completed_count': 5,
+          });
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<UserProvider>.value(
+              value: _MockUserProvider(parentUid),
+            ),
+            ChangeNotifierProvider<PzMetricsProvider>.value(value: provider),
+          ],
+          child: MaterialApp(
+            home: Builder(
+              builder: (context) {
+                testContext = context;
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+      );
+
+      final context = testContext!;
+      final completedLessonIds =
+          await MetricsTrackingHelper.fetchCompletedContentIds(
+            context: context,
+            activityType: ActivityType.lesson,
+          );
+      await MetricsTrackingHelper.trackLessonCompletion(
+        context: context,
+        lessonId: 'lesson-2',
+        topicName: 'Trace Na',
+      );
+      await MetricsTrackingHelper.trackAnswerAttempt(
+        context: context,
+        isCorrect: true,
+      );
+
+      final completions = await _childDoc(
+        firestore,
+        parentUid,
+        childUid,
+      ).collection(AppConstants.completedContentCollection).get();
+      final childDoc = await _childDoc(firestore, parentUid, childUid).get();
+
+      expect(completedLessonIds, isEmpty);
+      expect(completions.docs.map((doc) => doc.id), ['lesson_lesson-1']);
+      expect(childDoc.data()?['right_answers_count'], isNull);
+      expect(childDoc.data()?['wrong_answers_count'], isNull);
     });
   });
 }

@@ -5,7 +5,7 @@ import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/content_card.dart';
 import 'package:onepali/src/src.dart';
 
-class NewSongsScreen extends StatelessWidget {
+class NewSongsScreen extends StatefulWidget {
   final String categoryId;
   final String title;
   const NewSongsScreen({
@@ -13,6 +13,31 @@ class NewSongsScreen extends StatelessWidget {
     required this.categoryId,
     required this.title,
   });
+
+  @override
+  State<NewSongsScreen> createState() => _NewSongsScreenState();
+}
+
+class _NewSongsScreenState extends State<NewSongsScreen> {
+  Set<String> _completedSongIds = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    Misc.onLayoutRendered(_loadCompletedSongIds);
+  }
+
+  Future<void> _loadCompletedSongIds() async {
+    final completedSongIds =
+        await MetricsTrackingHelper.fetchCompletedContentIds(
+          context: context,
+          activityType: ActivityType.song,
+        );
+    if (!mounted) return;
+    setState(() {
+      _completedSongIds = completedSongIds;
+    });
+  }
 
   Widget _buildTitleText(BuildContext context, String text) {
     return Text(
@@ -51,7 +76,7 @@ class NewSongsScreen extends StatelessWidget {
                             : closeBtnPositionTablet) +
                         56,
                   ),
-                  child: Center(child: _buildTitleText(context, title)),
+                  child: Center(child: _buildTitleText(context, widget.title)),
                 ),
               ),
               Row(
@@ -84,7 +109,7 @@ class NewSongsScreen extends StatelessWidget {
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('songs')
-                  .where('category_id', isEqualTo: categoryId)
+                  .where('category_id', isEqualTo: widget.categoryId)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -104,32 +129,35 @@ class NewSongsScreen extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final data = snapshot.data!.docs;
+                      final songDoc = data[index];
                       return ContentCard(
                         showPlay: true,
-                        nameEn: data[index]['title_en'],
+                        isCompleted: _completedSongIds.contains(songDoc.id),
+                        nameEn: songDoc['title_en'],
                         nameNp: 'nameNp',
-                        onTap: () {
-                          Navigator.of(context).push(
+                        onTap: () async {
+                          await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => SongVideoPlayerScreen(
-                                youtubeUrl:
-                                    data[index]['media']['youtube_link'],
-                                title: data[index]['title_en'],
+                                youtubeUrl: songDoc['media']['youtube_link'],
+                                title: songDoc['title_en'],
                                 subtitle: '',
                                 isLocked: false,
                                 info: '',
-                                songId: data[index].id,
+                                songId: songDoc.id,
                                 initialPosition: 0.0,
                                 image: Utility.generateYoutubeThumbnailUrl(
-                                  data[index]['media']['youtube_link'],
+                                  songDoc['media']['youtube_link'],
                                 ),
                               ),
                             ),
                           );
+                          if (!context.mounted) return;
+                          await _loadCompletedSongIds();
                         },
                         image: null,
                         bgImage: Utility.generateYoutubeThumbnailUrl(
-                          data[index]['media']['youtube_link'],
+                          songDoc['media']['youtube_link'],
                         ),
                       );
                     },

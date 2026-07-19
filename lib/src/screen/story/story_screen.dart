@@ -12,6 +12,8 @@ class StoryScreen extends StatefulWidget {
 }
 
 class _StoryScreenState extends State<StoryScreen> {
+  Set<String> _completedStoryIds = <String>{};
+
   bool _isSvgImage(String imageUrl) {
     return Uri.tryParse(imageUrl)?.path.toLowerCase().endsWith('.svg') ??
         imageUrl.toLowerCase().endsWith('.svg');
@@ -20,6 +22,19 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   void initState() {
     super.initState();
+    Misc.onLayoutRendered(_loadCompletedStoryIds);
+  }
+
+  Future<void> _loadCompletedStoryIds() async {
+    final completedStoryIds =
+        await MetricsTrackingHelper.fetchCompletedContentIds(
+          context: context,
+          activityType: ActivityType.story,
+        );
+    if (!mounted) return;
+    setState(() {
+      _completedStoryIds = completedStoryIds;
+    });
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> _getStoriesStream(
@@ -108,6 +123,8 @@ class _StoryScreenState extends State<StoryScreen> {
                                               storyData,
                                             );
                                             return ContentCard(
+                                              isCompleted: _completedStoryIds
+                                                  .contains(story.nameEn),
                                               nameEn: story.nameEn,
                                               nameNp: story.nameNp,
                                               image: story.thumbnail,
@@ -127,7 +144,12 @@ class _StoryScreenState extends State<StoryScreen> {
                                                     story: story,
                                                     isFromRecommended: false,
                                                   ),
-                                                );
+                                                ).then((_) {
+                                                  if (!context.mounted) {
+                                                    return;
+                                                  }
+                                                  _loadCompletedStoryIds();
+                                                });
                                               },
                                             );
                                           },

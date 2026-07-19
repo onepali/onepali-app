@@ -26,9 +26,8 @@ class StoryRepo {
           .get();
       final List<StoryModel> stories = [];
       for (final doc in querySnapshot.docs) {
-        final data = doc.data();
         try {
-          stories.add(StoryModel.fromJson(data));
+          stories.add(StoryModel.fromJson(doc.data()));
         } catch (e, s) {
           logger.d('error ---> $e $s');
         }
