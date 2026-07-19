@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 import '../../src.dart';
+import 'auth_navigation_helper.dart';
 
 class GoogleAuthProvider with ChangeNotifier {
   DataFetchStatus _status = DataFetchStatus.initial;
@@ -141,7 +142,7 @@ class GoogleAuthProvider with ChangeNotifier {
       notifyListeners();
 
       if (isLogin) {
-        Utility.navigate(context, AppRoutes.dashboardScreen);
+        await onNavigate(context, firebaseUser.uid);
         showCustomToaster('Login Successful');
       } else {
         Utility.navigate(context, AppRoutes.onboardingScreen);
@@ -190,8 +191,8 @@ class GoogleAuthProvider with ChangeNotifier {
     }
   }
 
-  void onNavigate(BuildContext context) {
-    Utility.navigate(context, AppRoutes.dashboardScreen);
+  Future<void> onNavigate(BuildContext context, String userId) {
+    return navigateAfterParentLogin(context, userId);
   }
 
   Future<GoogleSignInAccount?> _signInWithGoogle(BuildContext context) async {
