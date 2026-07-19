@@ -18,9 +18,9 @@ class NewSongsScreen extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-        fontFamily: GoogleFonts.luckiestGuy().fontFamily,
+        fontFamily: GoogleFonts.poppins().fontFamily,
         fontSize: 36,
-        letterSpacing: 2,
+        letterSpacing: 1,
         fontWeight: FontWeight.bold,
         color: AppColors.kDrawerBgColor,
       ),
@@ -94,8 +94,8 @@ class NewSongsScreen extends StatelessWidget {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: 3 / 2.0,
-                      mainAxisSpacing: 16.0,
-                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 24.0,
+                      crossAxisSpacing: 24.0,
                     ),
                     padding: const EdgeInsets.only(
                       right: 24,

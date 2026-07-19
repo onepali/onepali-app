@@ -38,6 +38,10 @@ class _StoryScreenState extends State<StoryScreen> {
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
     return SafeArea(
+      right: true,
+      bottom: false,
+      top: false,
+      left: true,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('story_levels')
@@ -49,7 +53,7 @@ class _StoryScreenState extends State<StoryScreen> {
 
             return ListView.builder(
               itemCount: data.length,
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.only(left: 24, right: 24),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
@@ -65,56 +69,84 @@ class _StoryScreenState extends State<StoryScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    SizedBox(
-                      height: isMobile
-                          ? MediaQuery.of(context).size.height * 0.45
-                          : MediaQuery.of(context).size.height * 0.3,
-                      child: StreamBuilder(
-                        stream: _getStoriesStream(data[index]['id']),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final stories = snapshot.data!.docs
-                                .where(
-                                  (story) =>
-                                      kDebugMode ||
-                                      story.data()['active'] != false,
-                                )
-                                .toList();
-                            return ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: stories.length,
-                              separatorBuilder: (_, _) =>
-                                  Gaps.horizontalGapOf(16),
-                              itemBuilder: (context, storyIndex) {
-                                final storyDoc = stories[storyIndex];
-                                final storyData = storyDoc.data();
-                                final story = StoryModel.fromJson(storyData);
-                                return ContentCard(
-                                  nameEn: story.nameEn,
-                                  nameNp: story.nameNp,
-                                  image: story.thumbnail,
-                                  bgImage: storyData['bg_image'] as String?,
-                                  isImageSvg: _isSvgImage(story.thumbnail),
-                                  bgColor: storyData['bg_color'] as String?,
-                                  onTap: () {
-                                    Utility.navigateMaterialRoute(
-                                      context,
-                                      StoryContentScreen(
-                                        story: story,
-                                        isFromRecommended: false,
+                    SizedBox(height: 24),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final baseCardWidth = AppConstants.contentCardGridWidth(
+                          constraints.maxWidth,
+                          isMobile: isMobile,
+                        );
+                        final cardWidth =
+                            baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardHeight =
+                            baseCardWidth /
+                            AppConstants.contentCardAspectRatio *
+                            (isMobile ? 1.05 : 1.0);
+                        return StreamBuilder(
+                          stream: _getStoriesStream(data[index]['id']),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final stories = snapshot.data!.docs
+                                  .where(
+                                    (story) =>
+                                        kDebugMode ||
+                                        story.data()['active'] != false,
+                                  )
+                                  .toList();
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    for (final storyDoc in stories) ...[
+                                      SizedBox(
+                                        width: cardWidth,
+                                        height: cardHeight,
+                                        child: Builder(
+                                          builder: (context) {
+                                            final storyData = storyDoc.data();
+                                            final story = StoryModel.fromJson(
+                                              storyData,
+                                            );
+                                            return ContentCard(
+                                              nameEn: story.nameEn,
+                                              nameNp: story.nameNp,
+                                              image: story.thumbnail,
+                                              bgImage:
+                                                  storyData['bg_image']
+                                                      as String?,
+                                              isImageSvg: _isSvgImage(
+                                                story.thumbnail,
+                                              ),
+                                              bgColor:
+                                                  storyData['bg_color']
+                                                      as String?,
+                                              onTap: () {
+                                                Utility.navigateMaterialRoute(
+                                                  context,
+                                                  StoryContentScreen(
+                                                    story: story,
+                                                    isFromRecommended: false,
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          }
-                          return const CircularProgressIndicator();
-                        },
-                      ),
+                                      Gaps.horizontalGapOf(
+                                        AppConstants.contentCardGridSpacing,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        );
+                      },
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 24),
                   ],
                 );
               },
