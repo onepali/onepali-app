@@ -20,7 +20,7 @@ class StoryContentScreen extends StatefulWidget {
 
 class _StoryContentScreenState extends State<StoryContentScreen> {
   StoryProvider? _storyProvider;
-  CustomAudioWidget? _storyAudio;
+  bool _storyIntroAudioStarted = false;
 
   @override
   void initState() {
@@ -67,42 +67,31 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   }
 
   void _playStoryAudio() async {
-    if (widget.story.audio.isEmpty) return;
+    if (_storyIntroAudioStarted || widget.story.audio.isEmpty) return;
+    _storyIntroAudioStarted = true;
 
     try {
-      // If there are multiple audio files, play the first one
-      final audioUrl = widget.story.audio.isNotEmpty
-          ? widget.story.audio.first
-          : '';
-      if (audioUrl.isEmpty) return;
-
-      _storyAudio = CustomAudioWidget(
-        audioPath: audioUrl,
-        audioSourceType: AudioSourceType.network,
-      );
-      await _storyAudio!.play();
-      logger.d('Playing story audio: $audioUrl');
+      if (!mounted) {
+        _storyIntroAudioStarted = false;
+        return;
+      }
+      final storyProvider = _storyProvider ?? context.read<StoryProvider>();
+      await storyProvider.playAudio(widget.story.audio);
+      logger.d('Playing story audio: ${widget.story.audio}');
     } catch (e) {
+      _storyIntroAudioStarted = false;
       logger.e('Error playing story audio: $e');
     }
   }
 
-  void _disposeStoryAudio() async {
-    try {
-      if (_storyAudio != null) {
-        await _storyAudio!.dispose();
-        _storyAudio = null;
-        logger.d('Story audio disposed');
-      }
-    } catch (e) {
-      logger.e('Error disposing story audio: $e');
-    }
+  void _disposeStoryAudio([StoryProvider? provider]) {
+    _storyIntroAudioStarted = false;
+    (provider ?? _storyProvider)?.stopAudioAndResetIndex();
   }
 
   @override
   void dispose() {
     try {
-      _storyProvider?.stopAudioAndResetIndex();
       _disposeStoryAudio();
     } catch (e) {
       logger.e('Error stopping audio in dispose: $e');
@@ -157,14 +146,13 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
     return [
       TopRightPositionedCloseButton(
         onTap: () {
-          _disposeStoryAudio();
-          provider.stopAudioAndResetIndex();
+          _disposeStoryAudio(provider);
           Navigator.of(context).pop();
         },
       ),
       CenterRightAlignedForwardButton(
         onTap: () {
-          _disposeStoryAudio();
+          _disposeStoryAudio(provider);
           provider.nextContent(context);
         },
       ),
