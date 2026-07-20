@@ -1,6 +1,7 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +10,11 @@ class StoryProvider extends ChangeNotifier {
   DataFetchStatus get status => _status;
 
   final StoryRepo _repo;
+  final AudioPlayerService _audioPlayerService;
 
-  StoryProvider({StoryRepo? repo}) : _repo = repo ?? StoryRepo();
+  StoryProvider({StoryRepo? repo, AudioPlayerService? audioPlayerService})
+    : _repo = repo ?? StoryRepo(),
+      _audioPlayerService = audioPlayerService ?? AudioPlayerServiceImpl();
 
   final List<StoryModel> _stories = [];
   List<StoryModel> get stories => _stories;
@@ -30,7 +34,8 @@ class StoryProvider extends ChangeNotifier {
   int _currentAudioIndex = 0;
   int get currentAudioIndex => _currentAudioIndex;
 
-  AudioPlayer? _audioPlayerInstance;
+  int _audioPlaybackGeneration = 0;
+  Completer<void>? _audioCancelCompleter;
 
   bool _storyFinished = false;
   bool get isStoryFinished => _storyFinished;
@@ -59,6 +64,7 @@ class StoryProvider extends ChangeNotifier {
   }
 
   void setCurrentStory(StoryModel story, {int? progress}) {
+    unawaited(stopAudioAndResetIndex());
     _currentStory = story;
     // Resume from progress if provided and valid
     // If progress equals content.length, story is completed - restart from beginning
@@ -74,9 +80,11 @@ class StoryProvider extends ChangeNotifier {
   }
 
   void nextContent(BuildContext context) async {
+    if (_currentStory == null) return;
+    await stopAudioAndResetIndex();
+    if (!context.mounted) return;
     _isAudioCompleted = false;
     notifyListeners();
-    if (_currentStory == null) return;
     if (_currentContentIndex < _currentStory!.content.length) {
       _currentContentIndex++;
       notifyListeners();
@@ -144,6 +152,7 @@ class StoryProvider extends ChangeNotifier {
   void previousContent() async {
     if (_currentStory == null) return;
     if (_currentContentIndex > 0) {
+      await stopAudioAndResetIndex();
       _currentContentIndex--;
       notifyListeners();
       // Play audio for the new content after navigation
@@ -156,145 +165,126 @@ class StoryProvider extends ChangeNotifier {
   }
 
   Future<void> _playAudioCached(dynamic url) async {
-    if (url == null) return;
-
-    _isAudioCompleted = false;
-    notifyListeners();
-
-    await stopAudioAndResetIndex();
-
-    if (url is String) {
-      if (url.isEmpty) return;
-      String sourcePath = url;
-      AudioSourceType sourceType = AudioSourceType.network;
-      try {
-        final file = await DefaultCacheManager().getSingleFile(url);
-        if (file.existsSync()) {
-          sourcePath = file.path;
-          sourceType = AudioSourceType.asset;
-        }
-      } catch (_) {}
-      await playAudio(sourcePath, audioSourceType: sourceType);
-    } else if (url is List) {
-      _isPlaying = true;
-      notifyListeners();
-
-      try {
-        for (int i = 0; i < url.length; i++) {
-          final u = url[i];
-          if (u is String && u.isNotEmpty) {
-            _currentAudioIndex = i;
-            notifyListeners();
-
-            String sourcePath = u;
-            AudioSourceType sourceType = AudioSourceType.network;
-            try {
-              final file = await DefaultCacheManager().getSingleFile(u);
-              if (file.existsSync()) {
-                sourcePath = file.path;
-                sourceType = AudioSourceType.asset;
-              }
-            } catch (_) {}
-
-            // Play audio directly without calling playAudio() to avoid resetting index
-            logger.d('[StoryProvider] Playing audio from list: $u (index: $i)');
-            final audioWidget = CustomAudioWidget(
-              audioPath: sourcePath,
-              audioSourceType: sourceType,
-            );
-            _audioPlayerInstance = audioWidget.audioPlayer;
-            await audioWidget.play();
-            await audioWidget.audioPlayer.onPlayerComplete.first;
-          }
-        }
-      } catch (e) {
-        logger.e('Audio play error in _playAudioCached: $e');
-      }
-
-      _isPlaying = false;
-      _isAudioCompleted = true;
-      notifyListeners();
-    }
+    await playAudio(url);
   }
 
   Future<void> stopAudio() async {
-    if (_audioPlayerInstance != null) {
-      await _audioPlayerInstance!.stop();
-      await _audioPlayerInstance!.dispose();
-      _audioPlayerInstance = null;
-      _isPlaying = false;
-      _isAudioCompleted = false;
-      // Don't reset _currentAudioIndex here - it should persist after audio completes
-      notifyListeners();
-    }
+    await _stopAudio(resetIndex: false, invalidatePlayback: true);
   }
 
   Future<void> stopAudioAndResetIndex() async {
-    if (_audioPlayerInstance != null) {
-      await _audioPlayerInstance!.stop();
-      await _audioPlayerInstance!.dispose();
-      _audioPlayerInstance = null;
-      _isPlaying = false;
-      _currentAudioIndex = 0; // Reset index when manually stopping
-      _isAudioCompleted = false;
-      notifyListeners();
-    }
+    await _stopAudio(resetIndex: true, invalidatePlayback: true);
   }
 
-  Future<void> playAudio(
-    dynamic url, {
-    AudioSourceType audioSourceType = AudioSourceType.network,
-  }) async {
+  Future<void> playAudio(dynamic url) async {
     logger.d(
       '[StoryProvider] playAudio called with url: $url, isPlaying: $_isPlaying',
     );
-    _isAudioCompleted = false;
-    notifyListeners();
-    // Stop any currently playing audio before starting new and reset index
-    await stopAudioAndResetIndex();
+    final generation = _startAudioPlayback(resetIndex: true);
+    await _audioPlayerService.stop();
+    if (!_isCurrentAudioPlayback(generation)) return;
     if (url == null ||
         (url is String && url.isEmpty) ||
         (url is List && url.isEmpty)) {
       logger.d('[StoryProvider] playAudio: Not playing (url empty/null)');
       return;
     }
+    if (url is List) {
+      final sources = <String>[];
+      for (final u in url) {
+        if (u is String && u.isNotEmpty) {
+          sources.add(u);
+        }
+      }
+      await _playAudioSources(sources, generation);
+    } else if (url is String && url.isNotEmpty) {
+      await _playAudioSources([url], generation);
+    }
+  }
+
+  int _startAudioPlayback({required bool resetIndex}) {
+    _cancelPendingAudioPlayback();
+    _isPlaying = false;
+    _isAudioCompleted = false;
+    if (resetIndex) {
+      _currentAudioIndex = 0;
+    }
+    notifyListeners();
+    return _audioPlaybackGeneration;
+  }
+
+  void _cancelPendingAudioPlayback() {
+    _audioPlaybackGeneration++;
+    final audioCancelCompleter = _audioCancelCompleter;
+    if (audioCancelCompleter != null && !audioCancelCompleter.isCompleted) {
+      audioCancelCompleter.complete();
+    }
+    _audioCancelCompleter = Completer<void>();
+  }
+
+  bool _isCurrentAudioPlayback(int generation) {
+    return generation == _audioPlaybackGeneration;
+  }
+
+  Future<void> _stopAudio({
+    required bool resetIndex,
+    required bool invalidatePlayback,
+  }) async {
+    if (invalidatePlayback) {
+      _cancelPendingAudioPlayback();
+    }
+    await _audioPlayerService.stop();
+    _isPlaying = false;
+    if (resetIndex) {
+      _currentAudioIndex = 0;
+    }
+    _isAudioCompleted = false;
+    notifyListeners();
+  }
+
+  Future<void> _playAudioSources(List<String> sources, int generation) async {
+    if (sources.isEmpty || !_isCurrentAudioPlayback(generation)) return;
     _isPlaying = true;
     notifyListeners();
-    try {
-      if (url is List) {
-        for (int i = 0; i < url.length; i++) {
-          final u = url[i];
-          if (u is String && u.isNotEmpty) {
-            _currentAudioIndex = i;
-            notifyListeners();
 
-            logger.d('[StoryProvider] Playing audio from list: $u (index: $i)');
-            final audioWidget = CustomAudioWidget(
-              audioPath: u,
-              audioSourceType: audioSourceType,
-            );
-            _audioPlayerInstance = audioWidget.audioPlayer;
-            await audioWidget.play();
-            await audioWidget.audioPlayer.onPlayerComplete.first;
-          }
-        }
-      } else if (url is String && url.isNotEmpty) {
-        logger.d('[StoryProvider] Playing audio from string: $url');
-        final audioWidget = CustomAudioWidget(
-          audioPath: url,
-          audioSourceType: audioSourceType,
+    try {
+      for (var i = 0; i < sources.length; i++) {
+        if (!_isCurrentAudioPlayback(generation)) return;
+        _currentAudioIndex = i;
+        notifyListeners();
+
+        logger.d(
+          '[StoryProvider] Playing audio from source: ${sources[i]} (index: $i)',
         );
-        _audioPlayerInstance = audioWidget.audioPlayer;
-        await audioWidget.play();
-        await audioWidget.audioPlayer.onPlayerComplete.first;
+        final completed = await _playSingleAudioSource(sources[i], generation);
+        if (!completed) return;
       }
     } catch (e) {
-      logger.e('Audio play error: $e');
+      if (_isCurrentAudioPlayback(generation)) {
+        logger.e('Audio play error: $e');
+      }
     }
-    _isPlaying = false;
-    _isAudioCompleted = true;
-    notifyListeners();
-    logger.d('[StoryProvider] playAudio finished, isPlaying: $_isPlaying');
+
+    if (_isCurrentAudioPlayback(generation)) {
+      _isPlaying = false;
+      _isAudioCompleted = true;
+      notifyListeners();
+      logger.d('[StoryProvider] playAudio finished, isPlaying: $_isPlaying');
+    }
+  }
+
+  Future<bool> _playSingleAudioSource(String source, int generation) async {
+    if (!_isCurrentAudioPlayback(generation)) return false;
+    final playerComplete = _audioPlayerService.onPlayerComplete.first;
+    final audioCancel = _audioCancelCompleter?.future;
+
+    await _audioPlayerService.play(source);
+    if (audioCancel == null) {
+      await playerComplete;
+    } else {
+      await Future.any([playerComplete, audioCancel]);
+    }
+    return _isCurrentAudioPlayback(generation);
   }
 
   Future<void> fetchRecommendedStoriesForActiveChild(
@@ -373,6 +363,7 @@ class StoryProvider extends ChangeNotifier {
   }
 
   void resetStoryProvider() {
+    unawaited(stopAudioAndResetIndex());
     _currentStory = null;
     _currentContentIndex = 0;
     _currentAudioIndex = 0;
@@ -380,5 +371,12 @@ class StoryProvider extends ChangeNotifier {
     _isPlaying = false;
     _storyFinished = false;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _cancelPendingAudioPlayback();
+    unawaited(_audioPlayerService.dispose());
+    super.dispose();
   }
 }

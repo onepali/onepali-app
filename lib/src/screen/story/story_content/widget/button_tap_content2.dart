@@ -242,7 +242,12 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
             ),
           ),
         ),
-        TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
+        TopRightPositionedCloseButton(
+          onTap: () {
+            storyProvider.stopAudioAndResetIndex();
+            Navigator.pop(context);
+          },
+        ),
         if (isCorrect == true && widget.content.confetti.isNotEmpty)
           LottieHelper.fromSource(
             path: widget.content.confetti,
