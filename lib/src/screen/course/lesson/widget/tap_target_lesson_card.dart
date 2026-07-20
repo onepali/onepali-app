@@ -57,6 +57,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
   // Preloaded audio widgets for faster playback
   final Map<String, CustomAudioWidget> _preloadedTargetAudios = {};
+  int _lifecycleGeneration = 0;
+  bool _isDisposing = false;
 
   @override
   void initState() {
@@ -81,9 +83,16 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     _logLessonContentDetails();
 
     // Start the lesson by playing the question audio
+    final generation = _lifecycleGeneration;
     Misc.onLayoutRendered(() {
-      _playQuestionAudio();
+      if (_isCurrentLifecycle(generation)) {
+        _playQuestionAudio(generation);
+      }
     });
+  }
+
+  bool _isCurrentLifecycle(int generation) {
+    return mounted && !_isDisposing && _lifecycleGeneration == generation;
   }
 
   void _logLessonContentDetails() {
@@ -139,6 +148,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.index != widget.index) {
+      _lifecycleGeneration++;
       // Dispose audio before resetting state for new content
       _disposeAudioWidgets();
 
@@ -147,8 +157,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       // Preload audios for new content
       _preloadAllAudios();
 
+      final generation = _lifecycleGeneration;
       Misc.onLayoutRendered(() {
-        _playQuestionAudio();
+        if (_isCurrentLifecycle(generation)) {
+          _playQuestionAudio(generation);
+        }
       });
     }
   }
@@ -168,7 +181,10 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     _disposeAudioWidgets();
   }
 
-  void _playQuestionAudio() async {
+  void _playQuestionAudio([int? activeGeneration]) async {
+    final generation = activeGeneration ?? _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     // Show question text when audio plays
     setState(() {
       showQuestionText = true;
@@ -183,10 +199,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
         logger.e('Error playing question audio: $e');
       }
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Hide question text after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
+      if (_isCurrentLifecycle(generation)) {
         setState(() {
           showQuestionText = false;
         });
@@ -196,6 +213,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
   void _onTargetTap(TapTarget target) async {
     if (showCorrectFeedback || showIncorrectFeedback) return;
+    final generation = _lifecycleGeneration;
 
     setState(() {
       selectedTargetId = target.id;
@@ -228,6 +246,7 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     } catch (e) {
       logger.e('Error playing target audio: $e');
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Check if this is the correct answer
     final isCorrect = target.id == widget.content.correctAnswerId;
@@ -240,6 +259,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   }
 
   void _handleCorrectAnswer(TapTarget target) async {
+    final generation = _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     setState(() {
       showCorrectFeedback = true;
       feedbackText = target.nameNp; // Show Nepali name on top
@@ -262,10 +284,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     } catch (e) {
       logger.e('Error playing correct feedback audio: $e');
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Wait for feedback animation and proceed
     Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
+      if (_isCurrentLifecycle(generation)) {
         if (widget.isLastItem) {
           // For last item, dispose audio and call lesson complete
           _disposeAudioWidgets();
@@ -305,6 +328,9 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
   }
 
   void _handleIncorrectAnswer() async {
+    final generation = _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     wrongAttempts++;
 
     setState(() {
@@ -324,10 +350,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
     } catch (e) {
       logger.e('Error playing incorrect feedback audio: $e');
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Hide incorrect feedback after 1.5 seconds
     Future.delayed(const Duration(milliseconds: 1500), () {
-      if (mounted) {
+      if (_isCurrentLifecycle(generation)) {
         setState(() {
           showIncorrectFeedback = false;
           selectedTargetId = null;
@@ -345,11 +372,11 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
       _hintController.repeat(reverse: true);
 
       Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          _playQuestionAudio(); // Replay the question
+        if (_isCurrentLifecycle(generation)) {
+          _playQuestionAudio(generation); // Replay the question
           // Stop hint animation after 3 seconds
           Future.delayed(const Duration(seconds: 3), () {
-            if (mounted) {
+            if (_isCurrentLifecycle(generation)) {
               setState(() {
                 showHintAnimation = false;
               });
@@ -427,6 +454,8 @@ class _TapTargetLessonCardState extends State<TapTargetLessonCard>
 
   @override
   void dispose() {
+    _isDisposing = true;
+    _lifecycleGeneration++;
     _feedbackController.dispose();
     _textController.dispose();
     _hintController.dispose();

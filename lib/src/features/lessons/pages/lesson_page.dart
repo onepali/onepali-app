@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
+import 'package:onepali/src/core/widget/custom_audio_widget.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/templates/ball_slide/ball_slide_view.dart';
@@ -43,157 +46,192 @@ class LessonPage extends StatefulWidget {
 }
 
 class _LessonPageState extends State<LessonPage> {
+  int? _lastContentIndex;
+  LessonDetail? _lastCachedLessonDetails;
+
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
+  Future<void> _stopActiveLessonAudio() async {
+    await Future.wait([
+      AudioPlayerServiceImpl.stopAll(),
+      CustomAudioWidget.stopAll(),
+    ], eagerError: false);
+  }
+
+  @override
+  void dispose() {
+    unawaited(_stopActiveLessonAudio());
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          LessonBloc()..add(LessonEvent.started(widget.lessonId)),
-      child: Scaffold(
-        body: BlocConsumer<LessonBloc, LessonState>(
-          listenWhen: (previous, current) =>
-              current.status == LessonStatus.success &&
-              previous.lessonDetails != current.lessonDetails,
-          listener: (context, state) {
-            if (state.lessonDetails != null) {
-              MediaCacheManager().cacheLessonMedia(
-                state.lessonDetails!.contents,
-                context,
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state.lessonDetails == null) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (state.currentContent == null) {
-              return Center(child: Text('No content found'));
-            }
-            final lessonContent = state.currentContent!;
-            final contents = state.lessonDetails!.contents;
-            final isLastContent = state.currentIndex >= contents.length - 1;
-            final isFirstContent = state.currentIndex == 0;
-
-            void handleNext() {
-              if (isLastContent) {
-                Navigator.of(context).pop();
-              } else {
-                context.read<LessonBloc>().add(const LessonEvent.nextContent());
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          unawaited(_stopActiveLessonAudio());
+        }
+      },
+      child: BlocProvider(
+        create: (context) =>
+            LessonBloc()..add(LessonEvent.started(widget.lessonId)),
+        child: Scaffold(
+          body: BlocConsumer<LessonBloc, LessonState>(
+            listenWhen: (previous, current) =>
+                current.status == LessonStatus.success &&
+                (previous.lessonDetails != current.lessonDetails ||
+                    previous.currentIndex != current.currentIndex),
+            listener: (context, state) {
+              if (_lastContentIndex != null &&
+                  _lastContentIndex != state.currentIndex) {
+                unawaited(_stopActiveLessonAudio());
               }
-            }
+              _lastContentIndex = state.currentIndex;
 
-            return switch (lessonContent) {
-              IntroLessonContent() => IntroLessonView(
-                key: ValueKey('intro_${state.currentIndex}'),
-                content: lessonContent,
-                isLast: isLastContent,
-                isFirst: isFirstContent,
-              ),
-              InfoLessonContent() => BlocProvider(
-                key: ValueKey('info_${state.currentIndex}'),
-                create: (context) => InfoLessonContentBloc(),
-                child: InfoLessonView(content: lessonContent),
-              ),
-              ChooseCorrectLessonContent() => BlocProvider(
-                create: (context) => ChooseCorrectLessonContentBloc(),
-                child: ChooseCorrectLessonView(
+              if (state.lessonDetails != null &&
+                  _lastCachedLessonDetails != state.lessonDetails) {
+                MediaCacheManager().cacheLessonMedia(
+                  state.lessonDetails!.contents,
+                  context,
+                );
+                _lastCachedLessonDetails = state.lessonDetails;
+              }
+            },
+            builder: (context, state) {
+              if (state.lessonDetails == null) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state.currentContent == null) {
+                return Center(child: Text('No content found'));
+              }
+              final lessonContent = state.currentContent!;
+              final contents = state.lessonDetails!.contents;
+              final isLastContent = state.currentIndex >= contents.length - 1;
+              final isFirstContent = state.currentIndex == 0;
+
+              void handleNext() {
+                unawaited(_stopActiveLessonAudio());
+                if (isLastContent) {
+                  Navigator.of(context).pop();
+                } else {
+                  context.read<LessonBloc>().add(
+                    const LessonEvent.nextContent(),
+                  );
+                }
+              }
+
+              return switch (lessonContent) {
+                IntroLessonContent() => IntroLessonView(
+                  key: ValueKey('intro_${state.currentIndex}'),
+                  content: lessonContent,
+                  isLast: isLastContent,
+                  isFirst: isFirstContent,
+                ),
+                InfoLessonContent() => BlocProvider(
+                  key: ValueKey('info_${state.currentIndex}'),
+                  create: (context) => InfoLessonContentBloc(),
+                  child: InfoLessonView(content: lessonContent),
+                ),
+                ChooseCorrectLessonContent() => BlocProvider(
+                  create: (context) => ChooseCorrectLessonContentBloc(),
+                  child: ChooseCorrectLessonView(
+                    content: lessonContent,
+                    isLastContent: isLastContent,
+                  ),
+                ),
+                TapToRevealLessonContent() => BlocProvider(
+                  key: ValueKey('tap_to_reveal_${state.currentIndex}'),
+                  create: (context) => TapToRevealLessonContentBloc(),
+                  child: TapToRevealLessonView(content: lessonContent),
+                ),
+                DragToMatchLessonContent() => DragToMatchScreen(
+                  lessonContent: lessonContent,
+                ),
+                TapToPopLessonContent() => BlocProvider(
+                  key: ValueKey('tap_to_pop_${state.currentIndex}'),
+                  create: (context) =>
+                      TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
+                  child: TapToPopLessonView(content: lessonContent),
+                ),
+                ListenAndRepeatLessonContent() => BlocProvider(
+                  key: ValueKey('listen_and_repeat_${state.currentIndex}'),
+                  create: (context) => ListenAndRepeatBloc(
+                    audioPlayerService: AudioPlayerServiceImpl(),
+                    audioRecorderService: AudioRecorderServiceImpl(),
+                  ),
+                  child: ListenAndRepeatView(
+                    content: lessonContent,
+                    onCompleted: handleNext,
+                  ),
+                ),
+                CharTracingLessonContent() => NewLetterTracingPage(
                   content: lessonContent,
                   isLastContent: isLastContent,
+                  onNext: handleNext,
                 ),
-              ),
-              TapToRevealLessonContent() => BlocProvider(
-                key: ValueKey('tap_to_reveal_${state.currentIndex}'),
-                create: (context) => TapToRevealLessonContentBloc(),
-                child: TapToRevealLessonView(content: lessonContent),
-              ),
-              DragToMatchLessonContent() => DragToMatchScreen(
-                lessonContent: lessonContent,
-              ),
-              TapToPopLessonContent() => BlocProvider(
-                key: ValueKey('tap_to_pop_${state.currentIndex}'),
-                create: (context) =>
-                    TapToPopBloc()..add(TapToPopEvent.started(lessonContent)),
-                child: TapToPopLessonView(content: lessonContent),
-              ),
-              ListenAndRepeatLessonContent() => BlocProvider(
-                key: ValueKey('listen_and_repeat_${state.currentIndex}'),
-                create: (context) => ListenAndRepeatBloc(
-                  audioPlayerService: AudioPlayerServiceImpl(),
-                  audioRecorderService: AudioRecorderServiceImpl(),
-                ),
-                child: ListenAndRepeatView(
+                TeaMakingLessonContent() => KitchenPage(content: lessonContent),
+                BallSlideLessonContent() => BallSlideView(
+                  key: ValueKey('ball_slide_${state.currentIndex}'),
                   content: lessonContent,
-                  onCompleted: handleNext,
+                  onNext: handleNext,
                 ),
-              ),
-              CharTracingLessonContent() => NewLetterTracingPage(
-                content: lessonContent,
-                isLastContent: isLastContent,
-                onNext: handleNext,
-              ),
-              TeaMakingLessonContent() => KitchenPage(content: lessonContent),
-              BallSlideLessonContent() => BallSlideView(
-                key: ValueKey('ball_slide_${state.currentIndex}'),
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              FlipCardLessonContent() => FlipCardView(
-                key: ValueKey('flip_card_${state.currentIndex}'),
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              SlideUpToMatchLessonContent() => MatchGameScreen(
-                key: ValueKey('slide_up_to_match_${state.currentIndex}'),
-                content: lessonContent,
-                isLastContent: isLastContent,
-                onNext: handleNext,
-              ),
-              BalloonFillLessonContent() => BalloonFillView(
-                content: lessonContent,
-              ),
-              GunFillLessonContent() => GunFillLessonView(
-                content: lessonContent,
-              ),
-              HoliAnimateLessonContent() => HoliAnimateView(
-                content: lessonContent,
-              ),
-              TapToChangeLessonContent() => TapToChangeView(
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              TapToFillLessonContent() => TapToFillView(
-                key: ValueKey('tap_to_fill_${state.currentIndex}'),
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              OptionSelectionLessonContent() => OptionSelectionView(
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              PutInBagLessonContent() => PutInBagView(
-                key: ValueKey('put_in_bag_${state.currentIndex}'),
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              TapTheButtonLessonContent() => TapTheButtonView(
-                key: ValueKey('tap_the_button_${state.currentIndex}'),
-                content: lessonContent,
-                onNext: handleNext,
-              ),
-              LessonRecommendationLessonContent() => LessonRecommendationView(
-                content: lessonContent,
-              ),
-              _ => UnknownLessonType(
-                isFirst: isFirstContent,
-                isLast: isLastContent,
-              ),
-            };
-          },
+                FlipCardLessonContent() => FlipCardView(
+                  key: ValueKey('flip_card_${state.currentIndex}'),
+                  content: lessonContent,
+                  onNext: handleNext,
+                ),
+                SlideUpToMatchLessonContent() => MatchGameScreen(
+                  key: ValueKey('slide_up_to_match_${state.currentIndex}'),
+                  content: lessonContent,
+                  isLastContent: isLastContent,
+                  onNext: handleNext,
+                ),
+                BalloonFillLessonContent() => BalloonFillView(
+                  content: lessonContent,
+                ),
+                GunFillLessonContent() => GunFillLessonView(
+                  content: lessonContent,
+                ),
+                HoliAnimateLessonContent() => HoliAnimateView(
+                  content: lessonContent,
+                ),
+                TapToChangeLessonContent() => TapToChangeView(
+                  content: lessonContent,
+                  onNext: handleNext,
+                ),
+                TapToFillLessonContent() => TapToFillView(
+                  key: ValueKey('tap_to_fill_${state.currentIndex}'),
+                  content: lessonContent,
+                  onNext: handleNext,
+                ),
+                OptionSelectionLessonContent() => OptionSelectionView(
+                  content: lessonContent,
+                  onNext: handleNext,
+                ),
+                PutInBagLessonContent() => PutInBagView(
+                  key: ValueKey('put_in_bag_${state.currentIndex}'),
+                  content: lessonContent,
+                  onNext: handleNext,
+                ),
+                TapTheButtonLessonContent() => TapTheButtonView(
+                  key: ValueKey('tap_the_button_${state.currentIndex}'),
+                  content: lessonContent,
+                  onNext: handleNext,
+                ),
+                LessonRecommendationLessonContent() => LessonRecommendationView(
+                  content: lessonContent,
+                ),
+                _ => UnknownLessonType(
+                  isFirst: isFirstContent,
+                  isLast: isLastContent,
+                ),
+              };
+            },
+          ),
         ),
       ),
     );

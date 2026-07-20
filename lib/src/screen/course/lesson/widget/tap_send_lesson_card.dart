@@ -213,7 +213,16 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
             //   ),
 
             // Options grid
-            _buildOptionsGrid(isMobile, isTablet, isLandscape),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return _buildOptionsGrid(
+                  isMobile,
+                  isTablet,
+                  isLandscape,
+                  constraints.maxWidth,
+                );
+              },
+            ),
 
             // Button based on selected answer
             Visibility(
@@ -282,199 +291,242 @@ class _TapSendLessonCardState extends State<TapSendLessonCard> {
     );
   }
 
-  Widget _buildOptionsGrid(bool isMobile, bool isTablet, bool isLandscape) {
+  Widget _buildOptionsGrid(
+    bool isMobile,
+    bool isTablet,
+    bool isLandscape,
+    double availableWidth,
+  ) {
     if (isMobile) {
-      return _buildMobileLayout();
+      return _buildMobileLayout(availableWidth);
     } else if (isTablet) {
-      return _buildTabletLayout(isLandscape);
+      return _buildTabletLayout(isLandscape, availableWidth);
     } else {
-      return _buildWebLayout();
+      return _buildWebLayout(availableWidth);
     }
   }
 
-  Widget _buildMobileLayout() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: options.map((option) {
-        final isSelected = selectedAnswer == option.nameEn;
-        return GestureDetector(
-          onTap: () => _onOptionTap(option),
-          child: Container(
-            width: 25.w(context),
-            height: 40.h(context),
-            decoration: BoxDecoration(
-              color: option.color.isNotEmpty
-                  ? Utility.parseHexColors(option.color).first
-                  : AppColors.learningColors[options.indexOf(option) %
-                        AppColors.learningColors.length],
-              borderRadius: BorderRadius.circular(16),
-              border: isSelected
-                  ? Border.all(color: AppColors.kButtonGreen, width: 3)
-                  : null,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  option.nameNp,
-                  style: AppStyles.text20PxBold.copyWith(
-                    color: option.textColor.isNotEmpty
-                        ? Utility.parseHexColors(option.textColor).first
-                        : AppColors.kBlack,
-                    fontFamily: AppConstants.kMuktaFont,
+  double _rowWidth(double availableWidth) {
+    if (availableWidth.isFinite && availableWidth > 0) {
+      return availableWidth;
+    }
+    return MediaQuery.of(context).size.width;
+  }
+
+  double _optionWidth(double rowWidth, double preferredWidth) {
+    final optionCount = options.isEmpty ? 1 : options.length;
+    return preferredWidth.clamp(0.0, rowWidth / optionCount).toDouble();
+  }
+
+  Widget _buildMobileLayout(double availableWidth) {
+    final rowWidth = _rowWidth(availableWidth);
+    final cardWidth = _optionWidth(rowWidth, rowWidth * 0.25);
+    final imageWidth = (rowWidth * 0.20).clamp(0.0, cardWidth * 0.8).toDouble();
+
+    return SizedBox(
+      width: rowWidth,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: options.map((option) {
+          final isSelected = selectedAnswer == option.nameEn;
+          return GestureDetector(
+            onTap: () => _onOptionTap(option),
+            child: Container(
+              width: cardWidth,
+              height: 40.h(context),
+              decoration: BoxDecoration(
+                color: option.color.isNotEmpty
+                    ? Utility.parseHexColors(option.color).first
+                    : AppColors.learningColors[options.indexOf(option) %
+                          AppColors.learningColors.length],
+                borderRadius: BorderRadius.circular(16),
+                border: isSelected
+                    ? Border.all(color: AppColors.kButtonGreen, width: 3)
+                    : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    option.nameNp,
+                    style: AppStyles.text20PxBold.copyWith(
+                      color: option.textColor.isNotEmpty
+                          ? Utility.parseHexColors(option.textColor).first
+                          : AppColors.kBlack,
+                      fontFamily: AppConstants.kMuktaFont,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                Gaps.verticalGapOf(8),
-                CustomImage(
-                  option.image,
-                  height: 20.h(context),
-                  width: 20.w(context),
-                  cover: false,
-                  boxFit: BoxFit.cover,
-                  circular: false,
-                  imageType: CustomImageType.network,
-                ),
-                Gaps.verticalGapOf(8),
-                Text(
-                  option.nameEn,
-                  style: AppStyles.text12PxSemiBold.copyWith(
-                    color: option.textColor.isNotEmpty
-                        ? Utility.parseHexColors(option.textColor).first
-                        : AppColors.kBlack,
+                  Gaps.verticalGapOf(8),
+                  CustomImage(
+                    option.image,
+                    height: 20.h(context),
+                    width: imageWidth,
+                    cover: false,
+                    boxFit: BoxFit.cover,
+                    circular: false,
+                    imageType: CustomImageType.network,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  Gaps.verticalGapOf(8),
+                  Text(
+                    option.nameEn,
+                    style: AppStyles.text12PxSemiBold.copyWith(
+                      color: option.textColor.isNotEmpty
+                          ? Utility.parseHexColors(option.textColor).first
+                          : AppColors.kBlack,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  Widget _buildTabletLayout(bool isLandscape) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: options.map((option) {
-        final isSelected = selectedAnswer == option.nameEn;
-        return GestureDetector(
-          onTap: () => _onOptionTap(option),
-          child: Container(
-            width: isLandscape ? 25.w(context) : 180,
-            height: isLandscape ? 50.h(context) : 280,
-            decoration: BoxDecoration(
-              color: option.color.isNotEmpty
-                  ? Utility.parseHexColors(option.color).first
-                  : AppColors.learningColors[options.indexOf(option) %
-                        AppColors.learningColors.length],
-              borderRadius: BorderRadius.circular(20),
-              border: isSelected
-                  ? Border.all(color: AppColors.kButtonGreen, width: 4)
-                  : null,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  option.nameNp,
-                  style: AppStyles.text20PxBold.copyWith(
-                    color: option.nameEn.contains('rabbit')
-                        ? AppColors.kWhite
-                        : (option.textColor.isNotEmpty
-                              ? Utility.parseHexColors(option.textColor).first
-                              : AppColors.kBlack),
-                    fontFamily: AppConstants.kMuktaFont,
-                    fontWeight: FontWeight.bold,
-                    fontSize: isLandscape ? 50 : 24,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Gaps.verticalGapOf(15),
-                CustomImage(
-                  option.image,
-                  height: isLandscape ? 10.w(context) : 140,
-                  width: isLandscape ? 30.h(context) : 140,
-                  cover: false,
-                  boxFit: BoxFit.cover,
-                  circular: false,
-                  imageType: CustomImageType.network,
-                ),
-                Gaps.verticalGapOf(30),
+  Widget _buildTabletLayout(bool isLandscape, double availableWidth) {
+    final rowWidth = _rowWidth(availableWidth);
+    final cardWidth = _optionWidth(
+      rowWidth,
+      isLandscape ? rowWidth * 0.25 : 180,
+    );
+    final imageWidth = (isLandscape ? 30.h(context) : 140)
+        .clamp(0.0, cardWidth * 0.8)
+        .toDouble();
 
-                Text(
-                  option.nameEn,
-                  style: AppStyles.text16PxMedium.copyWith(
-                    color: option.textColor.isNotEmpty
-                        ? Utility.parseHexColors(option.textColor).first
-                        : option.nameEn.contains('rabbit')
-                        ? AppColors.kWhite
-                        : AppColors.kBlack,
-                    fontSize: isLandscape ? 28 : 16,
+    return SizedBox(
+      width: rowWidth,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: options.map((option) {
+          final isSelected = selectedAnswer == option.nameEn;
+          return GestureDetector(
+            onTap: () => _onOptionTap(option),
+            child: Container(
+              width: cardWidth,
+              height: isLandscape ? 50.h(context) : 280,
+              decoration: BoxDecoration(
+                color: option.color.isNotEmpty
+                    ? Utility.parseHexColors(option.color).first
+                    : AppColors.learningColors[options.indexOf(option) %
+                          AppColors.learningColors.length],
+                borderRadius: BorderRadius.circular(20),
+                border: isSelected
+                    ? Border.all(color: AppColors.kButtonGreen, width: 4)
+                    : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    option.nameNp,
+                    style: AppStyles.text20PxBold.copyWith(
+                      color: option.nameEn.contains('rabbit')
+                          ? AppColors.kWhite
+                          : (option.textColor.isNotEmpty
+                                ? Utility.parseHexColors(option.textColor).first
+                                : AppColors.kBlack),
+                      fontFamily: AppConstants.kMuktaFont,
+                      fontWeight: FontWeight.bold,
+                      fontSize: isLandscape ? 50 : 24,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  Gaps.verticalGapOf(15),
+                  CustomImage(
+                    option.image,
+                    height: isLandscape ? 10.w(context) : 140,
+                    width: imageWidth,
+                    cover: false,
+                    boxFit: BoxFit.cover,
+                    circular: false,
+                    imageType: CustomImageType.network,
+                  ),
+                  Gaps.verticalGapOf(30),
+
+                  Text(
+                    option.nameEn,
+                    style: AppStyles.text16PxMedium.copyWith(
+                      color: option.textColor.isNotEmpty
+                          ? Utility.parseHexColors(option.textColor).first
+                          : option.nameEn.contains('rabbit')
+                          ? AppColors.kWhite
+                          : AppColors.kBlack,
+                      fontSize: isLandscape ? 28 : 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  Widget _buildWebLayout() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: options.map((option) {
-        final isSelected = selectedAnswer == option.nameEn;
-        return GestureDetector(
-          onTap: () => _onOptionTap(option),
-          child: Container(
-            width: 220,
-            height: 300,
-            decoration: BoxDecoration(
-              color: option.color.isNotEmpty
-                  ? Utility.parseHexColors(option.color).first
-                  : AppColors.learningColors[options.indexOf(option) %
-                        AppColors.learningColors.length],
-              borderRadius: BorderRadius.circular(24),
-              border: isSelected
-                  ? Border.all(color: AppColors.kButtonGreen, width: 4)
-                  : null,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomImage(
-                  option.image,
-                  height: 150,
-                  width: 150,
-                  cover: false,
-                  boxFit: BoxFit.cover,
-                  circular: false,
-                  imageType: CustomImageType.network,
-                ),
-                Gaps.verticalGapOf(20),
-                Text(
-                  option.nameNp,
-                  style: AppStyles.text24PxBold.copyWith(
-                    color: AppColors.kSecondaryColor,
-                    fontFamily: AppConstants.kMuktaFont,
+  Widget _buildWebLayout(double availableWidth) {
+    final rowWidth = _rowWidth(availableWidth);
+    final cardWidth = _optionWidth(rowWidth, 220);
+    final imageWidth = 150.clamp(0.0, cardWidth * 0.8).toDouble();
+
+    return SizedBox(
+      width: rowWidth,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: options.map((option) {
+          final isSelected = selectedAnswer == option.nameEn;
+          return GestureDetector(
+            onTap: () => _onOptionTap(option),
+            child: Container(
+              width: cardWidth,
+              height: 300,
+              decoration: BoxDecoration(
+                color: option.color.isNotEmpty
+                    ? Utility.parseHexColors(option.color).first
+                    : AppColors.learningColors[options.indexOf(option) %
+                          AppColors.learningColors.length],
+                borderRadius: BorderRadius.circular(24),
+                border: isSelected
+                    ? Border.all(color: AppColors.kButtonGreen, width: 4)
+                    : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomImage(
+                    option.image,
+                    height: 150,
+                    width: imageWidth,
+                    cover: false,
+                    boxFit: BoxFit.cover,
+                    circular: false,
+                    imageType: CustomImageType.network,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  option.nameEn,
-                  style: AppStyles.text18PxMedium.copyWith(
-                    color: AppColors.kBlack,
+                  Gaps.verticalGapOf(20),
+                  Text(
+                    option.nameNp,
+                    style: AppStyles.text24PxBold.copyWith(
+                      color: AppColors.kSecondaryColor,
+                      fontFamily: AppConstants.kMuktaFont,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  Text(
+                    option.nameEn,
+                    style: AppStyles.text18PxMedium.copyWith(
+                      color: AppColors.kBlack,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 
