@@ -6,11 +6,11 @@ import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
-import 'package:onepali/src/features/tea_maker/bloc/tutorial_bloc.dart';
-import 'package:onepali/src/features/tea_maker/widgets/leopard_with_tea.dart';
-import 'package:onepali/src/features/tea_maker/widgets/dragged_item.dart';
-import 'package:onepali/src/features/tea_maker/widgets/huncha_button.dart';
-import 'package:onepali/src/features/tea_maker/widgets/ingredient.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/bloc/tutorial_bloc.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/widgets/leopard_with_tea.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/widgets/dragged_item.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/widgets/huncha_button.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/widgets/ingredient.dart';
 
 class KitchenPage extends StatefulWidget {
   const KitchenPage({super.key, required this.content});
@@ -21,37 +21,39 @@ class KitchenPage extends StatefulWidget {
 }
 
 class _KitchenPageState extends State<KitchenPage> {
+  final GlobalKey _stackKey = GlobalKey();
   final GlobalKey _taePotKey = GlobalKey();
   final GlobalKey _stoveKey = GlobalKey();
 
   Widget buildIndicator(Size size, String? dragIndicator) {
+    final stackContext = _stackKey.currentContext;
     final taeContext = _taePotKey.currentContext;
     final stoveContext = _stoveKey.currentContext;
-    if (taeContext == null ||
+    if (stackContext == null ||
+        taeContext == null ||
         stoveContext == null ||
         dragIndicator?.isNotEmpty != true) {
       return const SizedBox.shrink();
     }
 
+    final stackBox = stackContext.findRenderObject() as RenderBox;
     final taeBox = taeContext.findRenderObject() as RenderBox;
     final stoveBox = stoveContext.findRenderObject() as RenderBox;
 
-    // Global positions
-    final taeOffset = taeBox.localToGlobal(Offset.zero);
-    final stoveOffset = stoveBox.localToGlobal(Offset.zero);
-
-    // Stove top-center
-    final stoveTopCenter = Offset(
-      stoveOffset.dx + stoveBox.size.width / 2,
-      stoveOffset.dy,
+    final taeBottomRight = stackBox.globalToLocal(
+      taeBox.localToGlobal(Offset(taeBox.size.width, taeBox.size.height)),
     );
 
-    // Calculate container dimensions
-    final left = taeOffset.dx + size.height * 0.1;
-    final top = taeOffset.dy + size.height * 0.1;
+    final stoveTopCenter = stackBox.globalToLocal(
+      stoveBox.localToGlobal(Offset(stoveBox.size.width / 2, 0)),
+    );
+
+    final left = taeBottomRight.dx;
+    final top = taeBottomRight.dy;
 
     final width = stoveTopCenter.dx - left;
     final height = stoveTopCenter.dy - top;
+    if (width <= 0 || height <= 0) return const SizedBox.shrink();
 
     return Positioned(
       left: left,
@@ -90,6 +92,7 @@ class _KitchenPageState extends State<KitchenPage> {
             body: state.showLoading
                 ? Center(child: CircularProgressIndicator())
                 : Stack(
+                    key: _stackKey,
                     children: [
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,8 +126,6 @@ class _KitchenPageState extends State<KitchenPage> {
                                 children: List.generate(
                                   state.ingredients.length,
                                   (index) => SizedBox(
-                                    key: index == 0 ? _taePotKey : null,
-
                                     width: isMobile
                                         ? size.height * 0.3
                                         : size.height * 0.2,
@@ -160,6 +161,9 @@ class _KitchenPageState extends State<KitchenPage> {
                                                   ),
                                               child: SizedBox(
                                                 child: Ingredient(
+                                                  key: index == 0
+                                                      ? _taePotKey
+                                                      : null,
                                                   ingredient:
                                                       state.ingredients[index],
                                                   isSelected:
@@ -238,15 +242,9 @@ class _KitchenPageState extends State<KitchenPage> {
                           ),
                         ),
                       // Leopard making announcement
-                      Positioned.fill(
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.only(
-                            top: 100,
-                            right: 100,
-                            left: 100,
-                          ),
-                          child: LeopardWithTea(),
-                        ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: LeopardWithTea(),
                       ),
 
                       // Huncha button in middle
