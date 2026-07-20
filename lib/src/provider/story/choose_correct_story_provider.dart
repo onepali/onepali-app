@@ -13,6 +13,7 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   bool _isQuestionAudioPlaying = false;
   bool _isCorrectAnswerSelected = false;
   bool _disposed = false;
+  int _selectionGeneration = 0;
   Conversation? _currentConversation;
   Conversation? _userSelectedConversation;
   bool get isQuestionAudioPlaying => _isQuestionAudioPlaying;
@@ -80,21 +81,65 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   void onTappedItem(Conversation conversation) {
     if (_disposed) return;
 
+    final selectionGeneration = ++_selectionGeneration;
     _userSelectedConversation = conversation;
     _isCorrectAnswerSelected = conversation == _currentConversation;
     _cancelAudioSubscription();
     _isQuestionAudioPlaying = false;
     unawaited(
-      _audioPlayerService
-          .playAsset(
-            _isCorrectAnswerSelected ? Assets.starBlast : Assets.wrongSfx,
-          )
-          .catchError((_) {}),
+      _playSelectionAudio(
+        conversation,
+        isCorrect: _isCorrectAnswerSelected,
+        selectionGeneration: selectionGeneration,
+      ),
     );
     _notifyListenersIfActive();
   }
 
+  Future<void> _playSelectionAudio(
+    Conversation conversation, {
+    required bool isCorrect,
+    required int selectionGeneration,
+  }) async {
+    final feedbackAsset = isCorrect ? Assets.starBlast : Assets.wrongSfx;
+    final feedbackComplete = _audioPlayerService.onPlayerComplete.first.timeout(
+      const Duration(seconds: 3),
+      onTimeout: () {},
+    );
+
+    var didStartFeedback = false;
+    try {
+      await _audioPlayerService.playAsset(feedbackAsset);
+      didStartFeedback = true;
+    } catch (_) {}
+
+    if (didStartFeedback) {
+      await feedbackComplete.catchError((_) {});
+    }
+
+    if (!_isCurrentSelection(selectionGeneration)) {
+      return;
+    }
+
+    final audioItem = conversation.audioItem;
+    if (audioItem == null || audioItem.isEmpty) {
+      return;
+    }
+
+    await _audioPlayerService.play(audioItem).catchError((_) {});
+  }
+
+  bool _isCurrentSelection(int selectionGeneration) {
+    return !_disposed && selectionGeneration == _selectionGeneration;
+  }
+
+  void _cancelSelectionPlayback() {
+    _selectionGeneration++;
+    unawaited(_audioPlayerService.stop().catchError((_) {}));
+  }
+
   void clearSelection() {
+    _cancelSelectionPlayback();
     _userSelectedConversation = null;
     _isCorrectAnswerSelected = false;
     _notifyListenersIfActive();
@@ -103,6 +148,7 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _selectionGeneration++;
     _cancelAudioSubscription();
     unawaited(_audioPlayerService.dispose());
     super.dispose();

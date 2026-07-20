@@ -77,7 +77,9 @@ abstract class Conversation with _$Conversation {
     @Default('') String messageNp,
     @Default('') String icon,
     @Default(false) bool correct,
-    String? question, // Audio question
+    // Audio question
+    String? question,
+    String? audioItem,
   }) = _Conversation;
 
   factory Conversation.fromJson(Map<String, dynamic> json) =>
