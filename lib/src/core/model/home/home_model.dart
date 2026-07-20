@@ -16,7 +16,7 @@ class HomeServiceModel {
   });
 }
 
-// Games // Stories // Songs & Rhymes // Lessons
+// Games // Stories // Videos // Lessons
 List<HomeServiceModel> homeServices = [
   HomeServiceModel(
     name: 'Lessons',
@@ -32,10 +32,10 @@ List<HomeServiceModel> homeServices = [
   //   route: AppRoutes.comingSoon,
   // ),
   HomeServiceModel(
-    name: 'Songs',
-    icon: Assets.songsRhymes,
-    tooltip: 'Songs',
-    color: AppColors.kSongColor,
+    name: 'Videos',
+    icon: Assets.video,
+    tooltip: 'Videos',
+    color: AppColors.kPurple,
     route: AppRoutes.comingSoon,
   ),
   HomeServiceModel(
