@@ -32,7 +32,7 @@ import 'package:onepali/src/features/lessons/templates/tap_to_pop/tap_to_pop_les
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/unknown_lesson_type.dart';
-import 'package:onepali/src/features/tea_maker/pages/kitchen_page.dart';
+import 'package:onepali/src/features/lessons/templates/tea_making/pages/kitchen_page.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key, required this.lessonId});
