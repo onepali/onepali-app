@@ -1,3 +1,5 @@
+import 'dart:async';
+
 // import 'dart:math';
 
 // import 'dart:io';
@@ -138,6 +140,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       }
 
       // Reset audio state first to ensure clean start
+      _audioProvider = audioProvider;
+      await _stopLessonAudio();
       audioProvider.resetAudioState();
       // Don't set the audioProvider index here, we'll handle it per content
     });
@@ -159,10 +163,17 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     _saveCurrentProgress();
 
     // Clean up audio when leaving the screen
-    _audioProvider?.stopAudio();
+    unawaited(_stopLessonAudio());
 
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
+  }
+
+  Future<void> _stopLessonAudio() async {
+    await Future.wait([
+      _audioProvider?.stopAudio() ?? Future<void>.value(),
+      CustomAudioWidget.stopAll(),
+    ], eagerError: false);
   }
 
   void _saveCurrentProgress() {
@@ -196,8 +207,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     }
   }
 
-  void _nextContent() {
+  Future<void> _nextContent() async {
     if (_currentContentIndex < widget.lesson.lessonContent.length) {
+      await _stopLessonAudio();
+      if (!mounted) return;
       setState(() {
         _currentContentIndex++;
       });
@@ -228,6 +241,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   }
 
   Future<void> _completeRegularLesson() async {
+    await _stopLessonAudio();
+    if (!mounted) return;
     setState(() {
       _showGoodRemark = true;
     });
@@ -257,8 +272,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     });
   }
 
-  void _previousContent() {
+  Future<void> _previousContent() async {
     if (_currentContentIndex > 0) {
+      await _stopLessonAudio();
+      if (!mounted) return;
       setState(() {
         _currentContentIndex--;
       });
@@ -333,7 +350,9 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
         right: 0,
         child: CircularButtonWidget(
           type: CircularButtonType.close,
-          onPressed: () {
+          onPressed: () async {
+            await _stopLessonAudio();
+            if (!mounted) return;
             _saveCurrentProgress();
             Navigator.of(context).pop();
           },
@@ -540,7 +559,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 child: Center(
                   child: CircularButtonWidget(
                     type: CircularButtonType.rightArrow,
-                    onPressed: _nextContent,
+                    onPressed: () => unawaited(_nextContent()),
                   ),
                 ),
               ),
@@ -594,7 +613,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   child: Center(
                     child: CircularButtonWidget(
                       type: CircularButtonType.leftArrow,
-                      onPressed: _previousContent,
+                      onPressed: () => unawaited(_previousContent()),
                     ),
                   ),
                 ),
@@ -698,26 +717,32 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               if (widget.hasSound &&
                                   content.wordAudio?.isNotEmpty == true) ...[
                                 SizedBox(height: verticalSpacing),
-                                CustomAvatarGlow(
-                                  glowColor: AppColors.kSecondaryColor,
-                                  glowShape: BoxShape.circle,
-                                  visible: isPlaying,
-                                  glowRadiusFactor: 0.2,
-                                  child: CircularButtonWidget(
-                                    type: CircularButtonType.sound,
-                                    onPressed: () async {
-                                      try {
-                                        final audioProvider = context
-                                            .read<LessonAudioProvider>();
-                                        await audioProvider.playWordAudio(
-                                          content.wordAudio ?? '',
-                                        );
-                                      } catch (e) {
-                                        logger.e(
-                                          'Error playing word audio: $e',
-                                        );
-                                      }
-                                    },
+                                SizedBox.square(
+                                  dimension:
+                                      Dimensions.kIconSize(context) * 1.4,
+                                  child: Center(
+                                    child: CustomAvatarGlow(
+                                      glowColor: AppColors.kSecondaryColor,
+                                      glowShape: BoxShape.circle,
+                                      visible: isPlaying,
+                                      glowRadiusFactor: 0.2,
+                                      child: CircularButtonWidget(
+                                        type: CircularButtonType.sound,
+                                        onPressed: () async {
+                                          try {
+                                            final audioProvider = context
+                                                .read<LessonAudioProvider>();
+                                            await audioProvider.playWordAudio(
+                                              content.wordAudio ?? '',
+                                            );
+                                          } catch (e) {
+                                            logger.e(
+                                              'Error playing word audio: $e',
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -737,7 +762,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     child: Center(
                       child: CircularButtonWidget(
                         type: CircularButtonType.rightArrow,
-                        onPressed: _nextContent,
+                        onPressed: () => unawaited(_nextContent()),
                       ),
                     ),
                   )
@@ -766,7 +791,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               padding: EdgeInsets.only(left: Dimensions.kIconMargin(context)),
               child: CircularButtonWidget(
                 type: CircularButtonType.leftArrow,
-                onPressed: _previousContent,
+                onPressed: () => unawaited(_previousContent()),
               ),
             ),
 
@@ -778,9 +803,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     isPlaying: false,
                     isLastItem: isLast,
                     onCorrectAnswer: () {
-                      _nextContent();
+                      unawaited(_nextContent());
                     },
                     onLessonComplete: () async {
+                      await _audioProvider?.stopAudio();
+                      if (!mounted) return;
                       await _saveProgress(content, contentIndex);
                       // For tap_send lessons, don't trigger the main lesson completion
                       // as TapSendLessonCard handles its own animation
@@ -818,9 +845,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     isPlaying: false,
                     isLastItem: isLast,
                     onCorrectAnswer: () {
-                      _nextContent();
+                      unawaited(_nextContent());
                     },
                     onLessonComplete: () async {
+                      await _audioProvider?.stopAudio();
+                      if (!mounted) return;
                       await _saveProgress(content, contentIndex);
                       // For tap_target lessons, handle completion
                       try {
@@ -856,9 +885,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     isPlaying: false,
                     isLastItem: isLast,
                     onCorrectAnswer: () {
-                      _nextContent();
+                      unawaited(_nextContent());
                     },
                     onLessonComplete: () async {
+                      await _audioProvider?.stopAudio();
+                      if (!mounted) return;
                       logger.d(
                         'DragToMatchLessonCard onLessonComplete callback started',
                       );
@@ -914,7 +945,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               padding: EdgeInsets.only(right: Dimensions.kIconMargin(context)),
               child: CircularButtonWidget(
                 type: CircularButtonType.rightArrow,
-                onPressed: _nextContent,
+                onPressed: () => unawaited(_nextContent()),
               ),
             ),
         ],
@@ -1003,6 +1034,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       onPopInvokedWithResult: (didPop, value) {
         if (didPop) {
           logger.d('PopScope: onPopInvoked called');
+          unawaited(_stopLessonAudio());
           _saveCurrentProgress();
         }
       },

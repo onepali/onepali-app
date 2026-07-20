@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -8,8 +10,10 @@ import '../../src.dart';
 class LessonAudioProvider extends ChangeNotifier {
   final AudioPlayer _audioPlayer1 = AudioPlayer();
   final AudioPlayer _audioPlayer2 = AudioPlayer();
+  CustomAudioWidget? _activeAudioWidget;
   bool _isPlaying = false;
   int _currentIndex = 0;
+  int _playbackGeneration = 0;
 
   bool get isPlaying => _isPlaying;
   int get currentIndex => _currentIndex;
@@ -75,44 +79,60 @@ class LessonAudioProvider extends ChangeNotifier {
     bool forceReplay = false,
   }) async {
     if (_isPlaying && !forceReplay) return;
+    await stopAudio();
+    final generation = ++_playbackGeneration;
     _isPlaying = true;
     notifyListeners();
-    final audioPath = contents[_currentIndex].audio;
-    logger.i('Playing audio: $audioPath');
-    if (audioPath.isNotEmpty) {
-      String sourcePath = audioPath;
-      AudioSourceType sourceType = audioSourceType;
-      if (audioSourceType == AudioSourceType.network) {
-        // Try to get from cache
-        final file = await DefaultCacheManager().getSingleFile(audioPath);
-        if (file.existsSync()) {
-          sourcePath = file.path;
-          sourceType = AudioSourceType.asset; // Play as local file
-          logger.i('Playing from cache: $sourcePath');
-        } else {
-          logger.i('Audio not cached, will stream from network: $audioPath');
-        }
-      }
-      final audioWidget = CustomAudioWidget(
-        audioPath: sourcePath,
-        audioSourceType: sourceType,
-      );
-      // Preload next audio if available
-      if (_currentIndex < contents.length - 1) {
-        final nextAudioPath = contents[_currentIndex + 1].audio;
-        logger.i('Preloading next audio: $nextAudioPath');
-        if (nextAudioPath.isNotEmpty) {
-          // Preload/caching for next audio
-          if (audioSourceType == AudioSourceType.network) {
-            await DefaultCacheManager().downloadFile(nextAudioPath);
-            logger.i('Preloaded and cached next audio');
+
+    try {
+      final audioPath = contents[_currentIndex].audio;
+      logger.i('Playing audio: $audioPath');
+      if (audioPath.isNotEmpty) {
+        String sourcePath = audioPath;
+        AudioSourceType sourceType = audioSourceType;
+        if (audioSourceType == AudioSourceType.network) {
+          // Try to get from cache
+          final file = await DefaultCacheManager().getSingleFile(audioPath);
+          if (_playbackGeneration != generation) return;
+          if (file.existsSync()) {
+            sourcePath = file.path;
+            sourceType = AudioSourceType.asset; // Play as local file
+            logger.i('Playing from cache: $sourcePath');
+          } else {
+            logger.i('Audio not cached, will stream from network: $audioPath');
           }
         }
+        if (_playbackGeneration != generation) return;
+        final audioWidget = CustomAudioWidget(
+          audioPath: sourcePath,
+          audioSourceType: sourceType,
+        );
+        _activeAudioWidget = audioWidget;
+        // Preload next audio if available
+        if (_currentIndex < contents.length - 1) {
+          final nextAudioPath = contents[_currentIndex + 1].audio;
+          logger.i('Preloading next audio: $nextAudioPath');
+          if (nextAudioPath.isNotEmpty) {
+            // Preload/caching for next audio
+            if (audioSourceType == AudioSourceType.network) {
+              await DefaultCacheManager().downloadFile(nextAudioPath);
+              logger.i('Preloaded and cached next audio');
+            }
+          }
+        }
+        if (_playbackGeneration != generation) return;
+        await audioWidget.play();
+        await audioWidget.audioPlayer.onPlayerComplete.first;
       }
-      await audioWidget.play();
+    } catch (e) {
+      logger.e('Error playing content audio: $e');
+    } finally {
+      if (_playbackGeneration == generation) {
+        await _disposeActiveAudioWidget();
+        _isPlaying = false;
+        notifyListeners();
+      }
     }
-    _isPlaying = false;
-    notifyListeners();
   }
 
   void navigateToNextContent(
@@ -193,6 +213,8 @@ class LessonAudioProvider extends ChangeNotifier {
   Future<void> playWordAudio(String audioPath) async {
     if (audioPath.isEmpty) return;
 
+    await stopAudio();
+    final generation = ++_playbackGeneration;
     _isPlaying = true;
     notifyListeners();
 
@@ -210,23 +232,34 @@ class LessonAudioProvider extends ChangeNotifier {
         logger.i('Word audio not cached, will stream from network: $audioPath');
       }
 
+      if (_playbackGeneration != generation) return;
       final audioWidget = CustomAudioWidget(
         audioPath: sourcePath,
         audioSourceType: sourceType,
       );
+      _activeAudioWidget = audioWidget;
 
       await audioWidget.play();
+      await audioWidget.audioPlayer.onPlayerComplete.first;
     } catch (e) {
       logger.e('Error playing word audio: $e');
     } finally {
-      _isPlaying = false;
-      notifyListeners();
+      if (_playbackGeneration == generation) {
+        await _disposeActiveAudioWidget();
+        _isPlaying = false;
+        notifyListeners();
+      }
     }
   }
 
   /// Play option audio for tap_send lesson type
   Future<void> playOptionAudio(String audioPath) async {
     if (audioPath.isEmpty) return;
+
+    await stopAudio();
+    final generation = ++_playbackGeneration;
+    _isPlaying = true;
+    notifyListeners();
 
     try {
       // Try to get from cache
@@ -244,20 +277,31 @@ class LessonAudioProvider extends ChangeNotifier {
         );
       }
 
+      if (_playbackGeneration != generation) return;
       final audioWidget = CustomAudioWidget(
         audioPath: sourcePath,
         audioSourceType: sourceType,
       );
+      _activeAudioWidget = audioWidget;
 
       await audioWidget.play();
+      await audioWidget.audioPlayer.onPlayerComplete.first;
     } catch (e) {
       logger.e('Error playing option audio: $e');
+    } finally {
+      if (_playbackGeneration == generation) {
+        await _disposeActiveAudioWidget();
+        _isPlaying = false;
+        notifyListeners();
+      }
     }
   }
 
   /// Stop all audio playback
   Future<void> stopAudio() async {
     try {
+      _playbackGeneration++;
+      await _disposeActiveAudioWidget();
       await _audioPlayer1.stop();
       await _audioPlayer2.stop();
       _isPlaying = false;
@@ -280,14 +324,27 @@ class LessonAudioProvider extends ChangeNotifier {
 
   /// Reset audio state to initial state
   void resetAudioState() {
+    _playbackGeneration++;
+    unawaited(_disposeActiveAudioWidget());
+    unawaited(_audioPlayer1.stop());
+    unawaited(_audioPlayer2.stop());
     _isPlaying = false;
     _currentIndex = 0;
     notifyListeners();
     logger.d('Audio state reset to initial state');
   }
 
+  Future<void> _disposeActiveAudioWidget() async {
+    final audioWidget = _activeAudioWidget;
+    _activeAudioWidget = null;
+    if (audioWidget != null) {
+      await audioWidget.dispose();
+    }
+  }
+
   @override
   void dispose() {
+    unawaited(_disposeActiveAudioWidget());
     _audioPlayer1.dispose();
     _audioPlayer2.dispose();
     super.dispose();

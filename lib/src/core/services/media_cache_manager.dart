@@ -5,6 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
+bool isSvgMediaUrl(String mediaUrl) {
+  final normalizedUrl = mediaUrl.trim().toLowerCase();
+  final uriPath = Uri.tryParse(normalizedUrl)?.path.toLowerCase();
+  if (uriPath?.endsWith('.svg') ?? false) {
+    return true;
+  }
+  return normalizedUrl.split('?').first.endsWith('.svg');
+}
+
 class MediaCacheManager {
   static const key = 'mediaCache';
 
@@ -120,16 +129,10 @@ class MediaCacheManager {
       }
       // Image
       if (content.bgImageMobile != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.bgImageMobile!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.bgImageMobile!, context);
       }
       if (content.bgImageTablet != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.bgImageTablet!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.bgImageTablet!, context);
       }
     } catch (e) {
       rethrow;
@@ -148,7 +151,7 @@ class MediaCacheManager {
         _precacheMedia(content.video!);
       }
       if (!content.isImageSvg) {
-        precacheImage(CachedNetworkImageProvider(content.image), context);
+        _precacheNetworkRasterImage(content.image, context);
       }
     } catch (e) {
       rethrow;
@@ -210,13 +213,10 @@ class MediaCacheManager {
         _precacheMedia(content.instructionAudio!);
       }
       if (content.bgImage != null) {
-        precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+        _precacheNetworkRasterImage(content.bgImage!, context);
       }
       if (content.successImage != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.successImage!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.successImage!, context);
       }
       for (var item in content.items) {
         _precacheItemMedia(item, context);
@@ -237,10 +237,10 @@ class MediaCacheManager {
         _precacheMedia(content.audioBg!);
       }
       if (content.bgImage != null) {
-        precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+        _precacheNetworkRasterImage(content.bgImage!, context);
       }
       if (content.charImage != null && !content.isImageSvg) {
-        precacheImage(CachedNetworkImageProvider(content.charImage!), context);
+        _precacheNetworkRasterImage(content.charImage!, context);
       }
     } catch (e) {
       rethrow;
@@ -253,7 +253,7 @@ class MediaCacheManager {
     BuildContext context,
   ) {
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
   }
 
@@ -278,55 +278,34 @@ class MediaCacheManager {
         await DefaultCacheManager().getSingleFile(audio);
       }
       if (content.bgImageMobile != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.bgImageMobile!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.bgImageMobile!, context);
       }
       if (content.bgImageTablet != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.bgImageTablet!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.bgImageTablet!, context);
       }
       if (content.player1 != null) {
-        precacheImage(CachedNetworkImageProvider(content.player1!), context);
+        _precacheNetworkRasterImage(content.player1!, context);
       }
       if (content.player2 != null) {
-        precacheImage(CachedNetworkImageProvider(content.player2!), context);
+        _precacheNetworkRasterImage(content.player2!, context);
       }
       if (content.ballImage != null) {
-        precacheImage(CachedNetworkImageProvider(content.ballImage!), context);
+        _precacheNetworkRasterImage(content.ballImage!, context);
       }
       if (content.ballImageEnd != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.ballImageEnd!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.ballImageEnd!, context);
       }
       if (content.goalLeftImageMb != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.goalLeftImageMb!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.goalLeftImageMb!, context);
       }
       if (content.goalLeftImageTb != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.goalLeftImageTb!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.goalLeftImageTb!, context);
       }
       if (content.goalRightImageMb != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.goalRightImageMb!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.goalRightImageMb!, context);
       }
       if (content.goalRightImageTb != null) {
-        precacheImage(
-          CachedNetworkImageProvider(content.goalRightImageTb!),
-          context,
-        );
+        _precacheNetworkRasterImage(content.goalRightImageTb!, context);
       }
     } catch (e) {
       rethrow;
@@ -339,7 +318,7 @@ class MediaCacheManager {
     BuildContext context,
   ) {
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
     for (var item in content.items) {
       _precacheItemMedia(item, context);
@@ -352,7 +331,7 @@ class MediaCacheManager {
     BuildContext context,
   ) {
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
     for (var item in content.items) {
       _precacheItemMedia(item, context);
@@ -368,10 +347,10 @@ class MediaCacheManager {
       _precacheMedia(content.audio!);
     }
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
     if (content.bgImageTb != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+      _precacheNetworkRasterImage(content.bgImageTb!, context);
     }
     for (var item in content.items) {
       _precacheItemMedia(item, context);
@@ -403,11 +382,11 @@ class MediaCacheManager {
     TapToChangeLessonContent content,
     BuildContext context,
   ) {
-    precacheImage(CachedNetworkImageProvider(content.bgImage), context);
-    precacheImage(CachedNetworkImageProvider(content.afterBgImage), context);
+    _precacheNetworkRasterImage(content.bgImage, context);
+    _precacheNetworkRasterImage(content.afterBgImage, context);
 
-    precacheImage(CachedNetworkImageProvider(content.bgImageTb), context);
-    precacheImage(CachedNetworkImageProvider(content.afterBgImageTb), context);
+    _precacheNetworkRasterImage(content.bgImageTb, context);
+    _precacheNetworkRasterImage(content.afterBgImageTb, context);
     for (var item in content.items) {
       _precacheItemMedia(item, context);
     }
@@ -415,10 +394,10 @@ class MediaCacheManager {
       _precacheMedia(content.audio!);
     }
     if (content.tapGesture != null) {
-      precacheImage(CachedNetworkImageProvider(content.tapGesture!), context);
+      _precacheNetworkRasterImage(content.tapGesture!, context);
     }
     if (content.splashImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.splashImage!), context);
+      _precacheNetworkRasterImage(content.splashImage!, context);
     }
   }
 
@@ -434,16 +413,16 @@ class MediaCacheManager {
       _precacheMedia(content.audioBeforeOptions!);
     }
     if (content.preBgImageMb != null) {
-      precacheImage(CachedNetworkImageProvider(content.preBgImageMb!), context);
+      _precacheNetworkRasterImage(content.preBgImageMb!, context);
     }
     if (content.preBgImageTb != null) {
-      precacheImage(CachedNetworkImageProvider(content.preBgImageTb!), context);
+      _precacheNetworkRasterImage(content.preBgImageTb!, context);
     }
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
     if (content.bgImageTb != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+      _precacheNetworkRasterImage(content.bgImageTb!, context);
     }
   }
 
@@ -456,13 +435,13 @@ class MediaCacheManager {
       _precacheMedia(content.instruction!);
     }
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
     if (content.bgImageTb != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+      _precacheNetworkRasterImage(content.bgImageTb!, context);
     }
     if (content.image != null) {
-      precacheImage(CachedNetworkImageProvider(content.image!), context);
+      _precacheNetworkRasterImage(content.image!, context);
     }
   }
 
@@ -475,14 +454,14 @@ class MediaCacheManager {
       _precacheMedia(content.instructionAudio!);
     }
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
 
     if (content.bgImageTb != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+      _precacheNetworkRasterImage(content.bgImageTb!, context);
     }
     if (content.bagImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bagImage!), context);
+      _precacheNetworkRasterImage(content.bagImage!, context);
     }
     for (var item in content.items) {
       _precacheItemMedia(item, context);
@@ -495,14 +474,14 @@ class MediaCacheManager {
     BuildContext context,
   ) {
     if (content.bgImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImage!), context);
+      _precacheNetworkRasterImage(content.bgImage!, context);
     }
 
     if (content.bgImageTb != null) {
-      precacheImage(CachedNetworkImageProvider(content.bgImageTb!), context);
+      _precacheNetworkRasterImage(content.bgImageTb!, context);
     }
     if (content.buttonImage != null) {
-      precacheImage(CachedNetworkImageProvider(content.buttonImage!), context);
+      _precacheNetworkRasterImage(content.buttonImage!, context);
     }
     if (content.tapAudio != null) {
       _precacheMedia(content.tapAudio!);
@@ -527,19 +506,21 @@ class MediaCacheManager {
       }
       // Images
       if (item.imageOutline != null && !item.isImageOutlineSvg) {
-        precacheImage(CachedNetworkImageProvider(item.imageOutline!), context);
+        _precacheNetworkRasterImage(item.imageOutline!, context);
       }
       if (!item.isImageSvg) {
-        final image = item.image;
-        final extension = image.split('.').last;
-        if (extension == 'svg') {
-          return;
-        }
-        precacheImage(CachedNetworkImageProvider(image), context);
+        _precacheNetworkRasterImage(item.image, context);
       }
     } catch (e) {
       rethrow;
     }
+  }
+
+  void _precacheNetworkRasterImage(String imageUrl, BuildContext context) {
+    if (isSvgMediaUrl(imageUrl)) {
+      return;
+    }
+    precacheImage(CachedNetworkImageProvider(imageUrl), context);
   }
 
   // Cache audio and video
