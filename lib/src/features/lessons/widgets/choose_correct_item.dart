@@ -15,6 +15,7 @@ class ItemCard extends StatelessWidget {
     required this.size,
     required this.itemCount,
     required this.index,
+    this.availableWidth,
     this.isSelected = false,
     this.onTap,
     this.isCorrect = false,
@@ -30,6 +31,7 @@ class ItemCard extends StatelessWidget {
   final Size size;
   final int itemCount;
   final int index;
+  final double? availableWidth;
   final bool isSelected;
   final String? bgColor;
   final Function()? onTap;
@@ -37,9 +39,11 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
-    final cardWidth = (size.width * 0.75) / itemCount;
+    final rowWidth = availableWidth ?? size.width * 0.75;
+    final horizontalMargin = 16.0;
+    final cardWidth = (rowWidth - (horizontalMargin * itemCount)) / itemCount;
     final maxCardWidth = size.width * 0.25;
-    final finalCardWidth = cardWidth > maxCardWidth ? maxCardWidth : cardWidth;
+    final finalCardWidth = cardWidth.clamp(0.0, maxCardWidth).toDouble();
     final cardHeight = isMobile ? size.height * 0.6 : size.height * 0.50;
     final labelSectionHeight = cardHeight * 0.18;
 

@@ -45,23 +45,26 @@ class ListenAndRepeatBloc
     _Started event,
     Emitter<ListenAndRepeatState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        content: event.content,
-        phase: ListenAndRepeatPhase.playing,
-      ),
-    );
+    final content = event.content;
+    emit(state.copyWith(content: content, phase: ListenAndRepeatPhase.playing));
 
     try {
-      if (state.content == null) {
-        throw Exception('No content provided for Listen and Repeat');
+      if (content.audioWord.isEmpty) {
+        throw Exception('No audio provided for Listen and Repeat');
       }
-      await _audioPlayerService.play(state.content!.audioWord);
+      await _playerSubscription?.cancel();
       _playerSubscription = _audioPlayerService.onPlayerComplete.listen((_) {
-        add(const ListenAndRepeatEvent.audioFinished());
+        if (!isClosed) {
+          add(const ListenAndRepeatEvent.audioFinished());
+        }
       });
+      await _audioPlayerService.play(content.audioWord);
     } catch (e) {
-      add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      await _playerSubscription?.cancel();
+      _playerSubscription = null;
+      if (!isClosed) {
+        add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      }
     }
   }
 
@@ -72,11 +75,13 @@ class ListenAndRepeatBloc
     emit(state.copyWith(phase: ListenAndRepeatPhase.readyToRecord));
 
     await Future.delayed(const Duration(milliseconds: 500));
+    if (isClosed) return;
     await _startRecording(emit);
   }
 
   Future<void> _startRecording(Emitter<ListenAndRepeatState> emit) async {
     try {
+      if (isClosed) return;
       emit(
         state.copyWith(
           phase: ListenAndRepeatPhase.recording,
@@ -86,6 +91,10 @@ class ListenAndRepeatBloc
 
       _recordingTimer?.cancel();
       _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (isClosed) {
+          timer.cancel();
+          return;
+        }
         final elapsed = timer.tick;
         add(ListenAndRepeatEvent.recordingTimerTick(elapsed));
 
@@ -95,11 +104,14 @@ class ListenAndRepeatBloc
         }
       });
     } catch (e) {
-      add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      if (!isClosed) {
+        add(ListenAndRepeatEvent.recordingFailed(e.toString()));
+      }
     }
   }
 
   void _stopRecording() {
+    if (isClosed) return;
     add(ListenAndRepeatEvent.recordingCompleted('test.m4a'));
   }
 
@@ -136,20 +148,25 @@ class ListenAndRepeatBloc
 
   Future<void> _onRetryRequested(Emitter<ListenAndRepeatState> emit) async {
     _recordingTimer?.cancel();
+    _recordingTimer = null;
+    await _playerSubscription?.cancel();
+    _playerSubscription = null;
     await _audioPlayerService.stop();
     final content = state.content;
 
-    emit(ListenAndRepeatState());
+    emit(const ListenAndRepeatState());
     if (content == null) return;
     add(ListenAndRepeatEvent.started(content));
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     _recordingTimer?.cancel();
-    _playerSubscription?.cancel();
-    _audioPlayerService.dispose();
-    _audioRecorderService.dispose();
-    return super.close();
+    _recordingTimer = null;
+    await _playerSubscription?.cancel();
+    _playerSubscription = null;
+    await _audioPlayerService.dispose();
+    await _audioRecorderService.dispose();
+    await super.close();
   }
 }
