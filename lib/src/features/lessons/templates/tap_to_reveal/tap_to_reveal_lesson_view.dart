@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
+import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -293,18 +294,19 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 top: 16,
                 left: 0,
                 right: 0,
-                child: GestureDetector(
-                  onTap:
-                      state.isQuestionAudioPlaying ||
-                          state.isCorrectAudioPlaying
-                      ? null
-                      : () {
-                          final question = state.currentQuestion?.question;
-                          if (question != null && question.isNotEmpty) {
-                            _playQuestionAudio(question);
-                          }
-                        },
-                  child: SvgHelper.fromSource(path: Assets.sound),
+                child: Center(
+                  child: SpeakerIcon(
+                    onTap:
+                        state.isQuestionAudioPlaying ||
+                            state.isCorrectAudioPlaying
+                        ? null
+                        : () {
+                            final question = state.currentQuestion?.question;
+                            if (question != null && question.isNotEmpty) {
+                              _playQuestionAudio(question);
+                            }
+                          },
+                  ),
                 ),
               ),
 
