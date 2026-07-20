@@ -16,6 +16,7 @@ class ChooseCorrect extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.of(context).size;
+    const feedbackButtonHeight = 56.0;
     return ChangeNotifierProvider<ChooseCorrectStoryProvider>(
       create: (context) => ChooseCorrectStoryProvider()..setContent(content),
       child: Builder(
@@ -25,112 +26,147 @@ class ChooseCorrect extends StatelessWidget {
               return Stack(
                 children: [
                   Positioned.fill(
-                    child: Row(
-                      children: [
-                        // Left arrow
-                        Expanded(
-                          flex: 6,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                height: isMobile
-                                    ? size.height * 0.7
-                                    : size.height * 0.6,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (final item in content.conversation)
-                                      ItemCard(
-                                        bgImage: item.icon,
-                                        nameEn: item.messageEn,
-                                        nameNp: item.messageNp,
-                                        bgColor: '#FFFFFF',
-                                        isCorrect: item.correct,
-                                        size: size,
-                                        itemCount: content.conversation.length,
-                                        index: content.conversation.indexOf(
-                                          item,
-                                        ),
-                                        isSelected:
-                                            storyProvider
-                                                .userSelectedConversation ==
-                                            item,
-                                        onTap: () {
-                                          if (storyProvider
-                                              .isCorrectAnswerSelected) {
-                                            return;
-                                          }
-                                          storyProvider.onTappedItem(item);
-                                          MetricsTrackingHelper.trackAnswerAttempt(
-                                            context: context,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final gap = (constraints.maxHeight * 0.04).clamp(
+                          12.0,
+                          28.0,
+                        );
+                        const itemCardVerticalMargin = 16.0;
+                        final availableCardAreaHeight =
+                            (constraints.maxHeight - gap - feedbackButtonHeight)
+                                .clamp(0.0, constraints.maxHeight)
+                                .toDouble();
+                        final targetCardAreaHeight = isMobile
+                            ? size.height * 0.6
+                            : size.height * 0.50;
+                        final cardAreaHeight = targetCardAreaHeight
+                            .clamp(0.0, availableCardAreaHeight)
+                            .toDouble();
+                        final itemCardHeight =
+                            (cardAreaHeight - itemCardVerticalMargin)
+                                .clamp(0.0, cardAreaHeight)
+                                .toDouble();
+
+                        return Row(
+                          children: [
+                            Expanded(
+                              flex: 6,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: cardAreaHeight,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        for (final item in content.conversation)
+                                          ItemCard(
+                                            bgImage: item.icon,
+                                            nameEn: item.messageEn,
+                                            nameNp: item.messageNp,
+                                            bgColor: '#FFFFFF',
                                             isCorrect: item.correct,
-                                          );
-                                        },
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: size.height * 0.04),
-                              // Try again or Correct button
-                              Visibility(
-                                visible:
-                                    storyProvider.userSelectedConversation !=
-                                    null,
-                                maintainSize: true,
-                                maintainAnimation: true,
-                                maintainState: true,
-                                child: SizedBox(
-                                  width: size.width * 0.2,
-                                  child: Consumer<StoryProvider>(
-                                    builder: (context, provider, _) =>
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            if (!storyProvider
-                                                .isCorrectAnswerSelected) {
-                                              storyProvider.clearSelection();
-                                              return;
-                                            }
-                                            if (isLast) {
-                                              Navigator.of(context).pop();
-                                            } else {
-                                              provider.nextContent(context);
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            elevation: 0,
-                                            backgroundColor:
-                                                storyProvider
-                                                    .isCorrectAnswerSelected
-                                                ? AppColors.kButtonGreen
-                                                : AppColors.kButtonRed,
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 16,
+                                            size: size,
+                                            itemCount:
+                                                content.conversation.length,
+                                            index: content.conversation.indexOf(
+                                              item,
                                             ),
+                                            isSelected:
+                                                storyProvider
+                                                    .userSelectedConversation ==
+                                                item,
+                                            height: itemCardHeight,
+                                            onTap: () {
+                                              if (storyProvider
+                                                  .isCorrectAnswerSelected) {
+                                                return;
+                                              }
+                                              storyProvider.onTappedItem(item);
+                                              MetricsTrackingHelper.trackAnswerAttempt(
+                                                context: context,
+                                                isCorrect: item.correct,
+                                              );
+                                            },
                                           ),
-                                          child:
-                                              storyProvider
-                                                  .isCorrectAnswerSelected
-                                              ? Icon(
-                                                  Icons.check,
-                                                  size: 32,
-                                                  color: AppColors.kBlack,
-                                                )
-                                              : Text(
-                                                  "Try again",
-                                                  style: AppStyles.text20PxBold
-                                                      .copyWith(
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: gap),
+                                  // Try again or Correct button
+                                  Visibility(
+                                    visible:
+                                        storyProvider
+                                            .userSelectedConversation !=
+                                        null,
+                                    maintainSize: true,
+                                    maintainAnimation: true,
+                                    maintainState: true,
+                                    child: SizedBox(
+                                      width: size.width * 0.2,
+                                      height: feedbackButtonHeight,
+                                      child: Consumer<StoryProvider>(
+                                        builder: (context, provider, _) =>
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                if (!storyProvider
+                                                    .isCorrectAnswerSelected) {
+                                                  storyProvider
+                                                      .clearSelection();
+                                                  return;
+                                                }
+                                                if (isLast) {
+                                                  Navigator.of(context).pop();
+                                                } else {
+                                                  provider.nextContent(context);
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                backgroundColor:
+                                                    storyProvider
+                                                        .isCorrectAnswerSelected
+                                                    ? AppColors.kButtonGreen
+                                                    : AppColors.kButtonRed,
+                                                foregroundColor:
+                                                    AppColors.kBlack,
+                                                minimumSize: Size.zero,
+                                                padding: EdgeInsets.zero,
+                                                tapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                              ),
+                                              child:
+                                                  storyProvider
+                                                      .isCorrectAnswerSelected
+                                                  ? const Center(
+                                                      child: Icon(
+                                                        Icons.check,
+                                                        size: 32,
                                                         color: AppColors.kBlack,
                                                       ),
-                                                ),
-                                        ),
+                                                    )
+                                                  : Text(
+                                                      "Try again",
+                                                      style: AppStyles
+                                                          .text20PxBold
+                                                          .copyWith(
+                                                            color: AppColors
+                                                                .kBlack,
+                                                          ),
+                                                    ),
+                                            ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                   if (isLast && storyProvider.isCorrectAnswerSelected)
