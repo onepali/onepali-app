@@ -21,9 +21,7 @@ class Assets {
   static String kidSafeSeal = 'kid_safe_seal'.png;
 
   /// [Image] assets
-  static String splashImage = 'splash'.gif;
-  static String mbSplashImage = 'mb_splash'.mp4;
-  static String tbSplashImage = 'tb_splash'.mp4;
+  static String splashVideo = 'splash'.mp4;
 
   /// [Parent] Zone assets
   static String parentZoneImage = 'pz_danfe'.png;
@@ -71,6 +69,7 @@ class Assets {
   static String sound = 'sound'.icon;
   static String sound1 = 'sound1'.icon;
   static String play = 'play'.icon;
+  static String video = 'video'.icon;
   static String redo = 'redo'.icon;
   static String meta = 'meta'.icon;
   static String youtube = 'youtube'.icon;
