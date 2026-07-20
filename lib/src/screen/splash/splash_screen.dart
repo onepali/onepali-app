@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget _buildMobilePortraitSplash() {
     return CustomVideoPlayer(
-      videoPath: Assets.mbSplashImage,
+      videoPath: Assets.splashVideo,
       sourceType: VideoSourceType.asset,
       fit: BoxFit.cover,
       autoPlay: true,
@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget _buildTabletSplash() {
     return CustomVideoPlayer(
-      videoPath: Assets.tbSplashImage,
+      videoPath: Assets.splashVideo,
       sourceType: VideoSourceType.asset,
       fit: BoxFit.cover,
       autoPlay: true,
