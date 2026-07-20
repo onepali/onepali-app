@@ -142,10 +142,19 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
                       ? 32
                       : 16,
                 );
+                final buttonHeight =
+                    PlatformUtility.isTablet(context) &&
+                        PlatformUtility.isLandscape(context)
+                    ? 60.0
+                    : 48.0;
+                final buttonWidth =
+                    PlatformUtility.isTablet(context) &&
+                        PlatformUtility.isLandscape(context)
+                    ? 220.0
+                    : 120.0;
                 if (isSelected) {
                   if (isCorrect == true && correct) {
                     bgColor = AppColors.kButtonGreen;
-                    icon = Assets.check;
                     iconType = 'svg';
                     label = '';
                     textColor = AppColors.kWhite;
@@ -171,22 +180,29 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
                     );
                   }
                 }
+                if (isSelected && isCorrect == true && correct) {
+                  return GestureDetector(
+                    onTap: () {},
+                    child: SizedBox(
+                      width: buttonWidth,
+                      height: buttonHeight,
+                      child: SvgHelper.fromSource(
+                        path: Assets.checkButton,
+                        width: buttonWidth,
+                        height: buttonHeight,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  );
+                }
                 return CustomMaterialButton(
                   backgroundColor: bgColor,
                   showBorder: true,
                   elevation: 0,
                   radius: 60,
-                  height:
-                      PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? 60
-                      : 48,
+                  height: buttonHeight,
                   textStyle: textStyle,
-                  width:
-                      PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? 220
-                      : 120,
+                  width: buttonWidth,
                   onTap: () {
                     if (isCorrect == true && correct) {
                       return;
