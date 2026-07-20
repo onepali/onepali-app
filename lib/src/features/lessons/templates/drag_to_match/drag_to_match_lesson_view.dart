@@ -81,22 +81,14 @@ class _DragToMatchView extends StatelessWidget {
                           (i) => i.nameEn == itemPos.itemId,
                         );
 
-                        final isCurrentTarget =
-                            state.currentTargetItemId == itemPos.itemId;
                         return Padding(
                           padding: const EdgeInsets.only(right: 4),
-                          child: Opacity(
-                            opacity: isCurrentTarget ? 1.0 : 0.6,
-                            child: _DraggableItem(
-                              position: itemPos,
-                              item: item,
-                              totalItems: state.itemPositions.length,
-                              isBeingDragged:
-                                  state.draggedItemId == itemPos.itemId,
-                              isPlayingAudio:
-                                  state.currentPlayingAudioId == itemPos.itemId,
-                              isCurrentTarget: isCurrentTarget,
-                            ),
+                          child: _DraggableItem(
+                            position: itemPos,
+                            item: item,
+                            totalItems: state.itemPositions.length,
+                            isBeingDragged:
+                                state.draggedItemId == itemPos.itemId,
                           ),
                         );
                       }).toList(),
@@ -178,16 +170,12 @@ class _DraggableItem extends StatelessWidget {
   final ItemPosition position;
   final Item item;
   final bool isBeingDragged;
-  final bool isPlayingAudio;
-  final bool isCurrentTarget;
   final int totalItems;
 
   const _DraggableItem({
     required this.position,
     required this.item,
     required this.isBeingDragged,
-    required this.isPlayingAudio,
-    required this.isCurrentTarget,
     required this.totalItems,
   });
 
@@ -210,8 +198,6 @@ class _DraggableItem extends StatelessWidget {
         child: _ItemWidget(
           item: item,
           isBeingDragged: true,
-          isPlayingAudio: false,
-          isCurrentTarget: false,
           onSpeakerTap: null,
           totalItems: totalItems,
         ),
@@ -219,16 +205,12 @@ class _DraggableItem extends StatelessWidget {
       childWhenDragging: _ItemWidget(
         item: item,
         isBeingDragged: false,
-        isPlayingAudio: false,
-        isCurrentTarget: false,
         onSpeakerTap: null,
         totalItems: totalItems,
       ),
       child: _ItemWidget(
         item: item,
         isBeingDragged: isBeingDragged,
-        isPlayingAudio: isPlayingAudio,
-        isCurrentTarget: isCurrentTarget,
         onSpeakerTap: () {
           bloc.add(DragToMatchEvent.playItemAudio(itemId: item.nameEn));
         },
@@ -241,16 +223,12 @@ class _DraggableItem extends StatelessWidget {
 class _ItemWidget extends StatelessWidget {
   final Item item;
   final bool isBeingDragged;
-  final bool isPlayingAudio;
-  final bool isCurrentTarget;
   final VoidCallback? onSpeakerTap;
   final int totalItems;
 
   const _ItemWidget({
     required this.item,
     required this.isBeingDragged,
-    required this.isPlayingAudio,
-    required this.isCurrentTarget,
     this.onSpeakerTap,
     required this.totalItems,
   });
@@ -267,12 +245,6 @@ class _ItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.kStoryColor.withAlpha(100),
         borderRadius: BorderRadius.circular(12),
-
-        // border: isCurrentTarget
-        //     ? Border.all(color: AppColors.kGreen, width: 2)
-        //     : isPlayingAudio
-        //     ? Border.all(color: Colors.orange, width: 3)
-        //     : null,
       ),
       child: Center(
         child: ClipRRect(

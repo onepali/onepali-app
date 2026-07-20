@@ -88,13 +88,35 @@ void main() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final bool logged;
   final bool isParentLogged;
   const MyApp({super.key, required this.logged, required this.isParentLogged});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    final initialRoute = AppInitializer.getInitialRoute(
+      widget.logged,
+      widget.isParentLogged,
+    );
+    AppInitializer.setInitialRouteOrientation(initialRoute).catchError((e) {
+      logger.w('⚠️ Failed to set initial orientation: $e');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AppInitializer.appMaterialApp(context, logged, isParentLogged);
+    return AppInitializer.appMaterialApp(
+      context,
+      widget.logged,
+      widget.isParentLogged,
+    );
   }
 }
