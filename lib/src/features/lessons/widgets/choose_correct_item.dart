@@ -20,6 +20,7 @@ class ItemCard extends StatelessWidget {
     this.onTap,
     this.isCorrect = false,
     this.bgColor,
+    this.height,
   });
 
   final String nameEn;
@@ -35,6 +36,7 @@ class ItemCard extends StatelessWidget {
   final bool isSelected;
   final String? bgColor;
   final Function()? onTap;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,8 @@ class ItemCard extends StatelessWidget {
     final cardWidth = (rowWidth - (horizontalMargin * itemCount)) / itemCount;
     final maxCardWidth = size.width * 0.25;
     final finalCardWidth = cardWidth.clamp(0.0, maxCardWidth).toDouble();
-    final cardHeight = isMobile ? size.height * 0.6 : size.height * 0.50;
+    final cardHeight =
+        height ?? (isMobile ? size.height * 0.6 : size.height * 0.50);
     final labelSectionHeight = cardHeight * 0.18;
 
     return GestureDetector(
