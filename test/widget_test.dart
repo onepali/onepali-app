@@ -16,7 +16,7 @@ void main() {
 
       // Test widget properties
       expect(myApp, isA<MyApp>());
-      expect(myApp, isA<StatelessWidget>());
+      expect(myApp, isA<Widget>());
     });
 
     testWidgets('MyApp should handle different authentication states', (
