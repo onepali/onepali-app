@@ -1,8 +1,8 @@
 # Tea Making Template
 
 - Type: `tea_making`
-- View: `lib/src/features/tea_maker/pages/kitchen_page.dart`
-- Logic: feature-specific tea maker state/logic inside tea maker module
+- View: `lib/src/features/lessons/templates/tea_making/pages/kitchen_page.dart`
+- Logic: feature-specific tea-making state/logic inside this lesson template
 
 ## Variables (`TeaMakingLessonContent`)
 - `id`, `index`, `type`
