@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
@@ -19,8 +22,75 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   int? selectedIdx;
   bool? isCorrect;
   bool showTryAgain = false;
+  late final AudioPlayerService _optionAudioService;
+  int _selectionGeneration = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _optionAudioService = AudioPlayerServiceImpl();
+  }
+
+  @override
+  void dispose() {
+    _selectionGeneration++;
+    unawaited(_optionAudioService.dispose());
+    super.dispose();
+  }
+
+  Future<void> _playSelectionAudio(
+    Conversation option,
+    StoryProvider storyProvider,
+    int selectionGeneration,
+    bool correct,
+  ) async {
+    await _optionAudioService.stop().catchError((_) {});
+    await storyProvider.stopAudio();
+    if (!mounted || selectionGeneration != _selectionGeneration) {
+      return;
+    }
+
+    final feedbackAsset = correct ? Assets.starBlast : Assets.wrongSfx;
+    final feedbackComplete = _optionAudioService.onPlayerComplete.first.timeout(
+      const Duration(seconds: 3),
+      onTimeout: () {},
+    );
+
+    var didStartFeedback = false;
+    try {
+      await _optionAudioService.playAsset(feedbackAsset);
+      didStartFeedback = true;
+    } catch (error) {
+      logger.e('Error playing story feedback audio: $error');
+    }
+
+    if (didStartFeedback) {
+      await feedbackComplete.catchError((_) {});
+    }
+
+    if (!mounted || selectionGeneration != _selectionGeneration) {
+      return;
+    }
+
+    final audioItem = option.audioItem;
+    if (audioItem == null || audioItem.isEmpty) {
+      return;
+    }
+
+    final optionComplete = _optionAudioService.onPlayerComplete.first.timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {},
+    );
+    try {
+      await _optionAudioService.play(audioItem);
+      await optionComplete.catchError((_) {});
+    } catch (error) {
+      logger.e('Error playing story option audio: $error');
+    }
+  }
 
   void _handleTap(int i, StoryProvider storyProvider) async {
+    final selectionGeneration = ++_selectionGeneration;
     final opt = widget.content.conversation[i];
     final correct = opt.correct == true;
     setState(() {
@@ -28,6 +98,12 @@ class ButtonTapContentState extends State<ButtonTapContent> {
       isCorrect = correct;
       showTryAgain = !correct;
     });
+    final selectionAudio = _playSelectionAudio(
+      opt,
+      storyProvider,
+      selectionGeneration,
+      correct,
+    );
 
     // Track the answer for parent metrics
     if (storyProvider.currentStory != null) {
@@ -41,16 +117,16 @@ class ButtonTapContentState extends State<ButtonTapContent> {
     }
 
     if (correct) {
-      await Future.delayed(const Duration(milliseconds: 800));
-      if (mounted) {
+      await Future.wait([
+        selectionAudio,
+        Future.delayed(const Duration(milliseconds: 800)),
+      ]);
+      if (mounted && selectionGeneration == _selectionGeneration) {
         storyProvider.nextContent(context);
       }
+    } else {
+      unawaited(selectionAudio);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
