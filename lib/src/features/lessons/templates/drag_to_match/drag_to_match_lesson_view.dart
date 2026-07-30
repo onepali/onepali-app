@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/templates/drag_to_match/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
+
+const double _itemSpacing = 4.0;
 
 class DragToMatchScreen extends StatelessWidget {
   final DragToMatchLessonContent lessonContent;
@@ -44,8 +47,6 @@ class _DragToMatchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final Size padding = Size(size.width * 0.05, size.height * 0.05);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: BlocConsumer<DragToMatchBloc, DragToMatchState>(
@@ -65,99 +66,134 @@ class _DragToMatchView extends StatelessWidget {
 
           return Stack(
             children: [
-              // 1. Draggable Items Row (Top)
-              // We use AnimatedOpacity to fade it out when finished
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
-                opacity: allMatched ? 0.0 : 1.0,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: padding.height),
+              LessonContentFrame(
+                reserveLeftControl: false,
+                builder: (context, constraints) {
+                  final contentSize = Size(
+                    constraints.maxWidth,
+                    constraints.maxHeight,
+                  );
+                  final groupWidth = contentSize.width;
+                  final groupSize = Size(groupWidth, contentSize.height);
+                  final rowSpacing = contentSize.height * 0.04;
+
+                  final draggableRow = SizedBox(
+                    width: groupWidth,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: state.itemPositions.map((itemPos) {
+                      children: List.generate(state.itemPositions.length, (
+                        index,
+                      ) {
+                        final itemPos = state.itemPositions[index];
                         final item = items.firstWhere(
                           (i) => i.nameEn == itemPos.itemId,
                         );
 
                         return Padding(
-                          padding: const EdgeInsets.only(right: 4),
+                          padding: EdgeInsets.only(
+                            right: index == state.itemPositions.length - 1
+                                ? 0
+                                : _itemSpacing,
+                          ),
                           child: _DraggableItem(
                             position: itemPos,
                             item: item,
                             totalItems: state.itemPositions.length,
+                            availableSize: groupSize,
                             isBeingDragged:
                                 state.draggedItemId == itemPos.itemId,
                           ),
                         );
-                      }).toList(),
+                      }),
                     ),
-                  ),
-                ),
-              ),
+                  );
 
-              // 2. Animated Outline Target Row
-              // This will move from the bottom area to the center
-              AnimatedAlign(
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeInOutBack, // Adds a nice "pop" effect
-                alignment: allMatched
-                    ? Alignment.center
-                    : const Alignment(0, 0.8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: state.outlinePositions.map((outlinePos) {
-                    final item = items.firstWhere(
-                      (i) => i.nameEn == outlinePos.itemId,
-                    );
-                    return _OutlineTarget(
-                      position: outlinePos,
-                      item: item,
-                      isMatched: outlinePos.isMatched,
-                      totalItems: state.outlinePositions.length,
-                    );
-                  }).toList(),
-                ),
-              ),
+                  final outlineRow = SizedBox(
+                    width: groupWidth,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(state.outlinePositions.length, (
+                        index,
+                      ) {
+                        final outlinePos = state.outlinePositions[index];
+                        final item = items.firstWhere(
+                          (i) => i.nameEn == outlinePos.itemId,
+                        );
 
-              if (state.showNepaliword)
-                Positioned.fill(
-                  child: Center(
-                    child: LabelDisplay(
-                      nameNp: state.itemPositions
-                          .firstWhere(
-                            (i) => i.itemId == state.currentTargetItemId,
-                          )
-                          .nameNp,
-                      nameEn: state.itemPositions
-                          .firstWhere((i) => i.itemId == state.draggedItemId)
-                          .nameNp,
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            right: index == state.outlinePositions.length - 1
+                                ? 0
+                                : _itemSpacing,
+                          ),
+                          child: _OutlineTarget(
+                            position: outlinePos,
+                            item: item,
+                            isMatched: outlinePos.isMatched,
+                            totalItems: state.outlinePositions.length,
+                            availableSize: groupSize,
+                          ),
+                        );
+                      }),
                     ),
-                  ),
-                ),
+                  );
+
+                  return SizedBox.expand(
+                    child: Stack(
+                      children: [
+                        if (allMatched)
+                          Center(child: outlineRow)
+                        else
+                          Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                draggableRow,
+                                SizedBox(height: rowSpacing),
+                                outlineRow,
+                              ],
+                            ),
+                          ),
+                        if (state.showNepaliword)
+                          Positioned.fill(
+                            child: Center(
+                              child: LabelDisplay(
+                                nameNp: state.itemPositions
+                                    .firstWhere(
+                                      (i) =>
+                                          i.itemId == state.currentTargetItemId,
+                                    )
+                                    .nameNp,
+                                nameEn: state.itemPositions
+                                    .firstWhere(
+                                      (i) => i.itemId == state.draggedItemId,
+                                    )
+                                    .nameNp,
+                              ),
+                            ),
+                          ),
+                        if (state.showCat)
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Image.asset(
+                              Assets.goodRemark1,
+                              height: contentSize.height * 0.5,
+                              width: contentSize.height * 0.5,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
 
               // Close button
-              Positioned(
-                top: 16,
-                right: 16,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: SvgHelper.fromSource(path: Assets.wrong),
-                ),
+              TopRightPositionedCloseButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              if (state.showCat)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Image.asset(
-                    Assets.goodRemark1,
-                    height: size.height * 0.5,
-                    width: size.height * 0.5,
-                    fit: BoxFit.cover,
-                  ),
-                ),
             ],
           );
         },
@@ -171,12 +207,14 @@ class _DraggableItem extends StatelessWidget {
   final Item item;
   final bool isBeingDragged;
   final int totalItems;
+  final Size availableSize;
 
   const _DraggableItem({
     required this.position,
     required this.item,
     required this.isBeingDragged,
     required this.totalItems,
+    required this.availableSize,
   });
 
   @override
@@ -200,6 +238,7 @@ class _DraggableItem extends StatelessWidget {
           isBeingDragged: true,
           onSpeakerTap: null,
           totalItems: totalItems,
+          availableSize: availableSize,
         ),
       ),
       childWhenDragging: _ItemWidget(
@@ -207,6 +246,7 @@ class _DraggableItem extends StatelessWidget {
         isBeingDragged: false,
         onSpeakerTap: null,
         totalItems: totalItems,
+        availableSize: availableSize,
       ),
       child: _ItemWidget(
         item: item,
@@ -215,6 +255,7 @@ class _DraggableItem extends StatelessWidget {
           bloc.add(DragToMatchEvent.playItemAudio(itemId: item.nameEn));
         },
         totalItems: totalItems,
+        availableSize: availableSize,
       ),
     );
   }
@@ -225,18 +266,25 @@ class _ItemWidget extends StatelessWidget {
   final bool isBeingDragged;
   final VoidCallback? onSpeakerTap;
   final int totalItems;
+  final Size availableSize;
 
   const _ItemWidget({
     required this.item,
     required this.isBeingDragged,
     this.onSpeakerTap,
     required this.totalItems,
+    required this.availableSize,
   });
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final width = (size.width - size.width * 0.15) / totalItems;
+    final size = availableSize;
+    final gapCount = totalItems > 1 ? totalItems - 1 : 0;
+    final width = totalItems == 0
+        ? 0.0
+        : ((size.width - (_itemSpacing * gapCount)) / totalItems)
+              .clamp(0.0, size.width)
+              .toDouble();
     final height = (size.height - size.height * 0.4) / 2;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -266,18 +314,25 @@ class _OutlineTarget extends StatelessWidget {
   final Item item;
   final bool isMatched;
   final int totalItems;
+  final Size availableSize;
 
   const _OutlineTarget({
     required this.position,
     required this.item,
     required this.isMatched,
     required this.totalItems,
+    required this.availableSize,
   });
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final width = (size.width - size.width * 0.15) / totalItems;
+    final size = availableSize;
+    final gapCount = totalItems > 1 ? totalItems - 1 : 0;
+    final width = totalItems == 0
+        ? 0.0
+        : ((size.width - (_itemSpacing * gapCount)) / totalItems)
+              .clamp(0.0, size.width)
+              .toDouble();
     final height = (size.height - size.height * 0.4) / 2;
 
     final bloc = context.read<DragToMatchBloc>();

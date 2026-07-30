@@ -35,10 +35,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
             childId: widget.childId,
           ),
           // Close button at top-right corner
-          TopRightPositionedCloseButton(
-            iconPath: Assets.closeGreyIcon,
-            onTap: () => Navigator.pop(context),
-          ),
+          TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
         ],
       ),
     );

@@ -58,52 +58,52 @@ class _NewSongsScreenState extends State<NewSongsScreen> {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
+    final closeButtonPadding = isMobile
+        ? closeBtnPositionMobile
+        : closeBtnPositionTablet;
+    final closeButtonSize = isMobile
+        ? closeBtnIconSizeMobile
+        : closeBtnIconSizeTablet;
 
     return Scaffold(
       body: Column(
         children: [
-          Stack(
-            children: [
-              Positioned.fill(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: isMobile
-                        ? closeBtnPositionMobile
-                        : closeBtnPositionTablet,
-                    right:
-                        (isMobile
-                            ? closeBtnPositionMobile
-                            : closeBtnPositionTablet) +
-                        56,
-                  ),
-                  child: Center(child: _buildTitleText(context, widget.title)),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
+          SafeArea(
+            right: false,
+            bottom: false,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Padding(
                     padding: EdgeInsets.only(
-                      top: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                      bottom: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                      right: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
+                      left: closeButtonPadding,
+                      right: closeButtonPadding + closeButtonSize,
                     ),
-                    child: CustomCloseButton(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
+                    child: Center(
+                      child: _buildTitleText(context, widget.title),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: closeButtonPadding,
+                        bottom: closeButtonPadding,
+                        right: closeButtonPadding,
+                      ),
+                      child: CustomCloseButton(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: StreamBuilder(
@@ -114,53 +114,58 @@ class _NewSongsScreenState extends State<NewSongsScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final data = snapshot.data!.docs;
-                  return GridView.builder(
-                    itemCount: data.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3 / 2.0,
-                      mainAxisSpacing: 24.0,
-                      crossAxisSpacing: 24.0,
-                    ),
-                    padding: const EdgeInsets.only(
-                      right: 24,
-                      left: 24,
-                      bottom: 24,
-                    ),
-                    itemBuilder: (context, index) {
-                      final data = snapshot.data!.docs;
-                      final songDoc = data[index];
-                      return ContentCard(
-                        showPlay: true,
-                        isCompleted: _completedSongIds.contains(songDoc.id),
-                        nameEn: songDoc['title_en'],
-                        nameNp: 'nameNp',
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => SongVideoPlayerScreen(
-                                youtubeUrl: songDoc['media']['youtube_link'],
-                                title: songDoc['title_en'],
-                                subtitle: '',
-                                isLocked: false,
-                                info: '',
-                                songId: songDoc.id,
-                                initialPosition: 0.0,
-                                image: Utility.generateYoutubeThumbnailUrl(
-                                  songDoc['media']['youtube_link'],
+                  return SafeArea(
+                    right: false,
+                    bottom: false,
+                    top: false,
+                    child: GridView.builder(
+                      itemCount: data.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 3 / 2.0,
+                        mainAxisSpacing: 24.0,
+                        crossAxisSpacing: 24.0,
+                      ),
+                      padding: const EdgeInsets.only(
+                        right: 24,
+                        left: 24,
+                        bottom: 24,
+                      ),
+                      itemBuilder: (context, index) {
+                        final data = snapshot.data!.docs;
+                        final songDoc = data[index];
+                        return ContentCard(
+                          showPlay: true,
+                          isCompleted: _completedSongIds.contains(songDoc.id),
+                          nameEn: songDoc['title_en'],
+                          nameNp: 'nameNp',
+                          onTap: () async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => SongVideoPlayerScreen(
+                                  youtubeUrl: songDoc['media']['youtube_link'],
+                                  title: songDoc['title_en'],
+                                  subtitle: '',
+                                  isLocked: false,
+                                  info: '',
+                                  songId: songDoc.id,
+                                  initialPosition: 0.0,
+                                  image: Utility.generateYoutubeThumbnailUrl(
+                                    songDoc['media']['youtube_link'],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                          if (!context.mounted) return;
-                          await _loadCompletedSongIds();
-                        },
-                        image: null,
-                        bgImage: Utility.generateYoutubeThumbnailUrl(
-                          songDoc['media']['youtube_link'],
-                        ),
-                      );
-                    },
+                            );
+                            if (!context.mounted) return;
+                            await _loadCompletedSongIds();
+                          },
+                          image: null,
+                          bgImage: Utility.generateYoutubeThumbnailUrl(
+                            songDoc['media']['youtube_link'],
+                          ),
+                        );
+                      },
+                    ),
                   );
                 } else {
                   return const Center(child: CircularProgressIndicator());

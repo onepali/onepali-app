@@ -1,10 +1,11 @@
 import 'dart:async';
 
-// import 'dart:math';
+import 'dart:math' as math;
 
 // import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import 'tap_send_lesson_card.dart';
@@ -345,18 +346,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
             ),
           ),
         ),
-      Positioned(
-        top: 16,
-        right: 0,
-        child: CircularButtonWidget(
-          type: CircularButtonType.close,
-          onPressed: () async {
-            await _stopLessonAudio();
-            if (!mounted) return;
-            _saveCurrentProgress();
-            Navigator.of(context).pop();
-          },
-        ),
+      TopRightPositionedCloseButton(
+        onTap: () async {
+          await _stopLessonAudio();
+          if (!mounted) return;
+          _saveCurrentProgress();
+          Navigator.of(context).pop();
+        },
       ),
     ];
   }
@@ -380,43 +376,46 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           left: 0,
           right: 0,
           child: Center(
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.kWhite.withValues(alpha: 0.95),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.kBlack.withValues(alpha: 0.2),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomImage(
-                    Assets.goodRemark,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    imageType: CustomImageType.local,
-                  ),
-                  Gaps.verticalGapOf(16),
-                  Text(
-                    'Excellent Work!',
-                    style: AppStyles.text24PxBold.copyWith(
-                      color: AppColors.kButtonGreen,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.kWhite.withValues(alpha: 0.95),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.kBlack.withValues(alpha: 0.2),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
                     ),
-                  ),
-                  Gaps.verticalGapOf(8),
-                  Text(
-                    'Lesson Completed Successfully',
-                    style: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kSecondaryColor,
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomImage(
+                      Assets.goodRemark,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      imageType: CustomImageType.local,
                     ),
-                  ),
-                ],
+                    Gaps.verticalGapOf(16),
+                    Text(
+                      'Excellent Work!',
+                      style: AppStyles.text24PxBold.copyWith(
+                        color: AppColors.kButtonGreen,
+                      ),
+                    ),
+                    Gaps.verticalGapOf(8),
+                    Text(
+                      'Lesson Completed Successfully',
+                      style: AppStyles.text16PxMedium.copyWith(
+                        color: AppColors.kSecondaryColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -590,16 +589,35 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       return LayoutBuilder(
         builder: (context, constraints) {
           final availableWidth = constraints.maxWidth;
-          // Percentage-based layout: 10% left arrow, 40% animation, 35% text/audio, 10% right arrow
-          // 3 padding sections of 1.67% each = 5% total padding
-          final leftArrowWidth = availableWidth * 0.10;
-          final animationBoxWidth = availableWidth * 0.40;
-          final textAudioWidth = availableWidth * 0.35;
-          final rightArrowWidth = availableWidth * 0.10;
           final padding =
               availableWidth *
               (0.05 /
                   3); // ~1.67% padding between sections to total exactly 100%
+          final minArrowSlotWidth = Dimensions.iconSizeLarge;
+          final arrowSlotWidth = availableWidth * 0.10 < minArrowSlotWidth
+              ? minArrowSlotWidth
+              : availableWidth * 0.10;
+          final contentEdgeGap = padding < 24 ? 24.0 : padding;
+          final contentAreaWidth = math.max(
+            0.0,
+            availableWidth -
+                (arrowSlotWidth * 2) -
+                (contentEdgeGap * 2) -
+                padding,
+          );
+          final availableHeight = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : MediaQuery.sizeOf(context).height;
+          final preferredAnimationBoxWidth = contentAreaWidth * (0.40 / 0.75);
+          final maxAnimationBoxWidthForHeight = availableHeight / 0.65625;
+          final animationBoxWidth = math.min(
+            preferredAnimationBoxWidth,
+            maxAnimationBoxWidthForHeight,
+          );
+          final textAudioWidth = math.max(
+            0.0,
+            contentAreaWidth - animationBoxWidth,
+          );
 
           return SizedBox(
             width: availableWidth,
@@ -609,7 +627,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               children: [
                 // Left arrow: fixed 10% width, centered like right arrow
                 SizedBox(
-                  width: leftArrowWidth,
+                  width: arrowSlotWidth,
                   child: Center(
                     child: CircularButtonWidget(
                       type: CircularButtonType.leftArrow,
@@ -617,7 +635,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: padding),
+                SizedBox(width: contentEdgeGap),
 
                 // Animation box: fixed 40% width, with constraints to prevent overflow
                 SizedBox(
@@ -634,7 +652,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: padding),
+                SizedBox(width: contentEdgeGap),
 
                 // Text and audio area: fixed 35% width
                 SizedBox(
@@ -758,7 +776,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 // Right arrow: fixed 10% width (or empty space if last item)
                 if (!isLast)
                   SizedBox(
-                    width: rightArrowWidth,
+                    width: arrowSlotWidth,
                     child: Center(
                       child: CircularButtonWidget(
                         type: CircularButtonType.rightArrow,
@@ -767,7 +785,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     ),
                   )
                 else
-                  SizedBox(width: rightArrowWidth),
+                  SizedBox(width: arrowSlotWidth),
               ],
             ),
           );
@@ -1088,6 +1106,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     if (isAnimalLesson) mainContent,
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
                       child: Stack(
                         children: [
                           ...actionButtons,
@@ -1127,6 +1146,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   if (isAnimalLesson) mainContent,
                   // Content with SafeArea for interactive elements
                   SafeArea(
+                    right: false,
                     child: Stack(
                       children: [
                         ...actionButtons,

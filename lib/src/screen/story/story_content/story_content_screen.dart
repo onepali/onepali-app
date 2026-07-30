@@ -368,6 +368,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     _buildFullScreenBackground(backgroundImage),
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
                       child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
@@ -388,6 +389,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                     ),
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
                       child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
@@ -398,6 +400,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               return Container(
                 color: AppColors.kSkyBlue,
                 child: SafeArea(
+                  right: false,
                   child: Stack(children: [mainContent, ...actionButtons]),
                 ),
               );

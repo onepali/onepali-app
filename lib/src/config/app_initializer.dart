@@ -132,11 +132,10 @@ class AppInitializer {
     final portraitRoutes = OrientationRouteObserver.portraitRoutes;
     final shouldBePortrait = portraitRoutes.contains(initialRoute);
 
-    // Use "allow all then lock" pattern for better reliability
+    // Use the same landscape side everywhere so the camera/notch stays left.
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
 
@@ -149,7 +148,6 @@ class AppInitializer {
       ]);
     } else {
       await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
     }

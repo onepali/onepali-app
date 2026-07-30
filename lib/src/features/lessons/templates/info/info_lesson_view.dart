@@ -222,67 +222,64 @@ class _InfoLessonViewState extends State<InfoLessonView> {
             widget.content.video?.isNotEmpty == true && !state.isVideoCompleted;
         final content = state.lessonContent!;
 
-        return Center(
+        return SizedBox.expand(
           child: Stack(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: CenterLeftAlignedBackButton(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.previousContent(),
-                        );
-                      },
-                    ),
-                  ),
-
-                  Expanded(
-                    flex: 4,
-                    child: _buildMediaContent(content, showVideo),
-                  ),
-
-                  // Information Section
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              LessonContentFrame(
+                builder: (context, _) {
+                  return Center(
+                    child: Row(
                       children: [
-                        Text(
-                          content.nameNp,
-                          style: AppStyles.text32PxBold.copyWith(
-                            color: AppColors.kDrawerBgColor,
-                            fontFamily: AppConstants.kMuktaFont,
-                            fontSize: 64,
+                        Expanded(
+                          flex: 4,
+                          child: _buildMediaContent(content, showVideo),
+                        ),
+
+                        // Information Section
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                content.nameNp,
+                                style: AppStyles.text32PxBold.copyWith(
+                                  color: AppColors.kDrawerBgColor,
+                                  fontFamily: AppConstants.kMuktaFont,
+                                  fontSize: 64,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                content.nameEn,
+                                style: AppStyles.text20PxMedium.copyWith(
+                                  fontSize: 32,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              SpeakerIcon(onTap: _replayAudio),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Text(
-                          content.nameEn,
-                          style: AppStyles.text20PxMedium.copyWith(
-                            fontSize: 32,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        SpeakerIcon(onTap: _replayAudio),
                       ],
                     ),
-                  ),
-
-                  Expanded(
-                    flex: 1,
-                    child: CenterRightAlignedForwardButton(
-                      onTap: () {
-                        context.read<LessonBloc>().add(
-                          const LessonEvent.nextContent(),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-
+              CenterLeftAlignedBackButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(
+                    const LessonEvent.previousContent(),
+                  );
+                },
+              ),
+              CenterRightAlignedForwardButton(
+                onTap: () {
+                  context.read<LessonBloc>().add(
+                    const LessonEvent.nextContent(),
+                  );
+                },
+              ),
               TopRightPositionedCloseButton(
                 onTap: () => Navigator.of(context).pop(),
               ),

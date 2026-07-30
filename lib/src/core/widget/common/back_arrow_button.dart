@@ -23,18 +23,26 @@ class BackArrowButton extends StatelessWidget {
 }
 
 /// Keeps the back button clear of the left safe area.
+double leftAlignedBackButtonPadding(BuildContext context) {
+  final isMobile = PlatformUtility.isMobile(context);
+  final mediaQuery = MediaQuery.of(context);
+  final hasLeftSystemInset =
+      mediaQuery.padding.left > 0 || mediaQuery.viewPadding.left > 0;
+
+  return hasLeftSystemInset ? 0 : (isMobile ? 24 : 32);
+}
+
 class CenterLeftAlignedBackButton extends StatelessWidget {
   const CenterLeftAlignedBackButton({super.key, this.onTap});
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.only(left: isMobile ? 24 : 32),
+        padding: EdgeInsets.only(left: leftAlignedBackButtonPadding(context)),
         child: SafeArea(
-          right: true,
+          right: false,
           bottom: false,
           top: false,
           left: true,

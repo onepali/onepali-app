@@ -50,6 +50,9 @@ class _LessonCategoryPageState extends State<LessonCategoryPage> {
         fontWeight: FontWeight.bold,
         color: AppColors.kDrawerBgColor,
       ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
     );
   }
 
@@ -63,44 +66,52 @@ class _LessonCategoryPageState extends State<LessonCategoryPage> {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
+    final closeButtonPadding = isMobile
+        ? closeBtnPositionMobile
+        : closeBtnPositionTablet;
+    final closeButtonSize = isMobile
+        ? closeBtnIconSizeMobile
+        : closeBtnIconSizeTablet;
 
     return Scaffold(
       body: Column(
         children: [
-          Stack(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
+          SafeArea(
+            right: false,
+            bottom: false,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Padding(
                     padding: EdgeInsets.only(
-                      top: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                      bottom: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
-                      right: isMobile
-                          ? closeBtnPositionMobile
-                          : closeBtnPositionTablet,
+                      left: closeButtonPadding,
+                      right: closeButtonPadding + closeButtonSize,
                     ),
-                    child: CustomCloseButton(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
+                    child: Center(
+                      child: _buildTitleText(context, widget.title),
                     ),
                   ),
-                ],
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: Center(child: _buildTitleText(context, widget.title)),
-              ),
-            ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: closeButtonPadding,
+                        bottom: closeButtonPadding,
+                        right: closeButtonPadding,
+                      ),
+                      child: CustomCloseButton(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: StreamBuilder(
@@ -110,39 +121,44 @@ class _LessonCategoryPageState extends State<LessonCategoryPage> {
                   final data = snapshot.data!.docs
                       .where((lesson) => lesson.data()['active'] != false)
                       .toList();
-                  return GridView.builder(
-                    itemCount: data.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3 / 2.0,
-                      mainAxisSpacing: 16.0,
-                      crossAxisSpacing: 16.0,
+                  return SafeArea(
+                    right: false,
+                    bottom: false,
+                    top: false,
+                    child: GridView.builder(
+                      itemCount: data.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 3 / 2.0,
+                        mainAxisSpacing: 16.0,
+                        crossAxisSpacing: 16.0,
+                      ),
+                      padding: const EdgeInsets.only(
+                        right: 24,
+                        left: 24,
+                        bottom: 24,
+                      ),
+                      itemBuilder: (context, index) {
+                        final lesson = data[index];
+                        final lessonData = lesson.data();
+                        return ContentCard(
+                          nameEn: lessonData['name'] as String? ?? '',
+                          bgColor: lessonData['bg_color'] as String?,
+                          nameNp: lessonData['name_np'] as String? ?? '',
+                          onTap: () async {
+                            await Utility.navigateMaterialRoute(
+                              context,
+                              LessonPage(lessonId: lesson.id),
+                            );
+                            if (!context.mounted) return;
+                            await _loadCompletedLessonIds();
+                          },
+                          image: lessonData['image'] as String?,
+                          bgImage: lessonData['bg_image'] as String?,
+                          isCompleted: _completedLessonIds.contains(lesson.id),
+                        );
+                      },
                     ),
-                    padding: const EdgeInsets.only(
-                      right: 24,
-                      left: 24,
-                      bottom: 24,
-                    ),
-                    itemBuilder: (context, index) {
-                      final lesson = data[index];
-                      final lessonData = lesson.data();
-                      return ContentCard(
-                        nameEn: lessonData['name'] as String? ?? '',
-                        bgColor: lessonData['bg_color'] as String?,
-                        nameNp: lessonData['name_np'] as String? ?? '',
-                        onTap: () async {
-                          await Utility.navigateMaterialRoute(
-                            context,
-                            LessonPage(lessonId: lesson.id),
-                          );
-                          if (!context.mounted) return;
-                          await _loadCompletedLessonIds();
-                        },
-                        image: lessonData['image'] as String?,
-                        bgImage: lessonData['bg_image'] as String?,
-                        isCompleted: _completedLessonIds.contains(lesson.id),
-                      );
-                    },
                   );
                 } else {
                   return const Center(child: CircularProgressIndicator());

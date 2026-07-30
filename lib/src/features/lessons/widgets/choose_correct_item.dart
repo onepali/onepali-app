@@ -44,7 +44,9 @@ class ItemCard extends StatelessWidget {
     final rowWidth = availableWidth ?? size.width * 0.75;
     final horizontalMargin = 16.0;
     final cardWidth = (rowWidth - (horizontalMargin * itemCount)) / itemCount;
-    final maxCardWidth = size.width * 0.25;
+    final maxCardWidth = availableWidth == null
+        ? size.width * 0.25
+        : double.infinity;
     final finalCardWidth = cardWidth.clamp(0.0, maxCardWidth).toDouble();
     final cardHeight =
         height ?? (isMobile ? size.height * 0.6 : size.height * 0.50);

@@ -6,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:onepali/src/core/widget/custom_audio_widget.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -47,6 +50,7 @@ class LessonPage extends StatefulWidget {
 
 class _LessonPageState extends State<LessonPage> {
   int? _lastContentIndex;
+  int? _introNavigationReadyIndex;
   LessonDetail? _lastCachedLessonDetails;
 
   @override
@@ -89,6 +93,7 @@ class _LessonPageState extends State<LessonPage> {
               if (_lastContentIndex != null &&
                   _lastContentIndex != state.currentIndex) {
                 unawaited(_stopActiveLessonAudio());
+                _introNavigationReadyIndex = null;
               }
               _lastContentIndex = state.currentIndex;
 
@@ -124,12 +129,43 @@ class _LessonPageState extends State<LessonPage> {
                 }
               }
 
+              void handlePrevious() {
+                unawaited(_stopActiveLessonAudio());
+                context.read<LessonBloc>().add(
+                  const LessonEvent.previousContent(),
+                );
+              }
+
+              void markIntroNavigationReady() {
+                if (_introNavigationReadyIndex == state.currentIndex) return;
+                setState(() {
+                  _introNavigationReadyIndex = state.currentIndex;
+                });
+              }
+
               return switch (lessonContent) {
-                IntroLessonContent() => IntroLessonView(
-                  key: ValueKey('intro_${state.currentIndex}'),
-                  content: lessonContent,
-                  isLast: isLastContent,
-                  isFirst: isFirstContent,
+                IntroLessonContent() => Stack(
+                  children: [
+                    IntroLessonView(
+                      key: ValueKey('intro_${state.currentIndex}'),
+                      content: lessonContent,
+                      isLast: isLastContent,
+                      isFirst: isFirstContent,
+                      onNavigationReady: markIntroNavigationReady,
+                    ),
+                    TopRightPositionedCloseButton(
+                      onTap: () {
+                        unawaited(_stopActiveLessonAudio());
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    if (_introNavigationReadyIndex == state.currentIndex &&
+                        !isLastContent)
+                      CenterRightAlignedForwardButton(onTap: handleNext),
+                    if (_introNavigationReadyIndex == state.currentIndex &&
+                        !isFirstContent)
+                      CenterLeftAlignedBackButton(onTap: handlePrevious),
+                  ],
                 ),
                 InfoLessonContent() => BlocProvider(
                   key: ValueKey('info_${state.currentIndex}'),
