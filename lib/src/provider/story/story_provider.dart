@@ -39,6 +39,7 @@ class StoryProvider extends ChangeNotifier {
 
   bool _storyFinished = false;
   bool get isStoryFinished => _storyFinished;
+  bool _hasTrackedStoryCompletion = false;
 
   Future<void> fetchStories() async {
     _status = DataFetchStatus.loading;
@@ -76,6 +77,8 @@ class StoryProvider extends ChangeNotifier {
     }
     _currentAudioIndex = 0;
     _isAudioCompleted = false;
+    _storyFinished = false;
+    _hasTrackedStoryCompletion = false;
     notifyListeners();
   }
 
@@ -109,19 +112,6 @@ class StoryProvider extends ChangeNotifier {
           context,
           listen: false,
         );
-        final isStoryComplete =
-            _currentContentIndex == _currentStory!.content.length;
-        if (isStoryComplete && context.mounted) {
-          await MetricsTrackingHelper.trackStoryCompletion(
-            context: context,
-            storyId: _currentStory!.nameEn,
-            storyTitle: _currentStory!.nameNp.isNotEmpty
-                ? _currentStory!.nameNp
-                : _currentStory!.nameEn,
-            childUid: childId,
-          );
-        }
-
         logger.d(
           '[StoryProvider] Updating recommended story progress for childId: $childId, storyId: ${_currentStory!.nameEn}, progress: $_currentContentIndex',
         );
@@ -144,9 +134,40 @@ class StoryProvider extends ChangeNotifier {
         await _playAudioCached(content.audio);
       }
     } else {
-      _storyFinished = true;
-      notifyListeners();
+      await completeCurrentStory(context);
     }
+  }
+
+  Future<void> completeCurrentStory(BuildContext context) async {
+    final currentStory = _currentStory;
+    if (currentStory == null || _storyFinished) return;
+
+    _storyFinished = true;
+    notifyListeners();
+
+    if (_hasTrackedStoryCompletion || GuestUtil.isGuestUser()) {
+      return;
+    }
+    _hasTrackedStoryCompletion = true;
+
+    String? childId;
+    if (context.mounted) {
+      final authState = Provider.of<AuthState>(context, listen: false);
+      childId = authState.currentChildId;
+    }
+    childId = childId?.isNotEmpty == true
+        ? childId
+        : await ChildLocalStorage.getCurrentChildId();
+
+    if (!context.mounted) return;
+    await MetricsTrackingHelper.trackStoryCompletion(
+      context: context,
+      storyId: currentStory.nameEn,
+      storyTitle: currentStory.nameNp.isNotEmpty
+          ? currentStory.nameNp
+          : currentStory.nameEn,
+      childUid: childId,
+    );
   }
 
   void previousContent() async {

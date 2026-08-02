@@ -9,10 +9,12 @@ import '../../../../src.dart';
 class ButtonTapContent extends StatefulWidget {
   final Content content;
   final bool playAudio;
+  final bool isLast;
   const ButtonTapContent({
     super.key,
     required this.content,
     this.playAudio = true,
+    this.isLast = false,
   });
   @override
   State<ButtonTapContent> createState() => ButtonTapContentState();
@@ -23,19 +25,47 @@ class ButtonTapContentState extends State<ButtonTapContent> {
   bool? isCorrect;
   bool showTryAgain = false;
   late final AudioPlayerService _optionAudioService;
+  late final AudioPlayerService _completionAudioService;
+  bool _hasPlayedCompletionAudio = false;
+  Future<void>? _completionAudioFuture;
+  bool _showCompletionFeedback = false;
   int _selectionGeneration = 0;
 
   @override
   void initState() {
     super.initState();
     _optionAudioService = AudioPlayerServiceImpl();
+    _completionAudioService = AudioPlayerServiceImpl();
   }
 
   @override
   void dispose() {
     _selectionGeneration++;
     unawaited(_optionAudioService.dispose());
+    unawaited(_completionAudioService.dispose());
     super.dispose();
+  }
+
+  Future<void> _playCompletionAudioOnce() {
+    final completionAudioFuture = _completionAudioFuture;
+    if (completionAudioFuture != null) {
+      return completionAudioFuture;
+    }
+    if (_hasPlayedCompletionAudio) return Future<void>.value();
+    _hasPlayedCompletionAudio = true;
+    _completionAudioFuture = (() async {
+      final completion = _completionAudioService.onPlayerComplete.first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {},
+      );
+      try {
+        await _completionAudioService.playAsset(Assets.storiesComplete);
+        await completion.catchError((_) {});
+      } catch (error) {
+        logger.e('Error playing story completion audio: $error');
+      }
+    })();
+    return _completionAudioFuture!;
   }
 
   Future<void> _playSelectionAudio(
@@ -97,6 +127,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
       selectedIdx = i;
       isCorrect = correct;
       showTryAgain = !correct;
+      _showCompletionFeedback = false;
     });
     final selectionAudio = _playSelectionAudio(
       opt,
@@ -122,7 +153,19 @@ class ButtonTapContentState extends State<ButtonTapContent> {
         Future.delayed(const Duration(milliseconds: 800)),
       ]);
       if (mounted && selectionGeneration == _selectionGeneration) {
-        storyProvider.nextContent(context);
+        if (widget.isLast) {
+          setState(() {
+            _showCompletionFeedback = true;
+          });
+          await _playCompletionAudioOnce();
+          if (mounted && selectionGeneration == _selectionGeneration) {
+            await storyProvider.completeCurrentStory(context);
+            if (!mounted) return;
+            Navigator.of(context).pop();
+          }
+        } else {
+          storyProvider.nextContent(context);
+        }
       }
     } else {
       unawaited(selectionAudio);
@@ -273,6 +316,21 @@ class ButtonTapContentState extends State<ButtonTapContent> {
             ),
           ),
         ),
+        if (widget.isLast && _showCompletionFeedback)
+          IgnorePointer(
+            child: LottieHelper.fromSource(
+              path: widget.content.confetti.isNotEmpty
+                  ? widget.content.confetti
+                  : Assets.confetti1,
+              fit: BoxFit.cover,
+              repeat: true,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height,
+              type: widget.content.confetti.isNotEmpty
+                  ? LottieSourceType.network
+                  : LottieSourceType.asset,
+            ),
+          ),
       ],
     );
   }

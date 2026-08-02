@@ -3,7 +3,9 @@ import 'dart:async';
 
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onepali/src/core/model/story/story_model.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:onepali/src/provider/story/choose_correct_story_provider.dart';
 import 'package:onepali/src/provider/story/story_provider.dart';
 import 'package:onepali/src/repo/story/story_repo.dart';
 import '../../helpers/firebase_test_setup.dart';
@@ -59,6 +61,38 @@ void main() {
 
       expect(provider.isPlaying, isFalse);
       expect(provider.isAudioCompleted, isFalse);
+
+      provider.dispose();
+      await Future<void>.delayed(Duration.zero);
+    });
+
+    test('choose-correct completion waits for selected option audio', () async {
+      final audioService = _FakeAudioPlayerService();
+      final provider = ChooseCorrectStoryProvider(
+        audioPlayerService: audioService,
+      );
+      const option = Conversation(
+        messageEn: 'Who are friends?',
+        correct: true,
+        audioItem: 'friend-answer.mp3',
+      );
+
+      provider.setContent(const Content(conversation: [option]));
+      provider.onTappedItem(option);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(provider.isCorrectAnswerSelected, isTrue);
+      expect(provider.isCorrectFeedbackCompleted, isFalse);
+
+      audioService.complete();
+      await Future<void>.delayed(Duration.zero);
+      expect(provider.isCorrectFeedbackCompleted, isFalse);
+
+      audioService.complete();
+      await provider.waitForSelectionAudio();
+
+      expect(provider.isCorrectFeedbackCompleted, isTrue);
+      expect(audioService.playedSources.last, 'friend-answer.mp3');
 
       provider.dispose();
       await Future<void>.delayed(Duration.zero);

@@ -6,18 +6,24 @@ import 'package:onepali/src/core/model/model.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 
 class ChooseCorrectStoryProvider extends ChangeNotifier {
+  ChooseCorrectStoryProvider({AudioPlayerService? audioPlayerService})
+    : _audioPlayerService = audioPlayerService ?? AudioPlayerServiceImpl();
+
   Content? _content;
   Content? get content => _content;
-  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
+  final AudioPlayerService _audioPlayerService;
   StreamSubscription<void>? _audioSub;
   bool _isQuestionAudioPlaying = false;
   bool _isCorrectAnswerSelected = false;
+  bool _isCorrectFeedbackCompleted = false;
   bool _disposed = false;
   int _selectionGeneration = 0;
+  Future<void>? _selectionAudioFuture;
   Conversation? _currentConversation;
   Conversation? _userSelectedConversation;
   bool get isQuestionAudioPlaying => _isQuestionAudioPlaying;
   bool get isCorrectAnswerSelected => _isCorrectAnswerSelected;
+  bool get isCorrectFeedbackCompleted => _isCorrectFeedbackCompleted;
   Conversation? get currentConversation => _currentConversation;
   Conversation? get userSelectedConversation => _userSelectedConversation;
 
@@ -84,15 +90,15 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
     final selectionGeneration = ++_selectionGeneration;
     _userSelectedConversation = conversation;
     _isCorrectAnswerSelected = conversation == _currentConversation;
+    _isCorrectFeedbackCompleted = false;
     _cancelAudioSubscription();
     _isQuestionAudioPlaying = false;
-    unawaited(
-      _playSelectionAudio(
-        conversation,
-        isCorrect: _isCorrectAnswerSelected,
-        selectionGeneration: selectionGeneration,
-      ),
+    _selectionAudioFuture = _playSelectionAudio(
+      conversation,
+      isCorrect: _isCorrectAnswerSelected,
+      selectionGeneration: selectionGeneration,
     );
+    unawaited(_selectionAudioFuture);
     _notifyListenersIfActive();
   }
 
@@ -122,11 +128,29 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
     }
 
     final audioItem = conversation.audioItem;
-    if (audioItem == null || audioItem.isEmpty) {
+    if (audioItem != null && audioItem.isNotEmpty) {
+      final itemComplete = _audioPlayerService.onPlayerComplete.first.timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {},
+      );
+      try {
+        await _audioPlayerService.play(audioItem);
+        await itemComplete.catchError((_) {});
+      } catch (_) {}
+    }
+
+    if (!_isCurrentSelection(selectionGeneration)) {
       return;
     }
 
-    await _audioPlayerService.play(audioItem).catchError((_) {});
+    if (isCorrect) {
+      _isCorrectFeedbackCompleted = true;
+      _notifyListenersIfActive();
+    }
+  }
+
+  Future<void> waitForSelectionAudio() {
+    return _selectionAudioFuture ?? Future<void>.value();
   }
 
   bool _isCurrentSelection(int selectionGeneration) {
@@ -135,6 +159,7 @@ class ChooseCorrectStoryProvider extends ChangeNotifier {
 
   void _cancelSelectionPlayback() {
     _selectionGeneration++;
+    _isCorrectFeedbackCompleted = false;
     unawaited(_audioPlayerService.stop().catchError((_) {}));
   }
 

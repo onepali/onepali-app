@@ -22,6 +22,8 @@ class ChooseCorrect extends StatefulWidget {
 class _ChooseCorrectState extends State<ChooseCorrect> {
   late final AudioPlayerService _completionAudioService;
   bool _hasPlayedCompletionAudio = false;
+  Future<void>? _completionAudioFuture;
+  bool _hasScheduledCompletionNavigation = false;
 
   @override
   void initState() {
@@ -35,15 +37,45 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
     super.dispose();
   }
 
-  void _playCompletionAudioOnce() {
-    if (_hasPlayedCompletionAudio) return;
+  Future<void> _playCompletionAudioOnce() {
+    final completionAudioFuture = _completionAudioFuture;
+    if (completionAudioFuture != null) {
+      return completionAudioFuture;
+    }
+    if (_hasPlayedCompletionAudio) return Future<void>.value();
     _hasPlayedCompletionAudio = true;
-    unawaited(
-      _completionAudioService.playAsset(Assets.storiesComplete).catchError((
-        error,
-      ) {
+    _completionAudioFuture = (() async {
+      final completion = _completionAudioService.onPlayerComplete.first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {},
+      );
+      try {
+        await _completionAudioService.playAsset(Assets.storiesComplete);
+        await completion.catchError((_) {});
+      } catch (error) {
         logger.e('Error playing story completion audio: $error');
-      }),
+      }
+    })();
+    return _completionAudioFuture!;
+  }
+
+  void _scheduleLastStoryCompletion(
+    BuildContext context,
+    ChooseCorrectStoryProvider answerProvider,
+    StoryProvider storyProvider,
+  ) {
+    if (_hasScheduledCompletionNavigation) return;
+    _hasScheduledCompletionNavigation = true;
+    unawaited(
+      (() async {
+        await answerProvider.waitForSelectionAudio();
+        if (!context.mounted) return;
+        await _playCompletionAudioOnce();
+        if (!context.mounted) return;
+        await storyProvider.completeCurrentStory(context);
+        if (!context.mounted) return;
+        Navigator.of(context).pop();
+      })(),
     );
   }
 
@@ -59,10 +91,20 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
         builder: (context) {
           return Consumer<ChooseCorrectStoryProvider>(
             builder: (context, storyProvider, _) {
-              if (widget.isLast && storyProvider.isCorrectAnswerSelected) {
-                _playCompletionAudioOnce();
+              if (widget.isLast && storyProvider.isCorrectFeedbackCompleted) {
+                final mainStoryProvider = Provider.of<StoryProvider>(
+                  context,
+                  listen: false,
+                );
+                _scheduleLastStoryCompletion(
+                  context,
+                  storyProvider,
+                  mainStoryProvider,
+                );
               } else {
                 _hasPlayedCompletionAudio = false;
+                _completionAudioFuture = null;
+                _hasScheduledCompletionNavigation = false;
               }
 
               return Stack(
@@ -129,10 +171,28 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                                                 return;
                                               }
                                               storyProvider.onTappedItem(item);
-                                              MetricsTrackingHelper.trackAnswerAttempt(
-                                                context: context,
-                                                isCorrect: item.correct,
-                                              );
+                                              final mainStoryProvider =
+                                                  Provider.of<StoryProvider>(
+                                                    context,
+                                                    listen: false,
+                                                  );
+                                              final currentStory =
+                                                  mainStoryProvider
+                                                      .currentStory;
+                                              if (currentStory != null) {
+                                                unawaited(
+                                                  MetricsTrackingHelper.trackStoryAnswer(
+                                                    context: context,
+                                                    isCorrect: item.correct,
+                                                    storyTitle:
+                                                        currentStory
+                                                            .nameNp
+                                                            .isNotEmpty
+                                                        ? currentStory.nameNp
+                                                        : currentStory.nameEn,
+                                                  ),
+                                                );
+                                              }
                                             },
                                           ),
                                       ],
@@ -154,7 +214,7 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                                       child: Consumer<StoryProvider>(
                                         builder: (context, provider, _) =>
                                             ElevatedButton(
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 if (!storyProvider
                                                     .isCorrectAnswerSelected) {
                                                   storyProvider
@@ -162,7 +222,11 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                                                   return;
                                                 }
                                                 if (widget.isLast) {
-                                                  Navigator.of(context).pop();
+                                                  _scheduleLastStoryCompletion(
+                                                    context,
+                                                    storyProvider,
+                                                    provider,
+                                                  );
                                                 } else {
                                                   provider.nextContent(context);
                                                 }
@@ -213,7 +277,7 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                       },
                     ),
                   ),
-                  if (widget.isLast && storyProvider.isCorrectAnswerSelected)
+                  if (widget.isLast && storyProvider.isCorrectFeedbackCompleted)
                     Positioned.fill(
                       child: IgnorePointer(
                         child: LottieHelper.fromSource(

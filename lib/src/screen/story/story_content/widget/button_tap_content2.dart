@@ -11,10 +11,12 @@ import '../../../../src.dart';
 class ButtonTapContent2 extends StatefulWidget {
   final Content content;
   final bool playAudio;
+  final bool isLast;
   const ButtonTapContent2({
     super.key,
     required this.content,
     this.playAudio = true,
+    this.isLast = false,
   });
   @override
   State<ButtonTapContent2> createState() => ButtonTapContent2State();
@@ -24,9 +26,11 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
   int? selectedIdx;
   bool? isCorrect;
   bool showTryAgain = false;
+  bool _showCompletionFeedback = false;
   late final AudioPlayerService _completionAudioService;
   late final AudioPlayerService _optionAudioService;
   bool _hasPlayedCompletionAudio = false;
+  Future<void>? _completionAudioFuture;
   int _selectionGeneration = 0;
 
   @override
@@ -52,16 +56,26 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     super.dispose();
   }
 
-  void _playCompletionAudioOnce() {
-    if (_hasPlayedCompletionAudio) return;
+  Future<void> _playCompletionAudioOnce() {
+    final completionAudioFuture = _completionAudioFuture;
+    if (completionAudioFuture != null) {
+      return completionAudioFuture;
+    }
+    if (_hasPlayedCompletionAudio) return Future<void>.value();
     _hasPlayedCompletionAudio = true;
-    unawaited(
-      _completionAudioService.playAsset(Assets.storiesComplete).catchError((
-        error,
-      ) {
+    _completionAudioFuture = (() async {
+      final completion = _completionAudioService.onPlayerComplete.first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {},
+      );
+      try {
+        await _completionAudioService.playAsset(Assets.storiesComplete);
+        await completion.catchError((_) {});
+      } catch (error) {
         logger.e('Error playing story completion audio: $error');
-      }),
-    );
+      }
+    })();
+    return _completionAudioFuture!;
   }
 
   Future<void> _playSelectionAudio(
@@ -123,6 +137,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
       selectedIdx = i;
       isCorrect = correct;
       showTryAgain = !correct;
+      _showCompletionFeedback = false;
     });
     final selectionAudio = _playSelectionAudio(
       opt,
@@ -148,7 +163,19 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
         Future.delayed(const Duration(seconds: 5)),
       ]);
       if (mounted && selectionGeneration == _selectionGeneration) {
-        storyProvider.nextContent(context);
+        if (widget.isLast) {
+          setState(() {
+            _showCompletionFeedback = true;
+          });
+          await _playCompletionAudioOnce();
+          if (mounted && selectionGeneration == _selectionGeneration) {
+            await storyProvider.completeCurrentStory(context);
+            if (!mounted) return;
+            Navigator.of(context).pop();
+          }
+        } else {
+          storyProvider.nextContent(context);
+        }
       }
     } else {
       unawaited(selectionAudio);
@@ -185,10 +212,13 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
     final options = widget.content.conversation;
     final isMobile = PlatformUtility.isMobile(context);
     final storyProvider = Provider.of<StoryProvider>(context, listen: false);
+    final showConfetti = widget.isLast
+        ? _showCompletionFeedback
+        : isCorrect == true;
     if (storyProvider.isStoryFinished) {
       // Navigator.of(context).pop();
       if (isCorrect == true) {
-        _playCompletionAudioOnce();
+        unawaited(_playCompletionAudioOnce());
       }
     }
     return Stack(
@@ -343,7 +373,7 @@ class ButtonTapContent2State extends State<ButtonTapContent2> {
             Navigator.pop(context);
           },
         ),
-        if (isCorrect == true && widget.content.confetti.isNotEmpty)
+        if (showConfetti && widget.content.confetti.isNotEmpty)
           LottieHelper.fromSource(
             path: widget.content.confetti,
             fit: BoxFit.cover,
