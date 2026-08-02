@@ -112,6 +112,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
           checkIcon: checkIcon,
           leopardTakingTeaTb: leopardTakingTeaTb,
           leopardTakingTeaMb: leopardTakingTeaMb,
+          showLeopardWithTea: true,
         ),
       );
 
@@ -121,7 +122,6 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       final didStartInstructionAudio = await _playAudio(
         event.content.audioInstruction,
       );
-      emit(state.copyWith(showLeopardWithTea: true));
       if (didStartInstructionAudio && instructionCompletion != null) {
         await instructionCompletion;
       }

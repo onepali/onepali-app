@@ -104,7 +104,6 @@ class _DragToMatchView extends StatelessWidget {
           return Stack(
             children: [
               LessonContentFrame(
-                reserveLeftControl: false,
                 builder: (context, constraints) {
                   final contentSize = Size(
                     constraints.maxWidth,

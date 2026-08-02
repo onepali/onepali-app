@@ -91,7 +91,7 @@ class _KitchenPageState extends State<KitchenPage> {
     final isMobile = PlatformUtility.isMobile(context);
     final topIngredientBarHeight = size.height * (isMobile ? 0.28 : 0.26);
     final stoveSectionHeight = size.height * 0.25;
-    final ingredientSlotWidth = size.height * (isMobile ? 0.30 : 0.22);
+    final ingredientSlotWidth = size.height * 0.30;
     final ingredientPadding = EdgeInsets.symmetric(
       horizontal: isMobile ? 10 : 12,
       vertical: isMobile ? 12 : 16,
@@ -206,18 +206,19 @@ class _KitchenPageState extends State<KitchenPage> {
                             ),
                           Spacer(),
                           // Stove section
-                          Center(
-                            child: SizedBox(
-                              height: stoveSectionHeight,
-                              // decoration: BoxDecoration(color: Colors.orange),
-                              child: SvgPicture.network(
-                                key: _stoveKey,
-                                state.stoveImage ?? '',
+                          if (!state.showLeopardWithTea)
+                            Center(
+                              child: SizedBox(
                                 height: stoveSectionHeight,
-                                fit: BoxFit.fitHeight,
+                                // decoration: BoxDecoration(color: Colors.orange),
+                                child: SvgPicture.network(
+                                  key: _stoveKey,
+                                  state.stoveImage ?? '',
+                                  height: stoveSectionHeight,
+                                  fit: BoxFit.fitHeight,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
 

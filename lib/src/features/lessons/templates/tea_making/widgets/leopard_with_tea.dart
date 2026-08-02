@@ -12,7 +12,7 @@ class LeopardWithTea extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     final isMobile = PlatformUtility.isMobile(context);
     final topIngredientBarHeight = size.height * 0.25;
-    final topClearance = size.height * 0.04;
+    final topClearance = size.height * (isMobile ? 0.04 : 0.02);
     final imageHeight = size.height - topIngredientBarHeight - topClearance;
 
     return BlocBuilder<TutorialBloc, TutorialState>(
