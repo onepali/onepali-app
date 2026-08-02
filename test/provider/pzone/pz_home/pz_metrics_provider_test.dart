@@ -367,6 +367,67 @@ void main() {
       expect(provider.metrics?.completedActivities, 3);
     });
 
+    testWidgets('helper fetches completed lesson ids for current child only', (
+      tester,
+    ) async {
+      BuildContext? testContext;
+      SharedPreferences.setMockInitialValues({});
+      await SharedPreferencesService.init();
+      await ChildLocalStorage.saveCurrentChildId(childUid);
+
+      await _childDoc(firestore, parentUid, childUid)
+          .collection(AppConstants.completedContentCollection)
+          .doc('lesson_pets')
+          .set({
+            'id': 'lesson_pets',
+            'parent_id': parentUid,
+            'child_id': childUid,
+            'content_id': 'pets',
+            'content_name': 'The Pets',
+            'content_type': ActivityType.lesson.name,
+            'completed_count': 1,
+          });
+      await _childDoc(firestore, parentUid, otherChildUid)
+          .collection(AppConstants.completedContentCollection)
+          .doc('lesson_alphabet')
+          .set({
+            'id': 'lesson_alphabet',
+            'parent_id': parentUid,
+            'child_id': otherChildUid,
+            'content_id': 'alphabet',
+            'content_name': 'Alphabet',
+            'content_type': ActivityType.lesson.name,
+            'completed_count': 1,
+          });
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<UserProvider>.value(
+              value: _MockUserProvider(parentUid),
+            ),
+            ChangeNotifierProvider<PzMetricsProvider>.value(value: provider),
+          ],
+          child: MaterialApp(
+            home: Builder(
+              builder: (context) {
+                testContext = context;
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+      );
+
+      final completedLessonIds =
+          await MetricsTrackingHelper.fetchCompletedContentIds(
+            context: testContext!,
+            activityType: ActivityType.lesson,
+          );
+
+      expect(completedLessonIds, {'pets'});
+    });
+
     testWidgets('helper skips metrics and completed state for guest users', (
       tester,
     ) async {

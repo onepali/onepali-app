@@ -16,10 +16,12 @@ class NewLetterTracingPage extends StatefulWidget {
     required this.content,
     this.isLastContent = false,
     this.onNext,
+    this.onLessonCompleted,
   });
   final CharTracingLessonContent content;
   final bool isLastContent;
   final VoidCallback? onNext;
+  final VoidCallback? onLessonCompleted;
 
   @override
   State<NewLetterTracingPage> createState() => _NewLetterTracingPageState();
@@ -29,6 +31,7 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _pointerAnimationController;
   late Animation<double> _pointerAnimation;
+  bool _hasCompletedLesson = false;
 
   @override
   void initState() {
@@ -66,6 +69,16 @@ class _NewLetterTracingPageState extends State<NewLetterTracingPage>
           builder: (context, state) {
             if (state.letter == null) {
               return const Center(child: CircularProgressIndicator());
+            }
+
+            if (widget.isLastContent &&
+                state.repetitions >= 3 &&
+                !_hasCompletedLesson) {
+              _hasCompletedLesson = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                widget.onLessonCompleted?.call();
+              });
             }
 
             return SizedBox(

@@ -9,6 +9,7 @@ import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/utils/guest_util.dart';
+import 'package:onepali/src/core/utils/metrics_tracking_helper.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
@@ -44,6 +45,7 @@ import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reve
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_view.dart';
 import 'package:onepali/src/features/lessons/widgets/unknown_lesson_type.dart';
 import 'package:onepali/src/features/lessons/templates/tea_making/pages/kitchen_page.dart';
+import 'package:onepali/src/provider/lesson/lesson_provider.dart';
 
 class LessonPage extends StatefulWidget {
   const LessonPage({super.key, required this.lessonId});
@@ -62,6 +64,9 @@ class _LessonPageState extends State<LessonPage> {
   bool _showLessonCompletionFeedback = false;
   bool _isPlayingLessonCompletionFeedback = false;
   bool _hasPlayedLessonCompletionFeedback = false;
+  bool _hasTrackedLessonCompletion = false;
+  bool _isCompletingLesson = false;
+  bool _isCompletingFinalContent = false;
   bool _popAfterLessonCompletionFeedback = false;
 
   @override
@@ -129,6 +134,37 @@ class _LessonPageState extends State<LessonPage> {
     }
   }
 
+  Future<void> _trackLessonCompletion(LessonDetail lessonDetails) async {
+    if (_hasTrackedLessonCompletion || GuestUtil.isGuestUser()) return;
+    _hasTrackedLessonCompletion = true;
+
+    await context.read<LessonProvider>().incrementTotalLessonsCompleted(
+      context,
+      widget.lessonId,
+      lessonDetails.lesson.name,
+    );
+    if (!mounted) return;
+
+    await MetricsTrackingHelper.trackLessonCompletion(
+      context: context,
+      lessonId: widget.lessonId,
+      topicName: lessonDetails.lesson.name,
+    );
+  }
+
+  Future<void> _completeLessonAndNavigate(LessonDetail lessonDetails) async {
+    if (_isCompletingLesson) return;
+    _isCompletingLesson = true;
+
+    await _playLessonCompletionFeedback(popAfterFeedback: false);
+    if (!mounted) return;
+
+    await _trackLessonCompletion(lessonDetails);
+    if (!mounted) return;
+
+    _navigateHomeAfterLessonCompletion();
+  }
+
   @override
   void dispose() {
     unawaited(_stopActiveLessonAudio());
@@ -155,9 +191,10 @@ class _LessonPageState extends State<LessonPage> {
                         previous.currentIndex != current.currentIndex)),
             listener: (context, state) {
               if (state.status == LessonStatus.completed) {
-                unawaited(
-                  _playLessonCompletionFeedback(popAfterFeedback: true),
-                );
+                final lessonDetails = state.lessonDetails;
+                if (lessonDetails != null) {
+                  unawaited(_completeLessonAndNavigate(lessonDetails));
+                }
                 return;
               }
 
@@ -209,6 +246,8 @@ class _LessonPageState extends State<LessonPage> {
               }
 
               void completeLessonAfterFeedback() {
+                if (_isCompletingFinalContent) return;
+                _isCompletingFinalContent = true;
                 unawaited(
                   (() async {
                     await _playLessonCompletionFeedback(
@@ -231,13 +270,7 @@ class _LessonPageState extends State<LessonPage> {
                       isLast: isLastContent,
                       isFirst: isFirstContent,
                       onNavigationReady: markIntroNavigationReady,
-                      onLessonCompleted: () {
-                        unawaited(
-                          _playLessonCompletionFeedback(
-                            popAfterFeedback: false,
-                          ),
-                        );
-                      },
+                      onLessonCompleted: completeLessonAfterFeedback,
                     ),
                     TopRightPositionedCloseButton(
                       onTap: () {
@@ -274,6 +307,8 @@ class _LessonPageState extends State<LessonPage> {
                 ),
                 DragToMatchLessonContent() => DragToMatchScreen(
                   lessonContent: lessonContent,
+                  isLastContent: isLastContent,
+                  onLessonCompleted: completeLessonAfterFeedback,
                 ),
                 TapToPopLessonContent() => BlocProvider(
                   key: ValueKey('tap_to_pop_${state.currentIndex}'),
@@ -296,6 +331,7 @@ class _LessonPageState extends State<LessonPage> {
                   content: lessonContent,
                   isLastContent: isLastContent,
                   onNext: handleNext,
+                  onLessonCompleted: completeLessonAfterFeedback,
                 ),
                 TeaMakingLessonContent() => KitchenPage(
                   content: lessonContent,
@@ -358,13 +394,7 @@ class _LessonPageState extends State<LessonPage> {
                 LessonRecommendationLessonContent() => LessonRecommendationView(
                   content: lessonContent,
                   onLessonCompleted: isLastContent
-                      ? () {
-                          unawaited(
-                            _playLessonCompletionFeedback(
-                              popAfterFeedback: false,
-                            ),
-                          );
-                        }
+                      ? completeLessonAfterFeedback
                       : null,
                 ),
                 _ => UnknownLessonType(

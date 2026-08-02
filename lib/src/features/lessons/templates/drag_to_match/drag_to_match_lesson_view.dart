@@ -20,8 +20,15 @@ double _wordLabelSlotHeight(BuildContext context) {
 
 class DragToMatchScreen extends StatelessWidget {
   final DragToMatchLessonContent lessonContent;
+  final bool isLastContent;
+  final VoidCallback? onLessonCompleted;
 
-  const DragToMatchScreen({super.key, required this.lessonContent});
+  const DragToMatchScreen({
+    super.key,
+    required this.lessonContent,
+    this.isLastContent = false,
+    this.onLessonCompleted,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,11 @@ class DragToMatchScreen extends StatelessWidget {
       create: (context) =>
           DragToMatchBloc()
             ..add(DragToMatchEvent.initialize(items: lessonContent.items)),
-      child: _DragToMatchView(items: lessonContent.items),
+      child: _DragToMatchView(
+        items: lessonContent.items,
+        isLastContent: isLastContent,
+        onLessonCompleted: onLessonCompleted,
+      ),
     );
   }
 }
@@ -45,30 +56,46 @@ class DragToMatchScreenDirect extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           DragToMatchBloc()..add(DragToMatchEvent.initialize(items: items)),
-      child: _DragToMatchView(items: items),
+      child: _DragToMatchView(items: items, isLastContent: false),
     );
   }
 }
 
 class _DragToMatchView extends StatelessWidget {
   final List<Item> items;
+  final bool isLastContent;
+  final VoidCallback? onLessonCompleted;
 
-  const _DragToMatchView({required this.items});
+  const _DragToMatchView({
+    required this.items,
+    required this.isLastContent,
+    this.onLessonCompleted,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: BlocConsumer<DragToMatchBloc, DragToMatchState>(
-        listenWhen: (previous, current) =>
-            previous.dragStatus != current.dragStatus &&
-            (current.dragStatus == DragStatus.correctMatch ||
-                current.dragStatus == DragStatus.wrongMatch),
+        listenWhen: (previous, current) {
+          final answerStatusChanged =
+              previous.dragStatus != current.dragStatus &&
+              (current.dragStatus == DragStatus.correctMatch ||
+                  current.dragStatus == DragStatus.wrongMatch);
+          final completionShown = !previous.showCat && current.showCat;
+          return answerStatusChanged || completionShown;
+        },
         listener: (context, state) {
-          MetricsTrackingHelper.trackAnswerAttempt(
-            context: context,
-            isCorrect: state.dragStatus == DragStatus.correctMatch,
-          );
+          if (state.dragStatus == DragStatus.correctMatch ||
+              state.dragStatus == DragStatus.wrongMatch) {
+            MetricsTrackingHelper.trackAnswerAttempt(
+              context: context,
+              isCorrect: state.dragStatus == DragStatus.correctMatch,
+            );
+          }
+          if (isLastContent && state.showCat) {
+            onLessonCompleted?.call();
+          }
         },
         builder: (context, state) {
           final allMatched =
