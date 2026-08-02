@@ -97,6 +97,23 @@ class GunFillBloc extends Bloc<GunFillEvent, GunFillState> {
     on<_InstructionComplete>((event, emit) {
       emit(state.copyWith(status: GunFillStatus.ideal));
     });
+    on<_WrongColorDropped>((event, emit) async {
+      if (state.status != GunFillStatus.ideal) return;
+      emit(state.copyWith(status: GunFillStatus.audioPlaying));
+      try {
+        final completion = _audioPlayerService.onPlayerComplete.first;
+        await _audioPlayerService.playAsset(Assets.wrongSfx);
+        await completion;
+      } catch (error, stackTrace) {
+        log(
+          'Failed to play gun fill wrong audio',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      } finally {
+        emit(state.copyWith(status: GunFillStatus.ideal));
+      }
+    });
     on<_ColorFilled>((event, emit) async {
       if (state.status != GunFillStatus.ideal) return;
       // Already filled

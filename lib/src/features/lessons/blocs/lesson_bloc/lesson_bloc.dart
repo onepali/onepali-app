@@ -50,8 +50,14 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     if (nextIndex < lessonDetails.contents.length) {
       final nextContent = lessonDetails.contents[nextIndex];
       emit(
-        state.copyWith(currentIndex: nextIndex, currentContent: nextContent),
+        state.copyWith(
+          currentIndex: nextIndex,
+          currentContent: nextContent,
+          status: LessonStatus.success,
+        ),
       );
+    } else {
+      emit(state.copyWith(status: LessonStatus.completed));
     }
   }
 
@@ -63,7 +69,11 @@ class LessonBloc extends Bloc<LessonEvent, LessonState> {
     if (prevIndex >= 0) {
       final prevContent = lessonDetails.contents[prevIndex];
       emit(
-        state.copyWith(currentIndex: prevIndex, currentContent: prevContent),
+        state.copyWith(
+          currentIndex: prevIndex,
+          currentContent: prevContent,
+          status: LessonStatus.success,
+        ),
       );
     }
   }

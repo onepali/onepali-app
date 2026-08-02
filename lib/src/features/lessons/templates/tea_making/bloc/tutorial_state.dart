@@ -19,5 +19,6 @@ abstract class TutorialState with _$TutorialState {
     String? leopardTakingTeaTb,
     String? leopardTakingTeaMb,
     @Default(false) bool teaReady,
+    @Default(false) bool completionFeedbackReady,
   }) = _TutorialState;
 }

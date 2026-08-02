@@ -6,6 +6,7 @@ abstract class MatchState with _$MatchState {
     SlideUpToMatchLessonContent? content,
     @Default([]) List<NepaliWord> nepaliWords,
     @Default(false) bool isAnsweredAll,
+    @Default(false) bool completionFeedbackReady,
   }) = _MatchState;
 }
 

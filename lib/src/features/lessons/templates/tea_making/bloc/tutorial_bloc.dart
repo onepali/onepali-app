@@ -170,9 +170,10 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         await playNextAudio(event.index);
       } else if (event.index == ingredients.length - 1) {
         await Future.delayed(const Duration(seconds: 2));
-        emit(state.copyWith(teaReady: true));
+        emit(state.copyWith(teaReady: true, completionFeedbackReady: false));
 
         await _playAudioAndWait(teaReadySound);
+        emit(state.copyWith(completionFeedbackReady: true));
       } else {
         await playNextAudio(event.index);
       }

@@ -55,13 +55,14 @@ extension GunFillEventPatterns on GunFillEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _InstructionComplete value)?  instructionComplete,TResult Function( _ColorFilled value)?  colorFilled,TResult Function( _StarBlustCompleted value)?  starBlustCompleted,TResult Function( _AudioComplete value)?  audioComplete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _InstructionComplete value)?  instructionComplete,TResult Function( _ColorFilled value)?  colorFilled,TResult Function( _WrongColorDropped value)?  wrongColorDropped,TResult Function( _StarBlustCompleted value)?  starBlustCompleted,TResult Function( _AudioComplete value)?  audioComplete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _InstructionComplete() when instructionComplete != null:
 return instructionComplete(_that);case _ColorFilled() when colorFilled != null:
-return colorFilled(_that);case _StarBlustCompleted() when starBlustCompleted != null:
+return colorFilled(_that);case _WrongColorDropped() when wrongColorDropped != null:
+return wrongColorDropped(_that);case _StarBlustCompleted() when starBlustCompleted != null:
 return starBlustCompleted(_that);case _AudioComplete() when audioComplete != null:
 return audioComplete(_that);case _:
   return orElse();
@@ -81,13 +82,14 @@ return audioComplete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _InstructionComplete value)  instructionComplete,required TResult Function( _ColorFilled value)  colorFilled,required TResult Function( _StarBlustCompleted value)  starBlustCompleted,required TResult Function( _AudioComplete value)  audioComplete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _InstructionComplete value)  instructionComplete,required TResult Function( _ColorFilled value)  colorFilled,required TResult Function( _WrongColorDropped value)  wrongColorDropped,required TResult Function( _StarBlustCompleted value)  starBlustCompleted,required TResult Function( _AudioComplete value)  audioComplete,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _InstructionComplete():
 return instructionComplete(_that);case _ColorFilled():
-return colorFilled(_that);case _StarBlustCompleted():
+return colorFilled(_that);case _WrongColorDropped():
+return wrongColorDropped(_that);case _StarBlustCompleted():
 return starBlustCompleted(_that);case _AudioComplete():
 return audioComplete(_that);case _:
   throw StateError('Unexpected subclass');
@@ -106,13 +108,14 @@ return audioComplete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _InstructionComplete value)?  instructionComplete,TResult? Function( _ColorFilled value)?  colorFilled,TResult? Function( _StarBlustCompleted value)?  starBlustCompleted,TResult? Function( _AudioComplete value)?  audioComplete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _InstructionComplete value)?  instructionComplete,TResult? Function( _ColorFilled value)?  colorFilled,TResult? Function( _WrongColorDropped value)?  wrongColorDropped,TResult? Function( _StarBlustCompleted value)?  starBlustCompleted,TResult? Function( _AudioComplete value)?  audioComplete,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _InstructionComplete() when instructionComplete != null:
 return instructionComplete(_that);case _ColorFilled() when colorFilled != null:
-return colorFilled(_that);case _StarBlustCompleted() when starBlustCompleted != null:
+return colorFilled(_that);case _WrongColorDropped() when wrongColorDropped != null:
+return wrongColorDropped(_that);case _StarBlustCompleted() when starBlustCompleted != null:
 return starBlustCompleted(_that);case _AudioComplete() when audioComplete != null:
 return audioComplete(_that);case _:
   return null;
@@ -131,12 +134,13 @@ return audioComplete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( GunFillLessonContent content,  bool isMobile)?  started,TResult Function()?  instructionComplete,TResult Function( String partId)?  colorFilled,TResult Function( GunPart part)?  starBlustCompleted,TResult Function()?  audioComplete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( GunFillLessonContent content,  bool isMobile)?  started,TResult Function()?  instructionComplete,TResult Function( String partId)?  colorFilled,TResult Function()?  wrongColorDropped,TResult Function( GunPart part)?  starBlustCompleted,TResult Function()?  audioComplete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content,_that.isMobile);case _InstructionComplete() when instructionComplete != null:
 return instructionComplete();case _ColorFilled() when colorFilled != null:
-return colorFilled(_that.partId);case _StarBlustCompleted() when starBlustCompleted != null:
+return colorFilled(_that.partId);case _WrongColorDropped() when wrongColorDropped != null:
+return wrongColorDropped();case _StarBlustCompleted() when starBlustCompleted != null:
 return starBlustCompleted(_that.part);case _AudioComplete() when audioComplete != null:
 return audioComplete();case _:
   return orElse();
@@ -156,12 +160,13 @@ return audioComplete();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( GunFillLessonContent content,  bool isMobile)  started,required TResult Function()  instructionComplete,required TResult Function( String partId)  colorFilled,required TResult Function( GunPart part)  starBlustCompleted,required TResult Function()  audioComplete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( GunFillLessonContent content,  bool isMobile)  started,required TResult Function()  instructionComplete,required TResult Function( String partId)  colorFilled,required TResult Function()  wrongColorDropped,required TResult Function( GunPart part)  starBlustCompleted,required TResult Function()  audioComplete,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started(_that.content,_that.isMobile);case _InstructionComplete():
 return instructionComplete();case _ColorFilled():
-return colorFilled(_that.partId);case _StarBlustCompleted():
+return colorFilled(_that.partId);case _WrongColorDropped():
+return wrongColorDropped();case _StarBlustCompleted():
 return starBlustCompleted(_that.part);case _AudioComplete():
 return audioComplete();case _:
   throw StateError('Unexpected subclass');
@@ -180,12 +185,13 @@ return audioComplete();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( GunFillLessonContent content,  bool isMobile)?  started,TResult? Function()?  instructionComplete,TResult? Function( String partId)?  colorFilled,TResult? Function( GunPart part)?  starBlustCompleted,TResult? Function()?  audioComplete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( GunFillLessonContent content,  bool isMobile)?  started,TResult? Function()?  instructionComplete,TResult? Function( String partId)?  colorFilled,TResult? Function()?  wrongColorDropped,TResult? Function( GunPart part)?  starBlustCompleted,TResult? Function()?  audioComplete,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content,_that.isMobile);case _InstructionComplete() when instructionComplete != null:
 return instructionComplete();case _ColorFilled() when colorFilled != null:
-return colorFilled(_that.partId);case _StarBlustCompleted() when starBlustCompleted != null:
+return colorFilled(_that.partId);case _WrongColorDropped() when wrongColorDropped != null:
+return wrongColorDropped();case _StarBlustCompleted() when starBlustCompleted != null:
 return starBlustCompleted(_that.part);case _AudioComplete() when audioComplete != null:
 return audioComplete();case _:
   return null;
@@ -360,6 +366,38 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class _WrongColorDropped implements GunFillEvent {
+  const _WrongColorDropped();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WrongColorDropped);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'GunFillEvent.wrongColorDropped()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

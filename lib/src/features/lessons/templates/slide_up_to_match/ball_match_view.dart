@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +17,13 @@ class MatchGameScreen extends StatefulWidget {
   final SlideUpToMatchLessonContent content;
   final bool isLastContent;
   final VoidCallback onNext;
+  final VoidCallback? onLessonCompleted;
 
   const MatchGameScreen({
     super.key,
     required this.content,
     required this.onNext,
+    this.onLessonCompleted,
     this.isLastContent = false,
   });
 
@@ -31,57 +35,74 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
-    final size = MediaQuery.sizeOf(context);
     return BlocProvider(
       create: (context) => MatchBloc()..add(MatchEvent.started(widget.content)),
-      child: BlocBuilder<MatchBloc, MatchState>(
+      child: BlocConsumer<MatchBloc, MatchState>(
+        listenWhen: (previous, current) =>
+            widget.isLastContent &&
+            !previous.completionFeedbackReady &&
+            current.completionFeedbackReady,
+        listener: (context, state) {
+          widget.onLessonCompleted?.call();
+        },
         builder: (context, state) {
           if (state.content == null) {
             return SizedBox.shrink();
           }
           return Stack(
             children: [
-              Column(
-                children: [
-                  SizedBox(height: isMobile ? 60 : size.height * 0.15),
-                  //TOP ROW: Items & English Labels
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: state.content!.items.map((item) {
-                      return TopItems(
-                        image: item.image,
-                        labelEn: item.nameEn,
-                        labelNp: item.nameNp,
-                        bgColor: colorFromHex(item.bgColor) ?? Colors.white,
-                        isCorrect: item.isCorrect,
-                      );
-                    }).toList(),
-                  ),
-                  Spacer(),
-                  //BOTTOM ROW: Draggable Nepali Labels
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: state.nepaliWords.map((item) {
-                      return _buildDraggableLabel(item.word, item.isMatched);
-                    }).toList(),
-                  ),
-                  SizedBox(height: isMobile ? 60 : size.height * 0.15),
-                ],
+              LessonContentFrame(
+                builder: (context, constraints) {
+                  final frameSize = Size(
+                    constraints.maxWidth,
+                    constraints.maxHeight,
+                  );
+                  final metrics = _MatchLayoutMetrics.fromFrame(
+                    frameSize: frameSize,
+                    isMobile: isMobile,
+                    itemCount: state.content!.items.length,
+                  );
+                  return Column(
+                    children: [
+                      SizedBox(height: metrics.edgeSpacer),
+                      //TOP ROW: Items & English Labels
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: state.content!.items.map((item) {
+                          return _TopItems(
+                            image: item.image,
+                            labelEn: item.nameEn,
+                            labelNp: item.nameNp,
+                            bgColor: colorFromHex(item.bgColor) ?? Colors.white,
+                            isCorrect: item.isCorrect,
+                            metrics: metrics,
+                          );
+                        }).toList(),
+                      ),
+                      Spacer(),
+                      //BOTTOM ROW: Draggable Nepali Labels
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: state.nepaliWords.map((item) {
+                          return _buildDraggableLabel(
+                            item.word,
+                            item.isMatched,
+                            metrics,
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(height: metrics.edgeSpacer),
+                    ],
+                  );
+                },
               ),
-              if (state.isAnsweredAll && widget.isLastContent)
-                Positioned.fill(
-                  child: LottieHelper.fromSource(
-                    path: Assets.confetti1,
-                    fit: BoxFit.cover,
-                  ),
-                ),
               CenterLeftAlignedBackButton(
                 onTap: () {
                   context.read<LessonBloc>().add(LessonEvent.previousContent());
                 },
               ),
-              if (state.isAnsweredAll)
+              if (state.isAnsweredAll && !widget.isLastContent)
                 CenterRightAlignedForwardButton(onTap: widget.onNext),
 
               TopRightPositionedCloseButton(
@@ -97,18 +118,27 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
   }
 
   // Helper for the Draggable Nepali words at the bottom
-  Widget _buildDraggableLabel(String text, bool isMatched) {
+  Widget _buildDraggableLabel(
+    String text,
+    bool isMatched,
+    _MatchLayoutMetrics metrics,
+  ) {
     return Draggable<String>(
       data: text,
       feedback: Material(
         color: Colors.transparent,
-        child: _labelContainer(text, opacity: 0.7, isMatched: isMatched),
+        child: _labelContainer(
+          text,
+          opacity: 0.7,
+          isMatched: isMatched,
+          metrics: metrics,
+        ),
       ),
       childWhenDragging: Opacity(
         opacity: 0.3,
-        child: _labelContainer(text, isMatched: isMatched),
+        child: _labelContainer(text, isMatched: isMatched, metrics: metrics),
       ),
-      child: _labelContainer(text, isMatched: isMatched),
+      child: _labelContainer(text, isMatched: isMatched, metrics: metrics),
     );
   }
 
@@ -116,24 +146,18 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
     String text, {
     double opacity = 1.0,
     bool isMatched = false,
+    required _MatchLayoutMetrics metrics,
   }) {
-    final isMobile = PlatformUtility.isMobile(context);
     if (isMatched) {
-      return Container(
-        width: isMobile ? 180 : 250,
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(
-          vertical: isMobile ? 8 : 12,
-          horizontal: isMobile ? 16 : 32,
-        ),
-      );
+      return SizedBox(width: metrics.labelWidth, height: metrics.labelHeight);
     }
     return Container(
-      width: isMobile ? 180 : 250,
+      width: metrics.labelWidth,
+      height: metrics.labelHeight,
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 8 : 12,
-        horizontal: isMobile ? 16 : 32,
+        vertical: metrics.labelVerticalPadding,
+        horizontal: metrics.labelHorizontalPadding,
       ),
       decoration: BoxDecoration(
         color: AppColors.kSecondaryColor,
@@ -141,33 +165,100 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
       ),
       child: isMatched
           ? SizedBox.shrink()
-          : Text(
-              text,
-              style: isMobile
-                  ? Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.kWhite,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: AppConstants.kMuktaFont,
-                    )
-                  : Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: AppColors.kWhite,
-                      fontSize: 44,
-                      fontFamily: AppConstants.kMuktaFont,
-                    ),
+          : FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: AppColors.kWhite,
+                  fontSize: metrics.labelFontSize,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: AppConstants.kMuktaFont,
+                ),
+              ),
             ),
     );
   }
 }
 
-class TopItems extends StatelessWidget {
-  const TopItems({
-    super.key,
+class _MatchLayoutMetrics {
+  const _MatchLayoutMetrics({
+    required this.imageSize,
+    required this.labelWidth,
+    required this.labelHeight,
+    required this.labelFontSize,
+    required this.labelVerticalPadding,
+    required this.labelHorizontalPadding,
+    required this.itemLabelGap,
+    required this.edgeSpacer,
+  });
+
+  final double imageSize;
+  final double labelWidth;
+  final double labelHeight;
+  final double labelFontSize;
+  final double labelVerticalPadding;
+  final double labelHorizontalPadding;
+  final double itemLabelGap;
+  final double edgeSpacer;
+
+  factory _MatchLayoutMetrics.fromFrame({
+    required Size frameSize,
+    required bool isMobile,
+    required int itemCount,
+  }) {
+    final safeItemCount = max(1, itemCount);
+    final laneWidth = frameSize.width / safeItemCount;
+    final maxLabelWidth = isMobile ? 180.0 : 250.0;
+    final labelWidth = min(
+      maxLabelWidth,
+      max(0.0, laneWidth - (isMobile ? 8.0 : 16.0)),
+    );
+    final labelFontSize = min(
+      isMobile ? 24.0 : 44.0,
+      max(16.0, labelWidth * 0.18),
+    );
+    final labelVerticalPadding = isMobile ? 8.0 : 12.0;
+    final labelHorizontalPadding = min(
+      isMobile ? 16.0 : 32.0,
+      labelWidth * 0.12,
+    );
+    final labelHeight = (labelFontSize * 1.35) + (labelVerticalPadding * 2);
+    final itemLabelGap = min(isMobile ? 16.0 : 24.0, frameSize.height * 0.04);
+    final maxImageSize = isMobile ? 120.0 : 200.0;
+    final imageSize = min(
+      maxImageSize,
+      min(labelWidth, frameSize.height * 0.32),
+    );
+    final topItemHeight = imageSize + itemLabelGap + labelHeight;
+    final availableSpacerHeight = max(
+      0.0,
+      frameSize.height - topItemHeight - labelHeight,
+    );
+    final desiredEdgeSpacer = isMobile ? 60.0 : frameSize.height * 0.15;
+    final edgeSpacer = min(desiredEdgeSpacer, availableSpacerHeight / 2);
+
+    return _MatchLayoutMetrics(
+      imageSize: imageSize,
+      labelWidth: labelWidth,
+      labelHeight: labelHeight,
+      labelFontSize: labelFontSize,
+      labelVerticalPadding: labelVerticalPadding,
+      labelHorizontalPadding: labelHorizontalPadding,
+      itemLabelGap: itemLabelGap,
+      edgeSpacer: edgeSpacer,
+    );
+  }
+}
+
+class _TopItems extends StatelessWidget {
+  const _TopItems({
     required this.image,
     required this.labelEn,
     required this.labelNp,
     required this.bgColor,
     required this.isCorrect,
+    required this.metrics,
   });
 
   final String image;
@@ -175,10 +266,10 @@ class TopItems extends StatelessWidget {
   final String labelNp;
   final Color bgColor;
   final bool isCorrect;
+  final _MatchLayoutMetrics metrics;
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = PlatformUtility.isMobile(context);
     return DragTarget(
       onAcceptWithDetails: (details) {
         final isCorrect = details.data == labelNp;
@@ -188,16 +279,18 @@ class TopItems extends StatelessWidget {
         );
         if (isCorrect) {
           context.read<MatchBloc>().add(MatchEvent.onAccept(labelNp));
+        } else {
+          context.read<MatchBloc>().add(const MatchEvent.onWrongAccept());
         }
       },
       builder: (context, candidateData, rejectedData) => Column(
         children: [
           SizedBox(
-            width: isMobile ? 120 : 200,
-            height: isMobile ? 120 : 200,
+            width: metrics.imageSize,
+            height: metrics.imageSize,
             child: CustomCachedImage(imageUrl: image, fit: BoxFit.cover),
           ),
-          SizedBox(height: isMobile ? 16 : 24),
+          SizedBox(height: metrics.itemLabelGap),
           DottedBorder(
             options: RoundedRectDottedBorderOptions(
               radius: Radius.circular(50),
@@ -206,10 +299,11 @@ class TopItems extends StatelessWidget {
               color: isCorrect ? Colors.transparent : AppColors.kStoneGrey,
             ),
             child: Container(
-              width: isMobile ? 180 : 250,
+              width: metrics.labelWidth,
+              height: metrics.labelHeight,
               padding: EdgeInsets.symmetric(
-                vertical: isMobile ? 8 : 12,
-                horizontal: isMobile ? 16 : 32,
+                vertical: metrics.labelVerticalPadding,
+                horizontal: metrics.labelHorizontalPadding,
               ),
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -218,19 +312,17 @@ class TopItems extends StatelessWidget {
                     : AppColors.kButtonGrey,
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Text(
-                isCorrect ? labelNp : labelEn,
-                style: isMobile
-                    ? Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 24,
-                        fontFamily: AppConstants.kMuktaFont,
-                      )
-                    : Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
-                        fontFamily: AppConstants.kMuktaFont,
-                      ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  isCorrect ? labelNp : labelEn,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: isCorrect ? AppColors.kWhite : AppColors.kGrey,
+                    fontWeight: FontWeight.w600,
+                    fontSize: metrics.labelFontSize,
+                    fontFamily: AppConstants.kMuktaFont,
+                  ),
+                ),
               ),
             ),
           ),

@@ -4,9 +4,19 @@ import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/templates/drag_to_match/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
-import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 const double _itemSpacing = 4.0;
+
+double _wordLabelGap(BuildContext context) {
+  return PlatformUtility.isMobile(context) ? 8.0 : 12.0;
+}
+
+double _wordLabelSlotHeight(BuildContext context) {
+  final isMobile = PlatformUtility.isMobile(context);
+  final labelFontSize = isMobile ? 32.0 : 48.0;
+  final labelVerticalPadding = isMobile ? 6.0 : 12.0;
+  return (labelFontSize * 1.4) + (labelVerticalPadding * 2);
+}
 
 class DragToMatchScreen extends StatelessWidget {
   final DragToMatchLessonContent lessonContent;
@@ -74,8 +84,16 @@ class _DragToMatchView extends StatelessWidget {
                     constraints.maxHeight,
                   );
                   final groupWidth = contentSize.width;
-                  final groupSize = Size(groupWidth, contentSize.height);
-                  final rowSpacing = contentSize.height * 0.04;
+                  final labelSlotHeight = _wordLabelSlotHeight(
+                    context,
+                  ).clamp(0.0, contentSize.height);
+                  final labelGap = _wordLabelGap(context);
+                  final matchAreaHeight =
+                      (contentSize.height - labelSlotHeight - labelGap)
+                          .clamp(0.0, contentSize.height)
+                          .toDouble();
+                  final groupSize = Size(groupWidth, matchAreaHeight);
+                  final rowSpacing = matchAreaHeight * 0.04;
 
                   final draggableRow = SizedBox(
                     width: groupWidth,
@@ -138,38 +156,39 @@ class _DragToMatchView extends StatelessWidget {
                     ),
                   );
 
+                  String? currentWord;
+                  for (final position in state.itemPositions) {
+                    if (position.itemId == state.currentTargetItemId) {
+                      currentWord = position.nameNp;
+                      break;
+                    }
+                  }
+
+                  final wordLabel = state.showNepaliword && currentWord != null
+                      ? _DragWordLabel(nameNp: currentWord)
+                      : const SizedBox.shrink();
+                  final showCompletionOnly =
+                      allMatched && !state.showNepaliword;
+
                   return SizedBox.expand(
                     child: Stack(
                       children: [
-                        if (allMatched)
+                        if (showCompletionOnly)
                           Center(child: outlineRow)
                         else
                           Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                SizedBox(
+                                  height: labelSlotHeight,
+                                  child: Center(child: wordLabel),
+                                ),
+                                SizedBox(height: labelGap),
                                 draggableRow,
                                 SizedBox(height: rowSpacing),
                                 outlineRow,
                               ],
-                            ),
-                          ),
-                        if (state.showNepaliword)
-                          Positioned.fill(
-                            child: Center(
-                              child: LabelDisplay(
-                                nameNp: state.itemPositions
-                                    .firstWhere(
-                                      (i) =>
-                                          i.itemId == state.currentTargetItemId,
-                                    )
-                                    .nameNp,
-                                nameEn: state.itemPositions
-                                    .firstWhere(
-                                      (i) => i.itemId == state.draggedItemId,
-                                    )
-                                    .nameNp,
-                              ),
                             ),
                           ),
                         if (state.showCat)
@@ -177,8 +196,8 @@ class _DragToMatchView extends StatelessWidget {
                             alignment: Alignment.bottomRight,
                             child: Image.asset(
                               Assets.goodRemark1,
-                              height: contentSize.height * 0.5,
-                              width: contentSize.height * 0.5,
+                              height: matchAreaHeight * 0.5,
+                              width: matchAreaHeight * 0.5,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -256,6 +275,37 @@ class _DraggableItem extends StatelessWidget {
         },
         totalItems: totalItems,
         availableSize: availableSize,
+      ),
+    );
+  }
+}
+
+class _DragWordLabel extends StatelessWidget {
+  const _DragWordLabel({required this.nameNp});
+
+  final String nameNp;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 32,
+        vertical: isMobile ? 6 : 12,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.kSecondaryColor,
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        nameNp,
+        style: TextStyle(
+          fontSize: isMobile ? 32 : 48,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: AppConstants.kMuktaFont,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }

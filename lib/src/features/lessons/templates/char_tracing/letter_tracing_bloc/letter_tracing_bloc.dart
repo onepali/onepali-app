@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/constants/assets.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/models/nepali_letter.dart';
 import 'package:onepali/src/features/lessons/services/nepali_letter_service.dart';
@@ -12,6 +15,8 @@ part 'letter_tracing_state.dart';
 part 'letter_tracing_bloc.freezed.dart';
 
 class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
+  final AudioPlayerService _audioPlayerService = AudioPlayerServiceImpl();
+
   LetterTracingBloc() : super(_LetterTracingState()) {
     on<_Started>(_onStarted);
     on<_OnPanStart>(_onPanStart);
@@ -196,6 +201,9 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
             repetitions: repetitions,
           ),
         );
+        if (hasCompletedPractice) {
+          unawaited(_playCorrectFeedbackAudio());
+        }
         return;
       }
 
@@ -339,6 +347,20 @@ class LetterTracingBloc extends Bloc<LetterTracingEvent, LetterTracingState> {
       coverage: coverage,
       accuracy: accuracy,
     );
+  }
+
+  Future<void> _playCorrectFeedbackAudio() async {
+    try {
+      await _audioPlayerService.playAsset(Assets.starBlast);
+    } catch (e) {
+      log('Error playing letter tracing completion feedback audio: $e');
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _audioPlayerService.dispose();
+    return super.close();
   }
 
   List<Offset> getPointsFromPath(Path path) {

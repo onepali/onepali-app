@@ -12,11 +12,15 @@ import 'package:onepali/src/features/lessons/widgets/choose_correct_item.dart';
 class ChooseCorrectLessonView extends StatefulWidget {
   final ChooseCorrectLessonContent content;
   final bool isLastContent;
+  final VoidCallback? onNext;
+  final VoidCallback? onLessonCompleted;
 
   const ChooseCorrectLessonView({
     super.key,
     required this.content,
     this.isLastContent = false,
+    this.onNext,
+    this.onLessonCompleted,
   });
 
   @override
@@ -48,9 +52,7 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
           previous.status != ChooseCorrectLessonContentStatus.completed &&
           current.status == ChooseCorrectLessonContentStatus.completed,
       listener: (context, state) {
-        context.read<ChooseCorrectLessonContentBloc>().add(
-          const ChooseCorrectLessonContentEvent.confettiFeedback(),
-        );
+        widget.onLessonCompleted?.call();
       },
       builder: (context, state) {
         if (state.errorMessage != null) {
@@ -72,6 +74,10 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                   );
                   final groupWidth = frameSize.width * 0.95;
                   final cardHeight = frameSize.height * 0.6;
+                  const feedbackButtonVerticalPadding = 16.0;
+                  const feedbackIconSize = 32.0;
+                  const feedbackButtonHeight =
+                      feedbackIconSize + (feedbackButtonVerticalPadding * 2);
 
                   return Center(
                     child: Column(
@@ -127,62 +133,62 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                           ),
                         ),
                         SizedBox(height: frameSize.height * 0.04),
-                        Visibility(
-                          visible: state.isAnswered,
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          child: SizedBox(
-                            width: frameSize.width * 0.2,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (state.isAnswered && state.isCorrect) {
-                                  if (widget.isLastContent) {
-                                    Navigator.of(context).pop();
-                                  } else {
-                                    context.read<LessonBloc>().add(
-                                      const LessonEvent.nextContent(),
-                                    );
-                                  }
-                                } else if (state.isAnswered &&
-                                    !state.isCorrect &&
-                                    state
-                                            .currentQuestion
-                                            ?.question
-                                            ?.isNotEmpty ==
-                                        true) {
-                                  context
-                                      .read<ChooseCorrectLessonContentBloc>()
-                                      .add(
-                                        const ChooseCorrectLessonContentEvent.questionAudioRequested(),
-                                      );
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: state.isCorrect
-                                    ? AppColors.kButtonGreen
-                                    : AppColors.kButtonRed,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                              ),
-                              child: state.isAnswered && !state.isCorrect
-                                  ? Text(
-                                      "Try again",
-                                      style: AppStyles.text20PxBold.copyWith(
-                                        color: AppColors.kBlack,
-                                      ),
-                                    )
-                                  : state.isAnswered && state.isCorrect
-                                  ? Icon(
-                                      Icons.check,
-                                      size: 32,
-                                      color: AppColors.kBlack,
-                                    )
-                                  : SizedBox(),
-                            ),
-                          ),
+                        SizedBox(
+                          width: frameSize.width * 0.2,
+                          height: feedbackButtonHeight,
+                          child: state.isAnswered
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    if (state.isAnswered && state.isCorrect) {
+                                      if (widget.onNext != null) {
+                                        widget.onNext!.call();
+                                      } else {
+                                        context.read<LessonBloc>().add(
+                                          const LessonEvent.nextContent(),
+                                        );
+                                      }
+                                    } else if (state.isAnswered &&
+                                        !state.isCorrect &&
+                                        state
+                                                .currentQuestion
+                                                ?.question
+                                                ?.isNotEmpty ==
+                                            true) {
+                                      context
+                                          .read<
+                                            ChooseCorrectLessonContentBloc
+                                          >()
+                                          .add(
+                                            const ChooseCorrectLessonContentEvent.questionAudioRequested(),
+                                          );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: state.isCorrect
+                                        ? AppColors.kButtonGreen
+                                        : AppColors.kButtonRed,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: feedbackButtonVerticalPadding,
+                                    ),
+                                  ),
+                                  child: state.isAnswered && !state.isCorrect
+                                      ? Text(
+                                          "Try again",
+                                          style: AppStyles.text20PxBold
+                                              .copyWith(
+                                                color: AppColors.kBlack,
+                                              ),
+                                        )
+                                      : state.isAnswered && state.isCorrect
+                                      ? Icon(
+                                          Icons.check,
+                                          size: feedbackIconSize,
+                                          color: AppColors.kBlack,
+                                        )
+                                      : SizedBox(),
+                                )
+                              : const SizedBox.shrink(),
                         ),
                       ],
                     ),
@@ -200,19 +206,14 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
                   state.status == ChooseCorrectLessonContentStatus.completed)
                 CenterRightAlignedForwardButton(
                   onTap: () {
-                    context.read<LessonBloc>().add(
-                      const LessonEvent.nextContent(),
-                    );
+                    if (widget.onNext != null) {
+                      widget.onNext!.call();
+                    } else {
+                      context.read<LessonBloc>().add(
+                        const LessonEvent.nextContent(),
+                      );
+                    }
                   },
-                ),
-              if (widget.isLastContent && state.isCorrect)
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: LottieHelper.fromSource(
-                      path: Assets.confetti1,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
                 ),
               TopRightPositionedCloseButton(
                 onTap: () => Navigator.pop(context),

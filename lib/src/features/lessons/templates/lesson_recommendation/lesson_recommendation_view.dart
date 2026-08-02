@@ -6,9 +6,30 @@ import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/pages/lesson_page.dart';
 
-class LessonRecommendationView extends StatelessWidget {
-  const LessonRecommendationView({super.key, required this.content});
+class LessonRecommendationView extends StatefulWidget {
+  const LessonRecommendationView({
+    super.key,
+    required this.content,
+    this.onLessonCompleted,
+  });
+
   final LessonRecommendationLessonContent content;
+  final VoidCallback? onLessonCompleted;
+
+  @override
+  State<LessonRecommendationView> createState() =>
+      _LessonRecommendationViewState();
+}
+
+class _LessonRecommendationViewState extends State<LessonRecommendationView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      widget.onLessonCompleted?.call();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +37,9 @@ class LessonRecommendationView extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: Container(color: colorFromHex(content.bgColor ?? '#FFFFFF')),
+          child: Container(
+            color: colorFromHex(widget.content.bgColor ?? '#FFFFFF'),
+          ),
         ),
         Positioned.fill(
           child: Column(
@@ -32,7 +55,7 @@ class LessonRecommendationView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: content.lessons
+                children: widget.content.lessons
                     .map(
                       (e) => GestureDetector(
                         onTap: () {

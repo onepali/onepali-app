@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:onepali/src/core/constants/assets.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 
@@ -42,6 +43,7 @@ class TapToPopBloc extends Bloc<TapToPopEvent, TapToPopState> {
         );
         if (isCompleted) {
           await _playCorrectItemAudio(event.item, waitForCompletion: true);
+          await _playCorrectFeedbackAudio();
           emit(
             state.copyWith(
               content: state.content,
@@ -96,6 +98,14 @@ class TapToPopBloc extends Bloc<TapToPopEvent, TapToPopState> {
       await completed;
     } catch (e) {
       log('Error playing tap to pop word audio: $e');
+    }
+  }
+
+  Future<void> _playCorrectFeedbackAudio() async {
+    try {
+      await _audioPlayerService.playAsset(Assets.starBlast);
+    } catch (e) {
+      log('Error playing tap to pop completion feedback audio: $e');
     }
   }
 

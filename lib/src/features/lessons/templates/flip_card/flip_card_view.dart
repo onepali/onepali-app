@@ -44,101 +44,82 @@ class _FlipCardViewState extends State<FlipCardView> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final isMobile = PlatformUtility.isMobile(context);
     return Stack(
       children: [
-        Positioned.fill(
-          child: Padding(
-            padding: EdgeInsets.all(isMobile ? 8.0 : 0),
-            child: SafeArea(
-              child: GridView(
-                padding: EdgeInsets.all(isMobile ? 24 : size.width * 0.1),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: isMobile
-                      ? size.width * 0.01
-                      : size.width * 0.05,
-                  crossAxisSpacing: isMobile
-                      ? size.width * 0.01
-                      : size.width * 0.05,
-                  childAspectRatio: isMobile ? 1.5 : 1.0,
-                ),
-                children: widget.content.items
-                    .map(
-                      (e) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              final c =
-                                  _controllers[widget.content.items.indexOf(e)];
-                              c.flipcard();
-                              if (!c.state!.isFront) {
-                                await _audioPlayerService.playAsset(
-                                  Assets.cardFlip,
-                                );
-                                await Future.delayed(
-                                  const Duration(milliseconds: 500),
-                                );
-                                if (!mounted || c.state?.isFront != false) {
-                                  return;
-                                }
-                                final audioItem = e.audioItem;
-                                if (audioItem != null && audioItem.isNotEmpty) {
-                                  await _audioPlayerService.play(audioItem);
-                                }
-                              }
-                            },
-                            child: FlipCard(
-                              rotateSide: RotateSide.bottom,
-                              animationDuration: Duration(milliseconds: 500),
-                              onTapFlipping: false,
-                              axis:
-                                  FlipAxis.values[_random.nextInt(
-                                    FlipAxis.values.length,
-                                  )],
-                              controller:
-                                  _controllers[widget.content.items.indexOf(e)],
-                              frontWidget: Transform.rotate(
-                                angle: 0.15,
-                                child: Container(
-                                  height: isMobile ? 100 : 200,
-                                  width: isMobile ? 100 : 200,
-                                  decoration: BoxDecoration(
-                                    color: colorFromHex(e.bgColor),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                              ),
-                              backWidget: Container(
-                                height: isMobile ? 100 : 200,
-                                width: isMobile ? 100 : 200,
-                                decoration: BoxDecoration(
-                                  color: colorFromHex(e.bgColor),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: CustomCachedImage(imageUrl: e.image),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            e.nameNp,
-                            style: Theme.of(context).textTheme.headlineLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: AppConstants.kMuktaFont,
-                                  fontSize: 40,
-                                ),
-                          ),
-                        ],
-                      ),
-                    )
-                    .toList(),
+        LessonContentFrame(
+          builder: (context, constraints) {
+            return Padding(
+              padding: EdgeInsets.all(isMobile ? 8.0 : 0),
+              child: LayoutBuilder(
+                builder: (context, gridConstraints) {
+                  const crossAxisCount = 3;
+                  final itemCount = widget.content.items.length;
+                  final rowCount = max(1, (itemCount / crossAxisCount).ceil());
+                  final gridPadding = isMobile
+                      ? 24.0
+                      : gridConstraints.maxWidth * 0.1;
+                  final crossSpacing = isMobile
+                      ? gridConstraints.maxWidth * 0.01
+                      : gridConstraints.maxWidth * 0.05;
+                  final mainSpacing = crossSpacing;
+                  final tileWidth =
+                      (gridConstraints.maxWidth -
+                          (gridPadding * 2) -
+                          (crossSpacing * (crossAxisCount - 1))) /
+                      crossAxisCount;
+                  final tileHeight =
+                      (gridConstraints.maxHeight -
+                          (gridPadding * 2) -
+                          (mainSpacing * (rowCount - 1))) /
+                      rowCount;
+                  final labelGap = isMobile ? 8.0 : 12.0;
+                  final labelHeight = isMobile ? 44.0 : 56.0;
+                  final maxCardSize = isMobile ? 100.0 : 200.0;
+                  final cardSize = min(
+                    maxCardSize,
+                    min(tileWidth, tileHeight - labelGap - labelHeight),
+                  ).clamp(0.0, maxCardSize);
+
+                  return GridView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.all(gridPadding),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: mainSpacing,
+                      crossAxisSpacing: crossSpacing,
+                      childAspectRatio: tileWidth / max(1.0, tileHeight),
+                    ),
+                    children: widget.content.items.asMap().entries.map((entry) {
+                      return _FlipCardTile(
+                        item: entry.value,
+                        controller: _controllers[entry.key],
+                        cardSize: cardSize,
+                        labelHeight: labelHeight,
+                        labelGap: labelGap,
+                        axis: FlipAxis
+                            .values[_random.nextInt(FlipAxis.values.length)],
+                        onCardRevealed: () async {
+                          await _audioPlayerService.playAsset(Assets.cardFlip);
+                          await Future.delayed(
+                            const Duration(milliseconds: 500),
+                          );
+                          if (!mounted ||
+                              _controllers[entry.key].state?.isFront != false) {
+                            return;
+                          }
+                          final audioItem = entry.value.audioItem;
+                          if (audioItem != null && audioItem.isNotEmpty) {
+                            await _audioPlayerService.play(audioItem);
+                          }
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
               ),
-            ),
-          ),
+            );
+          },
         ),
         TopRightPositionedCloseButton(
           onTap: () {
@@ -151,6 +132,85 @@ class _FlipCardViewState extends State<FlipCardView> {
           },
         ),
         CenterRightAlignedForwardButton(onTap: widget.onNext),
+      ],
+    );
+  }
+}
+
+class _FlipCardTile extends StatelessWidget {
+  const _FlipCardTile({
+    required this.item,
+    required this.controller,
+    required this.cardSize,
+    required this.labelHeight,
+    required this.labelGap,
+    required this.axis,
+    required this.onCardRevealed,
+  });
+
+  final Item item;
+  final FlipCardController controller;
+  final double cardSize;
+  final double labelHeight;
+  final double labelGap;
+  final FlipAxis axis;
+  final Future<void> Function() onCardRevealed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () async {
+            controller.flipcard();
+            if (!controller.state!.isFront) {
+              await onCardRevealed();
+            }
+          },
+          child: FlipCard(
+            rotateSide: RotateSide.bottom,
+            animationDuration: Duration(milliseconds: 500),
+            onTapFlipping: false,
+            axis: axis,
+            controller: controller,
+            frontWidget: Transform.rotate(
+              angle: 0.15,
+              child: Container(
+                height: cardSize,
+                width: cardSize,
+                decoration: BoxDecoration(
+                  color: colorFromHex(item.bgColor),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+            backWidget: Container(
+              height: cardSize,
+              width: cardSize,
+              decoration: BoxDecoration(
+                color: colorFromHex(item.bgColor),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: CustomCachedImage(imageUrl: item.image),
+            ),
+          ),
+        ),
+        SizedBox(height: labelGap),
+        SizedBox(
+          height: labelHeight,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              item.nameNp,
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontFamily: AppConstants.kMuktaFont,
+                fontSize: 40,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

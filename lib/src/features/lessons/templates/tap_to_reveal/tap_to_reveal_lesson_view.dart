@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/speaker_icon.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/templates/tap_to_reveal/tap_to_reveal_lesson_content_bloc/tap_to_reveal_lesson_content_bloc.dart';
@@ -321,15 +322,10 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 ),
               ),
 
-            Positioned(
-              top: 16,
-              right: 16,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: SvgHelper.fromSource(path: Assets.wrong),
-              ),
+            TopRightPositionedCloseButton(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
             ),
           ],
         );

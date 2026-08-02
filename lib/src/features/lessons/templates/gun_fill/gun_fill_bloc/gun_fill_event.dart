@@ -8,6 +8,7 @@ abstract class GunFillEvent with _$GunFillEvent {
   ) = _Started;
   const factory GunFillEvent.instructionComplete() = _InstructionComplete;
   const factory GunFillEvent.colorFilled(String partId) = _ColorFilled;
+  const factory GunFillEvent.wrongColorDropped() = _WrongColorDropped;
   const factory GunFillEvent.starBlustCompleted(GunPart part) =
       _StarBlustCompleted;
   const factory GunFillEvent.audioComplete() = _AudioComplete;

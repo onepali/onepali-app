@@ -13,8 +13,15 @@ import 'package:onepali/src/features/lessons/templates/tea_making/widgets/huncha
 import 'package:onepali/src/features/lessons/templates/tea_making/widgets/ingredient.dart';
 
 class KitchenPage extends StatefulWidget {
-  const KitchenPage({super.key, required this.content});
+  const KitchenPage({
+    super.key,
+    required this.content,
+    required this.onNext,
+    this.onLessonCompleted,
+  });
   final TeaMakingLessonContent content;
+  final VoidCallback onNext;
+  final VoidCallback? onLessonCompleted;
 
   @override
   State<KitchenPage> createState() => _KitchenPageState();
@@ -82,10 +89,23 @@ class _KitchenPageState extends State<KitchenPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final isMobile = PlatformUtility.isMobile(context);
+    final topIngredientBarHeight = size.height * (isMobile ? 0.28 : 0.26);
+    final stoveSectionHeight = size.height * 0.25;
+    final ingredientSlotWidth = size.height * (isMobile ? 0.30 : 0.22);
+    final ingredientPadding = EdgeInsets.symmetric(
+      horizontal: isMobile ? 10 : 12,
+      vertical: isMobile ? 12 : 16,
+    );
     return BlocProvider(
       create: (context) =>
           TutorialBloc()..add(TutorialEvent.started(widget.content)),
-      child: BlocBuilder<TutorialBloc, TutorialState>(
+      child: BlocConsumer<TutorialBloc, TutorialState>(
+        listenWhen: (previous, current) =>
+            !previous.completionFeedbackReady &&
+            current.completionFeedbackReady,
+        listener: (context, state) {
+          widget.onLessonCompleted?.call();
+        },
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.kBlue,
@@ -100,7 +120,7 @@ class _KitchenPageState extends State<KitchenPage> {
                           // Top ingredients
                           if (!state.teaReady)
                             Container(
-                              height: size.height * 0.25,
+                              height: topIngredientBarHeight,
                               padding: EdgeInsets.only(
                                 left: size.width * 0.05,
                                 right: size.width * 0.1,
@@ -120,73 +140,65 @@ class _KitchenPageState extends State<KitchenPage> {
                                 ],
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: List.generate(
                                   state.ingredients.length,
-                                  (index) => SizedBox(
-                                    width: isMobile
-                                        ? size.height * 0.3
-                                        : size.height * 0.2,
-                                    child: Stack(
-                                      children: [
-                                        Positioned.fill(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 24,
-                                            ),
-                                            child: Draggable<Map<int, String>>(
-                                              data: {
-                                                index: state.ingredients[index],
-                                              },
-                                              feedback: SvgPicture.network(
-                                                state.ingredients[index],
-                                              ),
-                                              onDragStarted: () {
-                                                // On drag start
-                                              },
-                                              onDragEnd: (details) {
-                                                // On drag end
-                                              },
-                                              childWhenDragging:
-                                                  SvgPicture.network(
-                                                    state.ingredients[index],
-                                                    colorFilter:
-                                                        ColorFilter.mode(
-                                                          Colors.grey,
-                                                          BlendMode.modulate,
-                                                        ),
-                                                  ),
-                                              child: SizedBox(
-                                                child: Ingredient(
-                                                  key: index == 0
-                                                      ? _taePotKey
-                                                      : null,
-                                                  ingredient:
+                                  (index) => Flexible(
+                                    child: SizedBox(
+                                      width: ingredientSlotWidth,
+                                      child: Stack(
+                                        children: [
+                                          Positioned.fill(
+                                            child: Padding(
+                                              padding: ingredientPadding,
+                                              child: Draggable<Map<int, String>>(
+                                                data: {
+                                                  index:
                                                       state.ingredients[index],
-                                                  isSelected:
-                                                      state.index == index,
+                                                },
+                                                feedback: SvgPicture.network(
+                                                  state.ingredients[index],
+                                                ),
+                                                childWhenDragging:
+                                                    SvgPicture.network(
+                                                      state.ingredients[index],
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                            Colors.grey,
+                                                            BlendMode.modulate,
+                                                          ),
+                                                    ),
+                                                child: SizedBox(
+                                                  child: Ingredient(
+                                                    key: index == 0
+                                                        ? _taePotKey
+                                                        : null,
+                                                    ingredient: state
+                                                        .ingredients[index],
+                                                    isSelected:
+                                                        state.index == index,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
 
-                                        if (state.index > index &&
-                                            state.checkIcon?.isNotEmpty == true)
-                                          Positioned.fill(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                8.0,
-                                              ),
-                                              child: SvgPicture.network(
-                                                state.checkIcon!,
+                                          if (state.index > index &&
+                                              state.checkIcon?.isNotEmpty ==
+                                                  true)
+                                            Positioned.fill(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  8.0,
+                                                ),
+                                                child: SvgPicture.network(
+                                                  state.checkIcon!,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -196,12 +208,12 @@ class _KitchenPageState extends State<KitchenPage> {
                           // Stove section
                           Center(
                             child: SizedBox(
-                              height: size.height * 0.25,
+                              height: stoveSectionHeight,
                               // decoration: BoxDecoration(color: Colors.orange),
                               child: SvgPicture.network(
                                 key: _stoveKey,
                                 state.stoveImage ?? '',
-                                height: size.height * 0.25,
+                                height: stoveSectionHeight,
                                 fit: BoxFit.fitHeight,
                               ),
                             ),
@@ -212,7 +224,8 @@ class _KitchenPageState extends State<KitchenPage> {
                       // Tea preparing section
                       if (!state.teaReady)
                         Positioned(
-                          bottom: size.height * 0.25,
+                          top: topIngredientBarHeight,
+                          bottom: stoveSectionHeight,
                           left: 0,
                           right: 0,
                           child: DragTarget<Map<int, String>>(
@@ -226,7 +239,6 @@ class _KitchenPageState extends State<KitchenPage> {
 
                             builder: (context, candidateData, rejectedData) {
                               return SizedBox(
-                                height: size.height * 0.50,
                                 width: size.width * 0.3,
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
@@ -270,9 +282,8 @@ class _KitchenPageState extends State<KitchenPage> {
                         ),
                       if (state.teaReady)
                         Positioned.fill(
-                          // alignment: Alignment.bottomCenter,
                           child: GestureDetector(
-                            onTap: () => Navigator.of(context).pop(),
+                            onTap: widget.onNext,
                             child: Padding(
                               padding: EdgeInsetsGeometry.only(
                                 top: 100,
@@ -286,15 +297,6 @@ class _KitchenPageState extends State<KitchenPage> {
                               ),
                             ),
                           ),
-                        ),
-                      if (state.teaReady)
-                        LottieHelper.fromSource(
-                          path: 'assets/lottie/confetti_1.json',
-                          fit: BoxFit.cover,
-                          repeat: true,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          type: LottieSourceType.asset,
                         ),
 
                       TopRightPositionedCloseButton(

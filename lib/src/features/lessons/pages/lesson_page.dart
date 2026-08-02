@@ -3,13 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/core/constants/assets.dart';
+import 'package:onepali/src/core/router/app_router.dart';
 import 'package:onepali/src/core/services/audio_player_service.dart';
 import 'package:onepali/src/core/services/audio_record_service.dart';
 import 'package:onepali/src/core/services/media_cache_manager.dart';
+import 'package:onepali/src/core/utils/guest_util.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/core/widget/custom_lottie.dart';
 import 'package:onepali/src/core/widget/custom_audio_widget.dart';
+import 'package:onepali/src/core/widget/fixed_appbar.dart';
 import 'package:onepali/src/features/lessons/blocs/lesson_bloc/lesson_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/templates/ball_slide/ball_slide_view.dart';
@@ -49,9 +54,15 @@ class LessonPage extends StatefulWidget {
 }
 
 class _LessonPageState extends State<LessonPage> {
+  static const _lessonCompletionFeedbackDuration = Duration(seconds: 3);
+
   int? _lastContentIndex;
   int? _introNavigationReadyIndex;
   LessonDetail? _lastCachedLessonDetails;
+  bool _showLessonCompletionFeedback = false;
+  bool _isPlayingLessonCompletionFeedback = false;
+  bool _hasPlayedLessonCompletionFeedback = false;
+  bool _popAfterLessonCompletionFeedback = false;
 
   @override
   void initState() {
@@ -64,6 +75,58 @@ class _LessonPageState extends State<LessonPage> {
       AudioPlayerServiceImpl.stopAll(),
       CustomAudioWidget.stopAll(),
     ], eagerError: false);
+  }
+
+  void _navigateHomeAfterLessonCompletion() {
+    final homeRoute = GuestUtil.isGuestUser()
+        ? AppRoutes.guestDashboardScreen
+        : AppRoutes.dashboardScreen;
+    Navigator.of(context).pushNamedAndRemoveUntil(homeRoute, (route) => false);
+    UserAppBar.setTabIndex(0);
+  }
+
+  Future<void> _playLessonCompletionFeedback({
+    required bool popAfterFeedback,
+  }) async {
+    if (popAfterFeedback) {
+      _popAfterLessonCompletionFeedback = true;
+    }
+
+    if (_hasPlayedLessonCompletionFeedback) {
+      if (popAfterFeedback && mounted) {
+        _navigateHomeAfterLessonCompletion();
+      }
+      return;
+    }
+
+    if (_isPlayingLessonCompletionFeedback) return;
+
+    _isPlayingLessonCompletionFeedback = true;
+    _hasPlayedLessonCompletionFeedback = true;
+    await _stopActiveLessonAudio();
+
+    if (!mounted) return;
+    setState(() {
+      _showLessonCompletionFeedback = true;
+    });
+
+    final feedbackPlayer = AudioPlayerServiceImpl();
+    try {
+      await feedbackPlayer.playAsset(Assets.confettiFeedback);
+      await Future<void>.delayed(_lessonCompletionFeedbackDuration);
+    } finally {
+      await feedbackPlayer.dispose();
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _showLessonCompletionFeedback = false;
+    });
+    _isPlayingLessonCompletionFeedback = false;
+
+    if (_popAfterLessonCompletionFeedback) {
+      _navigateHomeAfterLessonCompletion();
+    }
   }
 
   @override
@@ -86,10 +149,18 @@ class _LessonPageState extends State<LessonPage> {
         child: Scaffold(
           body: BlocConsumer<LessonBloc, LessonState>(
             listenWhen: (previous, current) =>
-                current.status == LessonStatus.success &&
-                (previous.lessonDetails != current.lessonDetails ||
-                    previous.currentIndex != current.currentIndex),
+                current.status == LessonStatus.completed ||
+                (current.status == LessonStatus.success &&
+                    (previous.lessonDetails != current.lessonDetails ||
+                        previous.currentIndex != current.currentIndex)),
             listener: (context, state) {
+              if (state.status == LessonStatus.completed) {
+                unawaited(
+                  _playLessonCompletionFeedback(popAfterFeedback: true),
+                );
+                return;
+              }
+
               if (_lastContentIndex != null &&
                   _lastContentIndex != state.currentIndex) {
                 unawaited(_stopActiveLessonAudio());
@@ -120,13 +191,7 @@ class _LessonPageState extends State<LessonPage> {
 
               void handleNext() {
                 unawaited(_stopActiveLessonAudio());
-                if (isLastContent) {
-                  Navigator.of(context).pop();
-                } else {
-                  context.read<LessonBloc>().add(
-                    const LessonEvent.nextContent(),
-                  );
-                }
+                context.read<LessonBloc>().add(const LessonEvent.nextContent());
               }
 
               void handlePrevious() {
@@ -143,7 +208,21 @@ class _LessonPageState extends State<LessonPage> {
                 });
               }
 
-              return switch (lessonContent) {
+              void completeLessonAfterFeedback() {
+                unawaited(
+                  (() async {
+                    await _playLessonCompletionFeedback(
+                      popAfterFeedback: false,
+                    );
+                    if (!mounted) return;
+                    context.read<LessonBloc>().add(
+                      const LessonEvent.nextContent(),
+                    );
+                  })(),
+                );
+              }
+
+              final contentView = switch (lessonContent) {
                 IntroLessonContent() => Stack(
                   children: [
                     IntroLessonView(
@@ -152,6 +231,13 @@ class _LessonPageState extends State<LessonPage> {
                       isLast: isLastContent,
                       isFirst: isFirstContent,
                       onNavigationReady: markIntroNavigationReady,
+                      onLessonCompleted: () {
+                        unawaited(
+                          _playLessonCompletionFeedback(
+                            popAfterFeedback: false,
+                          ),
+                        );
+                      },
                     ),
                     TopRightPositionedCloseButton(
                       onTap: () {
@@ -177,6 +263,8 @@ class _LessonPageState extends State<LessonPage> {
                   child: ChooseCorrectLessonView(
                     content: lessonContent,
                     isLastContent: isLastContent,
+                    onNext: handleNext,
+                    onLessonCompleted: completeLessonAfterFeedback,
                   ),
                 ),
                 TapToRevealLessonContent() => BlocProvider(
@@ -209,7 +297,15 @@ class _LessonPageState extends State<LessonPage> {
                   isLastContent: isLastContent,
                   onNext: handleNext,
                 ),
-                TeaMakingLessonContent() => KitchenPage(content: lessonContent),
+                TeaMakingLessonContent() => KitchenPage(
+                  content: lessonContent,
+                  onNext: isLastContent
+                      ? completeLessonAfterFeedback
+                      : handleNext,
+                  onLessonCompleted: isLastContent
+                      ? completeLessonAfterFeedback
+                      : null,
+                ),
                 BallSlideLessonContent() => BallSlideView(
                   key: ValueKey('ball_slide_${state.currentIndex}'),
                   content: lessonContent,
@@ -225,6 +321,7 @@ class _LessonPageState extends State<LessonPage> {
                   content: lessonContent,
                   isLastContent: isLastContent,
                   onNext: handleNext,
+                  onLessonCompleted: completeLessonAfterFeedback,
                 ),
                 BalloonFillLessonContent() => BalloonFillView(
                   content: lessonContent,
@@ -260,12 +357,39 @@ class _LessonPageState extends State<LessonPage> {
                 ),
                 LessonRecommendationLessonContent() => LessonRecommendationView(
                   content: lessonContent,
+                  onLessonCompleted: isLastContent
+                      ? () {
+                          unawaited(
+                            _playLessonCompletionFeedback(
+                              popAfterFeedback: false,
+                            ),
+                          );
+                        }
+                      : null,
                 ),
                 _ => UnknownLessonType(
                   isFirst: isFirstContent,
                   isLast: isLastContent,
                 ),
               };
+
+              return Stack(
+                children: [
+                  contentView,
+                  if (_showLessonCompletionFeedback)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: LottieHelper.fromSource(
+                          path: Assets.confetti1,
+                          width: MediaQuery.sizeOf(context).width,
+                          height: MediaQuery.sizeOf(context).height,
+                          fit: BoxFit.cover,
+                          repeat: false,
+                        ),
+                      ),
+                    ),
+                ],
+              );
             },
           ),
         ),

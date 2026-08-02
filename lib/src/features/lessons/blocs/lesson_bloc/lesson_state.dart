@@ -11,4 +11,4 @@ abstract class LessonState with _$LessonState {
   }) = _LessonState;
 }
 
-enum LessonStatus { initial, loading, success, failure }
+enum LessonStatus { initial, loading, success, completed, failure }

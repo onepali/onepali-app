@@ -672,8 +672,10 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
+        overlayColor: WidgetStateProperty.all(AppColors.kTransparentColor),
+        splashFactory: NoSplash.splashFactory,
         hoverColor: AppColors.kTransparentColor,
-        splashColor: AppColors.kTransparentColor.withValues(alpha: 0.1),
+        splashColor: AppColors.kTransparentColor,
         focusColor: AppColors.kTransparentColor,
         highlightColor: AppColors.kTransparentColor,
         child: Column(

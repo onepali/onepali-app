@@ -55,12 +55,13 @@ extension MatchEventPatterns on MatchEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _OnAccept value)?  onAccept,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _OnAccept value)?  onAccept,TResult Function( _OnWrongAccept value)?  onWrongAccept,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _OnAccept() when onAccept != null:
-return onAccept(_that);case _:
+return onAccept(_that);case _OnWrongAccept() when onWrongAccept != null:
+return onWrongAccept(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return onAccept(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _OnAccept value)  onAccept,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _OnAccept value)  onAccept,required TResult Function( _OnWrongAccept value)  onWrongAccept,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _OnAccept():
-return onAccept(_that);case _:
+return onAccept(_that);case _OnWrongAccept():
+return onWrongAccept(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return onAccept(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _OnAccept value)?  onAccept,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _OnAccept value)?  onAccept,TResult? Function( _OnWrongAccept value)?  onWrongAccept,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _OnAccept() when onAccept != null:
-return onAccept(_that);case _:
+return onAccept(_that);case _OnWrongAccept() when onWrongAccept != null:
+return onWrongAccept(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return onAccept(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SlideUpToMatchLessonContent content)?  started,TResult Function( String nepaliWord)?  onAccept,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SlideUpToMatchLessonContent content)?  started,TResult Function( String nepaliWord)?  onAccept,TResult Function()?  onWrongAccept,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content);case _OnAccept() when onAccept != null:
-return onAccept(_that.nepaliWord);case _:
+return onAccept(_that.nepaliWord);case _OnWrongAccept() when onWrongAccept != null:
+return onWrongAccept();case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return onAccept(_that.nepaliWord);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SlideUpToMatchLessonContent content)  started,required TResult Function( String nepaliWord)  onAccept,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SlideUpToMatchLessonContent content)  started,required TResult Function( String nepaliWord)  onAccept,required TResult Function()  onWrongAccept,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started(_that.content);case _OnAccept():
-return onAccept(_that.nepaliWord);case _:
+return onAccept(_that.nepaliWord);case _OnWrongAccept():
+return onWrongAccept();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return onAccept(_that.nepaliWord);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SlideUpToMatchLessonContent content)?  started,TResult? Function( String nepaliWord)?  onAccept,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SlideUpToMatchLessonContent content)?  started,TResult? Function( String nepaliWord)?  onAccept,TResult? Function()?  onWrongAccept,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content);case _OnAccept() when onAccept != null:
-return onAccept(_that.nepaliWord);case _:
+return onAccept(_that.nepaliWord);case _OnWrongAccept() when onWrongAccept != null:
+return onWrongAccept();case _:
   return null;
 
 }
@@ -310,9 +316,41 @@ as String,
 }
 
 /// @nodoc
+
+
+class _OnWrongAccept implements MatchEvent {
+  const _OnWrongAccept();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnWrongAccept);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'MatchEvent.onWrongAccept()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
 mixin _$MatchState {
 
- SlideUpToMatchLessonContent? get content; List<NepaliWord> get nepaliWords; bool get isAnsweredAll;
+ SlideUpToMatchLessonContent? get content; List<NepaliWord> get nepaliWords; bool get isAnsweredAll; bool get completionFeedbackReady;
 /// Create a copy of MatchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -323,16 +361,16 @@ $MatchStateCopyWith<MatchState> get copyWith => _$MatchStateCopyWithImpl<MatchSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MatchState&&const DeepCollectionEquality().equals(other.content, content)&&const DeepCollectionEquality().equals(other.nepaliWords, nepaliWords)&&(identical(other.isAnsweredAll, isAnsweredAll) || other.isAnsweredAll == isAnsweredAll));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MatchState&&const DeepCollectionEquality().equals(other.content, content)&&const DeepCollectionEquality().equals(other.nepaliWords, nepaliWords)&&(identical(other.isAnsweredAll, isAnsweredAll) || other.isAnsweredAll == isAnsweredAll)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),const DeepCollectionEquality().hash(nepaliWords),isAnsweredAll);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),const DeepCollectionEquality().hash(nepaliWords),isAnsweredAll,completionFeedbackReady);
 
 @override
 String toString() {
-  return 'MatchState(content: $content, nepaliWords: $nepaliWords, isAnsweredAll: $isAnsweredAll)';
+  return 'MatchState(content: $content, nepaliWords: $nepaliWords, isAnsweredAll: $isAnsweredAll, completionFeedbackReady: $completionFeedbackReady)';
 }
 
 
@@ -343,7 +381,7 @@ abstract mixin class $MatchStateCopyWith<$Res>  {
   factory $MatchStateCopyWith(MatchState value, $Res Function(MatchState) _then) = _$MatchStateCopyWithImpl;
 @useResult
 $Res call({
- SlideUpToMatchLessonContent? content, List<NepaliWord> nepaliWords, bool isAnsweredAll
+ SlideUpToMatchLessonContent? content, List<NepaliWord> nepaliWords, bool isAnsweredAll, bool completionFeedbackReady
 });
 
 
@@ -360,11 +398,12 @@ class _$MatchStateCopyWithImpl<$Res>
 
 /// Create a copy of MatchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? nepaliWords = null,Object? isAnsweredAll = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? nepaliWords = null,Object? isAnsweredAll = null,Object? completionFeedbackReady = null,}) {
   return _then(_self.copyWith(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as SlideUpToMatchLessonContent?,nepaliWords: null == nepaliWords ? _self.nepaliWords : nepaliWords // ignore: cast_nullable_to_non_nullable
 as List<NepaliWord>,isAnsweredAll: null == isAnsweredAll ? _self.isAnsweredAll : isAnsweredAll // ignore: cast_nullable_to_non_nullable
+as bool,completionFeedbackReady: null == completionFeedbackReady ? _self.completionFeedbackReady : completionFeedbackReady // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -450,10 +489,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll,  bool completionFeedbackReady)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MatchState() when $default != null:
-return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
+return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll,_that.completionFeedbackReady);case _:
   return orElse();
 
 }
@@ -471,10 +510,10 @@ return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll,  bool completionFeedbackReady)  $default,) {final _that = this;
 switch (_that) {
 case _MatchState():
-return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
+return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll,_that.completionFeedbackReady);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -491,10 +530,10 @@ return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SlideUpToMatchLessonContent? content,  List<NepaliWord> nepaliWords,  bool isAnsweredAll,  bool completionFeedbackReady)?  $default,) {final _that = this;
 switch (_that) {
 case _MatchState() when $default != null:
-return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
+return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll,_that.completionFeedbackReady);case _:
   return null;
 
 }
@@ -506,7 +545,7 @@ return $default(_that.content,_that.nepaliWords,_that.isAnsweredAll);case _:
 
 
 class _MatchState implements MatchState {
-  const _MatchState({this.content, final  List<NepaliWord> nepaliWords = const [], this.isAnsweredAll = false}): _nepaliWords = nepaliWords;
+  const _MatchState({this.content, final  List<NepaliWord> nepaliWords = const [], this.isAnsweredAll = false, this.completionFeedbackReady = false}): _nepaliWords = nepaliWords;
   
 
 @override final  SlideUpToMatchLessonContent? content;
@@ -518,6 +557,7 @@ class _MatchState implements MatchState {
 }
 
 @override@JsonKey() final  bool isAnsweredAll;
+@override@JsonKey() final  bool completionFeedbackReady;
 
 /// Create a copy of MatchState
 /// with the given fields replaced by the non-null parameter values.
@@ -529,16 +569,16 @@ _$MatchStateCopyWith<_MatchState> get copyWith => __$MatchStateCopyWithImpl<_Mat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MatchState&&const DeepCollectionEquality().equals(other.content, content)&&const DeepCollectionEquality().equals(other._nepaliWords, _nepaliWords)&&(identical(other.isAnsweredAll, isAnsweredAll) || other.isAnsweredAll == isAnsweredAll));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MatchState&&const DeepCollectionEquality().equals(other.content, content)&&const DeepCollectionEquality().equals(other._nepaliWords, _nepaliWords)&&(identical(other.isAnsweredAll, isAnsweredAll) || other.isAnsweredAll == isAnsweredAll)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),const DeepCollectionEquality().hash(_nepaliWords),isAnsweredAll);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),const DeepCollectionEquality().hash(_nepaliWords),isAnsweredAll,completionFeedbackReady);
 
 @override
 String toString() {
-  return 'MatchState(content: $content, nepaliWords: $nepaliWords, isAnsweredAll: $isAnsweredAll)';
+  return 'MatchState(content: $content, nepaliWords: $nepaliWords, isAnsweredAll: $isAnsweredAll, completionFeedbackReady: $completionFeedbackReady)';
 }
 
 
@@ -549,7 +589,7 @@ abstract mixin class _$MatchStateCopyWith<$Res> implements $MatchStateCopyWith<$
   factory _$MatchStateCopyWith(_MatchState value, $Res Function(_MatchState) _then) = __$MatchStateCopyWithImpl;
 @override @useResult
 $Res call({
- SlideUpToMatchLessonContent? content, List<NepaliWord> nepaliWords, bool isAnsweredAll
+ SlideUpToMatchLessonContent? content, List<NepaliWord> nepaliWords, bool isAnsweredAll, bool completionFeedbackReady
 });
 
 
@@ -566,11 +606,12 @@ class __$MatchStateCopyWithImpl<$Res>
 
 /// Create a copy of MatchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? nepaliWords = null,Object? isAnsweredAll = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? nepaliWords = null,Object? isAnsweredAll = null,Object? completionFeedbackReady = null,}) {
   return _then(_MatchState(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as SlideUpToMatchLessonContent?,nepaliWords: null == nepaliWords ? _self._nepaliWords : nepaliWords // ignore: cast_nullable_to_non_nullable
 as List<NepaliWord>,isAnsweredAll: null == isAnsweredAll ? _self.isAnsweredAll : isAnsweredAll // ignore: cast_nullable_to_non_nullable
+as bool,completionFeedbackReady: null == completionFeedbackReady ? _self.completionFeedbackReady : completionFeedbackReady // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

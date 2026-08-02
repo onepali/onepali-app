@@ -64,55 +64,56 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
-          body: SafeArea(
-            child: FadeTransition(
-              opacity: _fadeIn,
-              child: SlideTransition(
-                position: _slideIn,
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Gaps.verticalGapOf(size.height * 0.1),
-                        Spacer(),
-                        _buildCenterContent(
-                          context,
-                          widget.content.charImage ?? '',
-                          widget.content.image ?? '',
-                        ),
-                        Spacer(),
-                        _buildMicSection(),
-                        Gaps.verticalGapOf(size.height * 0.1),
-                      ],
-                    ),
+          body: FadeTransition(
+            opacity: _fadeIn,
+            child: SlideTransition(
+              position: _slideIn,
+              child: Stack(
+                children: [
+                  LessonContentFrame(
+                    reserveLeftControl: false,
+                    builder: (context, _) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Gaps.verticalGapOf(size.height * 0.1),
+                          const Spacer(),
+                          _buildCenterContent(
+                            context,
+                            widget.content.charImage ?? '',
+                            widget.content.image ?? '',
+                          ),
+                          const Spacer(),
+                          _buildMicSection(),
+                          Gaps.verticalGapOf(size.height * 0.1),
+                        ],
+                      );
+                    },
+                  ),
 
-                    TopRightPositionedCloseButton(
-                      onTap: () => Navigator.of(context).pop(),
-                    ),
+                  TopRightPositionedCloseButton(
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
 
-                    if (state.isRecorded)
-                      CenterRightAlignedForwardButton(
-                        onTap: widget.onCompleted,
+                  if (state.isRecorded)
+                    CenterRightAlignedForwardButton(onTap: widget.onCompleted),
+
+                  Positioned(
+                    top: isMobile ? 24 : 32,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: SpeakerIcon(
+                        onTap: state.isRecorded || state.hasError
+                            ? () => context.read<ListenAndRepeatBloc>().add(
+                                const ListenAndRepeatEvent.retryRequested(),
+                              )
+                            : null,
                       ),
-
-                    Positioned(
-                      top: isMobile ? 24 : 32,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: SpeakerIcon(
-                          onTap: state.isRecorded || state.hasError
-                              ? () => context.read<ListenAndRepeatBloc>().add(
-                                  const ListenAndRepeatEvent.retryRequested(),
-                                )
-                              : null,
-                        ),
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

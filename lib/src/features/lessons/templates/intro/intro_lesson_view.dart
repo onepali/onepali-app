@@ -16,11 +16,13 @@ class IntroLessonView extends StatefulWidget {
     required this.isLast,
     required this.isFirst,
     this.onNavigationReady,
+    this.onLessonCompleted,
   });
   final IntroLessonContent content;
   final bool isLast;
   final bool isFirst;
   final VoidCallback? onNavigationReady;
+  final VoidCallback? onLessonCompleted;
 
   @override
   State<IntroLessonView> createState() => _IntroLessonViewState();
@@ -73,7 +75,7 @@ class _IntroLessonViewState extends State<IntroLessonView> {
 
   void _playSuccessFeedbackIfLast() {
     if (widget.isLast) {
-      audioProvider.playAsset(Assets.confettiFeedback);
+      widget.onLessonCompleted?.call();
     }
   }
 

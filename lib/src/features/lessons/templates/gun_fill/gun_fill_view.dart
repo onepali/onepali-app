@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onepali/src/core/utils/color_from_hex.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/bottom_right_cat.dart';
@@ -63,6 +62,12 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
           }
 
           final gunParts = state.gunParts;
+          final colorChipRadius = isMobile ? 35.0 : 60.0;
+          final colorSelectionTickSize = colorChipRadius * 1.25;
+          final gunShapeHighlightOffset = Offset(
+            isMobile ? -2.0 : -3.0,
+            isMobile ? -2.0 : -3.0,
+          );
           return Stack(
             children: [
               Positioned.fill(
@@ -82,19 +87,14 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Draggable(
                               data: part.id,
-                              onDragCompleted: () {
-                                context.read<GunFillBloc>().add(
-                                  GunFillEvent.colorFilled(part.id),
-                                );
-                              },
                               feedback: CircleAvatar(
-                                radius: isMobile ? 35 : 60,
+                                radius: colorChipRadius,
                                 backgroundColor: colorFromHex(
                                   part.id,
                                 )?.withValues(alpha: 0.8),
                               ),
                               childWhenDragging: CircleAvatar(
-                                radius: isMobile ? 35 : 60,
+                                radius: colorChipRadius,
                                 backgroundColor: colorFromHex(
                                   part.id,
                                 )?.withValues(alpha: 0.5),
@@ -102,16 +102,16 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                               child: Stack(
                                 children: [
                                   CircleAvatar(
-                                    radius: isMobile ? 35 : 60,
+                                    radius: colorChipRadius,
                                     backgroundColor: colorFromHex(part.id),
                                   ),
                                   if (part.isFilled)
                                     Positioned.fill(
-                                      child: SvgPicture.asset(
-                                        Assets.check,
-                                        colorFilter: ColorFilter.mode(
-                                          AppColors.kButtonGreen,
-                                          BlendMode.srcIn,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.check_rounded,
+                                          color: AppColors.kButtonGreen,
+                                          size: colorSelectionTickSize,
                                         ),
                                       ),
                                     ),
@@ -142,6 +142,22 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                               height: svgHeight,
                               child: Stack(
                                 children: [
+                                  ...gunParts.map(
+                                    (part) => _GunPathHighlight(
+                                      path: part.path,
+                                      width: svgWidth,
+                                      height: svgHeight,
+                                      offset: gunShapeHighlightOffset,
+                                    ),
+                                  ),
+                                  ...state.labelPaths.map(
+                                    (labelPath) => _GunPathHighlight(
+                                      path: labelPath.path,
+                                      width: svgWidth,
+                                      height: svgHeight,
+                                      offset: gunShapeHighlightOffset,
+                                    ),
+                                  ),
                                   // Gun parts
                                   ...gunParts.map(
                                     (part) => part.isFilled
@@ -171,10 +187,18 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                             child: DragTarget(
                                               onWillAcceptWithDetails:
                                                   (details) {
-                                                    return details.data ==
-                                                        part.id;
+                                                    return details.data
+                                                        is String;
                                                   },
                                               onAcceptWithDetails: (details) {
+                                                final draggedPartId =
+                                                    details.data;
+                                                if (draggedPartId != part.id) {
+                                                  context.read<GunFillBloc>().add(
+                                                    const GunFillEvent.wrongColorDropped(),
+                                                  );
+                                                  return;
+                                                }
                                                 context.read<GunFillBloc>().add(
                                                   GunFillEvent.colorFilled(
                                                     part.id,
@@ -202,11 +226,18 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                                         onWillAcceptWithDetails: (details) {
                                           final gunPartId = labelPath.gunPartId;
                                           if (gunPartId == null) return false;
-                                          return details.data == gunPartId;
+                                          return details.data is String;
                                         },
                                         onAcceptWithDetails: (details) {
                                           final gunPartId = labelPath.gunPartId;
                                           if (gunPartId == null) return;
+                                          final draggedPartId = details.data;
+                                          if (draggedPartId != gunPartId) {
+                                            context.read<GunFillBloc>().add(
+                                              const GunFillEvent.wrongColorDropped(),
+                                            );
+                                            return;
+                                          }
                                           context.read<GunFillBloc>().add(
                                             GunFillEvent.colorFilled(gunPartId),
                                           );
@@ -285,5 +316,35 @@ class PartClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(oldClipper) => false;
+  bool shouldReclip(covariant PartClipper oldClipper) =>
+      oldClipper.pathData != pathData;
+}
+
+class _GunPathHighlight extends StatelessWidget {
+  const _GunPathHighlight({
+    required this.path,
+    required this.width,
+    required this.height,
+    required this.offset,
+  });
+
+  final String path;
+  final double width;
+  final double height;
+  final Offset offset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: offset,
+      child: ClipPath(
+        clipper: PartClipper(path),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: ColoredBox(color: AppColors.kWhite.withValues(alpha: 0.20)),
+        ),
+      ),
+    );
+  }
 }

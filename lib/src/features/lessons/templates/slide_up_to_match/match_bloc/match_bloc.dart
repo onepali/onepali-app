@@ -14,6 +14,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
   MatchBloc() : super(MatchState()) {
     on<_Started>(_onStarted);
     on<_OnAccept>(_onAccept);
+    on<_OnWrongAccept>(_onWrongAccept);
   }
 
   Future<void> _onStarted(_Started event, Emitter<MatchState> emit) async {
@@ -26,7 +27,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     emit(state.copyWith(content: event.content, nepaliWords: nepaliWordsList));
   }
 
-  void _onAccept(_OnAccept event, Emitter<MatchState> emit) async {
+  Future<void> _onAccept(_OnAccept event, Emitter<MatchState> emit) async {
     var updatedNepaliWords = List<NepaliWord>.from(state.nepaliWords);
 
     // update the isMatche to truen in NepaliWord. and keep other words as is
@@ -46,17 +47,51 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     final selectedItem = state.content!.items.firstWhere(
       (e) => e.nameNp == event.nepaliWord,
     );
+    final isAnsweredAll = updatedNepaliWords.every((word) => word.isMatched);
     emit(
       state.copyWith(
         nepaliWords: updatedNepaliWords,
         content: state.content!.copyWith(items: updatedItems),
-        isAnsweredAll: updatedNepaliWords.every((word) => word.isMatched),
+        isAnsweredAll: isAnsweredAll,
+        completionFeedbackReady: false,
       ),
     );
-    if (selectedItem.audioItem != null) {
-      _audioPlayerService.play(selectedItem.audioItem!);
-    } else {
-      _audioPlayerService.playAsset(Assets.starBlast);
+
+    await _playMatchAudio(selectedItem);
+
+    if (isAnsweredAll) {
+      emit(state.copyWith(completionFeedbackReady: true));
+    }
+  }
+
+  Future<void> _onWrongAccept(
+    _OnWrongAccept event,
+    Emitter<MatchState> emit,
+  ) async {
+    if (state.isAnsweredAll) return;
+    await _playWrongMatchAudio();
+  }
+
+  Future<void> _playMatchAudio(Item selectedItem) async {
+    final audioItem = selectedItem.audioItem;
+    final completion = _audioPlayerService.onPlayerComplete.first;
+    try {
+      if (audioItem != null && audioItem.isNotEmpty) {
+        await _audioPlayerService.play(audioItem);
+      } else {
+        await _audioPlayerService.playAsset(Assets.starBlast);
+      }
+      await completion;
+    } catch (_) {
+      // Audio should not block lesson completion if a remote file is unavailable.
+    }
+  }
+
+  Future<void> _playWrongMatchAudio() async {
+    try {
+      await _audioPlayerService.playAsset(Assets.wrongSfx);
+    } catch (_) {
+      // Audio feedback should not block the quiz if playback fails.
     }
   }
 
