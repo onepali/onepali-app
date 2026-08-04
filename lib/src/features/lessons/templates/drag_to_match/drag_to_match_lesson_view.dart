@@ -6,7 +6,8 @@ import 'package:onepali/src/features/lessons/templates/drag_to_match/drag_to_mat
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
-const double _itemSpacing = 4.0;
+const double _itemSpacing = 8.0;
+const double _rowsHeightFraction = 0.76;
 
 double _wordLabelGap(BuildContext context) {
   return PlatformUtility.isMobile(context) ? 8.0 : 12.0;
@@ -107,12 +108,20 @@ class _DragToMatchView extends StatelessWidget {
           return Stack(
             children: [
               LessonContentFrame(
+                reserveLeftControl: false,
+                reserveRightControl: false,
                 builder: (context, constraints) {
                   final contentSize = Size(
                     constraints.maxWidth,
                     constraints.maxHeight,
                   );
-                  final groupWidth = contentSize.width;
+                  final horizontalBuffer = PlatformUtility.isMobile(context)
+                      ? 12.0
+                      : 20.0;
+                  final groupWidth =
+                      (contentSize.width - (horizontalBuffer * 2))
+                          .clamp(0.0, contentSize.width)
+                          .toDouble();
                   final labelSlotHeight = _wordLabelSlotHeight(
                     context,
                   ).clamp(0.0, contentSize.height);
@@ -121,37 +130,39 @@ class _DragToMatchView extends StatelessWidget {
                       (contentSize.height - labelSlotHeight - labelGap)
                           .clamp(0.0, contentSize.height)
                           .toDouble();
-                  final groupSize = Size(groupWidth, matchAreaHeight);
                   final rowSpacing = matchAreaHeight * 0.04;
+                  final rowsHeight = matchAreaHeight * _rowsHeightFraction;
+                  final rowHeight = ((rowsHeight - rowSpacing) / 2)
+                      .clamp(0.0, rowsHeight)
+                      .toDouble();
+                  final rowSize = Size(groupWidth, rowHeight);
+                  final visibleItemPositions = state.itemPositions
+                      .where((position) => !position.isMatched)
+                      .toList();
 
                   final draggableRow = SizedBox(
                     width: groupWidth,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(state.itemPositions.length, (
-                        index,
-                      ) {
-                        final itemPos = state.itemPositions[index];
-                        final item = items.firstWhere(
-                          (i) => i.nameEn == itemPos.itemId,
-                        );
-
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            right: index == state.itemPositions.length - 1
-                                ? 0
-                                : _itemSpacing,
-                          ),
-                          child: _DraggableItem(
-                            position: itemPos,
-                            item: item,
+                      children: [
+                        for (final entry
+                            in visibleItemPositions.asMap().entries) ...[
+                          if (entry.key > 0)
+                            const SizedBox(width: _itemSpacing),
+                          _DraggableItem(
+                            position: entry.value,
+                            item: items.firstWhere(
+                              (i) => i.nameEn == entry.value.itemId,
+                            ),
                             totalItems: state.itemPositions.length,
-                            availableSize: groupSize,
+                            availableSize: rowSize,
+                            backgroundColor: AppColors.sunshineYellow,
                             isBeingDragged:
-                                state.draggedItemId == itemPos.itemId,
+                                state.draggedItemId == entry.value.itemId,
+                            canDrag: state.dragStatus == DragStatus.idle,
                           ),
-                        );
-                      }),
+                        ],
+                      ],
                     ),
                   );
 
@@ -159,29 +170,23 @@ class _DragToMatchView extends StatelessWidget {
                     width: groupWidth,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(state.outlinePositions.length, (
-                        index,
-                      ) {
-                        final outlinePos = state.outlinePositions[index];
-                        final item = items.firstWhere(
-                          (i) => i.nameEn == outlinePos.itemId,
-                        );
-
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            right: index == state.outlinePositions.length - 1
-                                ? 0
-                                : _itemSpacing,
-                          ),
-                          child: _OutlineTarget(
-                            position: outlinePos,
-                            item: item,
-                            isMatched: outlinePos.isMatched,
+                      children: [
+                        for (final entry
+                            in state.outlinePositions.asMap().entries) ...[
+                          if (entry.key > 0)
+                            const SizedBox(width: _itemSpacing),
+                          _OutlineTarget(
+                            position: entry.value,
+                            item: items.firstWhere(
+                              (i) => i.nameEn == entry.value.itemId,
+                            ),
+                            isMatched: entry.value.isMatched,
                             totalItems: state.outlinePositions.length,
-                            availableSize: groupSize,
+                            availableSize: rowSize,
+                            backgroundColor: AppColors.riverTeal,
                           ),
-                        );
-                      }),
+                        ],
+                      ],
                     ),
                   );
 
@@ -256,6 +261,8 @@ class _DraggableItem extends StatelessWidget {
   final bool isBeingDragged;
   final int totalItems;
   final Size availableSize;
+  final Color backgroundColor;
+  final bool canDrag;
 
   const _DraggableItem({
     required this.position,
@@ -263,6 +270,8 @@ class _DraggableItem extends StatelessWidget {
     required this.isBeingDragged,
     required this.totalItems,
     required this.availableSize,
+    required this.backgroundColor,
+    required this.canDrag,
   });
 
   @override
@@ -273,6 +282,7 @@ class _DraggableItem extends StatelessWidget {
     }
     return Draggable<String>(
       data: item.nameEn,
+      maxSimultaneousDrags: canDrag ? null : 0,
       onDragStarted: () {
         bloc.add(DragToMatchEvent.startDrag(itemId: item.nameEn));
       },
@@ -287,6 +297,7 @@ class _DraggableItem extends StatelessWidget {
           onSpeakerTap: null,
           totalItems: totalItems,
           availableSize: availableSize,
+          backgroundColor: backgroundColor,
         ),
       ),
       childWhenDragging: _ItemWidget(
@@ -295,6 +306,7 @@ class _DraggableItem extends StatelessWidget {
         onSpeakerTap: null,
         totalItems: totalItems,
         availableSize: availableSize,
+        backgroundColor: backgroundColor,
       ),
       child: _ItemWidget(
         item: item,
@@ -304,6 +316,7 @@ class _DraggableItem extends StatelessWidget {
         },
         totalItems: totalItems,
         availableSize: availableSize,
+        backgroundColor: backgroundColor,
       ),
     );
   }
@@ -348,6 +361,7 @@ class _ItemWidget extends StatelessWidget {
   final VoidCallback? onSpeakerTap;
   final int totalItems;
   final Size availableSize;
+  final Color backgroundColor;
 
   const _ItemWidget({
     required this.item,
@@ -355,6 +369,7 @@ class _ItemWidget extends StatelessWidget {
     this.onSpeakerTap,
     required this.totalItems,
     required this.availableSize,
+    required this.backgroundColor,
   });
 
   @override
@@ -366,13 +381,13 @@ class _ItemWidget extends StatelessWidget {
         : ((size.width - (_itemSpacing * gapCount)) / totalItems)
               .clamp(0.0, size.width)
               .toDouble();
-    final height = (size.height - size.height * 0.4) / 2;
+    final height = size.height;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.kStoryColor.withAlpha(100),
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Center(
@@ -396,6 +411,7 @@ class _OutlineTarget extends StatelessWidget {
   final bool isMatched;
   final int totalItems;
   final Size availableSize;
+  final Color backgroundColor;
 
   const _OutlineTarget({
     required this.position,
@@ -403,6 +419,7 @@ class _OutlineTarget extends StatelessWidget {
     required this.isMatched,
     required this.totalItems,
     required this.availableSize,
+    required this.backgroundColor,
   });
 
   @override
@@ -414,7 +431,7 @@ class _OutlineTarget extends StatelessWidget {
         : ((size.width - (_itemSpacing * gapCount)) / totalItems)
               .clamp(0.0, size.width)
               .toDouble();
-    final height = (size.height - size.height * 0.4) / 2;
+    final height = size.height;
 
     final bloc = context.read<DragToMatchBloc>();
 
@@ -438,20 +455,11 @@ class _OutlineTarget extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             color: isMatched
-                ? Colors.green.withAlpha(50)
+                ? backgroundColor.withAlpha(160)
                 : isHovering
-                ? AppColors.kSecondaryColor.withAlpha(50)
-                : AppColors.kGrey.withAlpha(50),
+                ? backgroundColor.withAlpha(120)
+                : backgroundColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isMatched
-                  ? AppColors.kButtonGreen
-                  : isHovering
-                  ? AppColors.kLightGreenBackgroundColor
-                  : Colors.grey,
-              width: 2,
-              style: BorderStyle.solid,
-            ),
           ),
           child: Center(
             child: SvgHelper.fromSource(

@@ -31,7 +31,8 @@ class AppColors {
 
   /// [Button] Color
   static const Color kButtonGrey = Color(0xFFE1E1E1);
-  static const Color kButtonGreen = Color(0xFF32D0AA);
+  static const Color riverTeal = Color(0xFF32D0AA);
+  static const Color kButtonGreen = riverTeal;
   static const Color kButtonRed = Color(0xFFFF96AA);
 
   /// [Menu] Color

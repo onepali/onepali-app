@@ -212,30 +212,24 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       // await _audioPlayer.play(AssetSource('audio/sfx/star_blast.mp3'));
       // await Future.delayed(const Duration(seconds: 1));
 
-      // Find and play the item's audio
       final item = _items.firstWhere((i) => i.nameEn == event.itemId);
 
-      try {
-        // await _audioPlayer.play(AssetSource(item.audioItem));
-        if (item.audioItem != null) {
-          final audioFile = await MediaCacheManager.instance.getSingleFile(
-            item.audioItem!,
-          );
-          await _audioPlayer.play(DeviceFileSource(audioFile.path));
-        }
-      } catch (e) {
-        log('Error playing item audio: $e');
-      }
-
-      // Update positions to show matched state
-      final updatedItemPositions = state.itemPositions.map((pos) {
+      final updatedOutlinePositions = state.outlinePositions.map((pos) {
         if (pos.itemId == event.itemId) {
           return pos.copyWith(isMatched: true);
         }
         return pos;
       }).toList();
 
-      final updatedOutlinePositions = state.outlinePositions.map((pos) {
+      emit(state.copyWith(outlinePositions: updatedOutlinePositions));
+
+      await Future.wait([
+        Future.delayed(const Duration(seconds: 2)),
+        _playItemAudio(item),
+      ]);
+      if (emit.isDone) return;
+
+      final updatedItemPositions = state.itemPositions.map((pos) {
         if (pos.itemId == event.itemId) {
           return pos.copyWith(isMatched: true);
         }
@@ -245,15 +239,6 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       emit(
         state.copyWith(
           itemPositions: updatedItemPositions,
-          outlinePositions: updatedOutlinePositions,
-        ),
-      );
-
-      // Reset drag status after a short delay
-      await Future.delayed(const Duration(seconds: 2));
-      if (emit.isDone) return;
-      emit(
-        state.copyWith(
           showNepaliword: false,
           dragStatus: DragStatus.idle,
           draggedItemId: null,
@@ -311,6 +296,21 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       await Future.delayed(const Duration(milliseconds: 500));
       if (emit.isDone) return;
       emit(state.copyWith(dragStatus: DragStatus.idle, draggedItemId: null));
+    }
+  }
+
+  Future<void> _playItemAudio(Item item) async {
+    final audioItem = item.audioItem;
+    if (audioItem == null || audioItem.isEmpty) return;
+    try {
+      final audioFile = await MediaCacheManager.instance.getSingleFile(
+        audioItem,
+      );
+      final completion = _audioPlayer.onPlayerComplete.first;
+      await _audioPlayer.play(DeviceFileSource(audioFile.path));
+      await completion;
+    } catch (e) {
+      log('Error playing item audio: $e');
     }
   }
 

@@ -16,7 +16,6 @@ class PDashboardMetricsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = [AppColors.kPink, AppColors.kYellow, AppColors.kPurple];
     final minHeight = isMobilePortrait ? 140.0 : 290.0;
     final sortedTopics = List<PzCompletedContentModel>.from(mostPracticedTopics)
       ..sort((a, b) => b.completedCount.compareTo(a.completedCount));
@@ -84,7 +83,6 @@ class PDashboardMetricsWidget extends StatelessWidget {
                     ),
                     child: _MostPracticedTopicsList(
                       topics: sortedTopics,
-                      colors: colors,
                       isMobilePortrait: isMobilePortrait,
                     ),
                   ),
@@ -104,7 +102,6 @@ class PDashboardMetricsWidget extends StatelessWidget {
             ),
             child: _MostPracticedTopicsList(
               topics: sortedTopics,
-              colors: colors,
               isMobilePortrait: isMobilePortrait,
             ),
           ),
@@ -116,13 +113,24 @@ class PDashboardMetricsWidget extends StatelessWidget {
 class _MostPracticedTopicsList extends StatelessWidget {
   const _MostPracticedTopicsList({
     required this.topics,
-    required this.colors,
     required this.isMobilePortrait,
   });
 
   final List<PzCompletedContentModel> topics;
-  final List<Color> colors;
   final bool isMobilePortrait;
+
+  Color _brandColorFor(PzCompletedContentModel topic) {
+    switch (topic.contentType) {
+      case 'lesson':
+        return AppColors.kLessonColor;
+      case 'song':
+        return AppColors.kSongColor;
+      case 'story':
+        return AppColors.kStoryColor;
+      default:
+        return AppColors.learningColors[12];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,13 +153,15 @@ class _MostPracticedTopicsList extends StatelessWidget {
         Gaps.verticalGapOf(8),
         ...List.generate(topics.length > 3 ? 3 : topics.length, (index) {
           final topic = topics[index];
+          final brandColor = _brandColorFor(topic);
           return Container(
             margin: const EdgeInsets.only(bottom: 8),
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: colors[index % colors.length],
+              color: brandColor.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: brandColor.withValues(alpha: 0.18)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
