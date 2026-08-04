@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 import 'package:onepali/src/features/lessons/templates/tea_making/bloc/tutorial_bloc.dart';
@@ -276,7 +277,7 @@ class _KitchenPageState extends State<KitchenPage> {
                           right: 0,
                           left: 0,
                           bottom: size.height * 0.09,
-                          child: LabelDisplay(
+                          child: LabelDisplay.wordPopup(
                             nameNp: state.droppedItem!,
                             nameEn: '',
                           ),
@@ -291,10 +292,11 @@ class _KitchenPageState extends State<KitchenPage> {
                                 right: 100,
                                 left: 100,
                               ),
-                              child: SvgPicture.network(
-                                isMobile
-                                    ? state.leopardTakingTeaMb ?? ''
-                                    : state.leopardTakingTeaTb ?? '',
+                              child: CustomCachedImage(
+                                imageUrl: isMobile
+                                    ? state.leopardWithTeaMb ?? ''
+                                    : state.leopardWithTeaTb ?? '',
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),

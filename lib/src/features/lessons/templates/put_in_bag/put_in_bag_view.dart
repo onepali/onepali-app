@@ -143,7 +143,7 @@ class _PutInBagViewState extends State<PutInBagView> {
                   bottom: size.height * 0.05,
                   left: 0,
                   right: 0,
-                  child: LabelDisplay(
+                  child: LabelDisplay.wordPopup(
                     nameNp: currentPlayingItem.nameNp,
                     nameEn: currentPlayingItem.nameEn,
                   ),

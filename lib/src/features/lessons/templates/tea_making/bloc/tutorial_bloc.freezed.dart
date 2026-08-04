@@ -350,7 +350,7 @@ as int,
 /// @nodoc
 mixin _$TutorialState {
 
- bool get showLoading; int get index; int get draggedIndex; List<String> get ingredients; bool get showLeopardWithTea; bool get showHunchButton; bool get showDragIndicator; String? get draggedItemPath; String? get droppedItem; String? get stoveImage; String? get dragIndicator; String? get hunchaButton; String? get checkIcon; String? get leopardTakingTeaTb; String? get leopardTakingTeaMb; bool get teaReady; bool get completionFeedbackReady;
+ bool get showLoading; int get index; int get draggedIndex; List<String> get ingredients; bool get showLeopardWithTea; bool get showHunchButton; bool get showDragIndicator; String? get draggedItemPath; String? get droppedItem; String? get stoveImage; String? get dragIndicator; String? get hunchaButton; String? get checkIcon; String? get leopardWithTeaTb; String? get leopardWithTeaMb; bool get teaReady; bool get completionFeedbackReady;
 /// Create a copy of TutorialState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -361,16 +361,16 @@ $TutorialStateCopyWith<TutorialState> get copyWith => _$TutorialStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TutorialState&&(identical(other.showLoading, showLoading) || other.showLoading == showLoading)&&(identical(other.index, index) || other.index == index)&&(identical(other.draggedIndex, draggedIndex) || other.draggedIndex == draggedIndex)&&const DeepCollectionEquality().equals(other.ingredients, ingredients)&&(identical(other.showLeopardWithTea, showLeopardWithTea) || other.showLeopardWithTea == showLeopardWithTea)&&(identical(other.showHunchButton, showHunchButton) || other.showHunchButton == showHunchButton)&&(identical(other.showDragIndicator, showDragIndicator) || other.showDragIndicator == showDragIndicator)&&(identical(other.draggedItemPath, draggedItemPath) || other.draggedItemPath == draggedItemPath)&&(identical(other.droppedItem, droppedItem) || other.droppedItem == droppedItem)&&(identical(other.stoveImage, stoveImage) || other.stoveImage == stoveImage)&&(identical(other.dragIndicator, dragIndicator) || other.dragIndicator == dragIndicator)&&(identical(other.hunchaButton, hunchaButton) || other.hunchaButton == hunchaButton)&&(identical(other.checkIcon, checkIcon) || other.checkIcon == checkIcon)&&(identical(other.leopardTakingTeaTb, leopardTakingTeaTb) || other.leopardTakingTeaTb == leopardTakingTeaTb)&&(identical(other.leopardTakingTeaMb, leopardTakingTeaMb) || other.leopardTakingTeaMb == leopardTakingTeaMb)&&(identical(other.teaReady, teaReady) || other.teaReady == teaReady)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TutorialState&&(identical(other.showLoading, showLoading) || other.showLoading == showLoading)&&(identical(other.index, index) || other.index == index)&&(identical(other.draggedIndex, draggedIndex) || other.draggedIndex == draggedIndex)&&const DeepCollectionEquality().equals(other.ingredients, ingredients)&&(identical(other.showLeopardWithTea, showLeopardWithTea) || other.showLeopardWithTea == showLeopardWithTea)&&(identical(other.showHunchButton, showHunchButton) || other.showHunchButton == showHunchButton)&&(identical(other.showDragIndicator, showDragIndicator) || other.showDragIndicator == showDragIndicator)&&(identical(other.draggedItemPath, draggedItemPath) || other.draggedItemPath == draggedItemPath)&&(identical(other.droppedItem, droppedItem) || other.droppedItem == droppedItem)&&(identical(other.stoveImage, stoveImage) || other.stoveImage == stoveImage)&&(identical(other.dragIndicator, dragIndicator) || other.dragIndicator == dragIndicator)&&(identical(other.hunchaButton, hunchaButton) || other.hunchaButton == hunchaButton)&&(identical(other.checkIcon, checkIcon) || other.checkIcon == checkIcon)&&(identical(other.leopardWithTeaTb, leopardWithTeaTb) || other.leopardWithTeaTb == leopardWithTeaTb)&&(identical(other.leopardWithTeaMb, leopardWithTeaMb) || other.leopardWithTeaMb == leopardWithTeaMb)&&(identical(other.teaReady, teaReady) || other.teaReady == teaReady)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,showLoading,index,draggedIndex,const DeepCollectionEquality().hash(ingredients),showLeopardWithTea,showHunchButton,showDragIndicator,draggedItemPath,droppedItem,stoveImage,dragIndicator,hunchaButton,checkIcon,leopardTakingTeaTb,leopardTakingTeaMb,teaReady,completionFeedbackReady);
+int get hashCode => Object.hash(runtimeType,showLoading,index,draggedIndex,const DeepCollectionEquality().hash(ingredients),showLeopardWithTea,showHunchButton,showDragIndicator,draggedItemPath,droppedItem,stoveImage,dragIndicator,hunchaButton,checkIcon,leopardWithTeaTb,leopardWithTeaMb,teaReady,completionFeedbackReady);
 
 @override
 String toString() {
-  return 'TutorialState(showLoading: $showLoading, index: $index, draggedIndex: $draggedIndex, ingredients: $ingredients, showLeopardWithTea: $showLeopardWithTea, showHunchButton: $showHunchButton, showDragIndicator: $showDragIndicator, draggedItemPath: $draggedItemPath, droppedItem: $droppedItem, stoveImage: $stoveImage, dragIndicator: $dragIndicator, hunchaButton: $hunchaButton, checkIcon: $checkIcon, leopardTakingTeaTb: $leopardTakingTeaTb, leopardTakingTeaMb: $leopardTakingTeaMb, teaReady: $teaReady, completionFeedbackReady: $completionFeedbackReady)';
+  return 'TutorialState(showLoading: $showLoading, index: $index, draggedIndex: $draggedIndex, ingredients: $ingredients, showLeopardWithTea: $showLeopardWithTea, showHunchButton: $showHunchButton, showDragIndicator: $showDragIndicator, draggedItemPath: $draggedItemPath, droppedItem: $droppedItem, stoveImage: $stoveImage, dragIndicator: $dragIndicator, hunchaButton: $hunchaButton, checkIcon: $checkIcon, leopardWithTeaTb: $leopardWithTeaTb, leopardWithTeaMb: $leopardWithTeaMb, teaReady: $teaReady, completionFeedbackReady: $completionFeedbackReady)';
 }
 
 
@@ -381,7 +381,7 @@ abstract mixin class $TutorialStateCopyWith<$Res>  {
   factory $TutorialStateCopyWith(TutorialState value, $Res Function(TutorialState) _then) = _$TutorialStateCopyWithImpl;
 @useResult
 $Res call({
- bool showLoading, int index, int draggedIndex, List<String> ingredients, bool showLeopardWithTea, bool showHunchButton, bool showDragIndicator, String? draggedItemPath, String? droppedItem, String? stoveImage, String? dragIndicator, String? hunchaButton, String? checkIcon, String? leopardTakingTeaTb, String? leopardTakingTeaMb, bool teaReady, bool completionFeedbackReady
+ bool showLoading, int index, int draggedIndex, List<String> ingredients, bool showLeopardWithTea, bool showHunchButton, bool showDragIndicator, String? draggedItemPath, String? droppedItem, String? stoveImage, String? dragIndicator, String? hunchaButton, String? checkIcon, String? leopardWithTeaTb, String? leopardWithTeaMb, bool teaReady, bool completionFeedbackReady
 });
 
 
@@ -398,7 +398,7 @@ class _$TutorialStateCopyWithImpl<$Res>
 
 /// Create a copy of TutorialState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? showLoading = null,Object? index = null,Object? draggedIndex = null,Object? ingredients = null,Object? showLeopardWithTea = null,Object? showHunchButton = null,Object? showDragIndicator = null,Object? draggedItemPath = freezed,Object? droppedItem = freezed,Object? stoveImage = freezed,Object? dragIndicator = freezed,Object? hunchaButton = freezed,Object? checkIcon = freezed,Object? leopardTakingTeaTb = freezed,Object? leopardTakingTeaMb = freezed,Object? teaReady = null,Object? completionFeedbackReady = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? showLoading = null,Object? index = null,Object? draggedIndex = null,Object? ingredients = null,Object? showLeopardWithTea = null,Object? showHunchButton = null,Object? showDragIndicator = null,Object? draggedItemPath = freezed,Object? droppedItem = freezed,Object? stoveImage = freezed,Object? dragIndicator = freezed,Object? hunchaButton = freezed,Object? checkIcon = freezed,Object? leopardWithTeaTb = freezed,Object? leopardWithTeaMb = freezed,Object? teaReady = null,Object? completionFeedbackReady = null,}) {
   return _then(_self.copyWith(
 showLoading: null == showLoading ? _self.showLoading : showLoading // ignore: cast_nullable_to_non_nullable
 as bool,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
@@ -413,8 +413,8 @@ as String?,stoveImage: freezed == stoveImage ? _self.stoveImage : stoveImage // 
 as String?,dragIndicator: freezed == dragIndicator ? _self.dragIndicator : dragIndicator // ignore: cast_nullable_to_non_nullable
 as String?,hunchaButton: freezed == hunchaButton ? _self.hunchaButton : hunchaButton // ignore: cast_nullable_to_non_nullable
 as String?,checkIcon: freezed == checkIcon ? _self.checkIcon : checkIcon // ignore: cast_nullable_to_non_nullable
-as String?,leopardTakingTeaTb: freezed == leopardTakingTeaTb ? _self.leopardTakingTeaTb : leopardTakingTeaTb // ignore: cast_nullable_to_non_nullable
-as String?,leopardTakingTeaMb: freezed == leopardTakingTeaMb ? _self.leopardTakingTeaMb : leopardTakingTeaMb // ignore: cast_nullable_to_non_nullable
+as String?,leopardWithTeaTb: freezed == leopardWithTeaTb ? _self.leopardWithTeaTb : leopardWithTeaTb // ignore: cast_nullable_to_non_nullable
+as String?,leopardWithTeaMb: freezed == leopardWithTeaMb ? _self.leopardWithTeaMb : leopardWithTeaMb // ignore: cast_nullable_to_non_nullable
 as String?,teaReady: null == teaReady ? _self.teaReady : teaReady // ignore: cast_nullable_to_non_nullable
 as bool,completionFeedbackReady: null == completionFeedbackReady ? _self.completionFeedbackReady : completionFeedbackReady // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -502,10 +502,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool showLoading,  int index,  int draggedIndex,  List<String> ingredients,  bool showLeopardWithTea,  bool showHunchButton,  bool showDragIndicator,  String? draggedItemPath,  String? droppedItem,  String? stoveImage,  String? dragIndicator,  String? hunchaButton,  String? checkIcon,  String? leopardTakingTeaTb,  String? leopardTakingTeaMb,  bool teaReady,  bool completionFeedbackReady)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool showLoading,  int index,  int draggedIndex,  List<String> ingredients,  bool showLeopardWithTea,  bool showHunchButton,  bool showDragIndicator,  String? draggedItemPath,  String? droppedItem,  String? stoveImage,  String? dragIndicator,  String? hunchaButton,  String? checkIcon,  String? leopardWithTeaTb,  String? leopardWithTeaMb,  bool teaReady,  bool completionFeedbackReady)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TutorialState() when $default != null:
-return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredients,_that.showLeopardWithTea,_that.showHunchButton,_that.showDragIndicator,_that.draggedItemPath,_that.droppedItem,_that.stoveImage,_that.dragIndicator,_that.hunchaButton,_that.checkIcon,_that.leopardTakingTeaTb,_that.leopardTakingTeaMb,_that.teaReady,_that.completionFeedbackReady);case _:
+return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredients,_that.showLeopardWithTea,_that.showHunchButton,_that.showDragIndicator,_that.draggedItemPath,_that.droppedItem,_that.stoveImage,_that.dragIndicator,_that.hunchaButton,_that.checkIcon,_that.leopardWithTeaTb,_that.leopardWithTeaMb,_that.teaReady,_that.completionFeedbackReady);case _:
   return orElse();
 
 }
@@ -523,10 +523,10 @@ return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredien
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool showLoading,  int index,  int draggedIndex,  List<String> ingredients,  bool showLeopardWithTea,  bool showHunchButton,  bool showDragIndicator,  String? draggedItemPath,  String? droppedItem,  String? stoveImage,  String? dragIndicator,  String? hunchaButton,  String? checkIcon,  String? leopardTakingTeaTb,  String? leopardTakingTeaMb,  bool teaReady,  bool completionFeedbackReady)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool showLoading,  int index,  int draggedIndex,  List<String> ingredients,  bool showLeopardWithTea,  bool showHunchButton,  bool showDragIndicator,  String? draggedItemPath,  String? droppedItem,  String? stoveImage,  String? dragIndicator,  String? hunchaButton,  String? checkIcon,  String? leopardWithTeaTb,  String? leopardWithTeaMb,  bool teaReady,  bool completionFeedbackReady)  $default,) {final _that = this;
 switch (_that) {
 case _TutorialState():
-return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredients,_that.showLeopardWithTea,_that.showHunchButton,_that.showDragIndicator,_that.draggedItemPath,_that.droppedItem,_that.stoveImage,_that.dragIndicator,_that.hunchaButton,_that.checkIcon,_that.leopardTakingTeaTb,_that.leopardTakingTeaMb,_that.teaReady,_that.completionFeedbackReady);case _:
+return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredients,_that.showLeopardWithTea,_that.showHunchButton,_that.showDragIndicator,_that.draggedItemPath,_that.droppedItem,_that.stoveImage,_that.dragIndicator,_that.hunchaButton,_that.checkIcon,_that.leopardWithTeaTb,_that.leopardWithTeaMb,_that.teaReady,_that.completionFeedbackReady);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -543,10 +543,10 @@ return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredien
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool showLoading,  int index,  int draggedIndex,  List<String> ingredients,  bool showLeopardWithTea,  bool showHunchButton,  bool showDragIndicator,  String? draggedItemPath,  String? droppedItem,  String? stoveImage,  String? dragIndicator,  String? hunchaButton,  String? checkIcon,  String? leopardTakingTeaTb,  String? leopardTakingTeaMb,  bool teaReady,  bool completionFeedbackReady)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool showLoading,  int index,  int draggedIndex,  List<String> ingredients,  bool showLeopardWithTea,  bool showHunchButton,  bool showDragIndicator,  String? draggedItemPath,  String? droppedItem,  String? stoveImage,  String? dragIndicator,  String? hunchaButton,  String? checkIcon,  String? leopardWithTeaTb,  String? leopardWithTeaMb,  bool teaReady,  bool completionFeedbackReady)?  $default,) {final _that = this;
 switch (_that) {
 case _TutorialState() when $default != null:
-return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredients,_that.showLeopardWithTea,_that.showHunchButton,_that.showDragIndicator,_that.draggedItemPath,_that.droppedItem,_that.stoveImage,_that.dragIndicator,_that.hunchaButton,_that.checkIcon,_that.leopardTakingTeaTb,_that.leopardTakingTeaMb,_that.teaReady,_that.completionFeedbackReady);case _:
+return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredients,_that.showLeopardWithTea,_that.showHunchButton,_that.showDragIndicator,_that.draggedItemPath,_that.droppedItem,_that.stoveImage,_that.dragIndicator,_that.hunchaButton,_that.checkIcon,_that.leopardWithTeaTb,_that.leopardWithTeaMb,_that.teaReady,_that.completionFeedbackReady);case _:
   return null;
 
 }
@@ -558,7 +558,7 @@ return $default(_that.showLoading,_that.index,_that.draggedIndex,_that.ingredien
 
 
 class _TutorialState implements TutorialState {
-  const _TutorialState({this.showLoading = false, this.index = -1, this.draggedIndex = 0, final  List<String> ingredients = const [], this.showLeopardWithTea = false, this.showHunchButton = false, this.showDragIndicator = false, this.draggedItemPath, this.droppedItem, this.stoveImage, this.dragIndicator, this.hunchaButton, this.checkIcon, this.leopardTakingTeaTb, this.leopardTakingTeaMb, this.teaReady = false, this.completionFeedbackReady = false}): _ingredients = ingredients;
+  const _TutorialState({this.showLoading = false, this.index = -1, this.draggedIndex = 0, final  List<String> ingredients = const [], this.showLeopardWithTea = false, this.showHunchButton = false, this.showDragIndicator = false, this.draggedItemPath, this.droppedItem, this.stoveImage, this.dragIndicator, this.hunchaButton, this.checkIcon, this.leopardWithTeaTb, this.leopardWithTeaMb, this.teaReady = false, this.completionFeedbackReady = false}): _ingredients = ingredients;
   
 
 @override@JsonKey() final  bool showLoading;
@@ -580,8 +580,8 @@ class _TutorialState implements TutorialState {
 @override final  String? dragIndicator;
 @override final  String? hunchaButton;
 @override final  String? checkIcon;
-@override final  String? leopardTakingTeaTb;
-@override final  String? leopardTakingTeaMb;
+@override final  String? leopardWithTeaTb;
+@override final  String? leopardWithTeaMb;
 @override@JsonKey() final  bool teaReady;
 @override@JsonKey() final  bool completionFeedbackReady;
 
@@ -595,16 +595,16 @@ _$TutorialStateCopyWith<_TutorialState> get copyWith => __$TutorialStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TutorialState&&(identical(other.showLoading, showLoading) || other.showLoading == showLoading)&&(identical(other.index, index) || other.index == index)&&(identical(other.draggedIndex, draggedIndex) || other.draggedIndex == draggedIndex)&&const DeepCollectionEquality().equals(other._ingredients, _ingredients)&&(identical(other.showLeopardWithTea, showLeopardWithTea) || other.showLeopardWithTea == showLeopardWithTea)&&(identical(other.showHunchButton, showHunchButton) || other.showHunchButton == showHunchButton)&&(identical(other.showDragIndicator, showDragIndicator) || other.showDragIndicator == showDragIndicator)&&(identical(other.draggedItemPath, draggedItemPath) || other.draggedItemPath == draggedItemPath)&&(identical(other.droppedItem, droppedItem) || other.droppedItem == droppedItem)&&(identical(other.stoveImage, stoveImage) || other.stoveImage == stoveImage)&&(identical(other.dragIndicator, dragIndicator) || other.dragIndicator == dragIndicator)&&(identical(other.hunchaButton, hunchaButton) || other.hunchaButton == hunchaButton)&&(identical(other.checkIcon, checkIcon) || other.checkIcon == checkIcon)&&(identical(other.leopardTakingTeaTb, leopardTakingTeaTb) || other.leopardTakingTeaTb == leopardTakingTeaTb)&&(identical(other.leopardTakingTeaMb, leopardTakingTeaMb) || other.leopardTakingTeaMb == leopardTakingTeaMb)&&(identical(other.teaReady, teaReady) || other.teaReady == teaReady)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TutorialState&&(identical(other.showLoading, showLoading) || other.showLoading == showLoading)&&(identical(other.index, index) || other.index == index)&&(identical(other.draggedIndex, draggedIndex) || other.draggedIndex == draggedIndex)&&const DeepCollectionEquality().equals(other._ingredients, _ingredients)&&(identical(other.showLeopardWithTea, showLeopardWithTea) || other.showLeopardWithTea == showLeopardWithTea)&&(identical(other.showHunchButton, showHunchButton) || other.showHunchButton == showHunchButton)&&(identical(other.showDragIndicator, showDragIndicator) || other.showDragIndicator == showDragIndicator)&&(identical(other.draggedItemPath, draggedItemPath) || other.draggedItemPath == draggedItemPath)&&(identical(other.droppedItem, droppedItem) || other.droppedItem == droppedItem)&&(identical(other.stoveImage, stoveImage) || other.stoveImage == stoveImage)&&(identical(other.dragIndicator, dragIndicator) || other.dragIndicator == dragIndicator)&&(identical(other.hunchaButton, hunchaButton) || other.hunchaButton == hunchaButton)&&(identical(other.checkIcon, checkIcon) || other.checkIcon == checkIcon)&&(identical(other.leopardWithTeaTb, leopardWithTeaTb) || other.leopardWithTeaTb == leopardWithTeaTb)&&(identical(other.leopardWithTeaMb, leopardWithTeaMb) || other.leopardWithTeaMb == leopardWithTeaMb)&&(identical(other.teaReady, teaReady) || other.teaReady == teaReady)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,showLoading,index,draggedIndex,const DeepCollectionEquality().hash(_ingredients),showLeopardWithTea,showHunchButton,showDragIndicator,draggedItemPath,droppedItem,stoveImage,dragIndicator,hunchaButton,checkIcon,leopardTakingTeaTb,leopardTakingTeaMb,teaReady,completionFeedbackReady);
+int get hashCode => Object.hash(runtimeType,showLoading,index,draggedIndex,const DeepCollectionEquality().hash(_ingredients),showLeopardWithTea,showHunchButton,showDragIndicator,draggedItemPath,droppedItem,stoveImage,dragIndicator,hunchaButton,checkIcon,leopardWithTeaTb,leopardWithTeaMb,teaReady,completionFeedbackReady);
 
 @override
 String toString() {
-  return 'TutorialState(showLoading: $showLoading, index: $index, draggedIndex: $draggedIndex, ingredients: $ingredients, showLeopardWithTea: $showLeopardWithTea, showHunchButton: $showHunchButton, showDragIndicator: $showDragIndicator, draggedItemPath: $draggedItemPath, droppedItem: $droppedItem, stoveImage: $stoveImage, dragIndicator: $dragIndicator, hunchaButton: $hunchaButton, checkIcon: $checkIcon, leopardTakingTeaTb: $leopardTakingTeaTb, leopardTakingTeaMb: $leopardTakingTeaMb, teaReady: $teaReady, completionFeedbackReady: $completionFeedbackReady)';
+  return 'TutorialState(showLoading: $showLoading, index: $index, draggedIndex: $draggedIndex, ingredients: $ingredients, showLeopardWithTea: $showLeopardWithTea, showHunchButton: $showHunchButton, showDragIndicator: $showDragIndicator, draggedItemPath: $draggedItemPath, droppedItem: $droppedItem, stoveImage: $stoveImage, dragIndicator: $dragIndicator, hunchaButton: $hunchaButton, checkIcon: $checkIcon, leopardWithTeaTb: $leopardWithTeaTb, leopardWithTeaMb: $leopardWithTeaMb, teaReady: $teaReady, completionFeedbackReady: $completionFeedbackReady)';
 }
 
 
@@ -615,7 +615,7 @@ abstract mixin class _$TutorialStateCopyWith<$Res> implements $TutorialStateCopy
   factory _$TutorialStateCopyWith(_TutorialState value, $Res Function(_TutorialState) _then) = __$TutorialStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool showLoading, int index, int draggedIndex, List<String> ingredients, bool showLeopardWithTea, bool showHunchButton, bool showDragIndicator, String? draggedItemPath, String? droppedItem, String? stoveImage, String? dragIndicator, String? hunchaButton, String? checkIcon, String? leopardTakingTeaTb, String? leopardTakingTeaMb, bool teaReady, bool completionFeedbackReady
+ bool showLoading, int index, int draggedIndex, List<String> ingredients, bool showLeopardWithTea, bool showHunchButton, bool showDragIndicator, String? draggedItemPath, String? droppedItem, String? stoveImage, String? dragIndicator, String? hunchaButton, String? checkIcon, String? leopardWithTeaTb, String? leopardWithTeaMb, bool teaReady, bool completionFeedbackReady
 });
 
 
@@ -632,7 +632,7 @@ class __$TutorialStateCopyWithImpl<$Res>
 
 /// Create a copy of TutorialState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? showLoading = null,Object? index = null,Object? draggedIndex = null,Object? ingredients = null,Object? showLeopardWithTea = null,Object? showHunchButton = null,Object? showDragIndicator = null,Object? draggedItemPath = freezed,Object? droppedItem = freezed,Object? stoveImage = freezed,Object? dragIndicator = freezed,Object? hunchaButton = freezed,Object? checkIcon = freezed,Object? leopardTakingTeaTb = freezed,Object? leopardTakingTeaMb = freezed,Object? teaReady = null,Object? completionFeedbackReady = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? showLoading = null,Object? index = null,Object? draggedIndex = null,Object? ingredients = null,Object? showLeopardWithTea = null,Object? showHunchButton = null,Object? showDragIndicator = null,Object? draggedItemPath = freezed,Object? droppedItem = freezed,Object? stoveImage = freezed,Object? dragIndicator = freezed,Object? hunchaButton = freezed,Object? checkIcon = freezed,Object? leopardWithTeaTb = freezed,Object? leopardWithTeaMb = freezed,Object? teaReady = null,Object? completionFeedbackReady = null,}) {
   return _then(_TutorialState(
 showLoading: null == showLoading ? _self.showLoading : showLoading // ignore: cast_nullable_to_non_nullable
 as bool,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
@@ -647,8 +647,8 @@ as String?,stoveImage: freezed == stoveImage ? _self.stoveImage : stoveImage // 
 as String?,dragIndicator: freezed == dragIndicator ? _self.dragIndicator : dragIndicator // ignore: cast_nullable_to_non_nullable
 as String?,hunchaButton: freezed == hunchaButton ? _self.hunchaButton : hunchaButton // ignore: cast_nullable_to_non_nullable
 as String?,checkIcon: freezed == checkIcon ? _self.checkIcon : checkIcon // ignore: cast_nullable_to_non_nullable
-as String?,leopardTakingTeaTb: freezed == leopardTakingTeaTb ? _self.leopardTakingTeaTb : leopardTakingTeaTb // ignore: cast_nullable_to_non_nullable
-as String?,leopardTakingTeaMb: freezed == leopardTakingTeaMb ? _self.leopardTakingTeaMb : leopardTakingTeaMb // ignore: cast_nullable_to_non_nullable
+as String?,leopardWithTeaTb: freezed == leopardWithTeaTb ? _self.leopardWithTeaTb : leopardWithTeaTb // ignore: cast_nullable_to_non_nullable
+as String?,leopardWithTeaMb: freezed == leopardWithTeaMb ? _self.leopardWithTeaMb : leopardWithTeaMb // ignore: cast_nullable_to_non_nullable
 as String?,teaReady: null == teaReady ? _self.teaReady : teaReady // ignore: cast_nullable_to_non_nullable
 as bool,completionFeedbackReady: null == completionFeedbackReady ? _self.completionFeedbackReady : completionFeedbackReady // ignore: cast_nullable_to_non_nullable
 as bool,

@@ -259,10 +259,10 @@ TeaMakingLessonContent _$TeaMakingLessonContentFromJson(
   hunchaButton: json['huncha_button'] as String,
   hunchaButtonAudio: json['huncha_button_audio'] as String,
   checkIcon: json['check_icon'] as String,
-  leopardTakingTeaTb:
-      _readLeopardTakingTeaTb(json, 'leopard_taking_tea_tb') as String,
-  leopardTakingTeaMb:
-      _readLeopardTakingTeaMb(json, 'leopard_taking_tea_mb') as String,
+  leopardWithTeaTb:
+      _readLeopardWithTeaTb(json, 'leopard_with_tea_tb') as String,
+  leopardWithTeaMb:
+      _readLeopardWithTeaMb(json, 'leopard_with_tea_mb') as String,
   ingredients:
       (json['ingredients'] as List<dynamic>?)
           ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
@@ -285,8 +285,8 @@ Map<String, dynamic> _$TeaMakingLessonContentToJson(
   'huncha_button': instance.hunchaButton,
   'huncha_button_audio': instance.hunchaButtonAudio,
   'check_icon': instance.checkIcon,
-  'leopard_taking_tea_tb': instance.leopardTakingTeaTb,
-  'leopard_taking_tea_mb': instance.leopardTakingTeaMb,
+  'leopard_with_tea_tb': instance.leopardWithTeaTb,
+  'leopard_with_tea_mb': instance.leopardWithTeaMb,
   'ingredients': instance.ingredients.map((e) => e.toJson()).toList(),
 };
 

@@ -4,6 +4,7 @@ import 'package:onepali/src/core/core.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/features/lessons/templates/drag_to_match/drag_to_match_bloc/drag_to_match_bloc.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
+import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 const double _itemSpacing = 4.0;
 
@@ -13,7 +14,9 @@ double _wordLabelGap(BuildContext context) {
 
 double _wordLabelSlotHeight(BuildContext context) {
   final isMobile = PlatformUtility.isMobile(context);
-  final labelFontSize = isMobile ? 32.0 : 48.0;
+  final labelFontSize = isMobile
+      ? kWordPopupMobileFontSize
+      : kWordPopupTabletFontSize;
   final labelVerticalPadding = isMobile ? 6.0 : 12.0;
   return (labelFontSize * 1.4) + (labelVerticalPadding * 2);
 }
@@ -326,7 +329,9 @@ class _DragWordLabel extends StatelessWidget {
       child: Text(
         nameNp,
         style: TextStyle(
-          fontSize: isMobile ? 32 : 48,
+          fontSize: isMobile
+              ? kWordPopupMobileFontSize
+              : kWordPopupTabletFontSize,
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: AppConstants.kMuktaFont,

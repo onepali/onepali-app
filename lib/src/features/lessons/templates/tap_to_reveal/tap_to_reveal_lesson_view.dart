@@ -316,7 +316,7 @@ class _TapToRevealLessonViewState extends State<TapToRevealLessonView> {
                 top: size.height * 0.05 + 50,
                 right: 0,
                 left: 0,
-                child: LabelDisplay(
+                child: LabelDisplay.wordPopup(
                   nameNp: state.tappedItem!.nameNp,
                   nameEn: state.tappedItem!.nameEn,
                 ),

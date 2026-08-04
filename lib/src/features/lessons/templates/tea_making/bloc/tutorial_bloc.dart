@@ -32,8 +32,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   String checkIcon = '';
   String boilStepName = '';
   int boilStepAfterIndex = -1;
-  String leopardTakingTeaTb = '';
-  String leopardTakingTeaMb = '';
+  String leopardWithTeaTb = '';
+  String leopardWithTeaMb = '';
 
   Map<String, String> _cachedPaths = {};
 
@@ -67,8 +67,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       hunchaButton = content.hunchaButton;
       hunchaButtonAudio = content.hunchaButtonAudio;
       checkIcon = content.checkIcon;
-      leopardTakingTeaTb = content.leopardTakingTeaTb;
-      leopardTakingTeaMb = content.leopardTakingTeaMb;
+      leopardWithTeaTb = content.leopardWithTeaTb;
+      leopardWithTeaMb = content.leopardWithTeaMb;
 
       emit(state.copyWith(showLoading: true));
 
@@ -80,8 +80,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         dragIndicator,
         hunchaButton,
         checkIcon,
-        leopardTakingTeaTb,
-        leopardTakingTeaMb,
+        leopardWithTeaTb,
+        leopardWithTeaMb,
       ].where((e) => e.isNotEmpty).toList();
 
       final allAudioUrls = [
@@ -110,8 +110,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
           dragIndicator: dragIndicator,
           hunchaButton: hunchaButton,
           checkIcon: checkIcon,
-          leopardTakingTeaTb: leopardTakingTeaTb,
-          leopardTakingTeaMb: leopardTakingTeaMb,
+          leopardWithTeaTb: leopardWithTeaTb,
+          leopardWithTeaMb: leopardWithTeaMb,
           showLeopardWithTea: true,
         ),
       );

@@ -16,8 +16,8 @@ abstract class TutorialState with _$TutorialState {
     String? dragIndicator,
     String? hunchaButton,
     String? checkIcon,
-    String? leopardTakingTeaTb,
-    String? leopardTakingTeaMb,
+    String? leopardWithTeaTb,
+    String? leopardWithTeaMb,
     @Default(false) bool teaReady,
     @Default(false) bool completionFeedbackReady,
   }) = _TutorialState;

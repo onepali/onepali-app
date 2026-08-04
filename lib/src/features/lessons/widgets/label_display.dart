@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:onepali/src/core/core.dart';
 
+const double kWordPopupMobileFontSize = 56.0;
+const double kWordPopupTabletFontSize = 72.0;
+
 class LabelDisplay extends StatefulWidget {
   final String nameNp;
   final String nameEn;
+  final double? mobileFontSize;
+  final double? tabletFontSize;
+  final Alignment scaleAlignment;
 
-  const LabelDisplay({super.key, required this.nameNp, required this.nameEn});
+  const LabelDisplay({
+    super.key,
+    required this.nameNp,
+    required this.nameEn,
+    this.mobileFontSize,
+    this.tabletFontSize,
+    this.scaleAlignment = Alignment.center,
+  });
+
+  const LabelDisplay.wordPopup({
+    super.key,
+    required this.nameNp,
+    required this.nameEn,
+  }) : mobileFontSize = kWordPopupMobileFontSize,
+       tabletFontSize = kWordPopupTabletFontSize,
+       scaleAlignment = Alignment.topCenter;
 
   @override
   State<LabelDisplay> createState() => _LabelDisplayState();
@@ -58,6 +79,7 @@ class _LabelDisplayState extends State<LabelDisplay>
             opacity: _opacityAnimation.value,
             child: Transform.scale(
               scale: _scaleAnimation.value,
+              alignment: widget.scaleAlignment,
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: isMobile ? 16 : 32,
@@ -70,7 +92,9 @@ class _LabelDisplayState extends State<LabelDisplay>
                 child: Text(
                   widget.nameNp,
                   style: TextStyle(
-                    fontSize: isMobile ? 32 : 48,
+                    fontSize: isMobile
+                        ? widget.mobileFontSize ?? 32
+                        : widget.tabletFontSize ?? 48,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     fontFamily: AppConstants.kMuktaFont,
