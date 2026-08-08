@@ -179,7 +179,7 @@ class ChildUserProvider extends ChangeNotifier {
                 );
                 return null;
               }
-              return ChildUserModel.fromJson(data);
+              return ChildUserModel.fromJson(data, documentId: doc.id);
             })
             .where((child) => child != null)
             .cast<ChildUserModel>()

@@ -38,7 +38,10 @@ class ChildUserModel {
     this.completedLessons,
   });
 
-  factory ChildUserModel.fromJson(Map<String, dynamic> json) => ChildUserModel(
+  factory ChildUserModel.fromJson(
+    Map<String, dynamic> json, {
+    String? documentId,
+  }) => ChildUserModel(
     avatarUrl: json["avatar_url"] ?? "",
     createdAt: json["created_at"] ?? "",
     dob: json["dob"] ?? "",
@@ -48,7 +51,7 @@ class ChildUserModel {
     role: json["role"] ?? "",
     // removed screenTime
     hasScreenTime: json["has_screen_time"] ?? false,
-    uid: json["uid"] ?? "",
+    uid: documentId ?? json["uid"] ?? "",
     screenTimeTracking: json["screenTimeTracking"] != null
         ? ScreenTimeModel.fromJson(json["screenTimeTracking"])
         : null,

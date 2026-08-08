@@ -595,7 +595,8 @@ class PzMetricsProvider extends ChangeNotifier {
         previous.answerSuccessRate != current.answerSuccessRate ||
         previous.dayStreak != current.dayStreak ||
         previous.lastActiveDate != current.lastActiveDate ||
-        previous.averageDailyLearningTime != current.averageDailyLearningTime) {
+        previous.averageDailyLearningTime != current.averageDailyLearningTime ||
+        previous.totalLearningTime != current.totalLearningTime) {
       return true;
     }
     if (!_sameBoolList(previous.weeklyStreak, current.weeklyStreak)) {
@@ -608,6 +609,9 @@ class PzMetricsProvider extends ChangeNotifier {
       return true;
     }
     if (!_sameIntMap(previous.topicCounts, current.topicCounts)) {
+      return true;
+    }
+    if (!_sameIntMap(previous.learningTimeByDate, current.learningTimeByDate)) {
       return true;
     }
     return false;

@@ -63,5 +63,14 @@ void main() {
         'lesson-2',
       ]);
     });
+
+    test('fromJson should prefer Firestore document id when provided', () {
+      final model = ChildUserModel.fromJson({
+        'uid': 'stale-child-id',
+        'full_name': 'Child',
+      }, documentId: 'child-doc-id');
+
+      expect(model.uid, 'child-doc-id');
+    });
   });
 }

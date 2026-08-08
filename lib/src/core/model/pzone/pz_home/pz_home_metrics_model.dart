@@ -5,6 +5,8 @@ class PzHomeMetricsModel {
   final List<bool> weeklyStreak;
   final String lastActiveDate;
   final int averageDailyLearningTime;
+  final int totalLearningTime;
+  final Map<String, int> learningTimeByDate;
   final List<String> mostPracticedTopics;
   final Map<String, int> topicCounts; // New field to track topic counts
 
@@ -15,6 +17,8 @@ class PzHomeMetricsModel {
     required this.weeklyStreak,
     required this.lastActiveDate,
     required this.averageDailyLearningTime,
+    required this.totalLearningTime,
+    required this.learningTimeByDate,
     required this.mostPracticedTopics,
     required this.topicCounts,
   });
@@ -28,19 +32,27 @@ class PzHomeMetricsModel {
         weeklyStreak: List.filled(7, false),
         lastActiveDate: '',
         averageDailyLearningTime: 0,
+        totalLearningTime: 0,
+        learningTimeByDate: {},
         mostPracticedTopics: [],
         topicCounts: {},
       );
     }
 
-    // Parse topic counts from Firebase
-    Map<String, int> parsedTopicCounts = {};
-    if (map['topicCounts'] != null) {
-      final topicCountsMap = map['topicCounts'] as Map<String, dynamic>;
-      parsedTopicCounts = topicCountsMap.map(
-        (key, value) => MapEntry(key, (value as num).toInt()),
-      );
-    }
+    final parsedTopicCounts = _parseIntMap(map['topicCounts']);
+    final parsedLearningTimeByDate = _parseIntMap(map['learningTimeByDate']);
+    final legacyAverageLearningTime =
+        (map['averageDailyLearningTime'] as num?)?.toInt() ?? 0;
+    final totalLearningTime =
+        (map['totalLearningTime'] as num?)?.toInt() ??
+        _sumIntMap(parsedLearningTimeByDate) ??
+        legacyAverageLearningTime;
+    final activeLearningDays = parsedLearningTimeByDate.values
+        .where((minutes) => minutes > 0)
+        .length;
+    final averageDailyLearningTime = parsedLearningTimeByDate.isEmpty
+        ? legacyAverageLearningTime
+        : _averageLearningTime(totalLearningTime, activeLearningDays);
 
     return PzHomeMetricsModel(
       completedActivities: map['completedActivities'] ?? 0,
@@ -50,7 +62,9 @@ class PzHomeMetricsModel {
           (map['weeklyStreak'] as List?)?.map((e) => e == true).toList() ??
           List.filled(7, false),
       lastActiveDate: map['lastActiveDate'] ?? '',
-      averageDailyLearningTime: map['averageDailyLearningTime'] ?? 0,
+      averageDailyLearningTime: averageDailyLearningTime,
+      totalLearningTime: totalLearningTime,
+      learningTimeByDate: parsedLearningTimeByDate,
       mostPracticedTopics:
           (map['mostPracticedTopics'] as List?)
               ?.map((e) => e.toString())
@@ -68,6 +82,8 @@ class PzHomeMetricsModel {
       'weeklyStreak': weeklyStreak,
       'lastActiveDate': lastActiveDate,
       'averageDailyLearningTime': averageDailyLearningTime,
+      'totalLearningTime': totalLearningTime,
+      'learningTimeByDate': learningTimeByDate,
       'mostPracticedTopics': mostPracticedTopics,
       'topicCounts': topicCounts,
     };
@@ -80,6 +96,8 @@ class PzHomeMetricsModel {
     List<bool>? weeklyStreak,
     String? lastActiveDate,
     int? averageDailyLearningTime,
+    int? totalLearningTime,
+    Map<String, int>? learningTimeByDate,
     List<String>? mostPracticedTopics,
     Map<String, int>? topicCounts,
   }) {
@@ -91,8 +109,44 @@ class PzHomeMetricsModel {
       lastActiveDate: lastActiveDate ?? this.lastActiveDate,
       averageDailyLearningTime:
           averageDailyLearningTime ?? this.averageDailyLearningTime,
+      totalLearningTime: totalLearningTime ?? this.totalLearningTime,
+      learningTimeByDate: learningTimeByDate ?? this.learningTimeByDate,
       mostPracticedTopics: mostPracticedTopics ?? this.mostPracticedTopics,
       topicCounts: topicCounts ?? this.topicCounts,
+    );
+  }
+
+  PzHomeMetricsModel recordLearningSession({
+    required int sessionMinutes,
+    required DateTime endedAt,
+  }) {
+    if (sessionMinutes <= 0) return this;
+
+    final dailyLearningTime = Map<String, int>.from(learningTimeByDate);
+    if (dailyLearningTime.isEmpty && totalLearningTime > 0) {
+      dailyLearningTime[_legacyLearningDateKey(endedAt)] = totalLearningTime;
+    }
+
+    final activeDate = DateTime(endedAt.year, endedAt.month, endedAt.day);
+    final activeDateKey = _dateKey(activeDate);
+    dailyLearningTime[activeDateKey] =
+        (dailyLearningTime[activeDateKey] ?? 0) + sessionMinutes;
+
+    final totalMinutes = dailyLearningTime.values.fold<int>(
+      0,
+      (sum, minutes) => sum + minutes,
+    );
+    final activeLearningDays = dailyLearningTime.values
+        .where((minutes) => minutes > 0)
+        .length;
+
+    return copyWith(
+      totalLearningTime: totalMinutes,
+      learningTimeByDate: dailyLearningTime,
+      averageDailyLearningTime: _averageLearningTime(
+        totalMinutes,
+        activeLearningDays,
+      ),
     );
   }
 
@@ -148,6 +202,11 @@ class PzHomeMetricsModel {
       return dayStreak + 1;
     }
     return 1;
+  }
+
+  String _legacyLearningDateKey(DateTime endedAt) {
+    final lastActiveDay = DateTime.tryParse(lastActiveDate);
+    return _dateKey(lastActiveDay ?? endedAt);
   }
 
   PzHomeMetricsModel _normalizeFromWeeklyActivity(DateTime today) {
@@ -207,6 +266,23 @@ class PzHomeMetricsModel {
     final month = date.month.toString().padLeft(2, '0');
     final day = date.day.toString().padLeft(2, '0');
     return '$year-$month-$day';
+  }
+
+  static Map<String, int> _parseIntMap(Object? value) {
+    if (value is! Map) return {};
+    return value.map(
+      (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+    );
+  }
+
+  static int? _sumIntMap(Map<String, int> values) {
+    if (values.isEmpty) return null;
+    return values.values.fold<int>(0, (sum, value) => sum + value);
+  }
+
+  static int _averageLearningTime(int totalMinutes, int activeLearningDays) {
+    if (activeLearningDays <= 0) return 0;
+    return (totalMinutes / activeLearningDays).round();
   }
 }
 

@@ -57,6 +57,41 @@ void main() {
       expect(provider.canClaimReward, isFalse);
     });
 
+    test('reward progress is scoped to the selected child', () async {
+      const otherChildUid = 'child-2';
+      await _seedChild(firestore, parentUid: parentUid, childUid: childUid);
+      await _seedChild(
+        firestore,
+        parentUid: parentUid,
+        childUid: otherChildUid,
+      );
+      for (var i = 1; i <= 3; i++) {
+        await _seedCompletion(
+          firestore,
+          parentUid: parentUid,
+          childUid: childUid,
+          type: ActivityType.lesson,
+          contentId: 'lesson-$i',
+        );
+      }
+      await _seedCompletion(
+        firestore,
+        parentUid: parentUid,
+        childUid: otherChildUid,
+        type: ActivityType.lesson,
+        contentId: 'other-child-lesson',
+      );
+
+      final progress = await provider.fetchRewardProgress(
+        parentUid: parentUid,
+        childUid: childUid,
+      );
+
+      expect(progress, 3);
+      expect(provider.rewardProgressCount, 3);
+      expect(provider.canClaimReward, isFalse);
+    });
+
     test('claiming reward consumes five unique lesson completions', () async {
       await _seedChild(firestore, parentUid: parentUid, childUid: childUid);
       for (var i = 1; i <= 6; i++) {

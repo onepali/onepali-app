@@ -11,6 +11,8 @@ void main() {
       List<bool>? weeklyStreak,
       String lastActiveDate = '',
       int averageDailyLearningTime = 0,
+      int totalLearningTime = 0,
+      Map<String, int>? learningTimeByDate,
       List<String>? mostPracticedTopics,
       Map<String, int>? topicCounts,
     }) {
@@ -21,6 +23,8 @@ void main() {
         weeklyStreak: weeklyStreak ?? List.filled(7, false),
         lastActiveDate: lastActiveDate,
         averageDailyLearningTime: averageDailyLearningTime,
+        totalLearningTime: totalLearningTime,
+        learningTimeByDate: learningTimeByDate ?? {},
         mostPracticedTopics: mostPracticedTopics ?? [],
         topicCounts: topicCounts ?? {},
       );
@@ -34,6 +38,8 @@ void main() {
         weeklyStreak: [true, true, false, true, true, false, true],
         lastActiveDate: '2024-01-01',
         averageDailyLearningTime: 30,
+        totalLearningTime: 90,
+        learningTimeByDate: {'2024-01-01': 30, '2024-01-02': 60},
         mostPracticedTopics: ['Math', 'Science', 'English'],
         topicCounts: {'Math': 5, 'Science': 3, 'English': 2},
       );
@@ -45,6 +51,8 @@ void main() {
       expect(model.weeklyStreak, [true, true, false, true, true, false, true]);
       expect(model.lastActiveDate, '2024-01-01');
       expect(model.averageDailyLearningTime, 30);
+      expect(model.totalLearningTime, 90);
+      expect(model.learningTimeByDate, {'2024-01-01': 30, '2024-01-02': 60});
       expect(model.mostPracticedTopics, ['Math', 'Science', 'English']);
     });
 
@@ -56,6 +64,8 @@ void main() {
         'weeklyStreak': [true, true, true, false, true, true, false],
         'lastActiveDate': '2024-01-03',
         'averageDailyLearningTime': 45,
+        'totalLearningTime': 90,
+        'learningTimeByDate': {'2024-01-01': 30, '2024-01-02': 60.0},
         'mostPracticedTopics': ['Reading', 'Writing'],
         'topicCounts': {'Reading': 4.0, 'Writing': 2},
       };
@@ -67,6 +77,8 @@ void main() {
       expect(model.weeklyStreak, [true, true, true, false, true, true, false]);
       expect(model.lastActiveDate, '2024-01-03');
       expect(model.averageDailyLearningTime, 45);
+      expect(model.totalLearningTime, 90);
+      expect(model.learningTimeByDate, {'2024-01-01': 30, '2024-01-02': 60});
       expect(model.mostPracticedTopics, ['Reading', 'Writing']);
       expect(model.topicCounts, {'Reading': 4, 'Writing': 2});
     });
@@ -80,6 +92,8 @@ void main() {
       expect(model.weeklyStreak, List.filled(7, false));
       expect(model.lastActiveDate, '');
       expect(model.averageDailyLearningTime, 0);
+      expect(model.totalLearningTime, 0);
+      expect(model.learningTimeByDate, {});
       expect(model.mostPracticedTopics, []);
     });
 
@@ -96,6 +110,8 @@ void main() {
       expect(model.weeklyStreak, List.filled(7, false));
       expect(model.lastActiveDate, '');
       expect(model.averageDailyLearningTime, 0);
+      expect(model.totalLearningTime, 0);
+      expect(model.learningTimeByDate, {});
       expect(model.mostPracticedTopics, []);
     });
 
@@ -107,6 +123,8 @@ void main() {
         weeklyStreak: [false, true, true, false, false, true, true],
         lastActiveDate: '2024-01-02',
         averageDailyLearningTime: 25,
+        totalLearningTime: 50,
+        learningTimeByDate: {'2024-01-01': 20, '2024-01-02': 30},
         mostPracticedTopics: ['Art', 'Music'],
         topicCounts: {'Art': 4, 'Music': 3},
       );
@@ -126,6 +144,8 @@ void main() {
       ]);
       expect(json['lastActiveDate'], '2024-01-02');
       expect(json['averageDailyLearningTime'], 25);
+      expect(json['totalLearningTime'], 50);
+      expect(json['learningTimeByDate'], {'2024-01-01': 20, '2024-01-02': 30});
       expect(json['mostPracticedTopics'], ['Art', 'Music']);
       expect(json['topicCounts'], {'Art': 4, 'Music': 3});
     });
@@ -137,6 +157,8 @@ void main() {
         dayStreak: 5,
         lastActiveDate: '2024-01-01',
         averageDailyLearningTime: 30,
+        totalLearningTime: 60,
+        learningTimeByDate: {'2024-01-01': 60},
         mostPracticedTopics: ['Math'],
         topicCounts: {'Math': 10},
       );
@@ -153,6 +175,8 @@ void main() {
       expect(updated.dayStreak, 5); // Unchanged
       expect(updated.lastActiveDate, '2024-01-02');
       expect(updated.averageDailyLearningTime, 30); // Unchanged
+      expect(updated.totalLearningTime, 60); // Unchanged
+      expect(updated.learningTimeByDate, {'2024-01-01': 60}); // Unchanged
       expect(updated.mostPracticedTopics, ['Math', 'Science']);
     });
 
@@ -164,6 +188,8 @@ void main() {
         weeklyStreak: List.filled(7, true),
         lastActiveDate: '2024-01-01',
         averageDailyLearningTime: 30,
+        totalLearningTime: 60,
+        learningTimeByDate: {'2024-01-01': 60},
         mostPracticedTopics: ['Math'],
         topicCounts: {'Math': 10},
       );
@@ -176,7 +202,60 @@ void main() {
       expect(copy.weeklyStreak, original.weeklyStreak);
       expect(copy.lastActiveDate, original.lastActiveDate);
       expect(copy.averageDailyLearningTime, original.averageDailyLearningTime);
+      expect(copy.totalLearningTime, original.totalLearningTime);
+      expect(copy.learningTimeByDate, original.learningTimeByDate);
       expect(copy.mostPracticedTopics, original.mostPracticedTopics);
+    });
+
+    test(
+      'recordLearningSession accumulates same-day time into the average',
+      () {
+        final updated =
+            metrics(
+              averageDailyLearningTime: 20,
+              totalLearningTime: 20,
+              learningTimeByDate: {'2026-08-08': 20},
+            ).recordLearningSession(
+              sessionMinutes: 10,
+              endedAt: DateTime(2026, 8, 8, 14),
+            );
+
+        expect(updated.totalLearningTime, 30);
+        expect(updated.learningTimeByDate, {'2026-08-08': 30});
+        expect(updated.averageDailyLearningTime, 30);
+      },
+    );
+
+    test('recordLearningSession averages total time across learning days', () {
+      final updated =
+          metrics(
+            averageDailyLearningTime: 30,
+            totalLearningTime: 30,
+            learningTimeByDate: {'2026-08-07': 30},
+          ).recordLearningSession(
+            sessionMinutes: 10,
+            endedAt: DateTime(2026, 8, 8, 9),
+          );
+
+      expect(updated.totalLearningTime, 40);
+      expect(updated.learningTimeByDate, {'2026-08-07': 30, '2026-08-08': 10});
+      expect(updated.averageDailyLearningTime, 20);
+    });
+
+    test('recordLearningSession seeds legacy average as prior total', () {
+      final updated =
+          metrics(
+            averageDailyLearningTime: 45,
+            totalLearningTime: 45,
+            lastActiveDate: '2026-08-07',
+          ).recordLearningSession(
+            sessionMinutes: 10,
+            endedAt: DateTime(2026, 8, 8, 9),
+          );
+
+      expect(updated.totalLearningTime, 55);
+      expect(updated.learningTimeByDate, {'2026-08-07': 45, '2026-08-08': 10});
+      expect(updated.averageDailyLearningTime, 28);
     });
 
     test('should handle weekly streak validation', () {

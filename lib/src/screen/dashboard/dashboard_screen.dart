@@ -13,6 +13,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedTabIndex = 0;
   String childProfileImage = '';
+  String? _currentChildId;
   double _appBarElevation = 0.0;
 
   // Moved to provider
@@ -48,7 +49,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       // Use provider method to get current child
       final currentChild = await childProvider.getCurrentChild();
+      if (!mounted) return;
       setState(() {
+        _currentChildId = currentChild?.uid;
         childProfileImage = currentChild?.avatarUrl ?? Assets.avatar1;
       });
     });
@@ -163,6 +166,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final childProvider = context.watch<ChildUserProvider>();
     final userProvider = context.watch<UserProvider>();
+    final authState = context.watch<AuthState>();
     final UserModel? userInfo = userProvider.user;
     final bool isLoading = userProvider.status == DataFetchStatus.loading;
     final bool hasData = userInfo != null;
@@ -171,15 +175,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Get the selected/current child (if any)
     String selectedChildName = 'User';
+    String selectedChildProfileImage = childProfileImage.isNotEmpty
+        ? childProfileImage
+        : Assets.avatar1;
     ChildUserModel? currentChild;
     if (childProvider.childUser.isNotEmpty) {
-      currentChild = childProvider.childUser.firstWhere(
-        (c) => c.avatarUrl == childProfileImage,
-        orElse: () => childProvider.childUser.first,
-      );
+      final selectedChildId = authState.currentChildId?.isNotEmpty == true
+          ? authState.currentChildId
+          : _currentChildId;
+      currentChild = selectedChildId != null && selectedChildId.isNotEmpty
+          ? childProvider.childUser.firstWhere(
+              (child) => child.uid == selectedChildId,
+              orElse: () => childProvider.childUser.first,
+            )
+          : childProvider.childUser.first;
       selectedChildName = currentChild.fullName.isNotEmpty
           ? currentChild.fullName
           : 'User';
+      selectedChildProfileImage = currentChild.avatarUrl.isNotEmpty
+          ? currentChild.avatarUrl
+          : Assets.avatar1;
     }
     return PopScope(
       canPop: false,
@@ -199,10 +214,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             appBar: UserAppBar(
               context: context,
               name: selectedChildName,
-              profileImage: childProfileImage,
+              profileImage: selectedChildProfileImage,
               totalStars: 0,
               parentUid: userProvider.userId ?? currentChild?.parentUid,
               childUid: currentChild?.uid,
+              totalLessonsCompleted:
+                  currentChild?.completedLessons?.totalLessonsCompleted ?? 0,
               totalChildCount: childCount > 0 ? childCount : 0,
               playStarBlastAudio: true,
               menuColor: homeServices[_selectedTabIndex].color,
