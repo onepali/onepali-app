@@ -22,7 +22,10 @@ class PutInBagView extends StatefulWidget {
   State<PutInBagView> createState() => _PutInBagViewState();
 }
 
-class _PutInBagViewState extends State<PutInBagView> {
+class _PutInBagViewState extends State<PutInBagView>
+    with AutoAdvanceMixin<PutInBagView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -30,7 +33,12 @@ class _PutInBagViewState extends State<PutInBagView> {
     return BlocProvider(
       create: (context) =>
           PutInBagBloc()..add(PutInBagEvent.started(widget.content)),
-      child: BlocBuilder<PutInBagBloc, PutInBagState>(
+      child: BlocConsumer<PutInBagBloc, PutInBagState>(
+        listenWhen: (previous, current) =>
+            !previous.isCompleted && current.isCompleted,
+        listener: (context, state) {
+          scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
+        },
         builder: (context, state) {
           if (state.content == null) {
             return const Center(child: CircularProgressIndicator());

@@ -16,20 +16,33 @@ import 'package:path_drawing/path_drawing.dart';
 
 class GunFillLessonView extends StatefulWidget {
   final GunFillLessonContent content;
-  const GunFillLessonView({super.key, required this.content});
+  final VoidCallback onNext;
+  const GunFillLessonView({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
 
   @override
   State<GunFillLessonView> createState() => _GunFillLessonViewState();
 }
 
-class _GunFillLessonViewState extends State<GunFillLessonView> {
+class _GunFillLessonViewState extends State<GunFillLessonView>
+    with AutoAdvanceMixin<GunFillLessonView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     return BlocProvider(
       create: (context) =>
           GunFillBloc()..add(GunFillEvent.started(widget.content, isMobile)),
-      child: BlocBuilder<GunFillBloc, GunFillState>(
+      child: BlocConsumer<GunFillBloc, GunFillState>(
+        listenWhen: (previous, current) =>
+            !previous.isCompleted && current.isCompleted,
+        listener: (context, state) {
+          scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
+        },
         builder: (context, state) {
           if (state.content == null) {
             return const Center(child: CircularProgressIndicator());
@@ -281,10 +294,7 @@ class _GunFillLessonViewState extends State<GunFillLessonView> {
                   ),
                 ),
               if (state.isCompleted)
-                CenterRightAlignedForwardButton(
-                  onTap: () =>
-                      context.read<LessonBloc>().add(LessonEvent.nextContent()),
-                ),
+                CenterRightAlignedForwardButton(onTap: widget.onNext),
               TopRightPositionedCloseButton(
                 onTap: () => Navigator.of(context).pop(),
               ),

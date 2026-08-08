@@ -16,6 +16,8 @@ class BallSliderEvent with _$BallSliderEvent {
     required double tapX,
     required double trackWidth,
   }) = _BallTapped;
+  const factory BallSliderEvent.completionFeedbackCompleted() =
+      _CompletionFeedbackCompleted;
   const factory BallSliderEvent.physicsTick() = _PhysicsTick;
   const factory BallSliderEvent.ballReset() = _BallReset;
 }

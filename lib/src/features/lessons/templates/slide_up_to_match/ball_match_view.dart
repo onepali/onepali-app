@@ -31,7 +31,10 @@ class MatchGameScreen extends StatefulWidget {
   State<MatchGameScreen> createState() => _MatchGameScreenState();
 }
 
-class _MatchGameScreenState extends State<MatchGameScreen> {
+class _MatchGameScreenState extends State<MatchGameScreen>
+    with AutoAdvanceMixin<MatchGameScreen> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
@@ -39,11 +42,18 @@ class _MatchGameScreenState extends State<MatchGameScreen> {
       create: (context) => MatchBloc()..add(MatchEvent.started(widget.content)),
       child: BlocConsumer<MatchBloc, MatchState>(
         listenWhen: (previous, current) =>
-            widget.isLastContent &&
             !previous.completionFeedbackReady &&
             current.completionFeedbackReady,
         listener: (context, state) {
-          widget.onLessonCompleted?.call();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scheduleAutoAdvance(_autoAdvanceDelay, () {
+              if (widget.isLastContent) {
+                widget.onLessonCompleted?.call();
+                return;
+              }
+              widget.onNext();
+            });
+          });
         },
         builder: (context, state) {
           if (state.content == null) {

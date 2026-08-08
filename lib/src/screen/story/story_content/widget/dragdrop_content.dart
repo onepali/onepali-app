@@ -21,6 +21,7 @@ class DragDropContent extends StatefulWidget {
 }
 
 class DragDropContentState extends State<DragDropContent> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   late List<bool> dropped;
   late List<bool> correct;
   late List<int?> droppedOn;
@@ -87,7 +88,7 @@ class DragDropContentState extends State<DragDropContent> {
           (() async {
             await Future.wait([
               completionAudio,
-              Future.delayed(const Duration(seconds: 5)),
+              Future.delayed(_autoAdvanceDelay),
             ]);
             if (!mounted) return;
             if (widget.isLast) {

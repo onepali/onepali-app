@@ -55,17 +55,24 @@ class TapToChangeBloc extends Bloc<TapToChangeEvent, TapToChangeState> {
   }
 
   Future<void> _onTapped(_Tapped event, Emitter<TapToChangeState> emit) async {
-    try {
-      await _audioPlayerService.playAsset(Assets.starBlast);
-    } catch (error, stackTrace) {
-      logger.e('Error playing tap-to-change star SFX: $error\n$stackTrace');
-    }
     emit(
       state.copyWith(
         status: TapToChangeStatus.tapped,
         tapPosition: event.point,
       ),
     );
+
+    try {
+      final completion = _audioPlayerService.onPlayerComplete.first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {},
+      );
+      await _audioPlayerService.playAsset(Assets.starBlast);
+      await completion.catchError((_) {});
+    } catch (error, stackTrace) {
+      logger.e('Error playing tap-to-change star SFX: $error\n$stackTrace');
+    }
+    emit(state.copyWith(status: TapToChangeStatus.feedbackCompleted));
   }
 
   @override

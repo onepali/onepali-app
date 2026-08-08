@@ -11,7 +11,7 @@ import 'package:onepali/src/features/lessons/templates/tap_the_button/tap_the_bu
 import 'package:onepali/src/features/lessons/models/lesson.dart';
 import 'package:onepali/src/features/lessons/widgets/background_image.dart';
 
-class TapTheButtonView extends StatelessWidget {
+class TapTheButtonView extends StatefulWidget {
   const TapTheButtonView({
     super.key,
     required this.content,
@@ -22,13 +22,26 @@ class TapTheButtonView extends StatelessWidget {
   final VoidCallback onNext;
 
   @override
+  State<TapTheButtonView> createState() => _TapTheButtonViewState();
+}
+
+class _TapTheButtonViewState extends State<TapTheButtonView>
+    with AutoAdvanceMixin<TapTheButtonView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
+  @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.sizeOf(context);
     return BlocProvider(
       create: (context) =>
-          TapTheButtonBloc()..add(TapTheButtonEvent.started(content)),
-      child: BlocBuilder<TapTheButtonBloc, TapTheButtonState>(
+          TapTheButtonBloc()..add(TapTheButtonEvent.started(widget.content)),
+      child: BlocConsumer<TapTheButtonBloc, TapTheButtonState>(
+        listenWhen: (previous, current) =>
+            !previous.isCompleted && current.isCompleted,
+        listener: (context, state) {
+          scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
+        },
         builder: (context, state) {
           if (state.content == null) {
             return const Center(child: Text('No content found'));
@@ -37,8 +50,8 @@ class TapTheButtonView extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: BackgroundImage(
-                  bgImageMb: content.bgImage,
-                  bgImageTb: content.bgImageTb,
+                  bgImageMb: widget.content.bgImage,
+                  bgImageTb: widget.content.bgImageTb,
                 ),
               ),
               TopRightPositionedCloseButton(
@@ -74,7 +87,7 @@ class TapTheButtonView extends StatelessWidget {
                             ),
                   ),
                 ),
-              if (state.isCompleted || state.isTapped)
+              if (state.isCompleted)
                 CenterLeftAlignedBackButton(
                   onTap: () {
                     context.read<LessonBloc>().add(
@@ -82,8 +95,8 @@ class TapTheButtonView extends StatelessWidget {
                     );
                   },
                 ),
-              if (state.isCompleted || state.isTapped)
-                CenterRightAlignedForwardButton(onTap: onNext),
+              if (state.isCompleted)
+                CenterRightAlignedForwardButton(onTap: widget.onNext),
             ],
           );
         },

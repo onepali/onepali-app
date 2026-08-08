@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -28,7 +30,10 @@ class ChooseCorrectLessonView extends StatefulWidget {
       _ChooseCorrectLessonViewState();
 }
 
-class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
+class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView>
+    with AutoAdvanceMixin<ChooseCorrectLessonView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   @override
   void initState() {
     super.initState();
@@ -47,12 +52,23 @@ class _ChooseCorrectLessonViewState extends State<ChooseCorrectLessonView> {
       ChooseCorrectLessonContentState
     >(
       listenWhen: (previous, current) =>
-          widget.isLastContent &&
           current.isCorrect &&
           previous.status != ChooseCorrectLessonContentStatus.completed &&
           current.status == ChooseCorrectLessonContentStatus.completed,
       listener: (context, state) {
-        widget.onLessonCompleted?.call();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scheduleAutoAdvance(_autoAdvanceDelay, () {
+            if (widget.isLastContent) {
+              widget.onLessonCompleted?.call();
+              return;
+            }
+            if (widget.onNext != null) {
+              widget.onNext!.call();
+            } else {
+              context.read<LessonBloc>().add(const LessonEvent.nextContent());
+            }
+          });
+        });
       },
       builder: (context, state) {
         if (state.errorMessage != null) {

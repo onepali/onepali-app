@@ -16,25 +16,35 @@ class IntroLessonView extends StatefulWidget {
     required this.isLast,
     required this.isFirst,
     this.onNavigationReady,
+    this.onNext,
     this.onLessonCompleted,
   });
   final IntroLessonContent content;
   final bool isLast;
   final bool isFirst;
   final VoidCallback? onNavigationReady;
+  final VoidCallback? onNext;
   final VoidCallback? onLessonCompleted;
 
   @override
   State<IntroLessonView> createState() => _IntroLessonViewState();
 }
 
-class _IntroLessonViewState extends State<IntroLessonView> {
+class _IntroLessonViewState extends State<IntroLessonView>
+    with AutoAdvanceMixin<IntroLessonView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   StreamSubscription? audioSubscription;
   late AudioPlayerService audioProvider;
   late AudioPlayerService messageSoundProvider;
   StreamSubscription? messageSoundSubscription;
   bool _isAudioCompleted = false;
   bool _isMessageSoundCompleted = false;
+
+  bool get _hasPlayableAudio =>
+      (widget.content.audio != null && widget.content.audio!.isNotEmpty) ||
+      (widget.content.messageSound != null &&
+          widget.content.messageSound!.isNotEmpty);
 
   @override
   void initState() {
@@ -70,13 +80,27 @@ class _IntroLessonViewState extends State<IntroLessonView> {
       });
       widget.onNavigationReady?.call();
     }
-    _playSuccessFeedbackIfLast();
+    if (_hasPlayableAudio) {
+      _scheduleAutoAdvanceAfterReady();
+    } else {
+      _playSuccessFeedbackIfLast();
+    }
   }
 
   void _playSuccessFeedbackIfLast() {
     if (widget.isLast) {
       widget.onLessonCompleted?.call();
     }
+  }
+
+  void _scheduleAutoAdvanceAfterReady() {
+    scheduleAutoAdvance(_autoAdvanceDelay, () {
+      if (widget.isLast) {
+        widget.onLessonCompleted?.call();
+      } else {
+        widget.onNext?.call();
+      }
+    });
   }
 
   void _playAudio() async {
@@ -134,40 +158,42 @@ class _IntroLessonViewState extends State<IntroLessonView> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final isMobile = PlatformUtility.isMobile(context);
-    return Stack(
-      children: [
-        if (widget.content.bgColor != null)
-          Positioned.fill(
-            child: Container(color: colorFromHex(widget.content.bgColor)),
-          ),
-        _buildBackgroundImage(isMobile),
-
-        if (widget.content.image != null && widget.content.image!.isNotEmpty)
-          Center(
-            child: SvgHelper.fromSource(
-              path: widget.content.image!,
-              type: SvgSourceType.network,
-              width: isMobile ? size.height * 0.7 : size.height * 0.6,
-              height: isMobile ? size.height * 0.7 : size.height * 0.6,
+    return cancelAutoAdvanceOnPointerDown(
+      child: Stack(
+        children: [
+          if (widget.content.bgColor != null)
+            Positioned.fill(
+              child: Container(color: colorFromHex(widget.content.bgColor)),
             ),
-          ),
-        if (_isAudioCompleted && widget.content.message != null)
-          Positioned(
-            top: size.height * 0.1,
-            left: 0,
-            right: 0,
-            child: LabelDisplay(nameEn: '', nameNp: widget.content.message!),
-          ),
-        if (widget.isLast && _isMessageSoundCompleted)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: LottieHelper.fromSource(
-                path: Assets.confetti1,
-                fit: BoxFit.cover,
+          _buildBackgroundImage(isMobile),
+
+          if (widget.content.image != null && widget.content.image!.isNotEmpty)
+            Center(
+              child: SvgHelper.fromSource(
+                path: widget.content.image!,
+                type: SvgSourceType.network,
+                width: isMobile ? size.height * 0.7 : size.height * 0.6,
+                height: isMobile ? size.height * 0.7 : size.height * 0.6,
               ),
             ),
-          ),
-      ],
+          if (_isAudioCompleted && widget.content.message != null)
+            Positioned(
+              top: size.height * 0.1,
+              left: 0,
+              right: 0,
+              child: LabelDisplay(nameEn: '', nameNp: widget.content.message!),
+            ),
+          if (widget.isLast && _isMessageSoundCompleted)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: LottieHelper.fromSource(
+                  path: Assets.confetti1,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

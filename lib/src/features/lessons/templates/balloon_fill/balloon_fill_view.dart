@@ -14,14 +14,22 @@ import 'package:onepali/src/features/lessons/widgets/background_image.dart';
 
 class BalloonFillView extends StatefulWidget {
   final BalloonFillLessonContent content;
+  final VoidCallback onNext;
 
-  const BalloonFillView({super.key, required this.content});
+  const BalloonFillView({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
 
   @override
   State<BalloonFillView> createState() => _BalloonFillViewState();
 }
 
-class _BalloonFillViewState extends State<BalloonFillView> {
+class _BalloonFillViewState extends State<BalloonFillView>
+    with AutoAdvanceMixin<BalloonFillView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   int currentIndex = 0;
 
   @override
@@ -31,116 +39,124 @@ class _BalloonFillViewState extends State<BalloonFillView> {
     return BlocProvider(
       create: (context) =>
           BalloonFillBloc()..add(BalloonFillEvent.started(widget.content)),
-      child: Stack(
-        children: [
-          LessonContentFrame(
-            builder: (context, constraints) {
-              final frameSize = Size(
-                constraints.maxWidth,
-                constraints.maxHeight,
-              );
-              return isMobile
-                  ? MobileView(availableSize: frameSize)
-                  : Center(
-                      child: SizedBox(
-                        width: frameSize.width * 0.96,
-                        child: GridView.builder(
-                          itemCount: widget.content.items.length,
-                          padding: EdgeInsets.zero,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 48,
-                                crossAxisSpacing: 48,
-                              ),
-                          itemBuilder: (context, index) {
-                            final item = widget.content.items[index];
-                            return BlocBuilder<
-                              BalloonFillBloc,
-                              BalloonFillState
-                            >(
-                              builder: (context, state) {
-                                final isFillingNow =
-                                    state.fillingIndex == index;
+      child: BlocConsumer<BalloonFillBloc, BalloonFillState>(
+        listenWhen: (previous, current) =>
+            !_isReadyToAdvance(previous) && _isReadyToAdvance(current),
+        listener: (context, state) {
+          scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
+        },
+        builder: (context, state) {
+          final isReadyToAdvance = _isReadyToAdvance(state);
+          return Stack(
+            children: [
+              LessonContentFrame(
+                builder: (context, constraints) {
+                  final frameSize = Size(
+                    constraints.maxWidth,
+                    constraints.maxHeight,
+                  );
+                  return isMobile
+                      ? MobileView(availableSize: frameSize)
+                      : Center(
+                          child: SizedBox(
+                            width: frameSize.width * 0.96,
+                            child: GridView.builder(
+                              itemCount: widget.content.items.length,
+                              padding: EdgeInsets.zero,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 48,
+                                    crossAxisSpacing: 48,
+                                  ),
+                              itemBuilder: (context, index) {
+                                final item = widget.content.items[index];
+                                return BlocBuilder<
+                                  BalloonFillBloc,
+                                  BalloonFillState
+                                >(
+                                  builder: (context, state) {
+                                    final isFillingNow =
+                                        state.fillingIndex == index;
 
-                                return FillBalloon(
-                                  balloonImage: item.image,
-                                  nameNp: item.nameNp,
-                                  fillColorHex: item.bgColor ?? '#FF0000',
-                                  isFilled: state.filledIndexes.contains(index),
-                                  isFillingNow: isFillingNow,
-                                  onTap: state.isLocked
-                                      ? null
-                                      : () {
-                                          if (state.filledIndexes.contains(
-                                            index,
-                                          )) {
-                                            context.read<BalloonFillBloc>().add(
-                                              BalloonFillEvent.filledBalloonTapped(
+                                    return FillBalloon(
+                                      balloonImage: item.image,
+                                      nameNp: item.nameNp,
+                                      fillColorHex: item.bgColor ?? '#FF0000',
+                                      isFilled: state.filledIndexes.contains(
+                                        index,
+                                      ),
+                                      isFillingNow: isFillingNow,
+                                      onTap: state.isLocked
+                                          ? null
+                                          : () {
+                                              if (state.filledIndexes.contains(
                                                 index,
-                                              ),
-                                            );
-                                            return;
-                                          }
+                                              )) {
+                                                context.read<BalloonFillBloc>().add(
+                                                  BalloonFillEvent.filledBalloonTapped(
+                                                    index,
+                                                  ),
+                                                );
+                                                return;
+                                              }
 
-                                          context.read<BalloonFillBloc>().add(
-                                            BalloonFillEvent.balloonTapped(
-                                              index,
-                                            ),
-                                          );
-                                        },
-                                  onFillComplete: isFillingNow
-                                      ? () => context.read<BalloonFillBloc>().add(
-                                          const BalloonFillEvent.fillAnimationCompleted(),
-                                        )
-                                      : null,
+                                              context.read<BalloonFillBloc>().add(
+                                                BalloonFillEvent.balloonTapped(
+                                                  index,
+                                                ),
+                                              );
+                                            },
+                                      onFillComplete: isFillingNow
+                                          ? () => context
+                                                .read<BalloonFillBloc>()
+                                                .add(
+                                                  const BalloonFillEvent.fillAnimationCompleted(),
+                                                )
+                                          : null,
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                        ),
-                      ),
-                    );
-            },
-          ),
-          Positioned.fill(
-            child: IgnorePointer(
-              child: BackgroundImage(
-                bgImageMb: widget.content.bgImage,
-                bgImageTb: widget.content.bgImageTb,
+                            ),
+                          ),
+                        );
+                },
               ),
-            ),
-          ),
-          TopRightPositionedCloseButton(onTap: () => Navigator.pop(context)),
-          BlocBuilder<BalloonFillBloc, BalloonFillState>(
-            builder: (context, state) {
-              final isAllFilled =
-                  state.filledIndexes.length == widget.content.items.length;
-              return isAllFilled
-                  ? CenterRightAlignedForwardButton(
-                      onTap: () => context.read<LessonBloc>().add(
-                        LessonEvent.nextContent(),
-                      ),
-                    )
-                  : Positioned(child: Container());
-            },
-          ),
-          BlocBuilder<BalloonFillBloc, BalloonFillState>(
-            builder: (context, state) {
-              final isAllFilled =
-                  state.filledIndexes.length == widget.content.items.length;
-              return isAllFilled
-                  ? CenterLeftAlignedBackButton(
-                      onTap: () => context.read<LessonBloc>().add(
-                        LessonEvent.previousContent(),
-                      ),
-                    )
-                  : Positioned(child: Container());
-            },
-          ),
-        ],
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: BackgroundImage(
+                    bgImageMb: widget.content.bgImage,
+                    bgImageTb: widget.content.bgImageTb,
+                  ),
+                ),
+              ),
+              TopRightPositionedCloseButton(
+                onTap: () => Navigator.pop(context),
+              ),
+              if (isReadyToAdvance)
+                CenterRightAlignedForwardButton(onTap: widget.onNext),
+              if (isReadyToAdvance)
+                CenterLeftAlignedBackButton(
+                  onTap: () => context.read<LessonBloc>().add(
+                    LessonEvent.previousContent(),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  bool _hasFilledAllBalloons(BalloonFillState state) {
+    final itemCount = state.content?.items.length ?? 0;
+    return itemCount > 0 && state.filledIndexes.length == itemCount;
+  }
+
+  bool _isReadyToAdvance(BalloonFillState state) {
+    return _hasFilledAllBalloons(state) &&
+        state.status == BalloonFillStatus.idle;
   }
 }
 

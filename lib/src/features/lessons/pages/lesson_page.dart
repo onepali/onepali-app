@@ -270,6 +270,7 @@ class _LessonPageState extends State<LessonPage> {
                       isLast: isLastContent,
                       isFirst: isFirstContent,
                       onNavigationReady: markIntroNavigationReady,
+                      onNext: handleNext,
                       onLessonCompleted: completeLessonAfterFeedback,
                     ),
                     TopRightPositionedCloseButton(
@@ -361,16 +362,27 @@ class _LessonPageState extends State<LessonPage> {
                 ),
                 BalloonFillLessonContent() => BalloonFillView(
                   content: lessonContent,
+                  onNext: isLastContent
+                      ? completeLessonAfterFeedback
+                      : handleNext,
                 ),
                 GunFillLessonContent() => GunFillLessonView(
                   content: lessonContent,
+                  onNext: isLastContent
+                      ? completeLessonAfterFeedback
+                      : handleNext,
                 ),
                 HoliAnimateLessonContent() => HoliAnimateView(
                   content: lessonContent,
+                  onNext: isLastContent
+                      ? completeLessonAfterFeedback
+                      : handleNext,
                 ),
                 TapToChangeLessonContent() => TapToChangeView(
                   content: lessonContent,
-                  onNext: handleNext,
+                  onNext: isLastContent
+                      ? completeLessonAfterFeedback
+                      : handleNext,
                 ),
                 TapToFillLessonContent() => TapToFillView(
                   key: ValueKey('tap_to_fill_${state.currentIndex}'),

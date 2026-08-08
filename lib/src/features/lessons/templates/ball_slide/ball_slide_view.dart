@@ -23,16 +23,16 @@ class BallSlideView extends StatelessWidget {
   Widget buildSlider(String direction) {
     switch (direction) {
       case 'ltr':
-        return BallSliderLtrView(content: content);
+        return BallSliderLtrView(content: content, onNext: onNext);
       case 'rtl':
-        return BallSliderRtlView(content: content);
+        return BallSliderRtlView(content: content, onNext: onNext);
       case 'ltr_heading':
       case 'rtl_heading':
-        return HeadingSliderLtrScreen(content: content);
+        return HeadingSliderLtrScreen(content: content, onNext: onNext);
       case 'penalty':
-        return PenaltySlideView(content: content);
+        return PenaltySlideView(content: content, onNext: onNext);
       case 'none':
-        return ConversationView(content: content);
+        return ConversationView(content: content, onNext: onNext);
       default:
         return const SizedBox.shrink();
     }
@@ -45,8 +45,13 @@ class BallSlideView extends StatelessWidget {
 }
 
 class BallSliderLtrView extends StatelessWidget {
-  const BallSliderLtrView({super.key, required this.content});
+  const BallSliderLtrView({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
   final BallSlideLessonContent content;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +61,19 @@ class BallSliderLtrView extends StatelessWidget {
         completionThreshold: 0.98,
         direction: SliderDirection.leftToRight,
       )..add(BallSliderEvent.started(content)),
-      child: _SliderView(content: content),
+      child: _SliderView(content: content, onNext: onNext),
     );
   }
 }
 
 class BallSliderRtlView extends StatelessWidget {
-  const BallSliderRtlView({super.key, required this.content});
+  const BallSliderRtlView({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
   final BallSlideLessonContent content;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -73,26 +83,39 @@ class BallSliderRtlView extends StatelessWidget {
         completionThreshold: 0.98,
         direction: SliderDirection.rightToLeft, // ← reversed
       )..add(BallSliderEvent.started(content)),
-      child: _SliderView(content: content),
+      child: _SliderView(content: content, onNext: onNext),
     );
   }
 }
 
 class _SliderView extends StatefulWidget {
   final BallSlideLessonContent content;
-  const _SliderView({required this.content});
+  final VoidCallback onNext;
+  const _SliderView({required this.content, required this.onNext});
 
   @override
   State<_SliderView> createState() => _SliderViewState();
 }
 
-class _SliderViewState extends State<_SliderView> {
+class _SliderViewState extends State<_SliderView>
+    with AutoAdvanceMixin<_SliderView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   @override
   Widget build(BuildContext context) {
     final isMobile = PlatformUtility.isMobile(context);
     final size = MediaQuery.sizeOf(context);
-    return BlocBuilder<BallSliderBloc, BallSliderState>(
-      buildWhen: (p, c) => p.isComplete != c.isComplete,
+    return BlocConsumer<BallSliderBloc, BallSliderState>(
+      buildWhen: (p, c) =>
+          p.isComplete != c.isComplete ||
+          p.isAllAudioCompleted != c.isAllAudioCompleted,
+      listenWhen: (previous, current) =>
+          !previous.completionFeedbackReady && current.completionFeedbackReady,
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
+        });
+      },
       builder: (context, state) {
         return Stack(
           children: [
@@ -115,7 +138,7 @@ class _SliderViewState extends State<_SliderView> {
             if (state.isComplete)
               CenterRightAlignedForwardButton(
                 onTap: () {
-                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                  widget.onNext();
                 },
               ),
             if (state.isComplete)
@@ -186,14 +209,19 @@ class _SliderViewState extends State<_SliderView> {
 }
 
 class HeadingSliderLtrScreen extends StatelessWidget {
-  const HeadingSliderLtrScreen({super.key, required this.content});
+  const HeadingSliderLtrScreen({
+    super.key,
+    required this.content,
+    required this.onNext,
+  });
   final BallSlideLessonContent content;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => BallHeadingBloc()..add(BallHeadingEvent.started(content)),
-      child: HeadingView(content: content),
+      child: HeadingView(content: content, onNext: onNext),
     );
   }
 }

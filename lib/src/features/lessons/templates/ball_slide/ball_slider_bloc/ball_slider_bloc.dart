@@ -43,6 +43,7 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     on<_BallDragged>(_onBallDragged);
     on<_BallDragEnded>(_onBallDragEnded);
     on<_BallTapped>(_onBallTapped);
+    on<_CompletionFeedbackCompleted>(_onCompletionFeedbackCompleted);
     on<_BallReset>(_onBallReset);
     on<_PhysicsTick>(_onPhysicsTick);
   }
@@ -52,8 +53,9 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     if (conversationAudios.isNotEmpty) {
       // play all audios in conversation sequentially
       for (final audio in conversationAudios) {
-        _audioPlayerService.play(audio);
-        await _audioPlayerService.onPlayerComplete.first;
+        final completion = _audioPlayerService.onPlayerComplete.first;
+        await _audioPlayerService.play(audio);
+        await completion;
       }
       emit(state.copyWith(isAllAudioCompleted: true));
     } else {
@@ -141,11 +143,38 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     return;
   }
 
+  void _onCompletionFeedbackCompleted(
+    _CompletionFeedbackCompleted event,
+    Emitter<BallSliderState> emit,
+  ) {
+    emit(state.copyWith(completionFeedbackReady: true));
+  }
+
   //  Reset
   void _onBallReset(_BallReset event, Emitter<BallSliderState> emit) {
     _stopPhysics();
     _velocity = 0;
     emit(const BallSliderState());
+  }
+
+  Future<void> _playCompletionFeedback() async {
+    final content = state.content;
+    if (content == null) return;
+
+    final completion = _audioPlayerService.onPlayerComplete.first;
+    try {
+      if (content.messageSound != null && content.messageSound!.isNotEmpty) {
+        await _audioPlayerService.play(content.messageSound!);
+      } else {
+        await _audioPlayerService.playAsset(Assets.starBlast);
+      }
+      await completion;
+    } catch (_) {
+      // Audio feedback should not block progression.
+    }
+    if (!isClosed) {
+      add(const BallSliderEvent.completionFeedbackCompleted());
+    }
   }
 
   //  Helpers
@@ -167,11 +196,7 @@ class BallSliderBloc extends Bloc<BallSliderEvent, BallSliderState> {
     final clamped = raw.clamp(0.0, 1.0);
     final isComplete = clamped >= completionThreshold;
     if (isComplete && !state.isComplete) {
-      if (state.content?.messageSound != null) {
-        _audioPlayerService.play(state.content!.messageSound!);
-      } else {
-        _audioPlayerService.playAsset(Assets.starBlast);
-      }
+      unawaited(_playCompletionFeedback());
     }
     return state.copyWith(
       value: clamped,

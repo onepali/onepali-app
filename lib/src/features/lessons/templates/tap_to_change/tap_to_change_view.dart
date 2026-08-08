@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onepali/src/core/utils/auto_advance_mixin.dart';
 import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
@@ -23,7 +24,10 @@ class TapToChangeView extends StatefulWidget {
   State<TapToChangeView> createState() => _TapToChangeViewState();
 }
 
-class _TapToChangeViewState extends State<TapToChangeView> {
+class _TapToChangeViewState extends State<TapToChangeView>
+    with AutoAdvanceMixin<TapToChangeView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +39,13 @@ class _TapToChangeViewState extends State<TapToChangeView> {
     return BlocProvider(
       create: (context) =>
           TapToChangeBloc()..add(TapToChangeEvent.started(widget.content)),
-      child: BlocBuilder<TapToChangeBloc, TapToChangeState>(
+      child: BlocConsumer<TapToChangeBloc, TapToChangeState>(
+        listenWhen: (previous, current) =>
+            previous.status != TapToChangeStatus.feedbackCompleted &&
+            current.status == TapToChangeStatus.feedbackCompleted,
+        listener: (context, state) {
+          scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
+        },
         builder: (context, state) {
           if (state.content == null) {
             return const Center(child: CircularProgressIndicator());
@@ -64,19 +74,21 @@ class _TapToChangeViewState extends State<TapToChangeView> {
                 TopRightPositionedCloseButton(
                   onTap: () => Navigator.of(context).pop(),
                 ),
-                CenterRightAlignedForwardButton(
-                  onTap: () {
-                    widget.onNext();
-                  },
-                ),
+                if (state.status == TapToChangeStatus.feedbackCompleted)
+                  CenterRightAlignedForwardButton(
+                    onTap: () {
+                      widget.onNext();
+                    },
+                  ),
 
-                CenterLeftAlignedBackButton(
-                  onTap: () {
-                    context.read<LessonBloc>().add(
-                      const LessonEvent.previousContent(),
-                    );
-                  },
-                ),
+                if (state.status == TapToChangeStatus.feedbackCompleted)
+                  CenterLeftAlignedBackButton(
+                    onTap: () {
+                      context.read<LessonBloc>().add(
+                        const LessonEvent.previousContent(),
+                      );
+                    },
+                  ),
                 if (state.status == TapToChangeStatus.idle)
                   Center(
                     child:
@@ -97,7 +109,8 @@ class _TapToChangeViewState extends State<TapToChangeView> {
                               curve: Curves.easeInOut,
                             ),
                   ),
-                if (state.status == TapToChangeStatus.tapped &&
+                if ((state.status == TapToChangeStatus.tapped ||
+                        state.status == TapToChangeStatus.feedbackCompleted) &&
                     state.tapPosition != null)
                   Positioned(
                     top: state.tapPosition!.dy - (size.height * 0.25 / 2),

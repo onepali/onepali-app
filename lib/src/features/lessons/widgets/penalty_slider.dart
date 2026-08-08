@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -16,14 +17,22 @@ import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 class PenaltySlider extends StatefulWidget {
   final GameSliderConfig config;
   final BallSlideLessonContent content;
-  const PenaltySlider({super.key, required this.config, required this.content});
+  final VoidCallback onNext;
+  const PenaltySlider({
+    super.key,
+    required this.config,
+    required this.content,
+    required this.onNext,
+  });
 
   @override
   State<PenaltySlider> createState() => _PenaltySliderState();
 }
 
 class _PenaltySliderState extends State<PenaltySlider>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutoAdvanceMixin<PenaltySlider> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   /// Negative = left path, positive = right path, 0 = resting centre
   double _ballProgress = 0.0;
 
@@ -36,6 +45,7 @@ class _PenaltySliderState extends State<PenaltySlider>
 
   bool _showGoal = false;
   bool _isAllAudioCompleted = false;
+  bool _hasCompleted = false;
 
   @override
   void initState() {
@@ -54,8 +64,9 @@ class _PenaltySliderState extends State<PenaltySlider>
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         for (final audio in widget.content.conversation) {
           if (!mounted) return;
+          final completion = _audioPlayerService.onPlayerComplete.first;
           await _audioPlayerService.play(audio);
-          await _audioPlayerService.onPlayerComplete.first;
+          await completion;
         }
         if (!mounted) return;
         setState(() {
@@ -85,19 +96,36 @@ class _PenaltySliderState extends State<PenaltySlider>
   void _onPanEnd() {
     log("Ball progress at pan end: $_ballProgress");
     final double p = _ballProgress.abs();
-    if (p > 0.9) {
+    if (p > 0.9 && !_hasCompleted) {
       _animateTo(_ballProgress < 0 ? -1.0 : 1.0);
       Future.delayed(const Duration(milliseconds: 300), () {
-        if (widget.content.messageSound != null) {
-          _audioPlayerService.play(widget.content.messageSound!);
-        } else {
-          _audioPlayerService.playAsset(Assets.starBlast);
-        }
-        if (mounted) setState(() => _showGoal = true);
+        unawaited(_completeAfterFeedback());
       });
     } else if (p > 0.04) {
       _animateTo(0.0);
     }
+  }
+
+  Future<void> _completeAfterFeedback() async {
+    if (!mounted || _hasCompleted) return;
+    _hasCompleted = true;
+    setState(() => _showGoal = true);
+
+    final completion = _audioPlayerService.onPlayerComplete.first;
+    try {
+      if (widget.content.messageSound != null &&
+          widget.content.messageSound!.isNotEmpty) {
+        await _audioPlayerService.play(widget.content.messageSound!);
+      } else {
+        await _audioPlayerService.playAsset(Assets.starBlast);
+      }
+      await completion;
+    } catch (_) {
+      // Audio feedback should not block progression.
+    }
+
+    if (!mounted) return;
+    scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
   }
 
   @override
@@ -189,7 +217,7 @@ class _PenaltySliderState extends State<PenaltySlider>
             if (_showGoal)
               CenterRightAlignedForwardButton(
                 onTap: () {
-                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                  widget.onNext();
                 },
               ),
             if (_showGoal)

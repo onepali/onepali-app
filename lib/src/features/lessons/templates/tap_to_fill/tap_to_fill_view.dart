@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onepali/src/core/core.dart';
@@ -19,8 +21,11 @@ class TapToFillView extends StatefulWidget {
   State<TapToFillView> createState() => _TapToFillViewState();
 }
 
-class _TapToFillViewState extends State<TapToFillView> {
+class _TapToFillViewState extends State<TapToFillView>
+    with AutoAdvanceMixin<TapToFillView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   final audioPlayerService = AudioPlayerServiceImpl();
+  bool _isCompletionFeedbackReady = false;
 
   @override
   void dispose() {
@@ -35,10 +40,11 @@ class _TapToFillViewState extends State<TapToFillView> {
       create: (context) =>
           TapToFillBloc()..add(TapToFillEvent.started(widget.content)),
       child: BlocConsumer<TapToFillBloc, TapToFillState>(
+        listenWhen: (previous, current) =>
+            previous.status != TapToFillStatus.completed &&
+            current.status == TapToFillStatus.completed,
         listener: (context, state) {
-          if (state.status == TapToFillStatus.completed) {
-            audioPlayerService.playAsset(Assets.starBlast);
-          }
+          unawaited(_advanceAfterFeedback());
         },
         builder: (context, state) {
           if (state.content == null) {
@@ -110,19 +116,39 @@ class _TapToFillViewState extends State<TapToFillView> {
                     ),
                   ),
                 ),
-              if (state.status == TapToFillStatus.completed)
+              if (state.status == TapToFillStatus.completed &&
+                  _isCompletionFeedbackReady)
                 CenterLeftAlignedBackButton(
                   onTap: () => context.read<LessonBloc>().add(
                     LessonEvent.previousContent(),
                   ),
                 ),
 
-              if (state.status == TapToFillStatus.completed)
+              if (state.status == TapToFillStatus.completed &&
+                  _isCompletionFeedbackReady)
                 CenterRightAlignedForwardButton(onTap: widget.onNext),
             ],
           );
         },
       ),
     );
+  }
+
+  Future<void> _advanceAfterFeedback() async {
+    final completion = audioPlayerService.onPlayerComplete.first.timeout(
+      const Duration(seconds: 3),
+      onTimeout: () {},
+    );
+    try {
+      await audioPlayerService.playAsset(Assets.starBlast);
+      await completion.catchError((_) {});
+    } catch (error, stackTrace) {
+      logger.e('Error playing TapToFill completion SFX: $error\n$stackTrace');
+    }
+    if (!mounted) return;
+    setState(() {
+      _isCompletionFeedbackReady = true;
+    });
+    scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
   }
 }

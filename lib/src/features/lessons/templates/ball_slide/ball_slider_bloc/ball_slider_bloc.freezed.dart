@@ -55,14 +55,15 @@ extension BallSliderEventPatterns on BallSliderEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _BallDragged value)?  ballDragged,TResult Function( _BallDragEnded value)?  ballDragEnded,TResult Function( _BallTapped value)?  ballTapped,TResult Function( _PhysicsTick value)?  physicsTick,TResult Function( _BallReset value)?  ballReset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _BallDragged value)?  ballDragged,TResult Function( _BallDragEnded value)?  ballDragEnded,TResult Function( _BallTapped value)?  ballTapped,TResult Function( _CompletionFeedbackCompleted value)?  completionFeedbackCompleted,TResult Function( _PhysicsTick value)?  physicsTick,TResult Function( _BallReset value)?  ballReset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _BallDragged() when ballDragged != null:
 return ballDragged(_that);case _BallDragEnded() when ballDragEnded != null:
 return ballDragEnded(_that);case _BallTapped() when ballTapped != null:
-return ballTapped(_that);case _PhysicsTick() when physicsTick != null:
+return ballTapped(_that);case _CompletionFeedbackCompleted() when completionFeedbackCompleted != null:
+return completionFeedbackCompleted(_that);case _PhysicsTick() when physicsTick != null:
 return physicsTick(_that);case _BallReset() when ballReset != null:
 return ballReset(_that);case _:
   return orElse();
@@ -82,14 +83,15 @@ return ballReset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _BallDragged value)  ballDragged,required TResult Function( _BallDragEnded value)  ballDragEnded,required TResult Function( _BallTapped value)  ballTapped,required TResult Function( _PhysicsTick value)  physicsTick,required TResult Function( _BallReset value)  ballReset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _BallDragged value)  ballDragged,required TResult Function( _BallDragEnded value)  ballDragEnded,required TResult Function( _BallTapped value)  ballTapped,required TResult Function( _CompletionFeedbackCompleted value)  completionFeedbackCompleted,required TResult Function( _PhysicsTick value)  physicsTick,required TResult Function( _BallReset value)  ballReset,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _BallDragged():
 return ballDragged(_that);case _BallDragEnded():
 return ballDragEnded(_that);case _BallTapped():
-return ballTapped(_that);case _PhysicsTick():
+return ballTapped(_that);case _CompletionFeedbackCompleted():
+return completionFeedbackCompleted(_that);case _PhysicsTick():
 return physicsTick(_that);case _BallReset():
 return ballReset(_that);case _:
   throw StateError('Unexpected subclass');
@@ -108,14 +110,15 @@ return ballReset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _BallDragged value)?  ballDragged,TResult? Function( _BallDragEnded value)?  ballDragEnded,TResult? Function( _BallTapped value)?  ballTapped,TResult? Function( _PhysicsTick value)?  physicsTick,TResult? Function( _BallReset value)?  ballReset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _BallDragged value)?  ballDragged,TResult? Function( _BallDragEnded value)?  ballDragEnded,TResult? Function( _BallTapped value)?  ballTapped,TResult? Function( _CompletionFeedbackCompleted value)?  completionFeedbackCompleted,TResult? Function( _PhysicsTick value)?  physicsTick,TResult? Function( _BallReset value)?  ballReset,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _BallDragged() when ballDragged != null:
 return ballDragged(_that);case _BallDragEnded() when ballDragEnded != null:
 return ballDragEnded(_that);case _BallTapped() when ballTapped != null:
-return ballTapped(_that);case _PhysicsTick() when physicsTick != null:
+return ballTapped(_that);case _CompletionFeedbackCompleted() when completionFeedbackCompleted != null:
+return completionFeedbackCompleted(_that);case _PhysicsTick() when physicsTick != null:
 return physicsTick(_that);case _BallReset() when ballReset != null:
 return ballReset(_that);case _:
   return null;
@@ -134,13 +137,14 @@ return ballReset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BallSlideLessonContent content)?  started,TResult Function( double delta,  double usableWidth)?  ballDragged,TResult Function( double velocityPx,  double usableWidth)?  ballDragEnded,TResult Function( double tapX,  double trackWidth)?  ballTapped,TResult Function()?  physicsTick,TResult Function()?  ballReset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BallSlideLessonContent content)?  started,TResult Function( double delta,  double usableWidth)?  ballDragged,TResult Function( double velocityPx,  double usableWidth)?  ballDragEnded,TResult Function( double tapX,  double trackWidth)?  ballTapped,TResult Function()?  completionFeedbackCompleted,TResult Function()?  physicsTick,TResult Function()?  ballReset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content);case _BallDragged() when ballDragged != null:
 return ballDragged(_that.delta,_that.usableWidth);case _BallDragEnded() when ballDragEnded != null:
 return ballDragEnded(_that.velocityPx,_that.usableWidth);case _BallTapped() when ballTapped != null:
-return ballTapped(_that.tapX,_that.trackWidth);case _PhysicsTick() when physicsTick != null:
+return ballTapped(_that.tapX,_that.trackWidth);case _CompletionFeedbackCompleted() when completionFeedbackCompleted != null:
+return completionFeedbackCompleted();case _PhysicsTick() when physicsTick != null:
 return physicsTick();case _BallReset() when ballReset != null:
 return ballReset();case _:
   return orElse();
@@ -160,13 +164,14 @@ return ballReset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BallSlideLessonContent content)  started,required TResult Function( double delta,  double usableWidth)  ballDragged,required TResult Function( double velocityPx,  double usableWidth)  ballDragEnded,required TResult Function( double tapX,  double trackWidth)  ballTapped,required TResult Function()  physicsTick,required TResult Function()  ballReset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BallSlideLessonContent content)  started,required TResult Function( double delta,  double usableWidth)  ballDragged,required TResult Function( double velocityPx,  double usableWidth)  ballDragEnded,required TResult Function( double tapX,  double trackWidth)  ballTapped,required TResult Function()  completionFeedbackCompleted,required TResult Function()  physicsTick,required TResult Function()  ballReset,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started(_that.content);case _BallDragged():
 return ballDragged(_that.delta,_that.usableWidth);case _BallDragEnded():
 return ballDragEnded(_that.velocityPx,_that.usableWidth);case _BallTapped():
-return ballTapped(_that.tapX,_that.trackWidth);case _PhysicsTick():
+return ballTapped(_that.tapX,_that.trackWidth);case _CompletionFeedbackCompleted():
+return completionFeedbackCompleted();case _PhysicsTick():
 return physicsTick();case _BallReset():
 return ballReset();case _:
   throw StateError('Unexpected subclass');
@@ -185,13 +190,14 @@ return ballReset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BallSlideLessonContent content)?  started,TResult? Function( double delta,  double usableWidth)?  ballDragged,TResult? Function( double velocityPx,  double usableWidth)?  ballDragEnded,TResult? Function( double tapX,  double trackWidth)?  ballTapped,TResult? Function()?  physicsTick,TResult? Function()?  ballReset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BallSlideLessonContent content)?  started,TResult? Function( double delta,  double usableWidth)?  ballDragged,TResult? Function( double velocityPx,  double usableWidth)?  ballDragEnded,TResult? Function( double tapX,  double trackWidth)?  ballTapped,TResult? Function()?  completionFeedbackCompleted,TResult? Function()?  physicsTick,TResult? Function()?  ballReset,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that.content);case _BallDragged() when ballDragged != null:
 return ballDragged(_that.delta,_that.usableWidth);case _BallDragEnded() when ballDragEnded != null:
 return ballDragEnded(_that.velocityPx,_that.usableWidth);case _BallTapped() when ballTapped != null:
-return ballTapped(_that.tapX,_that.trackWidth);case _PhysicsTick() when physicsTick != null:
+return ballTapped(_that.tapX,_that.trackWidth);case _CompletionFeedbackCompleted() when completionFeedbackCompleted != null:
+return completionFeedbackCompleted();case _PhysicsTick() when physicsTick != null:
 return physicsTick();case _BallReset() when ballReset != null:
 return ballReset();case _:
   return null;
@@ -474,6 +480,38 @@ as double,
 /// @nodoc
 
 
+class _CompletionFeedbackCompleted implements BallSliderEvent {
+  const _CompletionFeedbackCompleted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompletionFeedbackCompleted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'BallSliderEvent.completionFeedbackCompleted()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class _PhysicsTick implements BallSliderEvent {
   const _PhysicsTick();
   
@@ -538,7 +576,7 @@ String toString() {
 /// @nodoc
 mixin _$BallSliderState {
 
- BallSlideLessonContent? get content; double get value; double get rotationAngle; bool get isComplete; bool get isAnimating; bool get isAllAudioCompleted;
+ BallSlideLessonContent? get content; double get value; double get rotationAngle; bool get isComplete; bool get isAnimating; bool get isAllAudioCompleted; bool get completionFeedbackReady;
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -549,16 +587,16 @@ $BallSliderStateCopyWith<BallSliderState> get copyWith => _$BallSliderStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating,isAllAudioCompleted);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating,isAllAudioCompleted,completionFeedbackReady);
 
 @override
 String toString() {
-  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating, isAllAudioCompleted: $isAllAudioCompleted)';
+  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating, isAllAudioCompleted: $isAllAudioCompleted, completionFeedbackReady: $completionFeedbackReady)';
 }
 
 
@@ -569,7 +607,7 @@ abstract mixin class $BallSliderStateCopyWith<$Res>  {
   factory $BallSliderStateCopyWith(BallSliderState value, $Res Function(BallSliderState) _then) = _$BallSliderStateCopyWithImpl;
 @useResult
 $Res call({
- BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating, bool isAllAudioCompleted
+ BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating, bool isAllAudioCompleted, bool completionFeedbackReady
 });
 
 
@@ -586,7 +624,7 @@ class _$BallSliderStateCopyWithImpl<$Res>
 
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,Object? isAllAudioCompleted = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,Object? isAllAudioCompleted = null,Object? completionFeedbackReady = null,}) {
   return _then(_self.copyWith(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as BallSlideLessonContent?,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -594,6 +632,7 @@ as double,rotationAngle: null == rotationAngle ? _self.rotationAngle : rotationA
 as double,isComplete: null == isComplete ? _self.isComplete : isComplete // ignore: cast_nullable_to_non_nullable
 as bool,isAnimating: null == isAnimating ? _self.isAnimating : isAnimating // ignore: cast_nullable_to_non_nullable
 as bool,isAllAudioCompleted: null == isAllAudioCompleted ? _self.isAllAudioCompleted : isAllAudioCompleted // ignore: cast_nullable_to_non_nullable
+as bool,completionFeedbackReady: null == completionFeedbackReady ? _self.completionFeedbackReady : completionFeedbackReady // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -679,10 +718,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted,  bool completionFeedbackReady)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BallSliderState() when $default != null:
-return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted);case _:
+return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted,_that.completionFeedbackReady);case _:
   return orElse();
 
 }
@@ -700,10 +739,10 @@ return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted,  bool completionFeedbackReady)  $default,) {final _that = this;
 switch (_that) {
 case _BallSliderState():
-return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted);case _:
+return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted,_that.completionFeedbackReady);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -720,10 +759,10 @@ return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BallSlideLessonContent? content,  double value,  double rotationAngle,  bool isComplete,  bool isAnimating,  bool isAllAudioCompleted,  bool completionFeedbackReady)?  $default,) {final _that = this;
 switch (_that) {
 case _BallSliderState() when $default != null:
-return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted);case _:
+return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_that.isAnimating,_that.isAllAudioCompleted,_that.completionFeedbackReady);case _:
   return null;
 
 }
@@ -735,7 +774,7 @@ return $default(_that.content,_that.value,_that.rotationAngle,_that.isComplete,_
 
 
 class _BallSliderState implements BallSliderState {
-  const _BallSliderState({this.content, this.value = 0.0, this.rotationAngle = 0.0, this.isComplete = false, this.isAnimating = false, this.isAllAudioCompleted = false});
+  const _BallSliderState({this.content, this.value = 0.0, this.rotationAngle = 0.0, this.isComplete = false, this.isAnimating = false, this.isAllAudioCompleted = false, this.completionFeedbackReady = false});
   
 
 @override final  BallSlideLessonContent? content;
@@ -744,6 +783,7 @@ class _BallSliderState implements BallSliderState {
 @override@JsonKey() final  bool isComplete;
 @override@JsonKey() final  bool isAnimating;
 @override@JsonKey() final  bool isAllAudioCompleted;
+@override@JsonKey() final  bool completionFeedbackReady;
 
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
@@ -755,16 +795,16 @@ _$BallSliderStateCopyWith<_BallSliderState> get copyWith => __$BallSliderStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallSliderState&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.value, value) || other.value == value)&&(identical(other.rotationAngle, rotationAngle) || other.rotationAngle == rotationAngle)&&(identical(other.isComplete, isComplete) || other.isComplete == isComplete)&&(identical(other.isAnimating, isAnimating) || other.isAnimating == isAnimating)&&(identical(other.isAllAudioCompleted, isAllAudioCompleted) || other.isAllAudioCompleted == isAllAudioCompleted)&&(identical(other.completionFeedbackReady, completionFeedbackReady) || other.completionFeedbackReady == completionFeedbackReady));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating,isAllAudioCompleted);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(content),value,rotationAngle,isComplete,isAnimating,isAllAudioCompleted,completionFeedbackReady);
 
 @override
 String toString() {
-  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating, isAllAudioCompleted: $isAllAudioCompleted)';
+  return 'BallSliderState(content: $content, value: $value, rotationAngle: $rotationAngle, isComplete: $isComplete, isAnimating: $isAnimating, isAllAudioCompleted: $isAllAudioCompleted, completionFeedbackReady: $completionFeedbackReady)';
 }
 
 
@@ -775,7 +815,7 @@ abstract mixin class _$BallSliderStateCopyWith<$Res> implements $BallSliderState
   factory _$BallSliderStateCopyWith(_BallSliderState value, $Res Function(_BallSliderState) _then) = __$BallSliderStateCopyWithImpl;
 @override @useResult
 $Res call({
- BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating, bool isAllAudioCompleted
+ BallSlideLessonContent? content, double value, double rotationAngle, bool isComplete, bool isAnimating, bool isAllAudioCompleted, bool completionFeedbackReady
 });
 
 
@@ -792,7 +832,7 @@ class __$BallSliderStateCopyWithImpl<$Res>
 
 /// Create a copy of BallSliderState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,Object? isAllAudioCompleted = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? content = freezed,Object? value = null,Object? rotationAngle = null,Object? isComplete = null,Object? isAnimating = null,Object? isAllAudioCompleted = null,Object? completionFeedbackReady = null,}) {
   return _then(_BallSliderState(
 content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as BallSlideLessonContent?,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -800,6 +840,7 @@ as double,rotationAngle: null == rotationAngle ? _self.rotationAngle : rotationA
 as double,isComplete: null == isComplete ? _self.isComplete : isComplete // ignore: cast_nullable_to_non_nullable
 as bool,isAnimating: null == isAnimating ? _self.isAnimating : isAnimating // ignore: cast_nullable_to_non_nullable
 as bool,isAllAudioCompleted: null == isAllAudioCompleted ? _self.isAllAudioCompleted : isAllAudioCompleted // ignore: cast_nullable_to_non_nullable
+as bool,completionFeedbackReady: null == completionFeedbackReady ? _self.completionFeedbackReady : completionFeedbackReady // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

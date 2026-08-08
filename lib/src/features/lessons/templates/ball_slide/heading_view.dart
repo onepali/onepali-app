@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,13 +16,17 @@ import 'package:onepali/src/features/lessons/widgets/label_display.dart';
 
 class HeadingView extends StatefulWidget {
   final BallSlideLessonContent content;
-  const HeadingView({super.key, required this.content});
+  final VoidCallback onNext;
+  const HeadingView({super.key, required this.content, required this.onNext});
 
   @override
   State<HeadingView> createState() => _HeadingViewState();
 }
 
-class _HeadingViewState extends State<HeadingView> {
+class _HeadingViewState extends State<HeadingView>
+    with AutoAdvanceMixin<HeadingView> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
+
   bool isComplete = false;
   late AudioPlayerService audioPlayerService;
 
@@ -37,11 +42,21 @@ class _HeadingViewState extends State<HeadingView> {
     super.dispose();
   }
 
-  void _playMessageSound() async {
-    if (widget.content.messageSound != null &&
-        widget.content.messageSound!.isNotEmpty) {
-      await audioPlayerService.play(widget.content.messageSound!);
+  Future<void> _completeAfterFeedback() async {
+    final completion = audioPlayerService.onPlayerComplete.first;
+    try {
+      if (widget.content.messageSound != null &&
+          widget.content.messageSound!.isNotEmpty) {
+        await audioPlayerService.play(widget.content.messageSound!);
+      } else {
+        await audioPlayerService.playAsset(Assets.starBlast);
+      }
+      await completion;
+    } catch (_) {
+      // Audio feedback should not block progression.
     }
+    if (!mounted) return;
+    scheduleAutoAdvance(_autoAdvanceDelay, widget.onNext);
   }
 
   @override
@@ -74,7 +89,7 @@ class _HeadingViewState extends State<HeadingView> {
             if (isComplete)
               CenterRightAlignedForwardButton(
                 onTap: () {
-                  context.read<LessonBloc>().add(LessonEvent.nextContent());
+                  widget.onNext();
                 },
               ),
 
@@ -113,13 +128,7 @@ class _HeadingViewState extends State<HeadingView> {
                                     log('isComplete: $isComplete');
                                     isComplete = true;
                                   });
-                                  if (widget.content.messageSound != null) {
-                                    _playMessageSound();
-                                  } else {
-                                    audioPlayerService.playAsset(
-                                      Assets.starBlast,
-                                    );
-                                  }
+                                  unawaited(_completeAfterFeedback());
                                 } else {
                                   if (!isComplete) return;
                                   setState(() {

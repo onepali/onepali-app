@@ -19,7 +19,9 @@ class ChooseCorrect extends StatefulWidget {
   State<ChooseCorrect> createState() => _ChooseCorrectState();
 }
 
-class _ChooseCorrectState extends State<ChooseCorrect> {
+class _ChooseCorrectState extends State<ChooseCorrect>
+    with AutoAdvanceMixin<ChooseCorrect> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   late final AudioPlayerService _completionAudioService;
   bool _hasPlayedCompletionAudio = false;
   Future<void>? _completionAudioFuture;
@@ -70,11 +72,36 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
       (() async {
         await answerProvider.waitForSelectionAudio();
         if (!context.mounted) return;
-        await _playCompletionAudioOnce();
+        scheduleAutoAdvance(_autoAdvanceDelay, () {
+          return _completeLastStory(context, storyProvider);
+        });
+      })(),
+    );
+  }
+
+  Future<void> _completeLastStory(
+    BuildContext context,
+    StoryProvider storyProvider,
+  ) async {
+    await _playCompletionAudioOnce();
+    if (!context.mounted) return;
+    await storyProvider.completeCurrentStory(context);
+    if (!context.mounted) return;
+    Navigator.of(context).pop();
+  }
+
+  void _scheduleNextContentAfterFeedback(
+    BuildContext context,
+    ChooseCorrectStoryProvider answerProvider,
+    StoryProvider storyProvider,
+  ) {
+    unawaited(
+      (() async {
+        await answerProvider.waitForSelectionAudio();
         if (!context.mounted) return;
-        await storyProvider.completeCurrentStory(context);
-        if (!context.mounted) return;
-        Navigator.of(context).pop();
+        scheduleAutoAdvance(_autoAdvanceDelay, () {
+          storyProvider.nextContent(context);
+        });
       })(),
     );
   }
@@ -91,20 +118,29 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
         builder: (context) {
           return Consumer<ChooseCorrectStoryProvider>(
             builder: (context, storyProvider, _) {
-              if (widget.isLast && storyProvider.isCorrectFeedbackCompleted) {
+              if (storyProvider.isCorrectFeedbackCompleted) {
                 final mainStoryProvider = Provider.of<StoryProvider>(
                   context,
                   listen: false,
                 );
-                _scheduleLastStoryCompletion(
-                  context,
-                  storyProvider,
-                  mainStoryProvider,
-                );
+                if (widget.isLast) {
+                  _scheduleLastStoryCompletion(
+                    context,
+                    storyProvider,
+                    mainStoryProvider,
+                  );
+                } else {
+                  _scheduleNextContentAfterFeedback(
+                    context,
+                    storyProvider,
+                    mainStoryProvider,
+                  );
+                }
               } else {
                 _hasPlayedCompletionAudio = false;
                 _completionAudioFuture = null;
                 _hasScheduledCompletionNavigation = false;
+                resetAutoAdvance();
               }
 
               return Stack(
@@ -221,11 +257,16 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                                                       .clearSelection();
                                                   return;
                                                 }
+                                                if (!storyProvider
+                                                    .isCorrectFeedbackCompleted) {
+                                                  return;
+                                                }
                                                 if (widget.isLast) {
-                                                  _scheduleLastStoryCompletion(
-                                                    context,
-                                                    storyProvider,
-                                                    provider,
+                                                  unawaited(
+                                                    _completeLastStory(
+                                                      context,
+                                                      provider,
+                                                    ),
                                                   );
                                                 } else {
                                                   provider.nextContent(context);
@@ -297,7 +338,8 @@ class _ChooseCorrectState extends State<ChooseCorrect> {
                         ),
                   ),
 
-                  if (!widget.isLast && storyProvider.isCorrectAnswerSelected)
+                  if (!widget.isLast &&
+                      storyProvider.isCorrectFeedbackCompleted)
                     Consumer<StoryProvider>(
                       builder: (context, provider, _) =>
                           CenterRightAlignedForwardButton(

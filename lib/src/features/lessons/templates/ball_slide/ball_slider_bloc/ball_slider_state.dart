@@ -9,5 +9,6 @@ abstract class BallSliderState with _$BallSliderState {
     @Default(false) bool isComplete,
     @Default(false) bool isAnimating,
     @Default(false) bool isAllAudioCompleted,
+    @Default(false) bool completionFeedbackReady,
   }) = _BallSliderState;
 }

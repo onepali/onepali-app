@@ -15,7 +15,9 @@ class SlideContent extends StatefulWidget {
   State<SlideContent> createState() => SlideContentState();
 }
 
-class SlideContentState extends State<SlideContent> {
+class SlideContentState extends State<SlideContent>
+    with AutoAdvanceMixin<SlideContent> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   double _position = 0.0;
   bool _completed = false;
 
@@ -52,9 +54,9 @@ class SlideContentState extends State<SlideContent> {
       });
       if (_position >= maxPosition && !_completed) {
         setState(() => _completed = true);
-        await Future.delayed(const Duration(milliseconds: 600));
-        if (!context.mounted) return;
-        if (mounted) storyProvider.nextContent(context);
+        scheduleAutoAdvance(_autoAdvanceDelay, () {
+          storyProvider.nextContent(context);
+        });
       }
     }
 

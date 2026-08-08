@@ -21,6 +21,7 @@ class ButtonTapContent extends StatefulWidget {
 }
 
 class ButtonTapContentState extends State<ButtonTapContent> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   int? selectedIdx;
   bool? isCorrect;
   bool showTryAgain = false;
@@ -148,10 +149,7 @@ class ButtonTapContentState extends State<ButtonTapContent> {
     }
 
     if (correct) {
-      await Future.wait([
-        selectionAudio,
-        Future.delayed(const Duration(milliseconds: 800)),
-      ]);
+      await Future.wait([selectionAudio, Future.delayed(_autoAdvanceDelay)]);
       if (mounted && selectionGeneration == _selectionGeneration) {
         if (widget.isLast) {
           setState(() {
