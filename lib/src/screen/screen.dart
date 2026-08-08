@@ -14,7 +14,9 @@ export 'system/error_screen.dart';
 // Auth Screen
 
 // [Auth] --> [Login]
+export 'auth/login/auth_sign_up_footer.dart';
 export 'auth/login/login_screen.dart';
+export 'auth/login/forgot_password_screen.dart';
 
 /// [Auth] --> [Register]
 export 'auth/register/register_screen.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isObscure = true;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Utility.navigate(context, AppRoutes.loginScreen);
+                          Utility.navigate(
+                            context,
+                            AppRoutes.forgotPasswordScreen,
+                            arguments: {'email': emailController.text.trim()},
+                          );
                         },
                         child: Text(
                           'Forgot password?',
@@ -153,47 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: AppColors.kWhite,
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding,
-              vertical: bottomPadding,
-            ),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: 'Don\'t have an account? ',
-                style:
-                    (isTabletPortrait
-                            ? AppStyles.text16PxRegular
-                            : AppStyles.text14PxRegular)
-                        .copyWith(
-                          color: AppColors.kPitchBlack,
-                          fontFamily: AppConstants.kPoppinsFont,
-                        ),
-                children: [
-                  TextSpan(
-                    text: 'Sign up',
-                    style:
-                        (isTabletPortrait
-                                ? AppStyles.text16PxSemiBold
-                                : AppStyles.text14PxSemiBold)
-                            .copyWith(
-                              color: AppColors.kButtonGreen,
-                              fontFamily: AppConstants.kPoppinsFont,
-                            ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Utility.navigate(context, AppRoutes.registerScreen);
-                      },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+      bottomNavigationBar: AuthSignUpFooter(
+        horizontalPadding: horizontalPadding,
+        bottomPadding: bottomPadding,
       ),
     );
   }

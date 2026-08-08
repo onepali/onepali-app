@@ -68,9 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Gaps.verticalGapOf(taglineGap),
                   Text(
                     context.tr('tagline'),
-                    style: taglineStyle.copyWith(
-                      color: AppColors.kPrimaryColor,
-                    ),
+                    style: taglineStyle.copyWith(color: AppColors.kBlack),
                     textAlign: TextAlign.center,
                   ),
                   const Spacer(),

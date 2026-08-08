@@ -264,6 +264,59 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> sendPasswordResetEmail(
+    String email, {
+    bool showSuccessToast = true,
+  }) async {
+    final trimmedEmail = email.trim();
+    if (trimmedEmail.isEmpty) {
+      showCustomToaster("Email is required", isError: true);
+      return false;
+    }
+
+    setStatus(DataFetchStatus.loading);
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: trimmedEmail);
+      setStatus(DataFetchStatus.success);
+      if (showSuccessToast) {
+        showCustomToaster(
+          "If an account exists, we sent a password reset link.",
+        );
+      }
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        setStatus(DataFetchStatus.success);
+        if (showSuccessToast) {
+          showCustomToaster(
+            "If an account exists, we sent a password reset link.",
+          );
+        }
+        return true;
+      }
+
+      setStatus(DataFetchStatus.initial);
+      if (e.code == 'invalid-email') {
+        showCustomToaster("Enter a valid email address", isError: true);
+      } else if (e.code == 'too-many-requests') {
+        showCustomToaster(
+          "Too many reset requests. Please try again later.",
+          isError: true,
+        );
+      } else {
+        showCustomToaster(
+          e.message ?? "Failed to send password reset email",
+          isError: true,
+        );
+      }
+      return false;
+    } catch (e) {
+      setStatus(DataFetchStatus.initial);
+      showCustomToaster("Failed to send password reset email", isError: true);
+      return false;
+    }
+  }
+
   /// New register method: handles registration, user data update, prefs, navigation, and error handling.
   Future<void> register({
     required BuildContext context,
