@@ -71,7 +71,6 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
               child: Stack(
                 children: [
                   LessonContentFrame(
-                    reserveLeftControl: false,
                     builder: (context, _) {
                       return Column(
                         mainAxisSize: MainAxisSize.max,
@@ -101,8 +100,8 @@ class _ListenAndRepeatViewState extends State<ListenAndRepeatView>
 
                   Positioned(
                     top: isMobile ? 24 : 32,
-                    left: 0,
-                    right: 0,
+                    left: lessonContentInsetStart(context),
+                    right: lessonContentInsetEnd(context),
                     child: Center(
                       child: SpeakerIcon(
                         onTap: state.isRecorded || state.hasError
