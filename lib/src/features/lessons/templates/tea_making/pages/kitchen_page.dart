@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:onepali/src/core/core.dart';
+import 'package:onepali/src/core/services/media_cache_manager.dart';
 import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/models/lesson.dart';
@@ -72,6 +73,14 @@ class _KitchenPageState extends State<KitchenPage> {
         child: SvgPicture.network(dragIndicator!, fit: BoxFit.fill),
       ),
     );
+  }
+
+  Widget _buildTeaReadyImage(String imageUrl) {
+    if (imageUrl.isEmpty) return const SizedBox.shrink();
+    if (isSvgMediaUrl(imageUrl)) {
+      return SvgPicture.network(imageUrl, fit: BoxFit.contain);
+    }
+    return CustomCachedImage(imageUrl: imageUrl, fit: BoxFit.contain);
   }
 
   @override
@@ -145,63 +154,82 @@ class _KitchenPageState extends State<KitchenPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: List.generate(
                                   state.ingredients.length,
-                                  (index) => Flexible(
-                                    child: SizedBox(
-                                      width: ingredientSlotWidth,
-                                      child: Stack(
-                                        children: [
-                                          Positioned.fill(
-                                            child: Padding(
-                                              padding: ingredientPadding,
-                                              child: Draggable<Map<int, String>>(
-                                                data: {
-                                                  index:
-                                                      state.ingredients[index],
-                                                },
-                                                feedback: SvgPicture.network(
-                                                  state.ingredients[index],
-                                                ),
-                                                childWhenDragging:
-                                                    SvgPicture.network(
-                                                      state.ingredients[index],
-                                                      colorFilter:
-                                                          ColorFilter.mode(
-                                                            Colors.grey,
-                                                            BlendMode.modulate,
-                                                          ),
+                                  (index) {
+                                    final canDragIngredient =
+                                        state.canSelectIngredient &&
+                                        !state.isBoilStepInProgress &&
+                                        state.index == index;
+                                    final ingredient = state.ingredients[index];
+
+                                    return Flexible(
+                                      child: SizedBox(
+                                        width: ingredientSlotWidth,
+                                        child: Stack(
+                                          children: [
+                                            Positioned.fill(
+                                              child: Padding(
+                                                padding: ingredientPadding,
+                                                child: Draggable<Map<int, String>>(
+                                                  data: {index: ingredient},
+                                                  maxSimultaneousDrags:
+                                                      canDragIngredient ? 1 : 0,
+                                                  feedback: SizedBox(
+                                                    width:
+                                                        ingredientSlotWidth -
+                                                        ingredientPadding
+                                                            .horizontal,
+                                                    height:
+                                                        topIngredientBarHeight -
+                                                        ingredientPadding
+                                                            .vertical,
+                                                    child: Ingredient(
+                                                      ingredient: ingredient,
+                                                      isSelected:
+                                                          state.index == index,
                                                     ),
-                                                child: SizedBox(
-                                                  child: Ingredient(
-                                                    key: index == 0
-                                                        ? _taePotKey
-                                                        : null,
-                                                    ingredient: state
-                                                        .ingredients[index],
+                                                  ),
+                                                  childWhenDragging: Ingredient(
+                                                    ingredient: ingredient,
                                                     isSelected:
                                                         state.index == index,
+                                                    colorFilter:
+                                                        ColorFilter.mode(
+                                                          Colors.grey,
+                                                          BlendMode.modulate,
+                                                        ),
+                                                  ),
+                                                  child: SizedBox(
+                                                    child: Ingredient(
+                                                      key: index == 0
+                                                          ? _taePotKey
+                                                          : null,
+                                                      ingredient: ingredient,
+                                                      isSelected:
+                                                          state.index == index,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
 
-                                          if (state.index > index &&
-                                              state.checkIcon?.isNotEmpty ==
-                                                  true)
-                                            Positioned.fill(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  8.0,
-                                                ),
-                                                child: SvgPicture.network(
-                                                  state.checkIcon!,
+                                            if (state.index > index &&
+                                                state.checkIcon?.isNotEmpty ==
+                                                    true)
+                                              Positioned.fill(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    8.0,
+                                                  ),
+                                                  child: SvgPicture.network(
+                                                    state.checkIcon!,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -261,13 +289,8 @@ class _KitchenPageState extends State<KitchenPage> {
                         child: LeopardWithTea(),
                       ),
 
-                      // Huncha button in middle
-                      Positioned(
-                        bottom: size.height * 0.17,
-                        right: 0,
-                        left: 0,
-                        child: HunchaButton(),
-                      ),
+                      // Huncha button in the screen center.
+                      Positioned.fill(child: HunchaButton()),
                       // Drag indicator
                       if (state.showDragIndicator)
                         buildIndicator(size, state.dragIndicator),
@@ -292,11 +315,10 @@ class _KitchenPageState extends State<KitchenPage> {
                                 right: 100,
                                 left: 100,
                               ),
-                              child: CustomCachedImage(
-                                imageUrl: isMobile
-                                    ? state.leopardWithTeaMb ?? ''
-                                    : state.leopardWithTeaTb ?? '',
-                                fit: BoxFit.contain,
+                              child: _buildTeaReadyImage(
+                                isMobile
+                                    ? state.leopardTakingTeaMb ?? ''
+                                    : state.leopardTakingTeaTb ?? '',
                               ),
                             ),
                           ),

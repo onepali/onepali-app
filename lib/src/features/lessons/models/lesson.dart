@@ -8,6 +8,12 @@ Object? _readLeopardWithTeaTb(Map<dynamic, dynamic> json, String key) =>
 Object? _readLeopardWithTeaMb(Map<dynamic, dynamic> json, String key) =>
     json[key];
 
+Object? _readLeopardTakingTeaTb(Map<dynamic, dynamic> json, String key) =>
+    json[key];
+
+Object? _readLeopardTakingTeaMb(Map<dynamic, dynamic> json, String key) =>
+    json[key];
+
 @freezed
 abstract class Lesson with _$Lesson {
   const factory Lesson({
@@ -162,6 +168,10 @@ abstract class LessonContent with _$LessonContent implements LessonContentBase {
     required String leopardWithTeaTb,
     @JsonKey(name: 'leopard_with_tea_mb', readValue: _readLeopardWithTeaMb)
     required String leopardWithTeaMb,
+    @JsonKey(name: 'leopard_taking_tea_tb', readValue: _readLeopardTakingTeaTb)
+    required String leopardTakingTeaTb,
+    @JsonKey(name: 'leopard_taking_tea_mb', readValue: _readLeopardTakingTeaMb)
+    required String leopardTakingTeaMb,
     @Default([])
     List<Item>
     ingredients, // In this case, imageOutline is the placed image on top of stove

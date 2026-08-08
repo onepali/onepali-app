@@ -6,12 +6,22 @@ class Ingredient extends StatelessWidget {
     super.key,
     required this.isSelected,
     required this.ingredient,
+    this.colorFilter,
   });
   final String ingredient;
   final bool isSelected;
+  final ColorFilter? colorFilter;
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.network(ingredient);
+    return SizedBox.expand(
+      child: Center(
+        child: SvgPicture.network(
+          ingredient,
+          fit: BoxFit.contain,
+          colorFilter: colorFilter,
+        ),
+      ),
+    );
   }
 }

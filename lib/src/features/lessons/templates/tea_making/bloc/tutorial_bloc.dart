@@ -34,6 +34,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   int boilStepAfterIndex = -1;
   String leopardWithTeaTb = '';
   String leopardWithTeaMb = '';
+  String leopardTakingTeaTb = '';
+  String leopardTakingTeaMb = '';
 
   Map<String, String> _cachedPaths = {};
 
@@ -69,6 +71,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       checkIcon = content.checkIcon;
       leopardWithTeaTb = content.leopardWithTeaTb;
       leopardWithTeaMb = content.leopardWithTeaMb;
+      leopardTakingTeaTb = content.leopardTakingTeaTb;
+      leopardTakingTeaMb = content.leopardTakingTeaMb;
 
       emit(state.copyWith(showLoading: true));
 
@@ -82,6 +86,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         checkIcon,
         leopardWithTeaTb,
         leopardWithTeaMb,
+        leopardTakingTeaTb,
+        leopardTakingTeaMb,
       ].where((e) => e.isNotEmpty).toList();
 
       final allAudioUrls = [
@@ -112,6 +118,8 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
           checkIcon: checkIcon,
           leopardWithTeaTb: leopardWithTeaTb,
           leopardWithTeaMb: leopardWithTeaMb,
+          leopardTakingTeaTb: leopardTakingTeaTb,
+          leopardTakingTeaMb: leopardTakingTeaMb,
           showLeopardWithTea: true,
         ),
       );
@@ -138,24 +146,36 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
       await Future.delayed(const Duration(seconds: 2));
 
       await _playAudioAndWait(kitleyLeyAudio);
-      emit(state.copyWith(showDragIndicator: ingredients.isNotEmpty, index: 0));
+      emit(
+        state.copyWith(
+          showDragIndicator: ingredients.isNotEmpty,
+          index: 0,
+          canSelectIngredient: ingredients.isNotEmpty,
+        ),
+      );
     });
 
     on<_OnDragAccept>((event, emit) async {
+      if (!state.canSelectIngredient) return;
+      if (state.isBoilStepInProgress) return;
       if (event.index != state.index) return;
       if (event.index < 0 || event.index >= onDraggedItems.length) return;
       if (player.state == PlayerState.playing) return;
 
-      droppedItemText(event.index, emit);
+      final nextIndex = state.index + 1;
 
       emit(
         state.copyWith(
-          index: state.index + 1,
+          index: nextIndex,
           draggedItemPath: onDraggedItems[event.index],
-
+          droppedItem: _droppedItemText(event.index),
           showDragIndicator: false,
+          canSelectIngredient: false,
+          isBoilStepInProgress: event.index == boilStepAfterIndex,
         ),
       );
+
+      await _playIngredientAudio(event.index);
 
       if (event.index == boilStepAfterIndex) {
         await Future.delayed(const Duration(seconds: 2));
@@ -168,6 +188,12 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         );
         await Future.delayed(const Duration(seconds: 2));
         await playNextAudio(event.index);
+        emit(
+          state.copyWith(
+            isBoilStepInProgress: false,
+            canSelectIngredient: _hasIngredient(nextIndex),
+          ),
+        );
       } else if (event.index == ingredients.length - 1) {
         await Future.delayed(const Duration(seconds: 2));
         emit(state.copyWith(teaReady: true, completionFeedbackReady: false));
@@ -176,6 +202,7 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
         emit(state.copyWith(completionFeedbackReady: true));
       } else {
         await playNextAudio(event.index);
+        emit(state.copyWith(canSelectIngredient: _hasIngredient(nextIndex)));
       }
     });
   }
@@ -215,17 +242,22 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
     await _playAudioAndWait(audioFiles[index]);
   }
 
-  Future<void> droppedItemText(int index, Emitter<TutorialState> emit) async {
-    if (index < 0 || index >= ingredientNames.length) return;
-    emit(state.copyWith(droppedItem: ingredientNames[index]));
-    await _playIngredientAudio(index);
+  String? _droppedItemText(int index) {
+    if (index < 0 || index >= ingredientNames.length) return null;
+    return ingredientNames[index];
   }
 
   Future<void> _playIngredientAudio(int index) async {
     if (index < 0 || index >= ingredientAudioFiles.length) return;
     final audio = ingredientAudioFiles[index];
     if (audio.isEmpty) return;
+    final completion = _audioPlayerService.onPlayerComplete.first;
     await _audioPlayerService.play(audio);
+    await completion;
+  }
+
+  bool _hasIngredient(int index) {
+    return index >= 0 && index < ingredients.length;
   }
 
   @override

@@ -18,6 +18,10 @@ abstract class TutorialState with _$TutorialState {
     String? checkIcon,
     String? leopardWithTeaTb,
     String? leopardWithTeaMb,
+    String? leopardTakingTeaTb,
+    String? leopardTakingTeaMb,
+    @Default(false) bool canSelectIngredient,
+    @Default(false) bool isBoilStepInProgress,
     @Default(false) bool teaReady,
     @Default(false) bool completionFeedbackReady,
   }) = _TutorialState;

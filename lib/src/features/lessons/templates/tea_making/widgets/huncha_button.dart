@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:onepali/src/core/services/media_cache_manager.dart';
+import 'package:onepali/src/core/widget/common/custom_cache_image.dart';
 import 'package:onepali/src/features/lessons/templates/tea_making/bloc/tutorial_bloc.dart';
 
 class HunchaButton extends StatefulWidget {
@@ -37,6 +39,13 @@ class _HunchaButtonState extends State<HunchaButton>
     super.dispose();
   }
 
+  Widget _buildButtonImage(String imageUrl) {
+    if (isSvgMediaUrl(imageUrl)) {
+      return SvgPicture.network(imageUrl, fit: BoxFit.contain);
+    }
+    return CustomCachedImage(imageUrl: imageUrl, fit: BoxFit.contain);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TutorialBloc, TutorialState>(
@@ -53,18 +62,21 @@ class _HunchaButtonState extends State<HunchaButton>
           _controller.repeat(reverse: true);
         }
 
-        return GestureDetector(
-          onTap: () {
-            context.read<TutorialBloc>().add(
-              const TutorialEvent.hunchaButtonPressed(),
-            );
-          },
-          child: ScaleTransition(
-            scale: _animation,
-            child: Center(
-              child: SizedBox.square(
-                dimension: 172,
-                child: SvgPicture.network(state.hunchaButton!),
+        return SizedBox(
+          width: double.infinity,
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                context.read<TutorialBloc>().add(
+                  const TutorialEvent.hunchaButtonPressed(),
+                );
+              },
+              child: ScaleTransition(
+                scale: _animation,
+                child: SizedBox.square(
+                  dimension: 172,
+                  child: _buildButtonImage(state.hunchaButton!),
+                ),
               ),
             ),
           ),

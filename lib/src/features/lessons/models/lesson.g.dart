@@ -263,6 +263,10 @@ TeaMakingLessonContent _$TeaMakingLessonContentFromJson(
       _readLeopardWithTeaTb(json, 'leopard_with_tea_tb') as String,
   leopardWithTeaMb:
       _readLeopardWithTeaMb(json, 'leopard_with_tea_mb') as String,
+  leopardTakingTeaTb:
+      _readLeopardTakingTeaTb(json, 'leopard_taking_tea_tb') as String,
+  leopardTakingTeaMb:
+      _readLeopardTakingTeaMb(json, 'leopard_taking_tea_mb') as String,
   ingredients:
       (json['ingredients'] as List<dynamic>?)
           ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
@@ -287,6 +291,8 @@ Map<String, dynamic> _$TeaMakingLessonContentToJson(
   'check_icon': instance.checkIcon,
   'leopard_with_tea_tb': instance.leopardWithTeaTb,
   'leopard_with_tea_mb': instance.leopardWithTeaMb,
+  'leopard_taking_tea_tb': instance.leopardTakingTeaTb,
+  'leopard_taking_tea_mb': instance.leopardTakingTeaMb,
   'ingredients': instance.ingredients.map((e) => e.toJson()).toList(),
 };
 
