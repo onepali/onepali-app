@@ -86,8 +86,10 @@ class _DragToMatchView extends StatelessWidget {
               previous.dragStatus != current.dragStatus &&
               (current.dragStatus == DragStatus.correctMatch ||
                   current.dragStatus == DragStatus.wrongMatch);
-          final completionShown = !previous.showCat && current.showCat;
-          return answerStatusChanged || completionShown;
+          final completionFeedbackReady =
+              !previous.completionFeedbackReady &&
+              current.completionFeedbackReady;
+          return answerStatusChanged || completionFeedbackReady;
         },
         listener: (context, state) {
           if (state.dragStatus == DragStatus.correctMatch ||
@@ -97,7 +99,7 @@ class _DragToMatchView extends StatelessWidget {
               isCorrect: state.dragStatus == DragStatus.correctMatch,
             );
           }
-          if (isLastContent && state.showCat) {
+          if (isLastContent && state.completionFeedbackReady) {
             onLessonCompleted?.call();
           }
         },

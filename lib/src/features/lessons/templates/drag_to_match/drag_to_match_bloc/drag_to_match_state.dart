@@ -11,6 +11,7 @@ abstract class DragToMatchState with _$DragToMatchState {
     @Default(false) bool isPlayingAudio,
     @Default(false) bool showNepaliword,
     @Default(false) bool showCat,
+    @Default(false) bool completionFeedbackReady,
     String? currentPlayingAudioId,
     @Default(DragStatus.idle) DragStatus dragStatus,
     String? draggedItemId,

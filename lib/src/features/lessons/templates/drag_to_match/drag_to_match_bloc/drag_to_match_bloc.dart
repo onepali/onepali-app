@@ -73,6 +73,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         outlinePositions: outlinePositions,
         matchedItemIds: [],
         currentHintIndex: 0,
+        completionFeedbackReady: false,
       ),
     );
     await _audioPlayer.play(AssetSource('audio/sounds/match_instruction.mp3'));
@@ -205,6 +206,7 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
           showNepaliword: true,
           dragStatus: DragStatus.correctMatch,
           matchedItemIds: [...state.matchedItemIds, event.itemId],
+          completionFeedbackReady: false,
         ),
       );
 
@@ -250,8 +252,11 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
         // Game complete!
         log('🎉 All items matched! Game complete!');
         await Future.delayed(const Duration(seconds: 2));
-        emit(state.copyWith(showCat: true));
-        _audioPlayer.play(AssetSource(Assets.goodFeedback));
+        if (emit.isDone) return;
+        emit(state.copyWith(showCat: true, completionFeedbackReady: false));
+        await _playCompletionFeedback();
+        if (emit.isDone) return;
+        emit(state.copyWith(completionFeedbackReady: true));
       } else {
         // Play next hint after successful match
         await Future.delayed(const Duration(seconds: 2));
@@ -311,6 +316,16 @@ class DragToMatchBloc extends Bloc<DragToMatchEvent, DragToMatchState> {
       await completion;
     } catch (e) {
       log('Error playing item audio: $e');
+    }
+  }
+
+  Future<void> _playCompletionFeedback() async {
+    try {
+      final completion = _audioPlayer.onPlayerComplete.first;
+      await _audioPlayer.play(AssetSource(Assets.goodFeedback));
+      await completion;
+    } catch (e) {
+      log('Error playing drag-to-match completion feedback: $e');
     }
   }
 
