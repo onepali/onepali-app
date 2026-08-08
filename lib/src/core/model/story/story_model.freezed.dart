@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StoryModel {
 
-@JsonKey(name: 'level_id') String get levelId; String get nameEn; String get nameNp; String get thumbnail; String get lottie;@JsonKey(fromJson: _stringListFromJson) List<String> get audio; String get tooltip; String get description; List<Content> get content;@JsonKey(name: 'bg_color') String? get bgColor;
+@JsonKey(name: 'level_id') String get levelId; String get nameEn; String get nameNp; String get thumbnail;@JsonKey(name: 'bg_image_mobile') String? get bgImageMobile;@JsonKey(name: 'bg_image_tablet') String? get bgImageTablet; String get lottie;@JsonKey(fromJson: _stringListFromJson) List<String> get audio; String get tooltip; String get description; List<Content> get content;@JsonKey(name: 'bg_color') String? get bgColor;
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $StoryModelCopyWith<StoryModel> get copyWith => _$StoryModelCopyWithImpl<StoryMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryModel&&(identical(other.levelId, levelId) || other.levelId == levelId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.lottie, lottie) || other.lottie == lottie)&&const DeepCollectionEquality().equals(other.audio, audio)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryModel&&(identical(other.levelId, levelId) || other.levelId == levelId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.bgImageMobile, bgImageMobile) || other.bgImageMobile == bgImageMobile)&&(identical(other.bgImageTablet, bgImageTablet) || other.bgImageTablet == bgImageTablet)&&(identical(other.lottie, lottie) || other.lottie == lottie)&&const DeepCollectionEquality().equals(other.audio, audio)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.content, content)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,levelId,nameEn,nameNp,thumbnail,lottie,const DeepCollectionEquality().hash(audio),tooltip,description,const DeepCollectionEquality().hash(content),bgColor);
+int get hashCode => Object.hash(runtimeType,levelId,nameEn,nameNp,thumbnail,bgImageMobile,bgImageTablet,lottie,const DeepCollectionEquality().hash(audio),tooltip,description,const DeepCollectionEquality().hash(content),bgColor);
 
 @override
 String toString() {
-  return 'StoryModel(levelId: $levelId, nameEn: $nameEn, nameNp: $nameNp, thumbnail: $thumbnail, lottie: $lottie, audio: $audio, tooltip: $tooltip, description: $description, content: $content, bgColor: $bgColor)';
+  return 'StoryModel(levelId: $levelId, nameEn: $nameEn, nameNp: $nameNp, thumbnail: $thumbnail, bgImageMobile: $bgImageMobile, bgImageTablet: $bgImageTablet, lottie: $lottie, audio: $audio, tooltip: $tooltip, description: $description, content: $content, bgColor: $bgColor)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $StoryModelCopyWith<$Res>  {
   factory $StoryModelCopyWith(StoryModel value, $Res Function(StoryModel) _then) = _$StoryModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail, String lottie,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
+@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail,@JsonKey(name: 'bg_image_mobile') String? bgImageMobile,@JsonKey(name: 'bg_image_tablet') String? bgImageTablet, String lottie,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
 });
 
 
@@ -65,13 +65,15 @@ class _$StoryModelCopyWithImpl<$Res>
 
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? levelId = null,Object? nameEn = null,Object? nameNp = null,Object? thumbnail = null,Object? lottie = null,Object? audio = null,Object? tooltip = null,Object? description = null,Object? content = null,Object? bgColor = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? levelId = null,Object? nameEn = null,Object? nameNp = null,Object? thumbnail = null,Object? bgImageMobile = freezed,Object? bgImageTablet = freezed,Object? lottie = null,Object? audio = null,Object? tooltip = null,Object? description = null,Object? content = null,Object? bgColor = freezed,}) {
   return _then(_self.copyWith(
 levelId: null == levelId ? _self.levelId : levelId // ignore: cast_nullable_to_non_nullable
 as String,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
 as String,thumbnail: null == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
-as String,lottie: null == lottie ? _self.lottie : lottie // ignore: cast_nullable_to_non_nullable
+as String,bgImageMobile: freezed == bgImageMobile ? _self.bgImageMobile : bgImageMobile // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTablet: freezed == bgImageTablet ? _self.bgImageTablet : bgImageTablet // ignore: cast_nullable_to_non_nullable
+as String?,lottie: null == lottie ? _self.lottie : lottie // ignore: cast_nullable_to_non_nullable
 as String,audio: null == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
 as List<String>,tooltip: null == tooltip ? _self.tooltip : tooltip // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -162,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail, @JsonKey(name: 'bg_image_mobile')  String? bgImageMobile, @JsonKey(name: 'bg_image_tablet')  String? bgImageTablet,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
-return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
+return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.bgImageMobile,_that.bgImageTablet,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
   return orElse();
 
 }
@@ -183,10 +185,10 @@ return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail, @JsonKey(name: 'bg_image_mobile')  String? bgImageMobile, @JsonKey(name: 'bg_image_tablet')  String? bgImageTablet,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel():
-return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
+return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.bgImageMobile,_that.bgImageTablet,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +205,10 @@ return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'level_id')  String levelId,  String nameEn,  String nameNp,  String thumbnail, @JsonKey(name: 'bg_image_mobile')  String? bgImageMobile, @JsonKey(name: 'bg_image_tablet')  String? bgImageTablet,  String lottie, @JsonKey(fromJson: _stringListFromJson)  List<String> audio,  String tooltip,  String description,  List<Content> content, @JsonKey(name: 'bg_color')  String? bgColor)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
-return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
+return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.bgImageMobile,_that.bgImageTablet,_that.lottie,_that.audio,_that.tooltip,_that.description,_that.content,_that.bgColor);case _:
   return null;
 
 }
@@ -218,13 +220,15 @@ return $default(_that.levelId,_that.nameEn,_that.nameNp,_that.thumbnail,_that.lo
 
 @JsonSerializable(explicitToJson: true)
 class _StoryModel implements StoryModel {
-  const _StoryModel({@JsonKey(name: 'level_id') this.levelId = '', this.nameEn = '', this.nameNp = '', this.thumbnail = '', this.lottie = '', @JsonKey(fromJson: _stringListFromJson) final  List<String> audio = const <String>[], this.tooltip = '', this.description = '', final  List<Content> content = const <Content>[], @JsonKey(name: 'bg_color') this.bgColor}): _audio = audio,_content = content;
+  const _StoryModel({@JsonKey(name: 'level_id') this.levelId = '', this.nameEn = '', this.nameNp = '', this.thumbnail = '', @JsonKey(name: 'bg_image_mobile') this.bgImageMobile, @JsonKey(name: 'bg_image_tablet') this.bgImageTablet, this.lottie = '', @JsonKey(fromJson: _stringListFromJson) final  List<String> audio = const <String>[], this.tooltip = '', this.description = '', final  List<Content> content = const <Content>[], @JsonKey(name: 'bg_color') this.bgColor}): _audio = audio,_content = content;
   factory _StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
 
 @override@JsonKey(name: 'level_id') final  String levelId;
 @override@JsonKey() final  String nameEn;
 @override@JsonKey() final  String nameNp;
 @override@JsonKey() final  String thumbnail;
+@override@JsonKey(name: 'bg_image_mobile') final  String? bgImageMobile;
+@override@JsonKey(name: 'bg_image_tablet') final  String? bgImageTablet;
 @override@JsonKey() final  String lottie;
  final  List<String> _audio;
 @override@JsonKey(fromJson: _stringListFromJson) List<String> get audio {
@@ -257,16 +261,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryModel&&(identical(other.levelId, levelId) || other.levelId == levelId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.lottie, lottie) || other.lottie == lottie)&&const DeepCollectionEquality().equals(other._audio, _audio)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._content, _content)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryModel&&(identical(other.levelId, levelId) || other.levelId == levelId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameNp, nameNp) || other.nameNp == nameNp)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.bgImageMobile, bgImageMobile) || other.bgImageMobile == bgImageMobile)&&(identical(other.bgImageTablet, bgImageTablet) || other.bgImageTablet == bgImageTablet)&&(identical(other.lottie, lottie) || other.lottie == lottie)&&const DeepCollectionEquality().equals(other._audio, _audio)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._content, _content)&&(identical(other.bgColor, bgColor) || other.bgColor == bgColor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,levelId,nameEn,nameNp,thumbnail,lottie,const DeepCollectionEquality().hash(_audio),tooltip,description,const DeepCollectionEquality().hash(_content),bgColor);
+int get hashCode => Object.hash(runtimeType,levelId,nameEn,nameNp,thumbnail,bgImageMobile,bgImageTablet,lottie,const DeepCollectionEquality().hash(_audio),tooltip,description,const DeepCollectionEquality().hash(_content),bgColor);
 
 @override
 String toString() {
-  return 'StoryModel(levelId: $levelId, nameEn: $nameEn, nameNp: $nameNp, thumbnail: $thumbnail, lottie: $lottie, audio: $audio, tooltip: $tooltip, description: $description, content: $content, bgColor: $bgColor)';
+  return 'StoryModel(levelId: $levelId, nameEn: $nameEn, nameNp: $nameNp, thumbnail: $thumbnail, bgImageMobile: $bgImageMobile, bgImageTablet: $bgImageTablet, lottie: $lottie, audio: $audio, tooltip: $tooltip, description: $description, content: $content, bgColor: $bgColor)';
 }
 
 
@@ -277,7 +281,7 @@ abstract mixin class _$StoryModelCopyWith<$Res> implements $StoryModelCopyWith<$
   factory _$StoryModelCopyWith(_StoryModel value, $Res Function(_StoryModel) _then) = __$StoryModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail, String lottie,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
+@JsonKey(name: 'level_id') String levelId, String nameEn, String nameNp, String thumbnail,@JsonKey(name: 'bg_image_mobile') String? bgImageMobile,@JsonKey(name: 'bg_image_tablet') String? bgImageTablet, String lottie,@JsonKey(fromJson: _stringListFromJson) List<String> audio, String tooltip, String description, List<Content> content,@JsonKey(name: 'bg_color') String? bgColor
 });
 
 
@@ -294,13 +298,15 @@ class __$StoryModelCopyWithImpl<$Res>
 
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? levelId = null,Object? nameEn = null,Object? nameNp = null,Object? thumbnail = null,Object? lottie = null,Object? audio = null,Object? tooltip = null,Object? description = null,Object? content = null,Object? bgColor = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? levelId = null,Object? nameEn = null,Object? nameNp = null,Object? thumbnail = null,Object? bgImageMobile = freezed,Object? bgImageTablet = freezed,Object? lottie = null,Object? audio = null,Object? tooltip = null,Object? description = null,Object? content = null,Object? bgColor = freezed,}) {
   return _then(_StoryModel(
 levelId: null == levelId ? _self.levelId : levelId // ignore: cast_nullable_to_non_nullable
 as String,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameNp: null == nameNp ? _self.nameNp : nameNp // ignore: cast_nullable_to_non_nullable
 as String,thumbnail: null == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
-as String,lottie: null == lottie ? _self.lottie : lottie // ignore: cast_nullable_to_non_nullable
+as String,bgImageMobile: freezed == bgImageMobile ? _self.bgImageMobile : bgImageMobile // ignore: cast_nullable_to_non_nullable
+as String?,bgImageTablet: freezed == bgImageTablet ? _self.bgImageTablet : bgImageTablet // ignore: cast_nullable_to_non_nullable
+as String?,lottie: null == lottie ? _self.lottie : lottie // ignore: cast_nullable_to_non_nullable
 as String,audio: null == audio ? _self._audio : audio // ignore: cast_nullable_to_non_nullable
 as List<String>,tooltip: null == tooltip ? _self.tooltip : tooltip // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable

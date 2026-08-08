@@ -12,7 +12,7 @@ allprojects {
 ext {
     set("compileSdk", 36)
     set("minSdk", 24)
-    set("targetSdk", 35)
+    set("targetSdk", 36)
     set("ndkVersion", "27.0.12077973")
     set("javaVersion", JavaVersion.VERSION_17)
     set("jvmTarget", "17")

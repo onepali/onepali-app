@@ -11,6 +11,8 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
   nameEn: json['nameEn'] as String? ?? '',
   nameNp: json['nameNp'] as String? ?? '',
   thumbnail: json['thumbnail'] as String? ?? '',
+  bgImageMobile: json['bg_image_mobile'] as String?,
+  bgImageTablet: json['bg_image_tablet'] as String?,
   lottie: json['lottie'] as String? ?? '',
   audio: json['audio'] == null
       ? const <String>[]
@@ -31,6 +33,8 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'nameEn': instance.nameEn,
       'nameNp': instance.nameNp,
       'thumbnail': instance.thumbnail,
+      'bg_image_mobile': instance.bgImageMobile,
+      'bg_image_tablet': instance.bgImageTablet,
       'lottie': instance.lottie,
       'audio': instance.audio,
       'tooltip': instance.tooltip,

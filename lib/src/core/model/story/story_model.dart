@@ -28,6 +28,8 @@ abstract class StoryModel with _$StoryModel {
     @Default('') String nameEn,
     @Default('') String nameNp,
     @Default('') String thumbnail,
+    @JsonKey(name: 'bg_image_mobile') String? bgImageMobile,
+    @JsonKey(name: 'bg_image_tablet') String? bgImageTablet,
     @Default('') String lottie,
     @JsonKey(fromJson: _stringListFromJson)
     @Default(<String>[])
