@@ -73,20 +73,21 @@ class Assets {
   static String redo = 'redo'.icon;
   static String meta = 'meta'.icon;
   static String youtube = 'youtube'.icon;
-  static String other = 'other'.icon;
+  static String other = 'others'.icon;
   static String google = 'google'.icon;
-  static String blog = 'blog'.icon;
+  static String blog = 'blogs'.icon;
   static String apple = 'apple'.icon;
   static String facebook = 'facebook'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
-  static String family = 'family'.icon;
+  static String family = 'user-group'.icon;
   static String home = 'home'.icon;
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
   static String unsubscribe = 'unfav'.icon;
   static String email = 'email'.icon;
+  static String pencil = 'pencil'.icon;
 
   ///[ Buttons] assets
   static String checkButton = "check_btn".buttonSvg;

@@ -40,21 +40,23 @@ class AuthSignUpFooter extends StatelessWidget {
             horizontal: horizontalPadding,
             vertical: bottomPadding,
           ),
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: 'Don\'t have an account? ',
-              style: textStyle,
-              children: [
-                TextSpan(
-                  text: 'Sign up',
-                  style: linkTextStyle,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Utility.navigate(context, AppRoutes.registerScreen);
-                    },
-                ),
-              ],
+          child: Center(
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'Don\'t have an account? ',
+                style: textStyle,
+                children: [
+                  TextSpan(
+                    text: 'Sign up',
+                    style: linkTextStyle,
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Utility.navigate(context, AppRoutes.registerScreen);
+                      },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -17,14 +17,13 @@ class _RS1ScreenState extends State<RS1Screen> {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing and styling
-    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
     final int crossAxisCount = isTabletPortrait ? 3 : 2;
     final double mainAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
     final double crossAxisSpacing = isTabletPortrait ? 20.0 : 16.0;
-    final double childAspectRatio = isTabletPortrait ? 1.3 : 1.2;
-    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
-    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double childAspectRatio = isTabletPortrait ? 1.2 : 1.1;
+    final double buttonHeight = AuthOnboardingLayout.buttonHeight(context);
+    final double buttonRadius = AuthOnboardingLayout.buttonRadius(context);
 
     final TextStyle titleStyle = isTabletPortrait
         ? AppStyles.text24PxSemiBold
@@ -36,27 +35,18 @@ class _RS1ScreenState extends State<RS1Screen> {
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 1),
       backgroundColor: AppColors.kWhite,
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: 16.0,
-          ),
-          child: _buildNextButton(
-            context,
-            isTabletPortrait,
-            buttonTextStyle,
-            buttonHeight,
-            buttonRadius,
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(horizontalPadding),
-        child: Column(
+      body: AuthOnboardingLayout(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('How did you hear about O Nepali?', style: titleStyle),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                'How did you hear about O Nepali?',
+                style: titleStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
             Gaps.verticalGapOf(titleBottomGap),
             Expanded(
               child: GridView.count(
@@ -75,6 +65,8 @@ class _RS1ScreenState extends State<RS1Screen> {
                       });
                     },
                     icon: option.icon,
+                    iconHeight: option.iconHeight(isTabletPortrait),
+                    iconWidth: option.iconWidth(isTabletPortrait),
                     isTabletPortrait: isTabletPortrait,
                     color: option.color,
                   );
@@ -82,6 +74,13 @@ class _RS1ScreenState extends State<RS1Screen> {
               ),
             ),
           ],
+        ),
+        bottomAction: _buildNextButton(
+          context,
+          isTabletPortrait,
+          buttonTextStyle,
+          buttonHeight,
+          buttonRadius,
         ),
       ),
     );
@@ -92,10 +91,11 @@ class _RS1ScreenState extends State<RS1Screen> {
     bool isSelected, {
     required VoidCallback onTap,
     String? icon,
+    required double iconHeight,
+    double? iconWidth,
     required bool isTabletPortrait,
     Color? color,
   }) {
-    final double iconSize = isTabletPortrait ? 40.0 : 30.0;
     final double verticalGap = isTabletPortrait ? 16.0 : 12.0;
     final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
     final double borderWidth = isSelected
@@ -124,7 +124,8 @@ class _RS1ScreenState extends State<RS1Screen> {
           children: [
             SvgHelper.fromSource(
               path: icon ?? Assets.leoSvg,
-              height: iconSize,
+              height: iconHeight,
+              width: iconWidth,
               color: color,
             ),
             Gaps.verticalGapOf(verticalGap),
