@@ -13,8 +13,13 @@ export 'system/error_screen.dart';
 
 // Auth Screen
 
+// [Auth] --> [Widgets]
+export 'auth/widgets/auth_button_box.dart';
+
 // [Auth] --> [Login]
+export 'auth/login/auth_sign_up_footer.dart';
 export 'auth/login/login_screen.dart';
+export 'auth/login/forgot_password_screen.dart';
 
 /// [Auth] --> [Register]
 export 'auth/register/register_screen.dart';
@@ -101,7 +106,8 @@ export 'reward/reward_card.dart';
 /// [Achievement] Screen
 export 'achievement/achievement_screen.dart';
 export 'achievement/achievement_card.dart';
-export 'achievement/achievement_tab_card.dart';
+export 'achievement/achievement_layout.dart';
+export 'achievement/yellow_banner.dart';
 
 /// [Reward] --> [Widget]
 export 'reward/widget/reward_collection_widget.dart';

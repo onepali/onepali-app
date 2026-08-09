@@ -1,6 +1,7 @@
 // Tests for navigator_observer.dart
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/router/app_router.dart';
 import 'package:onepali/src/core/utils/navigator_observer.dart';
 
 void main() {
@@ -41,6 +42,7 @@ void main() {
       // Check for some expected routes
       expect(routes.any((route) => route.contains('splash')), isTrue);
       expect(routes.any((route) => route.contains('login')), isTrue);
+      expect(routes, contains(AppRoutes.forgotPasswordScreen));
       expect(routes.any((route) => route.contains('register')), isTrue);
       expect(routes.any((route) => route.contains('parent')), isTrue);
     });

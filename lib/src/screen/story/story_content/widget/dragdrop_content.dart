@@ -1,29 +1,41 @@
 // Drag & Drop UI
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/services/audio_player_service.dart';
+import 'package:provider/provider.dart';
 import '../../../../src.dart';
 
 class DragDropContent extends StatefulWidget {
   final Content content;
   final bool playAudio;
+  final bool isLast;
   const DragDropContent({
     super.key,
     required this.content,
     this.playAudio = true,
+    this.isLast = false,
   });
   @override
   State<DragDropContent> createState() => DragDropContentState();
 }
 
 class DragDropContentState extends State<DragDropContent> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   late List<bool> dropped;
   late List<bool> correct;
   late List<int?> droppedOn;
   bool finished = false;
   int? tryAgainIdx;
+  late final AudioPlayerService _completionAudioService;
+  bool _hasPlayedCompletionAudio = false;
+  Future<void>? _completionAudioFuture;
+  bool _hasScheduledCompletionNavigation = false;
 
   @override
   void initState() {
     super.initState();
+    _completionAudioService = AudioPlayerServiceImpl();
     final n = widget.content.conversation.length;
     dropped = List.generate(n, (_) => false);
     correct = List.generate(n, (_) => false);
@@ -32,29 +44,71 @@ class DragDropContentState extends State<DragDropContent> {
   }
 
   @override
+  void dispose() {
+    unawaited(_completionAudioService.dispose());
+    super.dispose();
+  }
+
+  Future<void> _playCompletionAudioOnce() {
+    final completionAudioFuture = _completionAudioFuture;
+    if (completionAudioFuture != null) {
+      return completionAudioFuture;
+    }
+    if (_hasPlayedCompletionAudio) return Future<void>.value();
+    _hasPlayedCompletionAudio = true;
+    _completionAudioFuture = (() async {
+      final completion = _completionAudioService.onPlayerComplete.first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {},
+      );
+      try {
+        await _completionAudioService.playAsset(Assets.storiesComplete);
+        await completion.catchError((_) {});
+      } catch (error) {
+        logger.e('Error playing story completion audio: $error');
+      }
+    })();
+    return _completionAudioFuture!;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final conv = widget.content.conversation;
-    final charList = widget.content.characters ?? [];
+    final charList = widget.content.characters;
     final char1 = charList.isNotEmpty ? charList[0] : null;
     final char2 = charList.length > 1 ? charList[1] : null;
     final bgColor = AppColors.kLightGreenBackgroundColor;
+    final storyProvider = Provider.of<StoryProvider>(context, listen: false);
 
     if (finished) {
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          bool isGuest = GuestUtil.isGuestUser();
-          if (isGuest) {
-            Navigator.pop(context);
-          } else {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AppRoutes.dashboardScreen,
-              (route) => false,
-            );
-            UserAppBar.setTabIndex(0);
-          }
-        }
-      });
+      final completionAudio = _playCompletionAudioOnce();
+      if (!_hasScheduledCompletionNavigation) {
+        _hasScheduledCompletionNavigation = true;
+        unawaited(
+          (() async {
+            await Future.wait([
+              completionAudio,
+              Future.delayed(_autoAdvanceDelay),
+            ]);
+            if (!mounted) return;
+            if (widget.isLast) {
+              await storyProvider.completeCurrentStory(context);
+              if (!mounted) return;
+            }
+            bool isGuest = GuestUtil.isGuestUser();
+            if (isGuest) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.dashboardScreen,
+                (route) => false,
+              );
+              UserAppBar.setTabIndex(0);
+            }
+          })(),
+        );
+      }
     }
 
     return Stack(

@@ -44,5 +44,33 @@ void main() {
       expect(toJson['dob'], '2018-05-10');
       expect(toJson['created_at'], '2024-01-01T00:00:00.000');
     });
+
+    test('fromJson should read nested completed lessons totals', () {
+      final model = ChildUserModel.fromJson({
+        'uid': 'child1',
+        'completedLessons': {
+          'totalLessonsCompleted': 2,
+          'lessons': [
+            {'id': 'lesson-1', 'name': 'Lesson One'},
+            {'id': 'lesson-2', 'name': 'Lesson Two'},
+          ],
+        },
+      });
+
+      expect(model.completedLessons?.totalLessonsCompleted, 2);
+      expect(model.completedLessons?.lessons.map((lesson) => lesson.id), [
+        'lesson-1',
+        'lesson-2',
+      ]);
+    });
+
+    test('fromJson should prefer Firestore document id when provided', () {
+      final model = ChildUserModel.fromJson({
+        'uid': 'stale-child-id',
+        'full_name': 'Child',
+      }, documentId: 'child-doc-id');
+
+      expect(model.uid, 'child-doc-id');
+    });
   });
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/utils/color_from_hex.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
+import 'package:onepali/src/screen/story/story_content/widget/button_tap_content2.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +21,7 @@ class StoryContentScreen extends StatefulWidget {
 
 class _StoryContentScreenState extends State<StoryContentScreen> {
   StoryProvider? _storyProvider;
-  CustomAudioWidget? _storyAudio;
+  bool _storyIntroAudioStarted = false;
 
   @override
   void initState() {
@@ -64,42 +68,31 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   }
 
   void _playStoryAudio() async {
-    if (widget.story.audio.isEmpty) return;
+    if (_storyIntroAudioStarted || widget.story.audio.isEmpty) return;
+    _storyIntroAudioStarted = true;
 
     try {
-      // If there are multiple audio files, play the first one
-      final audioUrl = widget.story.audio.isNotEmpty
-          ? widget.story.audio.first
-          : '';
-      if (audioUrl.isEmpty) return;
-
-      _storyAudio = CustomAudioWidget(
-        audioPath: audioUrl,
-        audioSourceType: AudioSourceType.network,
-      );
-      await _storyAudio!.play();
-      logger.d('Playing story audio: $audioUrl');
+      if (!mounted) {
+        _storyIntroAudioStarted = false;
+        return;
+      }
+      final storyProvider = _storyProvider ?? context.read<StoryProvider>();
+      await storyProvider.playAudio(widget.story.audio);
+      logger.d('Playing story audio: ${widget.story.audio}');
     } catch (e) {
+      _storyIntroAudioStarted = false;
       logger.e('Error playing story audio: $e');
     }
   }
 
-  void _disposeStoryAudio() async {
-    try {
-      if (_storyAudio != null) {
-        await _storyAudio!.dispose();
-        _storyAudio = null;
-        logger.d('Story audio disposed');
-      }
-    } catch (e) {
-      logger.e('Error disposing story audio: $e');
-    }
+  void _disposeStoryAudio([StoryProvider? provider]) {
+    _storyIntroAudioStarted = false;
+    (provider ?? _storyProvider)?.stopAudioAndResetIndex();
   }
 
   @override
   void dispose() {
     try {
-      _storyProvider?.stopAudioAndResetIndex();
       _disposeStoryAudio();
     } catch (e) {
       logger.e('Error stopping audio in dispose: $e');
@@ -119,8 +112,15 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   }
 
   /// Gets the background image path if available
-  String? _getBackgroundImage(int idx, List<Content> contentList) {
+  String? _getBackgroundImage(
+    int idx,
+    List<Content> contentList, {
+    bool isMobile = true,
+  }) {
     if (idx > 0 && idx <= contentList.length) {
+      if (!isMobile && contentList[idx - 1].imageTb != null) {
+        return contentList[idx - 1].imageTb;
+      }
       return contentList[idx - 1].image;
     }
     return null;
@@ -129,14 +129,29 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
   /// Builds the full-screen background image widget
   Widget _buildFullScreenBackground(String imagePath) {
     return Positioned.fill(
-      child: CustomImage(
-        imagePath,
-        imageType: CustomImageType.network,
-        boxFit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-      ),
+      child: imagePath.toLowerCase().contains('.svg')
+          ? SvgHelper.fromSource(
+              path: imagePath,
+              type: SvgSourceType.network,
+              fit: BoxFit.cover,
+            )
+          : CustomImage(
+              imagePath,
+              imageType: CustomImageType.network,
+              boxFit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
     );
+  }
+
+  String? _getStoryIntroImage(StoryModel story, bool isMobile) {
+    final image = isMobile ? story.bgImageMobile : story.bgImageTablet;
+    return image != null && image.isNotEmpty ? image : null;
+  }
+
+  Color _getStoryIntroColor(StoryModel story) {
+    return colorFromHex(story.bgColor) ?? AppColors.sunshineYellow;
   }
 
   /// Builds action buttons (close, next) for the story screen
@@ -145,165 +160,23 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
     StoryProvider provider,
   ) {
     return [
-      Positioned(
-        top: 16,
-        right: Dimensions.kIconMargin(context),
-        child: CircularButtonWidget(
-          type: CircularButtonType.close,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+      TopRightPositionedCloseButton(
+        onTap: () {
+          _disposeStoryAudio(provider);
+          Navigator.of(context).pop();
+        },
       ),
-      Positioned(
-        right: Dimensions.kIconMargin(context),
-        top: 0,
-        bottom: 0,
-        child: Center(
-          child: CircularButtonWidget(
-            type: CircularButtonType.rightArrow,
-            onPressed: () {
-              _disposeStoryAudio();
-              provider.nextContent(context);
-            },
-          ),
-        ),
+      CenterRightAlignedForwardButton(
+        onTap: () {
+          _disposeStoryAudio(provider);
+          provider.nextContent(context);
+        },
       ),
     ];
   }
 
   /// Builds the story intro screen
-  Widget _buildStoryIntro(BuildContext context, StoryProvider provider) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            // Background color is handled at parent level to cover whole screen
-            Positioned.fill(
-              child: LayoutBuilder(
-                builder: (context, innerConstraints) {
-                  // Use percentages of full screen height, but account for SafeArea
-                  final screenHeight = MediaQuery.of(context).size.height;
-                  final availableHeight = innerConstraints.maxHeight;
-                  final availableWidth = innerConstraints.maxWidth;
-
-                  // Get SafeArea padding to reserve space at top and bottom
-                  final safeAreaTop = MediaQuery.of(context).padding.top;
-                  final safeAreaBottom = MediaQuery.of(context).padding.bottom;
-
-                  // Calculate fixed sizes as percentages of screen height
-                  // Top padding: 5% of screen height (but ensure we have space for SafeArea)
-                  final topPadding = (screenHeight * 0.05).clamp(
-                    safeAreaTop,
-                    screenHeight,
-                  );
-
-                  // Thumbnail: 50% of screen height
-                  final thumbnailSize = screenHeight * 0.5;
-
-                  // Gap 1: 2% of screen height
-                  final gap1 = screenHeight * 0.02;
-
-                  // Title font size: 8% of screen height (text will take ~10% with line height)
-                  final titleFontSize = screenHeight * 0.08;
-                  final titleHeight =
-                      screenHeight * 0.10; // Reserve space for title
-
-                  // Gap 2: 1.5% of screen height (tablet only)
-                  final gap2 =
-                      PlatformUtility.isTablet(context) &&
-                          PlatformUtility.isLandscape(context)
-                      ? screenHeight * 0.015
-                      : 0.0;
-
-                  // Description font size: 4% of screen height (text will take ~5% with line height)
-                  final descFontSize = screenHeight * 0.04;
-                  final descHeight = widget.story.nameEn.isNotEmpty
-                      ? screenHeight * 0.05
-                      : 0.0;
-
-                  // Calculate total used space
-                  final totalUsed =
-                      topPadding +
-                      thumbnailSize +
-                      gap1 +
-                      titleHeight +
-                      gap2 +
-                      descHeight;
-
-                  // Reserve bottom space for SafeArea
-                  final bottomReserve = safeAreaBottom;
-                  final maxContentHeight = availableHeight - bottomReserve;
-
-                  // Ensure we don't exceed available height - adjust thumbnail if needed
-                  final adjustedThumbnailSize = totalUsed > maxContentHeight
-                      ? thumbnailSize - (totalUsed - maxContentHeight)
-                      : thumbnailSize;
-
-                  return SizedBox(
-                    height: availableHeight,
-                    width: availableWidth,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(height: topPadding),
-                        // Story thumbnail - fixed size
-                        if (widget.story.thumbnail.isNotEmpty)
-                          SizedBox(
-                            width: adjustedThumbnailSize,
-                            height: adjustedThumbnailSize,
-                            child: SvgHelper.fromSource(
-                              path: widget.story.thumbnail,
-                              width: adjustedThumbnailSize,
-                              height: adjustedThumbnailSize,
-                              fit: BoxFit.contain,
-                              type: SvgSourceType.network,
-                            ),
-                          ),
-                        SizedBox(height: gap1),
-                        // Story title - fixed height
-                        SizedBox(
-                          height: titleHeight,
-                          child: Center(
-                            child: Text(
-                              widget.story.nameNp,
-                              style: AppStyles.text24PxBold.copyWith(
-                                fontSize: titleFontSize,
-                                fontFamily: AppConstants.kMuktaFont,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        if (PlatformUtility.isTablet(context) &&
-                            PlatformUtility.isLandscape(context))
-                          SizedBox(height: gap2),
-                        // Story description - fixed height
-                        if (widget.story.nameEn.isNotEmpty)
-                          SizedBox(
-                            height: descHeight,
-                            child: Center(
-                              child: Text(
-                                widget.story.nameEn,
-                                style: AppStyles.text16PxMedium.copyWith(
-                                  color: AppColors.kBlack,
-                                  fontSize: descFontSize,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            ..._buildActionButtons(context, provider),
-          ],
-        );
-      },
-    );
-  }
+  Widget _buildStoryIntro() => const SizedBox.shrink();
 
   /// Builds the story content card
   Widget _buildStoryContent(int idx, List<Content> contentList) {
@@ -326,6 +199,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = PlatformUtility.isMobile(context);
     return Scaffold(
       backgroundColor: AppColors.kSkyBlue,
       body: Builder(
@@ -343,7 +217,14 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
               // Check if current content has background image
               final hasBackgroundImage = _hasBackgroundImage(idx, contentList);
-              final backgroundImage = _getBackgroundImage(idx, contentList);
+              final backgroundImage = _getBackgroundImage(
+                idx,
+                contentList,
+                isMobile: isMobile,
+              );
+              final storyIntroImage = idx == 0
+                  ? _getStoryIntroImage(story, isMobile)
+                  : null;
 
               // Build main content widget
               final mainContent = idx == 0
@@ -351,7 +232,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
                       Misc.onLayoutRendered(() {
                         _playStoryAudio();
                       });
-                      return _buildStoryIntro(context, provider);
+                      return _buildStoryIntro();
                     }()
                   : _buildStoryContent(idx, contentList);
 
@@ -362,12 +243,20 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
 
               // If there's a background image, it should cover the whole screen
               if (hasBackgroundImage && backgroundImage != null) {
+                if (contentList[idx - 1].type == "button_tap2") {
+                  return ButtonTapContent2(
+                    content: contentList[idx - 1],
+                    playAudio: true,
+                    isLast: idx == contentList.length,
+                  );
+                }
                 return Stack(
                   children: [
                     // Background image extends to full screen (behind SafeArea)
                     _buildFullScreenBackground(backgroundImage),
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
                       child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
@@ -378,16 +267,14 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               if (idx == 0) {
                 return Stack(
                   children: [
-                    // Yellow background extends to full screen (behind SafeArea)
                     Positioned.fill(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: AppColors.sunshineYellow,
-                        ),
-                      ),
+                      child: ColoredBox(color: _getStoryIntroColor(story)),
                     ),
+                    if (storyIntroImage != null)
+                      _buildFullScreenBackground(storyIntroImage),
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
                       child: Stack(children: [mainContent, ...actionButtons]),
                     ),
                   ],
@@ -398,6 +285,7 @@ class _StoryContentScreenState extends State<StoryContentScreen> {
               return Container(
                 color: AppColors.kSkyBlue,
                 child: SafeArea(
+                  right: false,
                   child: Stack(children: [mainContent, ...actionButtons]),
                 ),
               );

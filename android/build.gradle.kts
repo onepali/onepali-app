@@ -1,3 +1,6 @@
+import com.android.build.gradle.BaseExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 allprojects {
     repositories {
         google()
@@ -9,7 +12,7 @@ allprojects {
 ext {
     set("compileSdk", 36)
     set("minSdk", 24)
-    set("targetSdk", 35)
+    set("targetSdk", 36)
     set("ndkVersion", "27.0.12077973")
     set("javaVersion", JavaVersion.VERSION_17)
     set("jvmTarget", "17")
@@ -23,12 +26,20 @@ subprojects {
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 subprojects {
-    project.evaluationDependsOn(":app")
-}
-subprojects {
+    afterEvaluate {
+        extensions.findByType<BaseExtension>()?.compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
     tasks.withType<JavaCompile>().configureEach {
         sourceCompatibility = rootProject.extra["jvmTarget"] as String
         targetCompatibility = rootProject.extra["jvmTarget"] as String
+    }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 }
 

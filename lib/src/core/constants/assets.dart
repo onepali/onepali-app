@@ -21,9 +21,7 @@ class Assets {
   static String kidSafeSeal = 'kid_safe_seal'.png;
 
   /// [Image] assets
-  static String splashImage = 'splash'.gif;
-  static String mbSplashImage = 'mb_splash'.mp4;
-  static String tbSplashImage = 'tb_splash'.mp4;
+  static String splashVideo = 'splash'.mp4;
 
   /// [Parent] Zone assets
   static String parentZoneImage = 'pz_danfe'.png;
@@ -45,11 +43,15 @@ class Assets {
   static String logoLottie = 'onepali'.lottie;
   static String leoCharacterLottie = 'leo_character'.lottie;
   static String successLottie = 'success'.lottie;
+  static String successLottie1 = 'success1'.lottie;
   static String logoutLottie = 'hand_weaving'.lottie;
   static String preLoader = 'pre_loader'.lottie;
   static String starRewardLottie = 'rewards_star'.lottie;
+  static String starWinnerLottie = 'stars_winner'.lottie;
   static String alarmExtendLottie = 'alarm_extend'.lottie;
   static String completeConfettiLottie = 'complete_confetti'.lottie;
+  static String confetti1 = 'confetti_1'.lottie;
+  static String confetti2 = 'confetti_2'.lottie;
   static String noInternetLottie = 'no_internet_found'.lottie;
   static String lessonSuccessLottie = 'lesson_success_confetti'.lottie;
 
@@ -62,25 +64,30 @@ class Assets {
   static String wrong = 'wrong'.icon;
   static String closeGreyIcon = 'close_grey_btn'.icon;
   static String check = 'check'.icon;
+  static String tick = 'tick'.icon;
   static String correct = 'correct'.icon;
   static String sound = 'sound'.icon;
+  static String sound1 = 'sound1'.icon;
   static String play = 'play'.icon;
+  static String video = 'video'.icon;
   static String redo = 'redo'.icon;
   static String meta = 'meta'.icon;
   static String youtube = 'youtube'.icon;
-  static String other = 'other'.icon;
+  static String other = 'others'.icon;
   static String google = 'google'.icon;
-  static String blog = 'blog'.icon;
+  static String blog = 'blogs'.icon;
   static String apple = 'apple'.icon;
+  static String facebook = 'facebook'.icon;
   static String search = 'search'.icon;
   static String reward = 'reward'.icon;
-  static String family = 'family'.icon;
+  static String family = 'user-group'.icon;
   static String home = 'home'.icon;
   static String logout = 'logout'.icon;
   static String scrollRightArrow = 'scroll_right_arrow'.icon;
   static String star = 'star'.icon;
   static String unsubscribe = 'unfav'.icon;
   static String email = 'email'.icon;
+  static String pencil = 'pencil'.icon;
 
   ///[ Buttons] assets
   static String checkButton = "check_btn".buttonSvg;
@@ -99,9 +106,11 @@ class Assets {
   static String starAv = 'star'.png;
   static String achievement = 'achievement'.png;
   static String achievementTab = 'achievement_tab'.png;
+  static String rocket = 'rocket'.svg;
 
   /// [Remark] assets
   static String goodRemark = 'good_cat'.remark;
+  static String goodRemark1 = 'good_cat1'.remark;
 
   /// [Home] Menu
   static String games = 'game'.icon;
@@ -130,10 +139,8 @@ class Assets {
       getDrawerIcon(context, 'family');
   static String logoutIcon(BuildContext context) =>
       getDrawerIcon(context, 'logout');
-  static String downloadIcon(BuildContext context) =>
-      getDrawerIcon(context, 'download');
-  static String parentZoneIcon(BuildContext context) =>
-      getDrawerIcon(context, 'parent');
+  static String downloadIcon(BuildContext context) => download;
+  static String parentZoneIcon(BuildContext context) => parentZone;
 
   /// [Json] assets
   // static String user = 'user'.json;
@@ -144,10 +151,13 @@ class Assets {
   static String neJson = 'ne'.json;
 
   /// [Audio] assets
-  static String eww = 'audio/eww'.audio;
+  static String eww = 'audio/sfx/eww'.audio;
+  static String wrongSfx = 'audio/sfx/wrong'.audio;
   static String goodFeedback = 'audio/sfx/good_feedback'.audio;
   static String confettiFeedback = 'audio/sfx/confetti_feedback'.audio;
+  static String storiesComplete = 'audio/sfx/stories_complete'.audio;
   static String starBlast = 'audio/sfx/star_blast.mp3';
+  static String cardFlip = 'audio/sfx/card_flip'.audio;
 }
 
 extension AssetsExtension on String {

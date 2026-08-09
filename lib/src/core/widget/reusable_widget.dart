@@ -5,9 +5,11 @@ import '../../src.dart';
 class ReusableWidget {
   static GestureDetector horizontalIconTitle({
     String? icon,
+    IconData? iconData,
     String? title,
     VoidCallback? onTap,
     double? height,
+    double iconSize = 24,
     TextStyle? textStyle,
   }) {
     return GestureDetector(
@@ -30,11 +32,14 @@ class ReusableWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgHelper.fromSource(
-              path: icon ?? Assets.google,
-              height: 24,
-              width: 24,
-            ),
+            if (iconData != null)
+              Icon(iconData, size: iconSize, color: AppColors.kPitchBlack)
+            else
+              SvgHelper.fromSource(
+                path: icon ?? Assets.google,
+                height: iconSize,
+                width: iconSize,
+              ),
             Gaps.horizontalGapOf(15),
             Text(
               title ?? 'Sign in with Google',

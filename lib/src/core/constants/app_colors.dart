@@ -31,7 +31,8 @@ class AppColors {
 
   /// [Button] Color
   static const Color kButtonGrey = Color(0xFFE1E1E1);
-  static const Color kButtonGreen = Color(0xFF32D0AA);
+  static const Color riverTeal = Color(0xFF32D0AA);
+  static const Color kButtonGreen = riverTeal;
   static const Color kButtonRed = Color(0xFFFF96AA);
 
   /// [Menu] Color
@@ -46,6 +47,9 @@ class AppColors {
   static const Color infoColor = Color(0xFF2196F3);
   static const Color thumbColor = Color(0xFFFFD200);
   static const Color heartColor = Color(0xFFDC143C);
+
+  // Other colors
+  static const Color kStoneGrey = Color(0xFFCDCDCD);
 
   static const List<Color> learningColors = [
     Color(0xFFFF6B6B), // learningRed
@@ -76,7 +80,7 @@ class AppColors {
   ];
 
   static const List<Color> rewardCollectionColors = [
-    kOrange,
+    thumbColor,
     kPurple,
     kRed,
     kTeal,

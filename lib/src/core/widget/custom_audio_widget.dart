@@ -2,16 +2,34 @@ import 'package:audioplayers/audioplayers.dart';
 import '../../core/enums/app_enums.dart';
 
 class CustomAudioWidget {
+  static final Set<CustomAudioWidget> _instances = {};
+
+  static Future<void> stopAll() async {
+    await Future.wait(
+      _instances.toList().map((instance) async {
+        try {
+          await instance.stop();
+        } catch (_) {
+          // Best-effort route cleanup should not surface stale player errors.
+        }
+      }),
+      eagerError: false,
+    );
+  }
+
   final String audioPath;
   final AudioSourceType audioSourceType;
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPreloaded = false;
+  bool _isDisposed = false;
   Source? _cachedSource;
 
   CustomAudioWidget({
     required this.audioPath,
     this.audioSourceType = AudioSourceType.asset,
-  });
+  }) {
+    _instances.add(this);
+  }
 
   AudioPlayer get audioPlayer => _audioPlayer;
 
@@ -27,10 +45,11 @@ class CustomAudioWidget {
   }
 
   Future<void> preload() async {
-    if (_isPreloaded) return;
+    if (_isPreloaded || _isDisposed) return;
 
     try {
       _cachedSource = _getSource();
+      if (_isDisposed) return;
       await _audioPlayer.setSource(_cachedSource!);
       _isPreloaded = true;
     } catch (e) {
@@ -39,6 +58,8 @@ class CustomAudioWidget {
   }
 
   Future<void> play() async {
+    if (_isDisposed) return;
+
     final audioContext = AudioContext(
       android: AudioContextAndroid(
         stayAwake: false,
@@ -54,10 +75,19 @@ class CustomAudioWidget {
 
     final source = _cachedSource ?? _getSource();
 
+    if (_isDisposed) return;
     await _audioPlayer.play(source, ctx: audioContext);
   }
 
+  Future<void> stop() async {
+    if (_isDisposed) return;
+    await _audioPlayer.stop();
+  }
+
   Future<void> dispose() async {
+    if (_isDisposed) return;
+    _isDisposed = true;
+    _instances.remove(this);
     await _audioPlayer.stop();
     await _audioPlayer.dispose();
   }

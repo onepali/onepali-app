@@ -1,8 +1,11 @@
-// import 'dart:math';
+import 'dart:async';
+
+import 'dart:math' as math;
 
 // import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import 'tap_send_lesson_card.dart';
@@ -138,6 +141,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       }
 
       // Reset audio state first to ensure clean start
+      _audioProvider = audioProvider;
+      await _stopLessonAudio();
       audioProvider.resetAudioState();
       // Don't set the audioProvider index here, we'll handle it per content
     });
@@ -159,10 +164,17 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     _saveCurrentProgress();
 
     // Clean up audio when leaving the screen
-    _audioProvider?.stopAudio();
+    unawaited(_stopLessonAudio());
 
     MetricsTrackingHelper.endLearningSessionSafe();
     super.dispose();
+  }
+
+  Future<void> _stopLessonAudio() async {
+    await Future.wait([
+      _audioProvider?.stopAudio() ?? Future<void>.value(),
+      CustomAudioWidget.stopAll(),
+    ], eagerError: false);
   }
 
   void _saveCurrentProgress() {
@@ -196,8 +208,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     }
   }
 
-  void _nextContent() {
+  Future<void> _nextContent() async {
     if (_currentContentIndex < widget.lesson.lessonContent.length) {
+      await _stopLessonAudio();
+      if (!mounted) return;
       setState(() {
         _currentContentIndex++;
       });
@@ -228,6 +242,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
   }
 
   Future<void> _completeRegularLesson() async {
+    await _stopLessonAudio();
+    if (!mounted) return;
     setState(() {
       _showGoodRemark = true;
     });
@@ -257,8 +273,10 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     });
   }
 
-  void _previousContent() {
+  Future<void> _previousContent() async {
     if (_currentContentIndex > 0) {
+      await _stopLessonAudio();
+      if (!mounted) return;
       setState(() {
         _currentContentIndex--;
       });
@@ -312,7 +330,8 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     final isAnimalLesson =
         currentContent?.type == 'tap_target' ||
         currentContent?.type == 'drag_to_match';
-    final isDragToMatch = currentContent?.type == "drag_to_match";
+    final isDragToMatch = currentContent?.type == 'drag_to_match';
+
     return [
       // Show audio icon for all items in tap-target and drag-to-match, or for last item in other types
       if (widget.hasSound && (isAnimalLesson || contentListLength == idx))
@@ -327,16 +346,13 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
             ),
           ),
         ),
-      Positioned(
-        top: 16,
-        right: 0,
-        child: CircularButtonWidget(
-          type: CircularButtonType.close,
-          onPressed: () {
-            _saveCurrentProgress();
-            Navigator.of(context).pop();
-          },
-        ),
+      TopRightPositionedCloseButton(
+        onTap: () async {
+          await _stopLessonAudio();
+          if (!mounted) return;
+          _saveCurrentProgress();
+          Navigator.of(context).pop();
+        },
       ),
     ];
   }
@@ -360,43 +376,46 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
           left: 0,
           right: 0,
           child: Center(
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.kWhite.withValues(alpha: 0.95),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.kBlack.withValues(alpha: 0.2),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomImage(
-                    Assets.goodRemark,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    imageType: CustomImageType.local,
-                  ),
-                  Gaps.verticalGapOf(16),
-                  Text(
-                    'Excellent Work!',
-                    style: AppStyles.text24PxBold.copyWith(
-                      color: AppColors.kButtonGreen,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.kWhite.withValues(alpha: 0.95),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.kBlack.withValues(alpha: 0.2),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
                     ),
-                  ),
-                  Gaps.verticalGapOf(8),
-                  Text(
-                    'Lesson Completed Successfully',
-                    style: AppStyles.text16PxMedium.copyWith(
-                      color: AppColors.kSecondaryColor,
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomImage(
+                      Assets.goodRemark,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      imageType: CustomImageType.local,
                     ),
-                  ),
-                ],
+                    Gaps.verticalGapOf(16),
+                    Text(
+                      'Excellent Work!',
+                      style: AppStyles.text24PxBold.copyWith(
+                        color: AppColors.kButtonGreen,
+                      ),
+                    ),
+                    Gaps.verticalGapOf(8),
+                    Text(
+                      'Lesson Completed Successfully',
+                      style: AppStyles.text16PxMedium.copyWith(
+                        color: AppColors.kSecondaryColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -539,7 +558,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 child: Center(
                   child: CircularButtonWidget(
                     type: CircularButtonType.rightArrow,
-                    onPressed: _nextContent,
+                    onPressed: () => unawaited(_nextContent()),
                   ),
                 ),
               ),
@@ -570,16 +589,35 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
       return LayoutBuilder(
         builder: (context, constraints) {
           final availableWidth = constraints.maxWidth;
-          // Percentage-based layout: 10% left arrow, 40% animation, 35% text/audio, 10% right arrow
-          // 3 padding sections of 1.67% each = 5% total padding
-          final leftArrowWidth = availableWidth * 0.10;
-          final animationBoxWidth = availableWidth * 0.40;
-          final textAudioWidth = availableWidth * 0.35;
-          final rightArrowWidth = availableWidth * 0.10;
           final padding =
               availableWidth *
               (0.05 /
                   3); // ~1.67% padding between sections to total exactly 100%
+          final minArrowSlotWidth = Dimensions.iconSizeLarge;
+          final arrowSlotWidth = availableWidth * 0.10 < minArrowSlotWidth
+              ? minArrowSlotWidth
+              : availableWidth * 0.10;
+          final contentEdgeGap = padding < 24 ? 24.0 : padding;
+          final contentAreaWidth = math.max(
+            0.0,
+            availableWidth -
+                (arrowSlotWidth * 2) -
+                (contentEdgeGap * 2) -
+                padding,
+          );
+          final availableHeight = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : MediaQuery.sizeOf(context).height;
+          final preferredAnimationBoxWidth = contentAreaWidth * (0.40 / 0.75);
+          final maxAnimationBoxWidthForHeight = availableHeight / 0.65625;
+          final animationBoxWidth = math.min(
+            preferredAnimationBoxWidth,
+            maxAnimationBoxWidthForHeight,
+          );
+          final textAudioWidth = math.max(
+            0.0,
+            contentAreaWidth - animationBoxWidth,
+          );
 
           return SizedBox(
             width: availableWidth,
@@ -589,15 +627,15 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               children: [
                 // Left arrow: fixed 10% width, centered like right arrow
                 SizedBox(
-                  width: leftArrowWidth,
+                  width: arrowSlotWidth,
                   child: Center(
                     child: CircularButtonWidget(
                       type: CircularButtonType.leftArrow,
-                      onPressed: _previousContent,
+                      onPressed: () => unawaited(_previousContent()),
                     ),
                   ),
                 ),
-                SizedBox(width: padding),
+                SizedBox(width: contentEdgeGap),
 
                 // Animation box: fixed 40% width, with constraints to prevent overflow
                 SizedBox(
@@ -614,7 +652,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: padding),
+                SizedBox(width: contentEdgeGap),
 
                 // Text and audio area: fixed 35% width
                 SizedBox(
@@ -697,26 +735,32 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                               if (widget.hasSound &&
                                   content.wordAudio?.isNotEmpty == true) ...[
                                 SizedBox(height: verticalSpacing),
-                                CustomAvatarGlow(
-                                  glowColor: AppColors.kSecondaryColor,
-                                  glowShape: BoxShape.circle,
-                                  visible: isPlaying,
-                                  glowRadiusFactor: 0.2,
-                                  child: CircularButtonWidget(
-                                    type: CircularButtonType.sound,
-                                    onPressed: () async {
-                                      try {
-                                        final audioProvider = context
-                                            .read<LessonAudioProvider>();
-                                        await audioProvider.playWordAudio(
-                                          content.wordAudio ?? '',
-                                        );
-                                      } catch (e) {
-                                        logger.e(
-                                          'Error playing word audio: $e',
-                                        );
-                                      }
-                                    },
+                                SizedBox.square(
+                                  dimension:
+                                      Dimensions.kIconSize(context) * 1.4,
+                                  child: Center(
+                                    child: CustomAvatarGlow(
+                                      glowColor: AppColors.kSecondaryColor,
+                                      glowShape: BoxShape.circle,
+                                      visible: isPlaying,
+                                      glowRadiusFactor: 0.2,
+                                      child: CircularButtonWidget(
+                                        type: CircularButtonType.sound,
+                                        onPressed: () async {
+                                          try {
+                                            final audioProvider = context
+                                                .read<LessonAudioProvider>();
+                                            await audioProvider.playWordAudio(
+                                              content.wordAudio ?? '',
+                                            );
+                                          } catch (e) {
+                                            logger.e(
+                                              'Error playing word audio: $e',
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -732,16 +776,16 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                 // Right arrow: fixed 10% width (or empty space if last item)
                 if (!isLast)
                   SizedBox(
-                    width: rightArrowWidth,
+                    width: arrowSlotWidth,
                     child: Center(
                       child: CircularButtonWidget(
                         type: CircularButtonType.rightArrow,
-                        onPressed: _nextContent,
+                        onPressed: () => unawaited(_nextContent()),
                       ),
                     ),
                   )
                 else
-                  SizedBox(width: rightArrowWidth),
+                  SizedBox(width: arrowSlotWidth),
               ],
             ),
           );
@@ -765,7 +809,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               padding: EdgeInsets.only(left: Dimensions.kIconMargin(context)),
               child: CircularButtonWidget(
                 type: CircularButtonType.leftArrow,
-                onPressed: _previousContent,
+                onPressed: () => unawaited(_previousContent()),
               ),
             ),
 
@@ -777,9 +821,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     isPlaying: false,
                     isLastItem: isLast,
                     onCorrectAnswer: () {
-                      _nextContent();
+                      unawaited(_nextContent());
                     },
                     onLessonComplete: () async {
+                      await _audioProvider?.stopAudio();
+                      if (!mounted) return;
                       await _saveProgress(content, contentIndex);
                       // For tap_send lessons, don't trigger the main lesson completion
                       // as TapSendLessonCard handles its own animation
@@ -817,9 +863,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     isPlaying: false,
                     isLastItem: isLast,
                     onCorrectAnswer: () {
-                      _nextContent();
+                      unawaited(_nextContent());
                     },
                     onLessonComplete: () async {
+                      await _audioProvider?.stopAudio();
+                      if (!mounted) return;
                       await _saveProgress(content, contentIndex);
                       // For tap_target lessons, handle completion
                       try {
@@ -855,9 +903,11 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     isPlaying: false,
                     isLastItem: isLast,
                     onCorrectAnswer: () {
-                      _nextContent();
+                      unawaited(_nextContent());
                     },
                     onLessonComplete: () async {
+                      await _audioProvider?.stopAudio();
+                      if (!mounted) return;
                       logger.d(
                         'DragToMatchLessonCard onLessonComplete callback started',
                       );
@@ -913,7 +963,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
               padding: EdgeInsets.only(right: Dimensions.kIconMargin(context)),
               child: CircularButtonWidget(
                 type: CircularButtonType.rightArrow,
-                onPressed: _nextContent,
+                onPressed: () => unawaited(_nextContent()),
               ),
             ),
         ],
@@ -997,12 +1047,12 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
     logger.d(
       'LessonContentScreen: total: ${contentList.length}, current: $idx, remaining: ${contentList.length - idx}',
     );
-
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, value) {
         if (didPop) {
           logger.d('PopScope: onPopInvoked called');
+          unawaited(_stopLessonAudio());
           _saveCurrentProgress();
         }
       },
@@ -1056,6 +1106,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                     if (isAnimalLesson) mainContent,
                     // Content with SafeArea for interactive elements
                     SafeArea(
+                      right: false,
                       child: Stack(
                         children: [
                           ...actionButtons,
@@ -1095,6 +1146,7 @@ class _LessonContentScreenState extends State<LessonContentScreen> {
                   if (isAnimalLesson) mainContent,
                   // Content with SafeArea for interactive elements
                   SafeArea(
+                    right: false,
                     child: Stack(
                       children: [
                         ...actionButtons,

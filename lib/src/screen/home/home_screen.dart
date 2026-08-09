@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/screen/song/songs_category_grid.dart';
 import 'package:onepali/src/src.dart';
-import 'package:onepali/src/screen/course/lesson/widget/recommended_lessons_list.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -56,10 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  double _getCardHeight(BuildContext context) {
-    return AppCardResponsive.getDashboardCardHeight(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     // Check if user is guest
@@ -82,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
     }
-
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -90,25 +85,27 @@ class _HomeScreenState extends State<HomeScreen> {
           // Gaps.verticalGapOf(10),
           if (_selectedTabIndex == 0) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedLessonCard(context),
-              Gaps.verticalGapOf(10),
-            ],
-            _buildLessons(context),
+            // if (!isGuest) ...[
+            //   _buildRecommendedLessonCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
+            // _buildLessons(context),
+            CourseScreen(),
           ] else if (_selectedTabIndex == 1) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedSongCard(context),
-              Gaps.verticalGapOf(10),
-            ],
-            _buildSongCard(context),
+            // if (!isGuest) ...[
+            //   _buildRecommendedSongCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
+            // _buildSongCard(context),
+            SongsCategoryGrid(),
           ] else if (_selectedTabIndex == 2) ...[
             // Only show recommended card for non-guest users
-            if (!isGuest) ...[
-              _buildRecommendedStoryCard(context),
-              Gaps.verticalGapOf(10),
-            ],
-            _buildStories(context),
+            // if (!isGuest) ...[
+            //   _buildRecommendedStoryCard(context),
+            //   Gaps.verticalGapOf(10),
+            // ],
+            StoryScreen(),
           ],
         ],
       ),
@@ -153,175 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
       onRetry: onRetry,
       isInternetError: true,
       isDataError: false,
-    );
-  }
-
-  Consumer<RecommendedLessonProvider> _buildRecommendedLessonCard(
-    BuildContext context,
-  ) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return Consumer<RecommendedLessonProvider>(
-      builder: (context, provider, child) {
-        if (!(provider.hasData)) return const SizedBox();
-        return TitleActionChild(
-          title: 'Recommended lessons',
-          titlePadding: EdgeInsets.only(
-            bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-          ),
-          titleStyle: AppStyles.text20PxSemiBold.copyWith(
-            color: AppColors.kBlack,
-            fontSize: isTabletLandscape ? 24 : 20,
-            fontWeight: FontWeight.bold,
-          ),
-
-          child: SizedBox(
-            height: _getCardHeight(context),
-            child: RecommendedLessonsList(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLessons(BuildContext context) {
-    bool isTablet = PlatformUtility.isTablet(context);
-    double lessonCardHeight = isTablet
-        ? AppCardResponsive.getLessonCardHeight(context) *
-              0.8 // 20% smaller for tablets
-        : AppCardResponsive.getLessonCardHeight(context);
-    return SizedBox(
-      height: lessonCardHeight + 50,
-      child: CourseScreen(isMobile: false),
-    );
-  }
-
-  Widget _buildSongCard(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return TitleActionChild(
-      title: 'Songs',
-      titlePadding: EdgeInsets.only(
-        bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-      ),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(
-        color: AppColors.kBlack,
-        fontSize:
-            PlatformUtility.isTablet(context) &&
-                PlatformUtility.isLandscape(context)
-            ? 24
-            : 20,
-        fontWeight: FontWeight.bold,
-      ),
-      subTitle: 'View all',
-      subTitleStyle: AppStyles.text14PxMedium.copyWith(
-        color: AppColors.kSecondaryColor,
-        fontWeight: FontWeight.w500,
-        fontSize:
-            PlatformUtility.isTablet(context) &&
-                PlatformUtility.isLandscape(context)
-            ? 18
-            : 14,
-      ),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => SongScreen(showCategoryList: true)),
-        );
-      },
-      child: SizedBox(height: _getCardHeight(context), child: SongScreen()),
-    );
-  }
-
-  Widget _buildRecommendedSongCard(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return Consumer<RcmSongProvider>(
-      builder: (context, provider, child) {
-        if (!provider.hasData) return const SizedBox();
-        return TitleActionChild(
-          title: 'Recommended songs',
-          titlePadding: EdgeInsets.only(
-            bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-          ),
-          titleStyle: AppStyles.text20PxSemiBold.copyWith(
-            color: AppColors.kBlack,
-            fontSize: isTabletLandscape ? 24 : 20,
-            fontWeight: FontWeight.bold,
-          ),
-          child: SizedBox(
-            height: _getCardHeight(context),
-            child: RecommendedSongScreen(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildRecommendedStoryCard(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-
-    return Consumer<RecommendedStoryProvider>(
-      builder: (context, provider, child) {
-        if (!provider.hasData) return const SizedBox();
-        return TitleActionChild(
-          title: 'Recommended stories',
-          titlePadding: EdgeInsets.only(
-            bottom: isTabletLandscape ? 21 : 8,
-            left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-          ),
-          titleStyle: AppStyles.text20PxSemiBold.copyWith(
-            color: AppColors.kBlack,
-            fontSize: isTabletLandscape ? 24 : 20,
-            fontWeight: FontWeight.bold,
-          ),
-          child: SizedBox(
-            height: _getCardHeight(context),
-            child: RecommendedStoriesList(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildStories(BuildContext context) {
-    bool isTabletLandscape =
-        PlatformUtility.isTablet(context) &&
-        PlatformUtility.isLandscape(context);
-    bool isMobileLandscape =
-        PlatformUtility.isMobile(context) &&
-        PlatformUtility.isLandscape(context);
-    return TitleActionChild(
-      title: 'Level 1',
-      titlePadding: EdgeInsets.only(
-        bottom: isTabletLandscape ? 21 : 8,
-        left: isTabletLandscape ? 24 : (isMobileLandscape ? 20 : 16),
-      ),
-      titleStyle: AppStyles.text20PxSemiBold.copyWith(
-        color: AppColors.kBlack,
-        fontSize: isTabletLandscape ? 24 : 20,
-        fontWeight: FontWeight.bold,
-      ),
-      child: SizedBox(height: _getCardHeight(context), child: StoryScreen()),
     );
   }
 }

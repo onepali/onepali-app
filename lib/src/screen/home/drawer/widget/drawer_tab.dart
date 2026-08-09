@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -92,7 +93,7 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: 11,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -111,30 +112,24 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 ),
               ),
               // Settings section
-              Expanded(flex: 1, child: _buildSettingsSection()),
+              Expanded(flex: 9, child: _buildSettingsSection()),
             ],
           ),
           // Close button positioned consistently
-          Positioned(
-            top: 16,
-            right: Dimensions.kIconMargin(context),
-            child: CircularButtonWidget(
-              type: CircularButtonType.closeGrey,
-              onPressed: () async {
-                final isParentLogged =
-                    await ParentLocalStorage.isParentLogged();
-                logger.d('isParentLogged: $isParentLogged');
-                if (isParentLogged) {
-                  UserAppBar.setTabIndex(0);
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.parentDashboardScreen,
-                    (route) => false,
-                  );
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
+          TopRightPositionedCloseButton(
+            onTap: () async {
+              final isParentLogged = await ParentLocalStorage.isParentLogged();
+              logger.d('isParentLogged: $isParentLogged');
+              if (isParentLogged) {
+                UserAppBar.setTabIndex(0);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.parentDashboardScreen,
+                  (route) => false,
+                );
+              } else {
+                Navigator.pop(context);
+              }
+            },
           ),
         ],
       ),
@@ -185,22 +180,24 @@ class _TabDrawerScreenState extends State<TabDrawerScreen> {
                 ),
               ),
               Gaps.verticalGapOf(16),
-              customInkwell(
-                onTap: () {
-                  final targetChild = widget.data[index];
-                  Utility.navigateMaterialRoute(
-                    context,
-                    AchievementScreen(
-                      name: targetChild.fullName,
-                      profileImage: targetChild.avatarUrl,
-                      childId: targetChild.uid,
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.local_police,
-                  size: 64,
-                  color: AppColors.kYellow,
+              Flexible(
+                child: customInkwell(
+                  onTap: () {
+                    final targetChild = widget.data[index];
+                    Utility.navigateMaterialRoute(
+                      context,
+                      AchievementScreen(
+                        name: targetChild.fullName,
+                        profileImage: targetChild.avatarUrl,
+                        childId: targetChild.uid,
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.local_police,
+                    size: 64,
+                    color: AppColors.kYellow,
+                  ),
                 ),
               ),
             ],

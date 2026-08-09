@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onepali/src/src.dart';
 
 /// A reusable Cupertino-style date picker that shows a bottom sheet when tapped.
@@ -20,7 +21,13 @@ class CupertinoDatePickerField extends StatefulWidget {
   final int maxYear;
   final DateTime? lastDate;
   final String? label;
+  final double? labelWidth;
+  final double? labelGap;
+  final String? placeholder;
+  final bool selectOnPickerTap;
+  final double? verticalPadding;
   final TextStyle? textStyle;
+  final TextStyle? labelStyle;
   final BoxDecoration? decoration;
   final String? Function(DateTime)? validator;
   final String? errorText;
@@ -35,7 +42,13 @@ class CupertinoDatePickerField extends StatefulWidget {
     this.maxYear = 2100,
     this.lastDate,
     this.label,
+    this.labelWidth,
+    this.labelGap,
+    this.placeholder,
+    this.selectOnPickerTap = false,
+    this.verticalPadding,
     this.textStyle,
+    this.labelStyle,
     this.decoration,
     this.validator,
     this.errorText,
@@ -53,11 +66,13 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
   final TextEditingController _monthController = TextEditingController();
   final TextEditingController _combinedController = TextEditingController();
   bool _showYearInput = false;
+  late bool _hasSelection;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.initialDate;
+    _hasSelection = widget.placeholder == null;
     _yearController.text = selectedDate.year.toString();
     _monthController.text = selectedDate.month.toString();
     _updateCombinedController();
@@ -171,6 +186,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
   }
 
   Future<void> _showPicker(BuildContext context) async {
+    _dismissTextInput();
     setState(() {
       _error = null;
     });
@@ -187,6 +203,11 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
     final double handleWidth = isTabletPortrait ? 50.0 : 40.0;
     final double handleHeight = isTabletPortrait ? 5.0 : 4.0;
     final double pickerHeight = isTabletPortrait ? 240.0 : 200.0;
+    final bool selectOnPickerTap =
+        widget.selectOnPickerTap && !widget.showMonth && !widget.showDay;
+    if (selectOnPickerTap) {
+      _showYearInput = false;
+    }
 
     await showDialog<void>(
       context: context,
@@ -225,33 +246,35 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                       height: handleHeight,
                       width: handleWidth,
                     ),
-                    Gaps.verticalGapOf(16),
-                    // Year/Month input toggle button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomTextButton(
-                          textStyle: AppStyles.text14PxMedium.copyWith(
-                            color: AppColors.kButtonGreen,
-                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                    if (!selectOnPickerTap) ...[
+                      Gaps.verticalGapOf(16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomTextButton(
+                            textStyle: AppStyles.text14PxMedium.copyWith(
+                              color: AppColors.kButtonGreen,
+                              fontSize: isTabletPortrait ? 20.0 : 14.0,
+                            ),
+                            text: _showYearInput
+                                ? 'Use Picker'
+                                : (widget.showMonth
+                                      ? 'Enter Year & Month'
+                                      : 'Enter Year'),
+                            onPressed: () {
+                              setModalState(() {
+                                _showYearInput = !_showYearInput;
+                                if (!_showYearInput) {
+                                  _updateCombinedController();
+                                }
+                              });
+                            },
                           ),
-                          text: _showYearInput
-                              ? 'Use Picker'
-                              : (widget.showMonth
-                                    ? 'Enter Year & Month'
-                                    : 'Enter Year'),
-                          onPressed: () {
-                            setModalState(() {
-                              _showYearInput = !_showYearInput;
-                              if (!_showYearInput) {
-                                _updateCombinedController();
-                              }
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    Gaps.verticalGapOf(8), // Year/Month input field or picker
+                        ],
+                      ),
+                      Gaps.verticalGapOf(8),
+                    ] else
+                      Gaps.verticalGapOf(16),
                     _showYearInput
                         ? Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -313,66 +336,91 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
                               minYear: widget.minYear,
                               maxYear: widget.maxYear,
                               lastDate: maxDate,
+                              onItemTap: selectOnPickerTap
+                                  ? (date) {
+                                      final error = widget.validator?.call(
+                                        date,
+                                      );
+
+                                      if (error != null) {
+                                        setModalState(() => _error = error);
+                                        return;
+                                      }
+
+                                      _dismissTextInput();
+                                      Navigator.of(context).pop();
+                                      setState(() {
+                                        selectedDate = date;
+                                        _hasSelection = true;
+                                        widget.onDateChanged(date);
+                                        _error = null;
+                                        _updateCombinedController();
+                                      });
+                                    }
+                                  : null,
                             ),
                           ),
-                    Gaps.verticalGapOf(16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CustomTextButton(
-                          text: 'Cancel',
-                          textStyle: AppStyles.text14PxMedium.copyWith(
-                            color: AppColors.kGrey,
-                            fontSize: isTabletPortrait ? 20.0 : 14.0,
+                    if (!selectOnPickerTap) ...[
+                      Gaps.verticalGapOf(16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          CustomTextButton(
+                            text: 'Cancel',
+                            textStyle: AppStyles.text14PxMedium.copyWith(
+                              color: AppColors.kGrey,
+                              fontSize: isTabletPortrait ? 20.0 : 14.0,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        Gaps.horizontalGapOf(8),
-                        CustomTextButton(
-                          text: 'Select',
-                          textStyle: AppStyles.text14PxMedium.copyWith(
-                            color: AppColors.kButtonGreen,
-                            fontSize: isTabletPortrait ? 20.0 : 14.0,
-                          ),
-                          onPressed: () {
-                            String? error;
+                          Gaps.horizontalGapOf(8),
+                          CustomTextButton(
+                            text: 'Select',
+                            textStyle: AppStyles.text14PxMedium.copyWith(
+                              color: AppColors.kButtonGreen,
+                              fontSize: isTabletPortrait ? 20.0 : 14.0,
+                            ),
+                            onPressed: () {
+                              String? error;
 
-                            // Validate based on input method
-                            if (_showYearInput) {
-                              error = _validateCombined(
-                                _combinedController.text,
-                              );
-                              if (error == null) {
-                                final parsedDate = _parseCombinedInput(
+                              // Validate based on input method
+                              if (_showYearInput) {
+                                error = _validateCombined(
                                   _combinedController.text,
                                 );
-                                if (parsedDate != null) {
-                                  tempDate = parsedDate;
+                                if (error == null) {
+                                  final parsedDate = _parseCombinedInput(
+                                    _combinedController.text,
+                                  );
+                                  if (parsedDate != null) {
+                                    tempDate = parsedDate;
+                                  }
                                 }
                               }
-                            }
 
-                            // Apply widget validator if provided
-                            error ??= widget.validator?.call(tempDate);
+                              // Apply widget validator if provided
+                              error ??= widget.validator?.call(tempDate);
 
-                            if (error != null) {
-                              setModalState(() => _error = error);
-                            } else {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                selectedDate = tempDate;
-                                widget.onDateChanged(tempDate);
-                                _error = null;
-                                _updateCombinedController();
-                              });
-                            }
-                          },
-                        ),
-                        Gaps.horizontalGapOf(16),
-                      ],
-                    ),
+                              if (error != null) {
+                                setModalState(() => _error = error);
+                              } else {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  selectedDate = tempDate;
+                                  _hasSelection = true;
+                                  widget.onDateChanged(tempDate);
+                                  _error = null;
+                                  _updateCombinedController();
+                                });
+                              }
+                            },
+                          ),
+                          Gaps.horizontalGapOf(16),
+                        ],
+                      ),
+                    ],
                     if (_error != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0, bottom: 8),
@@ -392,6 +440,12 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
         );
       },
     );
+    _dismissTextInput();
+  }
+
+  void _dismissTextInput() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
   }
 
   String get _displayText {
@@ -411,7 +465,8 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing and styling
-    final double verticalPadding = isTabletPortrait ? 16.0 : 12.0;
+    final double verticalPadding =
+        widget.verticalPadding ?? (isTabletPortrait ? 16.0 : 12.0);
     final double horizontalPadding = isTabletPortrait ? 16.0 : 12.0;
     final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
     final double iconSize = isTabletPortrait ? 28.0 : 24.0;
@@ -421,9 +476,25 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
         (isTabletPortrait
             ? AppStyles.text18PxMedium
             : AppStyles.text16PxMedium);
+    final TextStyle labelStyle =
+        widget.labelStyle ??
+        (isTabletPortrait
+            ? AppStyles.text18PxSemiBold
+            : AppStyles.text14PxSemiBold);
+    final TextStyle placeholderStyle =
+        (isTabletPortrait
+                ? AppStyles.text16PxRegular
+                : AppStyles.text14PxRegular)
+            .copyWith(color: AppColors.kGrey);
+    final String fieldText = _hasSelection
+        ? _displayText
+        : (widget.placeholder ?? _displayText);
 
     return GestureDetector(
-      onTap: () => _showPicker(context),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        _showPicker(context);
+      },
       child: Container(
         padding: EdgeInsets.symmetric(
           vertical: verticalPadding,
@@ -438,8 +509,24 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
             ),
         child: Row(
           children: [
-            Text(_displayText, style: textStyle),
-            Spacer(),
+            if (widget.label?.isNotEmpty == true) ...[
+              SizedBox(
+                width: widget.labelWidth,
+                child: Text(
+                  widget.label!,
+                  style: labelStyle,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Gaps.horizontalGapOf(widget.labelGap ?? horizontalPadding),
+            ],
+            Expanded(
+              child: Text(
+                fieldText,
+                style: _hasSelection ? textStyle : placeholderStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             Icon(
               Icons.keyboard_arrow_down_rounded,
               color: Colors.grey,
@@ -456,6 +543,7 @@ class _CupertinoDatePickerFieldState extends State<CupertinoDatePickerField> {
 class _CupertinoDatePickerWidget extends StatefulWidget {
   final DateTime initialDate;
   final ValueChanged<DateTime> onDateChanged;
+  final ValueChanged<DateTime>? onItemTap;
   final bool showMonth;
   final bool showDay;
   final int minYear;
@@ -470,6 +558,7 @@ class _CupertinoDatePickerWidget extends StatefulWidget {
     required this.minYear,
     required this.maxYear,
     this.lastDate,
+    this.onItemTap,
   });
 
   @override
@@ -529,12 +618,29 @@ class _CupertinoDatePickerWidgetState
         },
         children: [
           for (int i = widget.minYear; i <= maxYear; i++)
-            Center(
-              child: Text(
-                i.toString(),
-                style: isTabletPortrait
-                    ? AppStyles.text28PxMedium
-                    : AppStyles.text16PxMedium,
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                setState(() {
+                  selectedYear = i;
+                  if (selectedDay > daysInMonth) selectedDay = daysInMonth;
+                });
+                _onChanged();
+                widget.onItemTap?.call(
+                  DateTime(
+                    selectedYear,
+                    widget.showMonth ? selectedMonth : 1,
+                    widget.showDay ? selectedDay : 1,
+                  ),
+                );
+              },
+              child: Center(
+                child: Text(
+                  i.toString(),
+                  style: isTabletPortrait
+                      ? AppStyles.text28PxMedium
+                      : AppStyles.text16PxMedium,
+                ),
               ),
             ),
         ],

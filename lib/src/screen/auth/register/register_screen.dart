@@ -9,10 +9,9 @@ class RegisterScreen extends StatelessWidget {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing and styling
-    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double topPadding = isTabletPortrait ? 48.0 : 32.0;
-    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
-    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double buttonHeight = AuthOnboardingLayout.buttonHeight(context);
+    final double buttonRadius = AuthOnboardingLayout.buttonRadius(context);
     final double titleGap = isTabletPortrait ? 12.0 : 8.0;
     final double subtitleGap = isTabletPortrait ? 32.0 : 24.0;
     final double stepGap = isTabletPortrait ? 28.0 : 18.0;
@@ -22,7 +21,6 @@ class RegisterScreen extends StatelessWidget {
     final double stepLineWidth = isTabletPortrait ? 5.0 : 4.0;
     final double stepLineHeight = isTabletPortrait ? 40.0 : 25.0;
     final double stepTextSpacing = isTabletPortrait ? 20.0 : 16.0;
-    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
 
     final TextStyle buttonTextStyle = isTabletPortrait
         ? AppStyles.text20PxMedium
@@ -41,14 +39,9 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: ''),
       backgroundColor: AppColors.kWhite,
-      body: Padding(
-        padding: EdgeInsets.only(
-          left: horizontalPadding,
-          right: horizontalPadding,
-          top: topPadding,
-          bottom: 0.0,
-        ),
-        child: Column(
+      body: AuthOnboardingLayout(
+        topPadding: topPadding,
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -105,39 +98,18 @@ class RegisterScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: bottomPadding,
-            vertical: bottomPadding,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.kWhite,
-            // boxShadow: [
-            //   BoxShadow(
-            //     color: AppColors.kGrey.withValues(alpha: 0.2),
-            //     spreadRadius: 0,
-            //     blurRadius: 2,
-            //     offset: Offset(0, -1),
-            //   ),
-            // ],
-          ),
-          child: Builder(
-            builder: (context) => CustomMaterialButton(
-              label: 'Continue',
-              onTap: () {
-                Utility.navigate(context, AppRoutes.rs1Screen);
-              },
-              elevation: 0,
-              radius: buttonRadius,
-              height: buttonHeight,
-              showBorder: false,
-              backgroundColor: AppColors.kButtonGreen,
-              width: double.infinity,
-              textStyle: buttonTextStyle,
-            ),
-          ),
+        bottomAction: CustomMaterialButton(
+          label: 'Continue',
+          onTap: () {
+            Utility.navigate(context, AppRoutes.rs1Screen);
+          },
+          elevation: 0,
+          radius: buttonRadius,
+          height: buttonHeight,
+          showBorder: false,
+          backgroundColor: AppColors.kButtonGreen,
+          width: double.infinity,
+          textStyle: buttonTextStyle,
         ),
       ),
     );

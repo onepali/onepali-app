@@ -75,6 +75,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   // Preloaded audio widgets for faster playback
   final Map<String, CustomAudioWidget> _preloadedVocabularyAudios = {};
   final Map<String, CustomAudioWidget> _preloadedAnimalSounds = {};
+  int _lifecycleGeneration = 0;
+  bool _isDisposing = false;
 
   // Animation values
   late Animation<double> _vocabularyAnimation;
@@ -90,9 +92,16 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     _initializeAudioWidgets();
 
     // Start the lesson flow
+    final generation = _lifecycleGeneration;
     Misc.onLayoutRendered(() {
-      _startLessonFlow();
+      if (_isCurrentLifecycle(generation)) {
+        _startLessonFlow(generation);
+      }
     });
+  }
+
+  bool _isCurrentLifecycle(int generation) {
+    return mounted && !_isDisposing && _lifecycleGeneration == generation;
   }
 
   @override
@@ -101,6 +110,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     // If the content changed (different index), dispose audio and reset state
     if (oldWidget.index != widget.index) {
+      _lifecycleGeneration++;
       setState(() {
         _completedMatches.clear();
         _showVocabularyBox = false;
@@ -123,8 +133,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       _initializeAudioWidgets();
 
       // Start the lesson flow for new content
+      final generation = _lifecycleGeneration;
       Misc.onLayoutRendered(() {
-        _startLessonFlow();
+        if (_isCurrentLifecycle(generation)) {
+          _startLessonFlow(generation);
+        }
       });
     }
   }
@@ -271,17 +284,26 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     );
   }
 
-  void _startLessonFlow() async {
+  void _startLessonFlow([int? activeGeneration]) async {
+    final generation = activeGeneration ?? _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     // Step 1: Play Nepali audio question
-    await _playQuestionAudio();
+    await _playQuestionAudio(generation);
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Step 2: Start sequential animal sound flow
     Future.delayed(const Duration(seconds: 2), () {
-      _startAnimalSounds();
+      if (_isCurrentLifecycle(generation)) {
+        _startAnimalSounds(generation);
+      }
     });
   }
 
-  Future<void> _playQuestionAudio() async {
+  Future<void> _playQuestionAudio([int? activeGeneration]) async {
+    final generation = activeGeneration ?? _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     try {
       if (_questionAudio != null) {
         await _questionAudio!.play();
@@ -292,7 +314,10 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     }
   }
 
-  void _startAnimalSounds() {
+  void _startAnimalSounds([int? activeGeneration]) {
+    final generation = activeGeneration ?? _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     // Initialize sequential flow
     setState(() {
       _currentAnimalIndex = 0;
@@ -301,11 +326,14 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     // Start with the first animal sound
     if (widget.content.dragTargets?.isNotEmpty == true) {
-      _playCurrentAnimalSound();
+      _playCurrentAnimalSound(generation);
     }
   }
 
-  void _playCurrentAnimalSound() async {
+  void _playCurrentAnimalSound([int? activeGeneration]) async {
+    final generation = activeGeneration ?? _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     if (_allCompleted ||
         widget.content.dragTargets?.isEmpty == true ||
         _currentAnimalIndex >= widget.content.dragTargets!.length) {
@@ -331,6 +359,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     final target = widget.content.dragTargets![_currentAnimalIndex];
 
     // Set state and play audio without waiting for setState to complete
+    if (!_isCurrentLifecycle(generation)) return;
     setState(() {
       _isWaitingForMatch = true;
     });
@@ -360,16 +389,22 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
     }
   }
 
-  void _playNextAnimalSound() {
+  void _playNextAnimalSound([int? activeGeneration]) {
+    final generation = activeGeneration ?? _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     // Move to next animal and play its sound
     _currentAnimalIndex++;
-    _playCurrentAnimalSound();
+    _playCurrentAnimalSound(generation);
   }
   // void _repeadCurrentAnimalSound() {
   //   _playCurrentAnimalSound();
   // }
 
   void _replayCurrentAnimalSound() {
+    final generation = _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     // Ensure we don't go beyond the available targets
     if (_currentAnimalIndex >= widget.content.dragTargets!.length) {
       return;
@@ -389,8 +424,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     // Play the same animal sound after a brief delay
     Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted && !_allCompleted) {
-        _playCurrentAnimalSound();
+      if (_isCurrentLifecycle(generation) && !_allCompleted) {
+        _playCurrentAnimalSound(generation);
         logger.d('Replaying current animal sound: ${target.nameEn}');
       }
     });
@@ -421,6 +456,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   }
 
   Future<void> _handleCorrectMatch(DragTargets target) async {
+    final generation = _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     setState(() {
       _completedMatches[target.id!] = true;
       _completedCount++;
@@ -442,6 +480,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         logger.e('Error playing correct feedback audio: $e');
       }
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Show vocabulary box animation
     _vocabularyController.forward();
@@ -471,6 +510,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         logger.e('Error playing vocabulary audio: $e');
       }
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Check if all matches are completed
     if (_completedCount >= _totalMatches) {
@@ -480,6 +520,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
       // Wait a bit after vocabulary audio, then show success lottie animation
       await Future.delayed(const Duration(milliseconds: 1500));
+      if (!_isCurrentLifecycle(generation)) return;
 
       // Show success lottie animation if confettiOnComplete is true and it's the last item
       if (widget.content.feedback?.confettiOnComplete == true &&
@@ -493,7 +534,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         bool confettiAnimationFinished = false;
 
         void checkIfBothFinished() {
-          if (confettiAudioFinished && confettiAnimationFinished && mounted) {
+          if (confettiAudioFinished &&
+              confettiAnimationFinished &&
+              _isCurrentLifecycle(generation)) {
             setState(() {
               _showSuccessLottie = false;
               showLeopardAnimation = true;
@@ -511,6 +554,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
                 _goodRemarkAudio!
                     .play()
                     .then((_) {
+                      if (!_isCurrentLifecycle(generation)) return;
                       logger.d('Good remark audio finished playing');
                     })
                     .catchError((e) {
@@ -531,6 +575,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
             _confettiFeedbackAudio!
                 .play()
                 .then((_) {
+                  if (!_isCurrentLifecycle(generation)) return;
                   logger.d('Confetti feedback audio finished playing');
                   confettiAudioFinished = true;
                   checkIfBothFinished();
@@ -556,6 +601,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
         // Wait for confetti animation to complete (typically 3-4 seconds for lottie)
         Future.delayed(const Duration(seconds: 4), () {
+          if (!_isCurrentLifecycle(generation)) return;
           logger.d('Confetti animation duration completed');
           confettiAnimationFinished = true;
           checkIfBothFinished();
@@ -573,6 +619,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
             _goodRemarkAudio!
                 .play()
                 .then((_) {
+                  if (!_isCurrentLifecycle(generation)) return;
                   logger.d('Good remark audio finished playing (no confetti)');
                 })
                 .catchError((e) {
@@ -603,7 +650,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
       // Auto-complete the course after a brief delay to let user see the completion
       Future.delayed(const Duration(seconds: 9), () {
-        if (mounted) {
+        if (_isCurrentLifecycle(generation)) {
           if (widget.isLastItem) {
             // Only call lesson complete if this is the last item in the lesson sequence
             widget.onLessonComplete?.call();
@@ -626,7 +673,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
             : const Duration(seconds: 4); // Hide after good remark audio only
 
         Future.delayed(hideDelay, () {
-          if (mounted) {
+          if (_isCurrentLifecycle(generation)) {
             setState(() {
               showLeopardAnimation = false;
             });
@@ -638,7 +685,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
       } else {
         // For non-last items, dispose audio widgets after a shorter delay
         Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
+          if (_isCurrentLifecycle(generation)) {
             _disposeAllAudioWidgets();
           }
         });
@@ -670,6 +717,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
       // Hide vocabulary box after showing it and play next animal sound immediately
       Future.delayed(const Duration(seconds: 2), () {
+        if (!_isCurrentLifecycle(generation)) return;
+
         // Start both animation and sound simultaneously for faster transition
         setState(() {
           _showVocabularyBox = false;
@@ -678,7 +727,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
         // Start animation reverse and play sound at the same time
         _vocabularyController.reverse();
-        _playNextAnimalSound(); // This now plays immediately without waiting for animation
+        _playNextAnimalSound(
+          generation,
+        ); // This now plays immediately without waiting for animation
       });
     }
 
@@ -688,6 +739,9 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
   }
 
   Future<void> _handleIncorrectMatch() async {
+    final generation = _lifecycleGeneration;
+    if (!_isCurrentLifecycle(generation)) return;
+
     setState(() {
       _showIncorrectFeedback = true;
       _isWaitingForMatch = false;
@@ -710,10 +764,11 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
         logger.e('Error playing incorrect feedback audio: $e');
       }
     }
+    if (!_isCurrentLifecycle(generation)) return;
 
     // Hide incorrect feedback after showing it
     Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) {
+      if (_isCurrentLifecycle(generation)) {
         setState(() {
           _showIncorrectFeedback = false;
         });
@@ -726,7 +781,7 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
     // After feedback audio finishes, replay ONLY the current animal sound
     Future.delayed(const Duration(seconds: 2), () {
-      if (mounted && !_allCompleted) {
+      if (_isCurrentLifecycle(generation) && !_allCompleted) {
         logger.d('Replaying current animal sound after incorrect match');
         _replayCurrentAnimalSound();
       }
@@ -737,6 +792,8 @@ class _DragToMatchLessonCardState extends State<DragToMatchLessonCard>
 
   @override
   void dispose() {
+    _isDisposing = true;
+    _lifecycleGeneration++;
     _vocabularyController.dispose();
     _feedbackController.dispose();
     _bounceController.dispose();

@@ -10,6 +10,7 @@ class OrientationRouteObserver extends NavigatorObserver {
     AppRoutes.splashScreen,
     AppRoutes.onboardingScreen,
     AppRoutes.loginScreen,
+    AppRoutes.forgotPasswordScreen,
     AppRoutes.registerScreen,
     AppRoutes.rs1Screen,
     AppRoutes.rs2Screen,
@@ -123,12 +124,10 @@ class OrientationRouteObserver extends NavigatorObserver {
       final isIOS = context != null && PlatformUtility.isIOS(context);
       final useAllowAllPattern = isIOS || isTablet;
 
-      // Determine which landscape orientation to prefer for 90° rotation
+      // Keep the camera/notch on the left for landscape child-facing screens.
       DeviceOrientation preferredLandscape = DeviceOrientation.landscapeRight;
       if (context != null) {
         final currentOrientation = MediaQuery.of(context).orientation;
-        // If coming from portrait, prefer landscapeRight (90° clockwise from portraitUp)
-        // This ensures 90° rotation instead of 270°
         if (currentOrientation == Orientation.portrait) {
           preferredLandscape = DeviceOrientation.landscapeRight;
         }
@@ -138,7 +137,6 @@ class OrientationRouteObserver extends NavigatorObserver {
         await SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
-          DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
         await Future.delayed(const Duration(milliseconds: 100));
@@ -147,7 +145,6 @@ class OrientationRouteObserver extends NavigatorObserver {
         await Future.delayed(const Duration(milliseconds: 50));
         // Then allow both landscape orientations
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
         await Future.delayed(const Duration(milliseconds: 50));
@@ -156,7 +153,6 @@ class OrientationRouteObserver extends NavigatorObserver {
         await SystemChrome.setPreferredOrientations([preferredLandscape]);
         await Future.delayed(const Duration(milliseconds: 50));
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
       }
@@ -234,7 +230,6 @@ class OrientationRouteObserver extends NavigatorObserver {
         await SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
-          DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
 
@@ -249,7 +244,6 @@ class OrientationRouteObserver extends NavigatorObserver {
           ]);
         } else {
           await SystemChrome.setPreferredOrientations([
-            DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight,
           ]);
         }
@@ -265,7 +259,6 @@ class OrientationRouteObserver extends NavigatorObserver {
           ]);
         } else {
           await SystemChrome.setPreferredOrientations([
-            DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight,
           ]);
         }
@@ -300,7 +293,6 @@ class OrientationRouteObserver extends NavigatorObserver {
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
-        DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
       await Future.delayed(const Duration(milliseconds: 100));
@@ -321,7 +313,6 @@ class OrientationRouteObserver extends NavigatorObserver {
         ]);
         await Future.delayed(const Duration(milliseconds: 50));
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
       }
@@ -342,7 +333,6 @@ class OrientationRouteObserver extends NavigatorObserver {
         ]);
         await Future.delayed(const Duration(milliseconds: 50));
         await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
           DeviceOrientation.landscapeRight,
         ]);
       }

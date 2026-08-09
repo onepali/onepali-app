@@ -1,0 +1,28 @@
+part of 'tutorial_bloc.dart';
+
+@freezed
+abstract class TutorialState with _$TutorialState {
+  const factory TutorialState({
+    @Default(false) bool showLoading,
+    @Default(-1) int index,
+    @Default(0) int draggedIndex,
+    @Default([]) List<String> ingredients,
+    @Default(false) bool showLeopardWithTea,
+    @Default(false) bool showHunchButton,
+    @Default(false) bool showDragIndicator,
+    String? draggedItemPath,
+    String? droppedItem,
+    String? stoveImage,
+    String? dragIndicator,
+    String? hunchaButton,
+    String? checkIcon,
+    String? leopardWithTeaTb,
+    String? leopardWithTeaMb,
+    String? leopardTakingTeaTb,
+    String? leopardTakingTeaMb,
+    @Default(false) bool canSelectIngredient,
+    @Default(false) bool isBoilStepInProgress,
+    @Default(false) bool teaReady,
+    @Default(false) bool completionFeedbackReady,
+  }) = _TutorialState;
+}

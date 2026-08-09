@@ -9,6 +9,8 @@ void main() {
         'nameEn': 'Test Story',
         'nameNp': 'परीक्षण कथा',
         'thumbnail': 'thumbnail.png',
+        'bg_image_mobile': 'intro-mobile.png',
+        'bg_image_tablet': 'intro-tablet.png',
         'lottie': 'lottie.json',
         'audio': ['audio1.mp3', 'audio2.mp3'],
         'tooltip': 'Test tooltip',
@@ -38,6 +40,8 @@ void main() {
       expect(model.nameEn, 'Test Story');
       expect(model.nameNp, 'परीक्षण कथा');
       expect(model.thumbnail, 'thumbnail.png');
+      expect(model.bgImageMobile, 'intro-mobile.png');
+      expect(model.bgImageTablet, 'intro-tablet.png');
       expect(model.lottie, 'lottie.json');
       expect(model.audio, ['audio1.mp3', 'audio2.mp3']);
       expect(model.tooltip, 'Test tooltip');
@@ -48,6 +52,8 @@ void main() {
       expect(toJson['nameEn'], 'Test Story');
       expect(toJson['nameNp'], 'परीक्षण कथा');
       expect(toJson['thumbnail'], 'thumbnail.png');
+      expect(toJson['bg_image_mobile'], 'intro-mobile.png');
+      expect(toJson['bg_image_tablet'], 'intro-tablet.png');
       expect(toJson['content'], isA<List>());
     });
 
@@ -58,11 +64,21 @@ void main() {
       expect(model.nameEn, 'Minimal Story');
       expect(model.nameNp, 'न्यूनतम कथा');
       expect(model.thumbnail, '');
+      expect(model.bgImageMobile, isNull);
+      expect(model.bgImageTablet, isNull);
       expect(model.lottie, '');
       expect(model.audio, []);
       expect(model.tooltip, '');
       expect(model.description, '');
       expect(model.content, []);
+    });
+
+    test('should coerce audio values to strings', () {
+      final model = StoryModel.fromJson({
+        'audio': [1, 'audio2.mp3'],
+      });
+
+      expect(model.audio, ['1', 'audio2.mp3']);
     });
   });
 
@@ -108,6 +124,16 @@ void main() {
       expect(content.conversation, []);
       expect(content.characters, []);
       expect(content.audio, []);
+    });
+
+    test('should coerce audio and character values to strings', () {
+      final content = Content.fromJson({
+        'audio': [1, 'audio2.mp3'],
+        'character': [2, 'character2'],
+      });
+
+      expect(content.audio, ['1', 'audio2.mp3']);
+      expect(content.characters, ['2', 'character2']);
     });
   });
 
@@ -173,6 +199,7 @@ void main() {
     test('storyModelToJson should convert to JSON string', () {
       final stories = [
         StoryModel(
+          levelId: 'level1',
           nameEn: 'Story 1',
           nameNp: 'कथा १',
           thumbnail: 'thumb1.png',

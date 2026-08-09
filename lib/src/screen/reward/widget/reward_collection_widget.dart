@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../src.dart';
@@ -42,7 +44,6 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
     // Responsive values
     final double stickerSize = isMobileLandscape ? 140 : 215;
     final double stickerMargin = isMobileLandscape ? 24 : 34;
-    final double titleFontSize = isMobileLandscape ? 48 : 64;
     final double stickerContainerMargin = isMobileLandscape ? 45 : 60;
 
     return Consumer<RewardProvider>(
@@ -69,23 +70,11 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
             Widget stickerGrid() {
               return Center(
                 child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          widget.childId != null
-                              ? 'Sticker Collection'
-                              : 'My Stickers',
-                          style: AppStyles.text22PxSemiBold.copyWith(
-                            fontSize: titleFontSize,
-                            fontFamily: 'Luckiest Guy',
-                            letterSpacing: 5,
-                          ),
-                        ),
-                      ),
-                      Gaps.verticalGapOf(stickerMargin + 10),
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: stickerContainerMargin,
@@ -98,11 +87,11 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
                           children: List.generate(4, (index) {
                             final isUnlocked = index < unlockedStickers.length;
                             final colors = [
-                              Colors.orange,
-                              Colors.purple,
+                              AppColors.thumbColor,
+                              AppColors.kPurple,
                               AppColors.kRed,
-                              Colors.teal,
-                              Colors.blue,
+                              AppColors.kTeal,
+                              AppColors.kBlue,
                             ];
                             final shapes = [
                               BoxShape.circle,
@@ -256,24 +245,63 @@ class _RewardCollectionWidgetState extends State<RewardCollectionWidget> {
 
             return Scaffold(
               backgroundColor: AppColors.kWhite,
-              body: SafeArea(
-                child: Stack(
-                  children: [
-                    stickerGrid(),
-                    // Close button positioned consistently with other reward screens
-                    Positioned(
-                      top: isMobile ? 16 : 24,
-                      right: Dimensions.kIconMargin(context),
-                      child: CircularButtonWidget(
-                        onPressed: () {
-                          UserAppBar.setTabIndex(0);
-                          Utility.navigate(context, AppRoutes.dashboardScreen);
-                        },
-                        type: CircularButtonType.closeGrey,
+              body: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: isMobile
+                                  ? closeBtnPositionMobile
+                                  : closeBtnPositionTablet,
+                              bottom: isMobile
+                                  ? closeBtnPositionMobile
+                                  : closeBtnPositionTablet,
+                              right: isMobile
+                                  ? closeBtnPositionMobile
+                                  : closeBtnPositionTablet,
+                            ),
+                            child: CustomCloseButton(
+                              onTap: () {
+                                UserAppBar.setTabIndex(0);
+                                Utility.navigate(
+                                  context,
+                                  AppRoutes.dashboardScreen,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Center(
+                          child: Text(
+                            widget.childId != null
+                                ? 'Sticker Collection'
+                                : 'My Stickers',
+                            style: Theme.of(context).textTheme.headlineLarge
+                                ?.copyWith(
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontSize: 36,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.kDrawerBgColor,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(child: stickerGrid()),
+                ],
               ),
             );
           },

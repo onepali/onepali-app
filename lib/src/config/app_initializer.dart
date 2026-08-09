@@ -127,16 +127,15 @@ class AppInitializer {
   }
 
   /// Set initial orientation based on the initial route
-  static Future<void> _setInitialRouteOrientation(String initialRoute) async {
+  static Future<void> setInitialRouteOrientation(String initialRoute) async {
     // Check if initial route should be portrait
     final portraitRoutes = OrientationRouteObserver.portraitRoutes;
     final shouldBePortrait = portraitRoutes.contains(initialRoute);
 
-    // Use "allow all then lock" pattern for better reliability
+    // Use the same landscape side everywhere so the camera/notch stays left.
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
 
@@ -149,7 +148,6 @@ class AppInitializer {
       ]);
     } else {
       await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
     }
@@ -162,13 +160,6 @@ class AppInitializer {
 
   static Widget appMaterialApp(BuildContext context, logged, isParentLogged) {
     final initialRoute = getInitialRoute(logged, isParentLogged);
-
-    // Set initial orientation based on initial route (non-blocking)
-    // Don't await - let it happen in background to prevent blocking app launch
-    _setInitialRouteOrientation(initialRoute).catchError((e) {
-      logger.w('⚠️ Failed to set initial orientation: $e');
-      // Continue anyway - orientation will be set by route observer
-    });
 
     return LayoutBuilder(
       builder: (context, constraints) {

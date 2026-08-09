@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/back_arrow_button.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
+import 'package:onepali/src/core/widget/common/forward_arrow_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../src.dart';
@@ -12,7 +15,9 @@ class SlideContent extends StatefulWidget {
   State<SlideContent> createState() => SlideContentState();
 }
 
-class SlideContentState extends State<SlideContent> {
+class SlideContentState extends State<SlideContent>
+    with AutoAdvanceMixin<SlideContent> {
+  static const _autoAdvanceDelay = Duration(seconds: 1);
   double _position = 0.0;
   bool _completed = false;
 
@@ -33,7 +38,7 @@ class SlideContentState extends State<SlideContent> {
     // Images: content.characters = [char1, char2]
     // Background image is handled at parent level in story_content_screen.dart
     // to fill the entire screen (appears once)
-    final charList = widget.content.characters ?? [];
+    final charList = widget.content.characters;
     final char1 = charList.isNotEmpty ? charList[0] : widget.content.image;
     final char2 = charList.length > 1 ? charList[1] : widget.content.image;
     bool isTabletLandScape =
@@ -49,9 +54,9 @@ class SlideContentState extends State<SlideContent> {
       });
       if (_position >= maxPosition && !_completed) {
         setState(() => _completed = true);
-        await Future.delayed(const Duration(milliseconds: 600));
-        if (!context.mounted) return;
-        if (mounted) storyProvider.nextContent(context);
+        scheduleAutoAdvance(_autoAdvanceDelay, () {
+          storyProvider.nextContent(context);
+        });
       }
     }
 
@@ -110,38 +115,33 @@ class SlideContentState extends State<SlideContent> {
             ),
           ),
         ),
-        Positioned(
-          top: 16,
-          right: Dimensions.kIconMargin(context),
-          child: CircularButtonWidget(
-            type: CircularButtonType.close,
-            onPressed: () {
-              storyProvider.stopAudioAndResetIndex();
-            },
-          ),
+
+        TopRightPositionedCloseButton(
+          onTap: () {
+            storyProvider.stopAudioAndResetIndex();
+            Navigator.of(context).pop();
+          },
         ),
-        Positioned(
-          left: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.leftArrow,
-              onPressed: () => storyProvider.previousContent(),
-            ),
-          ),
+
+        CenterLeftAlignedBackButton(
+          onTap: () {
+            storyProvider.previousContent();
+          },
         ),
         // Right arrow (center vertically)
-        Positioned(
-          right: Dimensions.kIconMargin(context),
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: CircularButtonWidget(
-              type: CircularButtonType.rightArrow,
-              onPressed: () => storyProvider.nextContent(context),
-            ),
-          ),
+        // Positioned(
+        //   right: Dimensions.kIconMargin(context),
+        //   top: 0,
+        //   bottom: 0,
+        //   child: Center(
+        //     child: CircularButtonWidget(
+        //       type: CircularButtonType.rightArrow,
+        //       onPressed: () => storyProvider.nextContent(context),
+        //     ),
+        //   ),
+        // ),
+        CenterRightAlignedForwardButton(
+          onTap: () => storyProvider.nextContent(context),
         ),
         Positioned(
           left: 32,
@@ -174,7 +174,7 @@ class SlideContentState extends State<SlideContent> {
                   Positioned(
                     left: 12 + _position,
                     child: SvgHelper.fromSource(
-                      path: Assets.scrollRightArrow,
+                      path: Assets.rightArrow,
                       height:
                           PlatformUtility.isTablet(context) &&
                               PlatformUtility.isLandscape(context)

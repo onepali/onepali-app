@@ -63,3 +63,6 @@ Icon?
 *.swp
 *.swo
 *.tmp
+
+# Local planning docs (not for version control)
+dev2-pr-review-friendly-plan.md

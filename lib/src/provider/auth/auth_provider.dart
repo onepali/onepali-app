@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../src.dart';
+import 'auth_navigation_helper.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -238,7 +239,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       if (!context.mounted) return;
       showCustomToaster("Login successful!");
-      Utility.navigate(context, AppRoutes.dashboardScreen);
+      await navigateAfterParentLogin(context, _user?.uid);
     } on FirebaseAuthException catch (e) {
       logger.e("FirebaseAuthException: ${e.code}");
       setStatus(DataFetchStatus.initial);
@@ -260,6 +261,59 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       setStatus(DataFetchStatus.initial);
       showCustomToaster("Login failed", isError: true);
+    }
+  }
+
+  Future<bool> sendPasswordResetEmail(
+    String email, {
+    bool showSuccessToast = true,
+  }) async {
+    final trimmedEmail = email.trim();
+    if (trimmedEmail.isEmpty) {
+      showCustomToaster("Email is required", isError: true);
+      return false;
+    }
+
+    setStatus(DataFetchStatus.loading);
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: trimmedEmail);
+      setStatus(DataFetchStatus.success);
+      if (showSuccessToast) {
+        showCustomToaster(
+          "If an account exists, we sent a password reset link.",
+        );
+      }
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        setStatus(DataFetchStatus.success);
+        if (showSuccessToast) {
+          showCustomToaster(
+            "If an account exists, we sent a password reset link.",
+          );
+        }
+        return true;
+      }
+
+      setStatus(DataFetchStatus.initial);
+      if (e.code == 'invalid-email') {
+        showCustomToaster("Enter a valid email address", isError: true);
+      } else if (e.code == 'too-many-requests') {
+        showCustomToaster(
+          "Too many reset requests. Please try again later.",
+          isError: true,
+        );
+      } else {
+        showCustomToaster(
+          e.message ?? "Failed to send password reset email",
+          isError: true,
+        );
+      }
+      return false;
+    } catch (e) {
+      setStatus(DataFetchStatus.initial);
+      showCustomToaster("Failed to send password reset email", isError: true);
+      return false;
     }
   }
 

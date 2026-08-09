@@ -31,9 +31,8 @@ class LearningSessionManager {
     }
 
     try {
-      final sessionDuration = DateTime.now()
-          .difference(_sessionStartTime!)
-          .inMinutes;
+      final endedAt = DateTime.now();
+      final sessionDuration = endedAt.difference(_sessionStartTime!).inMinutes;
 
       logger.i('� LearningSessionManager.endSession() called');
       logger.i('� Session duration: ${sessionDuration}min');
@@ -55,32 +54,30 @@ class LearningSessionManager {
           doc.data()?['metrics'],
         );
 
-        // Calculate new average daily learning time
-        final currentTime = currentMetrics.averageDailyLearningTime;
-        final newAverageTime = currentTime + sessionDuration;
+        final updatedMetrics = currentMetrics.recordLearningSession(
+          sessionMinutes: sessionDuration,
+          endedAt: endedAt,
+        );
 
-        // Update daily streak for today
-        final today = DateTime.now();
-        final weekday = today.weekday % 7; // 0 = Sunday, 6 = Saturday
-        final newWeeklyStreak = List<bool>.from(currentMetrics.weeklyStreak);
-        newWeeklyStreak[weekday] = true;
+        logger.i(
+          '📚 Total Learning Time: ${updatedMetrics.totalLearningTime} min',
+        );
+        logger.i(
+          '📚 Average Daily Learning Time: '
+          '${updatedMetrics.averageDailyLearningTime} min',
+        );
 
-        // Calculate day streak (consecutive days this week)
-        final dayStreak = newWeeklyStreak.where((day) => day).length;
-
-        logger.i('📚 Previous Average Learning Time: $currentTime min');
-        logger.i('📚 New Average Learning Time: $newAverageTime min');
-        logger.i('📚 Day Streak: $dayStreak/7');
-
-        // Update metrics in Firestore
         await docRef.update({
-          'metrics.averageDailyLearningTime': newAverageTime,
-          'metrics.dayStreak': dayStreak,
-          'metrics.weeklyStreak': newWeeklyStreak,
+          'metrics.averageDailyLearningTime':
+              updatedMetrics.averageDailyLearningTime,
+          'metrics.totalLearningTime': updatedMetrics.totalLearningTime,
+          'metrics.learningTimeByDate': updatedMetrics.learningTimeByDate,
         });
 
         logger.i(
-          '✅ Learning session metrics updated successfully. Duration: ${sessionDuration}min, New average: ${newAverageTime}min',
+          '✅ Learning session metrics updated successfully. '
+          'Duration: ${sessionDuration}min, '
+          'Average: ${updatedMetrics.averageDailyLearningTime}min',
         );
       } else {
         logger.w('⚠️ No metrics found for child: $_currentChildUid');

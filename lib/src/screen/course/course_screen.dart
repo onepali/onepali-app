@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:onepali/src/core/widget/common/content_card.dart';
+import 'package:onepali/src/features/lessons/pages/lesson_category_page.dart';
 import 'package:onepali/src/src.dart';
 
 class CourseScreen extends StatefulWidget {
@@ -14,10 +17,16 @@ class CourseScreenState extends State<CourseScreen> {
   @override
   void initState() {
     super.initState();
-    Misc.onLayoutRendered(() {
-      context.read<LessonProvider>().fetchCourses();
-      context.read<RecommendedLessonProvider>().fetchRecommendedLessons();
-    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> _getLessonsStream(
+    String levelId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('lesson_levels')
+        .doc(levelId)
+        .collection('categories')
+        .snapshots();
   }
 
   @override
@@ -25,234 +34,119 @@ class CourseScreenState extends State<CourseScreen> {
     bool isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
-    return Consumer<LessonProvider>(
-      builder: (context, lessonProvider, child) {
-        logger.d(
-          'CourseScreen: status: ${lessonProvider.status}, courses: ${lessonProvider.courses.length}',
-        );
-        return StatusHandler(
-          status: lessonProvider.status,
-          hasData: lessonProvider.courses.isNotEmpty,
-          errorTitle: 'No courses available',
-          errorMessage: 'Please check back later for new courses.',
-          checkConnectivity: false,
-          onRetry: () {
-            context.read<LessonProvider>().fetchCourses();
-          },
-          successBuilder: () {
-            final courseModel = lessonProvider.courses.first;
-            final categoriesWithChapters = courseModel.courses
-                .where((c) => c.chapters.isNotEmpty)
-                .toList();
+    final isMobile = PlatformUtility.isMobile(context);
+    return SafeArea(
+      right: true,
+      bottom: false,
+      top: false,
+      left: true,
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('lesson_levels')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data!.docs;
 
-            if (widget.isMobile) {
-              return SafeArea(
-                left: true,
-                top: true,
-                right: false,
-                bottom: false,
-                child: Scaffold(
-                  body: ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    itemCount: categoriesWithChapters.length,
-                    itemBuilder: (context, catIdx) {
-                      final category = categoriesWithChapters[catIdx];
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8, left: 8),
-                            child: Text(
-                              category.nameEn.isNotEmpty
-                                  ? category.nameEn
-                                  : category.nameNp,
-                              style: AppStyles.text20PxSemiBold.copyWith(
-                                color: AppColors.kBlack,
-                                fontSize: isTabletLandscape ? 24 : 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Gaps.verticalGapOf(8),
-                          Builder(
-                            builder: (context) {
-                              final cardWidth = AppCardResponsive.getCardWidth(
-                                context,
-                              );
-                              final isTablet = PlatformUtility.isTablet(
-                                context,
-                              );
-                              final cardHeight =
-                                  AppCardResponsive.getDashboardCardHeight(
-                                    context,
-                                  );
-                              final isMobile = PlatformUtility.isMobile(
-                                context,
-                              );
-                              final isLandscape = PlatformUtility.isLandscape(
-                                context,
-                              );
-                              final screenWidth = MediaQuery.of(
-                                context,
-                              ).size.width;
-                              final screenHeight = MediaQuery.of(
-                                context,
-                              ).size.height;
-
-                              logger.d(
-                                'CourseScreen Card Dimensions (Mobile Mode): cardWidth: $cardWidth, cardHeight: $cardHeight, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape, screenWidth: $screenWidth, screenHeight: $screenHeight',
-                              );
-
-                              return SizedBox(
-                                height: cardHeight,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  children: category.chapters.map((chapter) {
-                                    return SizedBox(
-                                      width: cardWidth,
-                                      height: cardHeight,
-                                      child: CourseCard(
-                                        title: chapter.nameEn.isNotEmpty
-                                            ? chapter.nameEn
-                                            : chapter.nameNp,
-                                        thumbnail: chapter.thumbnail,
-                                        color: AppColors.lessonBgColor,
-                                        isLocked:
-                                            GuestUtil.isGuestUser() &&
-                                            catIdx > 0,
-                                        isCompleted: false,
-                                        isGuestUser: GuestUtil.isGuestUser(),
-                                        onTap: () {
-                                          if (GuestUtil.isGuestUser() &&
-                                              catIdx > 0) {
-                                            // Show guest account prompt for locked lessons
-                                            GuestUtil.showGuestAccountPrompt(
-                                              context,
-                                            );
-                                          } else {
-                                            Utility.navigateMaterialRoute(
-                                              context,
-                                              LessonScreen(chapter: chapter),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              );
-                            },
-                          ),
-                          // Add bottom spacing to prevent cutoff
-                          if (catIdx == categoriesWithChapters.length - 1)
-                            Gaps.verticalGapOf(16),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              );
-            }
-
-            if (categoriesWithChapters.isNotEmpty) {
-              final category = categoriesWithChapters.first;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Column(
+            return ListView.builder(
+              itemCount: data.length,
+              padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final data = snapshot.data!.docs;
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: isTabletLandscape ? 21 : 8,
-                        left: isTabletLandscape ? 24 : 16,
-                      ),
-                      child: Text(
-                        category.nameEn.isNotEmpty
-                            ? category.nameEn
-                            : category.nameNp,
-                        style: AppStyles.text20PxSemiBold.copyWith(
-                          color: AppColors.kBlack,
-                          fontSize: isTabletLandscape ? 24 : 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Text(
+                      data[index]['name'],
+                      style: AppStyles.text20PxSemiBold.copyWith(
+                        color: AppColors.kBlack,
+                        fontSize: isTabletLandscape ? 24 : 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Gaps.verticalGapOf(8),
-                    Expanded(
-                      child: Builder(
-                        builder: (context) {
-                          final cardWidth = AppCardResponsive.getCardWidth(
-                            context,
-                          );
-                          final isTablet = PlatformUtility.isTablet(context);
-                          final cardHeight =
-                              AppCardResponsive.getDashboardCardHeight(context);
-                          final isMobile = PlatformUtility.isMobile(context);
-                          final isLandscape = PlatformUtility.isLandscape(
-                            context,
-                          );
-                          final screenWidth = MediaQuery.of(context).size.width;
-                          final screenHeight = MediaQuery.of(
-                            context,
-                          ).size.height;
-
-                          logger.d(
-                            'CourseScreen Card Dimensions (HomeScreen Mode): cardWidth: $cardWidth, cardHeight: $cardHeight, isTablet: $isTablet, isMobile: $isMobile, isLandscape: $isLandscape, screenWidth: $screenWidth, screenHeight: $screenHeight',
-                          );
-
-                          return ListView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            children: category.chapters.map((chapter) {
-                              return SizedBox(
-                                width: cardWidth,
-                                height: cardHeight,
-                                child: CourseCard(
-                                  title: chapter.nameEn.isNotEmpty
-                                      ? chapter.nameEn
-                                      : chapter.nameNp,
-                                  thumbnail: chapter.thumbnail,
-                                  color: AppColors.lessonBgColor,
-                                  isLocked: category.chapters.length > 1,
-                                  isCompleted: false,
-                                  isGuestUser: GuestUtil.isGuestUser(),
-                                  onTap: () {
-                                    if (category.chapters.length > 1) {
-                                      // Show guest account prompt for locked lessons
-                                      GuestUtil.showGuestAccountPrompt(context);
-                                    } else {
-                                      Utility.navigateMaterialRoute(
-                                        context,
-                                        LessonScreen(chapter: chapter),
-                                      );
-                                    }
-                                  },
+                    SizedBox(height: 24),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final baseCardWidth = AppConstants.contentCardGridWidth(
+                          constraints.maxWidth,
+                          isMobile: isMobile,
+                        );
+                        final cardWidth =
+                            baseCardWidth * (isMobile ? 1.12 : 1.0);
+                        final cardHeight =
+                            baseCardWidth /
+                            AppConstants.contentCardAspectRatio *
+                            (isMobile ? 1.05 : 1.0);
+                        return StreamBuilder(
+                          stream: _getLessonsStream(data[index]['id']),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final lessons = snapshot.data!.docs
+                                  .where(
+                                    (lesson) =>
+                                        kDebugMode ||
+                                        lesson.data()['active'] != false,
+                                  )
+                                  .toList();
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    for (final lesson in lessons) ...[
+                                      SizedBox(
+                                        width: cardWidth,
+                                        height: cardHeight,
+                                        child: ContentCard(
+                                          nameEn:
+                                              lesson.data()['name']
+                                                  as String? ??
+                                              '',
+                                          nameNp:
+                                              lesson.data()['name']
+                                                  as String? ??
+                                              '',
+                                          image:
+                                              lesson.data()['image'] as String?,
+                                          bgImage:
+                                              lesson.data()['bg_image']
+                                                  as String?,
+                                          bgColor:
+                                              lesson.data()['bg_color']
+                                                  as String?,
+                                          onTap: () => _onTapLesson(lesson),
+                                        ),
+                                      ),
+                                      Gaps.horizontalGapOf(
+                                        AppConstants.contentCardGridSpacing,
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               );
-                            }).toList(),
-                          );
-                        },
-                      ),
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        );
+                      },
                     ),
+                    SizedBox(height: 24),
                   ],
-                ),
-              );
-            }
+                );
+              },
+            );
+          }
+          return SizedBox();
+        },
+      ),
+    );
+  }
 
-            // Fallback
-            return const SizedBox();
-          },
-        );
-      },
+  void _onTapLesson(QueryDocumentSnapshot<Map<String, dynamic>> lesson) {
+    Utility.navigateMaterialRoute(
+      context,
+      LessonCategoryPage(categoryId: lesson.id, title: lesson['name']),
     );
   }
 }

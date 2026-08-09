@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
 
   Future<void> _fetchRewards() async {
     final rewardProvider = context.read<RewardProvider>();
-    await rewardProvider.fetchRewardCollection();
+    await rewardProvider.fetchClaimableRewards();
   }
 
   Widget stickerGrid(List<RewardModel> rewards) {
@@ -81,7 +82,7 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
   @override
   Widget build(BuildContext context) {
     final rewardProvider = Provider.of<RewardProvider>(context);
-    final rewards = rewardProvider.rewards;
+    final rewards = rewardProvider.claimableRewards;
     // final stickers = AppConstants.rewardOutlinedStickers;
     final isMobile = PlatformUtility.isMobile(context);
     final isMobileLandscape = isMobile && PlatformUtility.isLandscape(context);
@@ -107,49 +108,40 @@ class _ChooseRewardWidgetState extends State<ChooseRewardWidget> {
               ),
             ),
           ),
-          // Content with SafeArea
-          SafeArea(
-            child: Stack(
-              children: [
-                if (!isMobileLandscape) Gaps.verticalGapOf(100),
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: titlePaddingH,
-                          vertical: titlePaddingV,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.kWhite,
-                          borderRadius: BorderRadius.circular(60),
-                        ),
-                        child: Text(
-                          'Choose your new sticker!',
-                          style: AppStyles.text22PxSemiBold.copyWith(
-                            fontSize: titleFontSize,
-                          ),
+          Stack(
+            children: [
+              if (!isMobileLandscape) Gaps.verticalGapOf(100),
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: titlePaddingH,
+                        vertical: titlePaddingV,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.kWhite,
+                        borderRadius: BorderRadius.circular(60),
+                      ),
+                      child: Text(
+                        'Choose your new sticker!',
+                        style: AppStyles.text22PxSemiBold.copyWith(
+                          fontSize: titleFontSize,
                         ),
                       ),
-                      Gaps.verticalGapOf(gap),
-                      stickerGrid(rewards),
-                    ],
-                  ),
+                    ),
+                    Gaps.verticalGapOf(gap),
+                    stickerGrid(rewards),
+                  ],
                 ),
-                // Close button - last item in Stack to ensure it's on top
-                Positioned(
-                  top: isMobile ? 16 : 24,
-                  right: Dimensions.kIconMargin(context),
-                  child: CircularButtonWidget(
-                    type: CircularButtonType.closeGrey,
-                    onPressed: () {
-                      Utility.navigate(context, AppRoutes.dashboardScreen);
-                    },
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          TopRightPositionedCloseButton(
+            onTap: () {
+              Utility.navigate(context, AppRoutes.dashboardScreen);
+            },
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:onepali/src/src.dart';
 
 enum CircularButtonType { leftArrow, rightArrow, sound, close, closeGrey }
@@ -36,6 +37,14 @@ class _CircularButtonWidgetState extends State<CircularButtonWidget> {
       CircularButtonType.close => Assets.wrong,
       CircularButtonType.closeGrey => Assets.closeGreyIcon,
     };
+
+    if (widget.type == CircularButtonType.close ||
+        widget.type == CircularButtonType.closeGrey) {
+      return CustomCloseButton(
+        onTap: widget.enabled ? widget.onPressed : null,
+        iconPath: iconPath,
+      );
+    }
 
     // Only arrow buttons get darker shadow when pressed
     final isArrowButton =

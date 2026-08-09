@@ -17,11 +17,10 @@ class _RS2ScreenState extends State<RS2Screen> {
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing and styling
-    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double titleBottomGap = isTabletPortrait ? 32.0 : 24.0;
     final double cardBottomGap = isTabletPortrait ? 20.0 : 16.0;
-    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
-    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double buttonHeight = AuthOnboardingLayout.buttonHeight(context);
+    final double buttonRadius = AuthOnboardingLayout.buttonRadius(context);
 
     final TextStyle titleStyle = isTabletPortrait
         ? AppStyles.text24PxSemiBold
@@ -33,27 +32,18 @@ class _RS2ScreenState extends State<RS2Screen> {
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 2),
       backgroundColor: AppColors.kWhite,
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: 16.0,
-          ),
-          child: _buildNextButton(
-            context,
-            isTabletPortrait,
-            buttonTextStyle,
-            buttonHeight,
-            buttonRadius,
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(horizontalPadding),
-        child: Column(
+      body: AuthOnboardingLayout(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Why is your child learning Nepali?', style: titleStyle),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                'Why is your child learning Nepali?',
+                style: titleStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
             Gaps.verticalGapOf(titleBottomGap),
             ...List.generate(
               AppConstants.whyLearningNepali.length,
@@ -77,6 +67,13 @@ class _RS2ScreenState extends State<RS2Screen> {
             ),
           ],
         ),
+        bottomAction: _buildNextButton(
+          context,
+          isTabletPortrait,
+          buttonTextStyle,
+          buttonHeight,
+          buttonRadius,
+        ),
       ),
     );
   }
@@ -87,7 +84,7 @@ class _RS2ScreenState extends State<RS2Screen> {
     required VoidCallback onTap,
     required bool isTabletPortrait,
   }) {
-    final double verticalPadding = isTabletPortrait ? 20.0 : 16.0;
+    final double verticalPadding = isTabletPortrait ? 24.0 : 20.0;
     final double horizontalPadding = isTabletPortrait ? 24.0 : 20.0;
     final double borderRadius = isTabletPortrait ? 12.0 : 8.0;
     final double borderWidth = isSelected

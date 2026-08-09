@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/common/close_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../src.dart';
@@ -52,7 +53,18 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
 
   Future<void> _updateReward() async {
     final provider = context.read<RewardProvider>();
-    await provider.saveRewardForChild(widget.data);
+    final parentUid = context.read<UserProvider>().userId;
+    final childUid = await ChildLocalStorage.getCurrentChildId();
+    if (parentUid == null || parentUid.isEmpty || childUid == null) {
+      logger.e('Parent ID or Child ID not found');
+      return;
+    }
+
+    await provider.saveRewardForChild(
+      widget.data,
+      parentUid: parentUid,
+      childId: childUid,
+    );
   }
 
   Future<void> _playAudio() async {
@@ -113,23 +125,8 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
           // Content
           SafeArea(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: Dimensions.kIconMargin(context),
-                    top: isMobile ? 16 : 24,
-                  ),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: CircularButtonWidget(
-                      type: CircularButtonType.closeGrey,
-                      onPressed: () => Utility.navigate(
-                        context,
-                        AppRoutes.rewardCollectionScreen,
-                      ),
-                    ),
-                  ),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,6 +213,11 @@ class _RewardPreviewWidgetState extends State<RewardPreviewWidget> {
                 ),
               ],
             ),
+          ),
+          TopRightPositionedCloseButton(
+            onTap: () {
+              Utility.navigate(context, AppRoutes.rewardCollectionScreen);
+            },
           ),
         ],
       ),

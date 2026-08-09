@@ -21,6 +21,7 @@ class AppRoutes {
 
   /// [Auth] Routes
   static const String loginScreen = '/login';
+  static const String forgotPasswordScreen = '/forgot-password';
   static const String registerScreen = '/register';
 
   /// [Auth]  --->  [Register] Routes
@@ -100,6 +101,11 @@ class AppRoutes {
     onboardingScreen: (context) => const OnboardingScreen(),
 
     loginScreen: (context) => const LoginScreen(),
+    forgotPasswordScreen: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      return ForgotPasswordScreen(initialEmail: args?['email'] as String?);
+    },
     registerScreen: (context) => const RegisterScreen(),
 
     rs1Screen: (context) => const RS1Screen(),

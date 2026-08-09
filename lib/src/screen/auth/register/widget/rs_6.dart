@@ -41,14 +41,12 @@ class _RS6ScreenState extends State<RS6Screen>
     final bool isTabletPortrait = PlatformUtility.isTabletPortrait(context);
 
     // Responsive sizing and styling
-    final double horizontalPadding = isTabletPortrait ? 32.0 : 16.0;
     final double lottieSize = isTabletPortrait ? 200.0 : 150.0;
     final double svgSize = isTabletPortrait ? 240.0 : 180.0;
     final double titleGap = isTabletPortrait ? 40.0 : 30.0;
     final double subtitleGap = isTabletPortrait ? 16.0 : 10.0;
-    final double bottomPadding = isTabletPortrait ? 24.0 : 16.0;
-    final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
-    final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
+    final double buttonHeight = AuthOnboardingLayout.buttonHeight(context);
+    final double buttonRadius = AuthOnboardingLayout.buttonRadius(context);
 
     final TextStyle titleStyle = isTabletPortrait
         ? AppStyles.text24PxSemiBold
@@ -65,51 +63,51 @@ class _RS6ScreenState extends State<RS6Screen>
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 6),
       backgroundColor: AppColors.kWhite,
-      body: Padding(
-        padding: EdgeInsets.all(horizontalPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!_showSvg)
-              Lottie.asset(
-                Assets.successLottie,
-                height: lottieSize,
-                width: lottieSize,
-                repeat: false,
-                controller: _lottieController,
-                onLoaded: (composition) {
-                  _lottieController.duration = composition.duration;
-                  _lottieController.forward();
-                },
+      body: AuthOnboardingLayout(
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!_showSvg)
+                Lottie.asset(
+                  Assets.successLottie,
+                  height: lottieSize,
+                  width: lottieSize,
+                  repeat: false,
+                  controller: _lottieController,
+                  onLoaded: (composition) {
+                    _lottieController.duration = composition.duration;
+                    _lottieController.forward();
+                  },
+                ),
+              if (_showSvg)
+                SvgHelper.fromSource(
+                  path: Assets.successSvg,
+                  height: svgSize,
+                  width: svgSize,
+                ),
+              Gaps.verticalGapOf(titleGap),
+              Text(
+                'Account Setup Complete!',
+                style: titleStyle,
+                textAlign: TextAlign.center,
               ),
-            if (_showSvg)
-              SvgHelper.fromSource(
-                path: Assets.successSvg,
-                height: svgSize,
-                width: svgSize,
+              Gaps.verticalGapOf(subtitleGap),
+              Text(
+                'You\'re now part of a community helping children connect with their Nepali roots. Let the learning begin!',
+                style: descriptionStyle,
+                textAlign: TextAlign.center,
               ),
-            Gaps.verticalGapOf(titleGap),
-            Text('Account Setup Complete!', style: titleStyle),
-            Gaps.verticalGapOf(subtitleGap),
-            Text(
-              'You\'re now part of a community helping children connect with their Nepali roots. Let the learning begin!',
-              style: descriptionStyle,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(bottomPadding),
-          child: _buildNextButton(
-            context,
-            isTabletPortrait,
-            buttonTextStyle,
-            buttonHeight,
-            buttonRadius,
+            ],
           ),
+        ),
+        bottomAction: _buildNextButton(
+          context,
+          isTabletPortrait,
+          buttonTextStyle,
+          buttonHeight,
+          buttonRadius,
         ),
       ),
     );

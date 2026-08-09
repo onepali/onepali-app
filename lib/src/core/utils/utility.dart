@@ -29,13 +29,18 @@ class Utility {
     );
   }
 
-  static Row horizontalDividerTitle({String? title, TextStyle? titleStyle}) {
+  static Row horizontalDividerTitle({
+    String? title,
+    TextStyle? titleStyle,
+    double edgeIndent = 20.0,
+    double titleGap = 12.0,
+  }) {
     return Row(
       children: <Widget>[
         Expanded(
           child: Divider(
-            indent: 20.0,
-            endIndent: 12.0,
+            indent: edgeIndent,
+            endIndent: titleGap,
             color: AppColors.kGrey,
             thickness: 1,
           ),
@@ -48,8 +53,8 @@ class Utility {
         ),
         Expanded(
           child: Divider(
-            indent: 12.0,
-            endIndent: 20.0,
+            indent: titleGap,
+            endIndent: edgeIndent,
             color: AppColors.kGrey,
             thickness: 1,
           ),

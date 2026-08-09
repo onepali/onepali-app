@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onepali/src/core/widget/dialog/create_child_profile_dialog.dart';
 import 'package:onepali/src/src.dart';
+import 'package:provider/provider.dart';
 
 class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
@@ -10,6 +12,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int totalChildCount;
   final AuthProviderType? authType;
   final BuildContext context;
+  final String? parentUid;
+  final String? childUid;
   final int totalLessonsCompleted;
   final bool isGuest;
   final bool playStarBlastAudio;
@@ -26,6 +30,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.authType,
     this.totalChildCount = 0,
     required this.context,
+    this.parentUid,
+    this.childUid,
     this.isGuest = false,
     this.playStarBlastAudio = false,
     this.totalLessonsCompleted = 0,
@@ -137,23 +143,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      if (!isGuest) {
-                                        Utility.navigateMaterialRoute(
-                                          context,
-                                          DrawerScreen(
-                                            data: childData,
-                                            totalChildCount: totalChildCount,
-                                          ),
-                                          routeName: AppRoutes.drawerRoutes,
-                                        );
-                                      }
-                                      // } else {
-                                      //   Utility.navigate(
-                                      //     context,
-                                      //     AppRoutes.systemScreen,
-                                      //   );
-                                      // }
+                                    onPressed: () async {
+                                      await _handleAvatarTap(context);
                                     },
                                     icon: CustomImage(
                                       isGuest
@@ -185,19 +176,34 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       //     childData.isNotEmpty) {
                                       //   _playStarBlastAudio();
                                       // }
-                                      return customInkwell(
-                                        onTap: () {
-                                          Utility.navigate(
-                                            context,
-                                            AppRoutes.chooseRewardScreen,
+                                      return _RewardProgressBuilder(
+                                        parentUid: parentUid,
+                                        childUid: childUid,
+                                        fallbackProgress: totalLessonsCompleted,
+                                        builder: (context, rewardProgress) {
+                                          final canClaimReward =
+                                              RewardProvider.canClaimRewardFromProgress(
+                                                rewardProgress,
+                                              );
+                                          return customInkwell(
+                                            onTap: () {
+                                              Utility.navigate(
+                                                context,
+                                                canClaimReward
+                                                    ? AppRoutes
+                                                          .chooseRewardScreen
+                                                    : AppRoutes
+                                                          .rewardCollectionScreen,
+                                              );
+                                            },
+                                            child: LottieHelper.fromSource(
+                                              path: Assets.starRewardLottie,
+                                              height: starRewardLottieSize,
+                                              width: starRewardLottieSize,
+                                              repeat: canClaimReward,
+                                            ),
                                           );
                                         },
-                                        child: LottieHelper.fromSource(
-                                          path: Assets.starRewardLottie,
-                                          height: starRewardLottieSize,
-                                          width: starRewardLottieSize,
-                                          repeat: false,
-                                        ),
                                       );
                                     },
                                   ),
@@ -276,22 +282,8 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: IconButton(
                                             padding: EdgeInsets.zero,
                                             constraints: const BoxConstraints(),
-                                            onPressed: () {
-                                              if (!isGuest) {
-                                                Utility.navigateMaterialRoute(
-                                                  context,
-                                                  TabDrawerScreen(
-                                                    data: childData,
-                                                    totalChildCount:
-                                                        totalChildCount,
-                                                  ),
-                                                  routeName:
-                                                      AppRoutes.tabDrawerRoutes,
-                                                );
-                                              }
-                                              //  else {
-                                              //   Utility.navigate(context, AppRoutes.systemScreen);
-                                              // }
+                                            onPressed: () async {
+                                              await _handleAvatarTap(context);
                                             },
                                             icon: CustomImage(
                                               isGuest
@@ -304,6 +296,24 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                               imageType: isGuest
                                                   ? CustomImageType.local
                                                   : CustomImageType.network,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => GestureDetector(
+                                                    onTap: () async {
+                                                      await _handleAvatarTap(
+                                                        context,
+                                                      );
+                                                    },
+                                                    child: Image.asset(
+                                                      Assets.blueUserAvatar,
+                                                      height: avatarSize,
+                                                      width: avatarSize,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -331,8 +341,17 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       child: SizedBox(
                                         width:
                                             achievementsBarWidth, // 80% of left side allocation
-                                        child: buildProgressBar(
-                                          achievementsBarWidth,
+                                        child: _RewardProgressBuilder(
+                                          parentUid: parentUid,
+                                          childUid: childUid,
+                                          fallbackProgress:
+                                              totalLessonsCompleted,
+                                          builder: (context, rewardProgress) =>
+                                              buildProgressBar(
+                                                achievementsBarWidth,
+                                                rewardProgressCount:
+                                                    rewardProgress,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -461,8 +480,46 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
     await _stopStarBlastAudio();
   }
 
-  Widget buildProgressBar(double progressBarWidth) {
+  Future<void> _handleAvatarTap(BuildContext context) async {
+    if (isGuest) {
+      Utility.navigate(context, AppRoutes.onboardingScreen);
+      return;
+    }
+
+    final hasNoChild = childData.isEmpty || totalChildCount <= 0;
+    if (hasNoChild) {
+      final shouldCreateChild = await showCreateChildProfileDialog(context);
+      if (shouldCreateChild == true) {
+        Utility.navigate(context, AppRoutes.childRegisterScreen);
+      }
+      return;
+    }
+
+    final isMobileLandscape =
+        PlatformUtility.isMobile(context) &&
+        PlatformUtility.isLandscape(context);
+    if (isMobileLandscape) {
+      Utility.navigateMaterialRoute(
+        context,
+        DrawerScreen(data: childData, totalChildCount: totalChildCount),
+        routeName: AppRoutes.drawerRoutes,
+      );
+      return;
+    }
+
+    Utility.navigateMaterialRoute(
+      context,
+      TabDrawerScreen(data: childData, totalChildCount: totalChildCount),
+      routeName: AppRoutes.tabDrawerRoutes,
+    );
+  }
+
+  Widget buildProgressBar(double progressBarWidth, {int? rewardProgressCount}) {
     const totalSteps = 4;
+    final progressCount = rewardProgressCount ?? totalLessonsCompleted;
+    final canClaimReward = RewardProvider.canClaimRewardFromProgress(
+      progressCount,
+    );
     final isTabletLandscape =
         PlatformUtility.isTablet(context) &&
         PlatformUtility.isLandscape(context);
@@ -488,14 +545,14 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       children: [
         for (int i = 0; i < totalSteps; i++) ...[
           _buildDottedConnector(
-            isActive: totalLessonsCompleted > i,
+            isActive: progressCount > i,
             length: connectorLength,
             height: progressBarHeight,
           ),
 
           // Progress dot
           _buildProgressDot(
-            isCompleted: totalLessonsCompleted > i,
+            isCompleted: progressCount > i,
             isLastStep: i == totalSteps - 1,
             circleSize: circleSize,
           ),
@@ -503,7 +560,7 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
         // Final dotted connector after last dot
         _buildDottedConnector(
-          isActive: totalLessonsCompleted >= totalSteps,
+          isActive: progressCount >= totalSteps,
           length: connectorLength,
           height: progressBarHeight,
         ),
@@ -523,12 +580,17 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               return customInkwell(
                 onTap: () {
-                  Utility.navigate(context, AppRoutes.chooseRewardScreen);
+                  Utility.navigate(
+                    context,
+                    canClaimReward
+                        ? AppRoutes.chooseRewardScreen
+                        : AppRoutes.rewardCollectionScreen,
+                  );
                 },
                 child: LottieHelper.fromSource(
                   path: Assets.starRewardLottie,
                   height: starLottieSize,
-                  repeat: false,
+                  repeat: canClaimReward,
                   width: starLottieSize,
                 ),
               );
@@ -610,8 +672,10 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
+        overlayColor: WidgetStateProperty.all(AppColors.kTransparentColor),
+        splashFactory: NoSplash.splashFactory,
         hoverColor: AppColors.kTransparentColor,
-        splashColor: AppColors.kTransparentColor.withValues(alpha: 0.1),
+        splashColor: AppColors.kTransparentColor,
         focusColor: AppColors.kTransparentColor,
         highlightColor: AppColors.kTransparentColor,
         child: Column(
@@ -745,6 +809,42 @@ class UserAppBar extends StatelessWidget implements PreferredSizeWidget {
       captionTotalHeight: captionTotalHeight,
       tabCaptionFontSize: tabCaptionFontSize,
       tabContentHeight: tabContentHeight,
+    );
+  }
+}
+
+class _RewardProgressBuilder extends StatelessWidget {
+  const _RewardProgressBuilder({
+    required this.parentUid,
+    required this.childUid,
+    required this.fallbackProgress,
+    required this.builder,
+  });
+
+  final String? parentUid;
+  final String? childUid;
+  final int fallbackProgress;
+  final Widget Function(BuildContext context, int rewardProgress) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedParentUid = parentUid;
+    final resolvedChildUid = childUid;
+    if (resolvedParentUid == null ||
+        resolvedParentUid.isEmpty ||
+        resolvedChildUid == null ||
+        resolvedChildUid.isEmpty) {
+      return builder(context, fallbackProgress);
+    }
+
+    return StreamBuilder<int>(
+      stream: context.read<RewardProvider>().watchRewardProgress(
+        parentUid: resolvedParentUid,
+        childUid: resolvedChildUid,
+      ),
+      initialData: fallbackProgress,
+      builder: (context, snapshot) =>
+          builder(context, snapshot.data ?? fallbackProgress),
     );
   }
 }
