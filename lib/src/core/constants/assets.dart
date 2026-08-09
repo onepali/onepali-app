@@ -139,10 +139,8 @@ class Assets {
       getDrawerIcon(context, 'family');
   static String logoutIcon(BuildContext context) =>
       getDrawerIcon(context, 'logout');
-  static String downloadIcon(BuildContext context) =>
-      getDrawerIcon(context, 'download');
-  static String parentZoneIcon(BuildContext context) =>
-      getDrawerIcon(context, 'parent');
+  static String downloadIcon(BuildContext context) => download;
+  static String parentZoneIcon(BuildContext context) => parentZone;
 
   /// [Json] assets
   // static String user = 'user'.json;
