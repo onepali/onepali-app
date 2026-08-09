@@ -50,7 +50,7 @@ class _RS3ScreenState extends State<RS3Screen> {
     final double fieldGap = isTabletPortrait ? 24.0 : 20.0;
     final double fieldHeight = isTabletPortrait ? 64.0 : 56.0;
     final double fieldVerticalPadding = isTabletPortrait ? 20.0 : 16.0;
-    final double fieldLabelGap = isTabletPortrait ? 16.0 : 12.0;
+    final double fieldLabelGap = isTabletPortrait ? 12.0 : 8.0;
     final double pencilSize = isTabletPortrait ? 96.0 : 76.0;
     final double buttonHeight = AuthOnboardingLayout.buttonHeight(context);
     final double buttonRadius = AuthOnboardingLayout.buttonRadius(context);
@@ -124,7 +124,9 @@ class _RS3ScreenState extends State<RS3Screen> {
                       color: AppColors.kPitchBlack,
                     ),
                     labelGap: fieldLabelGap,
-                    placeholder: 'It will be used as Parent Zone password',
+                    placeholder: isTabletPortrait
+                        ? 'Used as Parent Zone password'
+                        : '',
                     maxYear: maxParentBirthYear,
                     selectOnPickerTap: true,
                     verticalPadding: fieldVerticalPadding,
@@ -138,6 +140,13 @@ class _RS3ScreenState extends State<RS3Screen> {
                     },
                   ),
                 ),
+                if (!isTabletPortrait) ...[
+                  Gaps.verticalGapOf(8),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: InfoWidget.info('Used as Parent Zone password'),
+                  ),
+                ],
                 Expanded(
                   child: Center(
                     child: SvgHelper.fromSource(

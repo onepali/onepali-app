@@ -224,9 +224,13 @@ class AuthCredentialLayout extends StatelessWidget {
     final double dividerSpacing = isTabletPortrait ? 42.0 : 34.0;
     final double afterPasswordSpacing = isTabletPortrait ? 8.0 : 6.0;
     final double afterPrimarySpacing = isTabletPortrait ? 18.0 : 14.0;
+    final double bottomActionGap = isTabletPortrait ? 24.0 : 16.0;
     final double buttonHeight = isTabletPortrait ? 56.0 : 48.0;
     final double buttonRadius = isTabletPortrait ? 12.0 : 8.0;
     final double loadingIndicatorSize = isTabletPortrait ? 20.0 : 16.0;
+    final double logoWidth = isTabletPortrait ? 240.0 : 180.0;
+    final double logoHeight = isTabletPortrait ? 38.0 : 28.0;
+    final double logoBottomGap = isTabletPortrait ? 56.0 : 44.0;
 
     final TextStyle titleStyle =
         (isTabletPortrait
@@ -243,75 +247,107 @@ class AuthCredentialLayout extends StatelessWidget {
             .copyWith(color: AppColors.kPitchBlack);
     final double socialIconSize = socialButtonTextStyle.fontSize ?? 16.0;
 
-    return AuthOnboardingLayout(
-      topPadding: topPadding,
-      bottomPadding: bottomPadding,
-      horizontalPadding: horizontalPadding,
-      body: AuthLogoContent(
-        child: Form(
-          key: formKey,
+    return Container(
+      color: AppColors.kWhite,
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            topPadding,
+            horizontalPadding,
+            bottomPadding,
+          ),
           child: Column(
             children: [
-              Center(child: Text(title, style: titleStyle)),
-              Gaps.verticalGapOf(sectionSpacing),
-              AuthContentBox(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _socialButton(
-                      context,
-                      title: 'Continue with Google',
-                      icon: Assets.google,
-                      iconSize: socialIconSize,
-                      textStyle: socialButtonTextStyle,
-                      height: buttonHeight,
-                      loaderSize: loadingIndicatorSize,
-                      isLoading: isGoogleLoading,
-                      onTap: onGoogleTap,
-                    ),
-                    Gaps.verticalGapOf(controlSpacing),
-                    _socialButton(
-                      context,
-                      title: 'Continue with Apple',
-                      iconData: Icons.apple,
-                      iconSize: socialIconSize,
-                      textStyle: socialButtonTextStyle,
-                      height: buttonHeight,
-                      loaderSize: loadingIndicatorSize,
-                      isLoading: isAppleLoading,
-                      onTap: onAppleTap,
-                    ),
-                    Gaps.verticalGapOf(dividerSpacing),
-                    Utility.horizontalDividerTitle(title: 'OR', edgeIndent: 0),
-                    Gaps.verticalGapOf(dividerSpacing),
-                    emailField,
-                    Gaps.verticalGapOf(controlSpacing),
-                    passwordField,
-                    if (afterPassword != null) ...[
-                      Gaps.verticalGapOf(afterPasswordSpacing),
-                      afterPassword!,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Center(
+                        child: SvgHelper.fromSource(
+                          path: Assets.logoSvg,
+                          width: logoWidth,
+                          height: logoHeight,
+                          color: AppColors.kDrawerBgColor,
+                        ),
+                      ),
+                      Gaps.verticalGapOf(logoBottomGap),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            Center(child: Text(title, style: titleStyle)),
+                            Gaps.verticalGapOf(sectionSpacing),
+                            AuthContentBox(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _socialButton(
+                                    context,
+                                    title: 'Continue with Google',
+                                    icon: Assets.google,
+                                    iconSize: socialIconSize,
+                                    textStyle: socialButtonTextStyle,
+                                    height: buttonHeight,
+                                    loaderSize: loadingIndicatorSize,
+                                    isLoading: isGoogleLoading,
+                                    onTap: onGoogleTap,
+                                  ),
+                                  Gaps.verticalGapOf(controlSpacing),
+                                  _socialButton(
+                                    context,
+                                    title: 'Continue with Apple',
+                                    iconData: Icons.apple,
+                                    iconSize: socialIconSize,
+                                    textStyle: socialButtonTextStyle,
+                                    height: buttonHeight,
+                                    loaderSize: loadingIndicatorSize,
+                                    isLoading: isAppleLoading,
+                                    onTap: onAppleTap,
+                                  ),
+                                  Gaps.verticalGapOf(dividerSpacing),
+                                  Utility.horizontalDividerTitle(
+                                    title: 'OR',
+                                    edgeIndent: 0,
+                                  ),
+                                  Gaps.verticalGapOf(dividerSpacing),
+                                  emailField,
+                                  Gaps.verticalGapOf(controlSpacing),
+                                  passwordField,
+                                  if (afterPassword != null) ...[
+                                    Gaps.verticalGapOf(afterPasswordSpacing),
+                                    afterPassword!,
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
-                  ],
+                  ),
                 ),
               ),
-              const Spacer(),
+              Gaps.verticalGapOf(bottomActionGap),
+              AuthContentBox(
+                child: AuthBottomFooter(
+                  footerGap: afterPrimarySpacing,
+                  footer: afterPrimary,
+                  child: CustomMaterialButton(
+                    label: primaryLabel,
+                    isLoading: isPrimaryLoading,
+                    onTap: isPrimaryLoading ? null : onPrimaryTap,
+                    backgroundColor: AppColors.kButtonGreen,
+                    width: double.infinity,
+                    elevation: 0,
+                    textStyle: primaryButtonTextStyle,
+                    height: buttonHeight,
+                    radius: buttonRadius,
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-      ),
-      bottomAction: AuthBottomFooter(
-        footerGap: afterPrimarySpacing,
-        footer: afterPrimary,
-        child: CustomMaterialButton(
-          label: primaryLabel,
-          isLoading: isPrimaryLoading,
-          onTap: isPrimaryLoading ? null : onPrimaryTap,
-          backgroundColor: AppColors.kButtonGreen,
-          width: double.infinity,
-          elevation: 0,
-          textStyle: primaryButtonTextStyle,
-          height: buttonHeight,
-          radius: buttonRadius,
         ),
       ),
     );
