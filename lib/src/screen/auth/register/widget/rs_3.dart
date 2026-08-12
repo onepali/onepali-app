@@ -62,17 +62,17 @@ class _RS3ScreenState extends State<RS3Screen> {
     final TextStyle buttonTextStyle = isTabletPortrait
         ? AppStyles.text20PxMedium
         : AppStyles.text16PxMedium;
-    final TextStyle titleActionTextStyle = isTabletPortrait
-        ? AppStyles.text18PxSemiBold
-        : AppStyles.text14PxSemiBold;
-    final double fieldLabelWidth =
-        _textWidth(
-          'Year of Birth',
-          titleActionTextStyle,
-          MediaQuery.textScalerOf(context),
-        ).ceilToDouble() +
-        fieldLabelGap;
-
+    final TextStyle fieldLabelStyle = DefaultTextStyle.of(context).style.merge(
+      (isTabletPortrait
+              ? AppStyles.text18PxSemiBold
+              : AppStyles.text14PxSemiBold)
+          .copyWith(color: AppColors.kPitchBlack),
+    );
+    final double fieldLabelWidth = _widestTextWidth(
+      ['Name', 'Year of Birth'],
+      fieldLabelStyle,
+      MediaQuery.textScalerOf(context),
+    );
     return Scaffold(
       appBar: CustomAppBar(title: '', showStepper: true, currentStep: 3),
       backgroundColor: AppColors.kWhite,
@@ -102,7 +102,7 @@ class _RS3ScreenState extends State<RS3Screen> {
                     focusNode: _nameFocusNode,
                     prefixIcon: _fieldLabelPrefix(
                       'Name',
-                      titleActionTextStyle,
+                      fieldLabelStyle,
                       fieldLabelWidth,
                       fieldLabelGap,
                       isTabletPortrait,
@@ -120,9 +120,7 @@ class _RS3ScreenState extends State<RS3Screen> {
                     onDateChanged: onYearSelected,
                     label: 'Year of Birth',
                     labelWidth: fieldLabelWidth,
-                    labelStyle: titleActionTextStyle.copyWith(
-                      color: AppColors.kPitchBlack,
-                    ),
+                    labelStyle: fieldLabelStyle,
                     labelGap: fieldLabelGap,
                     placeholder: isTabletPortrait
                         ? 'Used as Parent Zone password'
@@ -227,23 +225,29 @@ class _RS3ScreenState extends State<RS3Screen> {
         alignment: Alignment.centerLeft,
         child: SizedBox(
           width: labelWidth,
-          child: Text(
-            label,
-            style: textStyle.copyWith(color: AppColors.kPitchBlack),
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: Text(label, style: textStyle, overflow: TextOverflow.ellipsis),
         ),
       ),
     );
   }
 
-  double _textWidth(String text, TextStyle style, TextScaler textScaler) {
-    final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-      textScaler: textScaler,
-    )..layout();
-    return textPainter.width;
+  double _widestTextWidth(
+    List<String> labels,
+    TextStyle textStyle,
+    TextScaler textScaler,
+  ) {
+    double widest = 0;
+    for (final label in labels) {
+      final textPainter = TextPainter(
+        text: TextSpan(text: label, style: textStyle),
+        maxLines: 1,
+        textDirection: TextDirection.ltr,
+        textScaler: textScaler,
+      )..layout();
+      if (textPainter.width > widest) {
+        widest = textPainter.width;
+      }
+    }
+    return widest.ceilToDouble();
   }
 }
