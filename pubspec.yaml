@@ -49,7 +49,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.4.2
   path_drawing: ^1.0.1
-  record: ^6.2.0
+  record: ^7.1.1
   flutter_flip_card: ^0.0.6
 
   # Networking & HTTP
